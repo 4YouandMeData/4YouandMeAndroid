@@ -8,8 +8,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:3.6.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72")
+        classpath(Libs.com_android_tools_build_gradle)
+        classpath(Libs.kotlin_gradle_plugin)
     }
 }
 
@@ -21,6 +21,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven("https://dl.bintray.com/arrow-kt/arrow-kt/")
 
     }
 }

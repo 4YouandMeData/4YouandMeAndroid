@@ -33,6 +33,10 @@ android {
 
 dependencies {
 
+    /* --- modules --- */
+
+    implementation(project(":4youandme"))
+
     /* --- kotlin --- */
 
     implementation (Libs.kotlin_stdlib_jdk7)
