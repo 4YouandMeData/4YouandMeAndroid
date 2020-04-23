@@ -32,11 +32,23 @@ android {
 }
 
 dependencies {
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72")
-    implementation ("androidx.appcompat:appcompat:1.1.0")
-    implementation ("androidx.core:core-ktx:1.2.0")
-    implementation ("androidx.constraintlayout:constraintlayout:1.1.3")
-    testImplementation ("junit:junit:4.13")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.1")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.2.0")
+
+    /* --- kotlin --- */
+
+    implementation (Libs.kotlin_stdlib_jdk7)
+
+    /* --- android --- */
+
+    implementation (Libs.appcompat)
+    implementation (Libs.core_ktx)
+
+    /* --- layout --- */
+
+    implementation(Libs.constraintlayout)
+
+    /* --- test --- */
+
+    testImplementation (Libs.junit_junit)
+    androidTestImplementation (Libs.androidx_test_ext_junit)
+    androidTestImplementation (Libs.espresso_core)
 }
