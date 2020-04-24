@@ -8,6 +8,19 @@ import kotlin.String
  */
 object Libs {
     /**
+     * https://github.com/Kotlin/kotlinx.coroutines
+     */
+    const val kotlinx_coroutines_android: String =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:" +
+            Versions.org_jetbrains_kotlinx_kotlinx_coroutines
+
+    /**
+     * https://github.com/Kotlin/kotlinx.coroutines
+     */
+    const val kotlinx_coroutines_core: String = "org.jetbrains.kotlinx:kotlinx-coroutines-core:" +
+            Versions.org_jetbrains_kotlinx_kotlinx_coroutines
+
+    /**
      * https://kotlinlang.org/
      */
     const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
@@ -40,6 +53,56 @@ object Libs {
             Versions.org_jetbrains_kotlin
 
     /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val navigation_fragment_ktx: String = "androidx.navigation:navigation-fragment-ktx:" +
+            Versions.androidx_navigation
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val navigation_ui_ktx: String = "androidx.navigation:navigation-ui-ktx:" +
+            Versions.androidx_navigation
+
+    /**
+     * https://developer.android.com/jetpack/androidx
+     */
+    const val lifecycle_livedata_ktx: String = "androidx.lifecycle:lifecycle-livedata-ktx:" +
+            Versions.androidx_lifecycle
+
+    /**
+     * https://developer.android.com/jetpack/androidx
+     */
+    const val lifecycle_viewmodel_ktx: String = "androidx.lifecycle:lifecycle-viewmodel-ktx:" +
+            Versions.androidx_lifecycle
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_fx: String = "io.arrow-kt:arrow-fx:" + Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_optics: String = "io.arrow-kt:arrow-optics:" + Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_syntax: String = "io.arrow-kt:arrow-syntax:" + Versions.io_arrow_kt
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val android_arch_lifecycle_extensions: String = "android.arch.lifecycle:extensions:" +
+            Versions.android_arch_lifecycle_extensions
+
+    /**
      * https://developer.android.com/studio
      */
     const val com_android_tools_build_gradle: String = "com.android.tools.build:gradle:" +
@@ -60,11 +123,16 @@ object Libs {
             "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
             Versions.de_fayard_buildsrcversions_gradle_plugin
 
+    const val firebase_analytics: String = "com.google.firebase:firebase-analytics:" +
+            Versions.firebase_analytics
+
     /**
      * http://tools.android.com
      */
     const val constraintlayout: String = "androidx.constraintlayout:constraintlayout:" +
             Versions.constraintlayout
+
+    const val google_services: String = "com.google.gms:google-services:" + Versions.google_services
 
     /**
      * https://developer.android.com/testing

@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     kotlin("android.extensions")
+    id("com.google.gms.google-services")
 }
 
 androidExtensions { isExperimental = true }
@@ -45,6 +46,10 @@ dependencies {
 
     implementation (Libs.appcompat)
     implementation (Libs.core_ktx)
+
+    /* --- firebase --- */
+
+    implementation(Libs.firebase_analytics)
 
     /* --- test --- */
 

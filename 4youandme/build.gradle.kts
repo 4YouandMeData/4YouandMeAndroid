@@ -51,26 +51,26 @@ dependencies {
 
     /* --- android arch --- */
 
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
-    implementation("android.arch.lifecycle:extensions:1.1.1")
+    implementation(Libs.lifecycle_viewmodel_ktx)
+    implementation(Libs.lifecycle_livedata_ktx)
+    implementation(Libs.android_arch_lifecycle_extensions)
 
     /* --- arrow --- */
 
-    implementation("io.arrow-kt:arrow-fx:0.10.5")
-    implementation("io.arrow-kt:arrow-optics:0.10.5")
-    implementation("io.arrow-kt:arrow-syntax:0.10.5")
-    kapt("io.arrow-kt:arrow-meta:0.10.5")
+    implementation(Libs.arrow_fx)
+    implementation(Libs.arrow_optics)
+    implementation(Libs.arrow_syntax)
+    kapt(Libs.arrow_meta)
 
     /* coroutines */
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
+    implementation(Libs.kotlinx_coroutines_core)
+    implementation(Libs.kotlinx_coroutines_android)
 
     /* --- navigation --- */
 
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.2.2")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.2.2")
+    implementation(Libs.navigation_fragment_ktx)
+    implementation(Libs.navigation_ui_ktx)
 
     /* --- test --- */
 
