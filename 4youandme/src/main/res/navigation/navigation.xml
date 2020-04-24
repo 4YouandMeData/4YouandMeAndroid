@@ -1,0 +1,14 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/splash">
+
+    <fragment
+        android:id="@+id/splash"
+        android:name="org.fouryouandme.auth.splash.SplashFragment"
+        android:label="splash"
+        tools:layout="@layout/splash"/>
+
+</navigation>

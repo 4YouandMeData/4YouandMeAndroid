@@ -10,7 +10,7 @@ import org.fouryouandme.core.arch.livedata.toEvent
 
 typealias NavigationExecution = (NavController) -> Unit
 
-abstract class Navigator(
+class Navigator(
     private val navigationProvider: NavigationProvider
 ) {
 

@@ -15,10 +15,7 @@ import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.arch.loading.LoadingPayload
 import org.fouryouandme.core.arch.navigation.Navigator
 
-object EmptyState
-object EmptyStateUpdate
-object EmptyError
-object EmptyLoading
+object Empty
 
 open class BaseViewModel<F, S, SU, E, A>(
     private var state: S,

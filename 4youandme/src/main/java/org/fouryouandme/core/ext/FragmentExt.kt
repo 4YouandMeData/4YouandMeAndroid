@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import arrow.fx.ForIO
 import arrow.fx.IO
 import org.fouryouandme.core.arch.android.AppInjector
@@ -15,18 +16,18 @@ import org.fouryouandme.core.arch.navigation.Navigator
 /* --- resources --- */
 
 @ColorInt
-fun Context.color(@ColorRes res: Int): Int = ContextCompat.getColor(this, res)
+fun Fragment.color(@ColorRes res: Int): Int = ContextCompat.getColor(requireContext(), res)
 
 /* --- injector --- */
 
-val Context.injector: Injector
-    get() = (applicationContext as AppInjector).injector
+val Fragment.injector: Injector
+    get() = (requireActivity().applicationContext as AppInjector).injector
 
-val Context.IORuntime: Runtime<ForIO>
+val Fragment.IORuntime: Runtime<ForIO>
     get() = IO.runtime(
         injector.runtimeContext,
         injector.getDependencies()
     )
 
-val Context.navigator: Navigator
+val Fragment.navigator: Navigator
     get() = injector.navigator
