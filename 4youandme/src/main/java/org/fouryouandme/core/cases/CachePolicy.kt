@@ -2,6 +2,7 @@ package org.fouryouandme.core.cases
 
 import arrow.core.None
 import arrow.core.Option
+import org.fouryouandme.core.entity.text.Text
 import org.fouryouandme.core.entity.theme.Theme
 
 sealed class CachePolicy {
@@ -17,4 +18,6 @@ sealed class CachePolicy {
 object Memory {
 
     var theme: Option<Theme> = None
+
+    var text: Option<Text> = None
 }
