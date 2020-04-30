@@ -72,6 +72,18 @@ dependencies {
     implementation(Libs.navigation_fragment_ktx)
     implementation(Libs.navigation_ui_ktx)
 
+    /* --- encrypted prefs --- */
+
+    implementation("androidx.security:security-crypto:1.0.0-rc01")
+
+    /* --- moshi --- */
+
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.2")
+
+    /* --- timber --- */
+
+    implementation("com.jakewharton.timber:timber:4.7.1")
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)

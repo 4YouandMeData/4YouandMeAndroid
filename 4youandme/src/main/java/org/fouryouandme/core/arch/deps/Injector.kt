@@ -1,5 +1,7 @@
 package org.fouryouandme.core.arch.deps
 
+import android.content.SharedPreferences
+import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.navigation.Navigator
 
 interface Injector {
@@ -12,5 +14,11 @@ interface Injector {
 
     val navigator: Navigator
 
-    fun getDependencies(): Dependencies
+    /* --- cache --- */
+
+    val prefs: SharedPreferences
+
+    /* --- json --- */
+
+    val moshi: Moshi
 }

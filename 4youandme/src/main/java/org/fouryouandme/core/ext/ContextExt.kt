@@ -1,5 +1,6 @@
 package org.fouryouandme.core.ext
 
+import android.app.Application
 import android.content.Context
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -23,10 +24,7 @@ val Context.injector: Injector
     get() = (applicationContext as AppInjector).injector
 
 val Context.IORuntime: Runtime<ForIO>
-    get() = IO.runtime(
-        injector.runtimeContext,
-        injector.getDependencies()
-    )
+    get() = IO.runtime(injector, applicationContext as Application)
 
 val Context.navigator: Navigator
     get() = injector.navigator

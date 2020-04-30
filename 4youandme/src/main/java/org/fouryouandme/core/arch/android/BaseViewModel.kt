@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import arrow.Kind
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.ErrorPayload
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.livedata.Event
@@ -30,15 +31,13 @@ open class BaseViewModel<F, S, SU, E, A>(
     private val stateLiveData = MutableLiveData<Event<SU>>()
 
     protected fun setState(newState: S, update: SU): Kind<F, Unit> =
-            runtime.fx.concurrent {
+        runtime.fx.concurrent {
 
-                continueOn(runtime.context.mainDispatcher)
-
+            !runtime.onMainDispatcher {
                 state = newState
                 stateLiveData.value = update.toEvent()
-
-                continueOn(runtime.context.bgDispatcher)
             }
+        }
 
     fun stateLiveData(): LiveData<Event<SU>> = stateLiveData
 
@@ -47,11 +46,12 @@ open class BaseViewModel<F, S, SU, E, A>(
     private val errors = MutableLiveData<Event<ErrorPayload<E>>>()
 
     protected fun setError(error: FourYouAndMeError, cause: E): Kind<F, Unit> =
-            runtime.fx.concurrent {
-                continueOn(runtime.context.mainDispatcher)
+        runtime.fx.concurrent {
+
+            !runtime.onMainDispatcher {
                 errors.value = ErrorPayload(cause, error).toEvent()
-                continueOn(runtime.context.bgDispatcher)
             }
+        }
 
     fun errorLiveData(): LiveData<Event<ErrorPayload<E>>> = errors
 
@@ -60,18 +60,21 @@ open class BaseViewModel<F, S, SU, E, A>(
     private val loading = MutableLiveData<Event<LoadingPayload<A>>>()
 
     protected fun showLoading(task: A): Kind<F, Unit> =
-            runtime.fx.concurrent {
-                continueOn(runtime.context.mainDispatcher)
+        runtime.fx.concurrent {
+
+            !runtime.onMainDispatcher {
                 loading.value = LoadingPayload(task, true).toEvent()
-                continueOn(runtime.context.bgDispatcher)
             }
 
+        }
+
     protected fun hideLoading(task: A): Kind<F, Unit> =
-            runtime.fx.concurrent {
-                continueOn(runtime.context.mainDispatcher)
+        runtime.fx.concurrent {
+
+            !runtime.onMainDispatcher {
                 loading.value = LoadingPayload(task, false).toEvent()
-                continueOn(runtime.context.bgDispatcher)
             }
+        }
 
     fun loadingLiveData(): LiveData<Event<LoadingPayload<A>>> = loading
 
@@ -82,5 +85,5 @@ open class BaseViewModel<F, S, SU, E, A>(
     /* ============= RES ============= */
 
     protected fun getString(@StringRes stringRes: Int): String =
-            runtime.dependencies.application.getString(stringRes)
+        runtime.app.getString(stringRes)
 }

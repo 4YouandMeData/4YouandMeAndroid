@@ -1,4 +1,3 @@
-import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -38,6 +37,8 @@ object Versions {
     const val constraintlayout: String = "1.1.3"
 
     const val google_services: String = "4.3.3"
+
+    const val security_crypto: String = "1.0.0-rc01"
 
     const val espresso_core: String = "3.2.0"
 

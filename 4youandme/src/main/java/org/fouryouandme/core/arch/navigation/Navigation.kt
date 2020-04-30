@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import arrow.Kind
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
 
@@ -23,24 +24,21 @@ class Navigator(
     ): Kind<F, Unit> =
         runtime.fx.concurrent {
 
-            continueOn(runtime.context.mainDispatcher)
+            !runtime.onMainDispatcher {
 
-            val navigation =
-                navigationProvider.getNavigation(navigationAction)
+                val navigation =
+                    navigationProvider.getNavigation(navigationAction)
 
-            navigation(controller)
+                navigation(controller)
 
-            continueOn(runtime.context.bgDispatcher)
+            }
         }
 
     fun <F> performAction(runtime: Runtime<F>, action: ActivityAction): Kind<F, Unit> =
         runtime.fx.concurrent {
 
-            continueOn(runtime.context.mainDispatcher)
+            !runtime.onMainDispatcher { activityActionLiveData.value = action.toEvent() }
 
-            activityActionLiveData.value = action.toEvent()
-
-            continueOn(runtime.context.bgDispatcher)
         }
 
     fun activityAction(): LiveData<Event<ActivityAction>> = activityActionLiveData
