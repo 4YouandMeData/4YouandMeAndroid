@@ -10,6 +10,14 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'google-services.json'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(google-services.json.secureFilePath)'
+    Contents: '**'
+    TargetFolder: '$(system.defaultWorkingDirectory)/app'
 - task: Gradle@2
   inputs:
     workingDirectory: ''
