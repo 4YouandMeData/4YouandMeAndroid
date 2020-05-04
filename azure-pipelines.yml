@@ -15,8 +15,8 @@ steps:
     secureFile: 'google-services.json'
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(google-services.json.secureFilePath)'
-    Contents: '**'
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: 'google-services.json'
     TargetFolder: '$(system.defaultWorkingDirectory)/app'
 - task: Gradle@2
   inputs:
