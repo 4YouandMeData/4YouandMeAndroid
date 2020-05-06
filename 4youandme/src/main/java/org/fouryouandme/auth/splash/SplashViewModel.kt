@@ -1,5 +1,7 @@
 package org.fouryouandme.auth.splash
 
+import androidx.navigation.NavController
+import arrow.Kind
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
@@ -15,7 +17,7 @@ class SplashViewModel(
 ) : BaseViewModel<ForIO, Empty, Empty, SplashError, SplashLoading>
     (Empty, navigator, runtime) {
 
-    fun initialize(): Unit =
+    fun initialize(navController: NavController): Unit =
 
         runtime.fx.concurrent {
 
@@ -24,9 +26,15 @@ class SplashViewModel(
             val configuration =
                 !ConfigurationUseCase.getTheme(runtime, CachePolicy.DiskFirst)
 
-            !configuration.fold({ setError(it, SplashError.Configuration) }, { just(Unit) })
+            !configuration.fold(
+                { setError(it, SplashError.Configuration) },
+                { welcome(navController) }
+            )
 
             !hideLoading(SplashLoading.Configuration)
 
         }.unsafeRunAsync()
+
+    private fun welcome(navController: NavController): Kind<ForIO, Unit> =
+        navigator.navigateTo(runtime, navController, SplashToWelcome)
 }

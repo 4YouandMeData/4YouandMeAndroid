@@ -1,6 +1,7 @@
 package org.fouryouandme.auth.splash
 
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -16,6 +17,6 @@ class SplashFragment : BaseFragment<SplashViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.initialize()
+        viewModel.initialize(findNavController())
     }
 }

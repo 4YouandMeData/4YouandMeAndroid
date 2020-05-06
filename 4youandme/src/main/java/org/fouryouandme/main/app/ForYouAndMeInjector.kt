@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.deps.Injector
 import org.fouryouandme.core.arch.deps.RuntimeContext
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.main.app.navigation.ForYouAndMeNavigationProvider
 
 class ForYouAndMeInjector(val app: FourYouAndMeApp) : Injector {
 

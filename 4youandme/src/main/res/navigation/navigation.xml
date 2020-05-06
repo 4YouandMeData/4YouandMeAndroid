@@ -9,6 +9,23 @@
         android:id="@+id/splash"
         android:name="org.fouryouandme.auth.splash.SplashFragment"
         android:label="splash"
-        tools:layout="@layout/splash"/>
+        tools:layout="@layout/splash">
+
+        <action
+            android:id="@+id/action_splash_to_welcome"
+            app:destination="@id/welcome"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@navigation/navigation" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/welcome"
+        android:name="org.fouryouandme.auth.welcome.WelcomeFragment"
+        android:label="welcome"
+        tools:layout="@layout/welcome" />
 
 </navigation>
