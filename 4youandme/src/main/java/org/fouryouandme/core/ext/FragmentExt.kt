@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import arrow.fx.ForIO
 import arrow.fx.IO
 import org.fouryouandme.core.arch.android.AppInjector
+import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Injector
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.runtime
@@ -28,3 +29,6 @@ val Fragment.IORuntime: Runtime<ForIO>
 
 val Fragment.navigator: Navigator
     get() = injector.navigator
+
+val Fragment.imageConfiguration: ImageConfiguration
+    get() = injector.imageConfiguration
