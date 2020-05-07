@@ -7,27 +7,26 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
-import org.fouryouandme.core.entity.text.Text
-import org.fouryouandme.core.entity.theme.Theme
+import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.toKind
 
 object ConfigurationUseCase {
 
-    fun <F> getTheme(
+    fun <F> getConfiguration(
         runtime: Runtime<F>,
         cachePolicy: CachePolicy
-    ): Kind<F, Either<FourYouAndMeError, Theme>> =
+    ): Kind<F, Either<FourYouAndMeError, Configuration>> =
         runtime.fx.concurrent {
 
             !when (cachePolicy) {
 
                 CachePolicy.MemoryFirst ->
-                    Memory.theme
-                        .toKind(runtime.fx) { ConfigurationRepository.loadTheme(runtime) }
+                    Memory.configuration
+                        .toKind(runtime.fx) { ConfigurationRepository.loadConfiguration(runtime) }
                         .flatMap { disk ->
 
                             disk.fold(
-                                { ConfigurationRepository.fetchTheme(runtime) },
+                                { ConfigurationRepository.fetchConfiguration(runtime) },
                                 { just(it.right()) }
                             )
 
@@ -36,17 +35,17 @@ object ConfigurationUseCase {
                 CachePolicy.MemoryFirstRefresh ->
                     runtime.fx.concurrent {
 
-                        !getTheme(runtime, CachePolicy.MemoryFirst)
-                        !ConfigurationRepository.fetchTheme(runtime)
+                        !getConfiguration(runtime, CachePolicy.MemoryFirst)
+                        !ConfigurationRepository.fetchConfiguration(runtime)
 
                     }
 
                 CachePolicy.DiskFirst ->
-                    ConfigurationRepository.loadTheme(runtime)
+                    ConfigurationRepository.loadConfiguration(runtime)
                         .flatMap { disk ->
 
                             disk.fold(
-                                { ConfigurationRepository.fetchTheme(runtime) },
+                                { ConfigurationRepository.fetchConfiguration(runtime) },
                                 { just(it.right()) }
                             )
 
@@ -55,65 +54,13 @@ object ConfigurationUseCase {
                 CachePolicy.DiskFirstRefresh ->
                     runtime.fx.concurrent {
 
-                        !getTheme(runtime, CachePolicy.DiskFirst)
-                        !ConfigurationRepository.fetchTheme(runtime)
+                        !getConfiguration(runtime, CachePolicy.DiskFirst)
+                        !ConfigurationRepository.fetchConfiguration(runtime)
 
                     }
 
                 CachePolicy.Network ->
-                    ConfigurationRepository.fetchTheme(runtime)
-            }
-        }
-
-    fun <F> getText(
-        runtime: Runtime<F>,
-        cachePolicy: CachePolicy
-    ): Kind<F, Either<FourYouAndMeError, Text>> =
-        runtime.fx.concurrent {
-
-            !when (cachePolicy) {
-
-                CachePolicy.MemoryFirst ->
-                    Memory.text
-                        .toKind(runtime.fx) { ConfigurationRepository.loadText(runtime) }
-                        .flatMap { disk ->
-
-                            disk.fold(
-                                { ConfigurationRepository.fetchText(runtime) },
-                                { just(it.right()) }
-                            )
-
-                        }
-
-                CachePolicy.MemoryFirstRefresh ->
-                    runtime.fx.concurrent {
-
-                        !getText(runtime, CachePolicy.MemoryFirst)
-                        !ConfigurationRepository.fetchText(runtime)
-
-                    }
-
-                CachePolicy.DiskFirst ->
-                    ConfigurationRepository.loadText(runtime)
-                        .flatMap { disk ->
-
-                            disk.fold(
-                                { ConfigurationRepository.fetchText(runtime) },
-                                { just(it.right()) }
-                            )
-
-                        }
-
-                CachePolicy.DiskFirstRefresh ->
-                    runtime.fx.concurrent {
-
-                        !getText(runtime, CachePolicy.DiskFirst)
-                        !ConfigurationRepository.fetchText(runtime)
-
-                    }
-
-                CachePolicy.Network ->
-                    ConfigurationRepository.fetchText(runtime)
+                    ConfigurationRepository.fetchConfiguration(runtime)
             }
         }
 }

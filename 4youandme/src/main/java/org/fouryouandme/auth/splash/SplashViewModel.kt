@@ -24,7 +24,7 @@ class SplashViewModel(
             !showLoading(SplashLoading.Configuration)
 
             val configuration =
-                !ConfigurationUseCase.getTheme(runtime, CachePolicy.DiskFirst)
+                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.DiskFirst)
 
             !configuration.fold(
                 { setError(it, SplashError.Configuration) },

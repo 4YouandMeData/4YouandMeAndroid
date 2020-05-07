@@ -23,14 +23,14 @@ class WelcomeViewModel(
     fun initialize(): Unit =
         runtime.fx.concurrent {
 
-            val theme =
-                !ConfigurationUseCase.getTheme(runtime, CachePolicy.MemoryFirst)
+            val configuration =
+                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
 
-            !theme.fold(
+            !configuration.fold(
                 { setError(it, WelcomeError.Initialization) },
                 {
                     setState(
-                        state().copy(theme = it.toOption()),
+                        state().copy(configuration = it.toOption()),
                         WelcomeStateUpdate.Initialization(it)
                     )
                 }

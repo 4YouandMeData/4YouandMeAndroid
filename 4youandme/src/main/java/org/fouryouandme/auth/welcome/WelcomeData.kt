@@ -2,12 +2,13 @@ package org.fouryouandme.auth.welcome
 
 import arrow.core.None
 import arrow.core.Option
-import org.fouryouandme.core.entity.theme.Theme
+import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.configuration.Theme
 
-data class WelcomeState(val theme: Option<Theme> = None)
+data class WelcomeState(val configuration: Option<Configuration> = None)
 
 sealed class WelcomeStateUpdate {
-    data class Initialization(val theme: Theme): WelcomeStateUpdate()
+    data class Initialization(val configuration: Configuration): WelcomeStateUpdate()
 }
 
 sealed class WelcomeLoading {
