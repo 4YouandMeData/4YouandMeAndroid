@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.welcome
+package org.fouryouandme.auth.signup.info
 
 import androidx.navigation.NavController
 import arrow.core.toOption
@@ -10,16 +10,16 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
-class WelcomeViewModel(
+class SignUpInfoViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        WelcomeState,
-        WelcomeStateUpdate,
-        WelcomeError,
-        WelcomeLoading>
-    (WelcomeState(), navigator, runtime) {
+        SignUpInfoState,
+        SignUpInfoStateUpdate,
+        SignUpInfoError,
+        SignUpInfoError>
+    (SignUpInfoState(), navigator, runtime) {
 
     fun initialize(): Unit =
         runtime.fx.concurrent {
@@ -28,17 +28,17 @@ class WelcomeViewModel(
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
 
             !configuration.fold(
-                { setError(it, WelcomeError.Initialization) },
+                { setError(it, SignUpInfoError.Initialization) },
                 {
                     setState(
                         state().copy(configuration = it.toOption()),
-                        WelcomeStateUpdate.Initialization(it)
+                        SignUpInfoStateUpdate.Initialization(it)
                     )
                 }
             )
 
         }.unsafeRunAsync()
 
-    fun signUpInfo(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, WelcomeToSignUpInfo).unsafeRunAsync()
+    fun back(navController: NavController): Unit =
+        navigator.back(runtime, navController).unsafeRunAsync()
 }
