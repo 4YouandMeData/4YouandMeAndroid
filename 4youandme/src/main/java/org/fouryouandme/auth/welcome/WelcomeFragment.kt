@@ -58,5 +58,8 @@ class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
 
         start.background =
             button(configuration.theme.secondaryColor.color())
+        start.text = configuration.text.welcomeStartButton
+        start.setTextColor(configuration.theme.primaryColorEnd.color())
+        start.isAllCaps = false
     }
 }
