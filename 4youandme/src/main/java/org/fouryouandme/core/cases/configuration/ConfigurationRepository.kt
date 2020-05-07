@@ -106,7 +106,7 @@ object ConfigurationRepository {
                 Theme(
                     HEXColor("#FFF"),
                     HEXColor("#FFF"),
-                    HEXGradient("#FFF", "#FFF")
+                    HEXGradient("#fcba03", "#fc0f03")
                 ).toOption()
 
             val text =
