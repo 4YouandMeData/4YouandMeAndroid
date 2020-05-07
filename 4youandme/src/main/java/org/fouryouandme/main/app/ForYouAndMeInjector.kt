@@ -6,11 +6,20 @@ import androidx.security.crypto.MasterKeys
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
+import org.fouryouandme.core.arch.deps.Environment
+import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Injector
 import org.fouryouandme.core.arch.deps.RuntimeContext
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.data.api.configuration.ConfigurationApi
+import org.fouryouandme.core.data.api.getApiService
+import org.fouryouandme.main.app.navigation.ForYouAndMeNavigationProvider
 
-class ForYouAndMeInjector(val app: FourYouAndMeApp) : Injector {
+class ForYouAndMeInjector(
+    val app: FourYouAndMeApp,
+    env: Environment,
+    imageConfig: ImageConfiguration
+) : Injector {
 
     /* --- runtime --- */
 
@@ -35,7 +44,20 @@ class ForYouAndMeInjector(val app: FourYouAndMeApp) : Injector {
         )
     }
 
+    /* --- environment --- */
+
+    override val environment: Environment = env
+
+    /* --- image configuration --- */
+
+    override val imageConfiguration: ImageConfiguration = imageConfig
+
     /* --- moshi --- */
 
     override val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+    /* --- api --- */
+
+    override val configurationApi: ConfigurationApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
 }

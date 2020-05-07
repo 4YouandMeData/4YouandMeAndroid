@@ -2,5 +2,7 @@
 ***REMOVED***
 
     <string name="ERROR_generic">Oops, an error has occurred</string>
+    <string name="ERROR_api">Oops, an error has occurred</string>
+    <string name="ERROR_network_connection">Network error</string>
 
 ***REMOVED***

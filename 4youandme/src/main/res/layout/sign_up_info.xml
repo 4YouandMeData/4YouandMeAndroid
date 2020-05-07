@@ -1,0 +1,104 @@
+***REMOVED***
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:elevation="4dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingBottom="40dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/logo"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="25dp"
+                android:textSize="23sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/logo" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="25dp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/sign_up"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:padding="5dp"
+                app:layout_constraintStart_toStartOf="@id/description"
+                app:layout_constraintTop_toBottomOf="@id/description" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/sign_up_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@id/sign_up"
+                app:layout_constraintEnd_toEndOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/sign_up"
+                app:layout_constraintTop_toTopOf="@id/sign_up" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/sign_up_later"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                app:layout_constraintStart_toStartOf="@id/description"
+                app:layout_constraintTop_toBottomOf="@id/sign_up" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/sign_up_later_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@id/sign_up_later"
+                app:layout_constraintEnd_toEndOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/sign_up_later"
+                app:layout_constraintTop_toTopOf="@id/sign_up_later" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</LinearLayout>

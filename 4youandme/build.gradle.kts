@@ -60,6 +60,7 @@ dependencies {
     implementation(Libs.arrow_fx)
     implementation(Libs.arrow_optics)
     implementation(Libs.arrow_syntax)
+    implementation("io.arrow-kt:arrow-integration-retrofit-adapter:0.10.4")
     kapt(Libs.arrow_meta)
 
     /* coroutines */
@@ -83,6 +84,12 @@ dependencies {
     /* --- timber --- */
 
     implementation("com.jakewharton.timber:timber:4.7.1")
+
+    /* --- retrofit --- */
+
+    implementation("com.squareup.retrofit2:retrofit:2.8.1")
+    implementation("com.squareup.retrofit2:converter-moshi:2.8.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.4.1")
 
     /* --- test --- */
 

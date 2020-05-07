@@ -3,7 +3,7 @@
     package="org.fouryouandme.app">
 
     <application
-        android:name="org.fouryouandme.main.app.FourYouAndMeApp"
+        android:name=".SampleApp"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
