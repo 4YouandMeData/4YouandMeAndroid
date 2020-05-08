@@ -2,6 +2,7 @@ package org.fouryouandme.auth.welcome
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.welcome.*
 import org.fouryouandme.R
@@ -63,5 +64,12 @@ class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
         start.setTextColor(configuration.theme.primaryColorEnd.color())
         start.isAllCaps = false
         start.setOnClickListener { viewModel.signUpInfo(findNavController()) }
+
+        start.alpha = 0f
+        start.animate()
+            .alpha(1f)
+            .setDuration(800L)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .start()
     }
 }
