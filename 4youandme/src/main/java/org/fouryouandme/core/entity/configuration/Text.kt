@@ -13,5 +13,7 @@ data class Text(
     val introBack: String,
     val introLogin: String,
     val genericInfoTitle: String,
-    val welcomeStartButton: String
+    val welcomeStartButton: String,
+    val signUpLaterBody: String,
+    val signUpLaterConfirmButton: String
 )

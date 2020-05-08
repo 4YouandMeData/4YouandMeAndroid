@@ -1,24 +1,24 @@
-package org.fouryouandme.auth.signup.info
+package org.fouryouandme.auth.signup.later
 
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.sign_up_info.*
+import kotlinx.android.synthetic.main.sign_up_later.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackButton
 
-class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_info) {
+class SignUpLaterFragment : BaseFragment<SignUpLaterViewModel>(R.layout.sign_up_later) {
 
-    override val viewModel: SignUpInfoViewModel by lazy {
-        viewModelFactory(this, getFactory { SignUpInfoViewModel(navigator, IORuntime) })
+    override val viewModel: SignUpLaterViewModel by lazy {
+        viewModelFactory(this, getFactory { SignUpLaterViewModel(navigator, IORuntime) })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,7 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
             .observeEvent {
 
                 when (it) {
-                    is SignUpInfoStateUpdate.Initialization -> applyConfiguration(it.configuration)
+                    is SignUpLaterStateUpdate.Initialization -> applyConfiguration(it.configuration)
                 }
             }
 
@@ -46,12 +46,7 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
 
         logo.setImageResource(imageConfiguration.logo())
 
-        sign_up.setImageResource(imageConfiguration.signUp())
-
-        sign_up_later.setImageResource(imageConfiguration.signUp())
-        sign_up_later.setOnClickListener { viewModel.signUpLater(findNavController()) }
-
-        toolbar.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
+        back.setOnClickListener { viewModel.back(findNavController()) }
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
@@ -62,17 +57,15 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
                 configuration.theme.primaryColorEnd
             ).drawable()
 
-        title.setTextColor(configuration.theme.secondaryColor.color())
-        title.text = configuration.text.introTitle
-
         description.setTextColor(configuration.theme.secondaryColor.color())
-        description.text = configuration.text.introBody
+        description.text = configuration.text.signUpLaterBody
 
-        sign_up_text.setTextColor(configuration.theme.secondaryColor.color())
-        sign_up_text.text = configuration.text.introLogin
+        divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
 
-        sign_up_later_text.setTextColor(configuration.theme.secondaryColor.color())
-        sign_up_later_text.text = configuration.text.introBack
+        back.setTextColor(configuration.theme.primaryColorEnd.color())
+        back.text = configuration.text.signUpLaterConfirmButton
+        back.background =
+            button(configuration.theme.secondaryColor.color())
 
     }
 }

@@ -10,3 +10,7 @@ fun splashToWelcome(): NavigationExecution = {
 fun welcomeToSignUpInfo(): NavigationExecution = {
     it.navigate(R.id.action_welcome_to_sign_up_info)
 }
+
+fun signUpInfoToSignUpLater(): NavigationExecution = {
+    it.navigate(R.id.action_sign_up_info_to_sign_up_later)
+}

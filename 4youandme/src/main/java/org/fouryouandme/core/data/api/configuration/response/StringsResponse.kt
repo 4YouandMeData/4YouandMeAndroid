@@ -19,7 +19,9 @@ data class StringsResponse(
     @Json(name="WELCOME_START_BUTTON") val welcomeStartButton: String? = null,
     @Json(name="ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteButton: String? = null,
     @Json(name="INTRO_LOGIN") val introLogin: String? = null,
-    @Json(name="ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null
+    @Json(name="ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null,
+    @Json(name="SETUP_LATER_BODY") val setupLaterBody: String? = null,
+    @Json(name="SETUP_LATER_CONFIRM_BUTTON") val setupLaterConfirmButton: String? = null
 ) {
 
     fun toText(): Option<Text> =
@@ -38,7 +40,9 @@ data class StringsResponse(
                 !introBack.toOption(),
                 !introLogin.toOption(),
                 !genericInfoTitle.toOption(),
-                !welcomeStartButton.toOption()
+                !welcomeStartButton.toOption(),
+                !setupLaterBody.toOption(),
+                !setupLaterConfirmButton.toOption()
             )
         }
 }
