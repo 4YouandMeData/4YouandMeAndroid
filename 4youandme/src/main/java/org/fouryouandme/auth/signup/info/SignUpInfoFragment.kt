@@ -51,6 +51,8 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
         sign_up_later.setImageResource(imageConfiguration.signUp())
         sign_up_later.setOnClickListener { viewModel.signUpLater(findNavController()) }
 
+        sign_up_later_text.setOnClickListener { viewModel.signUpLater(findNavController()) }
+
         toolbar.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
     }
 
