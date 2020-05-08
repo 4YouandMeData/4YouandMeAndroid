@@ -21,7 +21,7 @@ steps:
 - task: Gradle@2
   inputs:
     gradleWrapperFile: 'gradlew'
-    tasks: 'assembleRelease'
+    tasks: 'assembleDebug'
     publishJUnitResults: false
     gradleOptions: '-Xmx3072m'
     sonarQubeRunAnalysis: false
