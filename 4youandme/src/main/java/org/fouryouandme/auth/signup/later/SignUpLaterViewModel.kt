@@ -1,8 +1,9 @@
-package org.fouryouandme.auth.signup.info
+package org.fouryouandme.auth.signup.later
 
 import androidx.navigation.NavController
 import arrow.core.toOption
 import arrow.fx.ForIO
+import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -10,16 +11,16 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
-class SignUpInfoViewModel(
+class SignUpLaterViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        SignUpInfoState,
-        SignUpInfoStateUpdate,
-        SignUpInfoError,
-        SignUpInfoError>
-    (SignUpInfoState(), navigator, runtime) {
+        SignUpLaterState,
+        SignUpLaterStateUpdate,
+        SignUpLaterError,
+        SignUpLaterError>
+    (SignUpLaterState(), navigator, runtime) {
 
     fun initialize(): Unit =
         runtime.fx.concurrent {
@@ -28,11 +29,11 @@ class SignUpInfoViewModel(
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
 
             !configuration.fold(
-                { setError(it, SignUpInfoError.Initialization) },
+                { setError(it, SignUpLaterError.Initialization) },
                 {
                     setState(
                         state().copy(configuration = it.toOption()),
-                        SignUpInfoStateUpdate.Initialization(it)
+                        SignUpLaterStateUpdate.Initialization(it)
                     )
                 }
             )
@@ -43,7 +44,4 @@ class SignUpInfoViewModel(
 
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
-
-    fun signUpLater(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, SignUpInfoToSignUpLater).unsafeRunAsync()
 }
