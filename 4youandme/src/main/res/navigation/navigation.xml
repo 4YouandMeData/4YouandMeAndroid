@@ -26,7 +26,7 @@
         android:id="@+id/welcome"
         android:name="org.fouryouandme.auth.welcome.WelcomeFragment"
         android:label="welcome"
-        tools:layout="@layout/welcome" >
+        tools:layout="@layout/welcome">
 
         <action
             android:id="@+id/action_welcome_to_sign_up_info"
@@ -42,7 +42,7 @@
         android:id="@+id/sign_up_info"
         android:name="org.fouryouandme.auth.signup.info.SignUpInfoFragment"
         android:label="sign_up_info"
-        tools:layout="@layout/sign_up_info" >
+        tools:layout="@layout/sign_up_info">
 
         <action
             android:id="@+id/action_sign_up_info_to_sign_up_later"
@@ -53,6 +53,14 @@
             app:popExitAnim="@anim/slide_to_right"
             app:popUpTo="@id/welcome" />
 
+        <action
+            android:id="@+id/action_sign_up_info_to_enter_phone"
+            app:destination="@id/enter_phone"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
     </fragment>
 
     <fragment
@@ -60,5 +68,11 @@
         android:name="org.fouryouandme.auth.signup.later.SignUpLaterFragment"
         android:label="sign_up_later"
         tools:layout="@layout/sign_up_later" />
+
+    <fragment
+        android:id="@+id/enter_phone"
+        android:name="org.fouryouandme.auth.phone.EnterPhoneFragment"
+        android:label="enter_phone"
+        tools:layout="@layout/enter_phone" />
 
 </navigation>

@@ -14,3 +14,7 @@ fun welcomeToSignUpInfo(): NavigationExecution = {
 fun signUpInfoToSignUpLater(): NavigationExecution = {
     it.navigate(R.id.action_sign_up_info_to_sign_up_later)
 }
+
+fun signUpInfoToEnterPhone(): NavigationExecution = {
+    it.navigate(R.id.action_sign_up_info_to_enter_phone)
+}

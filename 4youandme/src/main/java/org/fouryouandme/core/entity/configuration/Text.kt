@@ -15,5 +15,16 @@ data class Text(
     val genericInfoTitle: String,
     val welcomeStartButton: String,
     val signUpLaterBody: String,
-    val signUpLaterConfirmButton: String
+    val signUpLaterConfirmButton: String,
+    val phoneVerificationTitle: String,
+    val phoneVerificationBody: String,
+    val phoneVerificationLegal: String,
+    val phoneVerificationResendCode: String,
+    val phoneVerificationWrongNumber: String,
+    val phoneVerificationCodeDescription: String,
+    val phoneVerificationErrorWrongCode: String,
+    val phoneVerificationNumberDescription: String,
+    val phoneVerificationErrorMissingNumber: String,
+    val phoneVerificationLegalPrivacyPolicy: String,
+    val phoneVerificationLegalTermsOfService: String
 )

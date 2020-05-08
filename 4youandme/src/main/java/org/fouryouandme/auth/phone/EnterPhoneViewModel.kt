@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.signup.info
+package org.fouryouandme.auth.phone
 
 import androidx.navigation.NavController
 import arrow.core.toOption
@@ -10,16 +10,16 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
-class SignUpInfoViewModel(
+class EnterPhoneViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        SignUpInfoState,
-        SignUpInfoStateUpdate,
-        SignUpInfoError,
-        SignUpInfoError>
-    (SignUpInfoState(), navigator, runtime) {
+        EnterPhoneState,
+        EnterPhoneStateUpdate,
+        EnterPhoneError,
+        EnterPhoneError>
+    (EnterPhoneState(), navigator, runtime) {
 
     fun initialize(): Unit =
         runtime.fx.concurrent {
@@ -28,11 +28,11 @@ class SignUpInfoViewModel(
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
 
             !configuration.fold(
-                { setError(it, SignUpInfoError.Initialization) },
+                { setError(it, EnterPhoneError.Initialization) },
                 {
                     setState(
                         state().copy(configuration = it.toOption()),
-                        SignUpInfoStateUpdate.Initialization(it)
+                        EnterPhoneStateUpdate.Initialization(it)
                     )
                 }
             )
@@ -44,9 +44,4 @@ class SignUpInfoViewModel(
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
 
-    fun signUpLater(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, SignUpInfoToSignUpLater).unsafeRunAsync()
-
-    fun enterPhone(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, SignUpInfoToEnterPhone).unsafeRunAsync()
 }

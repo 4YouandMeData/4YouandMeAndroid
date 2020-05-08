@@ -22,3 +22,5 @@ sealed class SignUpInfoError {
 /* --- navigation --- */
 
 object SignUpInfoToSignUpLater: NavigationAction
+
+object SignUpInfoToEnterPhone: NavigationAction
