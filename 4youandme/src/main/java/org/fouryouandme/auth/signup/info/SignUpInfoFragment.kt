@@ -68,6 +68,8 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
         description.setTextColor(configuration.theme.secondaryColor.color())
         description.text = configuration.text.introBody
 
+        divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
+
         sign_up_text.setTextColor(configuration.theme.secondaryColor.color())
         sign_up_text.text = configuration.text.introLogin
 
