@@ -14,13 +14,13 @@ object Versions {
     const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.5"
              // available: "1.3.5-1.4-M1-release-99"
 
+    const val com_squareup_retrofit2: String = "2.8.1"
+
     const val org_jetbrains_kotlin: String = "1.3.72"
 
     const val androidx_navigation: String = "2.2.2"
 
     const val androidx_lifecycle: String = "2.2.0"
-
-    const val io_arrow_kt: String = "0.10.5"
 
     const val android_arch_lifecycle_extensions: String = "1.1.1"
 
@@ -32,7 +32,11 @@ object Versions {
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
-    const val firebase_analytics: String = "17.4.0"
+    const val arrow_integration_retrofit_adapter: String = "0.10.4"
+
+    const val logging_interceptor: String = "4.6.0"
+
+    const val firebase_analytics: String = "17.4.1"
 
     const val constraintlayout: String = "1.1.3"
 
@@ -42,20 +46,34 @@ object Versions {
 
     const val espresso_core: String = "3.2.0"
 
+    const val arrow_optics: String = "0.10.5"
+
+    const val arrow_syntax: String = "0.10.5"
+
+    const val moshi_kotlin: String = "1.9.2"
+
     const val lint_gradle: String = "26.6.3"
+
+    const val arrow_meta: String = "0.10.5"
 
     const val appcompat: String = "1.1.0"
 
+    const val arrow_fx: String = "0.10.5"
+
     const val core_ktx: String = "1.2.0"
 
+    const val timber: String = "4.7.1"
+
     const val aapt2: String = "3.6.3-6040484"
+
+    const val ccp: String = "2.3.9"
 
     /**
      * Current version: "6.3"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.3"
+    const val gradleLatestVersion: String = "6.4"
 }
 
 /**

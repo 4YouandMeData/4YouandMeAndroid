@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes
 
 interface ImageConfiguration {
 
+    /* --- common ---*/
+
     @DrawableRes
     fun back(): Int
 
@@ -13,10 +15,17 @@ interface ImageConfiguration {
     @DrawableRes
     fun logoStudy(): Int
 
+    /* --- auth --- */
+
     @DrawableRes
     fun welcome(): Int
 
     @DrawableRes
     fun signUp(): Int
 
+    @DrawableRes
+    fun phoneWrong(): Int
+
+    @DrawableRes
+    fun phoneValid(): Int
 }

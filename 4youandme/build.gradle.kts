@@ -65,7 +65,7 @@ dependencies {
     implementation(Libs.arrow_fx)
     implementation(Libs.arrow_optics)
     implementation(Libs.arrow_syntax)
-    implementation("io.arrow-kt:arrow-integration-retrofit-adapter:0.10.4")
+    implementation(Libs.arrow_integration_retrofit_adapter)
     kapt(Libs.arrow_meta)
 
     /* coroutines */
@@ -80,21 +80,25 @@ dependencies {
 
     /* --- encrypted prefs --- */
 
-    implementation("androidx.security:security-crypto:1.0.0-rc01")
+    implementation(Libs.security_crypto)
 
     /* --- moshi --- */
 
-    implementation("com.squareup.moshi:moshi-kotlin:1.9.2")
+    implementation(Libs.moshi_kotlin)
 
     /* --- timber --- */
 
-    implementation("com.jakewharton.timber:timber:4.7.1")
+    implementation(Libs.timber)
 
     /* --- retrofit --- */
 
-    implementation("com.squareup.retrofit2:retrofit:2.8.1")
-    implementation("com.squareup.retrofit2:converter-moshi:2.8.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.4.1")
+    implementation(Libs.retrofit)
+    implementation(Libs.converter_moshi)
+    implementation(Libs.logging_interceptor)
+
+    /* --- country code picker --- */
+
+    implementation(Libs.ccp)
 
     /* --- test --- */
 

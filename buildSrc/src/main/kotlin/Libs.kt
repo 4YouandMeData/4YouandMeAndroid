@@ -19,10 +19,16 @@ object Libs {
             Versions.org_jetbrains_kotlinx_kotlinx_coroutines
 
     /**
-     * https://kotlinlang.org/
+     * https://github.com/square/retrofit/
      */
-    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
-            Versions.org_jetbrains_kotlin
+    const val converter_moshi: String = "com.squareup.retrofit2:converter-moshi:" +
+            Versions.com_squareup_retrofit2
+
+    /**
+     * https://github.com/square/retrofit/
+     */
+    const val retrofit: String = "com.squareup.retrofit2:retrofit:" +
+            Versions.com_squareup_retrofit2
 
     /**
      * https://kotlinlang.org/
@@ -42,6 +48,12 @@ object Libs {
      */
     const val kotlin_annotation_processing_gradle: String =
             "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:" +
+            Versions.org_jetbrains_kotlin
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
             Versions.org_jetbrains_kotlin
 
     /**
@@ -75,26 +87,6 @@ object Libs {
             Versions.androidx_lifecycle
 
     /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_fx: String = "io.arrow-kt:arrow-fx:" + Versions.io_arrow_kt
-
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.io_arrow_kt
-
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_optics: String = "io.arrow-kt:arrow-optics:" + Versions.io_arrow_kt
-
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_syntax: String = "io.arrow-kt:arrow-syntax:" + Versions.io_arrow_kt
-
-    /**
      * https://developer.android.com/topic/libraries/architecture/index.html
      */
     const val android_arch_lifecycle_extensions: String = "android.arch.lifecycle:extensions:" +
@@ -121,6 +113,19 @@ object Libs {
             "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
             Versions.de_fayard_buildsrcversions_gradle_plugin
 
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_integration_retrofit_adapter: String =
+        "io.arrow-kt:arrow-integration-retrofit-adapter:" +
+                Versions.arrow_integration_retrofit_adapter
+
+    /**
+     * https://square.github.io/okhttp/
+     */
+    const val logging_interceptor: String = "com.squareup.okhttp3:logging-interceptor:" +
+            Versions.logging_interceptor
+
     const val firebase_analytics: String = "com.google.firebase:firebase-analytics:" +
             Versions.firebase_analytics
 
@@ -142,9 +147,29 @@ object Libs {
             Versions.espresso_core
 
     /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_optics: String = "io.arrow-kt:arrow-optics:" + Versions.arrow_optics
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_syntax: String = "io.arrow-kt:arrow-syntax:" + Versions.arrow_syntax
+
+    /**
+     * https://github.com/square/moshi
+     */
+    const val moshi_kotlin: String = "com.squareup.moshi:moshi-kotlin:" + Versions.moshi_kotlin
+
+    /**
      * https://developer.android.com/studio
      */
     const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.arrow_meta
 
     /**
      * https://developer.android.com/jetpack/androidx
@@ -152,12 +177,27 @@ object Libs {
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
     /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_fx: String = "io.arrow-kt:arrow-fx:" + Versions.arrow_fx
+
+    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val core_ktx: String = "androidx.core:core-ktx:" + Versions.core_ktx
 
     /**
+     * https://github.com/JakeWharton/timber
+     */
+    const val timber: String = "com.jakewharton.timber:timber:" + Versions.timber
+
+    /**
      * https://developer.android.com/studio
      */
     const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
+
+    /**
+     * https://github.com/hbb20/CountryCodePickerProject
+     */
+    const val ccp: String = "com.hbb20:ccp:" + Versions.ccp
 }

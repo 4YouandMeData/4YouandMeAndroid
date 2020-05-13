@@ -1,6 +1,8 @@
 package org.fouryouandme.auth.phone
 
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.enter_phone.*
@@ -14,6 +16,7 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.showBackButton
+
 
 class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phone) {
 
@@ -63,5 +66,40 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         description.setTextColor(configuration.theme.secondaryColor.color())
         description.text = configuration.text.phoneVerificationBody
 
+        ccp.contentColor = configuration.theme.secondaryColor.color()
+        ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
+        ccp.ccpDialogShowTitle = false
+        ccp.enableDialogInitialScrollToSelection(true)
+        ccp.setDialogBackgroundColor(configuration.theme.primaryColorStart.color())
+        ccp.setDialogTextColor(configuration.theme.secondaryColor.color())
+        ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
+        ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
+        ccp.setAutoDetectedCountry(true)
+        ccp.setTextSize(spToPx(15f))
+        ccp.setDialogKeyboardAutoPopup(false)
+        ccp.registerCarrierNumberEditText(phone)
+        ccp.setNumberAutoFormattingEnabled(true)
+        ccp.setPhoneNumberValidityChangeListener {
+            phone_validation.setImageResource(
+                if (it) imageConfiguration.phoneValid()
+                else imageConfiguration.phoneWrong()
+            )
+        }
+
+        phone_validation.imageTintList =
+            ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+
+        phone.setTextColor(configuration.theme.secondaryColor.color())
+        phone.setHintTextColor(configuration.theme.secondaryColor.color())
+        phone.backgroundTintList =
+            ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+    }
+
+    private fun spToPx(sp: Float): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp,
+            resources.displayMetrics
+        ).toInt()
     }
 }
