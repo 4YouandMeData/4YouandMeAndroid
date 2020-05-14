@@ -58,12 +58,12 @@ class SignUpLaterFragment : BaseFragment<SignUpLaterViewModel>(R.layout.sign_up_
             ).drawable()
 
         description.setTextColor(configuration.theme.secondaryColor.color())
-        description.text = configuration.text.signUpLaterBody
+        description.text = configuration.text.signUpLater.body
 
         divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
 
         back.setTextColor(configuration.theme.primaryColorEnd.color())
-        back.text = configuration.text.signUpLaterConfirmButton
+        back.text = configuration.text.signUpLater.confirmButton
         back.background =
             button(configuration.theme.secondaryColor.color())
 

@@ -16,9 +16,9 @@ class SampleImageConfiguration: ImageConfiguration {
 
     override fun welcome(): Int = R.drawable.welcome
 
-    override fun phoneWrong(): Int = R.drawable.phone_wrong
+    override fun entryWrong(): Int = R.drawable.phone_wrong
 
-    override fun phoneValid(): Int = R.drawable.phone_valid
+    override fun entryValid(): Int = R.drawable.phone_valid
 
     override fun signUpNextStep(): Int = R.drawable.sign_up_next
 }

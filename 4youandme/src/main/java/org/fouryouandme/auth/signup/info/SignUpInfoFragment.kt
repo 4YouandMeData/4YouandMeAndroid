@@ -68,18 +68,18 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
             ).drawable()
 
         title.setTextColor(configuration.theme.secondaryColor.color())
-        title.text = configuration.text.introTitle
+        title.text = configuration.text.intro.title
 
         description.setTextColor(configuration.theme.secondaryColor.color())
-        description.text = configuration.text.introBody
+        description.text = configuration.text.intro.body
 
         divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
 
         sign_up_text.setTextColor(configuration.theme.secondaryColor.color())
-        sign_up_text.text = configuration.text.introLogin
+        sign_up_text.text = configuration.text.intro.login
 
         sign_up_later_text.setTextColor(configuration.theme.secondaryColor.color())
-        sign_up_later_text.text = configuration.text.introBack
+        sign_up_later_text.text = configuration.text.intro.back
 
     }
 }

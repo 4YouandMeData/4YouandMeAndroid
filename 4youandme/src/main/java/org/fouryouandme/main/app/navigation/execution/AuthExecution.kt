@@ -18,3 +18,7 @@ fun signUpInfoToSignUpLater(): NavigationExecution = {
 fun signUpInfoToEnterPhone(): NavigationExecution = {
     it.navigate(R.id.action_sign_up_info_to_enter_phone)
 }
+
+fun enterPhoneToPhoneValidationCode(): NavigationExecution = {
+    it.navigate(R.id.action_enter_phone_to_phone_validation_code)
+}

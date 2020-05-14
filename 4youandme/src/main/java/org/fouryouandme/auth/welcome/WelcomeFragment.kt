@@ -60,7 +60,7 @@ class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
 
         start.background =
             button(configuration.theme.secondaryColor.color())
-        start.text = configuration.text.welcomeStartButton
+        start.text = configuration.text.welcome.startButton
         start.setTextColor(configuration.theme.primaryColorEnd.color())
         start.isAllCaps = false
         start.setOnClickListener { viewModel.signUpInfo(findNavController()) }
