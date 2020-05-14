@@ -14,10 +14,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.configuration.checkbox.checkbox
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackButton
+import org.fouryouandme.core.ext.*
 
 
 class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phone) {
@@ -98,6 +95,7 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         phone.setHintTextColor(configuration.theme.secondaryColor.color())
         phone.backgroundTintList =
             ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+        phone.autoCloseKeyboard()
 
         checkbox.buttonTintList =
             checkbox(
