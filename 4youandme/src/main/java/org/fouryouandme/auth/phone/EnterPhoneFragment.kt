@@ -82,10 +82,13 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         ccp.registerCarrierNumberEditText(phone)
         ccp.setNumberAutoFormattingEnabled(true)
         ccp.setPhoneNumberValidityChangeListener {
+
             phone_validation.setImageResource(
                 if (it) imageConfiguration.phoneValid()
                 else imageConfiguration.phoneWrong()
             )
+
+            next.isEnabled = checkbox.isChecked && it
         }
 
         phone_validation.imageTintList =
@@ -101,6 +104,10 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                 configuration.theme.secondaryColor.color(),
                 configuration.theme.secondaryColor.color()
             )
+
+        checkbox.setOnCheckedChangeListener { _, isChecked ->
+            next.isEnabled = isChecked && ccp.isValidFullNumber
+        }
 
         next.background =
             button(resources, imageConfiguration.signUpNextStep())

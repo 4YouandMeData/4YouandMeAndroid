@@ -29,8 +29,11 @@ fun button(resources: Resources, @DrawableRes drawable: Int): StateListDrawable 
 
     val pressedDrawable = loadDrawable(resources, drawable, 204)
 
+    val disabledDrawable = loadDrawable(resources, drawable, 130)
+
     val stateDrawable = StateListDrawable()
     stateDrawable.addState(arrayOf(android.R.attr.state_pressed).toIntArray(), pressedDrawable)
+    stateDrawable.addState(arrayOf(-android.R.attr.state_enabled).toIntArray(), disabledDrawable)
     stateDrawable.addState(StateSet.WILD_CARD, normalDrawable)
     return stateDrawable
 
@@ -56,14 +59,17 @@ private fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
 
 }
 
-private fun loadDrawable(resources: Resources, id: Int, alpha: Int): Drawable? {
+private fun loadDrawable(resources: Resources, id: Int, alpha: Int): Drawable {
 
     val drawable =
         resources.getDrawable(id, null)
-            .constantState
+
+    val updatedDrawable =
+        drawable.constantState
             ?.newDrawable()
             ?.mutate()
 
-    drawable?.alpha = alpha
-    return drawable
+    updatedDrawable?.alpha = alpha
+
+    return updatedDrawable ?: drawable
 }
