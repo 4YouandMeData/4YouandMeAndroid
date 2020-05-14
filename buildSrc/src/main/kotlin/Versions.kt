@@ -1,3 +1,4 @@
+import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -11,8 +12,7 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.5"
-             // available: "1.3.5-1.4-M1-release-99"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.5" // available: "1.3.6"
 
     const val com_squareup_retrofit2: String = "2.8.1"
 

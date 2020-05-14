@@ -46,12 +46,12 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
 
         logo.setImageResource(imageConfiguration.logo())
 
-        sign_up.setImageResource(imageConfiguration.signUp())
+        sign_up.setImageResource(imageConfiguration.signUpNextStep())
         sign_up.setOnClickListener { viewModel.enterPhone(findNavController()) }
 
         sign_up_text.setOnClickListener { viewModel.enterPhone(findNavController()) }
 
-        sign_up_later.setImageResource(imageConfiguration.signUp())
+        sign_up_later.setImageResource(imageConfiguration.signUpNextStep())
         sign_up_later.setOnClickListener { viewModel.signUpLater(findNavController()) }
 
         sign_up_later_text.setOnClickListener { viewModel.signUpLater(findNavController()) }

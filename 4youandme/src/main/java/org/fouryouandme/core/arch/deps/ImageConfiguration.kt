@@ -21,11 +21,11 @@ interface ImageConfiguration {
     fun welcome(): Int
 
     @DrawableRes
-    fun signUp(): Int
-
-    @DrawableRes
     fun phoneWrong(): Int
 
     @DrawableRes
     fun phoneValid(): Int
+
+    @DrawableRes
+    fun signUpNextStep(): Int
 }

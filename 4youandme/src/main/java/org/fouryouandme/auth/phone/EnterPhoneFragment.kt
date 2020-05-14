@@ -12,6 +12,8 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.entity.configuration.button.button
+import org.fouryouandme.core.entity.configuration.checkbox.checkbox
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
@@ -93,6 +95,15 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         phone.setHintTextColor(configuration.theme.secondaryColor.color())
         phone.backgroundTintList =
             ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+
+        checkbox.buttonTintList =
+            checkbox(
+                configuration.theme.secondaryColor.color(),
+                configuration.theme.secondaryColor.color()
+            )
+
+        next.background =
+            button(resources, imageConfiguration.signUpNextStep())
     }
 
     private fun spToPx(sp: Float): Int {
