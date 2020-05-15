@@ -10,17 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
-import kotlinx.android.synthetic.main.enter_phone.*
 import kotlinx.android.synthetic.main.phone_validation_code.*
-import kotlinx.android.synthetic.main.phone_validation_code.ccp
-import kotlinx.android.synthetic.main.phone_validation_code.description
-import kotlinx.android.synthetic.main.phone_validation_code.loading
-import kotlinx.android.synthetic.main.phone_validation_code.next
-import kotlinx.android.synthetic.main.phone_validation_code.phone
-import kotlinx.android.synthetic.main.phone_validation_code.phone_validation
-import kotlinx.android.synthetic.main.phone_validation_code.root
-import kotlinx.android.synthetic.main.phone_validation_code.title
-import kotlinx.android.synthetic.main.phone_validation_code.toolbar
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -99,8 +89,6 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
         phone.setText(args.phone)
 
         next.setOnClickListener {
-
-            setWrongCodeErrorVisibility(false)
             viewModel.auth(findNavController(), ccp.fullNumberWithPlus, code.text.toString())
         }
     }
@@ -159,13 +147,18 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
             ColorStateList.valueOf(configuration.theme.secondaryColor.color())
         code.autoCloseKeyboard()
         code.addTextChangedListener {
+
             code_validation.setImageResource(
                 if (it?.toString()?.length == 6) imageConfiguration.entryValid()
                 else imageConfiguration.entryWrong()
             )
 
             next.isEnabled = it?.toString()?.length == 6
+
+            setWrongCodeErrorVisibility(false)
+
         }
+
         code_validation.setImageResource(
             if (code.text?.toString()?.length == 6) imageConfiguration.entryValid()
             else imageConfiguration.entryWrong()
@@ -195,6 +188,15 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
     }
 
     private fun setWrongCodeErrorVisibility(visible: Boolean): Unit {
+
+        viewModel.state().configuration.map {
+
+            code.setTextColor(
+                if (visible) it.theme.primaryTextColor.color()
+                else it.theme.secondaryColor.color()
+            )
+
+        }
 
         if (visible)
             wrong_code_error

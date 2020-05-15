@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
-import android.util.TypedValue
 import android.view.View
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
@@ -42,8 +42,6 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         viewModel.loadingLiveData()
             .observeEvent {
                 when (it.task) {
-                    EnterPhoneLoading.Initialization -> {
-                    }
                     EnterPhoneLoading.PhoneNumberVerification -> loading.setVisibility(it.active)
                 }
             }
@@ -94,7 +92,6 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                 ccp.selectedCountryNameCode
             )
 
-            setMissingPhoneErrorVisibility(false)
         }
     }
 
@@ -143,6 +140,7 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         phone.backgroundTintList =
             ColorStateList.valueOf(configuration.theme.secondaryColor.color())
         phone.autoCloseKeyboard()
+        phone.addTextChangedListener { setMissingPhoneErrorVisibility(false) }
 
         checkbox.buttonTintList =
             checkbox(
@@ -229,6 +227,17 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
     }
 
     private fun setMissingPhoneErrorVisibility(visible: Boolean): Unit {
+
+        viewModel.state().configuration.map {
+
+            phone.setTextColor(
+                if (visible) it.theme.primaryTextColor.color()
+                else it.theme.secondaryColor.color()
+            )
+            ccp.contentColor =
+                if (visible) it.theme.primaryTextColor.color()
+                else it.theme.secondaryColor.color()
+        }
 
         if (visible)
             missing_number_error
