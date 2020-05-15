@@ -1,12 +1,18 @@
 package org.fouryouandme.auth.phone
 
 import androidx.navigation.NavController
+import arrow.Kind
+import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.ForIO
+import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.toastAction
 import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.auth.AuthUseCase
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
@@ -18,8 +24,10 @@ class EnterPhoneViewModel(
         EnterPhoneState,
         EnterPhoneStateUpdate,
         EnterPhoneError,
-        EnterPhoneError>
+        EnterPhoneLoading>
     (EnterPhoneState(), navigator, runtime) {
+
+    /* --- data --- */
 
     fun initialize(): Unit =
         runtime.fx.concurrent {
@@ -39,19 +47,46 @@ class EnterPhoneViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- auth --- */
+
+    fun verifyNumber(navController: NavController, phone: String): Unit =
+        runtime.fx.concurrent {
+
+            !showLoading(EnterPhoneLoading.PhoneNumberVerification)
+
+            val auth =
+                !AuthUseCase.verifyPhoneNumber(
+                    runtime,
+                    phone,
+                    state().configuration
+                        .map { it.text.phoneVerification.error.errorMissingNumber }
+                        .getOrElse { getString(R.string.ERROR_generic) }
+                )
+
+            !auth.fold(
+                { setError(it, EnterPhoneError.PhoneNumberVerification) },
+                { phoneValidationCode(navController) }
+            )
+
+            !hideLoading(EnterPhoneLoading.PhoneNumberVerification)
+
+        }.unsafeRunAsync()
+
     /* --- navigation --- */
 
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
 
-
-    fun phoneValidationCode(navController: NavController): Unit =
+    private fun phoneValidationCode(navController: NavController): Kind<ForIO, Unit> =
         navigator.navigateTo(
             runtime,
             navController,
             EnterPhoneToPhoneValidationCode
-        ).unsafeRunAsync()
+        )
 
     fun web(navController: NavController, url: String): Unit =
         navigator.navigateTo(runtime, navController, EnterPhoneToWeb(url)).unsafeRunAsync()
+
+    fun toastError(error: FourYouAndMeError): Unit =
+        navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()
 }

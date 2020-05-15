@@ -8,9 +8,11 @@ import arrow.fx.fix
 import arrow.fx.typeclasses.ConcurrentFx
 import arrow.fx.typeclasses.Disposable
 import arrow.integrations.retrofit.adapter.unwrapBody
+import arrow.typeclasses.ApplicativeError
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.toFourYouAndMeError
+import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
 
@@ -37,7 +39,6 @@ fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapToEither(
 
         !toFourYouAndMeError(runtime, unwrappedResponse)
     }
-
 
 /* --- fold ext --- */
 
@@ -84,6 +85,12 @@ fun <F, E, E2, A, B> Either<E, A>.foldToKind(
     }
 
 /* --- mapping ext --- */
+
+fun <F, E, E2, A> Kind<F, Either<E, A>>.mapError(
+    fx: ConcurrentFx<F>,
+    errorMapper: (E) -> E2
+): Kind<F, Either<E2, A>> =
+    mapResult(fx, { it }, errorMapper)
 
 fun <F, E, A, B> Kind<F, Either<E, A>>.mapResult(
     fx: ConcurrentFx<F>,

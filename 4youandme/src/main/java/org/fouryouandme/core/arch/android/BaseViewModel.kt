@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import arrow.Kind
+import arrow.fx.ForIO
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.ErrorPayload
@@ -15,6 +16,7 @@ import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.arch.loading.LoadingPayload
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.ext.unsafeRunAsync
 
 object Empty
 

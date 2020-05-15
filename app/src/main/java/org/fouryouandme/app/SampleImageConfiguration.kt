@@ -6,6 +6,8 @@ class SampleImageConfiguration: ImageConfiguration {
 
     /* --- common ---*/
 
+    override fun loading(): Int = R.drawable.loading
+
     override fun back(): Int = R.drawable.back
 
     override fun logo(): Int = R.drawable.logo

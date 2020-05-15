@@ -30,6 +30,10 @@ sealed class FourYouAndMeError(val message: (Context) -> String) {
         val responseBody: Option<String>,
         val errorMessage: (Context) -> String = defaultNetworkErrorMessage()
     ) : FourYouAndMeError(errorMessage)
+
+    /* --- auth --- */
+
+    class MissingPhoneNumber(message: (Context) -> String): FourYouAndMeError(message)
 }
 
 fun <F, A> ConcurrentSyntax<F>.toFourYouAndMeError(

@@ -15,6 +15,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.entity.configuration.*
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.configuration.checkbox.checkbox
@@ -38,23 +39,61 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                 }
             }
 
-        viewModel.initialize()
+        viewModel.loadingLiveData()
+            .observeEvent {
+                when (it.task) {
+                    EnterPhoneLoading.Initialization -> {
+                    }
+                    EnterPhoneLoading.PhoneNumberVerification -> loading.setVisibility(it.active)
+                }
+            }
+
+        viewModel.errorLiveData()
+            .observeEvent {
+                when (it.cause) {
+                    EnterPhoneError.PhoneNumberVerification -> {
+
+                        when (it.error) {
+
+                            is FourYouAndMeError.MissingPhoneNumber ->
+                                setMissingPhoneErrorVisibility(true)
+                            else ->
+                                viewModel.toastError(it.error)
+                        }
+                    }
+                }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration.map { applyConfiguration(it) }
+        viewModel.state().configuration
+            .fold(
+                { viewModel.initialize() },
+                { applyConfiguration(it) }
+            )
+
         setupView()
     }
 
     private fun setupView() {
 
+        loading.setLoader(imageConfiguration.loading())
+
         logo.setImageResource(imageConfiguration.logo())
 
         toolbar.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
 
-        next.setOnClickListener { viewModel.phoneValidationCode(findNavController()) }
+        next.setOnClickListener {
+
+            viewModel.verifyNumber(
+                findNavController(),
+                ccp.fullNumberWithPlus
+            )
+
+            setMissingPhoneErrorVisibility(false)
+        }
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
@@ -121,6 +160,10 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
 
         next.background =
             button(resources, imageConfiguration.signUpNextStep())
+
+        missing_number_error.text =
+            configuration.text.phoneVerification.error.errorMissingNumber
+        missing_number_error.setTextColor(configuration.theme.primaryTextColor.color())
     }
 
     private fun spToPx(sp: Float): Int {
@@ -189,5 +232,22 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                     spanList(requireContext()) { typeface(R.font.helvetica) }
                 )
                 .toSpannableString()
+    }
+
+    private fun setMissingPhoneErrorVisibility(visible: Boolean): Unit {
+
+        if (visible)
+            missing_number_error
+                .animate()
+                .alpha(1f)
+                .setDuration(500L)
+                .start()
+        else
+            missing_number_error
+                .animate()
+                .alpha(0f)
+                .setDuration(500L)
+                .start()
+
     }
 }

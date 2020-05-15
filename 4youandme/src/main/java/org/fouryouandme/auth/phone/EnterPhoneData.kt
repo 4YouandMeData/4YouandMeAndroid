@@ -13,10 +13,12 @@ sealed class EnterPhoneStateUpdate {
 
 sealed class EnterPhoneLoading {
     object Initialization: EnterPhoneLoading()
+    object PhoneNumberVerification: EnterPhoneLoading()
 }
 
 sealed class EnterPhoneError {
     object Initialization: EnterPhoneError()
+    object PhoneNumberVerification: EnterPhoneError()
 }
 
 /* --- navigation --- */

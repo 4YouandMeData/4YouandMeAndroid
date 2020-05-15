@@ -3,6 +3,7 @@ package org.fouryouandme.core.arch.deps
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 
 interface Injector {
@@ -34,4 +35,5 @@ interface Injector {
     /* --- api --- */
 
     val configurationApi: ConfigurationApi
+    val authApi: AuthApi
 }

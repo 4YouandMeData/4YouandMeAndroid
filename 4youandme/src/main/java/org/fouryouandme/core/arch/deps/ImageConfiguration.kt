@@ -7,6 +7,9 @@ interface ImageConfiguration {
     /* --- common ---*/
 
     @DrawableRes
+    fun loading(): Int
+
+    @DrawableRes
     fun back(): Int
 
     @DrawableRes

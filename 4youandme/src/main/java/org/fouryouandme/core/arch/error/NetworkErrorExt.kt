@@ -103,11 +103,11 @@ private fun ServerErrorMessage.mapToMessage(): (Context) -> String = defaultNetw
 
 fun <F> Throwable.toFourYouAndMeError(runtime: Runtime<F>): Kind<F, FourYouAndMeError> =
     runtime.fx.concurrent {
-        when (this) {
+        when (this@toFourYouAndMeError) {
             is UnknownHostException -> FourYouAndMeError.NetworkErrorUnknownHost
             is TimeoutException,
             is SocketTimeoutException -> FourYouAndMeError.NetworkErrorTimeOut
-            is HttpException -> !this.toNetworkErrorHTTP(runtime)
+            is HttpException -> !this@toFourYouAndMeError.toNetworkErrorHTTP(runtime)
             else -> FourYouAndMeError.Unkonwn
         }
     }
