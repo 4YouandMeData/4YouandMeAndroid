@@ -22,3 +22,5 @@ sealed class EnterPhoneError {
 /* --- navigation --- */
 
 object EnterPhoneToPhoneValidationCode: NavigationAction
+
+data class EnterPhoneToWeb(val url: String): NavigationAction

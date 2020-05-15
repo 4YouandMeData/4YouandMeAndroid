@@ -2,6 +2,7 @@ package org.fouryouandme.core.entity.configuration
 
 data class Text(
     val error: Error,
+    val url: Url,
     val welcome: Welcome,
     val intro: Intro,
     val signUpLater: SignUpLater,
@@ -15,6 +16,11 @@ data class Error(
     val buttonCancel: String,
     val messageRemoteButton: String,
     val messageConnectivity: String
+)
+
+data class Url(
+    val privacy: String,
+    val terms: String
 )
 
 data class Welcome(

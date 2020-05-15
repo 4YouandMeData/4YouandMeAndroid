@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.phone
+package org.fouryouandme.web
 
 import androidx.navigation.NavController
 import arrow.core.toOption
@@ -10,16 +10,16 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
-class EnterPhoneViewModel(
+class WebViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        EnterPhoneState,
-        EnterPhoneStateUpdate,
-        EnterPhoneError,
-        EnterPhoneError>
-    (EnterPhoneState(), navigator, runtime) {
+        WebState,
+        WebStateUpdate,
+        WebError,
+        WebLoading>
+    (WebState(), navigator, runtime) {
 
     fun initialize(): Unit =
         runtime.fx.concurrent {
@@ -28,11 +28,11 @@ class EnterPhoneViewModel(
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
 
             !configuration.fold(
-                { setError(it, EnterPhoneError.Initialization) },
+                { setError(it, WebError.Initialization) },
                 {
                     setState(
                         state().copy(configuration = it.toOption()),
-                        EnterPhoneStateUpdate.Initialization(it)
+                        WebStateUpdate.Initialization(it)
                     )
                 }
             )
@@ -44,14 +44,4 @@ class EnterPhoneViewModel(
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
 
-
-    fun phoneValidationCode(navController: NavController): Unit =
-        navigator.navigateTo(
-            runtime,
-            navController,
-            EnterPhoneToPhoneValidationCode
-        ).unsafeRunAsync()
-
-    fun web(navController: NavController, url: String): Unit =
-        navigator.navigateTo(runtime, navController, EnterPhoneToWeb(url)).unsafeRunAsync()
 }

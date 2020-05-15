@@ -1,6 +1,7 @@
 package org.fouryouandme.main.app.navigation
 
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
+import org.fouryouandme.auth.phone.EnterPhoneToWeb
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
@@ -19,6 +20,7 @@ class ForYouAndMeNavigationProvider: NavigationProvider {
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
             is EnterPhoneToPhoneValidationCode -> enterPhoneToPhoneValidationCode()
+            is EnterPhoneToWeb -> enterPhoneToWeb(action.url)
             else -> {
                 {}
             }

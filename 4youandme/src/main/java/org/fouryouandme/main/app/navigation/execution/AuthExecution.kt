@@ -1,6 +1,7 @@
 package org.fouryouandme.main.app.navigation.execution
 
 import org.fouryouandme.R
+import org.fouryouandme.auth.phone.EnterPhoneFragmentDirections
 import org.fouryouandme.core.arch.navigation.NavigationExecution
 
 fun splashToWelcome(): NavigationExecution = {
@@ -21,4 +22,8 @@ fun signUpInfoToEnterPhone(): NavigationExecution = {
 
 fun enterPhoneToPhoneValidationCode(): NavigationExecution = {
     it.navigate(R.id.action_enter_phone_to_phone_validation_code)
+}
+
+fun enterPhoneToWeb(url: String): NavigationExecution = {
+    it.navigate(EnterPhoneFragmentDirections.actionSignUpInfoToWeb(url))
 }

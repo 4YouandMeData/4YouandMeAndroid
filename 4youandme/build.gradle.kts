@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     kotlin("android.extensions")
+    id("androidx.navigation.safeargs")
 }
 
 androidExtensions { isExperimental = true }

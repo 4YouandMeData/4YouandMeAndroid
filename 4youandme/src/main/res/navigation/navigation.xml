@@ -73,7 +73,7 @@
         android:id="@+id/enter_phone"
         android:name="org.fouryouandme.auth.phone.EnterPhoneFragment"
         android:label="enter_phone"
-        tools:layout="@layout/enter_phone" >
+        tools:layout="@layout/enter_phone">
 
         <action
             android:id="@+id/action_enter_phone_to_phone_validation_code"
@@ -83,6 +83,21 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
 
+        <action
+            android:id="@+id/action_sign_up_info_to_web"
+            app:destination="@id/web"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" >
+
+            <argument
+                android:name="url"
+                app:nullable="true"
+                app:argType="string" />
+
+        </action>
+
     </fragment>
 
     <fragment
@@ -90,5 +105,18 @@
         android:name="org.fouryouandme.auth.phone.code.PhoneValidationCodeFragment"
         android:label="phone_validation_code"
         tools:layout="@layout/phone_validation_code" />
+
+    <fragment
+        android:id="@+id/web"
+        android:name="org.fouryouandme.web.WebFragment"
+        android:label="web"
+        tools:layout="@layout/web">
+
+        <argument
+            android:name="url"
+            app:nullable="true"
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>

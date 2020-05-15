@@ -34,6 +34,9 @@ data class StringsResponse(
     @Json(name = "PHONE_VERIFICATION_ERROR_WRONG_CODE") val phoneVerificationErrorWrongCode: String? = null,
     @Json(name = "PHONE_VERIFICATION_ERROR_MISSING_NUMBER") val phoneVerificationErrorMissingNumber: String? = null,
 
+    @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
+    @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
+
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
     @Json(name = "ERROR_BUTTON_RETRY") val errorButtonRetry: String? = null,
@@ -54,6 +57,10 @@ data class StringsResponse(
                     errorButtonCancel.toOption().bind(),
                     errorMessageRemoteButton.toOption().bind(),
                     errorMessageConnectivity.toOption().bind()
+                ),
+                Url(
+                    urlPrivacyPolicy.toOption().bind(),
+                    urlTermsOfService.toOption().bind()
                 ),
                 Welcome(welcomeStartButton.toOption().bind()),
                 Intro(

@@ -2,12 +2,12 @@ package org.fouryouandme.auth.phone
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.util.TypedValue
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import arrow.syntax.collections.prependTo
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.enter_phone.*
@@ -15,10 +15,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.configuration.HEXGradient
-import org.fouryouandme.core.entity.configuration.PhoneVerification
-import org.fouryouandme.core.entity.configuration.Theme
+import org.fouryouandme.core.entity.configuration.*
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.configuration.checkbox.checkbox
 import org.fouryouandme.core.ext.*
@@ -116,7 +113,11 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
             next.isEnabled = isChecked && ccp.isValidFullNumber
         }
 
-        setLegalCheckboxText(configuration.theme, configuration.text.phoneVerification)
+        setLegalCheckboxText(
+            configuration.theme,
+            configuration.text.phoneVerification,
+            configuration.text.url
+        )
 
         next.background =
             button(resources, imageConfiguration.signUpNextStep())
@@ -130,9 +131,10 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         ).toInt()
     }
 
-    private fun setLegalCheckboxText(theme: Theme, text: PhoneVerification) {
+    private fun setLegalCheckboxText(theme: Theme, text: PhoneVerification, url: Url) {
 
         checkbox_text.setTextColor(theme.secondaryColor.color())
+        checkbox_text.movementMethod = LinkMovementMethod.getInstance()
 
         val privacyIndex = text.legal.indexOf(text.legalPrivacyPolicy)
         val termsIndex = text.legal.indexOf(text.legalTermsOfService)
@@ -150,7 +152,13 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                     if (privacyIndex > termsIndex) text.legalPrivacyPolicy
                     else text.legalTermsOfService,
                     spanList(requireContext()) {
-                        click { }
+                        click {
+                            viewModel.web(
+                                findNavController(),
+                                if (privacyIndex > termsIndex) url.privacy
+                                else url.terms
+                            )
+                        }
                         typeface(R.font.helvetica_bold)
                         custom(ForegroundColorSpan(theme.secondaryColor.color()))
                         custom(UnderlineSpan())
@@ -164,7 +172,13 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                     if (privacyIndex > termsIndex) text.legalTermsOfService
                     else text.legalPrivacyPolicy,
                     spanList(requireContext()) {
-                        click { }
+                        click {
+                            viewModel.web(
+                                findNavController(),
+                                if (privacyIndex > termsIndex) url.terms
+                                else url.privacy
+                            )
+                        }
                         typeface(R.font.helvetica_bold)
                         custom(ForegroundColorSpan(theme.secondaryColor.color()))
                         custom(UnderlineSpan())
