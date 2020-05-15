@@ -18,9 +18,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
+        android:fillViewport="true"
         android:overScrollMode="never"
         android:paddingBottom="10dp"
-        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,27 +83,27 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/code_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:id="@+id/code_description"
-                android:layout_marginTop="60dp"
-                app:layout_constraintTop_toBottomOf="@id/phone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"/>
+                android:layout_marginTop="60dp"
+                android:layout_marginEnd="25dp"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/phone" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/code"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="25dp"
                 android:inputType="number"
                 android:singleLine="true"
-                app:layout_constraintTop_toBottomOf="@id/code_description"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/code_validation"
-                android:layout_marginStart="25dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/code_description" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/code_validation"
@@ -116,11 +116,20 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintHeight_min="40dp"
-                app:layout_constraintTop_toBottomOf="@id/code"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/next"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/next"/>
+                app:layout_constraintHeight_min="40dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/code" />
+
+            <androidx.appcompat.widget.AppCompatCheckedTextView
+                android:id="@+id/resend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/next"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/next"
@@ -129,8 +138,8 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="25dp"
                 android:layout_marginBottom="25dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

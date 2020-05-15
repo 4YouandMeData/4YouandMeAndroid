@@ -108,6 +108,9 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
             else imageConfiguration.entryWrong()
         )
 
+        resend.setTextColor(configuration.theme.secondaryColor.color())
+        resend.text = configuration.text.phoneVerification.resendCode
+
         next.background =
             button(resources, imageConfiguration.signUpNextStep())
     }

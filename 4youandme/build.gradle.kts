@@ -104,6 +104,10 @@ dependencies {
 
     implementation(Libs.ccp)
 
+    /* --- span droid --- */
+
+    implementation(Libs.span_droid)
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)

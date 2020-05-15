@@ -174,6 +174,11 @@ object Libs {
     const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.arrow_meta
 
     /**
+     * https://github.com/giacomoParisi/span-droid
+     */
+    const val span_droid: String = "com.giacomoparisi.spandroid:span-droid:" + Versions.span_droid
+
+    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
