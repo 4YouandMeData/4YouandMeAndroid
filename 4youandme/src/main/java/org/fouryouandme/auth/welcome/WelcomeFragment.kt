@@ -32,14 +32,14 @@ class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
                     is WelcomeStateUpdate.Initialization -> applyConfiguration(it.configuration)
                 }
             }
-
-        viewModel.initialize()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration.map { applyConfiguration(it) }
+        viewModel.state().configuration
+            .fold({ viewModel.initialize() }, { applyConfiguration(it) })
+
         setupView()
     }
 

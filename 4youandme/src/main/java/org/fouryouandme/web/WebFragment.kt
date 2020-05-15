@@ -18,10 +18,7 @@ import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackButton
+import org.fouryouandme.core.ext.*
 import timber.log.Timber
 
 class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
@@ -53,7 +50,7 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
         viewModel.state().configuration
             .fold({ viewModel.initialize() }, { applyConfiguration(it) })
 
-        toolbar.showBackButton(imageConfiguration) {
+        toolbar.showCloseButton(imageConfiguration) {
             if (web_view.canGoBack())
                 web_view.goBack()
             else
@@ -65,7 +62,7 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
-        toolbar.setBackgroundColor(configuration.theme.primaryColorEnd.color())
+        toolbar.setBackgroundColor(Color.WHITE)
 
         progress_bar.progressTintList =
             ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
