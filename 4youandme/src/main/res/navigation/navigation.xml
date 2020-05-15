@@ -81,7 +81,19 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="phone"
+                app:nullable="false"
+                app:argType="string" />
+
+            <argument
+                android:name="countryCode"
+                app:nullable="false"
+                app:argType="string" />
+
+        </action>
 
         <action
             android:id="@+id/action_sign_up_info_to_web"
@@ -104,7 +116,19 @@
         android:id="@+id/phone_validation_code"
         android:name="org.fouryouandme.auth.phone.code.PhoneValidationCodeFragment"
         android:label="phone_validation_code"
-        tools:layout="@layout/phone_validation_code" />
+        tools:layout="@layout/phone_validation_code" >
+
+        <argument
+            android:name="phone"
+            app:nullable="false"
+            app:argType="string" />
+
+        <argument
+            android:name="countryCode"
+            app:nullable="false"
+            app:argType="string" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/web"
@@ -114,7 +138,7 @@
 
         <argument
             android:name="url"
-            app:nullable="true"
+            app:nullable="false"
             app:argType="string" />
 
     </fragment>

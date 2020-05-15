@@ -34,6 +34,8 @@ sealed class FourYouAndMeError(val message: (Context) -> String) {
     /* --- auth --- */
 
     class MissingPhoneNumber(message: (Context) -> String): FourYouAndMeError(message)
+
+    class WrongPhoneCode(message: (Context) -> String): FourYouAndMeError(message)
 }
 
 fun <F, A> ConcurrentSyntax<F>.toFourYouAndMeError(

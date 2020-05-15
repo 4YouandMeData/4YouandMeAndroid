@@ -19,7 +19,7 @@ class ForYouAndMeNavigationProvider: NavigationProvider {
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
-            is EnterPhoneToPhoneValidationCode -> enterPhoneToPhoneValidationCode()
+            is EnterPhoneToPhoneValidationCode -> enterPhoneToPhoneValidationCode(action.phone, action.countryCode)
             is EnterPhoneToWeb -> enterPhoneToWeb(action.url)
             else -> {
                 {}

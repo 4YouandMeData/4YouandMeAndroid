@@ -20,8 +20,10 @@ fun signUpInfoToEnterPhone(): NavigationExecution = {
     it.navigate(R.id.action_sign_up_info_to_enter_phone)
 }
 
-fun enterPhoneToPhoneValidationCode(): NavigationExecution = {
-    it.navigate(R.id.action_enter_phone_to_phone_validation_code)
+fun enterPhoneToPhoneValidationCode(phone: String, countryCode: String): NavigationExecution = {
+    it.navigate(
+        EnterPhoneFragmentDirections.actionEnterPhoneToPhoneValidationCode(phone, countryCode)
+    )
 }
 
 fun enterPhoneToWeb(url: String): NavigationExecution = {

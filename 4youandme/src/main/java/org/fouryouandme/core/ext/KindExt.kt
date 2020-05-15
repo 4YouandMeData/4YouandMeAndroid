@@ -40,6 +40,26 @@ fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapToEither(
         !toFourYouAndMeError(runtime, unwrappedResponse)
     }
 
+fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapEmptyToEither(
+    runtime: Runtime<F>
+): Kind<F, Either<FourYouAndMeError, Unit>> =
+    runtime.fx.concurrent {
+
+        val request =
+            !this@unwrapEmptyToEither
+
+        val unwrappedResponse =
+            request.flatMap { it.unwrapEmptyBody(Either.applicativeError()).fix() }
+
+        !toFourYouAndMeError(runtime, unwrappedResponse)
+    }
+
+fun <F, R> Response<R>.unwrapEmptyBody(apError: ApplicativeError<F, Throwable>): Kind<F, Unit> =
+    if (this.isSuccessful)
+        apError.just(Unit)
+    else
+        apError.raiseError(HttpException(this))
+
 /* --- fold ext --- */
 
 fun <F, E, A, B> Either<E, A>.foldToKindEither(

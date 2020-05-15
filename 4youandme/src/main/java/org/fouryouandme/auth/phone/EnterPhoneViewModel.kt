@@ -49,7 +49,12 @@ class EnterPhoneViewModel(
 
     /* --- auth --- */
 
-    fun verifyNumber(navController: NavController, phone: String): Unit =
+    fun verifyNumber(
+        navController: NavController,
+        phoneAndCode: String,
+        phone: String,
+        countryCode: String
+    ): Unit =
         runtime.fx.concurrent {
 
             !showLoading(EnterPhoneLoading.PhoneNumberVerification)
@@ -57,7 +62,7 @@ class EnterPhoneViewModel(
             val auth =
                 !AuthUseCase.verifyPhoneNumber(
                     runtime,
-                    phone,
+                    phoneAndCode,
                     state().configuration
                         .map { it.text.phoneVerification.error.errorMissingNumber }
                         .getOrElse { getString(R.string.ERROR_generic) }
@@ -65,7 +70,7 @@ class EnterPhoneViewModel(
 
             !auth.fold(
                 { setError(it, EnterPhoneError.PhoneNumberVerification) },
-                { phoneValidationCode(navController) }
+                { phoneValidationCode(navController, phone, countryCode) }
             )
 
             !hideLoading(EnterPhoneLoading.PhoneNumberVerification)
@@ -77,11 +82,15 @@ class EnterPhoneViewModel(
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
 
-    private fun phoneValidationCode(navController: NavController): Kind<ForIO, Unit> =
+    private fun phoneValidationCode(
+        navController: NavController,
+        phone: String,
+        countryCode: String
+    ): Kind<ForIO, Unit> =
         navigator.navigateTo(
             runtime,
             navController,
-            EnterPhoneToPhoneValidationCode
+            EnterPhoneToPhoneValidationCode(phone, countryCode)
         )
 
     fun web(navController: NavController, url: String): Unit =

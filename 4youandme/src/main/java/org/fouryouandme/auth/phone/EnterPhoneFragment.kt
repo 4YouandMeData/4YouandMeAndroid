@@ -89,7 +89,9 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
 
             viewModel.verifyNumber(
                 findNavController(),
-                ccp.fullNumberWithPlus
+                ccp.fullNumberWithPlus,
+                phone.text.toString(),
+                ccp.selectedCountryNameCode
             )
 
             setMissingPhoneErrorVisibility(false)
@@ -119,7 +121,7 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
         ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
         ccp.setAutoDetectedCountry(true)
-        ccp.setTextSize(spToPx(15f))
+        ccp.setTextSize(15f.spToPx(requireContext()))
         ccp.setDialogKeyboardAutoPopup(false)
         ccp.registerCarrierNumberEditText(phone)
         ccp.setNumberAutoFormattingEnabled(true)
@@ -164,14 +166,6 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         missing_number_error.text =
             configuration.text.phoneVerification.error.errorMissingNumber
         missing_number_error.setTextColor(configuration.theme.primaryTextColor.color())
-    }
-
-    private fun spToPx(sp: Float): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP,
-            sp,
-            resources.displayMetrics
-        ).toInt()
     }
 
     private fun setLegalCheckboxText(theme: Theme, text: PhoneVerification, url: Url) {
