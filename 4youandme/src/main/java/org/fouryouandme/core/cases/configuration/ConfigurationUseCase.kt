@@ -2,9 +2,12 @@ package org.fouryouandme.core.cases.configuration
 
 import arrow.Kind
 import arrow.core.Either
+import arrow.core.None
+import arrow.core.left
 import arrow.core.right
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -37,6 +40,22 @@ object ConfigurationUseCase {
 
                         !getConfiguration(runtime, CachePolicy.MemoryFirst)
                         !ConfigurationRepository.fetchConfiguration(runtime)
+
+                    }
+
+                CachePolicy.MemoryOrDisk ->
+                    runtime.fx.concurrent {
+
+                        !Memory.configuration
+                            .toKind(runtime.fx) { ConfigurationRepository.loadConfiguration(runtime) }
+                            .flatMap { disk ->
+
+                                disk.fold(
+                                    { just(unknownError(None).left()) },
+                                    { just(it.right()) }
+                                )
+
+                            }
 
                     }
 

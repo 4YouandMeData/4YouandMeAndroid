@@ -2,8 +2,12 @@ package org.fouryouandme.core.cases.auth
 
 import arrow.Kind
 import arrow.core.Either
+import arrow.core.getOrElse
+import org.fouryouandme.R
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.data.api.auth.request.LoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneLoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberRequest
@@ -17,10 +21,14 @@ object AuthRepository {
 
     fun <F> verifyPhoneNumber(
         runtime: Runtime<F>,
-        phone: String,
-        missingPhoneErrorMessage: String
+        phone: String
     ): Kind<F, Either<FourYouAndMeError, Unit>> =
         runtime.fx.concurrent {
+
+            val configuration =
+                ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
+                    .bind()
+                    .toOption()
 
             !runtime.injector.authApi
                 .verifyPhoneNumber(
@@ -30,22 +38,32 @@ object AuthRepository {
                 .async(runtime.fx.M)
                 .attempt()
                 .unwrapEmptyToEither(runtime)
-                .mapError(runtime.fx) {
+                .mapError(runtime.fx) { error ->
 
-                    if (it is FourYouAndMeError.NetworkErrorHTTP && it.code == 404)
-                        FourYouAndMeError.MissingPhoneNumber { missingPhoneErrorMessage }
+                    if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 404)
+                        FourYouAndMeError.MissingPhoneNumber {
+                            configuration
+                                .map { it.text.phoneVerification.error.errorMissingNumber }
+                                .getOrElse {
+                                    runtime.app.getString(R.string.ERROR_generic)
+                                }
+                        }
                     else
-                        it
+                        error
                 }
         }
 
     fun <F> login(
         runtime: Runtime<F>,
         phone: String,
-        code: String,
-        wrongCodeErrorMessage: String
+        code: String
     ): Kind<F, Either<FourYouAndMeError, UserResponse>> =
         runtime.fx.concurrent {
+
+            val configuration =
+                ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
+                    .bind()
+                    .toOption()
 
             !runtime.injector.authApi
                 .login(
@@ -55,12 +73,18 @@ object AuthRepository {
                 .async(runtime.fx.M)
                 .attempt()
                 .unwrapToEither(runtime)
-                .mapError(runtime.fx) {
+                .mapError(runtime.fx) { error ->
 
-                    if (it is FourYouAndMeError.NetworkErrorHTTP && it.code == 403)
-                        FourYouAndMeError.WrongPhoneCode { wrongCodeErrorMessage }
+                    if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 403)
+                        FourYouAndMeError.WrongPhoneCode {
+                            configuration
+                                .map { it.text.phoneVerification.error.errorWrongCode }
+                                .getOrElse {
+                                    runtime.app.getString(R.string.ERROR_generic)
+                                }
+                        }
                     else
-                        it
+                        error
                 }
         }
 }

@@ -12,6 +12,9 @@ import arrow.typeclasses.ApplicativeError
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.toFourYouAndMeError
+import org.fouryouandme.core.arch.error.unknownError
+import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
@@ -37,7 +40,12 @@ fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapToEither(
         val unwrappedResponse =
             request.flatMap { it.unwrapBody(Either.applicativeError()).fix() }
 
-        !toFourYouAndMeError(runtime, unwrappedResponse)
+        val configuration =
+            ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
+                .bind()
+                .toOption()
+
+        !toFourYouAndMeError(runtime, unwrappedResponse, configuration.map { it.text })
     }
 
 fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapEmptyToEither(
@@ -51,7 +59,12 @@ fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapEmptyToEither(
         val unwrappedResponse =
             request.flatMap { it.unwrapEmptyBody(Either.applicativeError()).fix() }
 
-        !toFourYouAndMeError(runtime, unwrappedResponse)
+        val configuration =
+            ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
+                .bind()
+                .toOption()
+
+        !toFourYouAndMeError(runtime, unwrappedResponse, configuration.map { it.text })
     }
 
 fun <F, R> Response<R>.unwrapEmptyBody(apError: ApplicativeError<F, Throwable>): Kind<F, Unit> =
@@ -134,17 +147,31 @@ fun <F, E, E2, A, B> Kind<F, Either<E, A>>.mapResult(
 /* --- none to error --- */
 
 fun <F, A> Kind<F, Either<FourYouAndMeError, Option<A>>>.noneToError(
-    fx: ConcurrentFx<F>,
-    error: FourYouAndMeError = FourYouAndMeError.Unkonwn
+    runtime: Runtime<F>,
+    error: FourYouAndMeError? = null
 ): Kind<F, Either<FourYouAndMeError, A>> =
-    fx.concurrent { !this@noneToError.bind().noneToError(fx, error) }
+    runtime.fx.concurrent {
+
+        !this@noneToError.bind().noneToError(runtime, error)
+
+    }
 
 fun <F, A> Either<FourYouAndMeError, Option<A>>.noneToError(
-    fx: ConcurrentFx<F>,
-    error: FourYouAndMeError = FourYouAndMeError.Unkonwn
+    runtime: Runtime<F>,
+    error: FourYouAndMeError? = null
 ): Kind<F, Either<FourYouAndMeError, A>> =
-    fx.concurrent {
+    runtime.fx.concurrent {
+
+        val configuration =
+            ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
+                .bind()
+                .toOption()
+
         this@noneToError.flatMap { option ->
-            option.fold({ error.left() }, { it.right() })
+            option.fold(
+                { (error ?: unknownError(configuration.map { it.text })).left() },
+                { it.right() }
+            )
         }
+
     }

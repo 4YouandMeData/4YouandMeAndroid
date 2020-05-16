@@ -33,7 +33,7 @@ object ConfigurationRepository {
                     .attempt()
                     .unwrapToEither(runtime)
                     .mapResult(runtime.fx) { it.toConfiguration() }
-                    .noneToError(runtime.fx)
+                    .noneToError(runtime)
 
             !configuration.foldToKind(runtime.fx) {
 

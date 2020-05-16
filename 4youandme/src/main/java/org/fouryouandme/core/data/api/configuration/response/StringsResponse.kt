@@ -41,7 +41,7 @@ data class StringsResponse(
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
     @Json(name = "ERROR_BUTTON_RETRY") val errorButtonRetry: String? = null,
     @Json(name = "ERROR_BUTTON_CANCEL") val errorButtonCancel: String? = null,
-    @Json(name = "ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteButton: String? = null,
+    @Json(name = "ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteServer: String? = null,
     @Json(name = "ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null
 
 ) {
@@ -55,7 +55,7 @@ data class StringsResponse(
                     errorMessageDefault.toOption().bind(),
                     errorButtonRetry.toOption().bind(),
                     errorButtonCancel.toOption().bind(),
-                    errorMessageRemoteButton.toOption().bind(),
+                    errorMessageRemoteServer.toOption().bind(),
                     errorMessageConnectivity.toOption().bind()
                 ),
                 Url(

@@ -10,16 +10,14 @@ object AuthUseCase {
 
     fun <F> verifyPhoneNumber(
         runtime: Runtime<F>,
-        phone: String,
-        missingPhoneErrorMessage: String
+        phone: String
     ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        AuthRepository.verifyPhoneNumber(runtime, phone, missingPhoneErrorMessage)
+        AuthRepository.verifyPhoneNumber(runtime, phone)
 
     fun <F> login(
         runtime: Runtime<F>,
         phone: String,
-        code: String,
-        wrongCodeErrorMessage: String
+        code: String
     ): Kind<F, Either<FourYouAndMeError, UserResponse>> =
-        AuthRepository.login(runtime, phone, code, wrongCodeErrorMessage)
+        AuthRepository.login(runtime, phone, code)
 }

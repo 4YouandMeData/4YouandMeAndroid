@@ -14,7 +14,7 @@ data class Error(
     val messageDefault: String,
     val buttonRetry: String,
     val buttonCancel: String,
-    val messageRemoteButton: String,
+    val messageRemoteServer: String,
     val messageConnectivity: String
 )
 

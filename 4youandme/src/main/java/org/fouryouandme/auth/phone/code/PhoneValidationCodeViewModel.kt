@@ -2,10 +2,8 @@ package org.fouryouandme.auth.phone.code
 
 import androidx.navigation.NavController
 import arrow.Kind
-import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.ForIO
-import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -58,10 +56,7 @@ class PhoneValidationCodeViewModel(
                 !AuthUseCase.login(
                     runtime,
                     phone,
-                    code,
-                    state().configuration
-                        .map { it.text.phoneVerification.error.errorWrongCode }
-                        .getOrElse { getString(R.string.ERROR_generic) }
+                    code
                 )
 
             !auth.fold(
@@ -84,10 +79,7 @@ class PhoneValidationCodeViewModel(
             val auth =
                 !AuthUseCase.verifyPhoneNumber(
                     runtime,
-                    phoneAndCode,
-                    state().configuration
-                        .map { it.text.phoneVerification.error.errorMissingNumber }
-                        .getOrElse { getString(R.string.ERROR_generic) }
+                    phoneAndCode
                 )
 
             !auth.fold(

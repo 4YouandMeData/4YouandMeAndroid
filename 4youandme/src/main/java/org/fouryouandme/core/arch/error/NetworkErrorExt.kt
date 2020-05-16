@@ -8,13 +8,15 @@ import okhttp3.RequestBody
 import okio.Buffer
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.entity.configuration.Text
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
 private fun <F> HttpException.toNetworkErrorHTTP(
-    runtime: Runtime<F>
+    runtime: Runtime<F>,
+    text: Option<Text>
 ): Kind<F, FourYouAndMeError.NetworkErrorHTTP> =
     runtime.fx.concurrent {
 
@@ -36,7 +38,7 @@ private fun <F> HttpException.toNetworkErrorHTTP(
             response.flatMap { it.errorBody()?.string().toOption() }
 
 
-        val errorMessage = !responseJson.parseErrorMessage(runtime)
+        val errorMessage = !responseJson.parseErrorMessage(runtime, text)
 
         FourYouAndMeError.NetworkErrorHTTP(
             code(),
@@ -64,13 +66,14 @@ private fun <F> RequestBody?.bodyToString(
         }.attempt()
     }
 
-internal fun defaultNetworkErrorMessage(): (Context) -> String =
-    { it.getString(R.string.ERROR_api) }
+internal fun defaultNetworkErrorMessage(text: Option<Text>): (Context) -> String =
+    { text.map { it.error.messageDefault }.getOrElse { it.getString(R.string.ERROR_api) } }
 
 data class ServerErrorMessage(@Json(name = "message") val messageCode: String)
 
 private fun <F> Option<String>.parseErrorMessage(
-    runtime: Runtime<F>
+    runtime: Runtime<F>,
+    text: Option<Text>
 ): Kind<F, (Context) -> String> =
 
     map {
@@ -88,26 +91,39 @@ private fun <F> Option<String>.parseErrorMessage(
             val result = !parser.attempt()
 
             result.fold(
-                { defaultNetworkErrorMessage() },
+                { defaultNetworkErrorMessage(text) },
                 { option ->
                     option.fold(
-                        { defaultNetworkErrorMessage() },
-                        { it.mapToMessage() })
+                        { defaultNetworkErrorMessage(text) },
+                        { it.mapToMessage(text) })
                 }
             )
         }
-    }.getOrElse { runtime.fx.concurrent { defaultNetworkErrorMessage() } }
+    }.getOrElse { runtime.fx.concurrent { defaultNetworkErrorMessage(text) } }
 
 
-private fun ServerErrorMessage.mapToMessage(): (Context) -> String = defaultNetworkErrorMessage()
+private fun ServerErrorMessage.mapToMessage(text: Option<Text>): (Context) -> String =
+    defaultNetworkErrorMessage(text)
 
-fun <F> Throwable.toFourYouAndMeError(runtime: Runtime<F>): Kind<F, FourYouAndMeError> =
+fun <F> Throwable.toFourYouAndMeError(
+    runtime: Runtime<F>,
+    text: Option<Text>
+): Kind<F, FourYouAndMeError> =
     runtime.fx.concurrent {
         when (this@toFourYouAndMeError) {
-            is UnknownHostException -> FourYouAndMeError.NetworkErrorUnknownHost
+            is UnknownHostException ->
+                FourYouAndMeError.NetworkErrorUnknownHost(
+                    text.map { it.error.messageConnectivity }.orNull()
+                )
             is TimeoutException,
-            is SocketTimeoutException -> FourYouAndMeError.NetworkErrorTimeOut
-            is HttpException -> !this@toFourYouAndMeError.toNetworkErrorHTTP(runtime)
-            else -> FourYouAndMeError.Unkonwn
+            is SocketTimeoutException ->
+                FourYouAndMeError.NetworkErrorTimeOut(
+                    text.map { it.error.messageConnectivity }.orNull()
+                )
+            is HttpException -> !this@toFourYouAndMeError.toNetworkErrorHTTP(runtime, text)
+            else ->
+                FourYouAndMeError.Unknown(
+                    text.map { it.error.messageDefault }.orNull()
+                )
         }
     }

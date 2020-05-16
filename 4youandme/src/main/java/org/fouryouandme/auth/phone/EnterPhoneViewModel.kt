@@ -69,10 +69,7 @@ class EnterPhoneViewModel(
             val auth =
                 !AuthUseCase.verifyPhoneNumber(
                     runtime,
-                    phoneAndCode,
-                    state().configuration
-                        .map { it.text.phoneVerification.error.errorMissingNumber }
-                        .getOrElse { getString(R.string.ERROR_generic) }
+                    phoneAndCode
                 )
 
             !auth.fold(
