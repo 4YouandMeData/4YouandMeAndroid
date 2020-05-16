@@ -6,7 +6,6 @@ import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.R
-import org.fouryouandme.auth.phone.EnterPhoneError
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -71,6 +70,32 @@ class PhoneValidationCodeViewModel(
             )
 
             !hideLoading(PhoneValidationCodeLoading.Auth)
+
+        }.unsafeRunAsync()
+
+    fun resendCode(
+        navController: NavController,
+        phoneAndCode: String
+    ): Unit =
+        runtime.fx.concurrent {
+
+            !showLoading(PhoneValidationCodeLoading.ResendCode)
+
+            val auth =
+                !AuthUseCase.verifyPhoneNumber(
+                    runtime,
+                    phoneAndCode,
+                    state().configuration
+                        .map { it.text.phoneVerification.error.errorMissingNumber }
+                        .getOrElse { getString(R.string.ERROR_generic) }
+                )
+
+            !auth.fold(
+                { setError(it, PhoneValidationCodeError.ResendCode) },
+                { navigator.performAction(runtime, toastAction("Code sent successfully")) }
+            )
+
+            !hideLoading(PhoneValidationCodeLoading.ResendCode)
 
         }.unsafeRunAsync()
 

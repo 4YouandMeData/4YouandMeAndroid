@@ -25,7 +25,7 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
     R.layout.phone_validation_code
 ) {
 
-    val args: PhoneValidationCodeFragmentArgs by navArgs()
+    private val args: PhoneValidationCodeFragmentArgs by navArgs()
 
     override val viewModel: PhoneValidationCodeViewModel by lazy {
         viewModelFactory(
@@ -50,6 +50,7 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
             .observeEvent {
                 when (it.task) {
                     PhoneValidationCodeLoading.Auth -> loading.setVisibility(it.active)
+                    PhoneValidationCodeLoading.ResendCode -> loading.setVisibility(it.active)
                 }
             }
 
@@ -66,6 +67,8 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
                                 viewModel.toastError(it.error)
                         }
                     }
+                    PhoneValidationCodeError.ResendCode ->
+                        viewModel.toastError(it.error)
                 }
             }
 
@@ -90,6 +93,10 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
 
         next.setOnClickListener {
             viewModel.auth(findNavController(), ccp.fullNumberWithPlus, code.text.toString())
+        }
+
+        resend.setOnClickListener {
+            viewModel.resendCode(findNavController(), ccp.fullNumberWithPlus)
         }
     }
 
