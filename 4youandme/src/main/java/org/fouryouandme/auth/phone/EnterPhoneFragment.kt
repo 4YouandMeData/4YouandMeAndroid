@@ -132,16 +132,16 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         ccp.setNumberAutoFormattingEnabled(true)
         ccp.setPhoneNumberValidityChangeListener {
 
-            phone_validation.setImageResource(
-                if (it) imageConfiguration.entryValid()
-                else imageConfiguration.entryWrong()
-            )
-
             next.isEnabled = checkbox.isChecked && it
+
         }
 
         phone_validation.imageTintList =
             ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+        phone_validation.setImageResource(
+            if (ccp.isValidFullNumber) imageConfiguration.entryValid()
+            else imageConfiguration.entryWrong()
+        )
 
         phone.setTextColor(configuration.theme.secondaryColor.color())
         phone.setHintTextColor(configuration.theme.secondaryColor.color())
@@ -149,6 +149,15 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
             ColorStateList.valueOf(configuration.theme.secondaryColor.color())
         phone.autoCloseKeyboard()
         phone.addTextChangedListener { setMissingPhoneErrorVisibility(false) }
+        phone.setOnFocusChangeListener { _, hasFocus ->
+            phone_validation.setImageResource(
+                when {
+                    hasFocus -> 0
+                    hasFocus.not() && ccp.isValidFullNumber.not() -> imageConfiguration.entryWrong()
+                    else -> imageConfiguration.entryValid()
+                }
+            )
+        }
 
         checkbox.buttonTintList =
             checkbox(

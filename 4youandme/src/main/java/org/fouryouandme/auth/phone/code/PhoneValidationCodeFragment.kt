@@ -141,6 +141,11 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
         code_description.text =
             configuration.text.phoneVerification.codeDescription
 
+        code_validation.setImageResource(
+            if (code.length() == 6) imageConfiguration.entryValid()
+            else imageConfiguration.entryWrong()
+        )
+
         code.setTextColor(configuration.theme.secondaryColor.color())
         code.setHintTextColor(configuration.theme.secondaryColor.color())
         code.backgroundTintList =
@@ -148,21 +153,21 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
         code.autoCloseKeyboard()
         code.addTextChangedListener {
 
-            code_validation.setImageResource(
-                if (it?.toString()?.length == 6) imageConfiguration.entryValid()
-                else imageConfiguration.entryWrong()
-            )
-
             next.isEnabled = it?.toString()?.length == 6
 
             setWrongCodeErrorVisibility(false)
 
         }
+        code.setOnFocusChangeListener { _, hasFocus ->
 
-        code_validation.setImageResource(
-            if (code.text?.toString()?.length == 6) imageConfiguration.entryValid()
-            else imageConfiguration.entryWrong()
-        )
+            code_validation.setImageResource(
+                when {
+                    hasFocus -> 0
+                    hasFocus.not() && code.length() == 6 -> imageConfiguration.entryValid()
+                    else -> imageConfiguration.entryWrong()
+                }
+            )
+        }
 
         resend.setTextColor(configuration.theme.secondaryColor.color())
         resend.text =
