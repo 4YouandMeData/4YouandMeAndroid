@@ -5,10 +5,14 @@ import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 
-data class EnterPhoneState(val configuration: Option<Configuration> = None)
+data class EnterPhoneState(
+    val configuration: Option<Configuration> = None,
+    val countryNameCode: Option<String> = None
+)
 
 sealed class EnterPhoneStateUpdate {
     data class Initialization(val configuration: Configuration) : EnterPhoneStateUpdate()
+    data class CountryCode(val code: String) : EnterPhoneStateUpdate()
 }
 
 sealed class EnterPhoneLoading {

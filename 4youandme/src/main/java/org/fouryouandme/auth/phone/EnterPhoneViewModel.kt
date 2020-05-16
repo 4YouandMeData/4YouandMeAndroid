@@ -3,6 +3,7 @@ package org.fouryouandme.auth.phone
 import androidx.navigation.NavController
 import arrow.Kind
 import arrow.core.getOrElse
+import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.R
@@ -46,6 +47,12 @@ class EnterPhoneViewModel(
             )
 
         }.unsafeRunAsync()
+
+    fun setCountryNameCode(code: String): Unit =
+        setState(
+            state().copy(countryNameCode = code.some()),
+            EnterPhoneStateUpdate.CountryCode(code)
+        ).unsafeRunAsync()
 
     /* --- auth --- */
 

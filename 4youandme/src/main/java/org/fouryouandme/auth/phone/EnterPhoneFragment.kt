@@ -72,6 +72,14 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                 { applyConfiguration(it) }
             )
 
+        viewModel.state().countryNameCode.fold(
+            {
+                ccp.setAutoDetectedCountry(true)
+                viewModel.setCountryNameCode(ccp.selectedCountryNameCode)
+            },
+            { ccp.setCountryForNameCode(it) }
+        )
+
         setupView()
     }
 
@@ -109,6 +117,7 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         description.setTextColor(configuration.theme.secondaryColor.color())
         description.text = configuration.text.phoneVerification.body
 
+        ccp.setOnCountryChangeListener { viewModel.setCountryNameCode(ccp.selectedCountryNameCode) }
         ccp.contentColor = configuration.theme.secondaryColor.color()
         ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
         ccp.ccpDialogShowTitle = false
@@ -117,7 +126,6 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         ccp.setDialogTextColor(configuration.theme.secondaryColor.color())
         ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
         ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
-        ccp.setAutoDetectedCountry(true)
         ccp.setTextSize(15f.spToPx(requireContext()))
         ccp.setDialogKeyboardAutoPopup(false)
         ccp.registerCarrierNumberEditText(phone)
