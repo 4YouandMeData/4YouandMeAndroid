@@ -2,7 +2,6 @@ package org.fouryouandme.core.cases.auth
 
 import arrow.Kind
 import arrow.core.*
-import arrow.core.extensions.either.applicative.map
 import arrow.core.extensions.either.applicativeError.applicativeError
 import arrow.integrations.retrofit.adapter.unwrapBody
 import org.fouryouandme.R
@@ -97,7 +96,7 @@ object AuthRepository {
                             error
                     }
 
-            !user.fold({ just(Unit) }, { it.save(runtime)})
+            !user.fold({ just(Unit) }, { it.save(runtime) })
 
             user
         }
@@ -114,11 +113,11 @@ object AuthRepository {
                 { Throwable().left() },
                 { response ->
 
-                    response.headers()[Headers.AUTH]
-                        .toOption()
-                        .fold({ Throwable().left() }, { it.right() })
-                        .flatMap { token ->
-                            response.unwrapBody(Either.applicativeError()).map { it.toUser(token) }
+                    response.unwrapBody(Either.applicativeError())
+                        .flatMap { userResponse ->
+                            response.headers()[Headers.AUTH]
+                                .toOption()
+                                .fold({ Throwable().left() }, { userResponse.toUser(it).right() })
                         }
 
                 })

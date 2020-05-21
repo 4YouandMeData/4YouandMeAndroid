@@ -32,39 +32,36 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
+                style="@style/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="25dp"
-                android:textSize="30sp"
-                app:fontFamily="@font/helvetica"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/description"
+                style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="25dp"
-                android:textSize="16sp"
-                app:fontFamily="@font/helvetica"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/phone_description"
+                style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="25dp"
-                android:fontFamily="@font/helvetica"
-                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/description" />
@@ -80,9 +77,9 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/phone"
+                style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:fontFamily="@font/helvetica"
                 android:inputType="phone"
                 android:singleLine="true"
                 app:layout_constraintBottom_toBottomOf="@id/ccp"
@@ -109,23 +106,22 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/code_description"
+                style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="60dp"
                 android:layout_marginEnd="25dp"
-                android:fontFamily="@font/helvetica"
-                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/phone" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/code"
+                style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="25dp"
-                android:fontFamily="@font/helvetica"
                 android:inputType="number"
                 android:singleLine="true"
                 app:layout_constraintEnd_toStartOf="@id/code_validation"
@@ -142,14 +138,13 @@
 
             <androidx.appcompat.widget.AppCompatCheckedTextView
                 android:id="@+id/wrong_code_error"
+                style="@style/text_h3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="25dp"
                 android:alpha="0"
-                android:fontFamily="@font/helvetica"
-                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/code" />
@@ -168,8 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
-                android:fontFamily="@font/helvetica"
-                android:textSize="16sp"
+                style="@style/text_h3"
                 app:layout_constraintBottom_toBottomOf="@id/next"
                 app:layout_constraintStart_toStartOf="parent" />
 

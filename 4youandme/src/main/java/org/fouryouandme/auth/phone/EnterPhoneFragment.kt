@@ -87,8 +87,6 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
 
         loading.setLoader(imageConfiguration.loading())
 
-        logo.setImageResource(imageConfiguration.logo())
-
         toolbar.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
 
         next.setOnClickListener {

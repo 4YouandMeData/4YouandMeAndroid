@@ -15,37 +15,33 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/error_title"
+        style="@style/text_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:fontFamily="@font/helvetica"
         android:gravity="center"
         android:textColor="@color/text"
-        android:textSize="24sp"
         tools:text="@string/ERROR_title" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/error_message"
+        style="@style/text_paragraph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/helvetica"
         android:gravity="center"
         android:textColor="@color/text"
-        android:textSize="20sp"
         tools:text="@string/ERROR_generic" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/retry"
+        style="@style/text_h2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="100dp"
         android:background="@drawable/error_button"
-        android:fontFamily="@font/helvetica"
         android:gravity="center"
         android:text="@string/ERROR_retry"
-        android:textColor="@color/text_button"
-        android:textSize="20sp"
-        android:textAllCaps="false"/>
+        android:textColor="@color/text_button" />
 
 </LinearLayout>

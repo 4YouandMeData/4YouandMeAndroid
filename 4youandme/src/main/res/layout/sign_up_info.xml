@@ -41,26 +41,24 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
+                style="@style/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="25dp"
-                android:fontFamily="@font/helvetica"
-                android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/logo" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/description"
+                style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="25dp"
-                android:fontFamily="@font/helvetica"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
@@ -99,16 +97,15 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/sign_up_text"
+        style="@style/text_h3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="25dp"
         android:ellipsize="end"
-        android:fontFamily="@font/helvetica"
         android:gravity="center_vertical"
         android:lines="2"
         android:maxLines="2"
-        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/sign_up"
@@ -126,16 +123,15 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/sign_up_later_text"
+        style="@style/text_h3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="25dp"
         android:ellipsize="end"
-        android:fontFamily="@font/helvetica"
         android:gravity="center_vertical"
         android:lines="2"
         android:maxLines="2"
-        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/sign_up_later"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/sign_up_later"
