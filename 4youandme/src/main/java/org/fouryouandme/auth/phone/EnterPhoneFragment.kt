@@ -162,9 +162,11 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
                 configuration.theme.secondaryColor.color(),
                 configuration.theme.secondaryColor.color()
             )
-
+        checkbox.isChecked = viewModel.state().legalCheckbox
+        checkbox.jumpDrawablesToCurrentState()
         checkbox.setOnCheckedChangeListener { _, isChecked ->
             next.isEnabled = isChecked && ccp.isValidFullNumber
+            viewModel.setLegalCheckbox(isChecked)
         }
 
         setLegalCheckboxText(
@@ -173,6 +175,7 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
             configuration.text.url
         )
 
+        next.isEnabled = checkbox.isChecked && ccp.isValidFullNumber
         next.background =
             button(resources, imageConfiguration.signUpNextStep())
 

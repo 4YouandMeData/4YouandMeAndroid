@@ -2,11 +2,9 @@ package org.fouryouandme.auth.phone
 
 import androidx.navigation.NavController
 import arrow.Kind
-import arrow.core.getOrElse
 import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.ForIO
-import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -52,6 +50,12 @@ class EnterPhoneViewModel(
         setState(
             state().copy(countryNameCode = code.some()),
             EnterPhoneStateUpdate.CountryCode(code)
+        ).unsafeRunAsync()
+
+    fun setLegalCheckbox(isChecked: Boolean): Unit =
+        setState(
+            state().copy(legalCheckbox = isChecked),
+            EnterPhoneStateUpdate.LegalCheckBox(isChecked)
         ).unsafeRunAsync()
 
     /* --- auth --- */

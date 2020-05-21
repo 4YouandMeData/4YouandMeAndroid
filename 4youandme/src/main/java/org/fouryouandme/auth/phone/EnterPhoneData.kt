@@ -7,12 +7,14 @@ import org.fouryouandme.core.entity.configuration.Configuration
 
 data class EnterPhoneState(
     val configuration: Option<Configuration> = None,
-    val countryNameCode: Option<String> = None
+    val countryNameCode: Option<String> = None,
+    val legalCheckbox: Boolean = false
 )
 
 sealed class EnterPhoneStateUpdate {
     data class Initialization(val configuration: Configuration) : EnterPhoneStateUpdate()
     data class CountryCode(val code: String) : EnterPhoneStateUpdate()
+    data class LegalCheckBox(val legalCheckbox: Boolean) : EnterPhoneStateUpdate()
 }
 
 sealed class EnterPhoneLoading {
