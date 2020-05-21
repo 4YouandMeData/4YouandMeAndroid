@@ -19,4 +19,6 @@ object Memory {
 
     var configuration: Option<Configuration> = None
 
+    var token: Option<String> = None
+
 }

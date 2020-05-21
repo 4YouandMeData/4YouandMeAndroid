@@ -65,5 +65,7 @@ fun <F, A> ConcurrentSyntax<F>.toFourYouAndMeError(
         }
     }
 
-fun unknownError(text: Option<Text>) =
+fun unknownError(): FourYouAndMeError.Unknown = unknownError(None)
+
+fun unknownError(text: Option<Text>): FourYouAndMeError.Unknown =
     FourYouAndMeError.Unknown(text.map { it.error.messageDefault }.orNull())
