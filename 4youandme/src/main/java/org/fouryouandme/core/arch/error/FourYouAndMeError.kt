@@ -2,26 +2,32 @@ package org.fouryouandme.core.arch.error
 
 import android.content.Context
 import arrow.Kind
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.left
 import arrow.fx.typeclasses.ConcurrentSyntax
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.entity.configuration.Text
 
-sealed class FourYouAndMeError(val message: (Context) -> String) {
+sealed class FourYouAndMeError(val title: (Context) -> String, val message: (Context) -> String) {
 
     /* --- generic --- */
 
-    class Unknown(message: String?) : FourYouAndMeError({
-        message ?: it.getString(R.string.ERROR_generic) }
+    class Unknown(message: String?) : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        { message ?: it.getString(R.string.ERROR_generic) }
     )
 
-    class NetworkErrorTimeOut(message: String?) : FourYouAndMeError({
-        message ?: it.getString(R.string.ERROR_network_connection) }
+    class NetworkErrorTimeOut(message: String?) : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        { message ?: it.getString(R.string.ERROR_network_connection) }
     )
 
-    class NetworkErrorUnknownHost(message: String?) : FourYouAndMeError({
-        message ?: it.getString(R.string.ERROR_generic) }
+    class NetworkErrorUnknownHost(message: String?) : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        { message ?: it.getString(R.string.ERROR_generic) }
     )
 
     data class NetworkErrorHTTP(
@@ -32,13 +38,19 @@ sealed class FourYouAndMeError(val message: (Context) -> String) {
         val requestBody: Option<String>,
         val responseBody: Option<String>,
         val errorMessage: (Context) -> String = defaultNetworkErrorMessage(None)
-    ) : FourYouAndMeError(errorMessage)
+    ) : FourYouAndMeError({ it.getString(R.string.ERROR_title) }, errorMessage)
 
     /* --- auth --- */
 
-    class MissingPhoneNumber(message: (Context) -> String): FourYouAndMeError(message)
+    class MissingPhoneNumber(message: (Context) -> String) : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        message
+    )
 
-    class WrongPhoneCode(message: (Context) -> String): FourYouAndMeError(message)
+    class WrongPhoneCode(message: (Context) -> String) : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        message
+    )
 }
 
 fun <F, A> ConcurrentSyntax<F>.toFourYouAndMeError(
