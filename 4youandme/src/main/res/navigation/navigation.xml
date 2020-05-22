@@ -85,13 +85,13 @@
 
             <argument
                 android:name="phone"
-                app:nullable="false"
-                app:argType="string" />
+                app:argType="string"
+                app:nullable="false" />
 
             <argument
                 android:name="countryCode"
-                app:nullable="false"
-                app:argType="string" />
+                app:argType="string"
+                app:nullable="false" />
 
         </action>
 
@@ -101,12 +101,12 @@
             app:enterAnim="@anim/slide_from_top"
             app:exitAnim="@anim/idle"
             app:popEnterAnim="@anim/idle"
-            app:popExitAnim="@anim/slide_to_top" >
+            app:popExitAnim="@anim/slide_to_top">
 
             <argument
                 android:name="url"
-                app:nullable="true"
-                app:argType="string" />
+                app:argType="string"
+                app:nullable="true" />
 
         </action>
 
@@ -116,17 +116,26 @@
         android:id="@+id/phone_validation_code"
         android:name="org.fouryouandme.auth.phone.code.PhoneValidationCodeFragment"
         android:label="phone_validation_code"
-        tools:layout="@layout/phone_validation_code" >
+        tools:layout="@layout/phone_validation_code">
 
         <argument
             android:name="phone"
-            app:nullable="false"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="false" />
 
         <argument
             android:name="countryCode"
-            app:nullable="false"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/action_phone_validation_code_to_screening_questions"
+            app:destination="@id/screening_questions"
+            app:enterAnim="@anim/slide_from_top"
+            app:exitAnim="@anim/idle"
+            app:popEnterAnim="@anim/idle"
+            app:popExitAnim="@anim/slide_to_top" />
+
 
     </fragment>
 
@@ -138,9 +147,15 @@
 
         <argument
             android:name="url"
-            app:nullable="false"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="false" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/screening_questions"
+        android:name="org.fouryouandme.auth.questions.screening.ScreeningQuestionsFragment"
+        android:label="screening_questions"
+        tools:layout="@layout/screening_questions" />
 
 </navigation>

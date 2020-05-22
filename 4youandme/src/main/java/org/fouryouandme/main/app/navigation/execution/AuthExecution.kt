@@ -29,3 +29,7 @@ fun enterPhoneToPhoneValidationCode(phone: String, countryCode: String): Navigat
 fun enterPhoneToWeb(url: String): NavigationExecution = {
     it.navigate(EnterPhoneFragmentDirections.actionSignUpInfoToWeb(url))
 }
+
+fun phoneValidationCodeToScreeningQuestions(): NavigationExecution = {
+    it.navigate(R.id.action_phone_validation_code_to_screening_questions)
+}

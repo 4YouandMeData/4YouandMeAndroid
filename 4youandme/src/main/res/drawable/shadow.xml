@@ -1,0 +1,10 @@
+***REMOVED***
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <gradient
+        android:endColor="#33000000"
+        android:startColor="#00000000"
+        android:angle="270"/>
+
+</shape>

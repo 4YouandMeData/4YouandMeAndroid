@@ -61,7 +61,7 @@ class PhoneValidationCodeViewModel(
 
             !auth.fold(
                 { setError(it, PhoneValidationCodeError.Auth) },
-                { numberVerificationSuccess() }
+                { screeningQuestions(navController) }
             )
 
             !hideLoading(PhoneValidationCodeLoading.Auth)
@@ -96,8 +96,8 @@ class PhoneValidationCodeViewModel(
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
 
-    private fun numberVerificationSuccess(): Kind<ForIO, Unit> =
-        navigator.performAction(runtime, toastAction("Phone number verification SUCCESS"))
+    private fun screeningQuestions(navController: NavController): Kind<ForIO, Unit> =
+        navigator.navigateTo(runtime, navController, PhoneValidationCodeToScreeningQuestions)
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

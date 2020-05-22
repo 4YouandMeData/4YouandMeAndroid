@@ -2,6 +2,7 @@ package org.fouryouandme.auth.phone.code
 
 import arrow.core.None
 import arrow.core.Option
+import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class PhoneValidationCodeState(val configuration: Option<Configuration> = None)
@@ -21,3 +22,7 @@ sealed class PhoneValidationCodeError {
     object Auth : PhoneValidationCodeError()
     object ResendCode : PhoneValidationCodeError()
 }
+
+/* --- navigation --- */
+
+object PhoneValidationCodeToScreeningQuestions: NavigationAction
