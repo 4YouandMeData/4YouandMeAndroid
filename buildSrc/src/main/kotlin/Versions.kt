@@ -1,4 +1,3 @@
-import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -12,9 +11,9 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.5" // available: "1.3.6"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.5" // available: "1.3.7"
 
-    const val com_squareup_retrofit2: String = "2.8.1"
+    const val com_squareup_retrofit2: String = "2.8.1" // available: "2.9.0"
 
     const val org_jetbrains_kotlin: String = "1.3.72"
 
@@ -34,9 +33,11 @@ object Versions {
 
     const val arrow_integration_retrofit_adapter: String = "0.10.4"
 
-    const val logging_interceptor: String = "4.6.0"
+    const val logging_interceptor: String = "4.6.0" // available: "4.7.2"
 
-    const val firebase_analytics: String = "17.4.1"
+    const val recycler_droid_core: String = "1.7.0-beta02"
+
+    const val firebase_analytics: String = "17.4.1" // available: "17.4.2"
 
     const val constraintlayout: String = "1.1.3"
 
@@ -75,7 +76,7 @@ object Versions {
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.4"
+    const val gradleLatestVersion: String = "6.4.1"
 }
 
 /**

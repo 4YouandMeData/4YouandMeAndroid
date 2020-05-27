@@ -25,7 +25,7 @@ allprojects {
         jcenter()
         maven("https://dl.bintray.com/arrow-kt/arrow-kt/")
         maven("https://dl.bintray.com/giacomoparisi/span-droid")
-
+        maven("https://dl.bintray.com/giacomoparisi/recycler-droid")
     }
 }
 

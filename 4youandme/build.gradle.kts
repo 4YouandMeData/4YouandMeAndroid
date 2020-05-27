@@ -109,6 +109,10 @@ dependencies {
 
     implementation(Libs.span_droid)
 
+    /* --- recycler view --- */
+
+    implementation("com.giacomoparisi.recyclerdroid:recycler-droid-core:1.7.0-beta02")
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)

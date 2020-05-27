@@ -25,4 +25,6 @@ class SampleImageConfiguration: ImageConfiguration {
     override fun entryValid(): Int = R.drawable.phone_valid
 
     override fun signUpNextStep(): Int = R.drawable.sign_up_next
+
+    override fun signUpNextStepSecondary(): Int = R.drawable.sign_up_next_secondary
 }
