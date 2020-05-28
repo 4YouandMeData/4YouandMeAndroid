@@ -23,5 +23,12 @@ data class ScreeningResponse(
 
 @JsonApi(type = "question")
 data class ScreeningQuestionResponse(
-    @field:Json(name = "text") val text: String? = null
+    @field:Json(name = "text") val text: String? = null,
+    @field:Json(name = "possible_answers") val answer: HasMany<ScreeningAnswerResponse>? = null
+) : Resource()
+
+@JsonApi(type = "possible_answer")
+data class ScreeningAnswerResponse(
+    @field:Json(name = "text") val text: String? = null,
+    @field:Json(name = "correct") val correct: Boolean? = null
 ) : Resource()

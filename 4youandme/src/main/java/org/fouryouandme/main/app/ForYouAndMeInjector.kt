@@ -18,8 +18,9 @@ import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.getApiService
 import org.fouryouandme.core.data.api.screening.ScreeningApi
-import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
+import org.fouryouandme.core.data.api.screening.response.ScreeningAnswerResponse
 import org.fouryouandme.core.data.api.screening.response.ScreeningQuestionResponse
+import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 import org.fouryouandme.main.app.navigation.ForYouAndMeNavigationProvider
 
 class ForYouAndMeInjector(
@@ -69,6 +70,7 @@ class ForYouAndMeInjector(
                     .add(PageResponse::class.java)
                     .add(ScreeningResponse::class.java)
                     .add(ScreeningQuestionResponse::class.java)
+                    .add(ScreeningAnswerResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
