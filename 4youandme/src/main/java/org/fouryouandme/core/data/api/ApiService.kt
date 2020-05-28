@@ -2,6 +2,7 @@ package org.fouryouandme.core.data.api
 
 import arrow.integrations.retrofit.adapter.CallKindAdapterFactory
 import com.squareup.moshi.Moshi
+import moe.banana.jsonapi2.JsonApiConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,6 +22,7 @@ inline fun <reified T> getApiService(
 
     return Retrofit.Builder()
         .baseUrl(baseUrl)
+        .addConverterFactory(JsonApiConverterFactory.create(moshi))
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addCallAdapterFactory(CallKindAdapterFactory.create())
         .client(httpClient.build())

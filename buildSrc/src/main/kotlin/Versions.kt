@@ -1,3 +1,4 @@
+import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -11,15 +12,17 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.5" // available: "1.3.7"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.7" // available: "1.3.7"
 
-    const val com_squareup_retrofit2: String = "2.8.1" // available: "2.9.0"
+    const val com_squareup_retrofit2: String = "2.9.0" // available: "2.9.0"
 
     const val org_jetbrains_kotlin: String = "1.3.72"
 
     const val androidx_navigation: String = "2.2.2"
 
     const val androidx_lifecycle: String = "2.2.0"
+
+    const val moe_banana: String = "3.5.0"
 
     const val android_arch_lifecycle_extensions: String = "1.1.1"
 
@@ -33,11 +36,11 @@ object Versions {
 
     const val arrow_integration_retrofit_adapter: String = "0.10.4"
 
-    const val logging_interceptor: String = "4.6.0" // available: "4.7.2"
+    const val logging_interceptor: String = "4.7.2" // available: "4.7.2"
 
     const val recycler_droid_core: String = "1.7.0-beta02"
 
-    const val firebase_analytics: String = "17.4.1" // available: "17.4.2"
+    const val firebase_analytics: String = "17.4.2" // available: "17.4.2"
 
     const val constraintlayout: String = "1.1.3"
 
@@ -63,13 +66,13 @@ object Versions {
 
     const val arrow_fx: String = "0.10.5"
 
-    const val core_ktx: String = "1.2.0"
+    const val core_ktx: String = "1.3.0" // available: "1.3.0"
 
     const val timber: String = "4.7.1"
 
     const val aapt2: String = "3.6.3-6040484"
 
-    const val ccp: String = "2.3.9"
+    const val ccp: String = "2.4.0" // available: "2.4.0"
 
     /**
      * Current version: "6.3"

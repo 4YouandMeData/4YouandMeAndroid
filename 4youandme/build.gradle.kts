@@ -91,6 +91,11 @@ dependencies {
 
     implementation(Libs.moshi_kotlin)
 
+    /* --- json api --- */
+
+    implementation(Libs.moshi_jsonapi)
+    implementation(Libs.moshi_jsonapi_retrofit_converter)
+
     /* --- timber --- */
 
     implementation(Libs.timber)
@@ -111,7 +116,7 @@ dependencies {
 
     /* --- recycler view --- */
 
-    implementation("com.giacomoparisi.recyclerdroid:recycler-droid-core:1.7.0-beta02")
+    implementation(Libs.recycler_droid_core)
 
     /* --- test --- */
 

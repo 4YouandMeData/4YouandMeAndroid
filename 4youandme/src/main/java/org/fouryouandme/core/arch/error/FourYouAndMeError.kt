@@ -15,6 +15,11 @@ sealed class FourYouAndMeError(val title: (Context) -> String, val message: (Con
 
     /* --- generic --- */
 
+    object MissingConfiguration : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        { it.getString(R.string.ERROR_generic) }
+    )
+
     class Unknown(message: String?) : FourYouAndMeError(
         { it.getString(R.string.ERROR_title) },
         { message ?: it.getString(R.string.ERROR_generic) }
@@ -41,6 +46,11 @@ sealed class FourYouAndMeError(val title: (Context) -> String, val message: (Con
     ) : FourYouAndMeError({ it.getString(R.string.ERROR_title) }, errorMessage)
 
     /* --- auth --- */
+
+    object UserNotLoggedIn : FourYouAndMeError(
+        { it.getString(R.string.ERROR_title) },
+        { it.getString(R.string.ERROR_generic) }
+    )
 
     class MissingPhoneNumber(message: (Context) -> String) : FourYouAndMeError(
         { it.getString(R.string.ERROR_title) },

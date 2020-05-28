@@ -28,7 +28,7 @@ object AuthUseCase {
     internal fun <F> getToken(
         runtime: Runtime<F>,
         cachePolicy: CachePolicy
-    ): Kind<F, Option<String>> =
+    ): Kind<F, Either<FourYouAndMeError, String>> =
         runtime.fx.concurrent {
 
             when (cachePolicy) {
@@ -44,7 +44,7 @@ object AuthUseCase {
                     !Memory.token.toKind(runtime.fx) { AuthRepository.loadToken(runtime) }
                 CachePolicy.Network ->
                     !Memory.token.toKind(runtime.fx) { AuthRepository.loadToken(runtime) }
-            }
+            }.toEither { FourYouAndMeError.UserNotLoggedIn }
 
         }
 }

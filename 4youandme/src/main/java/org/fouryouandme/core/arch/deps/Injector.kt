@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
+import org.fouryouandme.core.data.api.screening.ScreeningApi
 
 interface Injector {
 
@@ -36,4 +37,5 @@ interface Injector {
 
     val configurationApi: ConfigurationApi
     val authApi: AuthApi
+    val screeningApi: ScreeningApi
 }
