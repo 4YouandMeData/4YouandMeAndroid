@@ -1,0 +1,14 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/screening_navigation"
+    app:startDestination="@id/screening_welcome">
+
+    <fragment
+        android:id="@+id/screening_welcome"
+        android:name="org.fouryouandme.auth.screening.welcome.ScreeningWelcomeFragment"
+        android:label="screening_welcome"
+        tools:layout="@layout/screening_welcome" />
+
+</navigation>

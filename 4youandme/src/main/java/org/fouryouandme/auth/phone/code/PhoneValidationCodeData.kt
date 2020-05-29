@@ -25,4 +25,4 @@ sealed class PhoneValidationCodeError {
 
 /* --- navigation --- */
 
-object PhoneValidationCodeToScreeningQuestions: NavigationAction
+object PhoneValidationCodeToScreening: NavigationAction

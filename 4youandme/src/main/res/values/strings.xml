@@ -8,4 +8,12 @@
     <string name="ERROR_title">Uh, oh!</string>
     <string name="ERROR_retry">Try again</string>
 
+    <string name="PLACEHOLDER_body">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Praesent lacinia diam urna, ut blandit justo bibendum nec. Duis euismod nulla turpis,
+        quis dignissim tellus dapibus ac. Duis commodo ullamcorper leo, in pellentesque felis
+        laoreet vitae. Vestibulum non tincidunt leo. Aliquam dictum euismod ligula at mollis.
+        Fusce leo justo, tincidunt eu enim ut, rutrum congue massa. Sed ullamcorper orci sem.
+        Fusce fringilla risus quis neque suscipit ultrices. Vestibulum maximus finibus nisl id
+        luctus. Phasellus elementum ut enim quis imperdiet. Morbi at lectus felis.</string>
+
 ***REMOVED***

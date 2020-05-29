@@ -3,6 +3,7 @@ package org.fouryouandme.auth.screening
 import androidx.navigation.NavController
 import arrow.core.toOption
 import arrow.fx.ForIO
+import kotlinx.coroutines.delay
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -59,4 +60,14 @@ class ScreeningViewModel(
             !hideLoading(ScreeningLoading.Initialization)
 
         }.unsafeRunAsync()
+
+    fun back(navController: NavController): Unit =
+        navigator.back(runtime, navController).unsafeRunAsync()
+
+    fun questions(navController: NavController): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            ScreeningWelcomeToScreeningQuestions
+        ).unsafeRunAsync()
 }

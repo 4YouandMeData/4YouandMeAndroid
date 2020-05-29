@@ -97,7 +97,7 @@ class PhoneValidationCodeViewModel(
         navigator.back(runtime, navController).unsafeRunAsync()
 
     private fun screeningQuestions(navController: NavController): Kind<ForIO, Unit> =
-        navigator.navigateTo(runtime, navController, PhoneValidationCodeToScreeningQuestions)
+        navigator.navigateTo(runtime, navController, PhoneValidationCodeToScreening)
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

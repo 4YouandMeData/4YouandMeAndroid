@@ -129,8 +129,8 @@
             app:nullable="false" />
 
         <action
-            android:id="@+id/action_phone_validation_code_to_screening_questions"
-            app:destination="@id/screening_questions"
+            android:id="@+id/action_phone_validation_code_to_screening"
+            app:destination="@id/screening"
             app:enterAnim="@anim/slide_from_top"
             app:exitAnim="@anim/idle"
             app:popEnterAnim="@anim/idle"
@@ -153,9 +153,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/screening_questions"
-        android:name="org.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
-        android:label="screening_questions"
-        tools:layout="@layout/screening_questions" />
+        android:id="@+id/screening"
+        android:name="org.fouryouandme.auth.screening.ScreeningFragment"
+        android:label="screening"
+        tools:layout="@layout/screening" />
 
 </navigation>

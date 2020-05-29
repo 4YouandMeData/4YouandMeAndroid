@@ -2,6 +2,7 @@ package org.fouryouandme.auth.screening
 
 import arrow.core.None
 import arrow.core.Option
+import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.screening.Screening
 
@@ -30,3 +31,7 @@ sealed class ScreeningError {
     object Initialization : ScreeningError()
 
 }
+
+/* --- navigator --- */
+
+object ScreeningWelcomeToScreeningQuestions : NavigationAction
