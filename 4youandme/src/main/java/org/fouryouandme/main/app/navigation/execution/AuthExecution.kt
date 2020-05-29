@@ -33,3 +33,4 @@ fun enterPhoneToWeb(url: String): NavigationExecution = {
 fun phoneValidationCodeToScreening(): NavigationExecution = {
     it.navigate(R.id.action_phone_validation_code_to_screening)
 }
+

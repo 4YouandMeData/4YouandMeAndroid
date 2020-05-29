@@ -9,6 +9,22 @@
         android:id="@+id/screening_welcome"
         android:name="org.fouryouandme.auth.screening.welcome.ScreeningWelcomeFragment"
         android:label="screening_welcome"
-        tools:layout="@layout/screening_welcome" />
+        tools:layout="@layout/screening_welcome" >
+
+        <action
+            android:id="@+id/action_screening_welcome_to_screening_questions"
+            app:destination="@id/screening_questions"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/screening_questions"
+        android:name="org.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
+        android:label="screening_questions"
+        tools:layout="@layout/screening_questions"/>
 
 </navigation>

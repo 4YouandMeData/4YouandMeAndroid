@@ -37,7 +37,8 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         description.text = page.body
         description.setTextColor(configuration.theme.primaryTextColor.color())
 
-        next.background = button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
+        next.background =
+            button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
 
         next.setOnClickListener { nextAction() }
 

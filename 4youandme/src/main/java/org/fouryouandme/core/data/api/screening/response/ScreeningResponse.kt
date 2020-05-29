@@ -59,6 +59,7 @@ data class ScreeningQuestionResponse(
     ): Option<ScreeningQuestion> =
         Option.fx {
             ScreeningQuestion(
+                id,
                 !text.toOption(),
                 !answer?.get(document)
                     ?.getOrNull(0)
@@ -80,6 +81,6 @@ data class ScreeningAnswerResponse(
 
     fun toScreeningAnswer(): Option<ScreeningAnswer> =
         Option.fx {
-            ScreeningAnswer(!text.toOption(), !correct.toOption())
+            ScreeningAnswer(id, !text.toOption(), !correct.toOption())
         }
 }
