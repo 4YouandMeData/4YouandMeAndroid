@@ -27,9 +27,6 @@ class SplashViewModel(
             val configuration =
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.DiskFirst)
 
-            val screening =
-                !ScreeningUseCase.getScreening(runtime)
-
             !configuration.fold(
                 { setError(it, SplashError.Configuration) },
                 { welcome(navController) }

@@ -6,14 +6,14 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase
-import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
+import org.fouryouandme.core.entity.screening.Screening
 import org.fouryouandme.core.ext.foldToKindEither
 
 object ScreeningUseCase {
 
     fun <F> getScreening(
         runtime: Runtime<F>
-    ): Kind<F, Either<FourYouAndMeError, ScreeningResponse>> =
+    ): Kind<F, Either<FourYouAndMeError, Screening>> =
         runtime.fx.concurrent {
 
             val token =

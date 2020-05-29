@@ -1,11 +1,14 @@
 package org.fouryouandme.core.data.api.screening.response
 
+import arrow.core.Option
+import arrow.core.extensions.fx
+import arrow.core.toOption
 import com.squareup.moshi.Json
-import moe.banana.jsonapi2.HasMany
-import moe.banana.jsonapi2.HasOne
-import moe.banana.jsonapi2.JsonApi
-import moe.banana.jsonapi2.Resource
+import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
+import org.fouryouandme.core.entity.screening.Screening
+import org.fouryouandme.core.entity.screening.ScreeningAnswer
+import org.fouryouandme.core.entity.screening.ScreeningQuestion
 
 @JsonApi(type = "screening")
 data class ScreeningResponse(
@@ -19,16 +22,64 @@ data class ScreeningResponse(
     val successPage: HasOne<PageResponse>? = null,
     @field:Json(name = "failure_page")
     val failurePage: HasOne<PageResponse>? = null
-) : Resource()
+) : Resource() {
+
+    fun toScreening(document: ObjectDocument<ScreeningResponse>): Option<Screening> =
+        Option.fx {
+
+            Screening(
+                !questions?.get(document)
+                    ?.mapNotNull { it.toScreeningQuestion(document).orNull() }
+                    .toOption(),
+                !pages?.get(document)
+                    ?.mapNotNull { it.toPage().orNull() }
+                    .toOption(),
+                !welcomePage?.get(document)
+                    .toOption()
+                    .flatMap { it.toPage() },
+                !successPage?.get(document)
+                    .toOption()
+                    .flatMap { it.toPage() },
+                !failurePage?.get(document)
+                    .toOption()
+                    .flatMap { it.toPage() }
+            )
+
+        }
+}
 
 @JsonApi(type = "question")
 data class ScreeningQuestionResponse(
     @field:Json(name = "text") val text: String? = null,
     @field:Json(name = "possible_answers") val answer: HasMany<ScreeningAnswerResponse>? = null
-) : Resource()
+) : Resource() {
+
+    fun toScreeningQuestion(
+        document: ObjectDocument<ScreeningResponse>
+    ): Option<ScreeningQuestion> =
+        Option.fx {
+            ScreeningQuestion(
+                !text.toOption(),
+                !answer?.get(document)
+                    ?.getOrNull(0)
+                    .toOption()
+                    .flatMap { it.toScreeningAnswer() },
+                !answer?.get(document)
+                    ?.getOrNull(1)
+                    .toOption()
+                    .flatMap { it.toScreeningAnswer() }
+            )
+        }
+}
 
 @JsonApi(type = "possible_answer")
 data class ScreeningAnswerResponse(
     @field:Json(name = "text") val text: String? = null,
     @field:Json(name = "correct") val correct: Boolean? = null
-) : Resource()
+) : Resource() {
+
+    fun toScreeningAnswer(): Option<ScreeningAnswer> =
+        Option.fx {
+            ScreeningAnswer(!text.toOption(), !correct.toOption())
+        }
+}
