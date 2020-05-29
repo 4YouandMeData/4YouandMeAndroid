@@ -131,10 +131,10 @@
         <action
             android:id="@+id/action_phone_validation_code_to_screening"
             app:destination="@id/screening"
-            app:enterAnim="@anim/slide_from_top"
-            app:exitAnim="@anim/idle"
-            app:popEnterAnim="@anim/idle"
-            app:popExitAnim="@anim/slide_to_top" />
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
 
 
     </fragment>
