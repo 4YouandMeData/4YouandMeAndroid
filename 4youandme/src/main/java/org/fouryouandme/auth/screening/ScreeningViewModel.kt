@@ -1,6 +1,9 @@
 package org.fouryouandme.auth.screening
 
 import androidx.navigation.NavController
+import arrow.core.None
+import arrow.core.getOrElse
+import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
@@ -62,6 +65,34 @@ class ScreeningViewModel(
             !hideLoading(ScreeningLoading.Initialization)
 
         }.unsafeRunAsync()
+
+
+    /* --- validation --- */
+
+    fun validate(navController: NavController) {
+
+        val validation =
+            state().questions.map { item ->
+
+                val answer =
+                    when (item.answer.getOrElse { "" }) {
+                        item.question.answers1.id -> item.question.answers1.some()
+                        item.question.answers2.id -> item.question.answers2.some()
+                        else -> None
+                    }
+
+                answer.map { it.correct }.getOrElse { false }
+
+            }.fold(true, { acc, b -> acc && b })
+
+        if (validation)
+            navigator.navigateTo(runtime, navController, ScreeningQuestionsToScreeningSuccess)
+                .unsafeRunAsync()
+        else
+            navigator.navigateTo(runtime, navController, ScreeningQuestionsToScreeningFailure)
+                .unsafeRunAsync()
+
+    }
 
 
     /* --- state update --- */

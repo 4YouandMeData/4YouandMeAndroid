@@ -9,7 +9,7 @@
         android:id="@+id/screening_welcome"
         android:name="org.fouryouandme.auth.screening.welcome.ScreeningWelcomeFragment"
         android:label="screening_welcome"
-        tools:layout="@layout/screening_welcome" >
+        tools:layout="@layout/screening_welcome">
 
         <action
             android:id="@+id/action_screening_welcome_to_screening_questions"
@@ -17,7 +17,7 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right"/>
+            app:popExitAnim="@anim/slide_to_right" />
 
     </fragment>
 
@@ -25,6 +25,36 @@
         android:id="@+id/screening_questions"
         android:name="org.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
         android:label="screening_questions"
-        tools:layout="@layout/screening_questions"/>
+        tools:layout="@layout/screening_questions" >
+
+        <action
+            android:id="@+id/action_screening_questions_to_screening_success"
+            app:destination="@id/screening_success"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_screening_questions_to_screening_failure"
+            app:destination="@id/screening_failure"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/screening_success"
+        android:name="org.fouryouandme.auth.screening.success.ScreeningSuccessFragment"
+        android:label="screening_success"
+        tools:layout="@layout/screening_response" />
+
+    <fragment
+        android:id="@+id/screening_failure"
+        android:name="org.fouryouandme.auth.screening.failure.ScreeningFailureFragment"
+        android:label="screening_failure"
+        tools:layout="@layout/screening_response" />
 
 </navigation>

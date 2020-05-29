@@ -34,6 +34,8 @@ data class StringsResponse(
     @Json(name = "PHONE_VERIFICATION_ERROR_WRONG_CODE") val phoneVerificationErrorWrongCode: String? = null,
     @Json(name = "PHONE_VERIFICATION_ERROR_MISSING_NUMBER") val phoneVerificationErrorMissingNumber: String? = null,
 
+    @Json(name = "SCREENING_FAILURE_RETRY_BUTTON") val screeningFailureRetryButton: String? = null,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -89,6 +91,9 @@ data class StringsResponse(
                         phoneVerificationErrorMissingNumber.toOption().bind(),
                         phoneVerificationErrorWrongCode.toOption().bind()
                     )
+                ),
+                Screening(
+                    screeningFailureRetryButton.toOption().bind()
                 )
             )
         }

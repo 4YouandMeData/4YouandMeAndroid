@@ -7,3 +7,15 @@ fun screeningWelcomeToScreeningQuestions(): NavigationExecution = {
 
     it.navigate(R.id.action_screening_welcome_to_screening_questions)
 }
+
+fun screeningQuestionsToScreeningSuccess(): NavigationExecution = {
+
+    it.navigate(R.id.action_screening_questions_to_screening_success)
+
+}
+
+fun screeningQuestionsToScreeningFailure(): NavigationExecution = {
+
+    it.navigate(R.id.action_screening_questions_to_screening_failure)
+
+}

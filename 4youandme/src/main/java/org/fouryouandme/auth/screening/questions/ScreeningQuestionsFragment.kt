@@ -69,7 +69,7 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
     private fun showQuestions(configuration: Configuration, screening: Screening): Unit {
 
         if (adapter.itemCount <= 0)
-            adapter.submitList(screening.questions.map { it.toItem(configuration) })
+            applyQuestions(screening.questions.map { it.toItem(configuration) })
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
@@ -92,11 +92,18 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
                 requireContext().resources,
                 requireContext().imageConfiguration.signUpNextStepSecondary()
             )
+        next.setOnClickListener { viewModel.validate(findNavController()) }
     }
 
     private fun applyQuestions(questions: List<ScreeningQuestionItem>): Unit {
 
         adapter.submitList(questions)
+
+        next.isEnabled =
+            questions.fold(
+                true,
+                { acc, item -> acc && item.answer.isDefined() }
+            )
 
     }
 }

@@ -3,6 +3,8 @@ package org.fouryouandme.main.app.navigation
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.EnterPhoneToWeb
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
+import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningFailure
+import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningSuccess
 import org.fouryouandme.auth.screening.ScreeningWelcomeToScreeningQuestions
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
@@ -17,6 +19,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
     override fun getNavigation(action: NavigationAction): NavigationExecution =
         when (action) {
+
             is SplashToWelcome -> splashToWelcome()
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
@@ -29,6 +32,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
+            is ScreeningQuestionsToScreeningSuccess -> screeningQuestionsToScreeningSuccess()
+            is ScreeningQuestionsToScreeningFailure -> screeningQuestionsToScreeningFailure()
 
             else -> {
                 {}

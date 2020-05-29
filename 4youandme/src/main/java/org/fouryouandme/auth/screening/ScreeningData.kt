@@ -39,3 +39,5 @@ sealed class ScreeningError {
 /* --- navigator --- */
 
 object ScreeningWelcomeToScreeningQuestions : NavigationAction
+object ScreeningQuestionsToScreeningSuccess : NavigationAction
+object ScreeningQuestionsToScreeningFailure : NavigationAction
