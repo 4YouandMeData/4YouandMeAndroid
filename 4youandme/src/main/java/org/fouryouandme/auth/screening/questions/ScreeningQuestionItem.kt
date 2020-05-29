@@ -122,6 +122,8 @@ class ScreeningQuestionViewHolder(
         answer_1_button.isChecked = t.question.answers1.id == t.answer.getOrElse { "" }
         answer_2_button.isChecked = t.question.answers2.id == t.answer.getOrElse { "" }
 
+        divider.setBackgroundColor(t.configuration.theme.deactiveColor.color())
+
     }
 
     override fun bind(t: ScreeningQuestionItem, position: Int, payloads: MutableList<Any>) {
