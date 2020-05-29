@@ -154,7 +154,7 @@
 
     <fragment
         android:id="@+id/screening_questions"
-        android:name="org.fouryouandme.auth.questions.screening.ScreeningQuestionsFragment"
+        android:name="org.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
         android:label="screening_questions"
         tools:layout="@layout/screening_questions" />
 

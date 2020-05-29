@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.questions.screening
+package org.fouryouandme.auth.screening.questions
 
 import android.os.Bundle
 import android.view.View
@@ -17,7 +17,12 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningQuestionsViewModel>(
     override val viewModel: ScreeningQuestionsViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { ScreeningQuestionsViewModel(navigator, IORuntime) }
+            getFactory {
+                ScreeningQuestionsViewModel(
+                    navigator,
+                    IORuntime
+                )
+            }
         )
     }
 

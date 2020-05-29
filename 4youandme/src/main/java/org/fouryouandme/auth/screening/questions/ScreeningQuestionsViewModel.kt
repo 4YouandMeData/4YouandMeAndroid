@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.questions.screening
+package org.fouryouandme.auth.screening.questions
 
 import arrow.core.toOption
 import arrow.fx.ForIO
