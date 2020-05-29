@@ -5,6 +5,24 @@
     android:id="@+id/navigation"
     app:startDestination="@id/splash">
 
+    <action
+        android:id="@+id/action_global_splash"
+        app:destination="@id/splash"
+        app:enterAnim="@anim/slide_from_right"
+        app:exitAnim="@anim/slide_to_left"
+        app:popEnterAnim="@anim/slide_from_left"
+        app:popExitAnim="@anim/slide_to_right"
+        app:popUpTo="@id/navigation" />
+
+    <action
+        android:id="@+id/action_global_welcome"
+        app:destination="@id/welcome"
+        app:enterAnim="@anim/slide_from_right"
+        app:exitAnim="@anim/slide_to_left"
+        app:popEnterAnim="@anim/slide_from_left"
+        app:popExitAnim="@anim/slide_to_right"
+        app:popUpTo="@id/navigation" />
+
     <fragment
         android:id="@+id/splash"
         android:name="org.fouryouandme.auth.splash.SplashFragment"

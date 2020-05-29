@@ -1,7 +1,9 @@
 package org.fouryouandme.auth.screening.questions
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +24,7 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.showBackSecondaryButton
+
 
 class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
     R.layout.screening_questions
@@ -77,6 +80,11 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
         footer.setBackgroundColor(configuration.theme.secondaryColor.color())
 
+        abort.text = configuration.text.onboarding.onboardingAbortButton
+        abort.setTextColor(configuration.theme.primaryColorEnd.color())
+        abort.setOnClickListener { showAbortAlert(configuration) }
+
+
     }
 
     private fun setupView(): Unit {
@@ -104,6 +112,18 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
                 true,
                 { acc, item -> acc && item.answer.isDefined() }
             )
+
+    }
+
+    private fun showAbortAlert(configuration: Configuration) {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(configuration.text.onboarding.onboardingAbortTitle)
+            .setMessage(configuration.text.onboarding.onboradingAbortMessage)
+            .setPositiveButton(configuration.text.onboarding.onboardingAbortConfirm)
+            { _, _ -> viewModel.abort(rootNavController())}
+            .setNegativeButton(configuration.text.onboarding.onboardingAbortCancel, null)
+            .show()
 
     }
 }

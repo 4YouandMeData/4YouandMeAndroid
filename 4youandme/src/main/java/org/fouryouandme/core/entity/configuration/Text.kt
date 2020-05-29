@@ -7,6 +7,7 @@ data class Text(
     val intro: Intro,
     val signUpLater: SignUpLater,
     val phoneVerification: PhoneVerification,
+    val onboarding: Onboarding,
     val screening: Screening
 )
 
@@ -58,6 +59,14 @@ data class PhoneVerification(
 data class PhoneVerificationError(
     val errorMissingNumber: String,
     val errorWrongCode: String
+)
+
+data class Onboarding(
+    val onboardingAbortTitle: String,
+    val onboardingAbortButton: String,
+    val onboardingAbortCancel: String,
+    val onboardingAbortConfirm: String,
+    val onboradingAbortMessage: String
 )
 
 data class Screening(

@@ -36,6 +36,12 @@ data class StringsResponse(
 
     @Json(name = "SCREENING_FAILURE_RETRY_BUTTON") val screeningFailureRetryButton: String? = null,
 
+    @Json(name = "ONBOARDING_ABORT_TITLE") val onboardingAbortTitle: String? = null,
+    @Json(name = "ONBOARDING_ABORT_BUTTON") val onboardingAbortButton: String? = null,
+    @Json(name = "ONBOARDING_ABORT_CANCEL") val onboardingAbortCancel: String? = null,
+    @Json(name = "ONBOARDING_ABORT_CONFIRM") val onboardingAbortConfirm: String? = null,
+    @Json(name = "ONBOARDING_ABORT_MESSAGE") val onboradingAbortMessage: String? = null,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -91,6 +97,13 @@ data class StringsResponse(
                         phoneVerificationErrorMissingNumber.toOption().bind(),
                         phoneVerificationErrorWrongCode.toOption().bind()
                     )
+                ),
+                Onboarding(
+                    onboardingAbortTitle.toOption().bind(),
+                    onboardingAbortButton.toOption().bind(),
+                    onboardingAbortCancel.toOption().bind(),
+                    onboardingAbortConfirm.toOption().bind(),
+                    onboradingAbortMessage.toOption().bind()
                 ),
                 Screening(
                     screeningFailureRetryButton.toOption().bind()
