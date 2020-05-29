@@ -3,7 +3,8 @@ package org.fouryouandme.auth.screening
 import androidx.navigation.NavController
 import arrow.core.toOption
 import arrow.fx.ForIO
-import kotlinx.coroutines.delay
+import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
+import org.fouryouandme.auth.screening.questions.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -46,13 +47,14 @@ class ScreeningViewModel(
 
             !initialization.fold(
                 { setError(it, ScreeningError.Initialization) },
-                {
+                { pair ->
                     setState(
                         state().copy(
-                            configuration = it.second.toOption(),
-                            screening = it.first.toOption()
+                            configuration = pair.second.toOption(),
+                            screening = pair.first.toOption(),
+                            questions = pair.first.questions.map { it.toItem(pair.second) }
                         ),
-                        ScreeningStateUpdate.Initialization(it.second, it.first)
+                        ScreeningStateUpdate.Initialization(pair.second, pair.first)
                     )
                 }
             )
@@ -60,6 +62,24 @@ class ScreeningViewModel(
             !hideLoading(ScreeningLoading.Initialization)
 
         }.unsafeRunAsync()
+
+
+    /* --- state update --- */
+
+    fun answer(item: ScreeningQuestionItem): Unit {
+
+        val questions =
+            state().questions.map { if (it.question.id == item.question.id) item else it }
+
+        setState(
+            state().copy(questions = questions),
+            ScreeningStateUpdate.Questions(questions)
+        ).unsafeRunAsync()
+
+    }
+
+
+    /* --- navigation --- */
 
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()

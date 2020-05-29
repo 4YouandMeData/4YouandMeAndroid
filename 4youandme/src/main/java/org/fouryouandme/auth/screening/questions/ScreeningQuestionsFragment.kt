@@ -10,6 +10,7 @@ import arrow.core.extensions.fx
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.screening_questions.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.screening.ScreeningStateUpdate
 import org.fouryouandme.auth.screening.ScreeningViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -26,7 +27,9 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
     R.layout.screening_questions
 ) {
 
-    private val adapter: StableDroidAdapter<DroidItem> by lazy { screeningAdapter() }
+    private val adapter: StableDroidAdapter<DroidItem> by lazy {
+        screeningAdapter { viewModel.answer(it) }
+    }
 
     override val viewModel: ScreeningViewModel by lazy {
         viewModelFactory(
@@ -38,6 +41,17 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
                 )
             }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateLiveData()
+            .observeEvent {
+                when (it) {
+                    is ScreeningStateUpdate.Questions -> applyQuestions(it.questions)
+                }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,5 +92,11 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
                 requireContext().resources,
                 requireContext().imageConfiguration.signUpNextStepSecondary()
             )
+    }
+
+    private fun applyQuestions(questions: List<ScreeningQuestionItem>): Unit {
+
+        adapter.submitList(questions)
+
     }
 }
