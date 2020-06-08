@@ -27,9 +27,9 @@ steps:
     sonarQubeRunAnalysis: false
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '**/'
-    Contents: '*.apk'
+    Contents: '**/*.apk'
     TargetFolder: '$(build.artifactStagingDirectory)'
+    flattenFolders: true
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
