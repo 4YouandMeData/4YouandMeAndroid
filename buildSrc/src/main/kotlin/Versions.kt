@@ -1,4 +1,3 @@
-import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -12,9 +11,9 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.7" // available: "1.3.7"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.7"
 
-    const val com_squareup_retrofit2: String = "2.9.0" // available: "2.9.0"
+    const val com_squareup_retrofit2: String = "2.9.0"
 
     const val org_jetbrains_kotlin: String = "1.3.72"
 
@@ -26,7 +25,7 @@ object Versions {
 
     const val android_arch_lifecycle_extensions: String = "1.1.1"
 
-    const val com_android_tools_build_gradle: String = "3.6.3"
+    const val com_android_tools_build_gradle: String = "4.0.0"
 
     const val androidx_test_ext_junit: String = "1.1.1"
 
@@ -36,11 +35,11 @@ object Versions {
 
     const val arrow_integration_retrofit_adapter: String = "0.10.4"
 
-    const val logging_interceptor: String = "4.7.2" // available: "4.7.2"
+    const val logging_interceptor: String = "4.7.2"
 
     const val recycler_droid_core: String = "1.7.0-beta02"
 
-    const val firebase_analytics: String = "17.4.2" // available: "17.4.2"
+    const val firebase_analytics: String = "17.4.3"
 
     const val constraintlayout: String = "1.1.3"
 
@@ -56,7 +55,7 @@ object Versions {
 
     const val moshi_kotlin: String = "1.9.2"
 
-    const val lint_gradle: String = "26.6.3"
+    const val lint_gradle: String = "27.0.0"
 
     const val arrow_meta: String = "0.10.5"
 
@@ -66,20 +65,20 @@ object Versions {
 
     const val arrow_fx: String = "0.10.5"
 
-    const val core_ktx: String = "1.3.0" // available: "1.3.0"
+    const val core_ktx: String = "1.3.0"
 
     const val timber: String = "4.7.1"
 
-    const val aapt2: String = "3.6.3-6040484"
+    const val aapt2: String = "4.0.0-6051327"
 
-    const val ccp: String = "2.4.0" // available: "2.4.0"
+    const val ccp: String = "2.4.0"
 
     /**
-     * Current version: "6.3"
+     * Current version: "6.5"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.4.1"
+    const val gradleLatestVersion: String = "6.5"
 }
 
 /**
