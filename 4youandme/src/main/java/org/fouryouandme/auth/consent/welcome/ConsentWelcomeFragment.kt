@@ -6,6 +6,8 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.consent_welcome.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.ConsentError
@@ -16,9 +18,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.Consent
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.*
 import kotlin.error
 
 class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_welcome) {
@@ -72,11 +72,23 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
     private fun setupView(): Unit {
 
         loading.setLoader(imageConfiguration.loading())
+
+        requireParentFragment()
+            .requireParentFragment()
+            .toolbar
+            .toOption()
+            .map { it.hide() }
     }
 
     private fun applyData(configuration: Configuration, consent: Consent): Unit {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+        requireParentFragment()
+            .requireParentFragment()
+            .consent_root
+            .toOption()
+            .map { it.setBackgroundColor(configuration.theme.secondaryColor.color()) }
 
         page.isVisible = true
         page.applyData(configuration, null, false, consent.welcomePage)

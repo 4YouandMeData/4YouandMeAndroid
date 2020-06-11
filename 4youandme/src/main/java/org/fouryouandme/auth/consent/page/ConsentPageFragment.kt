@@ -7,6 +7,8 @@ import androidx.navigation.fragment.navArgs
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.extensions.list.foldable.firstOrNone
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.consent_page.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.ConsentViewModel
@@ -15,10 +17,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.Consent
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import org.fouryouandme.core.ext.*
 
 class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page) {
 
@@ -43,8 +42,18 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
 
     private fun setupView(): Unit {
 
-        toolbar.showBackSecondaryButton(imageConfiguration)
-        { viewModel.back(findNavController()) }
+        requireParentFragment()
+            .requireParentFragment()
+            .toolbar
+            .toOption()
+            .map {
+
+                it.show()
+
+                it.showBackSecondaryButton(imageConfiguration)
+                { viewModel.back(findNavController()) }
+
+            }
 
     }
 
