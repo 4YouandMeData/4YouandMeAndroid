@@ -2,11 +2,9 @@ package org.fouryouandme.auth.consent
 
 import arrow.core.None
 import arrow.core.Option
-import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.Consent
-import org.fouryouandme.core.entity.screening.Screening
 
 data class ConsentState(
     val configuration: Option<Configuration> = None,
@@ -33,3 +31,8 @@ sealed class ConsentError {
     object Initialization : ConsentError()
 
 }
+
+/* --- navigation --- */
+
+data class ConsentWelcomeToConsentPage(val id: String) : NavigationAction
+data class ConsentPageToConsentPage(val id: String) : NavigationAction

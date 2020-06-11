@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import arrow.core.Option
 import kotlinx.android.synthetic.main.page.view.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -31,7 +32,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         buttonText: String? = null,
         centerMessage: Boolean = false,
         page: Page,
-        action: () -> Unit
+        action: (Option<Page>) -> Unit
     ): Unit {
 
         val decodedString: ByteArray = Base64.decode(page.image, Base64.DEFAULT)
@@ -56,7 +57,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             next_text.background =
                 button(configuration.theme.primaryColorEnd.color())
             next_text.text = buttonText
-            next_text.setOnClickListener { action() }
+            next_text.setOnClickListener { action(page.link1) }
 
         } else {
 
@@ -66,7 +67,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             next.background =
                 button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
 
-            next.setOnClickListener { action() }
+            next.setOnClickListener { action(page.link1) }
 
         }
 

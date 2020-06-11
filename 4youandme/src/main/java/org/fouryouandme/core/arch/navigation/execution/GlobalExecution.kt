@@ -1,4 +1,4 @@
-package org.fouryouandme.main.app.navigation
+package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.navigation.NavigationExecution

@@ -1,0 +1,10 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/debug_graph"
+    app:startDestination="@id/consentFragment">
+
+    <fragment
+        android:id="@+id/consentFragment"
+        android:name="org.fouryouandme.auth.consent.ConsentFragment"
+        android:label="ConsentFragment" />
+</navigation>

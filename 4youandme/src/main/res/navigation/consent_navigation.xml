@@ -9,6 +9,48 @@
         android:id="@+id/consent_welcome"
         android:name="org.fouryouandme.auth.consent.welcome.ConsentWelcomeFragment"
         android:label="consent_welcome"
-        tools:layout="@layout/consent_welcome" />
+        tools:layout="@layout/consent_welcome">
+
+        <action
+            android:id="@+id/action_consent_welcome_to_consent_page"
+            app:destination="@id/consent_page"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" >
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_page"
+        android:name="org.fouryouandme.auth.consent.page.ConsentPageFragment"
+        android:label="consent_page"
+        tools:layout="@layout/consent_page">
+
+        <action
+            android:id="@+id/action_consent_page_self"
+            app:destination="@id/consent_page"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" >
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>

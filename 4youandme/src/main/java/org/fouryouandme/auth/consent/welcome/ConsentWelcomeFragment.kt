@@ -3,9 +3,10 @@ package org.fouryouandme.auth.consent.welcome
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
-import kotlinx.android.synthetic.main.screening_welcome.*
+import kotlinx.android.synthetic.main.consent_welcome.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.ConsentError
 import org.fouryouandme.auth.consent.ConsentStateUpdate
@@ -18,7 +19,7 @@ import org.fouryouandme.core.entity.consent.Consent
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import kotlin.error
 
 class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_welcome) {
 
@@ -71,10 +72,6 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
     private fun setupView(): Unit {
 
         loading.setLoader(imageConfiguration.loading())
-
-        toolbar.showBackSecondaryButton(imageConfiguration)
-        { viewModel.back(rootNavController()) }
-
     }
 
     private fun applyData(configuration: Configuration, consent: Consent): Unit {
@@ -83,7 +80,7 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
 
         page.isVisible = true
         page.applyData(configuration, null, false, consent.welcomePage)
-        { }
+        { it.fold({}, { viewModel.page(findNavController(), it.id, true) }) }
 
     }
 }

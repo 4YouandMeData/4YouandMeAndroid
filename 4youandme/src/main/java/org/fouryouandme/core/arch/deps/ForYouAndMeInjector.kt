@@ -1,4 +1,4 @@
-package org.fouryouandme.main.app
+package org.fouryouandme.core.arch.deps
 
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -7,10 +7,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import moe.banana.jsonapi2.ResourceAdapterFactory
-import org.fouryouandme.core.arch.deps.Environment
-import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.Injector
-import org.fouryouandme.core.arch.deps.RuntimeContext
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.common.response.AnswerResponse
@@ -23,7 +19,8 @@ import org.fouryouandme.core.data.api.consent.response.ConsentResponse
 import org.fouryouandme.core.data.api.getApiService
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
-import org.fouryouandme.main.app.navigation.ForYouAndMeNavigationProvider
+import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
+import org.fouryouandme.core.arch.app.FourYouAndMeApp
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,

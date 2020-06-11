@@ -70,4 +70,11 @@ class ConsentViewModel(
 
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
+
+    fun page(navController: NavController, id: String, fromWelcome: Boolean): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            if(fromWelcome) ConsentWelcomeToConsentPage(id) else ConsentPageToConsentPage(id)
+        ).unsafeRunAsync()
 }

@@ -1,5 +1,7 @@
-package org.fouryouandme.main.app.navigation
+package org.fouryouandme.core.arch.navigation
 
+import org.fouryouandme.auth.consent.ConsentPageToConsentPage
+import org.fouryouandme.auth.consent.ConsentWelcomeToConsentPage
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.EnterPhoneToWeb
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
@@ -12,7 +14,7 @@ import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.*
-import org.fouryouandme.main.app.navigation.execution.*
+import org.fouryouandme.core.arch.navigation.execution.*
 
 class ForYouAndMeNavigationProvider : NavigationProvider {
 
@@ -37,6 +39,9 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ScreeningQuestionsToScreeningSuccess -> screeningQuestionsToScreeningSuccess()
             is ScreeningQuestionsToScreeningFailure -> screeningQuestionsToScreeningFailure()
             is ScreeningToConsent -> screeningToConsent()
+
+            is ConsentWelcomeToConsentPage -> consentWelcomeToConsentPage(action.id)
+            is ConsentPageToConsentPage -> consentPageToConsentPage(action.id)
 
             else -> {
                 {}

@@ -31,17 +31,17 @@ data class ConsentResponse(
                     ?.mapNotNull { it.toConsentQuestion(document).orNull() }
                     .toOption(),
                 !pages?.get(document)
-                    ?.mapNotNull { it.toPage().orNull() }
+                    ?.mapNotNull { it.toPage(document).orNull() }
                     .toOption(),
                 !welcomePage?.get(document)
                     .toOption()
-                    .flatMap { it.toPage() },
+                    .flatMap { it.toPage(document) },
                 !successPage?.get(document)
                     .toOption()
-                    .flatMap { it.toPage() },
+                    .flatMap { it.toPage(document) },
                 !failurePage?.get(document)
                     .toOption()
-                    .flatMap { it.toPage() }
+                    .flatMap { it.toPage(document) }
             )
 
         }
