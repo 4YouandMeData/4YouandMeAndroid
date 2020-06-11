@@ -5,6 +5,7 @@ import org.fouryouandme.auth.phone.EnterPhoneToWeb
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningFailure
 import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningSuccess
+import org.fouryouandme.auth.screening.ScreeningToConsent
 import org.fouryouandme.auth.screening.ScreeningWelcomeToScreeningQuestions
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
@@ -35,6 +36,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningQuestionsToScreeningSuccess -> screeningQuestionsToScreeningSuccess()
             is ScreeningQuestionsToScreeningFailure -> screeningQuestionsToScreeningFailure()
+            is ScreeningToConsent -> screeningToConsent()
 
             else -> {
                 {}

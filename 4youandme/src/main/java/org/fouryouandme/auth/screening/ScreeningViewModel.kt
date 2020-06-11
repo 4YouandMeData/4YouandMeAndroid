@@ -123,6 +123,9 @@ class ScreeningViewModel(
             ScreeningWelcomeToScreeningQuestions
         ).unsafeRunAsync()
 
+    fun consent(navController: NavController): Unit =
+        navigator.navigateTo(runtime, navController, ScreeningToConsent).unsafeRunAsync()
+
     fun abort(navController: NavController): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()
 }

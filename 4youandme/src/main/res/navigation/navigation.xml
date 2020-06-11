@@ -174,6 +174,22 @@
         android:id="@+id/screening"
         android:name="org.fouryouandme.auth.screening.ScreeningFragment"
         android:label="screening"
-        tools:layout="@layout/screening" />
+        tools:layout="@layout/screening">
+
+        <action
+            android:id="@+id/action_screening_to_consent"
+            app:destination="@id/consent"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent"
+        android:name="org.fouryouandme.auth.consent.ConsentFragment"
+        android:label="screening"
+        tools:layout="@layout/consent" />
 
 </navigation>

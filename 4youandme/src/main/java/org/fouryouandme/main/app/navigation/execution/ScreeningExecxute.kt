@@ -19,3 +19,9 @@ fun screeningQuestionsToScreeningFailure(): NavigationExecution = {
     it.navigate(R.id.action_screening_questions_to_screening_failure)
 
 }
+
+fun screeningToConsent(): NavigationExecution = {
+
+    it.navigate(R.id.action_screening_to_consent)
+
+}
