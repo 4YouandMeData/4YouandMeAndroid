@@ -61,7 +61,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             HEXGradient.from(
                 HEXColor.transparent(),
                 configuration.theme.primaryTextColor
-            ).drawable()
+            ).drawable(0.3f)
 
         if (buttonText != null) {
 

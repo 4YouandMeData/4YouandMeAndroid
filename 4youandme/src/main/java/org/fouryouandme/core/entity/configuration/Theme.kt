@@ -3,6 +3,9 @@ package org.fouryouandme.core.entity.configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import androidx.annotation.ColorInt
+import arrow.core.getOrElse
+import arrow.core.toOption
+import org.fouryouandme.core.ext.adjustAlpha
 
 data class HEXColor(val hex: String) {
 
@@ -21,14 +24,23 @@ fun String.toHEXColor(): HEXColor =
 
 data class HEXGradient(val primaryHex: String, val secondaryHex: String) {
 
-    fun drawable(): GradientDrawable {
+    fun drawable(alphaOverride: Float? = null): GradientDrawable {
+
+        val start =
+            alphaOverride.toOption()
+                .map { adjustAlpha(Color.parseColor(primaryHex), it) }
+                .getOrElse { Color.parseColor(primaryHex) }
+        val end =
+            alphaOverride.toOption()
+                .map { adjustAlpha(Color.parseColor(secondaryHex), it) }
+                .getOrElse { Color.parseColor(secondaryHex) }
 
         val gd =
             GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 intArrayOf(
-                    Color.parseColor(primaryHex),
-                    Color.parseColor(secondaryHex)
+                    start,
+                    end
                 )
             )
         gd.cornerRadius = 0f
