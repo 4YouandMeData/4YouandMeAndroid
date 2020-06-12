@@ -17,11 +17,25 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" >
+            app:popExitAnim="@anim/slide_to_right">
 
             <argument
                 android:name="id"
                 app:argType="string" />
+
+        </action>
+
+        <action
+            android:id="@+id/action_consent_welcome_to_consent_question"
+            app:destination="@id/consent_question"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" >
+
+            <argument
+                android:name="index"
+                app:argType="integer" />
 
         </action>
 
@@ -33,13 +47,17 @@
         android:label="consent_page"
         tools:layout="@layout/consent_page">
 
+        <argument
+            android:name="id"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_consent_page_self"
             app:destination="@id/consent_page"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" >
+            app:popExitAnim="@anim/slide_to_right">
 
             <argument
                 android:name="id"
@@ -47,9 +65,45 @@
 
         </action>
 
+        <action
+            android:id="@+id/action_consent_page_to_consent_question"
+            app:destination="@id/consent_question"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" >
+
+            <argument
+                android:name="index"
+                app:argType="integer" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_question"
+        android:name="org.fouryouandme.auth.consent.question.ConsentQuestionFragment"
+        android:label="consent_question"
+        tools:layout="@layout/consent_question" >
+
         <argument
-            android:name="id"
-            app:argType="string" />
+            android:name="index"
+            app:argType="integer" />
+
+        <action
+            android:id="@+id/action_consent_question_self"
+            app:destination="@id/consent_question"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" >
+
+            <argument
+                android:name="index"
+                app:argType="integer" />
+
+        </action>
 
     </fragment>
 

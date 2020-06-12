@@ -5,6 +5,7 @@ import arrow.core.None
 import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.ForIO
+import arrow.syntax.function.pipe
 import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
 import org.fouryouandme.auth.screening.questions.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
@@ -77,4 +78,11 @@ class ConsentViewModel(
             navController,
             if(fromWelcome) ConsentWelcomeToConsentPage(id) else ConsentPageToConsentPage(id)
         ).unsafeRunAsync()
+
+    fun question(navController: NavController, index: Int, fromWelcome: Boolean): Unit =
+        when {
+            fromWelcome -> ConsentWelcomeToConsentQuestion(index)
+            index == 0 -> ConsentPageToConsentQuestion(index)
+            else -> ConsentQuestionToConsentQuestion(index)
+        }.pipe { navigator.navigateTo(runtime, navController, it) }.unsafeRunAsync()
 }

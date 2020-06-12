@@ -35,4 +35,7 @@ sealed class ConsentError {
 /* --- navigation --- */
 
 data class ConsentWelcomeToConsentPage(val id: String) : NavigationAction
+data class ConsentWelcomeToConsentQuestion(val index: Int): NavigationAction
 data class ConsentPageToConsentPage(val id: String) : NavigationAction
+data class ConsentPageToConsentQuestion(val index: Int): NavigationAction
+data class ConsentQuestionToConsentQuestion(val index: Int): NavigationAction

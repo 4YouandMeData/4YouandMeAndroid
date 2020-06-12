@@ -1,7 +1,6 @@
 package org.fouryouandme.core.arch.navigation
 
-import org.fouryouandme.auth.consent.ConsentPageToConsentPage
-import org.fouryouandme.auth.consent.ConsentWelcomeToConsentPage
+import org.fouryouandme.auth.consent.*
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.EnterPhoneToWeb
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
@@ -41,7 +40,10 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ScreeningToConsent -> screeningToConsent()
 
             is ConsentWelcomeToConsentPage -> consentWelcomeToConsentPage(action.id)
+            is ConsentWelcomeToConsentQuestion -> consentWelcomeToConsentQuestion(action.index)
             is ConsentPageToConsentPage -> consentPageToConsentPage(action.id)
+            is ConsentPageToConsentQuestion -> consentPageToConsentQuestion(action.index)
+            is ConsentQuestionToConsentQuestion -> consentQuestionToConsentQuestion(action.index)
 
             else -> {
                 {}

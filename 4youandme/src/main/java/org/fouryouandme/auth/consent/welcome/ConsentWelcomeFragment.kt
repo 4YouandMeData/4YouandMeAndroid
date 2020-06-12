@@ -18,8 +18,10 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.Consent
-import org.fouryouandme.core.ext.*
-import kotlin.error
+import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.hide
+import org.fouryouandme.core.ext.imageConfiguration
+import org.fouryouandme.core.ext.navigator
 
 class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_welcome) {
 
@@ -91,8 +93,17 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
             .map { it.setBackgroundColor(configuration.theme.secondaryColor.color()) }
 
         page.isVisible = true
-        page.applyData(configuration, null, false, consent.welcomePage)
-        { it.fold({}, { viewModel.page(findNavController(), it.id, true) }) }
+        page.applyData(
+            configuration,
+            null,
+            false,
+            consent.welcomePage
+        )
+        { option ->
+            option.fold(
+                { viewModel.question(findNavController(), 0, true) },
+                { viewModel.page(findNavController(), it.id, true) })
+        }
 
     }
 }
