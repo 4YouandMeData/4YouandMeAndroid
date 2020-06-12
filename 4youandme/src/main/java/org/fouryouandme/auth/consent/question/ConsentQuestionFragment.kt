@@ -15,6 +15,7 @@ import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.consent_question.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.ConsentFragment
 import org.fouryouandme.auth.consent.ConsentStateUpdate
 import org.fouryouandme.auth.consent.ConsentViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -102,6 +103,9 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
                 configuration.theme.primaryColorEnd
             ).drawable()
 
+        (requireParentFragment().requireParentFragment() as? ConsentFragment)
+            .toOption()
+            .map { it.showAbort(configuration, configuration.theme.secondaryColor.color()) }
 
         question.setTextColor(configuration.theme.secondaryColor.color())
         question.text =

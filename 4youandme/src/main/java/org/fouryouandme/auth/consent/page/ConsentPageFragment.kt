@@ -11,6 +11,7 @@ import arrow.core.toOption
 import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.consent_page.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.ConsentFragment
 import org.fouryouandme.auth.consent.ConsentViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -61,6 +62,9 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
+        (requireParentFragment().requireParentFragment() as? ConsentFragment)
+            .toOption()
+            .map { it.showAbort(configuration, configuration.theme.primaryColorEnd.color()) }
 
         consent.pages.firstOrNone { it.id == args.id }
             .map { data ->

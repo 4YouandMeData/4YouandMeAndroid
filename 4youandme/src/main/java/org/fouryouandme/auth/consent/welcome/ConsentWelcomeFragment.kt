@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.consent_welcome.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.ConsentError
+import org.fouryouandme.auth.consent.ConsentFragment
 import org.fouryouandme.auth.consent.ConsentStateUpdate
 import org.fouryouandme.auth.consent.ConsentViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -85,6 +86,10 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
     private fun applyData(configuration: Configuration, consent: Consent): Unit {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+        (requireParentFragment().requireParentFragment() as? ConsentFragment)
+            .toOption()
+            .map { it.hideAbort() }
 
         requireParentFragment()
             .requireParentFragment()

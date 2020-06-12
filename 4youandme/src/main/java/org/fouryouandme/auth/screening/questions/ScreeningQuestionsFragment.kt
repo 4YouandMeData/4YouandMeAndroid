@@ -85,7 +85,6 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
         abort.setTextColor(configuration.theme.primaryColorEnd.color())
         abort.setOnClickListener { showAbortAlert(configuration) }
 
-
     }
 
     private fun setupView(): Unit {
