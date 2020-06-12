@@ -8,6 +8,7 @@ import android.graphics.drawable.StateListDrawable
 import android.util.StateSet
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import org.fouryouandme.core.ext.adjustAlpha
 import kotlin.math.roundToInt
 
 fun button(color: Int): StateListDrawable {
@@ -45,17 +46,6 @@ private fun createButtonDrawable(color: Int): GradientDrawable {
     drawable.setColor(color)
     drawable.cornerRadii = arrayOf(60f, 60f, 60f, 60f, 60f, 60f, 60f, 60f).toFloatArray()
     return drawable
-
-}
-
-@ColorInt
-private fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
-
-    val alpha = (Color.alpha(color) * factor).roundToInt()
-    val red = Color.red(color)
-    val green = Color.green(color)
-    val blue = Color.blue(color)
-    return Color.argb(alpha, red, green, blue)
 
 }
 

@@ -11,6 +11,7 @@ import org.fouryouandme.auth.screening.questions.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
+import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
@@ -123,6 +124,12 @@ class ScreeningViewModel(
             ScreeningWelcomeToScreeningQuestions
         ).unsafeRunAsync()
 
+    fun consent(navController: NavController): Unit =
+        navigator.navigateTo(runtime, navController, ScreeningToConsent).unsafeRunAsync()
+
     fun abort(navController: NavController): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()
+
+    fun web(navController: NavController, url: String): Unit =
+        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
 }

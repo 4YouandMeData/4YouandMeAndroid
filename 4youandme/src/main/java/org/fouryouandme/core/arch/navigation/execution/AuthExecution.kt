@@ -1,4 +1,4 @@
-package org.fouryouandme.main.app.navigation.execution
+package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.R
 import org.fouryouandme.auth.phone.EnterPhoneFragmentDirections
@@ -24,10 +24,6 @@ fun enterPhoneToPhoneValidationCode(phone: String, countryCode: String): Navigat
     it.navigate(
         EnterPhoneFragmentDirections.actionEnterPhoneToPhoneValidationCode(phone, countryCode)
     )
-}
-
-fun enterPhoneToWeb(url: String): NavigationExecution = {
-    it.navigate(EnterPhoneFragmentDirections.actionSignUpInfoToWeb(url))
 }
 
 fun phoneValidationCodeToScreening(): NavigationExecution = {

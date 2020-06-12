@@ -1,4 +1,4 @@
-package org.fouryouandme.core.data.api.screening.response
+package org.fouryouandme.core.data.api.consent.response
 
 import arrow.core.Option
 import arrow.core.extensions.fx
@@ -7,11 +7,11 @@ import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.data.api.common.response.QuestionResponse
-import org.fouryouandme.core.entity.screening.Screening
+import org.fouryouandme.core.entity.consent.Consent
 
-@JsonApi(type = "screening")
-data class ScreeningResponse(
-    @field:Json(name = "screening_questions")
+@JsonApi(type = "informed_consent")
+data class ConsentResponse(
+    @field:Json(name = "questions")
     val questions: HasMany<QuestionResponse>? = null,
     @field:Json(name = "pages")
     val pages: HasMany<PageResponse>? = null,
@@ -23,12 +23,12 @@ data class ScreeningResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toScreening(document: ObjectDocument<ScreeningResponse>): Option<Screening> =
+    fun toConsent(document: ObjectDocument<ConsentResponse>): Option<Consent> =
         Option.fx {
 
-            Screening(
+            Consent(
                 !questions?.get(document)
-                    ?.mapNotNull { it.toScreeningQuestion(document).orNull() }
+                    ?.mapNotNull { it.toConsentQuestion(document).orNull() }
                     .toOption(),
                 !pages?.get(document)
                     ?.mapNotNull { it.toPage(document).orNull() }
@@ -46,3 +46,4 @@ data class ScreeningResponse(
 
         }
 }
+

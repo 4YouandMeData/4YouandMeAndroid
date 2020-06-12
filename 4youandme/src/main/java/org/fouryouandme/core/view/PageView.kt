@@ -9,9 +9,13 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import arrow.core.Option
+import arrow.core.getOrElse
 import kotlinx.android.synthetic.main.page.view.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.configuration.HEXColor
+import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.imageConfiguration
@@ -31,7 +35,8 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         buttonText: String? = null,
         centerMessage: Boolean = false,
         page: Page,
-        action: () -> Unit
+        action: (Option<Page>) -> Unit,
+        externalAction: (String) -> Unit
     ): Unit {
 
         val decodedString: ByteArray = Base64.decode(page.image, Base64.DEFAULT)
@@ -47,6 +52,17 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
         description.gravity = if (centerMessage) Gravity.CENTER else Gravity.START
 
+        external.text = page.externalLinkLabel.getOrElse { "" }
+        external.setTextColor(configuration.theme.primaryColorEnd.color())
+        external.isVisible = page.externalLinkUrl.isDefined()
+        external.setOnClickListener { page.externalLinkUrl.map { externalAction(it) } }
+
+        shadow.background =
+            HEXGradient.from(
+                HEXColor.transparent(),
+                configuration.theme.primaryTextColor
+            ).drawable(0.3f)
+
         if (buttonText != null) {
 
             next.isVisible = false
@@ -56,7 +72,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             next_text.background =
                 button(configuration.theme.primaryColorEnd.color())
             next_text.text = buttonText
-            next_text.setOnClickListener { action() }
+            next_text.setOnClickListener { action(page.link1) }
 
         } else {
 
@@ -66,7 +82,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             next.background =
                 button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
 
-            next.setOnClickListener { action() }
+            next.setOnClickListener { action(page.link1) }
 
         }
 

@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.screening.welcome
+package org.fouryouandme.auth.consent.welcome
 
 import android.os.Bundle
 import android.view.View
@@ -6,27 +6,30 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
-import kotlinx.android.synthetic.main.screening_welcome.*
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.consent.*
+import kotlinx.android.synthetic.main.consent_welcome.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.screening.ScreeningError
-import org.fouryouandme.auth.screening.ScreeningStateUpdate
-import org.fouryouandme.auth.screening.ScreeningViewModel
+import org.fouryouandme.auth.consent.ConsentError
+import org.fouryouandme.auth.consent.ConsentFragment
+import org.fouryouandme.auth.consent.ConsentStateUpdate
+import org.fouryouandme.auth.consent.ConsentViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.screening.Screening
+import org.fouryouandme.core.entity.consent.Consent
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.hide
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
 
-class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.screening_welcome) {
+class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_welcome) {
 
-    override val viewModel: ScreeningViewModel by lazy {
+    override val viewModel: ConsentViewModel by lazy {
         viewModelFactory(
             requireParentFragment(),
-            getFactory { ScreeningViewModel(navigator, IORuntime) }
+            getFactory { ConsentViewModel(navigator, IORuntime) }
         )
     }
 
@@ -36,8 +39,8 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is ScreeningStateUpdate.Initialization ->
-                        applyData(it.configuration, it.screening)
+                    is ConsentStateUpdate.Initialization ->
+                        applyData(it.configuration, it.consent)
                 }
             }
 
@@ -47,7 +50,7 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
         viewModel.errorLiveData()
             .observeEvent {
                 when (it.cause) {
-                    ScreeningError.Initialization ->
+                    ConsentError.Initialization ->
                         error.setError(it.error)
                         { viewModel.initialize(rootNavController()) }
                 }
@@ -59,7 +62,7 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
 
         setupView()
 
-        Option.fx { !viewModel.state().configuration to !viewModel.state().screening }
+        Option.fx { !viewModel.state().configuration to !viewModel.state().consent }
             .fold(
                 {
                     viewModel.initialize(rootNavController())
@@ -73,21 +76,39 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
 
         loading.setLoader(imageConfiguration.loading())
 
-        toolbar.showBackSecondaryButton(imageConfiguration)
-        { viewModel.back(rootNavController()) }
-
+        requireParentFragment()
+            .requireParentFragment()
+            .toolbar
+            .toOption()
+            .map { it.hide() }
     }
 
-    private fun applyData(configuration: Configuration, screening: Screening): Unit {
+    private fun applyData(configuration: Configuration, consent: Consent): Unit {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
+        (requireParentFragment().requireParentFragment() as? ConsentFragment)
+            .toOption()
+            .map { it.hideAbort() }
+
+        requireParentFragment()
+            .requireParentFragment()
+            .consent_root
+            .toOption()
+            .map { it.setBackgroundColor(configuration.theme.secondaryColor.color()) }
+
         page.isVisible = true
-        page.applyData(configuration,
+        page.applyData(
+            configuration,
             null,
             false,
-            screening.welcomePage,
-            { viewModel.questions(findNavController()) },
-            { viewModel.web(rootNavController(), it) })
+            consent.welcomePage,
+            { option ->
+                option.fold(
+                    { viewModel.question(findNavController(), true) },
+                    { viewModel.page(findNavController(), it.id, true) })
+            },
+            { viewModel.web(rootNavController(), it) }
+        )
     }
 }

@@ -1,5 +1,6 @@
 package org.fouryouandme.core.ext
 
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 
@@ -26,3 +27,19 @@ fun Toolbar.showCloseButton(
     setNavigationIcon(imageConfiguration.close())
     setNavigationOnClickListener { back() }
 }
+
+fun Toolbar.removeBackButton(): Unit {
+
+    navigationIcon = null
+}
+
+fun Toolbar.show(): Unit {
+
+    visibility = View.VISIBLE
+}
+
+fun Toolbar.hide(): Unit {
+
+    visibility = View.INVISIBLE
+}
+

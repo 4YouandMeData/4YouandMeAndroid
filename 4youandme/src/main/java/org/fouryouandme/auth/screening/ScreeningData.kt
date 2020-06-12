@@ -41,3 +41,4 @@ sealed class ScreeningError {
 object ScreeningWelcomeToScreeningQuestions : NavigationAction
 object ScreeningQuestionsToScreeningSuccess : NavigationAction
 object ScreeningQuestionsToScreeningFailure : NavigationAction
+object ScreeningToConsent: NavigationAction

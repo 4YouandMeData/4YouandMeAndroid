@@ -2,6 +2,8 @@ package org.fouryouandme.core.arch.navigation
 
 interface NavigationAction
 
-object AnywhereToAuth: NavigationAction
+object AnywhereToAuth : NavigationAction
 
-object AnywhereToWelcome: NavigationAction
+object AnywhereToWelcome : NavigationAction
+
+data class AnywhereToWeb(val url: String) : NavigationAction

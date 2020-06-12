@@ -1,4 +1,4 @@
-package org.fouryouandme.main.app.navigation.execution
+package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.navigation.NavigationExecution
@@ -17,5 +17,11 @@ fun screeningQuestionsToScreeningSuccess(): NavigationExecution = {
 fun screeningQuestionsToScreeningFailure(): NavigationExecution = {
 
     it.navigate(R.id.action_screening_questions_to_screening_failure)
+
+}
+
+fun screeningToConsent(): NavigationExecution = {
+
+    it.navigate(R.id.action_screening_to_consent)
 
 }

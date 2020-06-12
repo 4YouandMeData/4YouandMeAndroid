@@ -1,4 +1,4 @@
-package org.fouryouandme.main.app
+package org.fouryouandme.core.arch.deps
 
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -7,21 +7,20 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import moe.banana.jsonapi2.ResourceAdapterFactory
-import org.fouryouandme.core.arch.deps.Environment
-import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.Injector
-import org.fouryouandme.core.arch.deps.RuntimeContext
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
+import org.fouryouandme.core.data.api.common.response.AnswerResponse
 import org.fouryouandme.core.data.api.common.response.PageResponse
+import org.fouryouandme.core.data.api.common.response.QuestionResponse
 import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
+import org.fouryouandme.core.data.api.consent.ConsentApi
+import org.fouryouandme.core.data.api.consent.response.ConsentResponse
 import org.fouryouandme.core.data.api.getApiService
 import org.fouryouandme.core.data.api.screening.ScreeningApi
-import org.fouryouandme.core.data.api.screening.response.ScreeningAnswerResponse
-import org.fouryouandme.core.data.api.screening.response.ScreeningQuestionResponse
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
-import org.fouryouandme.main.app.navigation.ForYouAndMeNavigationProvider
+import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
+import org.fouryouandme.core.arch.app.FourYouAndMeApp
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -68,9 +67,10 @@ class ForYouAndMeInjector(
                 ResourceAdapterFactory.builder()
                     .add(UnknownResourceResponse::class.java)
                     .add(PageResponse::class.java)
+                    .add(QuestionResponse::class.java)
+                    .add(AnswerResponse::class.java)
                     .add(ScreeningResponse::class.java)
-                    .add(ScreeningQuestionResponse::class.java)
-                    .add(ScreeningAnswerResponse::class.java)
+                    .add(ConsentResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -86,5 +86,8 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val screeningApi: ScreeningApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val consentApi: ConsentApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 }

@@ -36,7 +36,14 @@ class ScreeningSuccessFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        page.applyData(configuration, null, true, screening.successPage) {  }
+        page.applyData(
+            configuration,
+            null,
+            true,
+            screening.successPage,
+            { viewModel.consent(rootNavController()) },
+            { viewModel.web(rootNavController(), it) }
+        )
 
     }
 }
