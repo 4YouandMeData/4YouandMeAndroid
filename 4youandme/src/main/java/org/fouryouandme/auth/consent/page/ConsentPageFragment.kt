@@ -68,13 +68,14 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
                     configuration,
                     null,
                     false,
-                    data
+                    data,
+                    { option ->
+                        option.fold(
+                            { viewModel.question(findNavController(), false) },
+                            { viewModel.page(findNavController(), it.id, false) })
+                    },
+                    { viewModel.web(rootNavController(), it) }
                 )
-                { option ->
-                    option.fold(
-                        { viewModel.question(findNavController(), false) },
-                        { viewModel.page(findNavController(), it.id, false) })
-                }
             }
 
     }

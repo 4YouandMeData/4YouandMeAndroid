@@ -40,8 +40,9 @@ class ScreeningFailureFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
             configuration,
             configuration.text.screening.errorRetryButton,
             true,
-            screening.failurePage
-        ) { viewModel.back(findNavController()) }
-
+            screening.failurePage,
+            { viewModel.back(findNavController()) },
+            { viewModel.web(rootNavController(), it) }
+        )
     }
 }

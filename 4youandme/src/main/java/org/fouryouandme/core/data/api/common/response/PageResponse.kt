@@ -35,8 +35,8 @@ data class PageResponse(
                 link1Label.toOption(),
                 link2?.get(document).toOption().flatMap { it.toPage(document) },
                 link2Label.toOption(),
-                !externalLinkLabel.toOption(),
-                !externalLinkUrl.toOption()
+                externalLinkLabel.toOption(),
+                externalLinkUrl.toOption()
             )
 
         }

@@ -12,6 +12,7 @@ import org.fouryouandme.auth.consent.question.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
+import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
@@ -133,4 +134,7 @@ class ConsentViewModel(
                 ConsentQuestionToConsentQuestion(currentIndex + 1)
             ).unsafeRunAsync()
     }
+
+    fun web(navController: NavController, url: String): Unit =
+        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
 }

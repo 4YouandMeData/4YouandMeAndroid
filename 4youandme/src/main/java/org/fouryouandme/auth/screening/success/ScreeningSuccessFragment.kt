@@ -40,8 +40,10 @@ class ScreeningSuccessFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
             configuration,
             null,
             true,
-            screening.successPage
-        ) { viewModel.consent(rootNavController()) }
+            screening.successPage,
+            { viewModel.consent(rootNavController()) },
+            { viewModel.web(rootNavController(), it) }
+        )
 
     }
 }

@@ -83,8 +83,11 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         page.isVisible = true
-        page.applyData(configuration, null, false, screening.welcomePage)
-        { viewModel.questions(findNavController()) }
-
+        page.applyData(configuration,
+            null,
+            false,
+            screening.welcomePage,
+            { viewModel.questions(findNavController()) },
+            { viewModel.web(rootNavController(), it) })
     }
 }

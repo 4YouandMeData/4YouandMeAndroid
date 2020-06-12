@@ -2,7 +2,6 @@ package org.fouryouandme.core.arch.navigation
 
 import org.fouryouandme.auth.consent.*
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
-import org.fouryouandme.auth.phone.EnterPhoneToWeb
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningFailure
 import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningSuccess
@@ -12,7 +11,6 @@ import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
-import org.fouryouandme.core.arch.navigation.*
 import org.fouryouandme.core.arch.navigation.execution.*
 
 class ForYouAndMeNavigationProvider : NavigationProvider {
@@ -22,6 +20,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
             is AnywhereToAuth -> anywhereToAuth()
             is AnywhereToWelcome -> anywhereToWelcome()
+            is AnywhereToWeb -> anywhereToWeb(action.url)
 
             is SplashToWelcome -> splashToWelcome()
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
@@ -31,7 +30,6 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 action.phone,
                 action.countryCode
             )
-            is EnterPhoneToWeb -> enterPhoneToWeb(action.url)
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()

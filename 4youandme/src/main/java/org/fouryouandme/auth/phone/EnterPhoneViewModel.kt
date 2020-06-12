@@ -8,6 +8,7 @@ import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.toastAction
 import org.fouryouandme.core.cases.CachePolicy
@@ -102,7 +103,7 @@ class EnterPhoneViewModel(
         )
 
     fun web(navController: NavController, url: String): Unit =
-        navigator.navigateTo(runtime, navController, EnterPhoneToWeb(url)).unsafeRunAsync()
+        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

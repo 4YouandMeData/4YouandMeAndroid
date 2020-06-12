@@ -33,5 +33,3 @@ data class EnterPhoneToPhoneValidationCode(
     val phone: String,
     val countryCode: String
 ) : NavigationAction
-
-data class EnterPhoneToWeb(val url: String) : NavigationAction
