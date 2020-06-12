@@ -28,6 +28,11 @@ fun Toolbar.showCloseButton(
     setNavigationOnClickListener { back() }
 }
 
+fun Toolbar.removeBackButton(): Unit {
+
+    navigationIcon = null
+}
+
 fun Toolbar.show(): Unit {
 
     visibility = View.VISIBLE

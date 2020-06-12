@@ -16,8 +16,8 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.consent.Consent
 import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.hide
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.removeBackButton
 
 class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_question) {
 
@@ -30,6 +30,8 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
+
         Option.fx { !viewModel.state().configuration to !viewModel.state().consent }
             .map { applyData(it.first, it.second) }
     }
@@ -40,7 +42,7 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
             .requireParentFragment()
             .toolbar
             .toOption()
-            .map { it.hide() }
+            .map { it.removeBackButton() }
 
     }
 

@@ -4,10 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.fouryouandme.core.view.PageView
-        android:id="@+id/page"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/padding_view"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize" />
+
+        <org.fouryouandme.core.view.PageView
+            android:id="@+id/page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
     <org.fouryouandme.core.arch.loading.LoadingView
         android:id="@+id/loading"
