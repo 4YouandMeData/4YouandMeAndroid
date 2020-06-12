@@ -3,6 +3,7 @@ package org.fouryouandme.auth.consent.question
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -90,6 +91,7 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
         recycler_view.adapter = adapter
 
         next.background = button(resources, imageConfiguration.signUpNextStep())
+        next.setOnClickListener { viewModel.nextQuestion(findNavController(), args.index) }
     }
 
     private fun applyData(configuration: Configuration, consent: Consent): Unit {

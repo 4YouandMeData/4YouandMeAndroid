@@ -101,7 +101,7 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
         )
         { option ->
             option.fold(
-                { viewModel.question(findNavController(), 0, true) },
+                { viewModel.question(findNavController(), true) },
                 { viewModel.page(findNavController(), it.id, true) })
         }
 

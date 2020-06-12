@@ -118,10 +118,19 @@ class ConsentViewModel(
             if (fromWelcome) ConsentWelcomeToConsentPage(id) else ConsentPageToConsentPage(id)
         ).unsafeRunAsync()
 
-    fun question(navController: NavController, index: Int, fromWelcome: Boolean): Unit =
+    fun question(navController: NavController, fromWelcome: Boolean): Unit =
         when {
-            fromWelcome -> ConsentWelcomeToConsentQuestion(index)
-            index == 0 -> ConsentPageToConsentQuestion(index)
-            else -> ConsentQuestionToConsentQuestion(index)
+            fromWelcome -> ConsentWelcomeToConsentQuestion(0)
+            else -> ConsentPageToConsentQuestion(0)
         }.pipe { navigator.navigateTo(runtime, navController, it) }.unsafeRunAsync()
+
+    fun nextQuestion(navController: NavController, currentIndex: Int): Unit {
+
+        if (currentIndex < (state().questions.keys.size - 1))
+            navigator.navigateTo(
+                runtime,
+                navController,
+                ConsentQuestionToConsentQuestion(currentIndex + 1)
+            ).unsafeRunAsync()
+    }
 }
