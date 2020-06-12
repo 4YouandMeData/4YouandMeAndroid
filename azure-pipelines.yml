@@ -30,11 +30,6 @@ steps:
     Contents: '**/*.apk'
     TargetFolder: '$(build.artifactStagingDirectory)'
     flattenFolders: true
-- task: CopyFiles@2
-  inputs:
-    Contents: '**/distribution.ps1'
-    TargetFolder: '$(build.artifactStagingDirectory)'
-    flattenFolders: true
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
