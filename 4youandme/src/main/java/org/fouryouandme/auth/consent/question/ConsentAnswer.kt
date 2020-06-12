@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.StableDroidItem
@@ -68,13 +69,22 @@ class ConsentAnswerViewHolder(
     }
 ), LayoutContainer {
 
+    init {
+
+        itemView.findViewById<RadioButton>(R.id.answer_button)
+            .setOnClickListener {
+                onAnswer(item)
+            }
+
+    }
+
     override fun bind(t: ConsentAnswerItem, position: Int) {
 
         answer.text = t.answer.text
         answer.setTextColor(t.configuration.theme.secondaryColor.color())
 
-        radio_button.isChecked = t.isSelected
-        radio_button.buttonTintList =
+        answer_button.isChecked = t.isSelected
+        answer_button.buttonTintList =
             ColorStateList.valueOf(t.configuration.theme.secondaryColor.color())
 
     }
@@ -83,7 +93,7 @@ class ConsentAnswerViewHolder(
 
         payloads.forEach {
             when (it) {
-                ANSWER -> radio_button.isChecked = t.isSelected
+                ANSWER -> answer_button.isChecked = t.isSelected
             }
         }
     }

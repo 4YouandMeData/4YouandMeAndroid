@@ -1,18 +1,19 @@
 package org.fouryouandme.core.entity.configuration
 
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.StateListDrawable
-import android.util.StateSet
 import androidx.annotation.ColorInt
-import org.fouryouandme.R
-import kotlin.math.roundToInt
 
 data class HEXColor(val hex: String) {
 
     @ColorInt
     fun color(): Int = Color.parseColor(hex)
+
+    companion object {
+
+        fun transparent(): HEXColor = HEXColor("#00FFFFFF")
+
+    }
 }
 
 fun String.toHEXColor(): HEXColor =

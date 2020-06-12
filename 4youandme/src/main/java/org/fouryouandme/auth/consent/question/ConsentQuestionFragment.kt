@@ -2,6 +2,7 @@ package org.fouryouandme.auth.consent.question
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,14 +14,18 @@ import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.consent_question.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.ConsentStateUpdate
 import org.fouryouandme.auth.consent.ConsentViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.consent.Consent
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.removeBackButton
 
@@ -35,7 +40,25 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
     }
 
     private val adapter: StableDroidAdapter by lazy {
-        StableDroidAdapter(ConsentAnswerViewHolder.factory { })
+        StableDroidAdapter(
+            ConsentAnswerViewHolder.factory {
+                viewModel.answer(args.index, it.answer.id)
+            }
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateLiveData()
+            .observe(this,
+                Observer { event ->
+                    when (event.peekContent()) {
+                        is ConsentStateUpdate.Questions ->
+                            viewModel.getAnswers(args.index).map { applyAnswer(it) }
+                    }
+                }
+            )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,6 +68,9 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
 
         Option.fx { !viewModel.state().configuration to !viewModel.state().consent }
             .map { applyData(it.first, it.second) }
+
+        if (adapter.itemCount <= 0)
+            viewModel.getAnswers(args.index).map { applyAnswer(it) }
     }
 
     fun setupView(): Unit {
@@ -63,17 +89,10 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
             )
         recycler_view.adapter = adapter
 
+        next.background = button(resources, imageConfiguration.signUpNextStep())
     }
 
     private fun applyData(configuration: Configuration, consent: Consent): Unit {
-
-        if (adapter.itemCount <= 0)
-            consent.questions
-                .getOrNull(args.index)
-                .toOption()
-                .map { question ->
-                    adapter.submitList(question.answers.all.map { it.toItem(configuration) })
-                }
 
         root.background =
             HEXGradient.from(
@@ -90,6 +109,23 @@ class ConsentQuestionFragment : BaseFragment<ConsentViewModel>(R.layout.consent_
                 .map { it.text }
                 .getOrElse { "" }
 
+        shadow.background =
+            HEXGradient.from(
+                HEXColor.transparent(),
+                configuration.theme.primaryColorEnd
+            ).drawable()
+
+    }
+
+    private fun applyAnswer(answers: List<ConsentAnswerItem>): Unit {
+
+        adapter.submitList(answers)
+
+        next.isEnabled =
+            answers.fold(
+                false,
+                { acc, answer -> acc || answer.isSelected }
+            )
     }
 
 }

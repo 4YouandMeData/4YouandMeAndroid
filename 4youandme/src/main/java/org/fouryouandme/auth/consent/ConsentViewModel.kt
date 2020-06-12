@@ -1,17 +1,17 @@
 package org.fouryouandme.auth.consent
 
 import androidx.navigation.NavController
-import arrow.core.None
-import arrow.core.getOrElse
+import arrow.core.Option
+import arrow.core.extensions.fx
+import arrow.core.getOption
 import arrow.core.toOption
 import arrow.fx.ForIO
 import arrow.syntax.function.pipe
-import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
-import org.fouryouandme.auth.screening.questions.toItem
+import org.fouryouandme.auth.consent.question.ConsentAnswerItem
+import org.fouryouandme.auth.consent.question.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
-import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
@@ -52,12 +52,19 @@ class ConsentViewModel(
             !initialization.fold(
                 { setError(it, ConsentError.Initialization) },
                 { pair ->
+
+                    val questions =
+                        pair.first.questions.associateWith { question ->
+                            question.answers.map { it.toItem(pair.second) }.all
+                        }.mapKeys { it.key.id }
+
                     setState(
                         state().copy(
                             configuration = pair.second.toOption(),
-                            consent = pair.first.toOption()
+                            consent = pair.first.toOption(),
+                            questions = questions
                         ),
-                        ConsentStateUpdate.Initialization(pair.second, pair.first)
+                        ConsentStateUpdate.Initialization(pair.second, questions, pair.first)
                     )
                 }
             )
@@ -66,6 +73,38 @@ class ConsentViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- answer --- */
+
+    fun getAnswers(index: Int): Option<List<ConsentAnswerItem>> =
+        Option.fx {
+
+            val questionId =
+                !state().consent.bind().questions.getOrNull(index)?.id.toOption()
+
+            state().questions.getOption(questionId).bind()
+        }
+
+    fun answer(index: Int, answerId: String): Option<Unit> =
+
+        Option.fx {
+
+            val questionId =
+                !state().consent.bind().questions.getOrNull(index)?.id.toOption()
+
+            val questions =
+                state().questions.mapValues {
+                    if (it.key == questionId)
+                        it.value.map { item ->
+                            item.copy(isSelected = item.answer.id == answerId)
+                        }
+                    else it.value
+                }
+
+            setState(
+                state().copy(questions = questions),
+                ConsentStateUpdate.Questions(questions)
+            ).unsafeRunAsync()
+        }
 
     /* --- navigation --- */
 
@@ -76,7 +115,7 @@ class ConsentViewModel(
         navigator.navigateTo(
             runtime,
             navController,
-            if(fromWelcome) ConsentWelcomeToConsentPage(id) else ConsentPageToConsentPage(id)
+            if (fromWelcome) ConsentWelcomeToConsentPage(id) else ConsentPageToConsentPage(id)
         ).unsafeRunAsync()
 
     fun question(navController: NavController, index: Int, fromWelcome: Boolean): Unit =
