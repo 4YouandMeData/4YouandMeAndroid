@@ -1,6 +1,5 @@
 package org.fouryouandme.auth.screening.questions
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -30,8 +29,10 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
     R.layout.screening_questions
 ) {
 
-    private val adapter: StableDroidAdapter<DroidItem> by lazy {
-        screeningAdapter { viewModel.answer(it) }
+    private val adapter: StableDroidAdapter by lazy {
+        StableDroidAdapter(
+            ScreeningQuestionViewHolder.factory { viewModel.answer(it) }
+        )
     }
 
     override val viewModel: ScreeningViewModel by lazy {
@@ -121,7 +122,7 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
             .setTitle(configuration.text.onboarding.onboardingAbortTitle)
             .setMessage(configuration.text.onboarding.onboradingAbortMessage)
             .setPositiveButton(configuration.text.onboarding.onboardingAbortConfirm)
-            { _, _ -> viewModel.abort(rootNavController())}
+            { _, _ -> viewModel.abort(rootNavController()) }
             .setNegativeButton(configuration.text.onboarding.onboardingAbortCancel, null)
             .show()
 
