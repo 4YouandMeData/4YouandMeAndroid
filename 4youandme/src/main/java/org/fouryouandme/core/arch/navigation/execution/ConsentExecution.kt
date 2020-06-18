@@ -29,3 +29,13 @@ fun consentQuestionToConsentQuestion(index: Int): NavigationExecution =
     {
         it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionSelf(index))
     }
+
+fun consentQuestionToConsentSuccess(): NavigationExecution =
+    {
+        it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionToConsentSuccess())
+    }
+
+fun consentQuestionToConsentFailure(): NavigationExecution =
+    {
+        it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionToConsentFailure())
+    }

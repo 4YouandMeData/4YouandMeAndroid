@@ -1,6 +1,7 @@
 package org.fouryouandme.auth.consent
 
 import androidx.navigation.NavController
+import arrow.Kind
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOption
@@ -108,6 +109,36 @@ class ConsentViewModel(
             ).unsafeRunAsync()
         }
 
+    /* --- validation --- */
+
+    private fun validate(navController: NavController): Kind<ForIO, Unit> =
+        runtime.fx.concurrent {
+
+            val correctAnswers =
+                state().questions
+                    .mapValues {
+                        it.value.fold(
+                            false,
+                            { acc, answerItem ->
+                                acc || (answerItem.answer.correct && answerItem.isSelected)
+                            }
+                        )
+                    }
+                    .toList()
+                    .fold(
+                        0,
+                        { acc, pair ->
+                            acc + if (pair.second) 1 else 0
+                        }
+                    )
+
+            if (correctAnswers >= 4)
+                !navigator.navigateTo(runtime, navController, ConsentQuestionToConsentSuccess)
+            else
+                !navigator.navigateTo(runtime, navController, ConsentQuestionToConsentFailure)
+
+        }
+
     /* --- navigation --- */
 
     fun back(navController: NavController): Unit =
@@ -126,15 +157,18 @@ class ConsentViewModel(
             else -> ConsentPageToConsentQuestion(0)
         }.pipe { navigator.navigateTo(runtime, navController, it) }.unsafeRunAsync()
 
-    fun nextQuestion(navController: NavController, currentIndex: Int): Unit {
+    fun nextQuestion(navController: NavController, currentIndex: Int): Unit =
+        runtime.fx.concurrent {
 
-        if (currentIndex < (state().questions.keys.size - 1))
-            navigator.navigateTo(
-                runtime,
-                navController,
-                ConsentQuestionToConsentQuestion(currentIndex + 1)
-            ).unsafeRunAsync()
-    }
+            !if (currentIndex < (state().questions.keys.size - 1))
+                navigator.navigateTo(
+                    runtime,
+                    navController,
+                    ConsentQuestionToConsentQuestion(currentIndex + 1)
+                )
+            else validate(navController)
+
+        }.unsafeRunAsync()
 
     fun abort(navController: NavController): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()

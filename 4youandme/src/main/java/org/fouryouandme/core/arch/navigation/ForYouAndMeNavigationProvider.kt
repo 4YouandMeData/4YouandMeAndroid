@@ -42,6 +42,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ConsentPageToConsentPage -> consentPageToConsentPage(action.id)
             is ConsentPageToConsentQuestion -> consentPageToConsentQuestion(action.index)
             is ConsentQuestionToConsentQuestion -> consentQuestionToConsentQuestion(action.index)
+            is ConsentQuestionToConsentSuccess -> consentQuestionToConsentSuccess()
+            is ConsentQuestionToConsentFailure -> consentQuestionToConsentFailure()
 
             else -> {
                 {}

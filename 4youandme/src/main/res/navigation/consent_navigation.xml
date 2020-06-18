@@ -31,7 +31,7 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" >
+            app:popExitAnim="@anim/slide_to_right">
 
             <argument
                 android:name="index"
@@ -71,7 +71,7 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" >
+            app:popExitAnim="@anim/slide_to_right">
 
             <argument
                 android:name="index"
@@ -85,7 +85,7 @@
         android:id="@+id/consent_question"
         android:name="org.fouryouandme.auth.consent.question.ConsentQuestionFragment"
         android:label="consent_question"
-        tools:layout="@layout/consent_question" >
+        tools:layout="@layout/consent_question">
 
         <argument
             android:name="index"
@@ -97,7 +97,7 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" >
+            app:popExitAnim="@anim/slide_to_right">
 
             <argument
                 android:name="index"
@@ -105,6 +105,34 @@
 
         </action>
 
+        <action
+            android:id="@+id/action_consent_question_to_consent_failure"
+            app:destination="@id/consent_failure"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_consent_question_to_consent_success"
+            app:destination="@id/consent_success"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
     </fragment>
+
+    <fragment
+        android:id="@+id/consent_failure"
+        android:name="org.fouryouandme.auth.consent.failure.ConsentFailureFragment"
+        android:label="consent_failure"
+        tools:layout="@layout/consent_page" />
+
+    <fragment
+        android:id="@+id/consent_success"
+        android:name="org.fouryouandme.auth.consent.success.ConsentSuccessFragment"
+        android:label="consent_success"
+        tools:layout="@layout/consent_page" />
 
 </navigation>
