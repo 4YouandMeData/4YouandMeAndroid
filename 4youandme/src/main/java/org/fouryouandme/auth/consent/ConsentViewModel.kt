@@ -170,6 +170,42 @@ class ConsentViewModel(
 
         }.unsafeRunAsync()
 
+    fun restartFromWelcome(navController: NavController): Unit =
+        runtime.fx.concurrent {
+
+            // reset old answer
+            val questions =
+                state().questions.mapValues { entry ->
+                    entry.value.map { it.copy(isSelected = false) }
+                }
+
+            !setState(
+                state().copy(questions = questions),
+                ConsentStateUpdate.Questions(questions)
+            )
+
+            !navigator.navigateTo(runtime, navController, ConsentFailureToConsentWelcome)
+
+        }.unsafeRunAsync()
+
+    fun restartFromPage(navController: NavController, id: String): Unit =
+        runtime.fx.concurrent {
+
+            // reset old answer
+            val questions =
+                state().questions.mapValues { entry ->
+                    entry.value.map { it.copy(isSelected = false) }
+                }
+
+            !setState(
+                state().copy(questions = questions),
+                ConsentStateUpdate.Questions(questions)
+            )
+
+            !navigator.navigateTo(runtime, navController, ConsentFailureToConsentPage(id))
+
+        }.unsafeRunAsync()
+
     fun abort(navController: NavController): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()
 

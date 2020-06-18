@@ -2,15 +2,17 @@ package org.fouryouandme.auth.screening.questions
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arrow.core.Option
 import arrow.core.extensions.fx
+import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
+import kotlinx.android.synthetic.main.screening.*
 import kotlinx.android.synthetic.main.screening_questions.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.screening.ScreeningFragment
 import org.fouryouandme.auth.screening.ScreeningStateUpdate
 import org.fouryouandme.auth.screening.ScreeningViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -19,10 +21,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.screening.Screening
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import org.fouryouandme.core.ext.*
 
 
 class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
@@ -78,18 +77,25 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
+        (requireParentFragment().requireParentFragment() as? ScreeningFragment)
+            .toOption()
+            .map { it.showAbort(configuration, configuration.theme.primaryColorEnd.color()) }
+
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
         footer.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-        abort.text = configuration.text.onboarding.onboardingAbortButton
-        abort.setTextColor(configuration.theme.primaryColorEnd.color())
-        abort.setOnClickListener { showAbortAlert(configuration) }
 
     }
 
     private fun setupView(): Unit {
 
-        toolbar.showBackSecondaryButton(imageConfiguration) { viewModel.back(findNavController()) }
+        requireParentFragment()
+            .requireParentFragment()
+            .toolbar
+            .toOption()
+            .map {
+                it.showBackSecondaryButton(imageConfiguration)
+                { viewModel.back(findNavController()) }
+            }
 
         recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -112,18 +118,6 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
                 true,
                 { acc, item -> acc && item.answer.isDefined() }
             )
-
-    }
-
-    private fun showAbortAlert(configuration: Configuration) {
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(configuration.text.onboarding.onboardingAbortTitle)
-            .setMessage(configuration.text.onboarding.onboradingAbortMessage)
-            .setPositiveButton(configuration.text.onboarding.onboardingAbortConfirm)
-            { _, _ -> viewModel.abort(rootNavController()) }
-            .setNegativeButton(configuration.text.onboarding.onboardingAbortCancel, null)
-            .show()
 
     }
 }

@@ -48,3 +48,5 @@ data class ConsentPageToConsentQuestion(val index: Int) : NavigationAction
 data class ConsentQuestionToConsentQuestion(val index: Int) : NavigationAction
 object ConsentQuestionToConsentSuccess : NavigationAction
 object ConsentQuestionToConsentFailure : NavigationAction
+data class ConsentFailureToConsentPage(val id: String): NavigationAction
+object ConsentFailureToConsentWelcome: NavigationAction

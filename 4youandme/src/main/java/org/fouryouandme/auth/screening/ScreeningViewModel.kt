@@ -117,11 +117,20 @@ class ScreeningViewModel(
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
 
-    fun questions(navController: NavController): Unit =
+    fun questions(navController: NavController, fromWelcome: Boolean): Unit =
         navigator.navigateTo(
             runtime,
             navController,
-            ScreeningWelcomeToScreeningQuestions
+            if (fromWelcome) ScreeningWelcomeToScreeningQuestions
+            else ScreeningPageToScreeningQuestions
+        ).unsafeRunAsync()
+
+    fun page(navController: NavController, id: String, fromWelcome: Boolean): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            if (fromWelcome) ScreeningWelcomeToScreeningPage(id)
+            else ScreeningPageToScreeningPage(id)
         ).unsafeRunAsync()
 
     fun consent(navController: NavController): Unit =
@@ -132,4 +141,24 @@ class ScreeningViewModel(
 
     fun web(navController: NavController, url: String): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
+
+    fun retryFromWelcome(navController: NavController): Unit =
+        runtime.fx.concurrent {
+
+            // reset old answers
+            val questions =
+                state().questions.map { it.copy(answer = None) }
+
+            !setState(
+                state().copy(questions = questions),
+                ScreeningStateUpdate.Questions(questions)
+            )
+
+            !navigator.navigateTo(
+                runtime,
+                navController,
+                ScreeningFailureToScreeningWelcome
+            )
+
+        }.unsafeRunAsync()
 }

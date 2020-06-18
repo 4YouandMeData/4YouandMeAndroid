@@ -39,6 +39,10 @@ sealed class ScreeningError {
 /* --- navigator --- */
 
 object ScreeningWelcomeToScreeningQuestions : NavigationAction
+data class ScreeningWelcomeToScreeningPage(val id: String) : NavigationAction
+data class ScreeningPageToScreeningPage(val id: String) : NavigationAction
+object ScreeningPageToScreeningQuestions : NavigationAction
 object ScreeningQuestionsToScreeningSuccess : NavigationAction
 object ScreeningQuestionsToScreeningFailure : NavigationAction
+object ScreeningFailureToScreeningWelcome : NavigationAction
 object ScreeningToConsent: NavigationAction

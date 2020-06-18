@@ -15,6 +15,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.Consent
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.view.page.EPageType
 
 class ConsentFailureFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page) {
 
@@ -37,12 +38,32 @@ class ConsentFailureFragment : BaseFragment<ConsentViewModel>(R.layout.consent_p
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         page.applyData(
-            configuration,
-            null,
-            true,
-            consent.failurePage,
-            { viewModel.back(findNavController()) },
-            { viewModel.web(rootNavController(), it) }
+            configuration = configuration,
+            page = consent.failurePage,
+            pageType = EPageType.FAILURE,
+            action1 = { option ->
+                option.fold(
+                    { viewModel.back(findNavController()) },
+                    {
+                        if (it.id == consent.welcomePage.id)
+                            viewModel.restartFromWelcome(findNavController())
+                        else
+                            viewModel.restartFromPage(findNavController(), it.id)
+                    }
+                )
+            },
+            action2 = { option ->
+                option.fold(
+                    { viewModel.back(findNavController()) },
+                    {
+                        if (it.id == consent.welcomePage.id)
+                            viewModel.restartFromWelcome(findNavController())
+                        else
+                            viewModel.restartFromPage(findNavController(), it.id)
+                    }
+                )
+            },
+            externalAction = { viewModel.web(rootNavController(), it) }
         )
 
     }

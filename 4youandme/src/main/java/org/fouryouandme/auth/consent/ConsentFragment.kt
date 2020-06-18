@@ -2,6 +2,7 @@ package org.fouryouandme.auth.consent
 
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import kotlinx.android.synthetic.main.consent.*
 import kotlinx.android.synthetic.main.screening_questions.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment

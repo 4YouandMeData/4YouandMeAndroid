@@ -12,7 +12,55 @@
         tools:layout="@layout/screening_welcome">
 
         <action
+            android:id="@+id/action_screening_welcome_to_screening_page"
+            app:destination="@id/screening_page"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+        <action
             android:id="@+id/action_screening_welcome_to_screening_questions"
+            app:destination="@id/screening_questions"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/screening_page"
+        android:name="org.fouryouandme.auth.screening.page.ScreeningPageFragment"
+        android:label="screening_page"
+        tools:layout="@layout/screening_page">
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_screening_page_self"
+            app:destination="@id/screening_page"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+        <action
+            android:id="@+id/action_screening_page_to_screening_question"
             app:destination="@id/screening_questions"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
@@ -25,7 +73,7 @@
         android:id="@+id/screening_questions"
         android:name="org.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
         android:label="screening_questions"
-        tools:layout="@layout/screening_questions" >
+        tools:layout="@layout/screening_questions">
 
         <action
             android:id="@+id/action_screening_questions_to_screening_success"
@@ -49,12 +97,12 @@
         android:id="@+id/screening_success"
         android:name="org.fouryouandme.auth.screening.success.ScreeningSuccessFragment"
         android:label="screening_success"
-        tools:layout="@layout/screening_response" />
+        tools:layout="@layout/screening_page" />
 
     <fragment
         android:id="@+id/screening_failure"
         android:name="org.fouryouandme.auth.screening.failure.ScreeningFailureFragment"
         android:label="screening_failure"
-        tools:layout="@layout/screening_response" />
+        tools:layout="@layout/screening_page" />
 
 </navigation>

@@ -14,6 +14,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.Consent
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.view.page.EPageType
 
 class ConsentSuccessFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page) {
 
@@ -36,12 +37,11 @@ class ConsentSuccessFragment : BaseFragment<ConsentViewModel>(R.layout.consent_p
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         page.applyData(
-            configuration,
-            null,
-            true,
-            consent.successPage,
-            { },
-            { viewModel.web(rootNavController(), it) }
+            configuration = configuration,
+            page = consent.successPage,
+            pageType = EPageType.SUCCESS,
+            action1 = { },
+            externalAction = { viewModel.web(rootNavController(), it) }
         )
 
     }

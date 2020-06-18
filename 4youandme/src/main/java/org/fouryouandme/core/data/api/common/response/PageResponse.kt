@@ -9,6 +9,7 @@ import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.entity.page.Page
+import org.fouryouandme.core.ext.emptyOrBlankToNone
 
 @JsonApi(type = "page")
 data class PageResponse(
@@ -21,7 +22,7 @@ data class PageResponse(
     @field:Json(name = "link_2_label") val link2Label: String? = null,
     @field:Json(name = "external_link_label") val externalLinkLabel: String? = null,
     @field:Json(name = "external_link_url") val externalLinkUrl: String? = null
-): Resource() {
+) : Resource() {
 
     fun toPage(document: Document): Option<Page> =
         Option.fx {
@@ -32,11 +33,11 @@ data class PageResponse(
                 !body.toOption(),
                 !image.toOption(),
                 link1?.get(document).toOption().flatMap { it.toPage(document) },
-                link1Label.toOption(),
+                link1Label.emptyOrBlankToNone(),
                 link2?.get(document).toOption().flatMap { it.toPage(document) },
-                link2Label.toOption(),
-                externalLinkLabel.toOption(),
-                externalLinkUrl.toOption()
+                link2Label.emptyOrBlankToNone(),
+                externalLinkLabel.emptyOrBlankToNone(),
+                externalLinkUrl.emptyOrBlankToNone()
             )
 
         }

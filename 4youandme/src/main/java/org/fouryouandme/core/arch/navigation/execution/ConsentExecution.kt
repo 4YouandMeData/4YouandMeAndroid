@@ -1,5 +1,7 @@
 package org.fouryouandme.core.arch.navigation.execution
 
+import org.fouryouandme.R
+import org.fouryouandme.auth.consent.failure.ConsentFailureFragmentDirections
 import org.fouryouandme.auth.consent.page.ConsentPageFragmentDirections
 import org.fouryouandme.auth.consent.question.ConsentQuestionFragmentDirections
 import org.fouryouandme.auth.consent.welcome.ConsentWelcomeFragmentDirections
@@ -38,4 +40,14 @@ fun consentQuestionToConsentSuccess(): NavigationExecution =
 fun consentQuestionToConsentFailure(): NavigationExecution =
     {
         it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionToConsentFailure())
+    }
+
+fun consentFailureToConsentWelcome(): NavigationExecution =
+    {
+        it.popBackStack(R.id.consent_welcome, false)
+    }
+
+fun consentFailureToConsentPage(id: String): NavigationExecution =
+    {
+        it.navigate(ConsentFailureFragmentDirections.actionConsentFailureToConsentPage(id))
     }

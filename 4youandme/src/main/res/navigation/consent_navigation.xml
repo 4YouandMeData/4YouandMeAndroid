@@ -127,7 +127,24 @@
         android:id="@+id/consent_failure"
         android:name="org.fouryouandme.auth.consent.failure.ConsentFailureFragment"
         android:label="consent_failure"
-        tools:layout="@layout/consent_page" />
+        tools:layout="@layout/consent_page" >
+
+        <action
+            android:id="@+id/action_consent_failure_to_consent_page"
+            app:destination="@id/consent_page"
+            app:enterAnim="@anim/slide_from_left"
+            app:exitAnim="@anim/slide_to_right"
+            app:popEnterAnim="@anim/slide_from_right"
+            app:popExitAnim="@anim/slide_to_left"
+            app:popUpTo="@id/consent_welcome">
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+    </fragment>
 
     <fragment
         android:id="@+id/consent_success"

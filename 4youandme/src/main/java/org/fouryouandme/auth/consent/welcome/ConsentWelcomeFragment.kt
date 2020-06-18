@@ -23,6 +23,7 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.hide
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.view.page.EPageType
 
 class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_welcome) {
 
@@ -99,16 +100,15 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
 
         page.isVisible = true
         page.applyData(
-            configuration,
-            null,
-            false,
-            consent.welcomePage,
-            { option ->
+            configuration = configuration,
+            page = consent.welcomePage,
+            pageType = EPageType.INFO,
+            action1 = { option ->
                 option.fold(
                     { viewModel.question(findNavController(), true) },
                     { viewModel.page(findNavController(), it.id, true) })
             },
-            { viewModel.web(rootNavController(), it) }
+            externalAction = { viewModel.web(rootNavController(), it) }
         )
     }
 }

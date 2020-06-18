@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.consent.page
+package org.fouryouandme.auth.screening.page
 
 import android.os.Bundle
 import android.view.View
@@ -8,27 +8,27 @@ import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.extensions.list.foldable.firstOrNone
 import arrow.core.toOption
-import kotlinx.android.synthetic.main.consent.*
-import kotlinx.android.synthetic.main.consent_page.*
+import kotlinx.android.synthetic.main.screening.*
+import kotlinx.android.synthetic.main.screening_page.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.ConsentFragment
-import org.fouryouandme.auth.consent.ConsentViewModel
+import org.fouryouandme.auth.screening.ScreeningViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.consent.Consent
+import org.fouryouandme.core.entity.screening.Screening
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.view.page.EPageType
 
-class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page) {
+class ScreeningPageFragment : BaseFragment<ScreeningViewModel>(R.layout.screening_page) {
 
-    private val args: ConsentPageFragmentArgs by navArgs()
+    private val args: ScreeningPageFragmentArgs by navArgs()
 
-    override val viewModel: ConsentViewModel by lazy {
+    override val viewModel: ScreeningViewModel by lazy {
         viewModelFactory(
             requireParentFragment(),
-            getFactory { ConsentViewModel(navigator, IORuntime) }
+            getFactory { ScreeningViewModel(navigator, IORuntime) }
         )
     }
 
@@ -37,7 +37,7 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
 
         setupView()
 
-        Option.fx { !viewModel.state().configuration to !viewModel.state().consent }
+        Option.fx { !viewModel.state().configuration to !viewModel.state().screening }
             .map { applyData(it.first, it.second) }
 
     }
@@ -50,8 +50,6 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
             .toOption()
             .map {
 
-                it.show()
-
                 it.showBackSecondaryButton(imageConfiguration)
                 { viewModel.back(findNavController()) }
 
@@ -59,7 +57,7 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
 
     }
 
-    private fun applyData(configuration: Configuration, consent: Consent): Unit {
+    private fun applyData(configuration: Configuration, screening: Screening): Unit {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
@@ -67,18 +65,19 @@ class ConsentPageFragment : BaseFragment<ConsentViewModel>(R.layout.consent_page
             .toOption()
             .map { it.showAbort(configuration, configuration.theme.primaryColorEnd.color()) }
 
-        consent.pages.firstOrNone { it.id == args.id }
+        screening.pages.firstOrNone { it.id == args.id }
             .map { data ->
                 page.applyData(
-                    configuration = configuration,
-                    page = data,
-                    pageType = EPageType.INFO,
-                    action1 = { option ->
+                    configuration,
+                    data,
+                    EPageType.INFO,
+                    { option ->
                         option.fold(
-                            { viewModel.question(findNavController(), false) },
+                            { viewModel.questions(findNavController(), false) },
                             { viewModel.page(findNavController(), it.id, false) })
                     },
-                    externalAction = { viewModel.web(rootNavController(), it) }
+                    {},
+                    { viewModel.web(rootNavController(), it) }
                 )
             }
 

@@ -6,9 +6,12 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.screening.*
 import kotlinx.android.synthetic.main.screening_welcome.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.screening.ScreeningError
+import org.fouryouandme.auth.screening.ScreeningFragment
 import org.fouryouandme.auth.screening.ScreeningStateUpdate
 import org.fouryouandme.auth.screening.ScreeningViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -16,10 +19,8 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.screening.Screening
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.view.page.EPageType
 
 class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.screening_welcome) {
 
@@ -73,8 +74,14 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
 
         loading.setLoader(imageConfiguration.loading())
 
-        toolbar.showBackSecondaryButton(imageConfiguration)
-        { viewModel.back(rootNavController()) }
+        requireParentFragment()
+            .requireParentFragment()
+            .toolbar
+            .toOption()
+            .map {
+                it.showBackSecondaryButton(imageConfiguration)
+                { viewModel.back(findNavController()) }
+            }
 
     }
 
@@ -82,12 +89,16 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
+        (requireParentFragment().requireParentFragment() as? ScreeningFragment)
+            .toOption()
+            .map { it.hideAbort() }
+
         page.isVisible = true
-        page.applyData(configuration,
-            null,
-            false,
-            screening.welcomePage,
-            { viewModel.questions(findNavController()) },
-            { viewModel.web(rootNavController(), it) })
+        page.applyData(
+            configuration = configuration,
+            page = screening.welcomePage,
+            pageType = EPageType.INFO,
+            action1 = { viewModel.questions(findNavController(), true) },
+            externalAction = { viewModel.web(rootNavController(), it) })
     }
 }

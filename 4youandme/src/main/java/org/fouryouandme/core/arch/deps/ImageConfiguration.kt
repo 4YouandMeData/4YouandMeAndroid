@@ -40,4 +40,7 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun signUpNextStepSecondary(): Int
+
+    @DrawableRes
+    fun signUpPreviousStepSecondary(): Int
 }

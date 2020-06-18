@@ -3,10 +3,7 @@ package org.fouryouandme.core.arch.navigation
 import org.fouryouandme.auth.consent.*
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
-import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningFailure
-import org.fouryouandme.auth.screening.ScreeningQuestionsToScreeningSuccess
-import org.fouryouandme.auth.screening.ScreeningToConsent
-import org.fouryouandme.auth.screening.ScreeningWelcomeToScreeningQuestions
+import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
@@ -33,8 +30,12 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
+            is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)
+            is ScreeningPageToScreeningPage -> screeningPageToScreeningPage(action.id)
+            is ScreeningPageToScreeningQuestions -> screeningPageToScreeningQuestions()
             is ScreeningQuestionsToScreeningSuccess -> screeningQuestionsToScreeningSuccess()
             is ScreeningQuestionsToScreeningFailure -> screeningQuestionsToScreeningFailure()
+            is ScreeningFailureToScreeningWelcome -> screeningFailureToScreeningWelcome()
             is ScreeningToConsent -> screeningToConsent()
 
             is ConsentWelcomeToConsentPage -> consentWelcomeToConsentPage(action.id)
@@ -44,6 +45,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ConsentQuestionToConsentQuestion -> consentQuestionToConsentQuestion(action.index)
             is ConsentQuestionToConsentSuccess -> consentQuestionToConsentSuccess()
             is ConsentQuestionToConsentFailure -> consentQuestionToConsentFailure()
+            is ConsentFailureToConsentWelcome -> consentFailureToConsentWelcome()
+            is ConsentFailureToConsentPage -> consentFailureToConsentPage(action.id)
 
             else -> {
                 {}
