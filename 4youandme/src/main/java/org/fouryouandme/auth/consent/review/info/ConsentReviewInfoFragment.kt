@@ -2,6 +2,7 @@ package org.fouryouandme.auth.consent.review.info
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arrow.core.Option
@@ -26,7 +27,7 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
 
     override val viewModel: ConsentReviewViewModel by lazy {
         viewModelFactory(
-            this,
+            requireParentFragment(),
             getFactory {
                 ConsentReviewViewModel(
                     navigator,
@@ -90,6 +91,8 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
         recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         recycler_view.adapter = adapter
+
+        disagree.setOnClickListener { viewModel.disagree(findNavController()) }
 
     }
 

@@ -9,6 +9,18 @@
         android:id="@+id/consent_review_info"
         android:name="org.fouryouandme.auth.consent.review.info.ConsentReviewInfoFragment"
         android:label="consent_review_info"
-        tools:layout="@layout/consent_review_info" />
+        tools:layout="@layout/consent_review_info">
+
+        <action
+            android:id="@+id/action_consent_review_info_to_consent_review_disagree"
+            app:destination="@id/consent_review_disagree" />
+
+    </fragment>
+
+    <dialog
+        android:id="@+id/consent_review_disagree"
+        android:name="org.fouryouandme.auth.consent.review.disagree.ConsentReviewDisagreeFragment"
+        android:label="consent_review_disagree"
+        tools:layout="@layout/consent_review_disagree" />
 
 </navigation>

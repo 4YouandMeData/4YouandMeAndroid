@@ -1,0 +1,32 @@
+***REMOVED***
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:padding="16dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="5dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/body"
+        style="@style/text_paragraph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/close"
+        android:layout_marginTop="30dp"
+        android:gravity="center" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/disagree"
+        style="@style/text_h2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/body"
+        android:layout_marginTop="33dp" />
+
+</RelativeLayout>

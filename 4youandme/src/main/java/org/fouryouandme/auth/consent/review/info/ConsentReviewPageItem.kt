@@ -9,7 +9,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.consent_review_page.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.configuration.button.button
+import org.fouryouandme.core.entity.configuration.background.roundBackground
 import org.fouryouandme.core.entity.page.Page
 
 data class ConsentReviewPageItem(
@@ -67,7 +67,7 @@ class ConsentReviewPageViewHolder(
         body.setTextColor(t.configuration.theme.primaryTextColor.color())
 
         root.background =
-            button(t.configuration.theme.deactiveColor.color())
+            roundBackground(t.configuration.theme.deactiveColor.color())
 
     }
 
@@ -77,9 +77,11 @@ class ConsentReviewPageViewHolder(
 
         fun factory(): ViewHolderFactory =
             ViewHolderFactory(
-                { ConsentReviewPageViewHolder(
-                    it
-                ) as DroidViewHolder<DroidItem, *> },
+                {
+                    ConsentReviewPageViewHolder(
+                        it
+                    ) as DroidViewHolder<DroidItem, *>
+                },
                 { _, item -> item is ConsentReviewPageItem }
             )
 

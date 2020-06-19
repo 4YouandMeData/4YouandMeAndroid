@@ -3,6 +3,7 @@ package org.fouryouandme.auth.consent.review
 import arrow.core.None
 import arrow.core.Option
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.review.ConsentReview
 
@@ -36,4 +37,5 @@ sealed class ConsentReviewError {
 
 /* --- navigation --- */
 
-
+object ConsentReviewInfoToConsentReviewDisagree: NavigationAction
+object ConsentReviewDisagreeToAuth: NavigationAction

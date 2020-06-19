@@ -14,6 +14,7 @@ data class ConsentReviewResponse(
     @field:Json(name = "title") val title: String? = null,
     @field:Json(name = "body") val body: String? = null,
     @field:Json(name = "disagree_modal_body") val disagreeModalBody: String? = null,
+    @field:Json(name = "disagree_modal_button") val disagreeModalButton: String? = null,
     @field:Json(name = "pages") val pages: HasMany<PageResponse>? = null,
     @field:Json(name = "welcome_page") val welcomePage: HasOne<PageResponse>? = null
 
@@ -26,6 +27,7 @@ data class ConsentReviewResponse(
                 !title.toOption(),
                 !body.toOption(),
                 !disagreeModalBody.toOption(),
+                !disagreeModalButton.toOption(),
                 !pages?.get(document)
                     ?.mapNotNull { it.toPage(document).orNull() }
                     .toOption(),
