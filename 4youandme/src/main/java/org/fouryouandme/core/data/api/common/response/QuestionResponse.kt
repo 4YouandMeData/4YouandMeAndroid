@@ -9,9 +9,9 @@ import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.ObjectDocument
 import moe.banana.jsonapi2.Resource
-import org.fouryouandme.core.data.api.consent.response.ConsentResponse
+import org.fouryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
-import org.fouryouandme.core.entity.consent.ConsentQuestion
+import org.fouryouandme.core.entity.consent.informed.ConsentInfoQuestion
 import org.fouryouandme.core.entity.screening.ScreeningQuestion
 
 @JsonApi(type = "question")
@@ -39,10 +39,10 @@ data class QuestionResponse(
         }
 
     fun toConsentQuestion(
-        document: ObjectDocument<ConsentResponse>
-    ): Option<ConsentQuestion> =
+        document: ObjectDocument<ConsentInfoResponse>
+    ): Option<ConsentInfoQuestion> =
         Option.fx {
-            ConsentQuestion(
+            ConsentInfoQuestion(
                 id,
                 !text.toOption(),
                 !answer?.get(document)

@@ -9,8 +9,6 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.consent.ConsentUseCase
-import org.fouryouandme.core.cases.screening.ScreeningUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
 class SplashViewModel(

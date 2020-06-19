@@ -6,7 +6,7 @@ import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
-import org.fouryouandme.core.entity.consent.ConsentAnswer
+import org.fouryouandme.core.entity.consent.informed.ConsentInfoAnswer
 import org.fouryouandme.core.entity.screening.ScreeningAnswer
 
 @JsonApi(type = "possible_answer")
@@ -20,8 +20,12 @@ data class AnswerResponse(
             ScreeningAnswer(id, !text.toOption(), !correct.toOption())
         }
 
-    fun toConsentAnswer(): Option<ConsentAnswer> =
+    fun toConsentAnswer(): Option<ConsentInfoAnswer> =
         Option.fx {
-            ConsentAnswer(id, !text.toOption(), !correct.toOption())
+            ConsentInfoAnswer(
+                id,
+                !text.toOption(),
+                !correct.toOption()
+            )
         }
 }

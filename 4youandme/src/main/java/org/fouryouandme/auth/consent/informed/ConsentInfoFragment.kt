@@ -1,9 +1,8 @@
-package org.fouryouandme.auth.consent
+package org.fouryouandme.auth.consent.informed
 
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.consent.*
-import kotlinx.android.synthetic.main.screening_questions.*
+import kotlinx.android.synthetic.main.consent_info.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -12,12 +11,17 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 
-class ConsentFragment : BaseFragment<ConsentViewModel>(R.layout.consent) {
+class ConsentInfoFragment : BaseFragment<ConsentInfoViewModel>(R.layout.consent_info) {
 
-    override val viewModel: ConsentViewModel by lazy {
+    override val viewModel: ConsentInfoViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { ConsentViewModel(navigator, IORuntime) }
+            getFactory {
+                ConsentInfoViewModel(
+                    navigator,
+                    IORuntime
+                )
+            }
         )
     }
 

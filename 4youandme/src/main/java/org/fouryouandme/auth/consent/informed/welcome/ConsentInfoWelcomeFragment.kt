@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.consent.welcome
+package org.fouryouandme.auth.consent.informed.welcome
 
 import android.os.Bundle
 import android.view.View
@@ -7,30 +7,36 @@ import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toOption
-import kotlinx.android.synthetic.main.consent.*
-import kotlinx.android.synthetic.main.consent_welcome.*
+import kotlinx.android.synthetic.main.consent_info.*
+import kotlinx.android.synthetic.main.consent_info_welcome.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.ConsentError
-import org.fouryouandme.auth.consent.ConsentFragment
-import org.fouryouandme.auth.consent.ConsentStateUpdate
-import org.fouryouandme.auth.consent.ConsentViewModel
+import org.fouryouandme.auth.consent.informed.ConsentInfoError
+import org.fouryouandme.auth.consent.informed.ConsentInfoFragment
+import org.fouryouandme.auth.consent.informed.ConsentInfoStateUpdate
+import org.fouryouandme.auth.consent.informed.ConsentInfoViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.consent.Consent
+import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.hide
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.view.page.EPageType
 
-class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_welcome) {
+class ConsentInfoWelcomeFragment :
+    BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_welcome) {
 
-    override val viewModel: ConsentViewModel by lazy {
+    override val viewModel: ConsentInfoViewModel by lazy {
         viewModelFactory(
             requireParentFragment(),
-            getFactory { ConsentViewModel(navigator, IORuntime) }
+            getFactory {
+                ConsentInfoViewModel(
+                    navigator,
+                    IORuntime
+                )
+            }
         )
     }
 
@@ -40,8 +46,8 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is ConsentStateUpdate.Initialization ->
-                        applyData(it.configuration, it.consent)
+                    is ConsentInfoStateUpdate.Initialization ->
+                        applyData(it.configuration, it.consentInfo)
                 }
             }
 
@@ -51,7 +57,7 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
         viewModel.errorLiveData()
             .observeEvent {
                 when (it.cause) {
-                    ConsentError.Initialization ->
+                    ConsentInfoError.Initialization ->
                         error.setError(it.error)
                         { viewModel.initialize(rootNavController()) }
                 }
@@ -63,7 +69,7 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
 
         setupView()
 
-        Option.fx { !viewModel.state().configuration to !viewModel.state().consent }
+        Option.fx { !viewModel.state().configuration to !viewModel.state().consentInfo }
             .fold(
                 {
                     viewModel.initialize(rootNavController())
@@ -84,11 +90,11 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
             .map { it.hide() }
     }
 
-    private fun applyData(configuration: Configuration, consent: Consent): Unit {
+    private fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        (requireParentFragment().requireParentFragment() as? ConsentFragment)
+        (requireParentFragment().requireParentFragment() as? ConsentInfoFragment)
             .toOption()
             .map { it.hideAbort() }
 
@@ -101,7 +107,7 @@ class ConsentWelcomeFragment : BaseFragment<ConsentViewModel>(R.layout.consent_w
         page.isVisible = true
         page.applyData(
             configuration = configuration,
-            page = consent.welcomePage,
+            page = consentInfo.welcomePage,
             pageType = EPageType.INFO,
             action1 = { option ->
                 option.fold(

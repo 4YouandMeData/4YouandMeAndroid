@@ -188,8 +188,8 @@
 
     <fragment
         android:id="@+id/consent"
-        android:name="org.fouryouandme.auth.consent.ConsentFragment"
+        android:name="org.fouryouandme.auth.consent.informed.ConsentInfoFragment"
         android:label="screening"
-        tools:layout="@layout/consent" />
+        tools:layout="@layout/consent_info" />
 
 </navigation>

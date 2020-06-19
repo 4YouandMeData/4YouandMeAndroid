@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.consent
+package org.fouryouandme.auth.consent.informed
 
 import androidx.navigation.NavController
 import arrow.Kind
@@ -8,8 +8,8 @@ import arrow.core.getOption
 import arrow.core.toOption
 import arrow.fx.ForIO
 import arrow.syntax.function.pipe
-import org.fouryouandme.auth.consent.question.ConsentAnswerItem
-import org.fouryouandme.auth.consent.question.toItem
+import org.fouryouandme.auth.consent.informed.question.ConsentAnswerItem
+import org.fouryouandme.auth.consent.informed.question.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -18,28 +18,28 @@ import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.consent.ConsentUseCase
+import org.fouryouandme.core.cases.consent.informed.ConsentInfoUseCase
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
 
-class ConsentViewModel(
+class ConsentInfoViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        ConsentState,
-        ConsentStateUpdate,
-        ConsentError,
-        ConsentLoading>
-    (ConsentState(), navigator, runtime) {
+        ConsentInfoState,
+        ConsentInfoStateUpdate,
+        ConsentInfoError,
+        ConsentInfoLoading>
+    (ConsentInfoState(), navigator, runtime) {
 
     /* --- data --- */
 
     fun initialize(navController: NavController): Unit =
         runtime.fx.concurrent {
 
-            !showLoading(ConsentLoading.Initialization)
+            !showLoading(ConsentInfoLoading.Initialization)
 
             val configuration =
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
@@ -47,13 +47,13 @@ class ConsentViewModel(
             val initialization =
                 !configuration.foldToKindEither(runtime.fx) { config ->
 
-                    ConsentUseCase.getConsent(runtime)
+                    ConsentInfoUseCase.getConsent(runtime)
                         .mapResult(runtime.fx) { it to config }
 
                 }.handleAuthError(runtime, navController, navigator)
 
             !initialization.fold(
-                { setError(it, ConsentError.Initialization) },
+                { setError(it, ConsentInfoError.Initialization) },
                 { pair ->
 
                     val questions =
@@ -64,15 +64,15 @@ class ConsentViewModel(
                     setState(
                         state().copy(
                             configuration = pair.second.toOption(),
-                            consent = pair.first.toOption(),
+                            consentInfo = pair.first.toOption(),
                             questions = questions
                         ),
-                        ConsentStateUpdate.Initialization(pair.second, questions, pair.first)
+                        ConsentInfoStateUpdate.Initialization(pair.second, questions, pair.first)
                     )
                 }
             )
 
-            !hideLoading(ConsentLoading.Initialization)
+            !hideLoading(ConsentInfoLoading.Initialization)
 
         }.unsafeRunAsync()
 
@@ -82,7 +82,7 @@ class ConsentViewModel(
         Option.fx {
 
             val questionId =
-                !state().consent.bind().questions.getOrNull(index)?.id.toOption()
+                !state().consentInfo.bind().questions.getOrNull(index)?.id.toOption()
 
             state().questions.getOption(questionId).bind()
         }
@@ -92,7 +92,7 @@ class ConsentViewModel(
         Option.fx {
 
             val questionId =
-                !state().consent.bind().questions.getOrNull(index)?.id.toOption()
+                !state().consentInfo.bind().questions.getOrNull(index)?.id.toOption()
 
             val questions =
                 state().questions.mapValues {
@@ -105,7 +105,7 @@ class ConsentViewModel(
 
             setState(
                 state().copy(questions = questions),
-                ConsentStateUpdate.Questions(questions)
+                ConsentInfoStateUpdate.Questions(questions)
             ).unsafeRunAsync()
         }
 
@@ -133,9 +133,15 @@ class ConsentViewModel(
                     )
 
             if (correctAnswers >= 4)
-                !navigator.navigateTo(runtime, navController, ConsentQuestionToConsentSuccess)
+                !navigator.navigateTo(
+                    runtime, navController,
+                    ConsentInfoQuestionToConsentInfoSuccess
+                )
             else
-                !navigator.navigateTo(runtime, navController, ConsentQuestionToConsentFailure)
+                !navigator.navigateTo(
+                    runtime, navController,
+                    ConsentInfoQuestionToConsentInfoFailure
+                )
 
         }
 
@@ -148,13 +154,21 @@ class ConsentViewModel(
         navigator.navigateTo(
             runtime,
             navController,
-            if (fromWelcome) ConsentWelcomeToConsentPage(id) else ConsentPageToConsentPage(id)
+            if (fromWelcome) ConsentInfoWelcomeToConsentInfoPage(
+                id
+            ) else ConsentInfoPageToConsentInfoPage(
+                id
+            )
         ).unsafeRunAsync()
 
     fun question(navController: NavController, fromWelcome: Boolean): Unit =
         when {
-            fromWelcome -> ConsentWelcomeToConsentQuestion(0)
-            else -> ConsentPageToConsentQuestion(0)
+            fromWelcome -> ConsentInfoWelcomeToConsentInfoQuestion(
+                0
+            )
+            else -> ConsentInfoPageToConsentInfoQuestion(
+                0
+            )
         }.pipe { navigator.navigateTo(runtime, navController, it) }.unsafeRunAsync()
 
     fun nextQuestion(navController: NavController, currentIndex: Int): Unit =
@@ -164,7 +178,9 @@ class ConsentViewModel(
                 navigator.navigateTo(
                     runtime,
                     navController,
-                    ConsentQuestionToConsentQuestion(currentIndex + 1)
+                    ConsentInfoQuestionToConsentInfoQuestion(
+                        currentIndex + 1
+                    )
                 )
             else validate(navController)
 
@@ -181,10 +197,13 @@ class ConsentViewModel(
 
             !setState(
                 state().copy(questions = questions),
-                ConsentStateUpdate.Questions(questions)
+                ConsentInfoStateUpdate.Questions(questions)
             )
 
-            !navigator.navigateTo(runtime, navController, ConsentFailureToConsentWelcome)
+            !navigator.navigateTo(
+                runtime, navController,
+                ConsentInfoFailureToConsentInfoWelcome
+            )
 
         }.unsafeRunAsync()
 
@@ -199,10 +218,15 @@ class ConsentViewModel(
 
             !setState(
                 state().copy(questions = questions),
-                ConsentStateUpdate.Questions(questions)
+                ConsentInfoStateUpdate.Questions(questions)
             )
 
-            !navigator.navigateTo(runtime, navController, ConsentFailureToConsentPage(id))
+            !navigator.navigateTo(
+                runtime, navController,
+                ConsentInfoFailureToConsentInfoPage(
+                    id
+                )
+            )
 
         }.unsafeRunAsync()
 

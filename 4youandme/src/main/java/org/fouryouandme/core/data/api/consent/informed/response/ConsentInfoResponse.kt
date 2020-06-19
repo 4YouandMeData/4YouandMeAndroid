@@ -1,4 +1,4 @@
-package org.fouryouandme.core.data.api.consent.response
+package org.fouryouandme.core.data.api.consent.informed.response
 
 import arrow.core.Option
 import arrow.core.extensions.fx
@@ -7,10 +7,10 @@ import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.data.api.common.response.QuestionResponse
-import org.fouryouandme.core.entity.consent.Consent
+import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 
 @JsonApi(type = "informed_consent")
-data class ConsentResponse(
+data class ConsentInfoResponse(
     @field:Json(name = "questions")
     val questions: HasMany<QuestionResponse>? = null,
     @field:Json(name = "pages")
@@ -23,10 +23,10 @@ data class ConsentResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toConsent(document: ObjectDocument<ConsentResponse>): Option<Consent> =
+    fun toConsent(document: ObjectDocument<ConsentInfoResponse>): Option<ConsentInfo> =
         Option.fx {
 
-            Consent(
+            ConsentInfo(
                 !questions?.get(document)
                     ?.mapNotNull { it.toConsentQuestion(document).orNull() }
                     .toOption(),

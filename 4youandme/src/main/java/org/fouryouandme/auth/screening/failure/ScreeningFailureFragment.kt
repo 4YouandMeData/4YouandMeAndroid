@@ -9,7 +9,6 @@ import arrow.core.toOption
 import kotlinx.android.synthetic.main.screening.*
 import kotlinx.android.synthetic.main.screening_page.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.ConsentFragment
 import org.fouryouandme.auth.screening.ScreeningFragment
 import org.fouryouandme.auth.screening.ScreeningViewModel
 import org.fouryouandme.core.arch.android.BaseFragment

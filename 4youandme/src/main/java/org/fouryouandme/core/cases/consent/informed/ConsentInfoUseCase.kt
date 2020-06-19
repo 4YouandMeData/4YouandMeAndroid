@@ -1,4 +1,4 @@
-package org.fouryouandme.core.cases.consent
+package org.fouryouandme.core.cases.consent.informed
 
 import arrow.Kind
 import arrow.core.Either
@@ -6,14 +6,14 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase
-import org.fouryouandme.core.entity.consent.Consent
+import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.foldToKindEither
 
-object ConsentUseCase {
+object ConsentInfoUseCase {
 
     fun <F> getConsent(
         runtime: Runtime<F>
-    ): Kind<F, Either<FourYouAndMeError, Consent>> =
+    ): Kind<F, Either<FourYouAndMeError, ConsentInfo>> =
         runtime.fx.concurrent {
 
             val token =
@@ -21,7 +21,7 @@ object ConsentUseCase {
 
 
             !token.foldToKindEither(runtime.fx) {
-                ConsentRepository.getConsent(
+                ConsentInfoRepository.getConsent(
                     runtime,
                     it,
                     runtime.injector.environment.studyId()

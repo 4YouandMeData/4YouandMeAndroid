@@ -1,9 +1,9 @@
-package org.fouryouandme.core.entity.consent
+package org.fouryouandme.core.entity.consent.informed
 
 import org.fouryouandme.core.entity.page.Page
 
-data class Consent(
-    val questions: List<ConsentQuestion>,
+data class ConsentInfo(
+    val questions: List<ConsentInfoQuestion>,
     val pages: List<Page>,
     val welcomePage: Page,
     val successPage: Page,

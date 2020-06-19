@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/consent_navigation"
-    app:startDestination="@id/consent_welcome">
+    app:startDestination="@id/consent_info_welcome">
 
     <fragment
-        android:id="@+id/consent_welcome"
-        android:name="org.fouryouandme.auth.consent.welcome.ConsentWelcomeFragment"
-        android:label="consent_welcome"
-        tools:layout="@layout/consent_welcome">
+        android:id="@+id/consent_info_welcome"
+        android:name="org.fouryouandme.auth.consent.informed.welcome.ConsentInfoWelcomeFragment"
+        android:label="consent_info_welcome"
+        tools:layout="@layout/consent_info_welcome">
 
         <action
-            android:id="@+id/action_consent_welcome_to_consent_page"
-            app:destination="@id/consent_page"
+            android:id="@+id/action_consent_info_welcome_to_consent_info_page"
+            app:destination="@id/consent_info_page"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -26,8 +26,8 @@
         </action>
 
         <action
-            android:id="@+id/action_consent_welcome_to_consent_question"
-            app:destination="@id/consent_question"
+            android:id="@+id/action_consent_info_welcome_to_consent_info_question"
+            app:destination="@id/consent_info_question"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -42,18 +42,18 @@
     </fragment>
 
     <fragment
-        android:id="@+id/consent_page"
-        android:name="org.fouryouandme.auth.consent.page.ConsentPageFragment"
-        android:label="consent_page"
-        tools:layout="@layout/consent_page">
+        android:id="@+id/consent_info_page"
+        android:name="org.fouryouandme.auth.consent.informed.page.ConsentInfoPageFragment"
+        android:label="consent_info_page"
+        tools:layout="@layout/consent_info_page">
 
         <argument
             android:name="id"
             app:argType="string" />
 
         <action
-            android:id="@+id/action_consent_page_self"
-            app:destination="@id/consent_page"
+            android:id="@+id/action_consent_info_page_self"
+            app:destination="@id/consent_info_page"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -66,8 +66,8 @@
         </action>
 
         <action
-            android:id="@+id/action_consent_page_to_consent_question"
-            app:destination="@id/consent_question"
+            android:id="@+id/action_consent_info_page_to_consent_info_question"
+            app:destination="@id/consent_info_question"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -82,18 +82,18 @@
     </fragment>
 
     <fragment
-        android:id="@+id/consent_question"
-        android:name="org.fouryouandme.auth.consent.question.ConsentQuestionFragment"
-        android:label="consent_question"
-        tools:layout="@layout/consent_question">
+        android:id="@+id/consent_info_question"
+        android:name="org.fouryouandme.auth.consent.informed.question.ConsentInfoQuestionFragment"
+        android:label="consent_info_question"
+        tools:layout="@layout/consent_info_question">
 
         <argument
             android:name="index"
             app:argType="integer" />
 
         <action
-            android:id="@+id/action_consent_question_self"
-            app:destination="@id/consent_question"
+            android:id="@+id/action_consent_info_question_self"
+            app:destination="@id/consent_info_question"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -106,16 +106,16 @@
         </action>
 
         <action
-            android:id="@+id/action_consent_question_to_consent_failure"
-            app:destination="@id/consent_failure"
+            android:id="@+id/action_consent_info_question_to_consent_info_failure"
+            app:destination="@id/consent_info_failure"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
 
         <action
-            android:id="@+id/action_consent_question_to_consent_success"
-            app:destination="@id/consent_success"
+            android:id="@+id/action_consent_info_question_to_consent_info_success"
+            app:destination="@id/consent_info_success"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -124,19 +124,19 @@
     </fragment>
 
     <fragment
-        android:id="@+id/consent_failure"
-        android:name="org.fouryouandme.auth.consent.failure.ConsentFailureFragment"
-        android:label="consent_failure"
-        tools:layout="@layout/consent_page" >
+        android:id="@+id/consent_info_failure"
+        android:name="org.fouryouandme.auth.consent.informed.failure.ConsentInfoFailureFragment"
+        android:label="consent_info_failure"
+        tools:layout="@layout/consent_info_page">
 
         <action
-            android:id="@+id/action_consent_failure_to_consent_page"
-            app:destination="@id/consent_page"
+            android:id="@+id/action_consent_info_failure_to_consent_info_page"
+            app:destination="@id/consent_info_page"
             app:enterAnim="@anim/slide_from_left"
             app:exitAnim="@anim/slide_to_right"
             app:popEnterAnim="@anim/slide_from_right"
             app:popExitAnim="@anim/slide_to_left"
-            app:popUpTo="@id/consent_welcome">
+            app:popUpTo="@id/consent_info_welcome">
 
             <argument
                 android:name="id"
@@ -147,9 +147,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/consent_success"
-        android:name="org.fouryouandme.auth.consent.success.ConsentSuccessFragment"
-        android:label="consent_success"
-        tools:layout="@layout/consent_page" />
+        android:id="@+id/consent_info_success"
+        android:name="org.fouryouandme.auth.consent.informed.success.ConsentInfoSuccessFragment"
+        android:label="consent_info_success"
+        tools:layout="@layout/consent_info_page" />
 
 </navigation>

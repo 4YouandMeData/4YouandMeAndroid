@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.consent.question
+package org.fouryouandme.auth.consent.informed.question
 
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
@@ -10,11 +10,11 @@ import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.StableDroidItem
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.consent_answer.*
+import kotlinx.android.synthetic.main.consent_info_answer.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.question.EConsentAnswerPayload.ANSWER
+import org.fouryouandme.auth.consent.informed.question.EConsentAnswerPayload.ANSWER
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.consent.ConsentAnswer
+import org.fouryouandme.core.entity.consent.informed.ConsentInfoAnswer
 
 enum class EConsentAnswerPayload {
 
@@ -23,7 +23,7 @@ enum class EConsentAnswerPayload {
 }
 
 data class ConsentAnswerItem(
-    val answer: ConsentAnswer,
+    val answer: ConsentInfoAnswer,
     val isSelected: Boolean,
     val configuration: Configuration
 ) : StableDroidItem {
@@ -52,8 +52,12 @@ data class ConsentAnswerItem(
     }
 }
 
-fun ConsentAnswer.toItem(configuration: Configuration): ConsentAnswerItem =
-    ConsentAnswerItem(this, false, configuration)
+fun ConsentInfoAnswer.toItem(configuration: Configuration): ConsentAnswerItem =
+    ConsentAnswerItem(
+        this,
+        false,
+        configuration
+    )
 
 class ConsentAnswerViewHolder(
     parent: ViewGroup,
@@ -62,7 +66,7 @@ class ConsentAnswerViewHolder(
     parent,
     { layoutInflater: LayoutInflater, viewGroup: ViewGroup, b: Boolean ->
         layoutInflater.inflate(
-            R.layout.consent_answer,
+            R.layout.consent_info_answer,
             viewGroup,
             b
         )
@@ -104,7 +108,12 @@ class ConsentAnswerViewHolder(
 
         fun factory(onAnswer: (ConsentAnswerItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { ConsentAnswerViewHolder(it, onAnswer) as DroidViewHolder<DroidItem, *> },
+                {
+                    ConsentAnswerViewHolder(
+                        it,
+                        onAnswer
+                    ) as DroidViewHolder<DroidItem, *>
+                },
                 { _, droidItem -> droidItem is ConsentAnswerItem }
             )
     }

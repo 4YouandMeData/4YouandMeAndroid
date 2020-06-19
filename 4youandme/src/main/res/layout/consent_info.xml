@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/consent_navigation" />
+        app:navGraph="@navigation/consent_info_navigation" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

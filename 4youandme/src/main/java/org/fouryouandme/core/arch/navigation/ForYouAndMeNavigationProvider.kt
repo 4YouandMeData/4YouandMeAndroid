@@ -1,6 +1,6 @@
 package org.fouryouandme.core.arch.navigation
 
-import org.fouryouandme.auth.consent.*
+import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.*
@@ -38,15 +38,24 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ScreeningFailureToScreeningWelcome -> screeningFailureToScreeningWelcome()
             is ScreeningToConsent -> screeningToConsent()
 
-            is ConsentWelcomeToConsentPage -> consentWelcomeToConsentPage(action.id)
-            is ConsentWelcomeToConsentQuestion -> consentWelcomeToConsentQuestion(action.index)
-            is ConsentPageToConsentPage -> consentPageToConsentPage(action.id)
-            is ConsentPageToConsentQuestion -> consentPageToConsentQuestion(action.index)
-            is ConsentQuestionToConsentQuestion -> consentQuestionToConsentQuestion(action.index)
-            is ConsentQuestionToConsentSuccess -> consentQuestionToConsentSuccess()
-            is ConsentQuestionToConsentFailure -> consentQuestionToConsentFailure()
-            is ConsentFailureToConsentWelcome -> consentFailureToConsentWelcome()
-            is ConsentFailureToConsentPage -> consentFailureToConsentPage(action.id)
+            is ConsentInfoWelcomeToConsentInfoPage ->
+                consentInfoWelcomeToConsentInfoPage(action.id)
+            is ConsentInfoWelcomeToConsentInfoQuestion ->
+                consentInfoWelcomeToConsentInfoQuestion(action.index)
+            is ConsentInfoPageToConsentInfoPage ->
+                consentInfoPageToConsentInfoPage(action.id)
+            is ConsentInfoPageToConsentInfoQuestion ->
+                consentInfoPageToConsentInfoQuestion(action.index)
+            is ConsentInfoQuestionToConsentInfoQuestion ->
+                consentInfoQuestionToConsentInfoQuestion(action.index)
+            is ConsentInfoQuestionToConsentInfoSuccess ->
+                consentInfoQuestionToConsentInfoSuccess()
+            is ConsentInfoQuestionToConsentInfoFailure ->
+                consentInfoQuestionToConsentInfoFailure()
+            is ConsentInfoFailureToConsentInfoWelcome ->
+                consentInfoFailureToConsentInfoWelcome()
+            is ConsentInfoFailureToConsentInfoPage ->
+                consentInfoFailureToConsentInfoPage(action.id)
 
             else -> {
                 {}

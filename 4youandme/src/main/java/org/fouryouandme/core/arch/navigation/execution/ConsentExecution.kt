@@ -1,53 +1,73 @@
 package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.failure.ConsentFailureFragmentDirections
-import org.fouryouandme.auth.consent.page.ConsentPageFragmentDirections
-import org.fouryouandme.auth.consent.question.ConsentQuestionFragmentDirections
-import org.fouryouandme.auth.consent.welcome.ConsentWelcomeFragmentDirections
+import org.fouryouandme.auth.consent.informed.failure.ConsentInfoFailureFragmentDirections
+import org.fouryouandme.auth.consent.informed.page.ConsentInfoPageFragmentDirections
+import org.fouryouandme.auth.consent.informed.question.ConsentInfoQuestionFragmentDirections
+import org.fouryouandme.auth.consent.informed.welcome.ConsentInfoWelcomeFragmentDirections
 import org.fouryouandme.core.arch.navigation.NavigationExecution
 
-fun consentWelcomeToConsentPage(id: String): NavigationExecution =
+fun consentInfoWelcomeToConsentInfoPage(id: String): NavigationExecution =
     {
-        it.navigate(ConsentWelcomeFragmentDirections.actionConsentWelcomeToConsentPage(id))
+        it.navigate(
+            ConsentInfoWelcomeFragmentDirections.actionConsentInfoWelcomeToConsentInfoPage(
+                id
+            )
+        )
     }
 
-fun consentWelcomeToConsentQuestion(index: Int): NavigationExecution =
+fun consentInfoWelcomeToConsentInfoQuestion(index: Int): NavigationExecution =
     {
-        it.navigate(ConsentWelcomeFragmentDirections.actionConsentWelcomeToConsentQuestion(index))
+        it.navigate(
+            ConsentInfoWelcomeFragmentDirections
+                .actionConsentInfoWelcomeToConsentInfoQuestion(index)
+        )
     }
 
-fun consentPageToConsentPage(id: String): NavigationExecution =
+fun consentInfoPageToConsentInfoPage(id: String): NavigationExecution =
     {
-        it.navigate(ConsentPageFragmentDirections.actionConsentPageSelf(id))
+        it.navigate(ConsentInfoPageFragmentDirections.actionConsentInfoPageSelf(id))
     }
 
-fun consentPageToConsentQuestion(index: Int): NavigationExecution =
+fun consentInfoPageToConsentInfoQuestion(index: Int): NavigationExecution =
     {
-        it.navigate(ConsentPageFragmentDirections.actionConsentPageToConsentQuestion(index))
+        it.navigate(
+            ConsentInfoPageFragmentDirections.actionConsentInfoPageToConsentInfoQuestion(
+                index
+            )
+        )
     }
 
-fun consentQuestionToConsentQuestion(index: Int): NavigationExecution =
+fun consentInfoQuestionToConsentInfoQuestion(index: Int): NavigationExecution =
     {
-        it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionSelf(index))
+        it.navigate(ConsentInfoQuestionFragmentDirections.actionConsentInfoQuestionSelf(index))
     }
 
-fun consentQuestionToConsentSuccess(): NavigationExecution =
+fun consentInfoQuestionToConsentInfoSuccess(): NavigationExecution =
     {
-        it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionToConsentSuccess())
+        it.navigate(
+            ConsentInfoQuestionFragmentDirections
+                .actionConsentInfoQuestionToConsentInfoSuccess()
+        )
     }
 
-fun consentQuestionToConsentFailure(): NavigationExecution =
+fun consentInfoQuestionToConsentInfoFailure(): NavigationExecution =
     {
-        it.navigate(ConsentQuestionFragmentDirections.actionConsentQuestionToConsentFailure())
+        it.navigate(
+            ConsentInfoQuestionFragmentDirections
+                .actionConsentInfoQuestionToConsentInfoFailure()
+        )
     }
 
-fun consentFailureToConsentWelcome(): NavigationExecution =
+fun consentInfoFailureToConsentInfoWelcome(): NavigationExecution =
     {
-        it.popBackStack(R.id.consent_welcome, false)
+        it.popBackStack(R.id.consent_info_welcome, false)
     }
 
-fun consentFailureToConsentPage(id: String): NavigationExecution =
+fun consentInfoFailureToConsentInfoPage(id: String): NavigationExecution =
     {
-        it.navigate(ConsentFailureFragmentDirections.actionConsentFailureToConsentPage(id))
+        it.navigate(
+            ConsentInfoFailureFragmentDirections
+                .actionConsentInfoFailureToConsentInfoPage(id)
+        )
     }

@@ -7,6 +7,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import moe.banana.jsonapi2.ResourceAdapterFactory
+import org.fouryouandme.core.arch.app.FourYouAndMeApp
+import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.common.response.AnswerResponse
@@ -14,13 +16,11 @@ import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.data.api.common.response.QuestionResponse
 import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
-import org.fouryouandme.core.data.api.consent.ConsentApi
-import org.fouryouandme.core.data.api.consent.response.ConsentResponse
+import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
+import org.fouryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import org.fouryouandme.core.data.api.getApiService
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
-import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
-import org.fouryouandme.core.arch.app.FourYouAndMeApp
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -70,7 +70,7 @@ class ForYouAndMeInjector(
                     .add(QuestionResponse::class.java)
                     .add(AnswerResponse::class.java)
                     .add(ScreeningResponse::class.java)
-                    .add(ConsentResponse::class.java)
+                    .add(ConsentInfoResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -88,6 +88,6 @@ class ForYouAndMeInjector(
     override val screeningApi: ScreeningApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
-    override val consentApi: ConsentApi =
+    override val consentInfoApi: ConsentInfoApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 }
