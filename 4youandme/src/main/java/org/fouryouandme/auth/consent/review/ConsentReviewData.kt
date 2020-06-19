@@ -2,19 +2,22 @@ package org.fouryouandme.auth.consent.review
 
 import arrow.core.None
 import arrow.core.Option
+import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.review.ConsentReview
 
 data class ConsentReviewState(
     val configuration: Option<Configuration> = None,
-    val consentReview: Option<ConsentReview> = None
+    val consentReview: Option<ConsentReview> = None,
+    val items: List<DroidItem> = emptyList()
 )
 
 sealed class ConsentReviewStateUpdate {
 
     data class Initialization(
         val configuration: Configuration,
-        val consentReview: ConsentReview
+        val consentReview: ConsentReview,
+        val items: List<DroidItem>
     ) : ConsentReviewStateUpdate()
 
 }

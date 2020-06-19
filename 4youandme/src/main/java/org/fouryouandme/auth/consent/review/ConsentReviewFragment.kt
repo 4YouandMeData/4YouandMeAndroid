@@ -2,8 +2,12 @@ package org.fouryouandme.auth.consent.review
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arrow.core.Option
 import arrow.core.extensions.fx
+import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.consent_review.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -27,14 +31,23 @@ class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.cons
         )
     }
 
+    private val adapter: StableDroidAdapter by lazy {
+        StableDroidAdapter(
+            ConsentReviewHeaderViewHolder.factory(),
+            ConsentReviewPageViewHolder.factory()
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is ConsentReviewStateUpdate.Initialization ->
-                        applyConfiguration(it.configuration, it.consentReview)
+                    is ConsentReviewStateUpdate.Initialization -> {
+                        applyConfiguration(it.configuration)
+                        applyItems(it.items)
+                    }
                 }
             }
 
@@ -55,30 +68,31 @@ class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.cons
 
         setupView()
 
-        Option.fx { !viewModel.state().configuration to !viewModel.state().consentReview }
+        Option.fx { !viewModel.state().configuration to viewModel.state().items }
             .fold(
                 { viewModel.initialize(rootNavController()) },
-                { applyConfiguration(it.first, it.second) }
+                {
+                    applyConfiguration(it.first)
+                    applyItems(it.second)
+                }
             )
     }
 
     private fun setupView(): Unit {
 
         loading.setLoader(imageConfiguration.loading())
+
+        recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        recycler_view.adapter = adapter
+
     }
 
     private fun applyConfiguration(
-        configuration: Configuration,
-        consentReview: ConsentReview
+        configuration: Configuration
     ): Unit {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-        title.text = consentReview.title
-        title.setTextColor(configuration.theme.primaryTextColor.color())
-
-        body.text = consentReview.body
-        body.setTextColor(configuration.theme.fourthTextColor.color())
 
         shadow.background =
             HEXGradient.from(
@@ -95,5 +109,11 @@ class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.cons
         disagree.setTextColor(configuration.theme.primaryColorEnd.color())
         disagree.background =
             button(configuration.theme.secondaryColor.color())
+    }
+
+    private fun applyItems(items: List<DroidItem>): Unit {
+
+        adapter.submitList(items)
+
     }
 }
