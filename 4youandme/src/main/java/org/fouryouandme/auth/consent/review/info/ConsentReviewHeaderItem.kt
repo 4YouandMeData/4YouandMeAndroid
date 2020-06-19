@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.consent.review
+package org.fouryouandme.auth.consent.review.info
 
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +39,12 @@ data class ConsentReviewHeaderItem(
 fun ConsentReview.toConsentReviewHeaderItem(
     configuration: Configuration
 ): ConsentReviewHeaderItem =
-    ConsentReviewHeaderItem(configuration, title, body, "")
+    ConsentReviewHeaderItem(
+        configuration,
+        title,
+        body,
+        ""
+    )
 
 class ConsentReviewHeaderViewHolder(
     parent: ViewGroup
@@ -68,8 +73,10 @@ class ConsentReviewHeaderViewHolder(
 
         fun factory(): ViewHolderFactory =
             ViewHolderFactory(
-                { ConsentReviewHeaderViewHolder(it) as DroidViewHolder<DroidItem, Any> },
-                { _, item ->  item is ConsentReviewHeaderItem}
+                { ConsentReviewHeaderViewHolder(
+                    it
+                ) as DroidViewHolder<DroidItem, Any> },
+                { _, item ->  item is ConsentReviewHeaderItem }
             )
     }
 }

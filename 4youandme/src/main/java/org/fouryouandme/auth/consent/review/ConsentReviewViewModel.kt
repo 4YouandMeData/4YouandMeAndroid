@@ -4,6 +4,8 @@ import androidx.navigation.NavController
 import arrow.core.toOption
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import org.fouryouandme.auth.consent.review.info.toConsentReviewHeaderItem
+import org.fouryouandme.auth.consent.review.info.toConsentReviewPageItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError

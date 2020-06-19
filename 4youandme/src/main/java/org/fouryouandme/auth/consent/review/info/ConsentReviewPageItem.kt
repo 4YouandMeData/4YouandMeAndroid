@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.consent.review
+package org.fouryouandme.auth.consent.review.info
 
 import android.view.View
 import android.view.ViewGroup
@@ -77,7 +77,9 @@ class ConsentReviewPageViewHolder(
 
         fun factory(): ViewHolderFactory =
             ViewHolderFactory(
-                { ConsentReviewPageViewHolder(it) as DroidViewHolder<DroidItem, *> },
+                { ConsentReviewPageViewHolder(
+                    it
+                ) as DroidViewHolder<DroidItem, *> },
                 { _, item -> item is ConsentReviewPageItem }
             )
 

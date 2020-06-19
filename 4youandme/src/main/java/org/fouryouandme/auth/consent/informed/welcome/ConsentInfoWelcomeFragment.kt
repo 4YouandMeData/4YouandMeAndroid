@@ -100,7 +100,7 @@ class ConsentInfoWelcomeFragment :
 
         requireParentFragment()
             .requireParentFragment()
-            .consent_root
+            .consent_info_root
             .toOption()
             .map { it.setBackgroundColor(configuration.theme.secondaryColor.color()) }
 
