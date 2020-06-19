@@ -1,0 +1,36 @@
+package org.fouryouandme.auth.consent.review
+
+import arrow.core.None
+import arrow.core.Option
+import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.consent.review.ConsentReview
+
+data class ConsentReviewState(
+    val configuration: Option<Configuration> = None,
+    val consentReview: Option<ConsentReview> = None
+)
+
+sealed class ConsentReviewStateUpdate {
+
+    data class Initialization(
+        val configuration: Configuration,
+        val consentReview: ConsentReview
+    ) : ConsentReviewStateUpdate()
+
+}
+
+sealed class ConsentReviewLoading {
+
+    object Initialization : ConsentReviewLoading()
+
+}
+
+sealed class ConsentReviewError {
+
+    object Initialization : ConsentReviewError()
+
+}
+
+/* --- navigation --- */
+
+

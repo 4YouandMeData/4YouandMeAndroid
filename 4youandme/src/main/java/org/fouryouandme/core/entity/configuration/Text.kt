@@ -66,7 +66,9 @@ data class Onboarding(
     val onboardingAbortButton: String,
     val onboardingAbortCancel: String,
     val onboardingAbortConfirm: String,
-    val onboradingAbortMessage: String
+    val onboradingAbortMessage: String,
+    val onboardingAgreeButton: String,
+    val onboardingDisagreeButton: String
 )
 
 data class Screening(

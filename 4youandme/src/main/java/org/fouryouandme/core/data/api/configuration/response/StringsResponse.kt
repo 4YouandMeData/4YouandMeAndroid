@@ -41,6 +41,8 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_ABORT_CANCEL") val onboardingAbortCancel: String? = null,
     @Json(name = "ONBOARDING_ABORT_CONFIRM") val onboardingAbortConfirm: String? = null,
     @Json(name = "ONBOARDING_ABORT_MESSAGE") val onboradingAbortMessage: String? = null,
+    @Json(name = "ONBOARDING_AGREE_BUTTON") val onboradingAgreeButton: String? = null,
+    @Json(name = "ONBOARDING_DISAGREE_BUTTON") val onboradingDisagreeButton: String? = null,
 
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
@@ -103,7 +105,9 @@ data class StringsResponse(
                     onboardingAbortButton.toOption().bind(),
                     onboardingAbortCancel.toOption().bind(),
                     onboardingAbortConfirm.toOption().bind(),
-                    onboradingAbortMessage.toOption().bind()
+                    onboradingAbortMessage.toOption().bind(),
+                    onboradingAgreeButton.toOption().bind(),
+                    onboradingDisagreeButton.toOption().bind()
                 ),
                 Screening(
                     screeningFailureRetryButton.toOption().bind()
