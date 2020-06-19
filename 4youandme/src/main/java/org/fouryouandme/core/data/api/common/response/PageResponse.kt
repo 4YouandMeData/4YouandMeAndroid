@@ -31,7 +31,7 @@ data class PageResponse(
                 id,
                 !title.toOption(),
                 !body.toOption(),
-                !image.toOption(),
+                image.toOption(),
                 link1?.get(document).toOption().flatMap { it.toPage(document) },
                 link1Label.emptyOrBlankToNone(),
                 link2?.get(document).toOption().flatMap { it.toPage(document) },

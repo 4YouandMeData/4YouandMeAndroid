@@ -29,6 +29,8 @@ fun <A> Kind<ForIO, A>.unsafeRunAsyncCancelable(): Disposable =
         either.mapLeft { Timber.tag("4_YOU_AND_ME_ERROR").e(it) }
     }
 
+fun <A> Kind<ForIO, A>.unsafeRunSync(): A = fix().unsafeRunSync()
+
 fun <F, A> Kind<F, Either<Throwable, Response<A>>>.unwrapToEither(
     runtime: Runtime<F>
 ): Kind<F, Either<FourYouAndMeError, A>> =

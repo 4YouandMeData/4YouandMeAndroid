@@ -1,6 +1,7 @@
 package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.informed.ConsentInfoFragmentDirections
 import org.fouryouandme.auth.consent.informed.failure.ConsentInfoFailureFragmentDirections
 import org.fouryouandme.auth.consent.informed.page.ConsentInfoPageFragmentDirections
 import org.fouryouandme.auth.consent.informed.question.ConsentInfoQuestionFragmentDirections
@@ -70,4 +71,9 @@ fun consentInfoFailureToConsentInfoPage(id: String): NavigationExecution =
             ConsentInfoFailureFragmentDirections
                 .actionConsentInfoFailureToConsentInfoPage(id)
         )
+    }
+
+fun consentInfoToConsentReview(): NavigationExecution =
+    {
+        it.navigate(ConsentInfoFragmentDirections.actionConsentInfoToConsentReview())
     }

@@ -35,6 +35,6 @@ fun screeningFailureToScreeningWelcome(): NavigationExecution = {
     it.popBackStack(R.id.screening_welcome, false)
 }
 
-fun screeningToConsent(): NavigationExecution = {
-    it.navigate(ScreeningFragmentDirections.actionScreeningToConsent())
+fun screeningToConsentInfo(): NavigationExecution = {
+    it.navigate(ScreeningFragmentDirections.actionScreeningToConsentInfo())
 }

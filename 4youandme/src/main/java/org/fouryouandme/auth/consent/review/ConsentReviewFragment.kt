@@ -10,8 +10,12 @@ import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.configuration.HEXColor
+import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.consent.review.ConsentReview
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 
 class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.consent_review) {
@@ -49,6 +53,8 @@ class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.cons
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
+
         Option.fx { !viewModel.state().configuration to !viewModel.state().consentReview }
             .fold(
                 { viewModel.initialize(rootNavController()) },
@@ -56,10 +62,17 @@ class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.cons
             )
     }
 
+    private fun setupView(): Unit {
+
+        loading.setLoader(imageConfiguration.loading())
+    }
+
     private fun applyConfiguration(
         configuration: Configuration,
         consentReview: ConsentReview
     ): Unit {
+
+        root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         title.text = consentReview.title
         title.setTextColor(configuration.theme.primaryTextColor.color())
@@ -67,10 +80,20 @@ class ConsentReviewFragment : BaseFragment<ConsentReviewViewModel>(R.layout.cons
         body.text = consentReview.body
         body.setTextColor(configuration.theme.fourthTextColor.color())
 
+        shadow.background =
+            HEXGradient.from(
+                HEXColor.transparent(),
+                configuration.theme.primaryTextColor
+            ).drawable(0.1f)
+
         agree.text = configuration.text.onboarding.onboardingAgreeButton
         agree.setTextColor(configuration.theme.secondaryColor.color())
+        agree.background =
+            button(configuration.theme.primaryColorEnd.color())
 
         disagree.text = configuration.text.onboarding.onboardingDisagreeButton
-        disagree.setTextColor(configuration.theme.secondaryColor.color())
+        disagree.setTextColor(configuration.theme.primaryColorEnd.color())
+        disagree.background =
+            button(configuration.theme.secondaryColor.color())
     }
 }

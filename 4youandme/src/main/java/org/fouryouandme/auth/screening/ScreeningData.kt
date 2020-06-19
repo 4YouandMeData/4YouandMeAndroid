@@ -45,4 +45,4 @@ object ScreeningPageToScreeningQuestions : NavigationAction
 object ScreeningQuestionsToScreeningSuccess : NavigationAction
 object ScreeningQuestionsToScreeningFailure : NavigationAction
 object ScreeningFailureToScreeningWelcome : NavigationAction
-object ScreeningToConsent: NavigationAction
+object ScreeningToConsentInfo : NavigationAction

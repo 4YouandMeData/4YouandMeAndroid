@@ -11,11 +11,11 @@ import org.fouryouandme.core.entity.consent.review.ConsentReview
 @JsonApi(type = "consent")
 data class ConsentReviewResponse(
 
-    @Json(name = "title") val title: String? = null,
-    @Json(name = "body") val body: String? = null,
-    @Json(name = "disagree_modal_body") val disagreeModalBody: String? = null,
-    @Json(name = "pages") val pages: HasMany<PageResponse>? = null,
-    @Json(name = "welcome_page") val welcomePage: HasOne<PageResponse>? = null
+    @field:Json(name = "title") val title: String? = null,
+    @field:Json(name = "body") val body: String? = null,
+    @field:Json(name = "disagree_modal_body") val disagreeModalBody: String? = null,
+    @field:Json(name = "pages") val pages: HasMany<PageResponse>? = null,
+    @field:Json(name = "welcome_page") val welcomePage: HasOne<PageResponse>? = null
 
 ) : Resource() {
 

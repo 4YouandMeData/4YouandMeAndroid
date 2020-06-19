@@ -133,8 +133,8 @@ class ScreeningViewModel(
             else ScreeningPageToScreeningPage(id)
         ).unsafeRunAsync()
 
-    fun consent(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, ScreeningToConsent).unsafeRunAsync()
+    fun consentInfo(navController: NavController): Unit =
+        navigator.navigateTo(runtime, navController, ScreeningToConsentInfo).unsafeRunAsync()
 
     fun abort(navController: NavController): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()

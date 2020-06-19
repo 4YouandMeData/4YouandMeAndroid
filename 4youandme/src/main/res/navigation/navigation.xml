@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/consent">
+    app:startDestination="@id/consent_review">
 
     <action
         android:id="@+id/action_global_splash"
@@ -177,8 +177,8 @@
         tools:layout="@layout/screening">
 
         <action
-            android:id="@+id/action_screening_to_consent"
-            app:destination="@id/consent"
+            android:id="@+id/action_screening_to_consent_info"
+            app:destination="@id/consent_info"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -187,9 +187,25 @@
     </fragment>
 
     <fragment
-        android:id="@+id/consent"
+        android:id="@+id/consent_info"
         android:name="org.fouryouandme.auth.consent.informed.ConsentInfoFragment"
-        android:label="screening"
-        tools:layout="@layout/consent_info" />
+        android:label="consent_info"
+        tools:layout="@layout/consent_info">
+
+        <action
+            android:id="@+id/action_consent_info_to_consent_review"
+            app:destination="@id/consent_review"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_review"
+        android:name="org.fouryouandme.auth.consent.review.ConsentReviewFragment"
+        android:label="consent_review"
+        tools:layout="@layout/consent_review" />
 
 </navigation>

@@ -186,6 +186,9 @@ class ConsentInfoViewModel(
 
         }.unsafeRunAsync()
 
+    fun consentReview(navController: NavController): Unit =
+        navigator.navigateTo(runtime, navController, ConsentInfoToConsentReview).unsafeRunAsync()
+
     fun restartFromWelcome(navController: NavController): Unit =
         runtime.fx.concurrent {
 

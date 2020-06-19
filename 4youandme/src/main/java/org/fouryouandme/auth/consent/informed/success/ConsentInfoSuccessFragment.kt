@@ -45,7 +45,7 @@ class ConsentInfoSuccessFragment : BaseFragment<ConsentInfoViewModel>(R.layout.c
             configuration = configuration,
             page = consentInfo.successPage,
             pageType = EPageType.SUCCESS,
-            action1 = { },
+            action1 = { viewModel.consentReview(rootNavController()) },
             externalAction = { viewModel.web(rootNavController(), it) }
         )
 

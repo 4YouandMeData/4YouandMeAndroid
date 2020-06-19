@@ -1,7 +1,6 @@
 package org.fouryouandme.core.view.page
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
@@ -42,10 +41,17 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         externalAction: (String) -> Unit
     ): Unit {
 
-        val decodedString: ByteArray = Base64.decode(page.image, Base64.DEFAULT)
-        val decodedByte: Bitmap =
-            BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-        icon.setImageBitmap(decodedByte)
+        val decodedString = page.image.map { Base64.decode(it, Base64.DEFAULT) }
+        val decodedByte =
+            decodedString.map { BitmapFactory.decodeByteArray(it, 0, it.size) }
+
+        decodedByte.fold(
+            { icon.isVisible = false },
+            {
+                icon.isVisible = true
+                icon.setImageBitmap(it)
+            }
+        )
 
         title.text = page.title
         title.setTextColor(configuration.theme.primaryTextColor.color())

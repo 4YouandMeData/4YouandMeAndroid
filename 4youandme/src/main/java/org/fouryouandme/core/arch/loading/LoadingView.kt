@@ -10,9 +10,15 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import arrow.core.None
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.some
 import kotlinx.android.synthetic.main.loading.view.*
 import org.fouryouandme.R
+import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
+import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.dpToPx
+import org.fouryouandme.core.ext.unsafeRunAsync
 
 class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -24,10 +30,25 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
         rotation = AnimationUtils.loadAnimation(context, R.anim.rotate).some()
 
-        setBackgroundColor(ContextCompat.getColor(context, R.color.loading))
+        context.IORuntime.fx.concurrent {
+
+            continueOn(context.IORuntime.injector.runtimeContext.mainDispatcher)
+
+            val color =
+                ConfigurationUseCase.getConfiguration(context.IORuntime, CachePolicy.MemoryOrDisk)
+                    .bind()
+                    .toOption()
+                    .map { it.theme.secondaryColor.color() }
+                    .getOrElse { ContextCompat.getColor(context, R.color.loading) }
+
+            setBackgroundColor(color)
+
+        }.unsafeRunAsync()
 
         isFocusable = true
         isClickable = true
+
+        elevation = 20.dpToPx().toFloat()
 
         hide()
 

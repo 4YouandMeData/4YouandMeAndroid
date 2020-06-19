@@ -36,7 +36,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ScreeningQuestionsToScreeningSuccess -> screeningQuestionsToScreeningSuccess()
             is ScreeningQuestionsToScreeningFailure -> screeningQuestionsToScreeningFailure()
             is ScreeningFailureToScreeningWelcome -> screeningFailureToScreeningWelcome()
-            is ScreeningToConsent -> screeningToConsent()
+            is ScreeningToConsentInfo -> screeningToConsentInfo()
 
             is ConsentInfoWelcomeToConsentInfoPage ->
                 consentInfoWelcomeToConsentInfoPage(action.id)
@@ -56,6 +56,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentInfoFailureToConsentInfoWelcome()
             is ConsentInfoFailureToConsentInfoPage ->
                 consentInfoFailureToConsentInfoPage(action.id)
+            is ConsentInfoToConsentReview ->
+                consentInfoToConsentReview()
 
             else -> {
                 {}

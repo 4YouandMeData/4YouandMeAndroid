@@ -50,3 +50,4 @@ object ConsentInfoQuestionToConsentInfoSuccess : NavigationAction
 object ConsentInfoQuestionToConsentInfoFailure : NavigationAction
 data class ConsentInfoFailureToConsentInfoPage(val id: String) : NavigationAction
 object ConsentInfoFailureToConsentInfoWelcome : NavigationAction
+object ConsentInfoToConsentReview : NavigationAction

@@ -6,7 +6,7 @@ data class Page(
     val id: String,
     val title: String,
     val body: String,
-    val image: String,
+    val image: Option<String>,
     val link1: Option<Page>,
     val link1Label: Option<String>,
     val link2: Option<Page>,
