@@ -6,6 +6,7 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
+import org.fouryouandme.core.data.api.consent.review.ConsentReviewApi
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 
 interface Injector {
@@ -40,4 +41,5 @@ interface Injector {
     val authApi: AuthApi
     val screeningApi: ScreeningApi
     val consentInfoApi: ConsentInfoApi
+    val consentReviewApi: ConsentReviewApi
 }

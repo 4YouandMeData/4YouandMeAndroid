@@ -23,7 +23,7 @@ data class ConsentInfoResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toConsent(document: ObjectDocument<ConsentInfoResponse>): Option<ConsentInfo> =
+    fun toConsentInfo(document: ObjectDocument<ConsentInfoResponse>): Option<ConsentInfo> =
         Option.fx {
 
             ConsentInfo(

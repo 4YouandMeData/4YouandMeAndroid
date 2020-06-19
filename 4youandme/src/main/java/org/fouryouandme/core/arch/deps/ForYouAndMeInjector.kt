@@ -18,6 +18,8 @@ import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
 import org.fouryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
+import org.fouryouandme.core.data.api.consent.review.ConsentReviewApi
+import org.fouryouandme.core.data.api.consent.review.response.ConsentReviewResponse
 import org.fouryouandme.core.data.api.getApiService
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
@@ -71,6 +73,7 @@ class ForYouAndMeInjector(
                     .add(AnswerResponse::class.java)
                     .add(ScreeningResponse::class.java)
                     .add(ConsentInfoResponse::class.java)
+                    .add(ConsentReviewResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -89,5 +92,8 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val consentInfoApi: ConsentInfoApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val consentReviewApi: ConsentReviewApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 }
