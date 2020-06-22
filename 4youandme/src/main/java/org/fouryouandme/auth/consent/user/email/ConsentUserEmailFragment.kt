@@ -102,7 +102,7 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
         email_line.setBackgroundColor(configuration.theme.primaryTextColor.color())
 
         email_info.text = configuration.text.onboarding.user.emailInfo
-        email_info.setTextColor(configuration.theme.primaryTextColor.color())
+        email_info.setTextColor(configuration.theme.fourthTextColor.color())
     }
 
     private fun bindNext(): Unit {
