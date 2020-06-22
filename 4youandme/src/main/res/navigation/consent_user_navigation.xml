@@ -1,0 +1,14 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/consent_user_navigation"
+    app:startDestination="@id/consent_user_name">
+
+    <fragment
+        android:id="@+id/consent_user_name"
+        android:name="org.fouryouandme.auth.consent.user.name.ConsentUserNameFragment"
+        android:label="consent_user_name"
+        tools:layout="@layout/consent_user_name" />
+
+</navigation>

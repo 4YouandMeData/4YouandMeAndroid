@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/consent_review">
+    app:startDestination="@id/consent_user">
 
     <action
         android:id="@+id/action_global_splash"
@@ -206,6 +206,22 @@
         android:id="@+id/consent_review"
         android:name="org.fouryouandme.auth.consent.review.ConsentReviewFragment"
         android:label="consent_review"
-        tools:layout="@layout/consent_review" />
+        tools:layout="@layout/consent_review">
+
+        <action
+            android:id="@+id/action_consent_review_to_consent_user"
+            app:destination="@id/consent_user"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_user"
+        android:name="org.fouryouandme.auth.consent.user.ConsentUserFragment"
+        android:label="consent_user"
+        tools:layout="@layout/consent_user" />
 
 </navigation>

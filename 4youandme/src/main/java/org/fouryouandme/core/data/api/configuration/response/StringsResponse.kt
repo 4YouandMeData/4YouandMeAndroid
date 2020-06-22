@@ -44,6 +44,22 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_AGREE_BUTTON") val onboradingAgreeButton: String? = null,
     @Json(name = "ONBOARDING_DISAGREE_BUTTON") val onboradingDisagreeButton: String? = null,
 
+    @Json(name = "ONBOARDING_USER_NAME_TITLE") val onboardingUserNameTitle: String? = null,
+    @Json(name = "ONBOARDING_USER_NAME_LAST_NAME_DESCRIPTION") val onboardingNameLastNameDescription: String? = null,
+    @Json(name = "ONBOARDING_USER_NAME_FIRST_NAME_DESCRIPTION") val onboardingNameFirstNameDescription: String? = null,
+    @Json(name = "ONBOARDING_USER_SIGNATURE_TITLE") val onboardingSignatureTitle: String? = null,
+    @Json(name = "ONBOARDING_USER_SIGNATURE_BODY") val onboardingSignatureBody: String? = null,
+    @Json(name = "ONBOARDING_USER_SIGNATURE_CLEAR") val onboardingSignatureClear: String? = null,
+    @Json(name = "ONBOARDING_USER_SIGNATURE_PLACEHOLDER") val onboardingSignaturePlaceholder: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_INFO") val onboardingEmailInfo: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_EMAIL_DESCRIPTION") val onboardingEmailDescription: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_TITLE") val onboardingEmailVerificationTitle: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_BODY") val onboardingEmailVerificationBody: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_CODE_DESCRIPTION") val onboardingEmailVerificationCodeDescription: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_RESEND") val onboardingEmailVerificationResend: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_WRONG_EMAIL") val onboardingEmailVerificationWrongMail: String? = null,
+    @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_ERROR_WRONG_CODE") val onboardingEmailVerificationWrongCode: String? = null,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -107,7 +123,26 @@ data class StringsResponse(
                     onboardingAbortConfirm.toOption().bind(),
                     onboradingAbortMessage.toOption().bind(),
                     onboradingAgreeButton.toOption().bind(),
-                    onboradingDisagreeButton.toOption().bind()
+                    onboradingDisagreeButton.toOption().bind(),
+                    OnboardingUser(
+                        onboardingUserNameTitle.toOption().bind(),
+                        onboardingNameLastNameDescription.toOption().bind(),
+                        onboardingNameFirstNameDescription.toOption().bind(),
+                        onboardingSignatureTitle.toOption().bind(),
+                        onboardingSignatureBody.toOption().bind(),
+                        onboardingSignatureClear.toOption().bind(),
+                        onboardingSignaturePlaceholder.toOption().bind(),
+                        onboardingEmailInfo.toOption().bind(),
+                        onboardingEmailInfo.toOption().bind(),
+                        onboardingEmailVerificationTitle.toOption().bind(),
+                        onboardingEmailVerificationBody.toOption().bind(),
+                        onboardingEmailVerificationCodeDescription.toOption().bind(),
+                        onboardingEmailVerificationResend.toOption().bind(),
+                        OnboardingUserError(
+                            onboardingEmailVerificationWrongMail.toOption().bind(),
+                            onboardingEmailVerificationWrongCode.toOption().bind()
+                        )
+                    )
                 ),
                 Screening(
                     screeningFailureRetryButton.toOption().bind()

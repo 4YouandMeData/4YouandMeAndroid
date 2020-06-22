@@ -18,6 +18,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.dpToPx
+import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.unsafeRunAsync
 
 class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
@@ -34,10 +35,16 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
             continueOn(context.IORuntime.injector.runtimeContext.mainDispatcher)
 
-            val color =
+            loader.setImageResource(context.imageConfiguration.loading())
+
+            val configuration =
                 ConfigurationUseCase.getConfiguration(context.IORuntime, CachePolicy.MemoryOrDisk)
                     .bind()
                     .toOption()
+
+
+            val color =
+                configuration
                     .map { it.theme.secondaryColor.color() }
                     .getOrElse { ContextCompat.getColor(context, R.color.loading) }
 

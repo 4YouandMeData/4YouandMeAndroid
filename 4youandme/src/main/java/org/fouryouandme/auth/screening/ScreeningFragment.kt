@@ -19,7 +19,7 @@ class ScreeningFragment : BaseFragment<ScreeningViewModel>(R.layout.screening) {
 
     fun showAbort(configuration: Configuration, color: Int): Unit {
 
-        abort.text = configuration.text.onboarding.onboardingAbortButton
+        abort.text = configuration.text.onboarding.abortButton
         abort.setTextColor(color)
         abort.setOnClickListener { showAbortAlert(configuration) }
         abort.isVisible = true
@@ -35,11 +35,11 @@ class ScreeningFragment : BaseFragment<ScreeningViewModel>(R.layout.screening) {
     private fun showAbortAlert(configuration: Configuration) {
 
         AlertDialog.Builder(requireContext())
-            .setTitle(configuration.text.onboarding.onboardingAbortTitle)
-            .setMessage(configuration.text.onboarding.onboradingAbortMessage)
-            .setPositiveButton(configuration.text.onboarding.onboardingAbortConfirm)
+            .setTitle(configuration.text.onboarding.abortTitle)
+            .setMessage(configuration.text.onboarding.abortMessage)
+            .setPositiveButton(configuration.text.onboarding.abortConfirm)
             { _, _ -> viewModel.abort(rootNavController()) }
-            .setNegativeButton(configuration.text.onboarding.onboardingAbortCancel, null)
+            .setNegativeButton(configuration.text.onboarding.abortCancel, null)
             .show()
 
     }

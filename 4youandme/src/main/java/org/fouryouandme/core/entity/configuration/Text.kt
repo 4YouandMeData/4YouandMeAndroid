@@ -62,13 +62,36 @@ data class PhoneVerificationError(
 )
 
 data class Onboarding(
-    val onboardingAbortTitle: String,
-    val onboardingAbortButton: String,
-    val onboardingAbortCancel: String,
-    val onboardingAbortConfirm: String,
-    val onboradingAbortMessage: String,
-    val onboardingAgreeButton: String,
-    val onboardingDisagreeButton: String
+    val abortTitle: String,
+    val abortButton: String,
+    val abortCancel: String,
+    val abortConfirm: String,
+    val abortMessage: String,
+    val agreeButton: String,
+    val disagreeButton: String,
+    val user: OnboardingUser
+)
+
+data class OnboardingUser(
+    val nameTitle: String,
+    val nameLastNameDescription: String,
+    val nameFirstNameDescription: String,
+    val signatureTitle: String,
+    val signatureBody: String,
+    val signatureClear: String,
+    val signaturePlaceholder: String,
+    val emailInfo: String,
+    val emailDescription: String,
+    val emailVerificationTitle: String,
+    val emailVerificationBody: String,
+    val emailVerificationCodeDescription: String,
+    val emailVerificationResend: String,
+    val error: OnboardingUserError
+)
+
+data class OnboardingUserError(
+    val emailVerificationWrongMail: String,
+    val emailVerificationWrongCode: String
 )
 
 data class Screening(

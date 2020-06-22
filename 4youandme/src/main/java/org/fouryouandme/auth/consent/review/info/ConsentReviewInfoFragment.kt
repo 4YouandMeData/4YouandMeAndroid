@@ -11,7 +11,9 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.consent_review_info.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.review.*
+import org.fouryouandme.auth.consent.review.ConsentReviewError
+import org.fouryouandme.auth.consent.review.ConsentReviewStateUpdate
+import org.fouryouandme.auth.consent.review.ConsentReviewViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -108,12 +110,12 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
                 configuration.theme.primaryTextColor
             ).drawable(0.1f)
 
-        agree.text = configuration.text.onboarding.onboardingAgreeButton
+        agree.text = configuration.text.onboarding.agreeButton
         agree.setTextColor(configuration.theme.secondaryColor.color())
         agree.background =
             button(configuration.theme.primaryColorEnd.color())
 
-        disagree.text = configuration.text.onboarding.onboardingDisagreeButton
+        disagree.text = configuration.text.onboarding.disagreeButton
         disagree.setTextColor(configuration.theme.primaryColorEnd.color())
         disagree.background =
             button(configuration.theme.secondaryColor.color())
