@@ -133,7 +133,7 @@ data class StringsResponse(
                         onboardingSignatureClear.toOption().bind(),
                         onboardingSignaturePlaceholder.toOption().bind(),
                         onboardingEmailInfo.toOption().bind(),
-                        onboardingEmailInfo.toOption().bind(),
+                        onboardingEmailDescription.toOption().bind(),
                         onboardingEmailVerificationTitle.toOption().bind(),
                         onboardingEmailVerificationBody.toOption().bind(),
                         onboardingEmailVerificationCodeDescription.toOption().bind(),

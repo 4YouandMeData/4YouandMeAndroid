@@ -1,5 +1,6 @@
 package org.fouryouandme.auth.consent.user
 
+import android.util.Patterns
 import androidx.navigation.NavController
 import arrow.core.right
 import arrow.core.toOption
@@ -60,6 +61,11 @@ class ConsentUserViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- validation --- */
+
+    fun isValidEmail(email: String): Boolean =
+        email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
     /* --- state --- */
 
     fun setFirstName(firstName: String): Unit =
@@ -74,8 +80,21 @@ class ConsentUserViewModel(
             ConsentUserStateUpdate.FirstName(lastName)
         ).unsafeRunAsync()
 
+    fun setEmail(email: String): Unit =
+        setState(
+            state().copy(email = email),
+            ConsentUserStateUpdate.Email(email)
+        ).unsafeRunAsync()
+
     /* --- navigation --- */
 
     fun back(navController: NavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
+
+    fun email(navController: NavController): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            ConsentUserNameToConsentUserEmail
+        ).unsafeRunAsync()
 }

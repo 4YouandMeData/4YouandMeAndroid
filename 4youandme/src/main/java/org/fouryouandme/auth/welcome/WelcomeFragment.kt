@@ -46,7 +46,7 @@ class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
     private fun setupView() {
 
         logo.setImageResource(imageConfiguration.logoStudy())
-        welcome_image.setImageResource(imageConfiguration.welcome())
+        welcome_image.setImageResource(imageConfiguration.logoStudySecondary())
 
     }
 

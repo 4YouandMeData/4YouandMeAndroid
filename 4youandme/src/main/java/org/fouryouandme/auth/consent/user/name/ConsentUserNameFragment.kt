@@ -4,8 +4,11 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.consent_user.*
 import kotlinx.android.synthetic.main.consent_user_name.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.user.ConsentUserError
@@ -69,7 +72,13 @@ class ConsentUserNameFragment : BaseFragment<ConsentUserViewModel>(R.layout.cons
 
         bindNext()
         next.background = button(resources, imageConfiguration.signUpNextStep())
-        next.setOnClickListener { }
+        next.setOnClickListener { viewModel.email(findNavController()) }
+
+        requireParentFragment()
+            .requireParentFragment()
+            .toolbar
+            .toOption()
+            .map { it.removeBackButton() }
 
     }
 

@@ -9,6 +9,22 @@
         android:id="@+id/consent_user_name"
         android:name="org.fouryouandme.auth.consent.user.name.ConsentUserNameFragment"
         android:label="consent_user_name"
-        tools:layout="@layout/consent_user_name" />
+        tools:layout="@layout/consent_user_name">
+
+        <action
+            android:id="@+id/action_consent_user_name_to_consent_user_email"
+            app:destination="@id/consent_user_email"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_user_email"
+        android:name="org.fouryouandme.auth.consent.user.email.ConsentUserEmailFragment"
+        android:label="consent_user_email"
+        tools:layout="@layout/consent_user_email" />
 
 </navigation>

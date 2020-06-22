@@ -2,7 +2,7 @@ package org.fouryouandme.app
 
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 
-class SampleImageConfiguration: ImageConfiguration {
+class SampleImageConfiguration : ImageConfiguration {
 
     /* --- common ---*/
 
@@ -18,9 +18,9 @@ class SampleImageConfiguration: ImageConfiguration {
 
     override fun logoStudy(): Int = R.drawable.logo_study
 
-    /* --- auth --- */
+    override fun logoStudySecondary(): Int = R.drawable.logo_study_secondary
 
-    override fun welcome(): Int = R.drawable.welcome
+    /* --- auth --- */
 
     override fun entryWrong(): Int = R.drawable.phone_wrong
 

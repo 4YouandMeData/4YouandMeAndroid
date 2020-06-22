@@ -3,6 +3,7 @@ package org.fouryouandme.core.arch.navigation
 import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
+import org.fouryouandme.auth.consent.user.ConsentUserNameToConsentUserEmail
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.*
@@ -65,6 +66,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentReviewInfoToConsentReviewDisagree()
             is ConsentReviewDisagreeToAuth ->
                 consentReviewDisagreeToAuth()
+
+            is ConsentUserNameToConsentUserEmail -> consentUserNameToConsentUserEmail()
 
             else -> {
                 {}

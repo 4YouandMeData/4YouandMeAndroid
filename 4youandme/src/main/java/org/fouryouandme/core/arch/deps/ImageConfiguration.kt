@@ -24,10 +24,10 @@ interface ImageConfiguration {
     @DrawableRes
     fun logoStudy(): Int
 
-    /* --- auth --- */
-
     @DrawableRes
-    fun welcome(): Int
+    fun logoStudySecondary(): Int
+
+    /* --- auth --- */
 
     @DrawableRes
     fun entryWrong(): Int
