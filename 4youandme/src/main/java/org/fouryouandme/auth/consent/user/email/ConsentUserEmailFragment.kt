@@ -65,6 +65,7 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
             }
 
         next.background = button(resources, imageConfiguration.signUpNextStepSecondary())
+        next.setOnClickListener { viewModel.emailVerification(findNavController()) }
         bindNext()
 
     }
@@ -82,7 +83,7 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
             email_validation.setImageResource(
                 when {
                     hasFocus -> 0
-                    hasFocus.not() && viewModel.isValidEmail(email_entry.text.toString().trim()) ->
+                    hasFocus.not() && !viewModel.isValidEmail(email_entry.text.toString().trim()) ->
                         imageConfiguration.entryWrong()
                     else ->
                         imageConfiguration.entryValid()

@@ -41,3 +41,4 @@ sealed class ConsentUserError {
 /* --- navigation --- */
 
 object ConsentUserNameToConsentUserEmail : NavigationAction
+object ConsentUserEmailToConsentUserEmailValidationCode : NavigationAction

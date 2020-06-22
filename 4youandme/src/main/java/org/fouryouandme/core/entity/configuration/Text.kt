@@ -86,11 +86,11 @@ data class OnboardingUser(
     val emailVerificationBody: String,
     val emailVerificationCodeDescription: String,
     val emailVerificationResend: String,
+    val emailVerificationWrongMail: String,
     val error: OnboardingUserError
 )
 
 data class OnboardingUserError(
-    val emailVerificationWrongMail: String,
     val emailVerificationWrongCode: String
 )
 

@@ -138,8 +138,8 @@ data class StringsResponse(
                         onboardingEmailVerificationBody.toOption().bind(),
                         onboardingEmailVerificationCodeDescription.toOption().bind(),
                         onboardingEmailVerificationResend.toOption().bind(),
+                        onboardingEmailVerificationWrongMail.toOption().bind(),
                         OnboardingUserError(
-                            onboardingEmailVerificationWrongMail.toOption().bind(),
                             onboardingEmailVerificationWrongCode.toOption().bind()
                         )
                     )
