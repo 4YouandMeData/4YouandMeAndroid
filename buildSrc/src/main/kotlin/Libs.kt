@@ -163,6 +163,11 @@ object Libs {
             Versions.espresso_core
 
     /**
+     * https://github.com/gcacace/android-signaturepad
+     */
+    const val signature_pad: String = "com.github.gcacace:signature-pad:" + Versions.signature_pad
+
+    /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_optics: String = "io.arrow-kt:arrow-optics:" + Versions.arrow_optics

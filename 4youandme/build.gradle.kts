@@ -118,6 +118,9 @@ dependencies {
 
     implementation(Libs.recycler_droid_core)
 
+    /* --- signature --- */
+    implementation(Libs.signature_pad)
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)

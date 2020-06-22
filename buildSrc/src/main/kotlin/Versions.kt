@@ -1,3 +1,4 @@
+import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -49,11 +50,13 @@ object Versions {
 
     const val espresso_core: String = "3.2.0"
 
+    const val signature_pad: String = "1.3.1"
+
     const val arrow_optics: String = "0.10.5"
 
     const val arrow_syntax: String = "0.10.5"
 
-    const val moshi_kotlin: String = "1.9.2"
+    const val moshi_kotlin: String = "1.9.3"
 
     const val lint_gradle: String = "27.0.0"
 

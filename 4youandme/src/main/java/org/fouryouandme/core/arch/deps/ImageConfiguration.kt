@@ -19,6 +19,9 @@ interface ImageConfiguration {
     fun close(): Int
 
     @DrawableRes
+    fun clear(): Int
+
+    @DrawableRes
     fun logo(): Int
 
     @DrawableRes

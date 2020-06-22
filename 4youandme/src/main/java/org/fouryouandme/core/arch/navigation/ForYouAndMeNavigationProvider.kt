@@ -4,6 +4,7 @@ import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
 import org.fouryouandme.auth.consent.user.ConsentUserEmailToConsentUserEmailValidationCode
+import org.fouryouandme.auth.consent.user.ConsentUserEmailValidationCodeToConsentUserSignature
 import org.fouryouandme.auth.consent.user.ConsentUserNameToConsentUserEmail
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
@@ -71,7 +72,10 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ConsentUserNameToConsentUserEmail ->
                 consentUserNameToConsentUserEmail()
             is ConsentUserEmailToConsentUserEmailValidationCode ->
-                consentUserEmailToConsentUserEmailVerificationCode()
+                consentUserEmailToConsentUserEmailValidationCode()
+            is ConsentUserEmailValidationCodeToConsentUserSignature ->
+                consentUserEmailValidationCodeToConsentUserSignature()
+
 
             else -> {
                 {}

@@ -104,4 +104,11 @@ class ConsentUserViewModel(
             navController,
             ConsentUserEmailToConsentUserEmailValidationCode
         ).unsafeRunAsync()
+
+    fun signature(navController: NavController): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            ConsentUserEmailValidationCodeToConsentUserSignature
+        ).unsafeRunAsync()
 }

@@ -14,6 +14,8 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun close(): Int = R.drawable.close
 
+    override fun clear(): Int = R.drawable.clear
+
     override fun logo(): Int = R.drawable.logo
 
     override fun logoStudy(): Int = R.drawable.logo_study

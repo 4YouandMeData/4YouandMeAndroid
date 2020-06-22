@@ -72,6 +72,8 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
+        root.setBackgroundColor(configuration.theme.secondaryColor.color())
+
         email.text = configuration.text.onboarding.user.emailDescription
         email.setTextColor(configuration.theme.primaryTextColor.color())
 

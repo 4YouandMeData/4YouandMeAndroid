@@ -55,6 +55,7 @@ class ConsentUserEmailValidationCodeFragment : BaseFragment<ConsentUserViewModel
             }
 
         next.background = button(resources, imageConfiguration.signUpNextStep())
+        next.setOnClickListener { viewModel.signature(findNavController()) }
 
     }
 

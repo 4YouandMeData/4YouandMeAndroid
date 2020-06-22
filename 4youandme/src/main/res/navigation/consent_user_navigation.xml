@@ -41,6 +41,22 @@
         android:id="@+id/consent_user_email_validation_code"
         android:name="org.fouryouandme.auth.consent.user.email.code.ConsentUserEmailValidationCodeFragment"
         android:label="consent_user_email_validation_code"
-        tools:layout="@layout/consent_user_email_validation_code" />
+        tools:layout="@layout/consent_user_email_validation_code">
+
+        <action
+            android:id="@+id/action_consent_user_email_validation_code_to_consent_user_signature"
+            app:destination="@id/consent_user_signature"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_user_signature"
+        android:name="org.fouryouandme.auth.consent.user.signature.ConsentUserSignatureFragment"
+        android:label="consent_user_signature"
+        tools:layout="@layout/consent_user_signature" />
 
 </navigation>
