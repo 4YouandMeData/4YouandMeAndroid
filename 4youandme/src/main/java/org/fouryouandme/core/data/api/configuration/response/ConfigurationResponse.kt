@@ -11,7 +11,8 @@ data class ConfigurationResponse(
     @Json(name = "strings") val strings: StringsResponse? = null,
     @Json(name = "id") val id: Int? = null,
     @Json(name = "study_id") val studyId: Int? = null,
-    @Json(name = "color_palette") val colorPalette: ColorPaletteResponse? = null
+    @Json(name = "color_palette") val colorPalette: ColorPaletteResponse? = null,
+    @Json(name = "country_codes") val countryCodes: List<String>? =  null
 
 ) {
 
@@ -20,7 +21,8 @@ data class ConfigurationResponse(
 
             Configuration(
                 colorPalette.toOption().bind().toTheme().bind(),
-                strings.toOption().bind().toText().bind()
+                strings.toOption().bind().toText().bind(),
+                countryCodes ?: emptyList()
             )
 
         }

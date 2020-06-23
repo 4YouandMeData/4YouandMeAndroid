@@ -116,6 +116,15 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
         description.text = configuration.text.phoneVerification.body
 
         ccp.setOnCountryChangeListener { viewModel.setCountryNameCode(ccp.selectedCountryNameCode) }
+        ccp.setCustomMasterCountries(
+            configuration.countryCodes.fold(
+                "",
+                { acc, s ->
+                    if (acc.isEmpty()) s
+                    else "$acc,$s"
+                }
+            )
+        )
         ccp.contentColor = configuration.theme.secondaryColor.color()
         ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
         ccp.ccpDialogShowTitle = false
