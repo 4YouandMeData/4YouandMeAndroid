@@ -5,13 +5,13 @@ import android.util.Base64
 import android.util.Patterns
 import androidx.navigation.NavController
 import arrow.Kind
-import arrow.core.right
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
+import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.arch.navigation.toastAction
@@ -19,6 +19,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.consent.user.ConsentUserUseCase
 import org.fouryouandme.core.ext.foldToKindEither
+import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
 import java.io.ByteArrayOutputStream
 
@@ -47,10 +48,8 @@ class ConsentUserViewModel(
             val initialization =
                 !configuration.foldToKindEither(runtime.fx) { config ->
 
-                    /*ConsentUserUseCase.getConsent(runtime)
-                        .mapResult(runtime.fx) { it to config }*/
-
-                    just((Unit to config).right())
+                    ConsentUserUseCase.getConsent(runtime)
+                        .mapResult(runtime.fx) { it to config }
 
                 }.handleAuthError(runtime, rootNavController, navigator)
 
@@ -59,6 +58,7 @@ class ConsentUserViewModel(
                 { pair ->
                     setState(
                         state().copy(
+                            consent = pair.first.toOption(),
                             configuration = pair.second.toOption()
                         ),
                         ConsentUserStateUpdate.Initialization(pair.second)
@@ -134,7 +134,11 @@ class ConsentUserViewModel(
 
         }.unsafeRunAsync()
 
-    fun updateUser(rootNavController: RootNavController, signature: Bitmap): Unit =
+    fun updateUser(
+        rootNavController: RootNavController,
+        navController: NavController,
+        signature: Bitmap
+    ): Unit =
         runtime.fx.concurrent {
 
             !showLoading(ConsentUserLoading.UpdateUser)
@@ -151,7 +155,7 @@ class ConsentUserViewModel(
 
             !update.fold(
                 { setError(it, ConsentUserError.UpdateUser) },
-                { navigator.performAction(runtime, toastAction("Consent Updated")) }
+                { success(navController) }
             )
 
             !hideLoading(ConsentUserLoading.UpdateUser)
@@ -218,7 +222,17 @@ class ConsentUserViewModel(
             ConsentUserEmailValidationCodeToConsentUserSignature
         )
 
+    private fun success(navController: NavController): Kind<ForIO, Unit> =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            ConsentUserSignatureToConsentUserSuccess
+        )
+
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()
+
+    fun web(navController: RootNavController, url: String): Unit =
+        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
 
 }

@@ -11,6 +11,8 @@ import com.github.gcacace.signaturepad.views.SignaturePad
 import kotlinx.android.synthetic.main.consent_user.*
 import kotlinx.android.synthetic.main.consent_user_signature.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.user.ConsentUserError
+import org.fouryouandme.auth.consent.user.ConsentUserLoading
 import org.fouryouandme.auth.consent.user.ConsentUserViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -19,10 +21,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackButton
+import org.fouryouandme.core.ext.*
 
 class ConsentUserSignatureFragment : BaseFragment<ConsentUserViewModel>(
     R.layout.consent_user_signature
@@ -33,6 +32,24 @@ class ConsentUserSignatureFragment : BaseFragment<ConsentUserViewModel>(
             requireParentFragment(),
             getFactory { ConsentUserViewModel(navigator, IORuntime) }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.loadingLiveData()
+            .observeEventPeek {
+                when(it.task) {
+                   is ConsentUserLoading.UpdateUser -> loading.setVisibility(it.active)
+                }
+            }
+
+        viewModel.errorLiveData()
+            .observeEventPeek {
+                when(it.cause) {
+                    is ConsentUserError.UpdateUser -> viewModel.toastError(it.error)
+                }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,11 +68,15 @@ class ConsentUserSignatureFragment : BaseFragment<ConsentUserViewModel>(
             .toolbar
             .toOption()
             .map {
-                it.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
+                it.showBackSecondaryButton(imageConfiguration) { viewModel.back(findNavController()) }
             }
 
         next.setOnClickListener {
-            viewModel.updateUser(rootNavController(), signature_pad.signatureBitmap)
+            viewModel.updateUser(
+                rootNavController(),
+                findNavController(),
+                signature_pad.signatureBitmap
+            )
         }
 
     }

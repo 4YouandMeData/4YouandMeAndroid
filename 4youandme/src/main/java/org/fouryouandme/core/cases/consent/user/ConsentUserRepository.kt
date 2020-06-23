@@ -8,10 +8,30 @@ import org.fouryouandme.core.data.api.consent.user.request.ConfirmUserConsentEma
 import org.fouryouandme.core.data.api.consent.user.request.CreateUserConsentRequest
 import org.fouryouandme.core.data.api.consent.user.request.UpdateUserConsentRequest
 import org.fouryouandme.core.data.api.consent.user.request.UserConsentRequest
+import org.fouryouandme.core.entity.consent.user.ConsentUser
+import org.fouryouandme.core.ext.mapResult
+import org.fouryouandme.core.ext.noneToError
 import org.fouryouandme.core.ext.unwrapEmptyToEither
 import org.fouryouandme.core.ext.unwrapToEither
 
 object ConsentUserRepository {
+
+    internal fun <F> getConsent(
+        runtime: Runtime<F>,
+        token: String,
+        studyId: String
+    ): Kind<F, Either<FourYouAndMeError, ConsentUser>> =
+        runtime.fx.concurrent {
+
+            !runtime.injector.consentUserApi
+                .getConsentUser(token, studyId)
+                .async(runtime.fx.M)
+                .attempt()
+                .unwrapToEither(runtime)
+                .mapResult(runtime.fx) { it.get().toConsentUser(it) }
+                .noneToError(runtime)
+
+        }
 
     internal fun <F> createUserConsent(
         runtime: Runtime<F>,

@@ -4,9 +4,11 @@ import arrow.core.None
 import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.consent.user.ConsentUser
 
 data class ConsentUserState(
     val configuration: Option<Configuration> = None,
+    val consent: Option<ConsentUser> = None,
     val firstName: String = "",
     val lastName: String = "",
     val email: String = ""
@@ -51,3 +53,4 @@ sealed class ConsentUserError {
 object ConsentUserNameToConsentUserEmail : NavigationAction
 object ConsentUserEmailToConsentUserEmailValidationCode : NavigationAction
 object ConsentUserEmailValidationCodeToConsentUserSignature : NavigationAction
+object ConsentUserSignatureToConsentUserSuccess : NavigationAction
