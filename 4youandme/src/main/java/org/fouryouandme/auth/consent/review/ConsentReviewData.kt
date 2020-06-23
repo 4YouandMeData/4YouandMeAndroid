@@ -39,3 +39,4 @@ sealed class ConsentReviewError {
 
 object ConsentReviewInfoToConsentReviewDisagree: NavigationAction
 object ConsentReviewDisagreeToAuth: NavigationAction
+object ConsentReviewToConsentUser: NavigationAction

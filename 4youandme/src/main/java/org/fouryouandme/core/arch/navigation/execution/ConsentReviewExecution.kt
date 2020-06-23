@@ -1,6 +1,7 @@
 package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.NavigationDirections
+import org.fouryouandme.auth.consent.review.ConsentReviewFragmentDirections
 import org.fouryouandme.auth.consent.review.info.ConsentReviewInfoFragmentDirections
 import org.fouryouandme.core.arch.navigation.NavigationExecution
 
@@ -13,5 +14,11 @@ fun consentReviewInfoToConsentReviewDisagree(): NavigationExecution = {
 fun consentReviewDisagreeToAuth(): NavigationExecution = {
     it.navigate(
         NavigationDirections.actionGlobalSplash()
+    )
+}
+
+fun consentReviewToConsentUser(): NavigationExecution = {
+    it.navigate(
+        ConsentReviewFragmentDirections.actionConsentReviewToConsentUser()
     )
 }

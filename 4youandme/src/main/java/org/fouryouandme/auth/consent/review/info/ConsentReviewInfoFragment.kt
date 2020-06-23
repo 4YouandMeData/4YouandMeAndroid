@@ -93,6 +93,7 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
         recycler_view.adapter = adapter
 
         disagree.setOnClickListener { viewModel.disagree(findNavController()) }
+        agree.setOnClickListener { viewModel.consentUser(rootNavController()) }
 
     }
 
