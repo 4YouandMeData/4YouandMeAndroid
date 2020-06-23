@@ -1,15 +1,13 @@
 package org.fouryouandme.core.entity.configuration.button
 
 import android.content.res.Resources
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.StateSet
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import org.fouryouandme.core.ext.adjustAlpha
-import kotlin.math.roundToInt
+import org.fouryouandme.core.ext.dpToPx
 
 fun button(color: Int): StateListDrawable {
 
@@ -44,7 +42,18 @@ private fun createButtonDrawable(color: Int): GradientDrawable {
 
     val drawable = GradientDrawable()
     drawable.setColor(color)
-    drawable.cornerRadii = arrayOf(60f, 60f, 60f, 60f, 60f, 60f, 60f, 60f).toFloatArray()
+    val radius = 30.dpToPx().toFloat()
+    drawable.cornerRadii =
+        arrayOf(
+            radius,
+            radius,
+            radius,
+            radius,
+            radius,
+            radius,
+            radius,
+            radius
+        ).toFloatArray()
     return drawable
 
 }

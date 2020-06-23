@@ -48,6 +48,8 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
                     .map { it.theme.secondaryColor.color() }
                     .getOrElse { ContextCompat.getColor(context, R.color.loading) }
 
+            continueOn(context.IORuntime.injector.runtimeContext.mainDispatcher)
+
             setBackgroundColor(color)
 
         }.unsafeRunAsync()
