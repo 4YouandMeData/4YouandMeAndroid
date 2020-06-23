@@ -1,5 +1,7 @@
 package org.fouryouandme.auth.consent.user
 
+import android.graphics.Bitmap
+import android.util.Base64
 import android.util.Patterns
 import androidx.navigation.NavController
 import arrow.Kind
@@ -11,12 +13,15 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.arch.navigation.toastAction
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.consent.user.ConsentUserUseCase
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.unsafeRunAsync
+import java.io.ByteArrayOutputStream
+
 
 class ConsentUserViewModel(
     navigator: Navigator,
@@ -31,7 +36,7 @@ class ConsentUserViewModel(
 
     /* --- data --- */
 
-    fun initialize(navController: NavController): Unit =
+    fun initialize(rootNavController: RootNavController): Unit =
         runtime.fx.concurrent {
 
             !showLoading(ConsentUserLoading.Initialization)
@@ -47,7 +52,7 @@ class ConsentUserViewModel(
 
                     just((Unit to config).right())
 
-                }.handleAuthError(runtime, navController, navigator)
+                }.handleAuthError(runtime, rootNavController, navigator)
 
             !initialization.fold(
                 { setError(it, ConsentUserError.Initialization) },
@@ -67,13 +72,18 @@ class ConsentUserViewModel(
 
     /* --- user --- */
 
-    fun createUser(navController: NavController): Unit =
+    fun createUser(rootNavController: RootNavController, navController: NavController): Unit =
         runtime.fx.concurrent {
 
             !showLoading(ConsentUserLoading.CreateUser)
 
             val create =
                 !ConsentUserUseCase.createUserConsent(runtime, state().email)
+                    .handleAuthError(
+                        runtime,
+                        rootNavController,
+                        navigator
+                    )
 
             !create.fold(
                 { setError(it, ConsentUserError.CreateUser) },
@@ -83,6 +93,79 @@ class ConsentUserViewModel(
             !hideLoading(ConsentUserLoading.CreateUser)
 
         }.unsafeRunAsync()
+
+    fun resendEmail(rootNavController: RootNavController): Unit =
+        runtime.fx.concurrent {
+
+            !showLoading(ConsentUserLoading.ResendConfirmationEmail)
+
+            val resend =
+                !ConsentUserUseCase.resendConfirmationEmail(runtime)
+                    .handleAuthError(runtime, rootNavController, navigator)
+
+            !resend.fold(
+                { setError(it, ConsentUserError.ResendConfirmationEmail) },
+                { navigator.performAction(runtime, toastAction("Email sent successfully")) }
+            )
+
+            !hideLoading(ConsentUserLoading.ResendConfirmationEmail)
+
+        }.unsafeRunAsync()
+
+    fun confirmEmail(
+        rootNavController: RootNavController,
+        navController: NavController,
+        code: String
+    ): Unit =
+        runtime.fx.concurrent {
+
+            !showLoading(ConsentUserLoading.ConfirmEmail)
+
+            val resend =
+                !ConsentUserUseCase.confirmEmail(runtime, code)
+                    .handleAuthError(runtime, rootNavController, navigator)
+
+            !resend.fold(
+                { setError(it, ConsentUserError.ConfirmEmail) },
+                { signature(navController) }
+            )
+
+            !hideLoading(ConsentUserLoading.ConfirmEmail)
+
+        }.unsafeRunAsync()
+
+    fun updateUser(rootNavController: RootNavController, signature: Bitmap): Unit =
+        runtime.fx.concurrent {
+
+            !showLoading(ConsentUserLoading.UpdateUser)
+
+            val signatureBase64 = signature.toBase64()
+
+            val update =
+                !ConsentUserUseCase.updateUserConsent(
+                    runtime,
+                    state().firstName,
+                    state().lastName,
+                    signatureBase64
+                ).handleAuthError(runtime, rootNavController, navigator)
+
+            !update.fold(
+                { setError(it, ConsentUserError.UpdateUser) },
+                { navigator.performAction(runtime, toastAction("Consent Updated")) }
+            )
+
+            !hideLoading(ConsentUserLoading.UpdateUser)
+
+        }.unsafeRunAsync()
+
+    private fun Bitmap.toBase64(): String {
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+    }
 
     /* --- validation --- */
 
@@ -128,12 +211,12 @@ class ConsentUserViewModel(
             ConsentUserEmailToConsentUserEmailValidationCode
         )
 
-    fun signature(navController: NavController): Unit =
+    private fun signature(navController: NavController): Kind<ForIO, Unit> =
         navigator.navigateTo(
             runtime,
             navController,
             ConsentUserEmailValidationCodeToConsentUserSignature
-        ).unsafeRunAsync()
+        )
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

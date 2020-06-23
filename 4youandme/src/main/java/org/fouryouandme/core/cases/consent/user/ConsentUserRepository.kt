@@ -8,6 +8,7 @@ import org.fouryouandme.core.data.api.consent.user.request.ConfirmUserConsentEma
 import org.fouryouandme.core.data.api.consent.user.request.CreateUserConsentRequest
 import org.fouryouandme.core.data.api.consent.user.request.UpdateUserConsentRequest
 import org.fouryouandme.core.data.api.consent.user.request.UserConsentRequest
+import org.fouryouandme.core.ext.unwrapEmptyToEither
 import org.fouryouandme.core.ext.unwrapToEither
 
 object ConsentUserRepository {
@@ -76,7 +77,7 @@ object ConsentUserRepository {
                 )
                 .async(runtime.fx.M)
                 .attempt()
-                .unwrapToEither(runtime)
+                .unwrapEmptyToEither(runtime)
 
         }
 
@@ -94,7 +95,7 @@ object ConsentUserRepository {
                 )
                 .async(runtime.fx.M)
                 .attempt()
-                .unwrapToEither(runtime)
+                .unwrapEmptyToEither(runtime)
 
         }
 }

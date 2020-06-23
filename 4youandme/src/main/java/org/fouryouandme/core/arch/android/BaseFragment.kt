@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
+import org.fouryouandme.core.arch.navigation.RootNavController
 
 
 abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
@@ -24,8 +25,8 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
             .observeEvent { it(requireActivity()) }
     }
 
-    fun rootNavController(): NavController =
-        requireActivity().supportFragmentManager.fragments[0].findNavController()
+    fun rootNavController(): RootNavController =
+        RootNavController(requireActivity().supportFragmentManager.fragments[0].findNavController())
 
     fun <A> LiveData<Event<A>>.observeEvent(handle: (A) -> Unit): Unit =
         observe(this@BaseFragment, EventObserver { handle(it) })

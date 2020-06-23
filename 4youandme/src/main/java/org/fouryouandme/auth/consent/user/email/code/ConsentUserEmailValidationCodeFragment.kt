@@ -15,6 +15,8 @@ import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.consent_user.*
 import kotlinx.android.synthetic.main.consent_user_email_validation_code.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.user.ConsentUserError
+import org.fouryouandme.auth.consent.user.ConsentUserLoading
 import org.fouryouandme.auth.consent.user.ConsentUserViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -32,6 +34,27 @@ class ConsentUserEmailValidationCodeFragment : BaseFragment<ConsentUserViewModel
             requireParentFragment(),
             getFactory { ConsentUserViewModel(navigator, IORuntime) }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.loadingLiveData()
+            .observeEventPeek {
+                when (it.task) {
+                    ConsentUserLoading.ConfirmEmail -> loading.setVisibility(it.active)
+                    ConsentUserLoading.ResendConfirmationEmail -> loading.setVisibility(it.active)
+                }
+            }
+
+        viewModel.errorLiveData()
+            .observeEventPeek {
+                when (it.cause) {
+                    ConsentUserError.ConfirmEmail -> viewModel.toastError(it.error)
+                    ConsentUserError.ResendConfirmationEmail -> viewModel.toastError(it.error)
+                }
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +78,15 @@ class ConsentUserEmailValidationCodeFragment : BaseFragment<ConsentUserViewModel
             }
 
         next.background = button(resources, imageConfiguration.signUpNextStep())
-        next.setOnClickListener { viewModel.signature(findNavController()) }
+        next.setOnClickListener {
+            viewModel.confirmEmail(
+                rootNavController(),
+                findNavController(),
+                code_entry.text.toString().trim()
+            )
+        }
+
+        resend.setOnClickListener { viewModel.resendEmail(rootNavController()) }
 
     }
 

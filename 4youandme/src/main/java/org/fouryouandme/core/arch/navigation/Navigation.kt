@@ -19,6 +19,13 @@ class Navigator(
 
     fun <F> navigateTo(
         runtime: Runtime<F>,
+        controller: RootNavController,
+        navigationAction: NavigationAction
+    ): Kind<F, Unit> =
+        navigateTo(runtime, controller.navController, navigationAction)
+
+    fun <F> navigateTo(
+        runtime: Runtime<F>,
         controller: NavController,
         navigationAction: NavigationAction
     ): Kind<F, Unit> =

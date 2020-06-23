@@ -87,7 +87,7 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
             }
 
         next.background = button(resources, imageConfiguration.signUpNextStepSecondary())
-        next.setOnClickListener { viewModel.createUser(findNavController()) }
+        next.setOnClickListener { viewModel.createUser(rootNavController(), findNavController()) }
         bindNext()
 
     }

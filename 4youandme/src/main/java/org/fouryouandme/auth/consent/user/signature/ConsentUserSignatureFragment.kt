@@ -54,6 +54,10 @@ class ConsentUserSignatureFragment : BaseFragment<ConsentUserViewModel>(
                 it.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
             }
 
+        next.setOnClickListener {
+            viewModel.updateUser(rootNavController(), signature_pad.signatureBitmap)
+        }
+
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {

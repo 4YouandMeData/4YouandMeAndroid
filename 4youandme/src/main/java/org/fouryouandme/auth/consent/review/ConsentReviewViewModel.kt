@@ -10,6 +10,7 @@ import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.consent.review.ConsentReviewUseCase
@@ -31,7 +32,7 @@ class ConsentReviewViewModel(
 
     /* --- data --- */
 
-    fun initialize(navController: NavController): Unit =
+    fun initialize(navController: RootNavController): Unit =
         runtime.fx.concurrent {
 
             !showLoading(ConsentReviewLoading.Initialization)

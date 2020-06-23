@@ -14,6 +14,7 @@ import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.screening.ScreeningUseCase
@@ -34,7 +35,7 @@ class ScreeningViewModel(
 
     /* --- data --- */
 
-    fun initialize(navController: NavController): Unit =
+    fun initialize(navController: RootNavController): Unit =
         runtime.fx.concurrent {
 
             !showLoading(ScreeningLoading.Initialization)
@@ -133,13 +134,13 @@ class ScreeningViewModel(
             else ScreeningPageToScreeningPage(id)
         ).unsafeRunAsync()
 
-    fun consentInfo(navController: NavController): Unit =
+    fun consentInfo(navController: RootNavController): Unit =
         navigator.navigateTo(runtime, navController, ScreeningToConsentInfo).unsafeRunAsync()
 
-    fun abort(navController: NavController): Unit =
+    fun abort(navController: RootNavController): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()
 
-    fun web(navController: NavController, url: String): Unit =
+    fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
 
     fun retryFromWelcome(navController: NavController): Unit =

@@ -8,10 +8,11 @@ import arrow.core.right
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.AnywhereToAuth
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
 
 fun <F, A> Kind<F, Either<FourYouAndMeError, A>>.handleAuthError(
     runtime: Runtime<F>,
-    controller: NavController,
+    controller: RootNavController,
     navigator: Navigator
 ): Kind<F, Either<FourYouAndMeError, A>> =
     runtime.fx.concurrent {
