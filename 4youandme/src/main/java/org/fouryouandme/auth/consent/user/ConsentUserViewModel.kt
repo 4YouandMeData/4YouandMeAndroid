@@ -2,15 +2,19 @@ package org.fouryouandme.auth.consent.user
 
 import android.util.Patterns
 import androidx.navigation.NavController
+import arrow.Kind
 import arrow.core.right
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.toastAction
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
+import org.fouryouandme.core.cases.consent.user.ConsentUserUseCase
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.unsafeRunAsync
 
@@ -61,6 +65,25 @@ class ConsentUserViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- user --- */
+
+    fun createUser(navController: NavController): Unit =
+        runtime.fx.concurrent {
+
+            !showLoading(ConsentUserLoading.CreateUser)
+
+            val create =
+                !ConsentUserUseCase.createUserConsent(runtime, state().email)
+
+            !create.fold(
+                { setError(it, ConsentUserError.CreateUser) },
+                { emailVerification(navController) }
+            )
+
+            !hideLoading(ConsentUserLoading.CreateUser)
+
+        }.unsafeRunAsync()
+
     /* --- validation --- */
 
     fun isValidEmail(email: String): Boolean =
@@ -98,12 +121,12 @@ class ConsentUserViewModel(
             ConsentUserNameToConsentUserEmail
         ).unsafeRunAsync()
 
-    fun emailVerification(navController: NavController): Unit =
+    private fun emailVerification(navController: NavController): Kind<ForIO, Unit> =
         navigator.navigateTo(
             runtime,
             navController,
             ConsentUserEmailToConsentUserEmailValidationCode
-        ).unsafeRunAsync()
+        )
 
     fun signature(navController: NavController): Unit =
         navigator.navigateTo(
@@ -111,4 +134,8 @@ class ConsentUserViewModel(
             navController,
             ConsentUserEmailValidationCodeToConsentUserSignature
         ).unsafeRunAsync()
+
+    fun toastError(error: FourYouAndMeError): Unit =
+        navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()
+
 }

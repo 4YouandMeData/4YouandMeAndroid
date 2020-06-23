@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
@@ -13,6 +12,8 @@ import arrow.core.toOption
 import kotlinx.android.synthetic.main.consent_user.*
 import kotlinx.android.synthetic.main.consent_user_email.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.consent.user.ConsentUserError
+import org.fouryouandme.auth.consent.user.ConsentUserLoading
 import org.fouryouandme.auth.consent.user.ConsentUserStateUpdate
 import org.fouryouandme.auth.consent.user.ConsentUserViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -32,19 +33,40 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateLiveData()
+            .observeEventPeek {
+
+                when (it) {
+                    is ConsentUserStateUpdate.Email -> bindNext()
+                }
+
+            }
+
+        viewModel.loadingLiveData()
+            .observeEventPeek {
+
+                when (it.task) {
+                    ConsentUserLoading.CreateUser -> loading.setVisibility(it.active)
+                }
+
+            }
+
+        viewModel.errorLiveData()
+            .observeEventPeek {
+                when (it.cause) {
+                    ConsentUserError.CreateUser -> viewModel.toastError(it.error)
+                }
+            }
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
-
-        viewModel.stateLiveData()
-            .observe(this, Observer {
-
-                when (it.peekContent()) {
-                    is ConsentUserStateUpdate.Email -> bindNext()
-                }
-
-            })
 
         Option.fx { viewModel.state().configuration.bind() }
             .map { applyConfiguration(it) }
@@ -65,7 +87,7 @@ class ConsentUserEmailFragment : BaseFragment<ConsentUserViewModel>(R.layout.con
             }
 
         next.background = button(resources, imageConfiguration.signUpNextStepSecondary())
-        next.setOnClickListener { viewModel.emailVerification(findNavController()) }
+        next.setOnClickListener { viewModel.createUser(findNavController()) }
         bindNext()
 
     }

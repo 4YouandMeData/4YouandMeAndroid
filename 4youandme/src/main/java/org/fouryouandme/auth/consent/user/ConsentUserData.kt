@@ -29,12 +29,20 @@ sealed class ConsentUserStateUpdate {
 sealed class ConsentUserLoading {
 
     object Initialization : ConsentUserLoading()
+    object CreateUser : ConsentUserLoading()
+    object ConfirmEmail : ConsentUserLoading()
+    object ResendConfirmationEmail : ConsentUserLoading()
+    object UpdateUser : ConsentUserLoading()
 
 }
 
 sealed class ConsentUserError {
 
     object Initialization : ConsentUserError()
+    object CreateUser : ConsentUserError()
+    object ConfirmEmail : ConsentUserError()
+    object ResendConfirmationEmail : ConsentUserError()
+    object UpdateUser : ConsentUserError()
 
 }
 
@@ -42,4 +50,4 @@ sealed class ConsentUserError {
 
 object ConsentUserNameToConsentUserEmail : NavigationAction
 object ConsentUserEmailToConsentUserEmailValidationCode : NavigationAction
-object ConsentUserEmailValidationCodeToConsentUserSignature: NavigationAction
+object ConsentUserEmailValidationCodeToConsentUserSignature : NavigationAction
