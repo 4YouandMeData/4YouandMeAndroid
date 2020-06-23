@@ -20,6 +20,7 @@ import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.page.Page
+import org.fouryouandme.core.ext.dpToPx
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.view.page.EPageType.*
 
@@ -40,6 +41,13 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         action2: ((Option<Page>) -> Unit)? = null,
         externalAction: (String) -> Unit
     ): Unit {
+
+        val params = icon.layoutParams
+
+        params.height = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
+        params.width = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
+
+        icon.layoutParams = params
 
         val decodedString = page.image.map { Base64.decode(it, Base64.DEFAULT) }
         val decodedByte =
