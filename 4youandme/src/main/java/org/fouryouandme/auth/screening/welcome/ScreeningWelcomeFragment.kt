@@ -43,7 +43,7 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active) }
+            .observeEvent { loading.setVisibility(it.active, false) }
 
         viewModel.errorLiveData()
             .observeEvent {
@@ -71,8 +71,6 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
     }
 
     private fun setupView(): Unit {
-
-        loading.setLoader(imageConfiguration.loading())
 
         requireParentFragment()
             .requireParentFragment()

@@ -52,7 +52,7 @@ class ConsentInfoWelcomeFragment :
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active) }
+            .observeEvent { loading.setVisibility(it.active, false) }
 
         viewModel.errorLiveData()
             .observeEvent {
@@ -80,8 +80,6 @@ class ConsentInfoWelcomeFragment :
     }
 
     private fun setupView(): Unit {
-
-        loading.setLoader(imageConfiguration.loading())
 
         requireParentFragment()
             .requireParentFragment()

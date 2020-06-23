@@ -16,10 +16,7 @@ import kotlinx.android.synthetic.main.loading.view.*
 import org.fouryouandme.R
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.dpToPx
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.*
 
 class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -31,11 +28,52 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
         rotation = AnimationUtils.loadAnimation(context, R.anim.rotate).some()
 
+        applyTheme(true, null)
+
+        isFocusable = true
+        isClickable = true
+
+        elevation = 20.dpToPx().toFloat()
+
+        hide()
+
+    }
+
+    private fun show(): Unit {
+
+        rotation.map { loader.startAnimation(it) }
+
+        visibility = View.VISIBLE
+
+
+    }
+
+    private fun hide(): Unit {
+
+        loader.clearAnimation()
+
+        visibility = View.GONE
+    }
+
+    fun setVisibility(
+        isVisible: Boolean,
+        opaque: Boolean = true,
+        @DrawableRes loaderImage: Int? = null
+    ): Unit {
+
+        applyTheme(opaque, loaderImage)
+
+        if (isVisible) show() else hide()
+    }
+
+    private fun setLoader(@DrawableRes image: Int): Unit = loader.setImageResource(image)
+
+    private fun applyTheme(opaque: Boolean, @DrawableRes loaderImage: Int?): Unit =
         context.IORuntime.fx.concurrent {
 
             continueOn(context.IORuntime.injector.runtimeContext.mainDispatcher)
 
-            loader.setImageResource(context.imageConfiguration.loading())
+            loader.setImageResource(loaderImage ?: context.imageConfiguration.loading())
 
             val configuration =
                 ConfigurationUseCase.getConfiguration(context.IORuntime, CachePolicy.MemoryOrDisk)
@@ -50,39 +88,8 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
             continueOn(context.IORuntime.injector.runtimeContext.mainDispatcher)
 
-            setBackgroundColor(color)
+            setBackgroundColor(if (opaque) adjustAlpha(color, 0.5f) else color)
 
         }.unsafeRunAsync()
-
-        isFocusable = true
-        isClickable = true
-
-        elevation = 20.dpToPx().toFloat()
-
-        hide()
-
-    }
-
-    fun show(): Unit {
-
-        rotation.map { loader.startAnimation(it) }
-
-        visibility = View.VISIBLE
-
-
-    }
-
-    fun hide(): Unit {
-
-        loader.clearAnimation()
-
-        visibility = View.GONE
-    }
-
-    fun setVisibility(isVisible: Boolean): Unit =
-        if (isVisible) show() else hide()
-
-
-    fun setLoader(@DrawableRes image: Int): Unit = loader.setImageResource(image)
 
 }

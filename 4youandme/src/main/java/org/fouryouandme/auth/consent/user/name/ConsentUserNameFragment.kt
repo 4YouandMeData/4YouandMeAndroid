@@ -44,7 +44,7 @@ class ConsentUserNameFragment : BaseFragment<ConsentUserViewModel>(R.layout.cons
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active) }
+            .observeEvent { loading.setVisibility(it.active, false) }
 
         viewModel.errorLiveData()
             .observeEvent {

@@ -85,8 +85,6 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
 
     private fun setupView() {
 
-        loading.setLoader(imageConfiguration.loading())
-
         toolbar.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
 
         phone.setText(args.phone)

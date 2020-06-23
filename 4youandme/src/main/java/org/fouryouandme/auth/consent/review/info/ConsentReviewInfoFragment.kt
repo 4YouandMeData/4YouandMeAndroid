@@ -60,7 +60,7 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active) }
+            .observeEvent { loading.setVisibility(it.active, false) }
 
         viewModel.errorLiveData()
             .observeEvent {
@@ -87,8 +87,6 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
     }
 
     private fun setupView(): Unit {
-
-        loading.setLoader(imageConfiguration.loading())
 
         recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
