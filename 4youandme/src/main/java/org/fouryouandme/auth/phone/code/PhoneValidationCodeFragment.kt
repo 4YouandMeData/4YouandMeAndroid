@@ -94,7 +94,7 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
         }
 
         resend.setOnClickListener {
-            viewModel.resendCode(findNavController(), ccp.fullNumberWithPlus)
+            viewModel.resendCode(ccp.fullNumberWithPlus)
         }
     }
 

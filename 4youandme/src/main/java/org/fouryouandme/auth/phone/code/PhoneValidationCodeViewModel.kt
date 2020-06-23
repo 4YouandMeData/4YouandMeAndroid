@@ -69,7 +69,6 @@ class PhoneValidationCodeViewModel(
         }.unsafeRunAsync()
 
     fun resendCode(
-        navController: NavController,
         phoneAndCode: String
     ): Unit =
         runtime.fx.concurrent {
