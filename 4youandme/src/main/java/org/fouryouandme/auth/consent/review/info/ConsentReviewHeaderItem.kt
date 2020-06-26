@@ -43,7 +43,7 @@ fun ConsentReview.toConsentReviewHeaderItem(
         configuration,
         title,
         body,
-        ""
+        pagesSubtitle
     )
 
 class ConsentReviewHeaderViewHolder(
@@ -64,6 +64,9 @@ class ConsentReviewHeaderViewHolder(
 
         body.text = t.body
         body.setTextColor(t.configuration.theme.fourthTextColor.color())
+
+        subtitle.text = t.subtitle
+        subtitle.setTextColor(t.configuration.theme.primaryTextColor.color())
 
     }
 
