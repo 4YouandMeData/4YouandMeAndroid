@@ -71,7 +71,7 @@ object ConsentUserRepository {
                         UpdateUserConsentRequest(
                             firstName,
                             lastName,
-                            signatureBase64
+                            "data:image/png;base64,\\$signatureBase64"
                         )
                     )
                 )

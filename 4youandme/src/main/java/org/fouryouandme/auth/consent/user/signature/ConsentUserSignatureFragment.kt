@@ -75,7 +75,7 @@ class ConsentUserSignatureFragment : BaseFragment<ConsentUserViewModel>(
             viewModel.updateUser(
                 rootNavController(),
                 findNavController(),
-                signature_pad.signatureBitmap
+                signature_pad.transparentSignatureBitmap
             )
         }
 
