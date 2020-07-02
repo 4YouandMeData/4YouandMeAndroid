@@ -18,6 +18,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
+import org.fouryouandme.core.entity.configuration.checkbox.checkbox
 import org.fouryouandme.core.entity.optins.OptIns
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
@@ -72,6 +73,24 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
 
                 description.text = it.body
                 description.setTextColor(configuration.theme.primaryTextColor.color())
+
+                agree.buttonTintList =
+                    checkbox(
+                        configuration.theme.primaryColorEnd.color(),
+                        configuration.theme.primaryColorEnd.color()
+                    )
+
+                agree_text.text = it.agreeText
+                agree_text.setTextColor(configuration.theme.primaryTextColor.color())
+
+                disagree.buttonTintList =
+                    checkbox(
+                        configuration.theme.primaryColorEnd.color(),
+                        configuration.theme.primaryColorEnd.color()
+                    )
+
+                disagree_text.text = it.disagreeText
+                disagree_text.setTextColor(configuration.theme.primaryTextColor.color())
 
                 shadow.background =
                     HEXGradient.from(
