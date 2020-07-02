@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/opt_ins_navigation" />
+        app:navGraph="@navigation/opt_in_navigation" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

@@ -60,6 +60,11 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_WRONG_EMAIL") val onboardingEmailVerificationWrongMail: String? = null,
     @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_ERROR_WRONG_CODE") val onboardingEmailVerificationWrongCode: String? = null,
 
+    @Json(name = "ONBOARDING_OPT_IN_SUBMIT_BUTTON") val onboardingOptInSubmitButton: String,
+    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_CLOSE") val onboardingOptInMandatoryClose: String,
+    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_TITLE") val onboardingOptInMandatoryTitle: String,
+    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_DEFAULT") val onboardingOptInMandatoryDefault: String,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -142,6 +147,12 @@ data class StringsResponse(
                         OnboardingUserError(
                             onboardingEmailVerificationWrongCode.toOption().bind()
                         )
+                    ),
+                    OnboardingOptIn(
+                        onboardingOptInSubmitButton,
+                        onboardingOptInMandatoryClose,
+                        onboardingOptInMandatoryTitle,
+                        onboardingOptInMandatoryDefault
                     )
                 ),
                 Screening(

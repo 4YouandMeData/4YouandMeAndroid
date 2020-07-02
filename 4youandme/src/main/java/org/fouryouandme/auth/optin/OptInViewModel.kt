@@ -1,6 +1,7 @@
-package org.fouryouandme.auth.optins
+package org.fouryouandme.auth.optin
 
 import androidx.navigation.NavController
+import arrow.core.firstOrNone
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
@@ -19,23 +20,23 @@ import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
 
 
-class OptInsViewModel(
+class OptInViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        OptInsState,
-        OptInsStateUpdate,
-        OptInsError,
-        OptInsLoading>
-    (OptInsState(), navigator, runtime) {
+        OptInState,
+        OptInStateUpdate,
+        OptInError,
+        OptInLoading>
+    (OptInState(), navigator, runtime) {
 
     /* --- data --- */
 
     fun initialize(rootNavController: RootNavController): Unit =
         runtime.fx.concurrent {
 
-            !showLoading(OptInsLoading.Initialization)
+            !showLoading(OptInLoading.Initialization)
 
             val configuration =
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
@@ -49,19 +50,19 @@ class OptInsViewModel(
                 }.handleAuthError(runtime, rootNavController, navigator)
 
             !initialization.fold(
-                { setError(it, OptInsError.Initialization) },
+                { setError(it, OptInError.Initialization) },
                 { pair ->
                     setState(
                         state().copy(
                             optIns = pair.first.toOption(),
                             configuration = pair.second.toOption()
                         ),
-                        OptInsStateUpdate.Initialization(pair.second, pair.first)
+                        OptInStateUpdate.Initialization(pair.second, pair.first)
                     )
                 }
             )
 
-            !hideLoading(OptInsLoading.Initialization)
+            !hideLoading(OptInLoading.Initialization)
 
         }.unsafeRunAsync()
 
@@ -72,6 +73,23 @@ class OptInsViewModel(
 
     fun sectionBack(navController: RootNavController): Unit =
         navigator.back(runtime, navController).unsafeRunAsync()
+
+    fun permission(navController: NavController): Unit =
+        runtime.fx.concurrent {
+
+            !state().optIns.flatMap { it.permissions.firstOrNone() }
+                .fold(
+                    { just(Unit) },
+                    {
+                        navigator.navigateTo(
+                            runtime,
+                            navController,
+                            OptInWelcomeToOptInPermission(it.id)
+                        )
+                    }
+                )
+
+        }.unsafeRunAsync()
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

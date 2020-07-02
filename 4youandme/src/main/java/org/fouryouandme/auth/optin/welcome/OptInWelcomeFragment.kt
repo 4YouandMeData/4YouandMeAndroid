@@ -1,18 +1,19 @@
-package org.fouryouandme.auth.optins.welcome
+package org.fouryouandme.auth.optin.welcome
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toOption
-import kotlinx.android.synthetic.main.opt_ins.*
-import kotlinx.android.synthetic.main.opt_ins_welcome.*
+import kotlinx.android.synthetic.main.opt_in.*
+import kotlinx.android.synthetic.main.opt_in_welcome.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.optins.OptInsError
-import org.fouryouandme.auth.optins.OptInsLoading
-import org.fouryouandme.auth.optins.OptInsStateUpdate
-import org.fouryouandme.auth.optins.OptInsViewModel
+import org.fouryouandme.auth.optin.OptInError
+import org.fouryouandme.auth.optin.OptInLoading
+import org.fouryouandme.auth.optin.OptInStateUpdate
+import org.fouryouandme.auth.optin.OptInViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -25,13 +26,13 @@ import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.showBackSecondaryButton
 import org.fouryouandme.core.view.page.EPageType
 
-class OptInsWelcomeFragment : BaseFragment<OptInsViewModel>(R.layout.opt_ins_welcome) {
+class OptInWelcomeFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_welcome) {
 
-    override val viewModel: OptInsViewModel by lazy {
+    override val viewModel: OptInViewModel by lazy {
         viewModelFactory(
             requireParentFragment(),
             getFactory {
-                OptInsViewModel(
+                OptInViewModel(
                     navigator,
                     IORuntime
                 )
@@ -45,7 +46,7 @@ class OptInsWelcomeFragment : BaseFragment<OptInsViewModel>(R.layout.opt_ins_wel
         viewModel.stateLiveData()
             .observeEventPeek {
                 when (it) {
-                    is OptInsStateUpdate.Initialization ->
+                    is OptInStateUpdate.Initialization ->
                         applyConfiguration(it.configuration, it.optIns)
                 }
             }
@@ -53,7 +54,7 @@ class OptInsWelcomeFragment : BaseFragment<OptInsViewModel>(R.layout.opt_ins_wel
         viewModel.loadingLiveData()
             .observeEvent {
                 when (it.task) {
-                    OptInsLoading.Initialization ->
+                    OptInLoading.Initialization ->
                         loading.setVisibility(it.active, false)
                 }
             }
@@ -61,7 +62,7 @@ class OptInsWelcomeFragment : BaseFragment<OptInsViewModel>(R.layout.opt_ins_wel
         viewModel.errorLiveData()
             .observeEvent {
                 when (it.cause) {
-                    OptInsError.Initialization ->
+                    OptInError.Initialization ->
                         error.setError(it.error) { viewModel.initialize(rootNavController()) }
                 }
             }
@@ -112,7 +113,7 @@ class OptInsWelcomeFragment : BaseFragment<OptInsViewModel>(R.layout.opt_ins_wel
                 None
             ),
             pageType = EPageType.SUCCESS,
-            action1 = {},
+            action1 = { viewModel.permission(findNavController()) },
             externalAction = {}
         )
 

@@ -69,7 +69,8 @@ data class Onboarding(
     val abortMessage: String,
     val agreeButton: String,
     val disagreeButton: String,
-    val user: OnboardingUser
+    val user: OnboardingUser,
+    val optIn: OnboardingOptIn
 )
 
 data class OnboardingUser(
@@ -88,6 +89,13 @@ data class OnboardingUser(
     val emailVerificationResend: String,
     val emailVerificationWrongMail: String,
     val error: OnboardingUserError
+)
+
+data class OnboardingOptIn(
+    val submitButton: String,
+    val mandatoryClose: String,
+    val mandatoryTitle: String,
+    val mandatoryDefault: String
 )
 
 data class OnboardingUserError(

@@ -23,6 +23,7 @@ data class OptInsPermissionResponse(
         Option.fx {
 
             OptInsPermission(
+                id,
                 !title.toOption(),
                 !body.toOption(),
                 !position.toOption(),

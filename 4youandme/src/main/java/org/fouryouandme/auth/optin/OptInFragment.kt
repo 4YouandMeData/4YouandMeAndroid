@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.optins
+package org.fouryouandme.auth.optin
 
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -7,13 +7,13 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 
-class OptInsFragment : BaseFragment<OptInsViewModel>(R.layout.opt_ins) {
+class OptInFragment : BaseFragment<OptInViewModel>(R.layout.opt_in) {
 
-    override val viewModel: OptInsViewModel by lazy {
+    override val viewModel: OptInViewModel by lazy {
         viewModelFactory(
             this,
             getFactory {
-                OptInsViewModel(
+                OptInViewModel(
                     navigator,
                     IORuntime
                 )

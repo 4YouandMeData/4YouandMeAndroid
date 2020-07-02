@@ -8,6 +8,7 @@ import org.fouryouandme.auth.consent.user.ConsentUserEmailToConsentUserEmailVali
 import org.fouryouandme.auth.consent.user.ConsentUserEmailValidationCodeToConsentUserSignature
 import org.fouryouandme.auth.consent.user.ConsentUserNameToConsentUserEmail
 import org.fouryouandme.auth.consent.user.ConsentUserSignatureToConsentUserSuccess
+import org.fouryouandme.auth.optin.OptInWelcomeToOptInPermission
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.*
@@ -72,6 +73,9 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentReviewDisagreeToAuth()
             is ConsentReviewToOptIns ->
                 consentReviewToOptIns()
+
+            is OptInWelcomeToOptInPermission ->
+                optInsWelcomeToOptInsPermission(action.id)
 
             is ConsentUserNameToConsentUserEmail ->
                 consentUserNameToConsentUserEmail()
