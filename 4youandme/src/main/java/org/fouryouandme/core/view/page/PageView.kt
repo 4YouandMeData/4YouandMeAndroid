@@ -53,13 +53,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         val decodedByte =
             decodedString.map { BitmapFactory.decodeByteArray(it, 0, it.size) }
 
-        decodedByte.fold(
-            { icon.isVisible = false },
-            {
-                icon.isVisible = true
-                icon.setImageBitmap(it)
-            }
-        )
+        decodedByte.map { icon.setImageBitmap(it) }
 
         title.text = page.title
         title.setTextColor(configuration.theme.primaryTextColor.color())

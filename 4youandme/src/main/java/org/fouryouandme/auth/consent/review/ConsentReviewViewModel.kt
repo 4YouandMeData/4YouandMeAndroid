@@ -110,11 +110,11 @@ class ConsentReviewViewModel(
     fun exit(navController: NavController): Unit =
         navigator.navigateTo(runtime, navController, ConsentReviewDisagreeToAuth).unsafeRunAsync()
 
-    fun consentUser(rootNavController: RootNavController): Unit =
+    fun optIns(rootNavController: RootNavController): Unit =
         navigator.navigateTo(
             runtime,
             rootNavController,
-            ConsentReviewToConsentUser
+            ConsentReviewToOptIns
         ).unsafeRunAsync()
 
     fun back(navController: NavController): Unit =

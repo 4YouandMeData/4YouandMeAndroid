@@ -38,5 +38,5 @@ sealed class ConsentReviewError {
 /* --- navigation --- */
 
 object ConsentReviewInfoToConsentReviewDisagree: NavigationAction
-object ConsentReviewDisagreeToAuth: NavigationAction
-object ConsentReviewToConsentUser: NavigationAction
+object ConsentReviewDisagreeToAuth : NavigationAction
+object ConsentReviewToOptIns : NavigationAction

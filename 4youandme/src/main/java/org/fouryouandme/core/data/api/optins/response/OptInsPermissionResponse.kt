@@ -33,3 +33,6 @@ data class OptInsPermissionResponse(
 
         }
 }
+
+fun List<OptInsPermissionResponse>.toOptInsPermissions(): List<OptInsPermission> =
+    mapNotNull { it.toOptInsPermission().orNull() }

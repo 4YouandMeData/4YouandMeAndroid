@@ -22,7 +22,6 @@ import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 
 class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.consent_review_info) {
@@ -93,7 +92,7 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
         recycler_view.adapter = adapter
 
         disagree.setOnClickListener { viewModel.disagree(findNavController()) }
-        agree.setOnClickListener { viewModel.consentUser(rootNavController()) }
+        agree.setOnClickListener { viewModel.optIns(rootNavController()) }
 
     }
 

@@ -41,6 +41,9 @@ class Navigator(
             }
         }
 
+    fun <F> back(runtime: Runtime<F>, navController: RootNavController): Kind<F, Boolean> =
+        back(runtime, navController.navController)
+
     fun <F> back(runtime: Runtime<F>, navController: NavController): Kind<F, Boolean> =
         runtime.fx.concurrent { navController.popBackStack() }
 

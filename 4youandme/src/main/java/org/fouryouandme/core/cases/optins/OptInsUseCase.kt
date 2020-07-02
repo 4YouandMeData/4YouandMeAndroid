@@ -2,7 +2,6 @@ package org.fouryouandme.core.cases.optins
 
 import arrow.Kind
 import arrow.core.Either
-import arrow.core.Option
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
@@ -14,7 +13,7 @@ object OptInsUseCase {
 
     fun <F> getOptIns(
         runtime: Runtime<F>
-    ): Kind<F, Either<FourYouAndMeError, Option<OptIns>>> =
+    ): Kind<F, Either<FourYouAndMeError, OptIns>> =
         runtime.fx.concurrent {
 
             val token =

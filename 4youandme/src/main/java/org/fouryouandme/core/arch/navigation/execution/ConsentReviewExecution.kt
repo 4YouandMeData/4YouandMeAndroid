@@ -17,8 +17,8 @@ fun consentReviewDisagreeToAuth(): NavigationExecution = {
     )
 }
 
-fun consentReviewToConsentUser(): NavigationExecution = {
+fun consentReviewToOptIns(): NavigationExecution = {
     it.navigate(
-        ConsentReviewFragmentDirections.actionConsentReviewToConsentUser()
+        ConsentReviewFragmentDirections.actionConsentReviewToOptIns()
     )
 }

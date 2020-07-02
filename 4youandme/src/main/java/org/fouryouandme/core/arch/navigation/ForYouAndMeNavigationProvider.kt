@@ -3,7 +3,7 @@ package org.fouryouandme.core.arch.navigation
 import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
-import org.fouryouandme.auth.consent.review.ConsentReviewToConsentUser
+import org.fouryouandme.auth.consent.review.ConsentReviewToOptIns
 import org.fouryouandme.auth.consent.user.ConsentUserEmailToConsentUserEmailValidationCode
 import org.fouryouandme.auth.consent.user.ConsentUserEmailValidationCodeToConsentUserSignature
 import org.fouryouandme.auth.consent.user.ConsentUserNameToConsentUserEmail
@@ -70,8 +70,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentReviewInfoToConsentReviewDisagree()
             is ConsentReviewDisagreeToAuth ->
                 consentReviewDisagreeToAuth()
-            is ConsentReviewToConsentUser ->
-                consentReviewToConsentUser()
+            is ConsentReviewToOptIns ->
+                consentReviewToOptIns()
 
             is ConsentUserNameToConsentUserEmail ->
                 consentUserNameToConsentUserEmail()
@@ -81,7 +81,6 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentUserEmailValidationCodeToConsentUserSignature()
             is ConsentUserSignatureToConsentUserSuccess ->
                 consentUserSignatureToConsentUserSuccess()
-
 
             else -> {
                 {}
