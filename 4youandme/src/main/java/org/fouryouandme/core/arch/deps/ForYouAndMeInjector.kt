@@ -23,6 +23,8 @@ import org.fouryouandme.core.data.api.consent.review.response.ConsentReviewRespo
 import org.fouryouandme.core.data.api.consent.user.ConsentUserApi
 import org.fouryouandme.core.data.api.consent.user.response.ConsentUserResponse
 import org.fouryouandme.core.data.api.getApiService
+import org.fouryouandme.core.data.api.optins.response.OptInsPermissionResponse
+import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 
@@ -77,6 +79,8 @@ class ForYouAndMeInjector(
                     .add(ConsentInfoResponse::class.java)
                     .add(ConsentReviewResponse::class.java)
                     .add(ConsentUserResponse::class.java)
+                    .add(OptInsPermissionResponse::class.java)
+                    .add(OptInsResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
