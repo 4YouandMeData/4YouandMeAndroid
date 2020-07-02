@@ -23,6 +23,7 @@ import org.fouryouandme.core.data.api.consent.review.response.ConsentReviewRespo
 import org.fouryouandme.core.data.api.consent.user.ConsentUserApi
 import org.fouryouandme.core.data.api.consent.user.response.ConsentUserResponse
 import org.fouryouandme.core.data.api.getApiService
+import org.fouryouandme.core.data.api.optins.OptInsApi
 import org.fouryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
@@ -107,4 +108,6 @@ class ForYouAndMeInjector(
     override val consentUserApi: ConsentUserApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
+    override val optInsApi: OptInsApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
 }
