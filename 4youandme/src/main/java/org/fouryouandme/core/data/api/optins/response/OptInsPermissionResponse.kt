@@ -1,5 +1,6 @@
 package org.fouryouandme.core.data.api.optins.response
 
+import android.Manifest
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOrElse
@@ -29,7 +30,9 @@ data class OptInsPermissionResponse(
                 !position.toOption(),
                 !agreeText.toOption(),
                 !disagreeText.toOption(),
-                systemPermissions.toOption().getOrElse { emptyList() }
+                systemPermissions.toOption()
+                    .getOrElse { emptyList() }
+                    .mapNotNull { mapPermission(it) }
             )
 
         }
@@ -37,3 +40,9 @@ data class OptInsPermissionResponse(
 
 fun List<OptInsPermissionResponse>.toOptInsPermissions(): List<OptInsPermission> =
     mapNotNull { it.toOptInsPermission().orNull() }
+
+private fun mapPermission(permission: String): String? =
+    when (permission) {
+        "location" -> Manifest.permission.ACCESS_FINE_LOCATION
+        else -> null
+    }

@@ -1,4 +1,3 @@
-import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -18,8 +17,6 @@ object Versions {
 
     const val org_jetbrains_kotlin: String = "1.3.72"
 
-    const val androidx_navigation: String = "2.2.2"
-
     const val androidx_lifecycle: String = "2.2.0"
 
     const val moe_banana: String = "3.5.0"
@@ -36,11 +33,17 @@ object Versions {
 
     const val arrow_integration_retrofit_adapter: String = "0.10.4"
 
+    const val navigation_safe_args_gradle_plugin: String = "2.2.2" // available: "2.3.0"
+
+    const val navigation_fragment_ktx: String = "2.3.0"
+
     const val logging_interceptor: String = "4.7.2"
 
     const val recycler_droid_core: String = "1.7.0-beta05"
 
     const val firebase_analytics: String = "17.4.3"
+
+    const val navigation_ui_ktx: String = "2.3.0"
 
     const val constraintlayout: String = "1.1.3"
 
@@ -70,6 +73,8 @@ object Versions {
 
     const val core_ktx: String = "1.3.0"
 
+    const val dexter: String = "6.2.0"
+
     const val timber: String = "4.7.1"
 
     const val aapt2: String = "4.0.0-6051327"
@@ -81,7 +86,7 @@ object Versions {
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.5"
+    const val gradleLatestVersion: String = "6.5.1"
 }
 
 /**

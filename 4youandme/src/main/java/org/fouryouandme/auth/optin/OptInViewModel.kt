@@ -1,9 +1,19 @@
 package org.fouryouandme.auth.optin
 
 import androidx.navigation.NavController
+import arrow.Kind
+import arrow.core.Option
+import arrow.core.extensions.fx
 import arrow.core.firstOrNone
+import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.ForIO
+import com.karumi.dexter.DexterBuilder
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
+import com.karumi.dexter.listener.single.BasePermissionListener
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -66,9 +76,75 @@ class OptInViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- permission --- */
+
+    fun requestPermissions(
+        navController: NavController,
+        dexter: DexterBuilder.Permission,
+        index: Int
+    ): Unit {
+
+        Option.fx {
+
+            val agree = !state().permissions[index].toOption()
+            val optIn =
+                !state().optIns
+                    .bind()
+                    .permissions
+                    .getOrNull(index)
+                    .toOption()
+
+
+            // TODO: check required
+            if (agree) {
+
+                when (optIn.systemPermissions.size) {
+                    0 -> nextPermission(navController, index)
+                    1 ->
+                        dexter.withPermission(optIn.systemPermissions[0])
+                            .withListener(permissionListener(navController, index))
+                            .check()
+                    else ->
+                        dexter.withPermissions(optIn.systemPermissions)
+                            .withListener(multiplePermissionListener(navController, index))
+                            .check()
+                }
+
+            } else nextPermission(navController, index)
+        }
+
+    }
+
+    private fun permissionListener(
+        navController: NavController,
+        index: Int
+    ): BasePermissionListener =
+        object : BasePermissionListener() {
+
+            override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                nextPermission(navController, index)
+            }
+
+            override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                nextPermission(navController, index)
+            }
+        }
+
+    private fun multiplePermissionListener(
+        navController: NavController,
+        index: Int
+    ): BaseMultiplePermissionsListener =
+        object : BaseMultiplePermissionsListener() {
+
+            override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
+                nextPermission(navController, index)
+            }
+
+        }
+
     /* --- state --- */
 
-    fun setPermissionState(id: String, agree: Boolean): Unit {
+    fun setPermissionState(id: Int, agree: Boolean): Unit {
 
         val map =
             state().permissions.toMutableMap()
@@ -99,12 +175,36 @@ class OptInViewModel(
                         navigator.navigateTo(
                             runtime,
                             navController,
-                            OptInWelcomeToOptInPermission(it.id)
+                            OptInWelcomeToOptInPermission(0)
                         )
                     }
                 )
 
         }.unsafeRunAsync()
+
+    private fun nextPermission(navController: NavController, currentIndex: Int): Unit =
+        runtime.fx.concurrent {
+
+            if (state().optIns
+                    .map {
+                        it.permissions.size >
+                                (currentIndex + 1)
+                    }
+                    .getOrElse { false }
+            )
+
+                !navigator.navigateTo(
+                    runtime,
+                    navController,
+                    OptInPermissionToOptInPermission(currentIndex + 1)
+                )
+            else success(navController)
+
+        }.unsafeRunAsync()
+
+    // TODO: success page
+    private fun success(navController: NavController): Kind<ForIO, Unit> =
+        runtime.fx.concurrent { }
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

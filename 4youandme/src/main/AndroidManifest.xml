@@ -1,2 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.fouryouandme" />
+<manifest package="org.fouryouandme"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+</manifest>

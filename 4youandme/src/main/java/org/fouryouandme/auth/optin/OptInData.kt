@@ -9,7 +9,7 @@ import org.fouryouandme.core.entity.optins.OptIns
 data class OptInState(
     val configuration: Option<Configuration> = None,
     val optIns: Option<OptIns> = None,
-    val permissions: Map<String, Boolean> = emptyMap()
+    val permissions: Map<Int, Boolean> = emptyMap()
 )
 
 sealed class OptInStateUpdate {
@@ -19,7 +19,7 @@ sealed class OptInStateUpdate {
         val optIns: OptIns
     ) : OptInStateUpdate()
 
-    data class Permissions(val permissions: Map<String, Boolean>) : OptInStateUpdate()
+    data class Permissions(val permissions: Map<Int, Boolean>) : OptInStateUpdate()
 
 }
 
@@ -37,4 +37,5 @@ sealed class OptInError {
 
 /* --- navigation --- */
 
-data class OptInWelcomeToOptInPermission(val id: String) : NavigationAction
+data class OptInWelcomeToOptInPermission(val index: Int) : NavigationAction
+data class OptInPermissionToOptInPermission(val index: Int) : NavigationAction

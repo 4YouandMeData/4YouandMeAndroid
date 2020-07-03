@@ -2,11 +2,12 @@ package org.fouryouandme.auth.optin.permission
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arrow.core.Option
 import arrow.core.extensions.fx
-import arrow.core.firstOrNone
 import arrow.core.toOption
+import com.karumi.dexter.Dexter
 import kotlinx.android.synthetic.main.opt_in.*
 import kotlinx.android.synthetic.main.opt_in_permission.*
 import org.fouryouandme.R
@@ -45,10 +46,7 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
 
         setupView()
 
-        Option.fx { !viewModel.state().configuration to !viewModel.state().optIns }
-            .map { applyConfiguration(it.first, it.second) }
-
-        viewModel.state().permissions[args.id].toOption()
+        viewModel.state().permissions[args.index].toOption()
             .map {
                 if (it) {
                     agree.isChecked = true
@@ -58,6 +56,9 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                     disagree.jumpDrawablesToCurrentState()
                 }
             }
+
+        Option.fx { !viewModel.state().configuration to !viewModel.state().optIns }
+            .map { applyConfiguration(it.first, it.second) }
 
     }
 
@@ -74,7 +75,7 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
 
     private fun applyConfiguration(configuration: Configuration, optIns: OptIns): Unit {
 
-        optIns.permissions.firstOrNone { it.id == args.id }
+        optIns.permissions.getOrNull(args.index).toOption()
             .map {
 
                 root.setBackgroundColor(configuration.theme.secondaryColor.color())
@@ -93,7 +94,8 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                 agree.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         disagree.isChecked = false
-                        viewModel.setPermissionState(args.id, true)
+                        viewModel.setPermissionState(args.index, true)
+                        next.isEnabled = agree.isChecked || disagree.isChecked
                     }
                 }
 
@@ -109,7 +111,8 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                 disagree.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         agree.isChecked = false
-                        viewModel.setPermissionState(args.id, false)
+                        viewModel.setPermissionState(args.index, false)
+                        next.isEnabled = agree.isChecked || disagree.isChecked
                     }
                 }
 
@@ -125,8 +128,15 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                 next.text = configuration.text.onboarding.optIn.submitButton
                 next.setTextColor(configuration.theme.secondaryColor.color())
                 next.background = button(configuration.theme.primaryColorEnd.color())
-
+                next.setOnClickListener {
+                    viewModel.requestPermissions(
+                        findNavController(),
+                        Dexter.withContext(requireContext()),
+                        args.index
+                    )
+                }
+                next.isEnabled = agree.isChecked || disagree.isChecked
             }
-
     }
+
 }

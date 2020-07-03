@@ -15,8 +15,11 @@ fun button(color: Int): StateListDrawable {
 
     val pressedDrawable = createButtonDrawable(adjustAlpha(color, 0.8f))
 
+    val disabledDrawable = createButtonDrawable(adjustAlpha(color, 0.3f))
+
     val stateDrawable = StateListDrawable()
     stateDrawable.addState(arrayOf(android.R.attr.state_pressed).toIntArray(), pressedDrawable)
+    stateDrawable.addState(arrayOf(-android.R.attr.state_enabled).toIntArray(), disabledDrawable)
     stateDrawable.addState(StateSet.WILD_CARD, normalDrawable)
     return stateDrawable
 

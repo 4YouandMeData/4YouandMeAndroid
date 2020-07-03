@@ -119,7 +119,12 @@ dependencies {
     implementation(Libs.recycler_droid_core)
 
     /* --- signature --- */
+
     implementation(Libs.signature_pad)
+
+    /* --- permissions --- */
+
+    implementation(Libs.dexter)
 
     /* --- test --- */
 
