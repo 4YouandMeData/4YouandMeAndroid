@@ -1,6 +1,8 @@
 package org.fouryouandme.auth.optin.permission
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -97,14 +99,21 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
     private fun applyConfiguration(configuration: Configuration, optIns: OptIns): Unit {
 
         optIns.permissions.getOrNull(args.index).toOption()
-            .map {
+            .map { permission ->
 
                 root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-                title.text = it.title
+                val decodedString =
+                    permission.image.map { Base64.decode(it, Base64.DEFAULT) }
+                val decodedByte =
+                    decodedString.map { BitmapFactory.decodeByteArray(it, 0, it.size) }
+
+                decodedByte.map { icon.setImageBitmap(it) }
+
+                title.text = permission.title
                 title.setTextColor(configuration.theme.primaryTextColor.color())
 
-                description.text = it.body
+                description.text = permission.body
                 description.setTextColor(configuration.theme.primaryTextColor.color())
 
                 agree.buttonTintList =
@@ -121,7 +130,7 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                 }
 
 
-                agree_text.text = it.agreeText
+                agree_text.text = permission.agreeText
                 agree_text.setTextColor(configuration.theme.primaryTextColor.color())
 
                 disagree.buttonTintList =
@@ -137,7 +146,7 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                     }
                 }
 
-                disagree_text.text = it.disagreeText
+                disagree_text.text = permission.disagreeText
                 disagree_text.setTextColor(configuration.theme.primaryTextColor.color())
 
                 shadow.background =

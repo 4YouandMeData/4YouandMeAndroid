@@ -12,6 +12,7 @@ import org.fouryouandme.core.entity.optins.OptInsPermission
 
 @JsonApi(type = "permission")
 data class OptInsPermissionResponse(
+    @field:Json(name = "image") val image: String? = null,
     @field:Json(name = "title") val title: String? = null,
     @field:Json(name = "body") val body: String? = null,
     @field:Json(name = "position") val position: Int? = null,
@@ -25,6 +26,7 @@ data class OptInsPermissionResponse(
 
             OptInsPermission(
                 id,
+                image.toOption(),
                 !title.toOption(),
                 !body.toOption(),
                 !position.toOption(),
