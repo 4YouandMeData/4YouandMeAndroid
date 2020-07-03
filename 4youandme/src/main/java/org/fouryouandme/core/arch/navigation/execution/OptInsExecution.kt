@@ -25,6 +25,6 @@ fun optInPermissionToOptInSuccess(): NavigationExecution = {
 
 fun optInToConsentUser(): NavigationExecution = {
 
-    it.navigate(OptInFragmentDirections.actionOptInsToConsentUser())
+    it.navigate(OptInFragmentDirections.actionOptInToConsentUser())
 
 }

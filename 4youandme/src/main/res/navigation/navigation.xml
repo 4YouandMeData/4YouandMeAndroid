@@ -209,7 +209,23 @@
         tools:layout="@layout/consent_review">
 
         <action
-            android:id="@+id/action_consent_review_to_consent_user"
+            android:id="@+id/action_consent_review_to_opt_in"
+            app:destination="@id/opt_in"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/opt_in"
+        android:name="org.fouryouandme.auth.optin.OptInFragment"
+        android:label="opt_in"
+        tools:layout="@layout/opt_in">
+
+        <action
+            android:id="@+id/action_opt_in_to_consent_user"
             app:destination="@id/consent_user"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
