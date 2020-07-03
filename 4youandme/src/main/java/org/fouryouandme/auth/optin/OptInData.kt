@@ -26,12 +26,14 @@ sealed class OptInStateUpdate {
 sealed class OptInLoading {
 
     object Initialization : OptInLoading()
+    object PermissionSet : OptInLoading()
 
 }
 
 sealed class OptInError {
 
     object Initialization : OptInError()
+    object PermissionSet : OptInError()
 
 }
 

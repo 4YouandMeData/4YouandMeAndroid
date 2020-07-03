@@ -11,6 +11,8 @@ import com.karumi.dexter.Dexter
 import kotlinx.android.synthetic.main.opt_in.*
 import kotlinx.android.synthetic.main.opt_in_permission.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.optin.OptInError
+import org.fouryouandme.auth.optin.OptInLoading
 import org.fouryouandme.auth.optin.OptInViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -39,6 +41,25 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                 )
             }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.loadingLiveData()
+            .observeEvent {
+                when (it.task) {
+                    OptInLoading.PermissionSet -> loading.setVisibility(it.active)
+                }
+            }
+
+        viewModel.errorLiveData()
+            .observeEvent {
+                when (it.cause) {
+                    OptInError.PermissionSet -> viewModel.toastError(it.error)
+                }
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,6 +151,7 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                 next.background = button(configuration.theme.primaryColorEnd.color())
                 next.setOnClickListener {
                     viewModel.requestPermissions(
+                        rootNavController(),
                         findNavController(),
                         Dexter.withContext(requireContext()),
                         args.index
