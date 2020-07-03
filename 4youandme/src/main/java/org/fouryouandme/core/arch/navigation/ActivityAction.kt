@@ -2,6 +2,7 @@ package org.fouryouandme.core.arch.navigation
 
 import android.content.Context
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 
@@ -17,3 +18,11 @@ fun toastAction(message: String): ActivityAction = {
 
 private fun showToast(context: Context, message: String): Unit =
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+fun alertAction(title: String, message: String, close: String): ActivityAction = {
+    AlertDialog.Builder(it)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton(close) { dialog, _ -> dialog.dismiss() }
+        .show()
+}

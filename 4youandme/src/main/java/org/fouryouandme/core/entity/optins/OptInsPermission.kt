@@ -7,5 +7,6 @@ data class OptInsPermission(
     val position: Int,
     val agreeText: String,
     val disagreeText: String,
-    val systemPermissions: List<String>
+    val systemPermissions: List<String>,
+    val required: Boolean
 )

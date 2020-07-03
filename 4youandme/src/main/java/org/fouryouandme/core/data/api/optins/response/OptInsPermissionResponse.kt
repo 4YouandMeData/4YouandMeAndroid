@@ -32,7 +32,8 @@ data class OptInsPermissionResponse(
                 !disagreeText.toOption(),
                 systemPermissions.toOption()
                     .getOrElse { emptyList() }
-                    .mapNotNull { mapPermission(it) }
+                    .mapNotNull { mapPermission(it) },
+                true // TODO: remove mocked data
             )
 
         }

@@ -18,10 +18,7 @@ import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
-import org.fouryouandme.core.arch.navigation.AnywhereToWeb
-import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.arch.navigation.RootNavController
-import org.fouryouandme.core.arch.navigation.toastAction
+import org.fouryouandme.core.arch.navigation.*
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.optins.OptInsUseCase
@@ -110,7 +107,17 @@ class OptInViewModel(
                             .check()
                 }
 
-            } else nextPermission(navController, index)
+            } else {
+
+                if (optIn.required) state().configuration.map {
+                    alert(
+                        it.text.onboarding.optIn.mandatoryTitle,
+                        it.text.onboarding.optIn.mandatoryDefault,
+                        it.text.onboarding.optIn.mandatoryClose
+                    )
+                }
+                else nextPermission(navController, index)
+            }
         }
 
     }
@@ -192,7 +199,6 @@ class OptInViewModel(
                     }
                     .getOrElse { false }
             )
-
                 !navigator.navigateTo(
                     runtime,
                     navController,
@@ -208,6 +214,9 @@ class OptInViewModel(
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()
+
+    private fun alert(title: String, message: String, close: String): Unit =
+        navigator.performAction(runtime, alertAction(title, message, close)).unsafeRunAsync()
 
     fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
