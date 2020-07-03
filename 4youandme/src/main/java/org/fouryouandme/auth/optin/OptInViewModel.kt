@@ -291,7 +291,18 @@ class OptInViewModel(
 
     // TODO: success page
     private fun success(navController: NavController): Kind<ForIO, Unit> =
-        runtime.fx.concurrent { }
+        navigator.navigateTo(
+            runtime,
+            navController,
+            OptInPermissionToOptInSuccess
+        )
+
+    fun consentUser(rootNavController: RootNavController): Unit =
+        navigator.navigateTo(
+            runtime,
+            rootNavController,
+            OptInToConsentUser
+        ).unsafeRunAsync()
 
     fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()

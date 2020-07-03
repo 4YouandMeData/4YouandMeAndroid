@@ -41,3 +41,5 @@ sealed class OptInError {
 
 data class OptInWelcomeToOptInPermission(val index: Int) : NavigationAction
 data class OptInPermissionToOptInPermission(val index: Int) : NavigationAction
+object OptInPermissionToOptInSuccess : NavigationAction
+object OptInToConsentUser : NavigationAction
