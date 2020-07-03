@@ -66,6 +66,21 @@ class OptInViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- state --- */
+
+    fun setPermissionState(id: String, agree: Boolean): Unit {
+
+        val map =
+            state().permissions.toMutableMap()
+                .also { it[id] = agree }
+
+        setState(
+            state().copy(permissions = map),
+            OptInStateUpdate.Permissions(map)
+        ).unsafeRunAsync()
+
+    }
+
     /* --- navigation --- */
 
     fun back(navController: NavController): Unit =

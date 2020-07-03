@@ -48,6 +48,17 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
         Option.fx { !viewModel.state().configuration to !viewModel.state().optIns }
             .map { applyConfiguration(it.first, it.second) }
 
+        viewModel.state().permissions[args.id].toOption()
+            .map {
+                if (it) {
+                    agree.isChecked = true
+                    agree.jumpDrawablesToCurrentState()
+                } else {
+                    disagree.isChecked = true
+                    disagree.jumpDrawablesToCurrentState()
+                }
+            }
+
     }
 
 
@@ -79,6 +90,13 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                         configuration.theme.primaryColorEnd.color(),
                         configuration.theme.primaryColorEnd.color()
                     )
+                agree.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        disagree.isChecked = false
+                        viewModel.setPermissionState(args.id, true)
+                    }
+                }
+
 
                 agree_text.text = it.agreeText
                 agree_text.setTextColor(configuration.theme.primaryTextColor.color())
@@ -88,6 +106,12 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
                         configuration.theme.primaryColorEnd.color(),
                         configuration.theme.primaryColorEnd.color()
                     )
+                disagree.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        agree.isChecked = false
+                        viewModel.setPermissionState(args.id, false)
+                    }
+                }
 
                 disagree_text.text = it.disagreeText
                 disagree_text.setTextColor(configuration.theme.primaryTextColor.color())

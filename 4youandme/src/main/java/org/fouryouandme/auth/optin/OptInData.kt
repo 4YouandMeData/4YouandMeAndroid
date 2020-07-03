@@ -8,7 +8,8 @@ import org.fouryouandme.core.entity.optins.OptIns
 
 data class OptInState(
     val configuration: Option<Configuration> = None,
-    val optIns: Option<OptIns> = None
+    val optIns: Option<OptIns> = None,
+    val permissions: Map<String, Boolean> = emptyMap()
 )
 
 sealed class OptInStateUpdate {
@@ -17,6 +18,8 @@ sealed class OptInStateUpdate {
         val configuration: Configuration,
         val optIns: OptIns
     ) : OptInStateUpdate()
+
+    data class Permissions(val permissions: Map<String, Boolean>) : OptInStateUpdate()
 
 }
 
