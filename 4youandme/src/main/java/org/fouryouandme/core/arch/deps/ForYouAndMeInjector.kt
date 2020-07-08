@@ -28,6 +28,8 @@ import org.fouryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
+import org.fouryouandme.core.data.api.wearable.WearableApi
+import org.fouryouandme.core.data.api.wearable.response.WearableResponse
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -82,6 +84,7 @@ class ForYouAndMeInjector(
                     .add(ConsentUserResponse::class.java)
                     .add(OptInsPermissionResponse::class.java)
                     .add(OptInsResponse::class.java)
+                    .add(WearableResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -109,5 +112,8 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val optInsApi: OptInsApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val wearableApi: WearableApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 }

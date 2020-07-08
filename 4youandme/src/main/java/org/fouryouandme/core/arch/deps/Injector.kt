@@ -10,6 +10,7 @@ import org.fouryouandme.core.data.api.consent.review.ConsentReviewApi
 import org.fouryouandme.core.data.api.consent.user.ConsentUserApi
 import org.fouryouandme.core.data.api.optins.OptInsApi
 import org.fouryouandme.core.data.api.screening.ScreeningApi
+import org.fouryouandme.core.data.api.wearable.WearableApi
 
 interface Injector {
 
@@ -46,4 +47,5 @@ interface Injector {
     val consentReviewApi: ConsentReviewApi
     val consentUserApi: ConsentUserApi
     val optInsApi: OptInsApi
+    val wearableApi: WearableApi
 }
