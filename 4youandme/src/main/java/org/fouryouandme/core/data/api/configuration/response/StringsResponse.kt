@@ -65,6 +65,11 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_OPT_IN_MANDATORY_TITLE") val onboardingOptInMandatoryTitle: String,
     @Json(name = "ONBOARDING_OPT_IN_MANDATORY_DEFAULT") val onboardingOptInMandatoryDefault: String,
 
+    @Json(name = "ONBOARDING_WEARABLES_DOWNLOAD_BUTTON_DEFAULT") val onboardingWearableDownloadButtonDefault: String,
+    @Json(name = "ONBOARDING_WEARABLES_OPEN_APP_BUTTON_DEFAULT") val onboardingWearableOpenAppButtonDefault: String,
+    @Json(name = "ONBOARDING_WEARABLES_LOGIN_BUTTON_DEFAULT") val onboardingWearableLoginButtonDefault: String,
+    @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingWearableNextButtonDefault: String,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -153,6 +158,12 @@ data class StringsResponse(
                         onboardingOptInMandatoryClose,
                         onboardingOptInMandatoryTitle,
                         onboardingOptInMandatoryDefault
+                    ),
+                    OnboardingWearable(
+                        onboardingWearableDownloadButtonDefault,
+                        onboardingWearableOpenAppButtonDefault,
+                        onboardingWearableLoginButtonDefault,
+                        onboardingWearableNextButtonDefault
                     )
                 ),
                 Screening(

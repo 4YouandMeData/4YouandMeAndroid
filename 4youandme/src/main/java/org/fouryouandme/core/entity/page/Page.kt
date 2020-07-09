@@ -12,5 +12,7 @@ data class Page(
     val link2: Option<Page>,
     val link2Label: Option<String>,
     val externalLinkLabel: Option<String>,
-    val externalLinkUrl: Option<String>
+    val externalLinkUrl: Option<String>,
+    val specialLinkLabel: Option<String>,
+    val specialLinkValue: Option<String>
 )

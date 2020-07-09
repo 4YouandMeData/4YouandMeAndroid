@@ -1,5 +1,7 @@
 package org.fouryouandme.auth.wearable
 
+import androidx.navigation.NavController
+import arrow.core.Option
 import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
@@ -11,6 +13,7 @@ import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.wearable.WearableUseCase
+import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
@@ -66,5 +69,26 @@ class WearableViewModel(
 
     fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
+
+    fun nextPage(
+        navController: NavController,
+        page: Option<Page>,
+        fromWelcome: Boolean = false
+    ): Unit =
+        runtime.fx.concurrent {
+
+            !page.fold(
+                { /* TODO: handle section end */ just(Unit) },
+                {
+
+                    navigator.navigateTo(
+                        runtime,
+                        navController,
+                        if (fromWelcome) WearableWelcomeToWearablePage(it.id)
+                        else WearablePageToWearablePage(it.id)
+                    )
+                })
+
+        }.unsafeRunAsync()
 
 }

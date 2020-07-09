@@ -15,6 +15,8 @@ import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
+import org.fouryouandme.auth.wearable.WearablePageToWearablePage
+import org.fouryouandme.auth.wearable.WearableWelcomeToWearablePage
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
 
@@ -94,6 +96,12 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentUserSignatureToConsentUserSuccess()
             is ConsentUserToWearable ->
                 consentUserToWearable()
+
+            is WearableWelcomeToWearablePage ->
+                wearableWelcomeToWearablePage(action.pageId)
+            is WearablePageToWearablePage ->
+                wearablePageToWearablePage(action.pageId)
+
 
             else -> {
                 {}

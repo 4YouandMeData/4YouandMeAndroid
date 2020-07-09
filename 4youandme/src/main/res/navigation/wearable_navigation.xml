@@ -10,6 +10,49 @@
         android:id="@+id/wearable_welcome"
         android:name="org.fouryouandme.auth.wearable.welcome.WearableWelcomeFragment"
         android:label="wearable_welcome"
-        tools:layout="@layout/wearable_page" />
+        tools:layout="@layout/wearable_welcome">
+
+        <action
+            android:id="@+id/action_wearable_welcome_to_wearable_page"
+            app:destination="@id/wearable_page"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/wearable_page"
+        android:name="org.fouryouandme.auth.wearable.page.WearablePageFragment"
+        android:label="wearable_page"
+        tools:layout="@layout/wearable_page">
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_wearable_page_self"
+            app:destination="@id/wearable_page"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
+
+    </fragment>
 
 </navigation>

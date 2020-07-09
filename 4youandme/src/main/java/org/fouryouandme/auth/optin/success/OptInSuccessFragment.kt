@@ -71,6 +71,8 @@ class OptInSuccessFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_succes
                 None,
                 None,
                 None,
+                None,
+                None,
                 None
             ),
             pageType = EPageType.SUCCESS,

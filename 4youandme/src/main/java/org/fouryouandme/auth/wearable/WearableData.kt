@@ -1,5 +1,6 @@
 package org.fouryouandme.auth.wearable
 
+
 import arrow.core.None
 import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
@@ -34,7 +35,6 @@ sealed class WearableError {
 
 /* --- navigation --- */
 
-data class OptInWelcomeToOptInPermission(val index: Int) : NavigationAction
-data class OptInPermissionToOptInPermission(val index: Int) : NavigationAction
-object OptInPermissionToOptInSuccess : NavigationAction
-object OptInToConsentUser : NavigationAction
+data class WearableWelcomeToWearablePage(val pageId: String) : NavigationAction
+data class WearablePageToWearablePage(val pageId: String) : NavigationAction
+

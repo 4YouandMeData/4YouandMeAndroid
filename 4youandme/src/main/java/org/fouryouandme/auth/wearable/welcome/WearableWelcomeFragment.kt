@@ -2,6 +2,7 @@ package org.fouryouandme.auth.wearable.welcome
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toOption
@@ -83,7 +84,13 @@ class WearableWelcomeFragment : BaseFragment<WearableViewModel>(R.layout.wearabl
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        page.applyData(configuration, wearable.welcomePage, {}, {}, {})
+        page.applyData(
+            configuration,
+            wearable.welcomePage,
+            { viewModel.nextPage(findNavController(), it, true) },
+            {},
+            {}
+        )
 
     }
 }

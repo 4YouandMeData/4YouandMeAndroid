@@ -110,6 +110,8 @@ class OptInWelcomeFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_welcom
                 None,
                 None,
                 None,
+                None,
+                None,
                 None
             ),
             pageType = EPageType.SUCCESS,

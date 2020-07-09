@@ -70,7 +70,8 @@ data class Onboarding(
     val agreeButton: String,
     val disagreeButton: String,
     val user: OnboardingUser,
-    val optIn: OnboardingOptIn
+    val optIn: OnboardingOptIn,
+    val wearable: OnboardingWearable
 )
 
 data class OnboardingUser(
@@ -96,6 +97,13 @@ data class OnboardingOptIn(
     val mandatoryClose: String,
     val mandatoryTitle: String,
     val mandatoryDefault: String
+)
+
+data class OnboardingWearable(
+    val downloadButtonDefault: String,
+    val openAppDefault: String,
+    val loginButtonDefault: String,
+    val nextDefault: String
 )
 
 data class OnboardingUserError(
