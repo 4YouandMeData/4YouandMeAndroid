@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import arrow.core.Option
 import arrow.core.extensions.fx
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.wearable.*
 import kotlinx.android.synthetic.main.wearable_welcome.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.wearable.WearableError
@@ -17,6 +19,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.wearable.Wearable
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.removeBackButton
 
 class WearableWelcomeFragment : BaseFragment<WearableViewModel>(R.layout.wearable_welcome) {
 
@@ -63,11 +66,22 @@ class WearableWelcomeFragment : BaseFragment<WearableViewModel>(R.layout.wearabl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
+
         Option.fx { !viewModel.state().configuration to !viewModel.state().wearable }
             .fold({ viewModel.initialize(rootNavController()) }, { applyData(it.first, it.second) })
     }
 
+    private fun setupView(): Unit {
+
+        requireParentFragment().requireParentFragment().toolbar
+            .toOption()
+            .map { it.removeBackButton() }
+    }
+
     private fun applyData(configuration: Configuration, wearable: Wearable): Unit {
+
+        root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         page.applyData(configuration, wearable.welcomePage, {}, {}, {})
 
