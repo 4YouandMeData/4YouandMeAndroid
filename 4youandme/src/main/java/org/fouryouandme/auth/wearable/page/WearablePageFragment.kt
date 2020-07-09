@@ -18,8 +18,9 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.wearable.Wearable
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.removeBackButton
+import org.fouryouandme.core.ext.showBackSecondaryButton
 
 class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_page) {
 
@@ -50,7 +51,10 @@ class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_p
 
         requireParentFragment().requireParentFragment().toolbar
             .toOption()
-            .map { it.removeBackButton() }
+            .map {
+                it.showBackSecondaryButton(imageConfiguration)
+                { viewModel.back(findNavController()) }
+            }
     }
 
     private fun applyData(configuration: Configuration, wearable: Wearable): Unit {
@@ -64,7 +68,7 @@ class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_p
                     wearablePage,
                     { viewModel.nextPage(findNavController(), it, false) },
                     { viewModel.handleSpecialLink(it) },
-                    {}
+                    { viewModel.login(findNavController(), it, false) }
                 )
             }
 

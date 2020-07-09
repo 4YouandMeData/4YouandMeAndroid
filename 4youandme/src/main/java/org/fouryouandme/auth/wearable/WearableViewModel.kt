@@ -7,7 +7,10 @@ import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
-import org.fouryouandme.core.arch.navigation.*
+import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.arch.navigation.openApp
+import org.fouryouandme.core.arch.navigation.playStoreAction
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.wearable.WearableUseCase
@@ -65,8 +68,8 @@ class WearableViewModel(
 
     /* --- navigation --- */
 
-    fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
+    fun back(navController: NavController): Unit =
+        navigator.back(runtime, navController).unsafeRunAsync()
 
     fun nextPage(
         navController: NavController,
@@ -108,4 +111,17 @@ class WearableViewModel(
             }
 
         }.unsafeRunAsync()
+
+    fun login(
+        navController: NavController,
+        link: String,
+        fromWelcome: Boolean
+    ): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            if (fromWelcome) WearableWelcomeToWearableLogin(link)
+            else WearablePageToWearableLogin(link)
+        ).unsafeRunAsync()
+
 }

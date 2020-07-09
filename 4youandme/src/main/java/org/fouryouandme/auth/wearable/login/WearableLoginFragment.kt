@@ -1,4 +1,4 @@
-package org.fouryouandme.web
+package org.fouryouandme.auth.wearable.login
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.web.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.wearable.WearableViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -23,34 +24,22 @@ import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.showCloseButton
 import timber.log.Timber
 
-class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
+class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.web) {
 
-    private val args: WebFragmentArgs by navArgs()
+    private val args: WearableLoginFragmentArgs by navArgs()
 
-    override val viewModel: WebViewModel by lazy {
+    override val viewModel: WearableViewModel by lazy {
         viewModelFactory(
-            this,
-            getFactory { WebViewModel(navigator, IORuntime) }
+            requireParentFragment(),
+            getFactory { WearableViewModel(navigator, IORuntime) }
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent {
-
-                when (it) {
-                    is WebStateUpdate.Initialization -> applyConfiguration(it.configuration)
-                }
-            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.state().configuration
-            .fold({ viewModel.initialize() }, { applyConfiguration(it) })
+            .map { applyConfiguration(it) }
 
         toolbar.showCloseButton(imageConfiguration) {
             if (web_view.canGoBack())

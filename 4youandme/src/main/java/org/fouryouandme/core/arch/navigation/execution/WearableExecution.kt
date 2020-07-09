@@ -8,6 +8,14 @@ fun wearableWelcomeToWearablePage(id: String): NavigationExecution = {
     it.navigate(WearableWelcomeFragmentDirections.actionWearableWelcomeToWearablePage(id))
 }
 
+fun wearableWelcomeToWearableLogin(url: String): NavigationExecution = {
+    it.navigate(WearableWelcomeFragmentDirections.actionWearableWelcomeToWearableLogin(url))
+}
+
 fun wearablePageToWearablePage(id: String): NavigationExecution = {
     it.navigate(WearablePageFragmentDirections.actionWearablePageSelf(id))
+}
+
+fun wearablePageToWearableLogin(url: String): NavigationExecution = {
+    it.navigate(WearablePageFragmentDirections.actionWearablePageToWearableLogin(url))
 }

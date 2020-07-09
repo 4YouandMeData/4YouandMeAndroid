@@ -51,5 +51,7 @@ sealed class SpecialLinkAction {
 /* --- navigation --- */
 
 data class WearableWelcomeToWearablePage(val pageId: String) : NavigationAction
+data class WearableWelcomeToWearableLogin(val url: String) : NavigationAction
 data class WearablePageToWearablePage(val pageId: String) : NavigationAction
+data class WearablePageToWearableLogin(val url: String) : NavigationAction
 

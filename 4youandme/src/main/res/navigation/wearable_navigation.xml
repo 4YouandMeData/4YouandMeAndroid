@@ -25,6 +25,9 @@
                 app:argType="string" />
 
         </action>
+        <action
+            android:id="@+id/action_wearable_welcome_to_wearable_login"
+            app:destination="@id/wearable_login" />
 
     </fragment>
 
@@ -52,6 +55,32 @@
 
         </action>
 
+        <action
+            android:id="@+id/action_wearable_page_to_wearable_login"
+            app:destination="@id/wearable_login"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="url"
+                app:argType="string" />
+
+        </action>
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/wearable_login"
+        android:name="org.fouryouandme.auth.wearable.login.WearableLoginFragment"
+        android:label="wearable_login"
+        tools:layout="@layout/wearable_login">
+
+        <argument
+            android:name="url"
+            app:argType="string" />
 
     </fragment>
 
