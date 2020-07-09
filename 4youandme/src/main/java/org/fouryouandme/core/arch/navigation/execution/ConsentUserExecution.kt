@@ -1,5 +1,6 @@
 package org.fouryouandme.core.arch.navigation.execution
 
+import org.fouryouandme.auth.consent.user.ConsentUserFragmentDirections
 import org.fouryouandme.auth.consent.user.email.ConsentUserEmailFragmentDirections
 import org.fouryouandme.auth.consent.user.email.code.ConsentUserEmailValidationCodeFragmentDirections
 import org.fouryouandme.auth.consent.user.name.ConsentUserNameFragmentDirections
@@ -25,5 +26,11 @@ fun consentUserEmailValidationCodeToConsentUserSignature(): NavigationExecution 
 fun consentUserSignatureToConsentUserSuccess(): NavigationExecution = {
     it.navigate(
         ConsentUserSignatureFragmentDirections.actionConsentUserSignatureToConsentUserSuccess()
+    )
+}
+
+fun consentUserToWearable(): NavigationExecution = {
+    it.navigate(
+        ConsentUserFragmentDirections.actionConsentUserToWearable()
     )
 }

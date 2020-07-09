@@ -4,10 +4,7 @@ import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
 import org.fouryouandme.auth.consent.review.ConsentReviewToOptIns
-import org.fouryouandme.auth.consent.user.ConsentUserEmailToConsentUserEmailValidationCode
-import org.fouryouandme.auth.consent.user.ConsentUserEmailValidationCodeToConsentUserSignature
-import org.fouryouandme.auth.consent.user.ConsentUserNameToConsentUserEmail
-import org.fouryouandme.auth.consent.user.ConsentUserSignatureToConsentUserSuccess
+import org.fouryouandme.auth.consent.user.*
 import org.fouryouandme.auth.optin.OptInPermissionToOptInPermission
 import org.fouryouandme.auth.optin.OptInPermissionToOptInSuccess
 import org.fouryouandme.auth.optin.OptInToConsentUser
@@ -95,6 +92,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentUserEmailValidationCodeToConsentUserSignature()
             is ConsentUserSignatureToConsentUserSuccess ->
                 consentUserSignatureToConsentUserSuccess()
+            is ConsentUserToWearable ->
+                consentUserToWearable()
 
             else -> {
                 {}

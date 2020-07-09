@@ -238,6 +238,22 @@
         android:id="@+id/consent_user"
         android:name="org.fouryouandme.auth.consent.user.ConsentUserFragment"
         android:label="consent_user"
-        tools:layout="@layout/consent_user" />
+        tools:layout="@layout/consent_user">
+
+        <action
+            android:id="@+id/action_consent_user_to_wearable"
+            app:destination="@id/wearable"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/wearable"
+        android:name="org.fouryouandme.auth.wearable.WearableFragment"
+        android:label="wearable"
+        tools:layout="@layout/wearable" />
 
 </navigation>

@@ -1,0 +1,15 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wearable_navigation"
+    app:startDestination="@id/wearable_welcome">
+
+
+    <fragment
+        android:id="@+id/wearable_welcome"
+        android:name="org.fouryouandme.auth.wearable.welcome.WearableWelcomeFragment"
+        android:label="wearable_welcome"
+        tools:layout="@layout/wearable_page" />
+
+</navigation>
