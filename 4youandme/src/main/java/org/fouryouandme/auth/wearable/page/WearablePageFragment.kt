@@ -63,7 +63,7 @@ class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_p
                     configuration,
                     wearablePage,
                     { viewModel.nextPage(findNavController(), it, false) },
-                    {},
+                    { viewModel.handleSpecialLink(it) },
                     {}
                 )
             }

@@ -7,9 +7,7 @@ import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
-import org.fouryouandme.core.arch.navigation.AnywhereToWeb
-import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.arch.navigation.*
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.wearable.WearableUseCase
@@ -91,4 +89,23 @@ class WearableViewModel(
 
         }.unsafeRunAsync()
 
+
+    fun handleSpecialLink(specialLinkAction: SpecialLinkAction): Unit =
+        runtime.fx.concurrent {
+
+            !when (specialLinkAction) {
+                is SpecialLinkAction.OpenApp ->
+                    navigator.performAction(
+                        runtime,
+                        openApp(specialLinkAction.app.packageName)
+                    )
+                is SpecialLinkAction.Download ->
+                    navigator.performAction(
+                        runtime,
+                        playStoreAction(specialLinkAction.app.packageName)
+                    )
+
+            }
+
+        }.unsafeRunAsync()
 }

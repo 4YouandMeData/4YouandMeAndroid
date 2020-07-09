@@ -1,9 +1,13 @@
 package org.fouryouandme.core.arch.navigation
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
+import arrow.core.getOrElse
+import arrow.core.toOption
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 
 typealias ActivityAction = (FragmentActivity) -> Unit
@@ -25,4 +29,35 @@ fun alertAction(title: String, message: String, close: String): ActivityAction =
         .setMessage(message)
         .setPositiveButton(close) { dialog, _ -> dialog.dismiss() }
         .show()
+}
+
+private const val storeIntent =
+    "https://play.google.com/store/apps/details?id="
+
+fun playStoreAction(packageName: String): ActivityAction = {
+
+    val intent =
+        Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("$storeIntent$packageName")
+            setPackage("com.android.vending")
+        }
+
+    it.startActivity(intent)
+
+}
+
+fun openApp(packageName: String): ActivityAction = {
+
+    val intent = it.packageManager.getLaunchIntentForPackage(packageName)
+        .toOption()
+        .getOrElse {
+            Intent(Intent.ACTION_VIEW)
+                .apply {
+                    data = Uri.parse("$storeIntent$packageName")
+                    setPackage("com.android.vending")
+                }
+        }
+
+    it.startActivity(intent)
+
 }

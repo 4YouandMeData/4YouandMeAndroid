@@ -33,6 +33,21 @@ sealed class WearableError {
 
 }
 
+
+/* --- special action --- */
+
+sealed class App(val packageName: String) {
+
+    object Oura : App("com.ouraring.oura")
+    object Fitbit : App("com.fitbit.FitbitMobile")
+
+}
+
+sealed class SpecialLinkAction {
+    data class OpenApp(val app: App) : SpecialLinkAction()
+    data class Download(val app: App) : SpecialLinkAction()
+}
+
 /* --- navigation --- */
 
 data class WearableWelcomeToWearablePage(val pageId: String) : NavigationAction

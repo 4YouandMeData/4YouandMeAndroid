@@ -9,6 +9,8 @@ import arrow.core.*
 import arrow.core.extensions.fx
 import kotlinx.android.synthetic.main.wearable_page_view.view.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.wearable.App
+import org.fouryouandme.auth.wearable.SpecialLinkAction
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
@@ -134,16 +136,4 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
             contains("fitbit", true) -> App.Fitbit.some()
             else -> None
         }
-}
-
-sealed class App {
-
-    object Oura : App()
-    object Fitbit : App()
-
-}
-
-sealed class SpecialLinkAction {
-    data class OpenApp(val app: App) : SpecialLinkAction()
-    data class Download(val app: App) : SpecialLinkAction()
 }
