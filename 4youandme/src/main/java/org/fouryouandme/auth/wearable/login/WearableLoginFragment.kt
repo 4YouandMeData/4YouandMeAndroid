@@ -11,8 +11,11 @@ import android.webkit.*
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlinx.android.synthetic.main.web.*
+import arrow.core.toOption
+import kotlinx.android.synthetic.main.wearable.*
+import kotlinx.android.synthetic.main.wearable_login.*
 import org.fouryouandme.R
+import org.fouryouandme.auth.wearable.WearableStateUpdate
 import org.fouryouandme.auth.wearable.WearableViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -23,8 +26,9 @@ import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.showCloseButton
 import timber.log.Timber
+import java.net.URL
 
-class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.web) {
+class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.wearable_login) {
 
     private val args: WearableLoginFragmentArgs by navArgs()
 
@@ -35,39 +39,68 @@ class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.web) {
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateLiveData()
+            .observeEvent(WearableLoginFragment::class.java.simpleName) {
+                when (it) {
+                    is WearableStateUpdate.Cookies -> setupWebView(it.cookies)
+                }
+            }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.state().configuration
             .map { applyConfiguration(it) }
 
-        toolbar.showCloseButton(imageConfiguration) {
-            if (web_view.canGoBack())
-                web_view.goBack()
-            else
-                viewModel.back(findNavController())
-        }
+        viewModel.state().cookies
+            .fold(
+                { viewModel.getCookies() },
+                { setupWebView(it) }
+            )
 
-        setupWebView()
+        requireParentFragment().requireParentFragment()
+            .toolbar
+            .toOption()
+            .map {
+                it.showCloseButton(imageConfiguration) { viewModel.back(findNavController()) }
+            }
+
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
-        toolbar.setBackgroundColor(Color.WHITE)
+        root.setBackgroundColor(Color.WHITE)
 
         progress_bar.progressTintList =
             ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
 
-        loadPage()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView() {
+    private fun setupWebView(cookies: Map<String, String>) {
+
+        val cookieManager =
+            CookieManager.getInstance()
+        cookies.forEach {
+
+            val host = "${URL(args.url).protocol}://${URL(args.url).host}/"
+            val cookie = "${it.key}=${it.value}"
+
+            cookieManager.setCookie(host, cookie)
+            cookieManager.flush()
+        }
+
         web_view
             .also { it.settings.domStorageEnabled = true }
             .also { it.settings.javaScriptEnabled = true }
             .also { it.webViewClient = getWebClient() }
             .also { it.webChromeClient = getWebChromeClient() }
+
+        loadPage()
     }
 
     private fun loadPage(): Unit = web_view.loadUrl(args.url)

@@ -9,7 +9,8 @@ import org.fouryouandme.core.entity.wearable.Wearable
 
 data class WearableState(
     val configuration: Option<Configuration> = None,
-    val wearable: Option<Wearable> = None
+    val wearable: Option<Wearable> = None,
+    val cookies: Option<Map<String, String>> = None
 )
 
 sealed class WearableStateUpdate {
@@ -18,6 +19,8 @@ sealed class WearableStateUpdate {
         val configuration: Configuration,
         val wearable: Wearable
     ) : WearableStateUpdate()
+
+    data class Cookies(val cookies: Map<String, String>) : WearableStateUpdate()
 
 }
 
