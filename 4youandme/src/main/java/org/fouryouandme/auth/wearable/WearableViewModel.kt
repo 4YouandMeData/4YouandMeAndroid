@@ -1,15 +1,14 @@
 package org.fouryouandme.auth.wearable
 
 import androidx.navigation.NavController
-import arrow.core.*
+import arrow.core.Option
+import arrow.core.getOrElse
+import arrow.core.some
+import arrow.core.toOption
 import arrow.fx.ForIO
-import com.squareup.moshi.Types
-import moe.banana.jsonapi2.ObjectDocument
-import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
-import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.arch.navigation.openApp
@@ -17,12 +16,11 @@ import org.fouryouandme.core.arch.navigation.playStoreAction
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.data.api.wearable.response.WearableResponse
+import org.fouryouandme.core.cases.wearable.WearableUseCase
 import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
-import java.io.*
 
 
 class WearableViewModel(
@@ -49,24 +47,8 @@ class WearableViewModel(
             val initialization =
                 !configuration.foldToKindEither(runtime.fx) { config ->
 
-                    /*WearableUseCase.getWearable(runtime)
-                        .mapResult(runtime.fx) { it to config }*/
-
-                    val type = Types.newParameterizedType(
-                        ObjectDocument::class.java,
-                        WearableResponse::class.java
-                    )
-
-                    val adapter =
-                        runtime.injector.moshi.adapter<ObjectDocument<WearableResponse>>(type)
-
-                    val wearable =
-                        adapter.fromJson(loadJSONFromAsset()).toOption()
-                            .flatMap { it.get().toWearable(it) }
-                            .map { it to config }
-                            .fold({ unknownError().left() }, { it.right() })
-
-                    just(wearable)
+                    WearableUseCase.getWearable(runtime)
+                        .mapResult(runtime.fx) { it to config }
 
                 }.handleAuthError(runtime, rootNavController, navigator)
 
@@ -86,26 +68,6 @@ class WearableViewModel(
             !hideLoading(WearableLoading.Initialization)
 
         }.unsafeRunAsync()
-
-    fun loadJSONFromAsset(): String {
-
-        val inputStream = runtime.app.resources.openRawResource(R.raw.get_wearable)
-
-        val writer: Writer = StringWriter()
-        val buffer = CharArray(1024)
-        try {
-            val reader: Reader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
-            var n: Int
-            while (reader.read(buffer).also { n = it } != -1) {
-                writer.write(buffer, 0, n)
-            }
-        } finally {
-            inputStream.close()
-        }
-
-        return writer.toString()
-
-    }
 
     fun getCookies(): Unit =
         runtime.fx.concurrent {
