@@ -100,12 +100,18 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 wearableWelcomeToWearablePage(action.pageId)
             is WearableWelcomeToWearableLogin ->
                 wearableWelcomeToWearableLogin(action.url, action.nextPage)
+            is WearableWelcomeToWearableSuccess ->
+                wearableWelcomeToWearableSuccess()
             is WearablePageToWearablePage ->
                 wearablePageToWearablePage(action.pageId)
             is WearablePageToWearableLogin ->
                 wearablePageToWearableLogin(action.url, action.nextPage)
+            is WearablePageToWearableSuccess ->
+                wearablePageToWearableSuccess()
             is WearableLoginToWearablePage ->
                 wearableLoginToWearablePage(action.id)
+            is WearableLoginToWearableSuccess ->
+                wearableLoginToWearableSuccess()
 
 
             else -> {

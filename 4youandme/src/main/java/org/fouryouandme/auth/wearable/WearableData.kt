@@ -58,11 +58,14 @@ data class WearableWelcomeToWearableLogin(
     val url: String,
     val nextPage: Option<String>
 ) : NavigationAction
+object WearableWelcomeToWearableSuccess : NavigationAction
 
 data class WearablePageToWearablePage(val pageId: String) : NavigationAction
+object WearablePageToWearableSuccess : NavigationAction
 data class WearablePageToWearableLogin(
     val url: String,
     val nextPage: Option<String>
 ) : NavigationAction
 
 data class WearableLoginToWearablePage(val id: String) : NavigationAction
+object WearableLoginToWearableSuccess : NavigationAction

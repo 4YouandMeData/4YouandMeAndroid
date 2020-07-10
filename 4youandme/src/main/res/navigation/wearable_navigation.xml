@@ -5,7 +5,6 @@
     android:id="@+id/wearable_navigation"
     app:startDestination="@id/wearable_welcome">
 
-
     <fragment
         android:id="@+id/wearable_welcome"
         android:name="org.fouryouandme.auth.wearable.welcome.WearableWelcomeFragment"
@@ -44,6 +43,14 @@
                 app:nullable="true" />
 
         </action>
+
+        <action
+            android:id="@+id/action_wearable_welcome_to_wearable_success"
+            app:destination="@id/wearable_success"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
 
     </fragment>
 
@@ -90,6 +97,14 @@
 
         </action>
 
+        <action
+            android:id="@+id/action_wearable_page_to_wearable_success"
+            app:destination="@id/wearable_success"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
 
     </fragment>
 
@@ -124,7 +139,21 @@
 
         </action>
 
+        <action
+            android:id="@+id/action_wearable_login_to_wearable_success"
+            app:destination="@id/wearable_success"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
 
     </fragment>
+
+    <fragment
+        android:id="@+id/wearable_success"
+        android:name="org.fouryouandme.auth.wearable.success.WearableSuccessFragment"
+        android:label="wearable_success"
+        tools:layout="@layout/wearable_page" />
 
 </navigation>

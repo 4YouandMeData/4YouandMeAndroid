@@ -19,6 +19,10 @@ fun wearableWelcomeToWearableLogin(url: String, nextPageId: Option<String>): Nav
     )
 }
 
+fun wearableWelcomeToWearableSuccess(): NavigationExecution = {
+    it.navigate(WearableWelcomeFragmentDirections.actionWearableWelcomeToWearableSuccess())
+}
+
 fun wearablePageToWearablePage(id: String): NavigationExecution = {
     it.navigate(WearablePageFragmentDirections.actionWearablePageSelf(id))
 }
@@ -32,6 +36,14 @@ fun wearablePageToWearableLogin(url: String, nextPageId: Option<String>): Naviga
     )
 }
 
+fun wearablePageToWearableSuccess(): NavigationExecution = {
+    it.navigate(WearablePageFragmentDirections.actionWearablePageToWearableSuccess())
+}
+
 fun wearableLoginToWearablePage(id: String): NavigationExecution = {
     it.navigate(WearableLoginFragmentDirections.actionWearableLoginToWearablePage(id))
+}
+
+fun wearableLoginToWearableSuccess(): NavigationExecution = {
+    it.navigate(WearableLoginFragmentDirections.actionWearableLoginToWearableSuccess())
 }

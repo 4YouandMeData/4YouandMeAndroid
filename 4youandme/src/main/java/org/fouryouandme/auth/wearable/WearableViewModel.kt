@@ -135,9 +135,15 @@ class WearableViewModel(
         runtime.fx.concurrent {
 
             !page.fold(
-                { /* TODO: handle section end */ just(Unit) },
                 {
-
+                    navigator.navigateTo(
+                        runtime,
+                        navController,
+                        if (fromWelcome) WearableWelcomeToWearableSuccess
+                        else WearablePageToWearableSuccess
+                    )
+                },
+                {
                     navigator.navigateTo(
                         runtime,
                         navController,
@@ -188,7 +194,7 @@ class WearableViewModel(
         runtime.fx.concurrent {
 
             !nextPageId.fold(
-                { just(Unit) },
+                { navigator.navigateTo(runtime, navController, WearableLoginToWearableSuccess) },
                 { navigator.navigateTo(runtime, navController, WearableLoginToWearablePage(it)) }
             )
 
