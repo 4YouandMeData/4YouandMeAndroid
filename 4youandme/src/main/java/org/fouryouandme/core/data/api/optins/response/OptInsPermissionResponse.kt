@@ -18,7 +18,9 @@ data class OptInsPermissionResponse(
     @field:Json(name = "position") val position: Int? = null,
     @field:Json(name = "agree_text") val agreeText: String? = null,
     @field:Json(name = "disagree_text") val disagreeText: String? = null,
-    @field:Json(name = "system_permissions") val systemPermissions: List<String>? = null
+    @field:Json(name = "system_permissions") val systemPermissions: List<String>? = null,
+    @field:Json(name = "mandatory") val mandatory: Boolean? = null,
+    @field:Json(name = "mandatory_description") val mandatoryDescription: String? = null
 ) : Resource() {
 
     fun toOptInsPermission(): Option<OptInsPermission> =
@@ -35,7 +37,8 @@ data class OptInsPermissionResponse(
                 systemPermissions.toOption()
                     .getOrElse { emptyList() }
                     .mapNotNull { mapPermission(it) },
-                true // TODO: remove mocked data
+                mandatory.toOption().getOrElse { false },
+                mandatoryDescription.toOption()
             )
 
         }

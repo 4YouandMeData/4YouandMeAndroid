@@ -3,7 +3,6 @@ package org.fouryouandme.auth.optin.welcome
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import arrow.core.None
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toOption
@@ -19,11 +18,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.optins.OptIns
-import org.fouryouandme.core.entity.page.Page
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.view.page.EPageType
 
 class OptInWelcomeFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_welcome) {
@@ -96,24 +91,13 @@ class OptInWelcomeFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_welcom
 
     private fun applyConfiguration(configuration: Configuration, optIns: OptIns): Unit {
 
+        setStatusBar(configuration.theme.secondaryColor.color())
+
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         page.applyData(
             configuration = configuration,
-            page = Page(
-                "opt_ins_welcome",
-                optIns.title,
-                optIns.description,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-            ),
+            page = optIns.welcomePage,
             pageType = EPageType.SUCCESS,
             action1 = { viewModel.permission(findNavController()) },
             externalAction = {}

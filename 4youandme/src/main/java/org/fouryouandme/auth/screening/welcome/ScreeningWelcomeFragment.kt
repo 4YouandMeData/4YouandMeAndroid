@@ -85,6 +85,8 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
 
     private fun applyData(configuration: Configuration, screening: Screening): Unit {
 
+        setStatusBar(configuration.theme.secondaryColor.color())
+
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         (requireParentFragment().requireParentFragment() as? ScreeningFragment)

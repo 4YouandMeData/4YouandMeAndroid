@@ -2,7 +2,6 @@ package org.fouryouandme.auth.optin.success
 
 import android.os.Bundle
 import android.view.View
-import arrow.core.None
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toOption
@@ -16,10 +15,10 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.optins.OptIns
-import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.removeBackButton
+import org.fouryouandme.core.ext.setStatusBar
 import org.fouryouandme.core.view.page.EPageType
 
 class OptInSuccessFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_success) {
@@ -56,25 +55,13 @@ class OptInSuccessFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_succes
 
     private fun applyData(configuration: Configuration, optIns: OptIns): Unit {
 
+        setStatusBar(configuration.theme.secondaryColor.color())
+
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        // TODO: remove mock
         page.applyData(
             configuration = configuration,
-            page = Page(
-                "success",
-                "Thank You",
-                "Your participation in this study is helping us better understand pregnancy and may help many in the future.",
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-            ),
+            page = optIns.successPage,
             pageType = EPageType.SUCCESS,
             action1 = { viewModel.consentUser(rootNavController()) },
             externalAction = { viewModel.web(rootNavController(), it) }

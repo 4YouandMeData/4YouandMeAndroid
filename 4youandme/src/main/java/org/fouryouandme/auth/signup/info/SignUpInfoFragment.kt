@@ -10,10 +10,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackButton
+import org.fouryouandme.core.ext.*
 
 class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_info) {
 
@@ -60,6 +57,8 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
+
+        setStatusBar(configuration.theme.primaryColorStart.color())
 
         root.background =
             HEXGradient.from(

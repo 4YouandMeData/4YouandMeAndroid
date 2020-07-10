@@ -26,10 +26,7 @@ import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.consent.informed.ConsentInfo
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.removeBackButton
+import org.fouryouandme.core.ext.*
 
 class ConsentInfoQuestionFragment :
     BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_question) {
@@ -102,6 +99,8 @@ class ConsentInfoQuestionFragment :
     }
 
     private fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit {
+
+        setStatusBar(configuration.theme.primaryColorStart.color())
 
         root.background =
             HEXGradient.from(

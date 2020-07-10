@@ -4,8 +4,8 @@ import arrow.Kind
 import arrow.core.Either
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
-import org.fouryouandme.core.data.api.optins.request.OptInPermissionAnswerRequest
 import org.fouryouandme.core.data.api.optins.request.OptInPermissionRequest
+import org.fouryouandme.core.data.api.optins.request.OptInUserPermissionRequest
 import org.fouryouandme.core.entity.optins.OptIns
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.noneToError
@@ -41,7 +41,7 @@ object OptInsRepository {
             !runtime.injector.optInsApi
                 .setPermission(
                     token, permissionId, OptInPermissionRequest(
-                        OptInPermissionAnswerRequest(agree, batchCode)
+                        OptInUserPermissionRequest(agree, batchCode)
                     )
                 )
                 .async(runtime.fx.M)

@@ -18,10 +18,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.screening.Screening
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.view.page.EPageType
 
 class ScreeningPageFragment : BaseFragment<ScreeningViewModel>(R.layout.screening_page) {
@@ -61,6 +58,8 @@ class ScreeningPageFragment : BaseFragment<ScreeningViewModel>(R.layout.screenin
     }
 
     private fun applyData(configuration: Configuration, screening: Screening): Unit {
+
+        setStatusBar(configuration.theme.secondaryColor.color())
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

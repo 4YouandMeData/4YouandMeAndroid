@@ -15,6 +15,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.setStatusBar
 import org.fouryouandme.core.view.page.EPageType
 
 class ConsentInfoFailureFragment : BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_page) {
@@ -39,6 +40,8 @@ class ConsentInfoFailureFragment : BaseFragment<ConsentInfoViewModel>(R.layout.c
     }
 
     private fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit {
+
+        setStatusBar(configuration.theme.secondaryColor.color())
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

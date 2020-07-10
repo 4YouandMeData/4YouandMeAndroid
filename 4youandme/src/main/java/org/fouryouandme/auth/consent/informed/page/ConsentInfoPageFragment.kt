@@ -66,6 +66,8 @@ class ConsentInfoPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.cons
 
     private fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit {
 
+        setStatusBar(configuration.theme.secondaryColor.color())
+
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         (requireParentFragment().requireParentFragment() as? ConsentInfoFragment)

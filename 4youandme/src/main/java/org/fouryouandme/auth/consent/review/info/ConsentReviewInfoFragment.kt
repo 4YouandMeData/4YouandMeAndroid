@@ -23,6 +23,7 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.setStatusBar
 
 class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.consent_review_info) {
 
@@ -99,6 +100,8 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
     private fun applyConfiguration(
         configuration: Configuration
     ): Unit {
+
+        setStatusBar(configuration.theme.secondaryColor.color())
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

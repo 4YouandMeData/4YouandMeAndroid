@@ -18,6 +18,7 @@ import org.fouryouandme.core.entity.screening.Screening
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.removeBackButton
+import org.fouryouandme.core.ext.setStatusBar
 import org.fouryouandme.core.view.page.EPageType
 
 class ScreeningSuccessFragment : BaseFragment<ScreeningViewModel>(R.layout.screening_page) {
@@ -53,6 +54,8 @@ class ScreeningSuccessFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
     }
 
     private fun applyData(configuration: Configuration, screening: Screening): Unit {
+
+        setStatusBar(configuration.theme.secondaryColor.color())
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

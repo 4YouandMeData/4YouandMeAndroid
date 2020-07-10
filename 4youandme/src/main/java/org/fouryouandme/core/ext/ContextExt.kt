@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import arrow.fx.ForIO
 import arrow.fx.IO
 import org.fouryouandme.core.arch.android.AppInjector

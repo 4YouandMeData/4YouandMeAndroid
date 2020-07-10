@@ -14,7 +14,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
 import com.karumi.dexter.listener.single.BasePermissionListener
-import kotlinx.coroutines.delay
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -87,20 +86,14 @@ class OptInViewModel(
 
             !showLoading(OptInLoading.PermissionSet)
 
-            // TODO: remove this line when the api is ready
-            !effect { delay(3000) }
-
-            /*val set =
+            val set =
                 !OptInsUseCase.setPermission(runtime, permissionId, agree)
                     .handleAuthError(runtime, rootNavController, navigator)
 
             !set.fold(
                 { setError(it, OptInError.PermissionSet) },
                 { nextPermission(navController, index) }
-            )*/
-
-            // TODO: uncomment and remove this line when the api is ready
-            !nextPermission(navController, index)
+            )
 
             !hideLoading(OptInLoading.PermissionSet)
 
@@ -163,14 +156,15 @@ class OptInViewModel(
 
             } else {
 
-                if (optIn.required) state().configuration.map {
+                if (optIn.mandatory) state().configuration.map {
                     alert(
                         it.text.onboarding.optIn.mandatoryTitle,
-                        it.text.onboarding.optIn.mandatoryDefault,
+                        optIn.mandatoryDescription
+                            .getOrElse { it.text.onboarding.optIn.mandatoryDefault },
                         it.text.onboarding.optIn.mandatoryClose
                     )
                 }
-                else nextPermission(navController, index)
+                else nextPermission(navController, index).unsafeRunAsync()
             }
         }
 
@@ -289,7 +283,6 @@ class OptInViewModel(
 
         }
 
-    // TODO: success page
     private fun success(navController: NavController): Kind<ForIO, Unit> =
         navigator.navigateTo(
             runtime,

@@ -77,6 +77,8 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
+        setStatusBar(configuration.theme.secondaryColor.color())
+
         (requireParentFragment().requireParentFragment() as? ScreeningFragment)
             .toOption()
             .map { it.showAbort(configuration, configuration.theme.primaryColorEnd.color()) }

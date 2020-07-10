@@ -17,10 +17,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.wearable.Wearable
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showBackSecondaryButton
+import org.fouryouandme.core.ext.*
 
 class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_page) {
 
@@ -58,6 +55,8 @@ class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_p
     }
 
     private fun applyData(configuration: Configuration, wearable: Wearable): Unit {
+
+        setStatusBar(configuration.theme.secondaryColor.color())
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

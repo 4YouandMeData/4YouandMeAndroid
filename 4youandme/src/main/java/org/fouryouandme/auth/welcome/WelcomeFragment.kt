@@ -15,6 +15,7 @@ import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.setStatusBar
 
 class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
 
@@ -51,6 +52,8 @@ class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
+
+        setStatusBar(configuration.theme.primaryColorStart.color())
 
         root.background =
             HEXGradient.from(

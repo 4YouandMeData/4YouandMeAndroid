@@ -101,6 +101,8 @@ class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phon
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
+        setStatusBar(configuration.theme.primaryColorStart.color())
+
         root.background =
             HEXGradient.from(
                 configuration.theme.primaryColorStart,

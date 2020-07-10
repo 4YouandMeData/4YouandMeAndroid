@@ -3,7 +3,6 @@ package org.fouryouandme.web
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -17,10 +16,7 @@ import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showCloseButton
+import org.fouryouandme.core.ext.*
 import timber.log.Timber
 
 class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
@@ -64,7 +60,9 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
-        toolbar.setBackgroundColor(Color.WHITE)
+        setStatusBar(configuration.theme.secondaryColor.color())
+
+        toolbar.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         progress_bar.progressTintList =
             ColorStateList.valueOf(configuration.theme.primaryColorStart.color())

@@ -3,7 +3,6 @@ package org.fouryouandme.auth.wearable.login
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -21,10 +20,7 @@ import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.showCloseButton
+import org.fouryouandme.core.ext.*
 import timber.log.Timber
 import java.net.URL
 
@@ -73,7 +69,9 @@ class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.wearable_
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
-        root.setBackgroundColor(Color.WHITE)
+        setStatusBar(configuration.theme.secondaryColor.color())
+
+        root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         progress_bar.progressTintList =
             ColorStateList.valueOf(configuration.theme.primaryColorStart.color())

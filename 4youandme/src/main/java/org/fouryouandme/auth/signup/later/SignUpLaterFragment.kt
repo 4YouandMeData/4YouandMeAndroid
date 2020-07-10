@@ -14,6 +14,7 @@ import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.setStatusBar
 
 class SignUpLaterFragment : BaseFragment<SignUpLaterViewModel>(R.layout.sign_up_later) {
 
@@ -50,6 +51,8 @@ class SignUpLaterFragment : BaseFragment<SignUpLaterViewModel>(R.layout.sign_up_
     }
 
     private fun applyConfiguration(configuration: Configuration): Unit {
+
+        setStatusBar(configuration.theme.primaryColorStart.color())
 
         root.background =
             HEXGradient.from(

@@ -100,6 +100,8 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
 
     private fun applyConfiguration(configuration: Configuration): Unit {
 
+        setStatusBar(configuration.theme.activeColor.color())
+
         root.setBackgroundColor(configuration.theme.activeColor.color())
 
         title.setTextColor(configuration.theme.secondaryColor.color())

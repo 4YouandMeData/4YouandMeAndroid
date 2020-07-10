@@ -28,6 +28,7 @@ import org.fouryouandme.core.entity.optins.OptIns
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.removeBackButton
+import org.fouryouandme.core.ext.setStatusBar
 
 class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_permission) {
 
@@ -100,6 +101,8 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
 
         optIns.permissions.getOrNull(args.index).toOption()
             .map { permission ->
+
+                setStatusBar(configuration.theme.secondaryColor.color())
 
                 root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

@@ -21,6 +21,7 @@ import org.fouryouandme.core.entity.wearable.Wearable
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.removeBackButton
+import org.fouryouandme.core.ext.setStatusBar
 
 class WearableWelcomeFragment : BaseFragment<WearableViewModel>(R.layout.wearable_welcome) {
 
@@ -81,6 +82,8 @@ class WearableWelcomeFragment : BaseFragment<WearableViewModel>(R.layout.wearabl
     }
 
     private fun applyData(configuration: Configuration, wearable: Wearable): Unit {
+
+        setStatusBar(configuration.theme.secondaryColor.color())
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
