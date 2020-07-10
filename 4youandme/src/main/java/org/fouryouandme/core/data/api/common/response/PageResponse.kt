@@ -23,7 +23,7 @@ data class PageResponse(
     @field:Json(name = "external_link_label") val externalLinkLabel: String? = null,
     @field:Json(name = "external_link_url") val externalLinkUrl: String? = null,
     @field:Json(name = "special_link_label") val specialLinkLabel: String? = null,
-    @field:Json(name = "special_link_value") val specialLinkValue: String? = null
+    @field:Json(name = "special_link_data") val specialLinkValue: String? = null
 ) : Resource() {
 
     fun toPage(document: Document): Option<Page> =
