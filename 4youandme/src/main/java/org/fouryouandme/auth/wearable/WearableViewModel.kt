@@ -171,13 +171,27 @@ class WearableViewModel(
     fun login(
         navController: NavController,
         link: String,
+        nextPage: Option<Page>,
         fromWelcome: Boolean
     ): Unit =
         navigator.navigateTo(
             runtime,
             navController,
-            if (fromWelcome) WearableWelcomeToWearableLogin(link)
-            else WearablePageToWearableLogin(link)
+            if (fromWelcome) WearableWelcomeToWearableLogin(link, nextPage.map { it.id })
+            else WearablePageToWearableLogin(link, nextPage.map { it.id })
         ).unsafeRunAsync()
+
+    fun handleLogin(
+        navController: NavController,
+        nextPageId: Option<String>
+    ): Unit =
+        runtime.fx.concurrent {
+
+            !nextPageId.fold(
+                { just(Unit) },
+                { navigator.navigateTo(runtime, navController, WearableLoginToWearablePage(it)) }
+            )
+
+        }.unsafeRunAsync()
 
 }

@@ -15,10 +15,7 @@ import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
-import org.fouryouandme.auth.wearable.WearablePageToWearableLogin
-import org.fouryouandme.auth.wearable.WearablePageToWearablePage
-import org.fouryouandme.auth.wearable.WearableWelcomeToWearableLogin
-import org.fouryouandme.auth.wearable.WearableWelcomeToWearablePage
+import org.fouryouandme.auth.wearable.*
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
 
@@ -102,11 +99,13 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is WearableWelcomeToWearablePage ->
                 wearableWelcomeToWearablePage(action.pageId)
             is WearableWelcomeToWearableLogin ->
-                wearableWelcomeToWearableLogin(action.url)
+                wearableWelcomeToWearableLogin(action.url, action.nextPage)
             is WearablePageToWearablePage ->
                 wearablePageToWearablePage(action.pageId)
             is WearablePageToWearableLogin ->
-                wearablePageToWearableLogin(action.url)
+                wearablePageToWearableLogin(action.url, action.nextPage)
+            is WearableLoginToWearablePage ->
+                wearableLoginToWearablePage(action.id)
 
 
             else -> {

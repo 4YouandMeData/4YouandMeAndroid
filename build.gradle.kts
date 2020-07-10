@@ -11,7 +11,7 @@ buildscript {
         classpath(Libs.com_android_tools_build_gradle)
         classpath(Libs.kotlin_gradle_plugin)
         classpath(Libs.google_services)
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.2.2")
+        classpath(Libs.navigation_safe_args_gradle_plugin)
     }
 }
 

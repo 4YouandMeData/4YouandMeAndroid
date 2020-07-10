@@ -66,10 +66,11 @@ class WearablePageFragment : BaseFragment<WearableViewModel>(R.layout.wearable_p
                 page.applyData(
                     configuration,
                     wearablePage,
-                    //Page("0", "test", "test", None, None, None, None, None, None, "https://admin-4youandme-staging.balzo.eu/users/wearable_oauth/oura".some(), None, None),
                     { viewModel.nextPage(findNavController(), it, false) },
                     { viewModel.handleSpecialLink(it) },
-                    { viewModel.login(findNavController(), it, false) }
+                    { url, nextPage ->
+                        viewModel.login(findNavController(), url, nextPage, false)
+                    }
                 )
             }
 

@@ -51,6 +51,10 @@ dependencies {
 
     implementation(Libs.appcompat)
 
+    /* --- fragment --- */
+
+    implementation(Libs.fragment_ktx)
+
     /* --- core ktx --- */
 
     implementation(Libs.core_ktx)

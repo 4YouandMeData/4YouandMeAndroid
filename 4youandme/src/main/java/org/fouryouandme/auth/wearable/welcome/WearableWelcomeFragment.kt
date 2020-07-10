@@ -89,7 +89,9 @@ class WearableWelcomeFragment : BaseFragment<WearableViewModel>(R.layout.wearabl
             wearable.welcomePage,
             { viewModel.nextPage(findNavController(), it, true) },
             { viewModel.handleSpecialLink(it) },
-            { viewModel.login(findNavController(), it, true) }
+            { url, nextPage ->
+                viewModel.login(findNavController(), url, nextPage, true)
+            }
         )
 
     }

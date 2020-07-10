@@ -63,6 +63,24 @@ object Libs {
             Versions.org_jetbrains_kotlin
 
     /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val navigation_fragment_ktx: String = "androidx.navigation:navigation-fragment-ktx:" +
+            Versions.androidx_navigation
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val navigation_safe_args_gradle_plugin: String =
+        "androidx.navigation:navigation-safe-args-gradle-plugin:" + Versions.androidx_navigation
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val navigation_ui_ktx: String = "androidx.navigation:navigation-ui-ktx:" +
+            Versions.androidx_navigation
+
+    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val lifecycle_livedata_ktx: String = "androidx.lifecycle:lifecycle-livedata-ktx:" +
@@ -114,19 +132,6 @@ object Libs {
                 Versions.arrow_integration_retrofit_adapter
 
     /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val navigation_safe_args_gradle_plugin: String =
-        "androidx.navigation:navigation-safe-args-gradle-plugin:" +
-                Versions.navigation_safe_args_gradle_plugin
-
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val navigation_fragment_ktx: String = "androidx.navigation:navigation-fragment-ktx:" +
-            Versions.navigation_fragment_ktx
-
-    /**
      * https://square.github.io/okhttp/
      */
     const val logging_interceptor: String = "com.squareup.okhttp3:logging-interceptor:" +
@@ -137,12 +142,6 @@ object Libs {
 
     const val firebase_analytics: String = "com.google.firebase:firebase-analytics:" +
             Versions.firebase_analytics
-
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val navigation_ui_ktx: String = "androidx.navigation:navigation-ui-ktx:" +
-            Versions.navigation_ui_ktx
 
     /**
      * http://tools.android.com
@@ -175,6 +174,11 @@ object Libs {
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_syntax: String = "io.arrow-kt:arrow-syntax:" + Versions.arrow_syntax
+
+    /**
+     * https://developer.android.com/jetpack/androidx
+     */
+    const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx
 
     /**
      * https://github.com/square/moshi

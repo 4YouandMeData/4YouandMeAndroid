@@ -32,7 +32,7 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
         page: Page,
         nextAction: (Option<Page>) -> Unit,
         specialLinkAction: (SpecialLinkAction) -> Unit,
-        externalLinkAction: (String) -> Unit
+        externalLinkAction: (String, Option<Page>) -> Unit
     ): Unit {
 
         title.text = page.title
@@ -84,7 +84,7 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
                     page.externalLinkLabel
                         .getOrElse { configuration.text.onboarding.wearable.loginButtonDefault }
                 button_1_text.setOnClickListener {
-                    externalLinkAction.invoke(page.externalLinkUrl.t)
+                    externalLinkAction.invoke(page.externalLinkUrl.t, page.link1)
                 }
 
                 button_2_text.isVisible = true

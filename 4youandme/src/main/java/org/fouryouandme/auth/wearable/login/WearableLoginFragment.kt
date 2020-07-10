@@ -99,6 +99,15 @@ class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.wearable_
             .also { it.settings.javaScriptEnabled = true }
             .also { it.webViewClient = getWebClient() }
             .also { it.webChromeClient = getWebChromeClient() }
+            .also {
+                it.addJavascriptInterface(
+                    WearableLoginInterface(
+                        { viewModel.handleLogin(findNavController(), args.nextPage.toOption()) },
+                        { viewModel.back(findNavController()) }
+                    ),
+                    "Android"
+                )
+            }
 
         loadPage()
     }
