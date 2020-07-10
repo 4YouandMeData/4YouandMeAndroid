@@ -34,8 +34,6 @@ data class StringsResponse(
     @Json(name = "PHONE_VERIFICATION_ERROR_WRONG_CODE") val phoneVerificationErrorWrongCode: String? = null,
     @Json(name = "PHONE_VERIFICATION_ERROR_MISSING_NUMBER") val phoneVerificationErrorMissingNumber: String? = null,
 
-    @Json(name = "SCREENING_FAILURE_RETRY_BUTTON") val screeningFailureRetryButton: String? = null,
-
     @Json(name = "ONBOARDING_ABORT_TITLE") val onboardingAbortTitle: String? = null,
     @Json(name = "ONBOARDING_ABORT_BUTTON") val onboardingAbortButton: String? = null,
     @Json(name = "ONBOARDING_ABORT_CANCEL") val onboardingAbortCancel: String? = null,
@@ -165,9 +163,6 @@ data class StringsResponse(
                         onboardingWearableLoginButtonDefault,
                         onboardingWearableNextButtonDefault
                     )
-                ),
-                Screening(
-                    screeningFailureRetryButton.toOption().bind()
                 )
             )
         }
