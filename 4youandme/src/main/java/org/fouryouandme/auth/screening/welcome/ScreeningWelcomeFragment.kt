@@ -98,7 +98,11 @@ class ScreeningWelcomeFragment : BaseFragment<ScreeningViewModel>(R.layout.scree
             configuration = configuration,
             page = screening.welcomePage,
             pageType = EPageType.INFO,
-            action1 = { viewModel.questions(findNavController(), true) },
+            action1 = { option ->
+                option.fold(
+                    { viewModel.questions(findNavController(), true) },
+                    { viewModel.page(findNavController(), it.id, true) })
+            },
             externalAction = { viewModel.web(rootNavController(), it) })
     }
 }
