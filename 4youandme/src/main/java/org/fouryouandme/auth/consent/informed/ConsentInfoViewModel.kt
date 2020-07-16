@@ -5,6 +5,7 @@ import arrow.Kind
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOption
+import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.ForIO
 import arrow.syntax.function.pipe
@@ -133,7 +134,8 @@ class ConsentInfoViewModel(
                         }
                     )
 
-            if (correctAnswers >= 4)
+            if (correctAnswers >= state().consentInfo.map { it.minimumAnswer }
+                    .getOrElse { state().questions.size })
                 !navigator.navigateTo(
                     runtime, navController,
                     ConsentInfoQuestionToConsentInfoSuccess

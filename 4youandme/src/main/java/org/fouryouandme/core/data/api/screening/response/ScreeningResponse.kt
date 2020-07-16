@@ -11,6 +11,8 @@ import org.fouryouandme.core.entity.screening.Screening
 
 @JsonApi(type = "screening")
 data class ScreeningResponse(
+    @field:Json(name = "minimum_required_correct_answers")
+    val minimumAnswer: Int? = null,
     @field:Json(name = "screening_questions")
     val questions: HasMany<QuestionResponse>? = null,
     @field:Json(name = "pages")
@@ -27,6 +29,7 @@ data class ScreeningResponse(
         Option.fx {
 
             Screening(
+                !minimumAnswer.toOption(),
                 !questions?.get(document)
                     ?.mapNotNull { it.toScreeningQuestion(document).orNull() }
                     .toOption(),

@@ -72,30 +72,39 @@ class ScreeningViewModel(
 
     /* --- validation --- */
 
-    fun validate(navController: NavController) {
+    fun validate(navController: NavController): Unit =
+        runtime.fx.concurrent {
 
-        val validation =
-            state().questions.map { item ->
+            val correctAnswers =
+                state().questions.map { item ->
+                    val answer =
+                        when (item.answer.getOrElse { "" }) {
+                            item.question.answers1.id -> item.question.answers1.some()
+                            item.question.answers2.id -> item.question.answers2.some()
+                            else -> None
+                        }
 
-                val answer =
-                    when (item.answer.getOrElse { "" }) {
-                        item.question.answers1.id -> item.question.answers1.some()
-                        item.question.answers2.id -> item.question.answers2.some()
-                        else -> None
+                    answer.map { it.correct }.getOrElse { false }
+                }.fold(
+                    0,
+                    { acc, item ->
+                        acc + if (item) 1 else 0
                     }
+                )
 
-                answer.map { it.correct }.getOrElse { false }
+            if (correctAnswers >= state().screening.map { it.minimumAnswer }
+                    .getOrElse { state().questions.size })
+                !navigator.navigateTo(
+                    runtime, navController,
+                    ScreeningQuestionsToScreeningSuccess
+                )
+            else
+                !navigator.navigateTo(
+                    runtime, navController,
+                    ScreeningQuestionsToScreeningFailure
+                )
 
-            }.fold(true, { acc, b -> acc && b })
-
-        if (validation)
-            navigator.navigateTo(runtime, navController, ScreeningQuestionsToScreeningSuccess)
-                .unsafeRunAsync()
-        else
-            navigator.navigateTo(runtime, navController, ScreeningQuestionsToScreeningFailure)
-                .unsafeRunAsync()
-
-    }
+        }.unsafeRunAsync()
 
 
     /* --- state update --- */
