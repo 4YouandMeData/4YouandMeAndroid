@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -50,7 +51,12 @@ class StepFragment : BaseFragment<TaskViewModel>() {
 
                 when (step) {
                     is Step.IntroductionStep ->
-                        (view as IntroductionStepView).applyData(step)
+                        (view as IntroductionStepView).applyData(step) {
+                            viewModel.nextStep(
+                                findNavController(),
+                                args.index
+                            )
+                        }
                 }
             }
             .orNull()

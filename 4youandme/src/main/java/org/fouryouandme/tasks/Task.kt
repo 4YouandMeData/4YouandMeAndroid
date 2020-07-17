@@ -47,7 +47,21 @@ sealed class Task(
                     configuration,
                     "Reaction Time Task",
                     "description",
-                    imageConfiguration.logoStudy(),
+                    imageConfiguration.close(),
+                    "Next"
+                ),
+                Step.IntroductionStep(
+                    configuration,
+                    "Reaction Time Task 2",
+                    "description",
+                    imageConfiguration.close(),
+                    "Next"
+                ),
+                Step.IntroductionStep(
+                    configuration,
+                    "Reaction Time Task 3",
+                    "description",
+                    imageConfiguration.close(),
                     "Next"
                 )
             )

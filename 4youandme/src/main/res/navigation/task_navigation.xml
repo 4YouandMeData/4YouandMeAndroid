@@ -14,7 +14,7 @@
             app:argType="integer" />
 
         <action
-            android:id="@+id/action_step_self"
+            android:id="@+id/action_step_to_step"
             app:destination="@id/step"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
@@ -23,7 +23,6 @@
 
             <argument
                 android:name="index"
-                android:defaultValue="0"
                 app:argType="integer" />
 
         </action>

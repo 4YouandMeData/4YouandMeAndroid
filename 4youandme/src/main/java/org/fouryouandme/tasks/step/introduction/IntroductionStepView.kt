@@ -23,7 +23,8 @@ class IntroductionStepView(context: Context) : FrameLayout(context) {
     }
 
     fun applyData(
-        step: Step.IntroductionStep
+        step: Step.IntroductionStep,
+        nextAction: () -> Unit
     ): Unit {
 
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
@@ -39,7 +40,7 @@ class IntroductionStepView(context: Context) : FrameLayout(context) {
         lp.height = (height * 0.4).roundToInt()
         image.layoutParams = lp
         image.setImageResource(step.image)
-        image.setBackgroundColor(Color.argb(1, 227, 227, 227))
+        image.setBackgroundColor(Color.argb(255, 227, 227, 227))
 
         title.text = step.title
         title.setTextColor(step.configuration.theme.primaryTextColor.color())
@@ -50,6 +51,7 @@ class IntroductionStepView(context: Context) : FrameLayout(context) {
         next.background = button(step.configuration.theme.primaryColorEnd.color())
         next.text = step.button
         next.setTextColor(step.configuration.theme.secondaryColor.color())
+        next.setOnClickListener { nextAction() }
 
     }
 }
