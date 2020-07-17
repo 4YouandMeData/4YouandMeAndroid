@@ -1,5 +1,6 @@
 package org.fouryouandme.tasks
 
+import androidx.navigation.NavController
 import arrow.core.Option
 import arrow.core.some
 import arrow.core.toOption
@@ -39,7 +40,7 @@ class TaskViewModel(
                 {
 
                     // TODO: handle dynamic task creation
-                    val task = Task.ReactionTimeTask(it)
+                    val task = Task.ReactionTimeTask(it, runtime.injector.imageConfiguration)
 
 
                     setState(
@@ -61,5 +62,21 @@ class TaskViewModel(
 
     fun getStepByIndex(index: Int): Option<Step> =
         state().task.flatMap { it.steps.getOrNull(index).toOption() }
+
+
+    /* --- navigation --- */
+
+    fun nextStep(navController: NavController, currentStepIndex: Int): Unit =
+        getStepByIndex(currentStepIndex + 1)
+            .fold(
+                { Unit /* TODO: Handle task completed */ },
+                {
+                    navigator.navigateTo(
+                        runtime,
+                        navController,
+                        StepToStep(currentStepIndex + 1)
+                    ).unsafeRunAsync()
+                }
+            )
 
 }

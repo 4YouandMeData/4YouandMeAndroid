@@ -37,13 +37,23 @@ class StepFragment : BaseFragment<TaskViewModel>() {
                 when (step) {
                     is Step.IntroductionStep ->
                         IntroductionStepView(requireContext())
-                            .also {
-                                it.viewTreeObserver.addOnGlobalLayoutListener {
-                                    it.applyData(step)
-                                }
-                            }
                 }
             }
             .orNull()
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getStepByIndex(args.index)
+            .map { step ->
+
+                when (step) {
+                    is Step.IntroductionStep ->
+                        (view as IntroductionStepView).applyData(step)
+                }
+            }
+            .orNull()
+
+    }
 }

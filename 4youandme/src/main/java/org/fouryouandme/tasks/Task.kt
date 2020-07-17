@@ -2,32 +2,54 @@ package org.fouryouandme.tasks
 
 import arrow.core.Option
 import arrow.core.toOption
+import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.tasks.step.Step
 
-sealed class Task(val identifier: String, private val configuration: Configuration) {
+sealed class Task(
+    val identifier: String,
+    private val configuration: Configuration,
+    private val imageConfiguration: ImageConfiguration
+) {
 
-    val steps: List<Step> by lazy { buildSteps(configuration) }
+    val steps: List<Step> by lazy { buildSteps(configuration, imageConfiguration) }
 
-    protected open fun buildSteps(configuration: Configuration): List<Step> = emptyList()
+    protected open fun buildSteps(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration
+    ): List<Step> = emptyList()
 
     companion object {
 
-        fun byIdentifier(identifier: String, configuration: Configuration): Option<Task> =
+        fun byIdentifier(
+            identifier: String,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration
+        ): Option<Task> =
             when (identifier) {
-                "reaction_time" -> ReactionTimeTask(configuration)
+                "reaction_time" -> ReactionTimeTask(configuration, imageConfiguration)
                 else -> null
             }.toOption()
 
     }
 
     class ReactionTimeTask(
-        configuration: Configuration
-    ) : Task("reaction_time", configuration) {
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration
+    ) : Task("reaction_time", configuration, imageConfiguration) {
 
-        override fun buildSteps(configuration: Configuration): List<Step> =
-            listOf(
-                Step.IntroductionStep(configuration, "PIPPO")
+        override fun buildSteps(
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration
+        ): List<Step> =
+            listOf( // TODO: Remove mock
+                Step.IntroductionStep(
+                    configuration,
+                    "Reaction Time Task",
+                    "description",
+                    imageConfiguration.logoStudy(),
+                    "Next"
+                )
             )
 
     }
