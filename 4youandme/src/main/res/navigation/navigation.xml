@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/splash">
+    app:startDestination="@id/main">
 
     <action
         android:id="@+id/action_global_splash"
@@ -255,5 +255,11 @@
         android:name="org.fouryouandme.auth.wearable.WearableFragment"
         android:label="wearable"
         tools:layout="@layout/wearable" />
+
+    <fragment
+        android:id="@+id/main"
+        android:name="org.fouryouandme.main.MainFragment"
+        android:label="main"
+        tools:layout="@layout/main" />
 
 </navigation>

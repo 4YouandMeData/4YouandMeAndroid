@@ -58,15 +58,20 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_WRONG_EMAIL") val onboardingEmailVerificationWrongMail: String? = null,
     @Json(name = "ONBOARDING_USER_EMAIL_VERIFICATION_ERROR_WRONG_CODE") val onboardingEmailVerificationWrongCode: String? = null,
 
-    @Json(name = "ONBOARDING_OPT_IN_SUBMIT_BUTTON") val onboardingOptInSubmitButton: String,
-    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_CLOSE") val onboardingOptInMandatoryClose: String,
-    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_TITLE") val onboardingOptInMandatoryTitle: String,
-    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_DEFAULT") val onboardingOptInMandatoryDefault: String,
+    @Json(name = "ONBOARDING_OPT_IN_SUBMIT_BUTTON") val onboardingOptInSubmitButton: String? = null,
+    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_CLOSE") val onboardingOptInMandatoryClose: String? = null,
+    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_TITLE") val onboardingOptInMandatoryTitle: String? = null,
+    @Json(name = "ONBOARDING_OPT_IN_MANDATORY_DEFAULT") val onboardingOptInMandatoryDefault: String? = null,
 
-    @Json(name = "ONBOARDING_WEARABLES_DOWNLOAD_BUTTON_DEFAULT") val onboardingWearableDownloadButtonDefault: String,
-    @Json(name = "ONBOARDING_WEARABLES_OPEN_APP_BUTTON_DEFAULT") val onboardingWearableOpenAppButtonDefault: String,
-    @Json(name = "ONBOARDING_WEARABLES_LOGIN_BUTTON_DEFAULT") val onboardingWearableLoginButtonDefault: String,
-    @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingWearableNextButtonDefault: String,
+    @Json(name = "ONBOARDING_WEARABLES_DOWNLOAD_BUTTON_DEFAULT") val onboardingWearableDownloadButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_OPEN_APP_BUTTON_DEFAULT") val onboardingWearableOpenAppButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_LOGIN_BUTTON_DEFAULT") val onboardingWearableLoginButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingWearableNextButtonDefault: String? = null,
+
+    @Json(name = "TAB_FEED") val tabFeed: String? = null,
+    @Json(name = "TAB_TASK") val tabTask: String? = null,
+    @Json(name = "TAB_USER_DATA") val tabUserData: String? = null,
+    @Json(name = "TAB_STUDY_INFO") val tabStudyInfo: String? = null,
 
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
@@ -152,17 +157,23 @@ data class StringsResponse(
                         )
                     ),
                     OnboardingOptIn(
-                        onboardingOptInSubmitButton,
-                        onboardingOptInMandatoryClose,
-                        onboardingOptInMandatoryTitle,
-                        onboardingOptInMandatoryDefault
+                        onboardingOptInSubmitButton.toOption().bind(),
+                        onboardingOptInMandatoryClose.toOption().bind(),
+                        onboardingOptInMandatoryTitle.toOption().bind(),
+                        onboardingOptInMandatoryDefault.toOption().bind()
                     ),
                     OnboardingWearable(
-                        onboardingWearableDownloadButtonDefault,
-                        onboardingWearableOpenAppButtonDefault,
-                        onboardingWearableLoginButtonDefault,
-                        onboardingWearableNextButtonDefault
+                        onboardingWearableDownloadButtonDefault.toOption().bind(),
+                        onboardingWearableOpenAppButtonDefault.toOption().bind(),
+                        onboardingWearableLoginButtonDefault.toOption().bind(),
+                        onboardingWearableNextButtonDefault.toOption().bind()
                     )
+                ),
+                Tab(
+                    tabFeed.toOption().bind(),
+                    tabTask.toOption().bind(),
+                    tabUserData.toOption().bind(),
+                    tabStudyInfo.toOption().bind()
                 )
             )
         }

@@ -33,4 +33,15 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun signUpNextStepSecondary(): Int = R.drawable.sign_up_next_secondary
 
     override fun signUpPreviousStepSecondary(): Int = R.drawable.sign_up_previous_secondary
+
+    /* --- main --- */
+
+    override fun tabFeed(): Int = R.drawable.tab_feed
+
+    override fun tabTask(): Int = R.drawable.tab_task
+
+    override fun tabUserData(): Int = R.drawable.tab_user_data
+
+    override fun tabStudyInfo(): Int = R.drawable.tab_study_info
+
 }

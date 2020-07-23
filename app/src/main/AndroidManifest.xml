@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="org.fouryouandme.main.activity.MainActivity"
+            android:name="org.fouryouandme.core.activity.FYAMActivity"
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>

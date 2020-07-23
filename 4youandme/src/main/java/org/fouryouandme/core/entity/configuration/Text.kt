@@ -7,7 +7,8 @@ data class Text(
     val intro: Intro,
     val signUpLater: SignUpLater,
     val phoneVerification: PhoneVerification,
-    val onboarding: Onboarding
+    val onboarding: Onboarding,
+    val tab: Tab
 )
 
 data class Error(
@@ -107,4 +108,11 @@ data class OnboardingWearable(
 
 data class OnboardingUserError(
     val emailVerificationWrongCode: String
+)
+
+data class Tab(
+    val feed: String,
+    val task: String,
+    val userData: String,
+    val studyInfo: String
 )

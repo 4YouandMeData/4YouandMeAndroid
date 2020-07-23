@@ -1,4 +1,4 @@
-package org.fouryouandme.main.activity
+package org.fouryouandme.core.activity
 
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseActivity
@@ -7,11 +7,11 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 
-class MainActivity : BaseActivity<MainViewModel>(R.layout.main) {
+class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
-    override val viewModel: MainViewModel by lazy {
+    override val viewModel: FYAMViewModel by lazy {
         viewModelFactory(this, getFactory {
-            MainViewModel(
+            FYAMViewModel(
                 navigator,
                 IORuntime
             )
