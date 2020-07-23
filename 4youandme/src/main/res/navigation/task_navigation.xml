@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/task_navigation"
-    app:startDestination="@id/work_in_progress">
+    app:startDestination="@id/task">
 
     <fragment
-        android:id="@+id/work_in_progress"
-        android:name="org.fouryouandme.main.WorkInProgressFragment"
-        android:label="work_in_progress"
-        tools:layout="@layout/work_in_progress" />
+        android:id="@+id/task"
+        android:name="org.fouryouandme.main.task.TaskFragment"
+        android:label="task"
+        tools:layout="@layout/task" />
 
 </navigation>

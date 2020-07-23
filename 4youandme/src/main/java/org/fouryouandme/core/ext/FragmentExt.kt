@@ -16,6 +16,7 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.runtime
 import org.fouryouandme.core.arch.navigation.Navigator
 
+
 /* --- resources --- */
 
 @ColorInt
@@ -38,8 +39,6 @@ val Fragment.imageConfiguration: ImageConfiguration
 /* --- status bar --- */
 
 fun Fragment.setStatusBar(backgroundColor: Int): Unit {
-
-    requireActivity().window.statusBarColor = backgroundColor
 
     val red = Color.red(backgroundColor)
     val green = Color.green(backgroundColor)

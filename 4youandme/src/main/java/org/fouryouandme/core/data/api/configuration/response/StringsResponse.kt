@@ -70,8 +70,11 @@ data class StringsResponse(
 
     @Json(name = "TAB_FEED") val tabFeed: String? = null,
     @Json(name = "TAB_TASK") val tabTask: String? = null,
+    @Json(name = "TAB_TASK_TITLE") val tabTaskTitle: String? = null,
     @Json(name = "TAB_USER_DATA") val tabUserData: String? = null,
+    @Json(name = "TAB_USER_DATA_TITLE") val tabUserDataTitle: String? = null,
     @Json(name = "TAB_STUDY_INFO") val tabStudyInfo: String? = null,
+    @Json(name = "TAB_STUDY_INFO_TITLE") val tabStudyInfoTitle: String? = null,
 
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
@@ -172,8 +175,11 @@ data class StringsResponse(
                 Tab(
                     tabFeed.toOption().bind(),
                     tabTask.toOption().bind(),
+                    tabTaskTitle.toOption().bind(),
                     tabUserData.toOption().bind(),
-                    tabStudyInfo.toOption().bind()
+                    tabUserDataTitle.toOption().bind(),
+                    tabStudyInfo.toOption().bind(),
+                    tabStudyInfoTitle.toOption().bind()
                 )
             )
         }

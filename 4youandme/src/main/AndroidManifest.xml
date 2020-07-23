@@ -3,4 +3,22 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <application>
+
+        <activity
+            android:name="org.fouryouandme.core.activity.FYAMActivity"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
 </manifest>
