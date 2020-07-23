@@ -3,9 +3,6 @@ package org.fouryouandme.main
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import androidx.core.view.children
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import kotlinx.android.synthetic.main.main.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -63,7 +60,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
             .setIcon(imageConfiguration.tabFeed())
 
         bottom_navigation.menu
-            .add(Menu.NONE, R.id.task_navigation, Menu.NONE, configuration.text.tab.task)
+            .add(Menu.NONE, R.id.tasks_navigation, Menu.NONE, configuration.text.tab.tasks)
             .setIcon(imageConfiguration.tabTask())
 
         bottom_navigation.menu
@@ -90,7 +87,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
         val navGraphIds =
             listOf(
                 R.navigation.feed_navigation,
-                R.navigation.task_navigation,
+                R.navigation.tasks_navigation,
                 R.navigation.user_data_navigation,
                 R.navigation.study_info_navigation
             )

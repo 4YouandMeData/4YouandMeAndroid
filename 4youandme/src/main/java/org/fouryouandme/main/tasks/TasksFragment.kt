@@ -1,8 +1,8 @@
-package org.fouryouandme.main.task
+package org.fouryouandme.main.tasks
 
 import android.os.Bundle
 import android.view.View
-import kotlinx.android.synthetic.main.task.*
+import kotlinx.android.synthetic.main.tasks.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -13,10 +13,10 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.setStatusBar
 
-class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
+class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 
-    override val viewModel: TaskViewModel by lazy {
-        viewModelFactory(this, getFactory { TaskViewModel(navigator, IORuntime) })
+    override val viewModel: TasksViewModel by lazy {
+        viewModelFactory(this, getFactory { TasksViewModel(navigator, IORuntime) })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is TaskStateUpdate.Initialization -> applyData(it.configuration)
+                    is TasksStateUpdate.Initialization -> applyData(it.configuration)
                 }
             }
 
@@ -53,7 +53,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
         root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        title.text = configuration.text.tab.taskTitle
+        title.text = configuration.text.tab.tasksTitle
         title.setTextColor(configuration.theme.secondaryColor.color())
         title.background =
             HEXGradient.from(

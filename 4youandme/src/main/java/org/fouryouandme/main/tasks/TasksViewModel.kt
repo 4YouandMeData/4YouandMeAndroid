@@ -1,4 +1,4 @@
-package org.fouryouandme.main.task
+package org.fouryouandme.main.tasks
 
 import arrow.core.toOption
 import arrow.fx.ForIO
@@ -11,39 +11,39 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 
-class TaskViewModel(
+class TasksViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        TaskState,
-        TaskStateUpdate,
-        TaskError,
-        TaskLoading>
-    (TaskState(), navigator, runtime) {
+        TasksState,
+        TasksStateUpdate,
+        TasksError,
+        TasksLoading>
+    (TasksState(), navigator, runtime) {
 
     /* --- data --- */
 
     fun initialize(rootNavController: RootNavController): Unit =
         runtime.fx.concurrent {
 
-            !showLoading(TaskLoading.Initialization)
+            !showLoading(TasksLoading.Initialization)
 
             val configuration =
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
                     .handleAuthError(runtime, rootNavController, navigator)
 
             !configuration.fold(
-                { setError(it, TaskError.Initialization) },
+                { setError(it, TasksError.Initialization) },
                 {
                     setState(
                         state().copy(configuration = it.toOption()),
-                        TaskStateUpdate.Initialization(it)
+                        TasksStateUpdate.Initialization(it)
                     )
                 }
             )
 
-            !hideLoading(TaskLoading.Initialization)
+            !hideLoading(TasksLoading.Initialization)
 
         }.unsafeRunAsync()
 

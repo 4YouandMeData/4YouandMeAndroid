@@ -1,0 +1,14 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tasks_navigation"
+    app:startDestination="@id/tasks">
+
+    <fragment
+        android:id="@+id/tasks"
+        android:name="org.fouryouandme.main.tasks.TasksFragment"
+        android:label="tasks"
+        tools:layout="@layout/tasks" />
+
+</navigation>
