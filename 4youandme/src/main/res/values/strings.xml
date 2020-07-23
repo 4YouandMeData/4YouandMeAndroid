@@ -8,6 +8,7 @@
     <string name="ERROR_title">Uh, oh!</string>
     <string name="ERROR_retry">Try again</string>
 
+    <string name="PLACEHOLDER_title">Title Title Title Title Title Title Title Title</string>
     <string name="PLACEHOLDER_body">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Praesent lacinia diam urna, ut blandit justo bibendum nec. Duis euismod nulla turpis,
         quis dignissim tellus dapibus ac. Duis commodo ullamcorper leo, in pellentesque felis
