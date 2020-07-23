@@ -1,6 +1,7 @@
 package org.fouryouandme.core.activity
 
 import android.os.Bundle
+import androidx.core.view.ViewCompat
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseActivity
 import org.fouryouandme.core.arch.android.getFactory
