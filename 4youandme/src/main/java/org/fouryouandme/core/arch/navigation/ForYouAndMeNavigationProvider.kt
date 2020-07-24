@@ -112,6 +112,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 wearableLoginToWearablePage(action.id)
             is WearableLoginToWearableSuccess ->
                 wearableLoginToWearableSuccess()
+            is WearableSuccessToMain ->
+                wearableSuccessToMain()
 
 
             else -> {

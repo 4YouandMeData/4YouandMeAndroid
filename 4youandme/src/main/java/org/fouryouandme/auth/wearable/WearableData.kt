@@ -69,3 +69,4 @@ data class WearablePageToWearableLogin(
 
 data class WearableLoginToWearablePage(val id: String) : NavigationAction
 object WearableLoginToWearableSuccess : NavigationAction
+object WearableSuccessToMain : NavigationAction

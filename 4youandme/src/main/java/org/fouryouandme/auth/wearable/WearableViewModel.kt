@@ -162,4 +162,7 @@ class WearableViewModel(
 
         }.unsafeRunAsync()
 
+    fun openMain(rootNavController: RootNavController): Unit =
+        navigator.navigateTo(runtime, rootNavController, WearableSuccessToMain).unsafeRunAsync()
+
 }

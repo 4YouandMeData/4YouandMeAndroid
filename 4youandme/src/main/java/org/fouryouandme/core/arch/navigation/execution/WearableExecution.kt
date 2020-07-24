@@ -1,6 +1,7 @@
 package org.fouryouandme.core.arch.navigation.execution
 
 import arrow.core.Option
+import org.fouryouandme.auth.wearable.WearableFragmentDirections
 import org.fouryouandme.auth.wearable.login.WearableLoginFragmentDirections
 import org.fouryouandme.auth.wearable.page.WearablePageFragmentDirections
 import org.fouryouandme.auth.wearable.welcome.WearableWelcomeFragmentDirections
@@ -46,4 +47,8 @@ fun wearableLoginToWearablePage(id: String): NavigationExecution = {
 
 fun wearableLoginToWearableSuccess(): NavigationExecution = {
     it.navigate(WearableLoginFragmentDirections.actionWearableLoginToWearableSuccess())
+}
+
+fun wearableSuccessToMain(): NavigationExecution = {
+    it.navigate(WearableFragmentDirections.actionWearableToMain())
 }

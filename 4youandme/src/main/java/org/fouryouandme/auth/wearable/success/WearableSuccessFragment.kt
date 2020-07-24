@@ -55,7 +55,7 @@ class WearableSuccessFragment : BaseFragment<WearableViewModel>(R.layout.wearabl
         page.applyData(
             configuration,
             wearable.successPage,
-            { },
+            { viewModel.openMain(rootNavController()) },
             { },
             { _, _ -> }
         )
