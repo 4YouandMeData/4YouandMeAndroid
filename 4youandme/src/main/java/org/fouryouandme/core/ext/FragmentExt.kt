@@ -40,6 +40,8 @@ val Fragment.imageConfiguration: ImageConfiguration
 
 fun Fragment.setStatusBar(backgroundColor: Int): Unit {
 
+    requireActivity().window.statusBarColor = backgroundColor
+
     val red = Color.red(backgroundColor)
     val green = Color.green(backgroundColor)
     val blue = Color.blue(backgroundColor)
