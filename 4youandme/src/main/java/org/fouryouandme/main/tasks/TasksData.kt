@@ -5,11 +5,15 @@ import arrow.core.Option
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class TasksState(
-    val configuration: Option<Configuration> = None
+    val configuration: Option<Configuration> = None,
+    val tasks: List<TaskItem> = emptyList()
 )
 
 sealed class TasksStateUpdate {
-    data class Initialization(val configuration: Configuration) : TasksStateUpdate()
+    data class Initialization(
+        val configuration: Configuration,
+        val tasks: List<TaskItem>
+    ) : TasksStateUpdate()
 }
 
 sealed class TasksLoading {

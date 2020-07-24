@@ -56,6 +56,7 @@
             android:layout_marginTop="20dp"
             android:background="#FFF"
             android:gravity="center"
+            android:minWidth="124dp"
             android:paddingStart="17dp"
             android:paddingEnd="17dp"
             tools:text="FAQ" />

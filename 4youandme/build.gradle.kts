@@ -132,7 +132,7 @@ dependencies {
 
     /* --- threeten --- */
 
-    implementation("com.jakewharton.threetenabp:threetenabp:1.2.4")
+    implementation(Libs.threetenabp)
 
     /* --- test --- */
 

@@ -135,7 +135,7 @@ class ScreeningQuestionViewHolder(
 
         fun factory(onAnswer: (ScreeningQuestionItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { ScreeningQuestionViewHolder(it, onAnswer) as DroidViewHolder<DroidItem, *> },
+                { ScreeningQuestionViewHolder(it, onAnswer) },
                 { _, droidItem -> droidItem is ScreeningQuestionItem }
             )
     }

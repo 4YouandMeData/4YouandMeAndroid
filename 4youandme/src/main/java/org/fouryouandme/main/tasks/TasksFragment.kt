@@ -2,6 +2,12 @@ package org.fouryouandme.main.tasks
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import arrow.core.Option
+import arrow.core.extensions.fx
+import arrow.core.toOption
+import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import kotlinx.android.synthetic.main.tasks.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -19,13 +25,17 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
         viewModelFactory(this, getFactory { TasksViewModel(navigator, IORuntime) })
     }
 
+    private val adapter: DroidAdapter by lazy {
+        DroidAdapter(TaskViewHolder.factory())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is TasksStateUpdate.Initialization -> applyData(it.configuration)
+                    is TasksStateUpdate.Initialization -> applyData(it.configuration, it.tasks)
                 }
             }
 
@@ -40,14 +50,16 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupList()
+
         viewModel.state().configuration
             .fold(
                 { viewModel.initialize(rootNavController()) },
-                { applyData(it) }
+                { applyData(it, viewModel.state().tasks) }
             )
     }
 
-    private fun applyData(configuration: Configuration): Unit {
+    private fun applyData(configuration: Configuration, tasks: List<TaskItem>): Unit {
 
         setStatusBar(configuration.theme.primaryColorStart.color())
 
@@ -60,5 +72,17 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
                 configuration.theme.primaryColorStart,
                 configuration.theme.primaryColorEnd
             ).drawable()
+
+        applyTasks(tasks)
+    }
+
+    private fun applyTasks(tasks: List<TaskItem>): Unit = adapter.submitList(tasks)
+
+    private fun setupList(): Unit {
+
+        recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        recycler_view.adapter = adapter
+
     }
 }
