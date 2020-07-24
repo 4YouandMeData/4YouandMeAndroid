@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
+import org.fouryouandme.core.data.api.common.AnswerApi
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
 import org.fouryouandme.core.data.api.consent.review.ConsentReviewApi
@@ -48,4 +49,5 @@ interface Injector {
     val consentUserApi: ConsentUserApi
     val optInsApi: OptInsApi
     val wearableApi: WearableApi
+    val answerApi: AnswerApi
 }

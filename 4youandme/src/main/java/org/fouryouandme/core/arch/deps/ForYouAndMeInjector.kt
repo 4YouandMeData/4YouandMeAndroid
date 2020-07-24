@@ -11,6 +11,7 @@ import org.fouryouandme.core.arch.app.FourYouAndMeApp
 import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
+import org.fouryouandme.core.data.api.common.AnswerApi
 import org.fouryouandme.core.data.api.common.response.AnswerResponse
 import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.data.api.common.response.QuestionResponse
@@ -115,5 +116,8 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val wearableApi: WearableApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val answerApi: AnswerApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 }
