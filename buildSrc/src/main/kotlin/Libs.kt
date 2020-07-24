@@ -193,6 +193,12 @@ object Libs {
     const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
 
     /**
+     * https://github.com/JakeWharton/ThreeTenABP/
+     */
+    const val threetenabp: String = "com.jakewharton.threetenabp:threetenabp:" +
+            Versions.threetenabp
+
+    /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.arrow_meta

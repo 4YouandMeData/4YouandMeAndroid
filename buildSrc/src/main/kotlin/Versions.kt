@@ -38,7 +38,7 @@ object Versions {
 
     const val logging_interceptor: String = "4.8.0"
 
-    const val recycler_droid_core: String = "1.7.0-beta05"
+    const val recycler_droid_core: String = "1.7.0-beta06"
 
     const val firebase_analytics: String = "17.4.4"
 
@@ -62,6 +62,8 @@ object Versions {
 
     const val lint_gradle: String = "27.0.1"
 
+    const val threetenabp: String = "1.2.4"
+
     const val arrow_meta: String = "0.10.5"
 
     const val span_droid: String = "0.1"
@@ -70,7 +72,7 @@ object Versions {
 
     const val arrow_fx: String = "0.10.5"
 
-    const val core_ktx: String = "1.3.0"
+    const val core_ktx: String = "1.3.1" // available: "1.3.1"
 
     const val dexter: String = "6.2.1"
 
@@ -78,7 +80,7 @@ object Versions {
 
     const val aapt2: String = "4.0.1-6197926"
 
-    const val ccp: String = "2.4.0"
+    const val ccp: String = "2.4.1" // available: "2.4.1"
 
     /**
      * Current version: "6.5"

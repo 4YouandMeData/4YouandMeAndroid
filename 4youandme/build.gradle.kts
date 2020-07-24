@@ -130,6 +130,10 @@ dependencies {
 
     implementation(Libs.dexter)
 
+    /* --- threeten --- */
+
+    implementation("com.jakewharton.threetenabp:threetenabp:1.2.4")
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)
