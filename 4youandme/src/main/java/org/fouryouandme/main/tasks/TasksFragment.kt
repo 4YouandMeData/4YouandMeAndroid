@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.DroidItem
 import kotlinx.android.synthetic.main.tasks.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -26,7 +24,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(TaskViewHolder.factory())
+        DroidAdapter(TaskViewHolder.factory(), DateViewHolder.factory())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +57,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
             )
     }
 
-    private fun applyData(configuration: Configuration, tasks: List<TaskItem>): Unit {
+    private fun applyData(configuration: Configuration, tasks: List<DroidItem>): Unit {
 
         setStatusBar(configuration.theme.primaryColorStart.color())
 
@@ -76,7 +74,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
         applyTasks(tasks)
     }
 
-    private fun applyTasks(tasks: List<TaskItem>): Unit = adapter.submitList(tasks)
+    private fun applyTasks(tasks: List<DroidItem>): Unit = adapter.submitList(tasks)
 
     private fun setupList(): Unit {
 

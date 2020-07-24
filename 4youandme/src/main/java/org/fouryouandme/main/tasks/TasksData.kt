@@ -2,17 +2,18 @@ package org.fouryouandme.main.tasks
 
 import arrow.core.None
 import arrow.core.Option
+import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class TasksState(
     val configuration: Option<Configuration> = None,
-    val tasks: List<TaskItem> = emptyList()
+    val tasks: List<DroidItem> = emptyList()
 )
 
 sealed class TasksStateUpdate {
     data class Initialization(
         val configuration: Configuration,
-        val tasks: List<TaskItem>
+        val tasks: List<DroidItem>
     ) : TasksStateUpdate()
 }
 
