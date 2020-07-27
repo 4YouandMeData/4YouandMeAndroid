@@ -8,7 +8,7 @@ import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.entity.wearable.Wearable
 
-@JsonApi(type = "wearable")
+@JsonApi(type = "integration")
 data class WearableResponse(
     @field:Json(name = "pages") val pages: HasMany<PageResponse>? = null,
     @field:Json(name = "welcome_page") val welcomePage: HasOne<PageResponse>? = null,

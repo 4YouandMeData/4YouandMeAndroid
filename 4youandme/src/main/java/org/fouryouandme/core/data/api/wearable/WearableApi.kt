@@ -10,7 +10,7 @@ import retrofit2.http.Path
 
 interface WearableApi {
 
-    @GET("api/v1/studies/{study_id}/wearable")
+    @GET("api/v1/studies/{study_id}/integration")
     fun getWearable(
         @Header(Headers.AUTH) token: String,
         @Path("study_id") studyId: String
