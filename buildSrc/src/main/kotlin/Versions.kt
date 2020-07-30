@@ -67,6 +67,8 @@ object Versions {
 
     const val span_droid: String = "0.1"
 
+    const val viewpager2: String = "1.0.0"
+
     const val appcompat: String = "1.1.0"
 
     const val arrow_fx: String = "0.10.5"

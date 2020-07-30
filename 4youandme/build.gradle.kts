@@ -62,6 +62,7 @@ dependencies {
     /* --- layout --- */
 
     implementation(Libs.constraintlayout)
+    implementation(Libs.viewpager2)
 
     /* --- android arch --- */
 

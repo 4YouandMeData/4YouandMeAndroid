@@ -22,7 +22,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
-            style="@style/text_title"
+            style="@style/text_h2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -63,7 +63,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/answer_1_text"
-            style="@style/text_paragraph"
+            style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -91,7 +91,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/answer_2_text"
-            style="@style/text_paragraph"
+            style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -118,7 +118,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/answer_3_text"
-            style="@style/text_paragraph"
+            style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -144,7 +144,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/answer_4_text"
-            style="@style/text_paragraph"
+            style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -172,7 +172,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/answer_5_text"
-            style="@style/text_paragraph"
+            style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -199,7 +199,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/answer_6_text"
-            style="@style/text_paragraph"
+            style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
