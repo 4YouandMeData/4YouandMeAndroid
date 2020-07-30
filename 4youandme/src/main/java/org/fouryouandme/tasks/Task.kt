@@ -50,6 +50,11 @@ sealed class Task(
                     imageConfiguration.close(),
                     "Next"
                 ),
+                Step.CountDownStep(
+                    configuration,
+                    "Reaction Time Task",
+                    10
+                ),
                 Step.IntroductionStep(
                     configuration,
                     "Reaction Time Task 2",

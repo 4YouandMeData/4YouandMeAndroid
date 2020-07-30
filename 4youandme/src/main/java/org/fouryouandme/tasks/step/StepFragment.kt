@@ -12,6 +12,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.tasks.TaskViewModel
+import org.fouryouandme.tasks.step.countdown.CountDownStepView
 import org.fouryouandme.tasks.step.introduction.IntroductionStepView
 
 class StepFragment : BaseFragment<TaskViewModel>() {
@@ -38,6 +39,8 @@ class StepFragment : BaseFragment<TaskViewModel>() {
                 when (step) {
                     is Step.IntroductionStep ->
                         IntroductionStepView(requireContext())
+                    is Step.CountDownStep ->
+                        CountDownStepView(requireContext())
                 }
             }
             .orNull()
@@ -52,6 +55,13 @@ class StepFragment : BaseFragment<TaskViewModel>() {
                 when (step) {
                     is Step.IntroductionStep ->
                         (view as IntroductionStepView).applyData(step) {
+                            viewModel.nextStep(
+                                findNavController(),
+                                args.index
+                            )
+                        }
+                    is Step.CountDownStep ->
+                        (view as CountDownStepView).applyData(step) {
                             viewModel.nextStep(
                                 findNavController(),
                                 args.index

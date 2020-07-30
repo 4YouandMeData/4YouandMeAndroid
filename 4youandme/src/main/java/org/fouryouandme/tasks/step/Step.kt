@@ -12,4 +12,10 @@ sealed class Step(val configuration: Configuration) {
         val button: String
     ) : Step(configuration)
 
+    class CountDownStep(
+        configuration: Configuration,
+        val title: String,
+        val seconds: Int
+    ) : Step(configuration)
+
 }
