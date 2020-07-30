@@ -2,18 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/wearable_navigation"
-    app:startDestination="@id/wearable_welcome">
+    android:id="@+id/integration_navigation"
+    app:startDestination="@id/integration_welcome">
 
     <fragment
-        android:id="@+id/wearable_welcome"
-        android:name="org.fouryouandme.auth.wearable.welcome.WearableWelcomeFragment"
-        android:label="wearable_welcome"
-        tools:layout="@layout/wearable_welcome">
+        android:id="@+id/integration_welcome"
+        android:name="org.fouryouandme.auth.integration.welcome.IntegrationWelcomeFragment"
+        android:label="integration_welcome"
+        tools:layout="@layout/integration_welcome">
 
         <action
-            android:id="@+id/action_wearable_welcome_to_wearable_page"
-            app:destination="@id/wearable_page"
+            android:id="@+id/action_integration_welcome_to_integration_page"
+            app:destination="@id/integration_page"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -26,8 +26,8 @@
         </action>
 
         <action
-            android:id="@+id/action_wearable_welcome_to_wearable_login"
-            app:destination="@id/wearable_login"
+            android:id="@+id/action_integration_welcome_to_integration_login"
+            app:destination="@id/integration_login"
             app:enterAnim="@anim/slide_from_top"
             app:exitAnim="@anim/idle"
             app:popEnterAnim="@anim/idle"
@@ -45,8 +45,8 @@
         </action>
 
         <action
-            android:id="@+id/action_wearable_welcome_to_wearable_success"
-            app:destination="@id/wearable_success"
+            android:id="@+id/action_integration_welcome_to_integration_success"
+            app:destination="@id/integration_success"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -55,18 +55,18 @@
     </fragment>
 
     <fragment
-        android:id="@+id/wearable_page"
-        android:name="org.fouryouandme.auth.wearable.page.WearablePageFragment"
-        android:label="wearable_page"
-        tools:layout="@layout/wearable_page">
+        android:id="@+id/integration_page"
+        android:name="org.fouryouandme.auth.integration.page.IntegrationPageFragment"
+        android:label="integration_page"
+        tools:layout="@layout/integration_page">
 
         <argument
             android:name="id"
             app:argType="string" />
 
         <action
-            android:id="@+id/action_wearable_page_self"
-            app:destination="@id/wearable_page"
+            android:id="@+id/action_integration_page_self"
+            app:destination="@id/integration_page"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -79,8 +79,8 @@
         </action>
 
         <action
-            android:id="@+id/action_wearable_page_to_wearable_login"
-            app:destination="@id/wearable_login"
+            android:id="@+id/action_integration_page_to_integration_login"
+            app:destination="@id/integration_login"
             app:enterAnim="@anim/slide_from_top"
             app:exitAnim="@anim/idle"
             app:popEnterAnim="@anim/idle"
@@ -98,8 +98,8 @@
         </action>
 
         <action
-            android:id="@+id/action_wearable_page_to_wearable_success"
-            app:destination="@id/wearable_success"
+            android:id="@+id/action_integration_page_to_integration_success"
+            app:destination="@id/integration_success"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -109,10 +109,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/wearable_login"
-        android:name="org.fouryouandme.auth.wearable.login.WearableLoginFragment"
-        android:label="wearable_login"
-        tools:layout="@layout/wearable_login">
+        android:id="@+id/integration_login"
+        android:name="org.fouryouandme.auth.integration.login.IntegrationLoginFragment"
+        android:label="integration_login"
+        tools:layout="@layout/integration_login">
 
         <argument
             android:name="url"
@@ -124,13 +124,13 @@
             app:nullable="true" />
 
         <action
-            android:id="@+id/action_wearable_login_to_wearable_page"
-            app:destination="@id/wearable_page"
+            android:id="@+id/action_integration_login_to_integration_page"
+            app:destination="@id/integration_page"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/wearable_login"
+            app:popUpTo="@id/integration_login"
             app:popUpToInclusive="true">
 
             <argument
@@ -140,8 +140,8 @@
         </action>
 
         <action
-            android:id="@+id/action_wearable_login_to_wearable_success"
-            app:destination="@id/wearable_success"
+            android:id="@+id/action_integration_login_to_integration_success"
+            app:destination="@id/integration_success"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -151,9 +151,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/wearable_success"
-        android:name="org.fouryouandme.auth.wearable.success.WearableSuccessFragment"
-        android:label="wearable_success"
-        tools:layout="@layout/wearable_page" />
+        android:id="@+id/integration_success"
+        android:name="org.fouryouandme.auth.integration.success.IntegrationSuccessFragment"
+        android:label="integration_success"
+        tools:layout="@layout/integration_page" />
 
 </navigation>

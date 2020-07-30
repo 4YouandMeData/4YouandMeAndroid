@@ -1,8 +1,8 @@
-package org.fouryouandme.core.entity.wearable
+package org.fouryouandme.core.entity.integration
 
 import org.fouryouandme.core.entity.page.Page
 
-data class Wearable(
+data class Integration(
     val pages: List<Page>,
     val welcomePage: Page,
     val successPage: Page

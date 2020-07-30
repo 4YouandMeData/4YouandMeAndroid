@@ -235,7 +235,7 @@ class ConsentUserViewModel(
     fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
 
-    fun wearable(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(runtime, rootNavController, ConsentUserToWearable).unsafeRunAsync()
+    fun integration(rootNavController: RootNavController): Unit =
+        navigator.navigateTo(runtime, rootNavController, ConsentUserToIntegration).unsafeRunAsync()
 
 }

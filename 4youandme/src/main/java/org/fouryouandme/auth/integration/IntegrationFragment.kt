@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.wearable
+package org.fouryouandme.auth.integration
 
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -7,13 +7,13 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 
-class WearableFragment : BaseFragment<WearableViewModel>(R.layout.wearable) {
+class IntegrationFragment : BaseFragment<IntegrationViewModel>(R.layout.integration) {
 
-    override val viewModel: WearableViewModel by lazy {
+    override val viewModel: IntegrationViewModel by lazy {
         viewModelFactory(
             this,
             getFactory {
-                WearableViewModel(
+                IntegrationViewModel(
                     navigator,
                     IORuntime
                 )

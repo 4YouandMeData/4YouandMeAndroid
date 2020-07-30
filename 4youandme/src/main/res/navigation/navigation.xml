@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/wearable">
+    app:startDestination="@id/integration">
 
     <action
         android:id="@+id/action_global_splash"
@@ -241,8 +241,8 @@
         tools:layout="@layout/consent_user">
 
         <action
-            android:id="@+id/action_consent_user_to_wearable"
-            app:destination="@id/wearable"
+            android:id="@+id/action_consent_user_to_integration"
+            app:destination="@id/integration"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -251,13 +251,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/wearable"
-        android:name="org.fouryouandme.auth.wearable.WearableFragment"
-        android:label="wearable"
-        tools:layout="@layout/wearable">
+        android:id="@+id/integration"
+        android:name="org.fouryouandme.auth.integration.IntegrationFragment"
+        android:label="integration"
+        tools:layout="@layout/integration">
 
         <action
-            android:id="@+id/action_wearable_to_main"
+            android:id="@+id/action_integration_to_main"
             app:destination="@id/main"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"

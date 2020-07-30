@@ -5,6 +5,7 @@ import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
 import org.fouryouandme.auth.consent.review.ConsentReviewToOptIns
 import org.fouryouandme.auth.consent.user.*
+import org.fouryouandme.auth.integration.*
 import org.fouryouandme.auth.optin.OptInPermissionToOptInPermission
 import org.fouryouandme.auth.optin.OptInPermissionToOptInSuccess
 import org.fouryouandme.auth.optin.OptInToConsentUser
@@ -15,7 +16,6 @@ import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
-import org.fouryouandme.auth.wearable.*
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
 
@@ -93,27 +93,27 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentUserEmailValidationCodeToConsentUserSignature()
             is ConsentUserSignatureToConsentUserSuccess ->
                 consentUserSignatureToConsentUserSuccess()
-            is ConsentUserToWearable ->
-                consentUserToWearable()
+            is ConsentUserToIntegration ->
+                consentUserToIntegration()
 
-            is WearableWelcomeToWearablePage ->
-                wearableWelcomeToWearablePage(action.pageId)
-            is WearableWelcomeToWearableLogin ->
-                wearableWelcomeToWearableLogin(action.url, action.nextPage)
-            is WearableWelcomeToWearableSuccess ->
-                wearableWelcomeToWearableSuccess()
-            is WearablePageToWearablePage ->
-                wearablePageToWearablePage(action.pageId)
-            is WearablePageToWearableLogin ->
-                wearablePageToWearableLogin(action.url, action.nextPage)
-            is WearablePageToWearableSuccess ->
-                wearablePageToWearableSuccess()
-            is WearableLoginToWearablePage ->
-                wearableLoginToWearablePage(action.id)
-            is WearableLoginToWearableSuccess ->
-                wearableLoginToWearableSuccess()
-            is WearableSuccessToMain ->
-                wearableSuccessToMain()
+            is IntegrationWelcomeToIntegrationPage ->
+                integrationWelcomeToIntegrationPage(action.pageId)
+            is IntegrationWelcomeToIntegrationLogin ->
+                integrationWelcomeToIntegrationLogin(action.url, action.nextPage)
+            is IntegrationWelcomeToIntegrationSuccess ->
+                integrationWelcomeToIntegrationSuccess()
+            is IntegrationPageToIntegrationPage ->
+                integrationPageToIntegrationPage(action.pageId)
+            is IntegrationPageToIntegrationLogin ->
+                integrationPageToIntegrationLogin(action.url, action.nextPage)
+            is IntegrationPageToIntegrationSuccess ->
+                integrationPageToIntegrationSuccess()
+            is IntegrationLoginToIntegrationPage ->
+                integrationLoginToIntegrationPage(action.id)
+            is IntegrationLoginToIntegrationSuccess ->
+                integrationLoginToIntegrationSuccess()
+            is IntegrationSuccessToMain ->
+                integrationSuccessToMain()
 
 
             else -> {

@@ -1,9 +1,9 @@
-package org.fouryouandme.auth.wearable.login
+package org.fouryouandme.auth.integration.login
 
 import android.webkit.JavascriptInterface
 
 
-class WearableLoginInterface(val success: () -> Unit, val failure: () -> Unit) {
+class IntegrationLoginInterface(val success: () -> Unit, val failure: () -> Unit) {
 
     @JavascriptInterface
     fun wearableLogin(value: String) {

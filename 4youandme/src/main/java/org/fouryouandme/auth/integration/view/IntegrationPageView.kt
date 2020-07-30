@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.wearable.view
+package org.fouryouandme.auth.integration.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,10 +7,10 @@ import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import arrow.core.*
 import arrow.core.extensions.fx
-import kotlinx.android.synthetic.main.wearable_page_view.view.*
+import kotlinx.android.synthetic.main.integration_page_view.view.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.wearable.App
-import org.fouryouandme.auth.wearable.SpecialLinkAction
+import org.fouryouandme.auth.integration.App
+import org.fouryouandme.auth.integration.SpecialLinkAction
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
@@ -19,11 +19,11 @@ import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.imageConfiguration
 
 
-class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     init {
 
-        View.inflate(context, R.layout.wearable_page_view, this)
+        View.inflate(context, R.layout.integration_page_view, this)
 
     }
 
@@ -61,9 +61,9 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
                         .getOrElse {
                             when (specialAction.t) {
                                 is SpecialLinkAction.OpenApp ->
-                                    configuration.text.onboarding.wearable.openAppDefault
+                                    configuration.text.onboarding.integration.openAppDefault
                                 is SpecialLinkAction.Download ->
-                                    configuration.text.onboarding.wearable.downloadButtonDefault
+                                    configuration.text.onboarding.integration.downloadButtonDefault
 
                             }
                         }
@@ -72,7 +72,7 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
                 button_2_text.isVisible = true
                 button_2_text.text =
                     page.link1Label
-                        .getOrElse { configuration.text.onboarding.wearable.nextDefault }
+                        .getOrElse { configuration.text.onboarding.integration.nextDefault }
 
             }
             page.externalLinkUrl is Some -> {
@@ -82,7 +82,7 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
                 button_1_text.isVisible = true
                 button_1_text.text =
                     page.externalLinkLabel
-                        .getOrElse { configuration.text.onboarding.wearable.loginButtonDefault }
+                        .getOrElse { configuration.text.onboarding.integration.loginButtonDefault }
                 button_1_text.setOnClickListener {
                     externalLinkAction.invoke(page.externalLinkUrl.t, page.link1)
                 }
@@ -90,7 +90,7 @@ class WearablePageView(context: Context, attrs: AttributeSet?) : FrameLayout(con
                 button_2_text.isVisible = true
                 button_2_text.text =
                     page.link1Label
-                        .getOrElse { configuration.text.onboarding.wearable.nextDefault }
+                        .getOrElse { configuration.text.onboarding.integration.nextDefault }
 
             }
             else -> {

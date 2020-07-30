@@ -63,10 +63,10 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_OPT_IN_MANDATORY_TITLE") val onboardingOptInMandatoryTitle: String? = null,
     @Json(name = "ONBOARDING_OPT_IN_MANDATORY_DEFAULT") val onboardingOptInMandatoryDefault: String? = null,
 
-    @Json(name = "ONBOARDING_WEARABLES_DOWNLOAD_BUTTON_DEFAULT") val onboardingWearableDownloadButtonDefault: String? = null,
-    @Json(name = "ONBOARDING_WEARABLES_OPEN_APP_BUTTON_DEFAULT") val onboardingWearableOpenAppButtonDefault: String? = null,
-    @Json(name = "ONBOARDING_WEARABLES_LOGIN_BUTTON_DEFAULT") val onboardingWearableLoginButtonDefault: String? = null,
-    @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingWearableNextButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_DOWNLOAD_BUTTON_DEFAULT") val onboardingIntegrationDownloadButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_OPEN_APP_BUTTON_DEFAULT") val onboardingIntegrationOpenAppButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_LOGIN_BUTTON_DEFAULT") val onboardingIntegrationLoginButtonDefault: String? = null,
+    @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingIntegrationNextButtonDefault: String? = null,
 
     @Json(name = "TAB_FEED") val tabFeed: String? = null,
     @Json(name = "TAB_TASK") val tabTask: String? = null,
@@ -165,11 +165,11 @@ data class StringsResponse(
                         onboardingOptInMandatoryTitle.toOption().bind(),
                         onboardingOptInMandatoryDefault.toOption().bind()
                     ),
-                    OnboardingWearable(
-                        onboardingWearableDownloadButtonDefault.toOption().bind(),
-                        onboardingWearableOpenAppButtonDefault.toOption().bind(),
-                        onboardingWearableLoginButtonDefault.toOption().bind(),
-                        onboardingWearableNextButtonDefault.toOption().bind()
+                    OnboardingIntegration(
+                        onboardingIntegrationDownloadButtonDefault.toOption().bind(),
+                        onboardingIntegrationOpenAppButtonDefault.toOption().bind(),
+                        onboardingIntegrationLoginButtonDefault.toOption().bind(),
+                        onboardingIntegrationNextButtonDefault.toOption().bind()
                     )
                 ),
                 Tab(

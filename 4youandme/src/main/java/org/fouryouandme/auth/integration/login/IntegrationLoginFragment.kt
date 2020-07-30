@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.wearable.login
+package org.fouryouandme.auth.integration.login
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -11,11 +11,11 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arrow.core.toOption
-import kotlinx.android.synthetic.main.wearable.*
-import kotlinx.android.synthetic.main.wearable_login.*
+import kotlinx.android.synthetic.main.integration.*
+import kotlinx.android.synthetic.main.integration_login.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.wearable.WearableStateUpdate
-import org.fouryouandme.auth.wearable.WearableViewModel
+import org.fouryouandme.auth.integration.IntegrationStateUpdate
+import org.fouryouandme.auth.integration.IntegrationViewModel
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -24,14 +24,14 @@ import org.fouryouandme.core.ext.*
 import timber.log.Timber
 import java.net.URL
 
-class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.wearable_login) {
+class IntegrationLoginFragment : BaseFragment<IntegrationViewModel>(R.layout.integration_login) {
 
-    private val args: WearableLoginFragmentArgs by navArgs()
+    private val args: IntegrationLoginFragmentArgs by navArgs()
 
-    override val viewModel: WearableViewModel by lazy {
+    override val viewModel: IntegrationViewModel by lazy {
         viewModelFactory(
             requireParentFragment(),
-            getFactory { WearableViewModel(navigator, IORuntime) }
+            getFactory { IntegrationViewModel(navigator, IORuntime) }
         )
     }
 
@@ -39,9 +39,9 @@ class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.wearable_
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent(WearableLoginFragment::class.java.simpleName) {
+            .observeEvent(IntegrationLoginFragment::class.java.simpleName) {
                 when (it) {
-                    is WearableStateUpdate.Cookies -> setupWebView(it.cookies)
+                    is IntegrationStateUpdate.Cookies -> setupWebView(it.cookies)
                 }
             }
     }
@@ -99,7 +99,7 @@ class WearableLoginFragment : BaseFragment<WearableViewModel>(R.layout.wearable_
             .also { it.webChromeClient = getWebChromeClient() }
             .also {
                 it.addJavascriptInterface(
-                    WearableLoginInterface(
+                    IntegrationLoginInterface(
                         { viewModel.handleLogin(findNavController(), args.nextPage.toOption()) },
                         { viewModel.back(findNavController()) }
                     ),

@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize" />
 
-        <org.fouryouandme.auth.wearable.view.WearablePageView
+        <org.fouryouandme.auth.integration.view.IntegrationPageView
             android:id="@+id/page"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
