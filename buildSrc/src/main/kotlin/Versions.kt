@@ -1,4 +1,3 @@
-import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -72,7 +71,7 @@ object Versions {
 
     const val arrow_fx: String = "0.10.5"
 
-    const val core_ktx: String = "1.3.1" // available: "1.3.1"
+    const val core_ktx: String = "1.3.1"
 
     const val dexter: String = "6.2.1"
 
@@ -80,7 +79,7 @@ object Versions {
 
     const val aapt2: String = "4.0.1-6197926"
 
-    const val ccp: String = "2.4.1" // available: "2.4.1"
+    const val ccp: String = "2.4.1"
 
     /**
      * Current version: "6.5"
