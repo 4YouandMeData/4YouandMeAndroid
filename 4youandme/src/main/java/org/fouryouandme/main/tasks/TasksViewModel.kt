@@ -10,9 +10,12 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
+import org.fouryouandme.core.cases.task.TaskUseCase
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.ext.foldToKindEither
+import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.main.items.DateItem
 import org.fouryouandme.main.items.toItems
@@ -36,19 +39,23 @@ class TasksViewModel(
 
             !showLoading(TasksLoading.Initialization)
 
-            val configuration =
+            val data =
                 !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
+                    .bind()
+                    .foldToKindEither(runtime.fx) { config ->
+                        TaskUseCase.getTasks(runtime).mapResult(runtime.fx) { config to it }
+                    }
                     .handleAuthError(runtime, rootNavController, navigator)
 
-            !configuration.fold(
+            !data.fold(
                 { setError(it, TasksError.Initialization) },
                 {
                     setState(
                         state().copy(
-                            configuration = it.toOption(),
-                            tasks = taskMock(it)
+                            configuration = it.first.toOption(),
+                            tasks = taskMock(it.first)
                         ),
-                        TasksStateUpdate.Initialization(it, taskMock(it))
+                        TasksStateUpdate.Initialization(it.first, taskMock(it.first))
                     )
                 }
             )

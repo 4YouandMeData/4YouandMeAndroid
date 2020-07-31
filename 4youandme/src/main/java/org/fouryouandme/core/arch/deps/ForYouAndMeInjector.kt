@@ -31,6 +31,7 @@ import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 import org.fouryouandme.core.data.api.task.TaskApi
+import org.fouryouandme.core.data.api.task.response.TaskResponse
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -86,6 +87,7 @@ class ForYouAndMeInjector(
                     .add(OptInsPermissionResponse::class.java)
                     .add(OptInsResponse::class.java)
                     .add(IntegrationResponse::class.java)
+                    .add(TaskResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
