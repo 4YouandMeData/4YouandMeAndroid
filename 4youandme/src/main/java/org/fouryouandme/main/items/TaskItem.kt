@@ -1,4 +1,4 @@
-package org.fouryouandme.main.tasks
+package org.fouryouandme.main.items
 
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +9,9 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.task_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.decodeBase64Image
-import org.threeten.bp.ZonedDateTime
 
 data class TaskItem(
     val configuration: Configuration,

@@ -30,6 +30,7 @@ import org.fouryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
+import org.fouryouandme.core.data.api.task.TaskApi
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -116,4 +117,8 @@ class ForYouAndMeInjector(
 
     override val integrationApi: IntegrationApi =
         getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val taskApi: TaskApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
 }

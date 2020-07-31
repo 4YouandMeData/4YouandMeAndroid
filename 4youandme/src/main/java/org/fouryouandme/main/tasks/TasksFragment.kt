@@ -16,6 +16,8 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.setStatusBar
+import org.fouryouandme.main.items.DateViewHolder
+import org.fouryouandme.main.items.TaskViewHolder
 
 class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 

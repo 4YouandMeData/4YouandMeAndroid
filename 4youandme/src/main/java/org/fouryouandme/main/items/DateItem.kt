@@ -1,4 +1,4 @@
-package org.fouryouandme.main.tasks
+package org.fouryouandme.main.items
 
 import android.view.View
 import android.view.ViewGroup

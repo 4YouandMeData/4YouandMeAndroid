@@ -14,6 +14,8 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.main.items.DateItem
+import org.fouryouandme.main.items.toItems
 import org.threeten.bp.ZonedDateTime
 
 class TasksViewModel(
@@ -61,7 +63,12 @@ class TasksViewModel(
 
         val list = mutableListOf<DroidItem>()
 
-        list.add(DateItem(configuration, ZonedDateTime.now()))
+        list.add(
+            DateItem(
+                configuration,
+                ZonedDateTime.now()
+            )
+        )
 
         val tasks =
             listOf(
