@@ -15,6 +15,10 @@ import org.fouryouandme.core.data.api.common.response.AnswerResponse
 import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.data.api.common.response.QuestionResponse
 import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
+import org.fouryouandme.core.data.api.common.response.activity.ActivityResponse
+import org.fouryouandme.core.data.api.common.response.activity.QuickActivityOptionResponse
+import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
+import org.fouryouandme.core.data.api.common.response.activity.SurveyResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
 import org.fouryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
@@ -88,6 +92,10 @@ class ForYouAndMeInjector(
                     .add(OptInsResponse::class.java)
                     .add(IntegrationResponse::class.java)
                     .add(TaskResponse::class.java)
+                    .add(QuickActivityResponse::class.java)
+                    .add(QuickActivityOptionResponse::class.java)
+                    .add(SurveyResponse::class.java)
+                    .add(ActivityResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
