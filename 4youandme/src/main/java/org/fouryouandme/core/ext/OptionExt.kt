@@ -2,6 +2,7 @@ package org.fouryouandme.core.ext
 
 import arrow.Kind
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.typeclasses.ConcurrentFx
 
@@ -16,3 +17,5 @@ fun <T, F> Option<T>.toKind(
             { just(it.toOption()) }
         )
     }
+
+fun Option<String>.getOrEmpty(): String = getOrElse { "" }

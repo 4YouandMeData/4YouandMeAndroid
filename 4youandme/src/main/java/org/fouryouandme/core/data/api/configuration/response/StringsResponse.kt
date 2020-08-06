@@ -76,6 +76,9 @@ data class StringsResponse(
     @Json(name = "TAB_STUDY_INFO") val tabStudyInfo: String? = null,
     @Json(name = "TAB_STUDY_INFO_TITLE") val tabStudyInfoTitle: String? = null,
 
+    @Json(name = "ACTIVITY_BUTTON_DEFAULT") val activityButtonDefault: String? = null,
+    @Json(name = "QUICK_ACTIVITY_BUTTON_DEFAULT") val quickActivityButtonDefault: String? = null,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -180,6 +183,10 @@ data class StringsResponse(
                     tabUserDataTitle.toOption().bind(),
                     tabStudyInfo.toOption().bind(),
                     tabStudyInfoTitle.toOption().bind()
+                ),
+                Activity(
+                    activityButtonDefault.toOption().bind(),
+                    quickActivityButtonDefault.toOption().bind()
                 )
             )
         }

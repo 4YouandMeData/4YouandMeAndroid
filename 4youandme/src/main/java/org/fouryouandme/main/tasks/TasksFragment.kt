@@ -17,7 +17,7 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.setStatusBar
 import org.fouryouandme.main.items.DateViewHolder
-import org.fouryouandme.main.items.TaskViewHolder
+import org.fouryouandme.main.items.TaskActivityViewHolder
 
 class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 
@@ -26,7 +26,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(TaskViewHolder.factory(), DateViewHolder.factory())
+        DroidAdapter(TaskActivityViewHolder.factory(), DateViewHolder.factory())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

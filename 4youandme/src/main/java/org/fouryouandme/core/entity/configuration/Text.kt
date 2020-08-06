@@ -8,7 +8,8 @@ data class Text(
     val signUpLater: SignUpLater,
     val phoneVerification: PhoneVerification,
     val onboarding: Onboarding,
-    val tab: Tab
+    val tab: Tab,
+    val activity: Activity
 )
 
 data class Error(
@@ -118,4 +119,9 @@ data class Tab(
     val userDataTitle: String,
     val studyInfo: String,
     val studyInfoTitle: String
+)
+
+data class Activity(
+    val activityButtonDefault: String,
+    val quickActivityButtonDefault: String
 )

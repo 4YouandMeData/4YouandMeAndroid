@@ -2,7 +2,6 @@ package org.fouryouandme.main.tasks
 
 import arrow.core.toOption
 import arrow.fx.ForIO
-import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -11,12 +10,14 @@ import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.task.TaskUseCase
+import org.fouryouandme.core.entity.activity.QuickActivity
+import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
-import org.fouryouandme.main.items.DateItem
-import org.threeten.bp.ZonedDateTime
+import org.fouryouandme.main.items.TaskActivityItem
 
 class TasksViewModel(
     navigator: Navigator,
@@ -47,12 +48,15 @@ class TasksViewModel(
             !data.fold(
                 { setError(it, TasksError.Initialization) },
                 {
+
+                    val tasks = it.second.toItems(it.first)
+
                     setState(
                         state().copy(
                             configuration = it.first.toOption(),
-                            tasks = taskMock(it.first)
+                            tasks = tasks
                         ),
-                        TasksStateUpdate.Initialization(it.first, taskMock(it.first))
+                        TasksStateUpdate.Initialization(it.first, tasks)
                     )
                 }
             )
@@ -61,20 +65,13 @@ class TasksViewModel(
 
         }.unsafeRunAsync()
 
+    private fun List<Task>.toItems(configuration: Configuration): List<TaskActivityItem> =
+        mapNotNull {
 
-    // TODO: remove mock
-    private fun taskMock(configuration: Configuration): List<DroidItem> {
+            when (it.activity) {
+                is QuickActivity -> null
+                is TaskActivity -> TaskActivityItem(configuration, it.activity, it.from, it.to)
+            }
 
-        val list = mutableListOf<DroidItem>()
-
-        list.add(
-            DateItem(
-                configuration,
-                ZonedDateTime.now()
-            )
-        )
-
-        return list
-    }
-
+        }
 }

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.*
 import kotlinx.android.extensions.LayoutContainer
@@ -15,6 +16,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.decodeBase64Image
+import org.fouryouandme.core.ext.getOrEmpty
 import org.fouryouandme.main.items.EQuickActivityPayload.SELECTED_ANSWER
 
 enum class EQuickActivityPayload {
@@ -69,11 +71,11 @@ class QuickActivityViewHolder(
                 t.configuration.theme.primaryColorEnd
             ).drawable()
 
-        title.text = t.data.title
+        title.text = t.data.title.getOrEmpty()
         title.setTextColor(t.configuration.theme.secondaryColor.color())
         title.alpha = 0.5f
 
-        body.text = t.data.description
+        body.text = t.data.description.getOrEmpty()
         body.setTextColor(t.configuration.theme.secondaryColor.color())
 
         getAnswerImage(t.selectedAnswer, t.data.answer1).map { answer_1.setImageBitmap(it) }
@@ -83,16 +85,24 @@ class QuickActivityViewHolder(
         getAnswerImage(t.selectedAnswer, t.data.answer5).map { answer_5.setImageBitmap(it) }
         getAnswerImage(t.selectedAnswer, t.data.answer6).map { answer_6.setImageBitmap(it) }
 
-        answer_1_text.text = t.data.answer1.text
-        answer_2_text.text = t.data.answer2.text
-        answer_3_text.text = t.data.answer3.text
-        answer_4_text.text = t.data.answer4.text
-        answer_5_text.text = t.data.answer5.text
-        answer_6_text.text = t.data.answer6.text
+        answer_1.isEnabled = t.data.answer1.isDefined()
+        answer_2.isEnabled = t.data.answer2.isDefined()
+        answer_2.isEnabled = t.data.answer3.isDefined()
+        answer_4.isEnabled = t.data.answer4.isDefined()
+        answer_5.isEnabled = t.data.answer5.isDefined()
+        answer_6.isEnabled = t.data.answer6.isDefined()
+
+        answer_1_text.text = t.data.answer1.flatMap { it.text }.getOrEmpty()
+        answer_2_text.text = t.data.answer2.flatMap { it.text }.getOrEmpty()
+        answer_3_text.text = t.data.answer3.flatMap { it.text }.getOrEmpty()
+        answer_4_text.text = t.data.answer4.flatMap { it.text }.getOrEmpty()
+        answer_5_text.text = t.data.answer5.flatMap { it.text }.getOrEmpty()
+        answer_6_text.text = t.data.answer6.flatMap { it.text }.getOrEmpty()
 
         button.background = button(t.configuration.theme.secondaryColor.color())
-        button.text = t.data.button
         button.setTextColor(t.configuration.theme.primaryTextColor.color())
+        button.text =
+            t.data.button.getOrElse { t.configuration.text.activity.quickActivityButtonDefault }
 
     }
 
@@ -121,13 +131,14 @@ class QuickActivityViewHolder(
 
     private fun getAnswerImage(
         selectedAnswer: Option<String>,
-        answer: QuickActivityAnswer
+        answer: Option<QuickActivityAnswer>
     ): Option<Bitmap> =
-        if (selectedAnswer == answer.id.toOption())
-            answer.selectedImage.decodeBase64Image()
-        else
-            answer.image.decodeBase64Image()
-
+        answer.flatMap { quickActivityAnswer ->
+            if (selectedAnswer == quickActivityAnswer.id.toOption())
+                quickActivityAnswer.selectedImage.flatMap { it.decodeBase64Image() }
+            else
+                quickActivityAnswer.image.flatMap { it.decodeBase64Image() }
+        }
 
     override val containerView: View? = itemView
 
