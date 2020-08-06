@@ -99,6 +99,7 @@ class TasksViewModel(
             items.add(
                 QuickActivitiesItem(
                     "quick_activities",
+                    configuration,
                     DroidAdapter(
                         QuickActivityViewHolder.factory { item, answer ->
                             selectAnswer(item, answer)
@@ -123,7 +124,7 @@ class TasksViewModel(
 
         }
 
-        return items
+        return emptyList()
 
     }
 
@@ -153,7 +154,11 @@ class TasksViewModel(
 
                     droidItem.quickActivities.submitList(updatedActivities)
 
-                    QuickActivitiesItem(droidItem.id, droidItem.quickActivities)
+                    QuickActivitiesItem(
+                        droidItem.id,
+                        droidItem.configuration,
+                        droidItem.quickActivities
+                    )
 
                 }
                 else -> droidItem

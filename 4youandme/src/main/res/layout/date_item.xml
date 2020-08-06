@@ -3,6 +3,7 @@
     android:id="@+id/date"
     style="@style/text_paragraph"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp">
 
 </androidx.appcompat.widget.AppCompatTextView>

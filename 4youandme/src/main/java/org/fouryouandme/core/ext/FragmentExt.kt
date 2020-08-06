@@ -59,3 +59,7 @@ fun Fragment.setStatusBar(backgroundColor: Int): Unit {
     }
 
 }
+
+/* --- parent --- */
+
+fun Fragment.sectionParent(): Fragment = requireParentFragment().requireParentFragment()

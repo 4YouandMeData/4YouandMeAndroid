@@ -2,6 +2,7 @@ package org.fouryouandme.main
 
 import arrow.core.toOption
 import arrow.fx.ForIO
+import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -49,10 +50,24 @@ class MainViewModel(
 
     /* --- page --- */
 
-    fun setPage(id: Int): Unit =
+    fun setRestorePage(id: Int): Unit =
         setState(
-            state().copy(selectedPage = id),
-            MainStateUpdate.Page(id)
+            state().copy(restorePage = id),
+            MainStateUpdate.RestorePage(id)
         ).unsafeRunAsync()
+
+    fun selectFeed(): Unit =
+        setState(
+            state(),
+            MainStateUpdate.PageNavigation(R.id.feed_navigation)
+        ).unsafeRunAsync()
+
+    fun getPagedIds(): List<Int> =
+        listOf(
+            R.navigation.feed_navigation,
+            R.navigation.tasks_navigation,
+            R.navigation.user_data_navigation,
+            R.navigation.study_info_navigation
+        )
 
 }

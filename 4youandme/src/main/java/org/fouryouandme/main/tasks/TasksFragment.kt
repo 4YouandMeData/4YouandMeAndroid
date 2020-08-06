@@ -2,6 +2,7 @@ package org.fouryouandme.main.tasks
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
@@ -14,10 +15,9 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.dpToPx
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.setStatusBar
+import org.fouryouandme.core.entity.configuration.button.button
+import org.fouryouandme.core.ext.*
+import org.fouryouandme.main.MainViewModel
 import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
@@ -26,6 +26,10 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 
     override val viewModel: TasksViewModel by lazy {
         viewModelFactory(this, getFactory { TasksViewModel(navigator, IORuntime) })
+    }
+
+    private val mainViewModel: MainViewModel by lazy {
+        viewModelFactory(sectionParent(), getFactory { MainViewModel(navigator, IORuntime) })
     }
 
     private val adapter: DroidAdapter by lazy {
@@ -59,6 +63,8 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 
         setupList()
 
+        empty.isVisible = false
+
         viewModel.state().configuration
             .fold(
                 { viewModel.initialize(rootNavController()) },
@@ -80,10 +86,26 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
                 configuration.theme.primaryColorEnd
             ).drawable()
 
+        empty_title.setTextColor(configuration.theme.primaryTextColor.color())
+        empty_title.text = configuration.text.tab.tabTaskEmptyTitle
+
+        empty_description.setTextColor(configuration.theme.primaryTextColor.color())
+        empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
+
+        empty_button.setTextColor(configuration.theme.secondaryColor.color())
+        empty_button.background = button(configuration.theme.primaryColorEnd.color())
+        empty_button.text = configuration.text.tab.tabTaskEmptyButton
+        empty_button.setOnClickListener { mainViewModel.selectFeed() }
+
         applyTasks(tasks)
     }
 
-    private fun applyTasks(tasks: List<DroidItem>): Unit = adapter.submitList(tasks)
+    private fun applyTasks(tasks: List<DroidItem>): Unit {
+
+        empty.isVisible = tasks.isEmpty()
+
+        adapter.submitList(tasks)
+    }
 
     private fun setupList(): Unit {
 

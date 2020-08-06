@@ -29,7 +29,10 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is MainStateUpdate.Initialization -> setupNavigation(it.configuration)
+                    is MainStateUpdate.Initialization ->
+                        setupNavigation(it.configuration)
+                    is MainStateUpdate.PageNavigation ->
+                        bottom_navigation.selectedItemId = it.selectedPage
                 }
             }
 
@@ -71,7 +74,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
             .add(Menu.NONE, R.id.study_info_navigation, Menu.NONE, configuration.text.tab.studyInfo)
             .setIcon(imageConfiguration.tabStudyInfo())
 
-        bottom_navigation.selectedItemId = viewModel.state().selectedPage
+        bottom_navigation.selectedItemId = viewModel.state().restorePage
 
         bottom_navigation.itemIconTintList =
             selectedUnselectedColor(
@@ -84,13 +87,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
                 configuration.theme.secondaryMenuColor.color()
             )
 
-        val navGraphIds =
-            listOf(
-                R.navigation.feed_navigation,
-                R.navigation.tasks_navigation,
-                R.navigation.user_data_navigation,
-                R.navigation.study_info_navigation
-            )
+        val navGraphIds = viewModel.getPagedIds()
 
         // Setup the bottom navigation view with a list of navigation graphs
         bottom_navigation.setupWithNavController(
@@ -103,7 +100,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
     override fun onDestroyView() {
 
-        viewModel.setPage(bottom_navigation.selectedItemId)
+        viewModel.setRestorePage(bottom_navigation.selectedItemId)
 
         super.onDestroyView()
     }
