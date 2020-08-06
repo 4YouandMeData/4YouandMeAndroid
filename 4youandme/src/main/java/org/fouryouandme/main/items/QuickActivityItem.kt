@@ -57,7 +57,8 @@ data class QuickActivityItem(
 
 
 class QuickActivityViewHolder(
-    viewGroup: ViewGroup
+    viewGroup: ViewGroup,
+    val onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit
 ) : DroidViewHolder<QuickActivityItem, EQuickActivityPayload>(
     viewGroup,
     R.layout.quick_activity_item
@@ -106,6 +107,13 @@ class QuickActivityViewHolder(
         answer_5_text.setTextColor(t.configuration.theme.secondaryColor.color())
         answer_6_text.setTextColor(t.configuration.theme.secondaryColor.color())
 
+        answer_1.setOnClickListener { t.data.answer1.map { onAnswerSelected(t, it) } }
+        answer_2.setOnClickListener { t.data.answer2.map { onAnswerSelected(t, it) } }
+        answer_3.setOnClickListener { t.data.answer3.map { onAnswerSelected(t, it) } }
+        answer_4.setOnClickListener { t.data.answer4.map { onAnswerSelected(t, it) } }
+        answer_5.setOnClickListener { t.data.answer5.map { onAnswerSelected(t, it) } }
+        answer_6.setOnClickListener { t.data.answer6.map { onAnswerSelected(t, it) } }
+
         button.isEnabled = t.selectedAnswer.isDefined()
         button.background = button(t.configuration.theme.secondaryColor.color())
         button.setTextColor(t.configuration.theme.primaryTextColor.color())
@@ -132,6 +140,8 @@ class QuickActivityViewHolder(
                         .map { answer_5.setImageBitmap(it) }
                     getAnswerImage(t.selectedAnswer, t.data.answer6)
                         .map { answer_6.setImageBitmap(it) }
+
+                    button.isEnabled = t.selectedAnswer.isDefined()
                 }
             }
         }
@@ -152,9 +162,11 @@ class QuickActivityViewHolder(
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
+        fun factory(
+            onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit
+        ): ViewHolderFactory =
             ViewHolderFactory(
-                { QuickActivityViewHolder(it) },
+                { QuickActivityViewHolder(it, onAnswerSelected) },
                 { _, item -> item is QuickActivityItem }
             )
 

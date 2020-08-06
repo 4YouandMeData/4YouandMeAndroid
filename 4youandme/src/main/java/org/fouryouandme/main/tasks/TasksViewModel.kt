@@ -1,6 +1,7 @@
 package org.fouryouandme.main.tasks
 
 import arrow.core.None
+import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
@@ -14,6 +15,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.task.TaskUseCase
 import org.fouryouandme.core.entity.activity.QuickActivity
+import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
@@ -97,8 +99,10 @@ class TasksViewModel(
             items.add(
                 QuickActivitiesItem(
                     "quick_activities",
-                    DroidAdapter(QuickActivityViewHolder.factory())
-                        .also { it.submitList(quickActivities.toList()) }
+                    DroidAdapter(
+                        QuickActivityViewHolder.factory { item, answer ->
+                            selectAnswer(item, answer)
+                        }).also { it.submitList(quickActivities.toList()) }
                 )
             )
 
@@ -120,6 +124,41 @@ class TasksViewModel(
         }
 
         return items
+
+    }
+
+    private fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
+
+        state().tasks.map { droidItem ->
+            when (droidItem) {
+                is QuickActivitiesItem -> {
+
+                    val quickActivities =
+                        droidItem.quickActivities.getItems()
+
+                    val updatedActivities =
+                        quickActivities.map {
+
+                            when (it) {
+
+                                is QuickActivityItem ->
+                                    if (it.data.id == item.data.id)
+                                        it.copy(selectedAnswer = answer.id.some())
+                                    else
+                                        it
+
+                                else -> it
+                            }
+                        }
+
+                    droidItem.quickActivities.submitList(updatedActivities)
+
+                    QuickActivitiesItem(droidItem.id, droidItem.quickActivities)
+
+                }
+                else -> droidItem
+            }
+        }
 
     }
 }
