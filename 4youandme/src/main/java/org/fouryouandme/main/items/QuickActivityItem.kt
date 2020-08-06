@@ -99,6 +99,14 @@ class QuickActivityViewHolder(
         answer_5_text.text = t.data.answer5.flatMap { it.text }.getOrEmpty()
         answer_6_text.text = t.data.answer6.flatMap { it.text }.getOrEmpty()
 
+        answer_1_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_2_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_3_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_4_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_5_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_6_text.setTextColor(t.configuration.theme.secondaryColor.color())
+
+        button.isEnabled = t.selectedAnswer.isDefined()
         button.background = button(t.configuration.theme.secondaryColor.color())
         button.setTextColor(t.configuration.theme.primaryTextColor.color())
         button.text =

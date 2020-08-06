@@ -1,7 +1,10 @@
 package org.fouryouandme.main.tasks
 
+import arrow.core.None
 import arrow.core.toOption
 import arrow.fx.ForIO
+import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -17,7 +20,9 @@ import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
-import org.fouryouandme.main.items.TaskActivityItem
+import org.fouryouandme.main.items.*
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 class TasksViewModel(
     navigator: Navigator,
@@ -65,13 +70,56 @@ class TasksViewModel(
 
         }.unsafeRunAsync()
 
-    private fun List<Task>.toItems(configuration: Configuration): List<TaskActivityItem> =
-        mapNotNull {
+    private fun List<Task>.toItems(configuration: Configuration): List<DroidItem> {
+
+        val quickActivities = mutableListOf<QuickActivityItem>()
+
+        val taskActivities = mutableListOf<TaskActivityItem>()
+
+        forEach {
 
             when (it.activity) {
-                is QuickActivity -> null
-                is TaskActivity -> TaskActivityItem(configuration, it.activity, it.from, it.to)
+                is QuickActivity ->
+                    quickActivities.add(
+                        QuickActivityItem(configuration, it.activity, None)
+                    )
+                is TaskActivity ->
+                    taskActivities.add(
+                        TaskActivityItem(configuration, it.activity, it.from, it.to)
+                    )
             }
 
         }
+
+        val items = mutableListOf<DroidItem>()
+
+        if (quickActivities.isNotEmpty())
+            items.add(
+                QuickActivitiesItem(
+                    "quick_activities",
+                    DroidAdapter(QuickActivityViewHolder.factory())
+                        .also { it.submitList(quickActivities.toList()) }
+                )
+            )
+
+        taskActivities.groupBy(
+            { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
+            { it }
+        ).forEach { (key, value) ->
+
+            items.add(
+                DateItem(
+                    configuration, ZonedDateTime.parse(
+                        key,
+                        DateTimeFormatter.ISO_ZONED_DATE_TIME
+                    )
+                )
+            )
+            items.addAll(value)
+
+        }
+
+        return items
+
+    }
 }

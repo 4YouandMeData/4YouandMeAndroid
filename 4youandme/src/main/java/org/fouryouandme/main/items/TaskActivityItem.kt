@@ -8,7 +8,7 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.task_item.*
+import kotlinx.android.synthetic.main.task_activity_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -49,7 +49,8 @@ data class TaskActivityItem(
 }
 
 class TaskActivityViewHolder(viewGroup: ViewGroup) :
-    DroidViewHolder<TaskActivityItem, Unit>(viewGroup, R.layout.task_item), LayoutContainer {
+    DroidViewHolder<TaskActivityItem, Unit>(viewGroup, R.layout.task_activity_item),
+    LayoutContainer {
 
     override val containerView: View? = itemView
 

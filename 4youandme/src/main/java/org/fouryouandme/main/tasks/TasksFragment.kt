@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.tasks.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -14,9 +15,11 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.dpToPx
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.setStatusBar
 import org.fouryouandme.main.items.DateViewHolder
+import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
 
 class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
@@ -26,7 +29,11 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(TaskActivityViewHolder.factory(), DateViewHolder.factory())
+        DroidAdapter(
+            TaskActivityViewHolder.factory(),
+            DateViewHolder.factory(),
+            QuickActivitiesViewHolder.factory()
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +90,15 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
         recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         recycler_view.adapter = adapter
+        recycler_view.invalidateItemDecorations()
+        recycler_view.addItemDecoration(
+            LinearMarginItemDecoration(
+                { 0 },
+                { if (it.index == 0) 0 else 20.dpToPx() },
+                { if (it.index == 0) 0 else 20.dpToPx() },
+                { 0 }
+            )
+        )
 
     }
 }
