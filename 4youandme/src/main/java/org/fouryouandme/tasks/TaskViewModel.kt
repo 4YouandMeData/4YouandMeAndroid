@@ -11,7 +11,7 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
-import org.fouryouandme.tasks.step.Step
+import org.fouryouandme.researchkit.step.Step
 
 class TaskViewModel(
     navigator: Navigator,

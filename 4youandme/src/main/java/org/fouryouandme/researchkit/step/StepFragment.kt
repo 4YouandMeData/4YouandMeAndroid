@@ -1,4 +1,4 @@
-package org.fouryouandme.tasks.step
+package org.fouryouandme.researchkit.step
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,9 +11,9 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.researchkit.step.countdown.CountDownStepView
+import org.fouryouandme.researchkit.step.introduction.IntroductionStepView
 import org.fouryouandme.tasks.TaskViewModel
-import org.fouryouandme.tasks.step.countdown.CountDownStepView
-import org.fouryouandme.tasks.step.introduction.IntroductionStepView
 
 class StepFragment : BaseFragment<TaskViewModel>() {
 

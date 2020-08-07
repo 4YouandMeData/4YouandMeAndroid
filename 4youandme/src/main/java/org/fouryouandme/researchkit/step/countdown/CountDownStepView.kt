@@ -1,4 +1,4 @@
-package org.fouryouandme.tasks.step.countdown
+package org.fouryouandme.researchkit.step.countdown
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
 import org.fouryouandme.core.ext.unsafeRunAsync
-import org.fouryouandme.tasks.step.Step
+import org.fouryouandme.researchkit.step.Step
 
 
 class CountDownStepView(context: Context) : FrameLayout(context) {

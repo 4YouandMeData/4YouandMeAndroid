@@ -4,7 +4,7 @@ import arrow.core.Option
 import arrow.core.toOption
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.tasks.step.Step
+import org.fouryouandme.researchkit.step.Step
 
 sealed class Task(
     val identifier: String,

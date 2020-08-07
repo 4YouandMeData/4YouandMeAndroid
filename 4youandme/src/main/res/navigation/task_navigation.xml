@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/step"
-        android:name="org.fouryouandme.tasks.step.StepFragment"
+        android:name="org.fouryouandme.researchkit.step.StepFragment"
         android:label="step">
 
         <argument

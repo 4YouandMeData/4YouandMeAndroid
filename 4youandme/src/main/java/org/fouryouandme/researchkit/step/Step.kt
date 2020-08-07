@@ -1,4 +1,4 @@
-package org.fouryouandme.tasks.step
+package org.fouryouandme.researchkit.step
 
 import org.fouryouandme.core.entity.configuration.Configuration
 

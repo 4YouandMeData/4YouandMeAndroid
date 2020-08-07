@@ -1,4 +1,4 @@
-package org.fouryouandme.tasks.step.introduction
+package org.fouryouandme.researchkit.step.introduction
 
 import android.content.Context
 import android.graphics.Color
@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.page.view.title
 import kotlinx.android.synthetic.main.step_introduction.view.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.tasks.step.Step
+import org.fouryouandme.researchkit.step.Step
 import kotlin.math.roundToInt
 
 
