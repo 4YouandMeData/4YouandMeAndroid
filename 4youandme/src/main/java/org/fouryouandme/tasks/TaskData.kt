@@ -4,6 +4,7 @@ import arrow.core.None
 import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.researchkit.task.Task
 
 data class TaskState(
     val configuration: Option<Configuration> = None,

@@ -1,4 +1,4 @@
-package org.fouryouandme.tasks
+package org.fouryouandme.researchkit.task
 
 import arrow.core.Option
 import arrow.core.toOption
@@ -27,7 +27,10 @@ sealed class Task(
             imageConfiguration: ImageConfiguration
         ): Option<Task> =
             when (identifier) {
-                "reaction_time" -> ReactionTimeTask(configuration, imageConfiguration)
+                "reaction_time" -> ReactionTimeTask(
+                    configuration,
+                    imageConfiguration
+                )
                 else -> null
             }.toOption()
 
@@ -44,6 +47,7 @@ sealed class Task(
         ): List<Step> =
             listOf( // TODO: Remove mock
                 Step.IntroductionStep(
+                    "introduction_1",
                     configuration,
                     "Reaction Time Task",
                     "description",
@@ -51,11 +55,13 @@ sealed class Task(
                     "Next"
                 ),
                 Step.CountDownStep(
+                    "countdown_1",
                     configuration,
                     "Reaction Time Task",
                     10
                 ),
                 Step.IntroductionStep(
+                    "introduction_2",
                     configuration,
                     "Reaction Time Task 2",
                     "description",
@@ -63,6 +69,7 @@ sealed class Task(
                     "Next"
                 ),
                 Step.IntroductionStep(
+                    "introduction_3",
                     configuration,
                     "Reaction Time Task 3",
                     "description",

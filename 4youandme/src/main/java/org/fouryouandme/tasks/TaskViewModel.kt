@@ -12,6 +12,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.task.Task
 
 class TaskViewModel(
     navigator: Navigator,

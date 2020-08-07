@@ -12,6 +12,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.researchkit.task.Task
 
 class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
