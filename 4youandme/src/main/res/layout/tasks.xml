@@ -10,7 +10,7 @@
         android:id="@+id/title"
         style="@style/text_title"
         android:layout_width="0dp"
-        android:layout_height="115dp"
+        android:layout_height="?android:attr/actionBarSize"
         android:gravity="bottom|center_horizontal"
         android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
