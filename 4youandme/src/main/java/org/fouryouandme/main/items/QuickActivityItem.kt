@@ -128,18 +128,25 @@ class QuickActivityViewHolder(
         payloads.forEach { payload ->
             when (payload) {
                 SELECTED_ANSWER -> {
-                    getAnswerImage(t.selectedAnswer, t.data.answer1)
-                        .map { answer_1.setImageBitmap(it) }
-                    getAnswerImage(t.selectedAnswer, t.data.answer2)
-                        .map { answer_2.setImageBitmap(it) }
-                    getAnswerImage(t.selectedAnswer, t.data.answer3)
-                        .map { answer_3.setImageBitmap(it) }
-                    getAnswerImage(t.selectedAnswer, t.data.answer4)
-                        .map { answer_4.setImageBitmap(it) }
-                    getAnswerImage(t.selectedAnswer, t.data.answer5)
-                        .map { answer_5.setImageBitmap(it) }
-                    getAnswerImage(t.selectedAnswer, t.data.answer6)
-                        .map { answer_6.setImageBitmap(it) }
+
+                    answer_1.setImageBitmap(
+                        getAnswerImage(t.selectedAnswer, t.data.answer1).orNull()
+                    )
+                    answer_2.setImageBitmap(
+                        getAnswerImage(t.selectedAnswer, t.data.answer2).orNull()
+                    )
+                    answer_3.setImageBitmap(
+                        getAnswerImage(t.selectedAnswer, t.data.answer3).orNull()
+                    )
+                    answer_4.setImageBitmap(
+                        getAnswerImage(t.selectedAnswer, t.data.answer4).orNull()
+                    )
+                    answer_5.setImageBitmap(
+                        getAnswerImage(t.selectedAnswer, t.data.answer5).orNull()
+                    )
+                    answer_6.setImageBitmap(
+                        getAnswerImage(t.selectedAnswer, t.data.answer6).orNull()
+                    )
 
                     button.isEnabled = t.selectedAnswer.isDefined()
                 }
