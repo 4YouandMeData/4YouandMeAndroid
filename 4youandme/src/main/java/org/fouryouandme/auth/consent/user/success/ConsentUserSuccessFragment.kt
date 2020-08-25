@@ -54,7 +54,7 @@ class ConsentUserSuccessFragment : BaseFragment<ConsentUserViewModel>(R.layout.c
             configuration = configuration,
             page = consentUser.successPage,
             pageType = EPageType.SUCCESS,
-            action1 = { viewModel.wearable(rootNavController()) },
+            action1 = { viewModel.integration(rootNavController()) },
             externalAction = { viewModel.web(rootNavController(), it) }
         )
 

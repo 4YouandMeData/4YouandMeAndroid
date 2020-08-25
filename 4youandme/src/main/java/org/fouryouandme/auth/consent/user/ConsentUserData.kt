@@ -54,4 +54,4 @@ object ConsentUserNameToConsentUserEmail : NavigationAction
 object ConsentUserEmailToConsentUserEmailValidationCode : NavigationAction
 object ConsentUserEmailValidationCodeToConsentUserSignature : NavigationAction
 object ConsentUserSignatureToConsentUserSuccess : NavigationAction
-object ConsentUserToWearable : NavigationAction
+object ConsentUserToIntegration : NavigationAction

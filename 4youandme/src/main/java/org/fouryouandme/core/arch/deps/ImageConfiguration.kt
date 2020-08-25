@@ -46,4 +46,19 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun signUpPreviousStepSecondary(): Int
+
+    /* --- main --- */
+
+    @DrawableRes
+    fun tabFeed(): Int
+
+    @DrawableRes
+    fun tabTask(): Int
+
+    @DrawableRes
+    fun tabUserData(): Int
+
+    @DrawableRes
+    fun tabStudyInfo(): Int
+
 }

@@ -108,12 +108,7 @@ class ConsentAnswerViewHolder(
 
         fun factory(onAnswer: (ConsentAnswerItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                {
-                    ConsentAnswerViewHolder(
-                        it,
-                        onAnswer
-                    ) as DroidViewHolder<DroidItem, *>
-                },
+                { ConsentAnswerViewHolder(it, onAnswer) },
                 { _, droidItem -> droidItem is ConsentAnswerItem }
             )
     }

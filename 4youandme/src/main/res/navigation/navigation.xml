@@ -241,8 +241,8 @@
         tools:layout="@layout/consent_user">
 
         <action
-            android:id="@+id/action_consent_user_to_wearable"
-            app:destination="@id/wearable"
+            android:id="@+id/action_consent_user_to_integration"
+            app:destination="@id/integration"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -251,9 +251,27 @@
     </fragment>
 
     <fragment
-        android:id="@+id/wearable"
-        android:name="org.fouryouandme.auth.wearable.WearableFragment"
-        android:label="wearable"
-        tools:layout="@layout/wearable" />
+        android:id="@+id/integration"
+        android:name="org.fouryouandme.auth.integration.IntegrationFragment"
+        android:label="integration"
+        tools:layout="@layout/integration">
+
+        <action
+            android:id="@+id/action_integration_to_main"
+            app:destination="@id/main"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@id/navigation"
+            app:popUpToInclusive="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/main"
+        android:name="org.fouryouandme.main.MainFragment"
+        android:label="main"
+        tools:layout="@layout/main" />
 
 </navigation>

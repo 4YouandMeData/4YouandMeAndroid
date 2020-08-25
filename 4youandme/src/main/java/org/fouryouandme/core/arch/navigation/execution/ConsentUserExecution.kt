@@ -29,8 +29,8 @@ fun consentUserSignatureToConsentUserSuccess(): NavigationExecution = {
     )
 }
 
-fun consentUserToWearable(): NavigationExecution = {
+fun consentUserToIntegration(): NavigationExecution = {
     it.navigate(
-        ConsentUserFragmentDirections.actionConsentUserToWearable()
+        ConsentUserFragmentDirections.actionConsentUserToIntegration()
     )
 }

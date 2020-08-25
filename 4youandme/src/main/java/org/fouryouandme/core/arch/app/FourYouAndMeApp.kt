@@ -1,6 +1,7 @@
 package org.fouryouandme.core.arch.app
 
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.fouryouandme.BuildConfig
 import org.fouryouandme.core.arch.android.AppInjector
 import org.fouryouandme.core.arch.deps.Environment
@@ -30,5 +31,7 @@ abstract class FourYouAndMeApp : Application(), AppInjector {
 
         if (BuildConfig.DEBUG)
             Timber.plant(DebugTree())
+
+        AndroidThreeTen.init(this);
     }
 }

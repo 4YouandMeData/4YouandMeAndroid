@@ -77,11 +77,7 @@ class ConsentReviewPageViewHolder(
 
         fun factory(): ViewHolderFactory =
             ViewHolderFactory(
-                {
-                    ConsentReviewPageViewHolder(
-                        it
-                    ) as DroidViewHolder<DroidItem, *>
-                },
+                { ConsentReviewPageViewHolder(it) },
                 { _, item -> item is ConsentReviewPageItem }
             )
 

@@ -7,7 +7,9 @@ data class Text(
     val intro: Intro,
     val signUpLater: SignUpLater,
     val phoneVerification: PhoneVerification,
-    val onboarding: Onboarding
+    val onboarding: Onboarding,
+    val tab: Tab,
+    val activity: Activity
 )
 
 data class Error(
@@ -70,7 +72,7 @@ data class Onboarding(
     val disagreeButton: String,
     val user: OnboardingUser,
     val optIn: OnboardingOptIn,
-    val wearable: OnboardingWearable
+    val integration: OnboardingIntegration
 )
 
 data class OnboardingUser(
@@ -98,7 +100,7 @@ data class OnboardingOptIn(
     val mandatoryDefault: String
 )
 
-data class OnboardingWearable(
+data class OnboardingIntegration(
     val downloadButtonDefault: String,
     val openAppDefault: String,
     val loginButtonDefault: String,
@@ -107,4 +109,22 @@ data class OnboardingWearable(
 
 data class OnboardingUserError(
     val emailVerificationWrongCode: String
+)
+
+data class Tab(
+    val feed: String,
+    val tasks: String,
+    val tasksTitle: String,
+    val tabTaskEmptyTitle: String,
+    val tabTaskEmptySubtitle: String,
+    val tabTaskEmptyButton: String,
+    val userData: String,
+    val userDataTitle: String,
+    val studyInfo: String,
+    val studyInfoTitle: String
+)
+
+data class Activity(
+    val activityButtonDefault: String,
+    val quickActivityButtonDefault: String
 )

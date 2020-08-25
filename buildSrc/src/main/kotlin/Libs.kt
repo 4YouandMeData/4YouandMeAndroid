@@ -72,7 +72,7 @@ object Libs {
      * https://developer.android.com/topic/libraries/architecture/index.html
      */
     const val navigation_safe_args_gradle_plugin: String =
-        "androidx.navigation:navigation-safe-args-gradle-plugin:" + Versions.androidx_navigation
+            "androidx.navigation:navigation-safe-args-gradle-plugin:" + Versions.androidx_navigation
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html
@@ -121,15 +121,15 @@ object Libs {
     const val junit_junit: String = "junit:junit:" + Versions.junit_junit
 
     const val de_fayard_buildsrcversions_gradle_plugin: String =
-        "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
-                Versions.de_fayard_buildsrcversions_gradle_plugin
+            "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
+            Versions.de_fayard_buildsrcversions_gradle_plugin
 
     /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_integration_retrofit_adapter: String =
-        "io.arrow-kt:arrow-integration-retrofit-adapter:" +
-                Versions.arrow_integration_retrofit_adapter
+            "io.arrow-kt:arrow-integration-retrofit-adapter:" +
+            Versions.arrow_integration_retrofit_adapter
 
     /**
      * https://square.github.io/okhttp/
@@ -191,6 +191,12 @@ object Libs {
     const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
 
     /**
+     * https://github.com/JakeWharton/ThreeTenABP/
+     */
+    const val threetenabp: String = "com.jakewharton.threetenabp:threetenabp:" +
+            Versions.threetenabp
+
+    /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.arrow_meta
@@ -199,6 +205,11 @@ object Libs {
      * https://github.com/giacomoParisi/span-droid
      */
     const val span_droid: String = "com.giacomoparisi.spandroid:span-droid:" + Versions.span_droid
+
+    /**
+     * https://developer.android.com/jetpack/androidx
+     */
+    const val viewpager2: String = "androidx.viewpager2:viewpager2:" + Versions.viewpager2
 
     /**
      * https://developer.android.com/jetpack/androidx

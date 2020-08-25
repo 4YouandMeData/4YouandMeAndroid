@@ -16,6 +16,10 @@ import org.fouryouandme.core.data.api.common.response.AnswerResponse
 import org.fouryouandme.core.data.api.common.response.PageResponse
 import org.fouryouandme.core.data.api.common.response.QuestionResponse
 import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
+import org.fouryouandme.core.data.api.common.response.activity.QuickActivityOptionResponse
+import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
+import org.fouryouandme.core.data.api.common.response.activity.SurveyResponse
+import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
 import org.fouryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
@@ -24,13 +28,15 @@ import org.fouryouandme.core.data.api.consent.review.response.ConsentReviewRespo
 import org.fouryouandme.core.data.api.consent.user.ConsentUserApi
 import org.fouryouandme.core.data.api.consent.user.response.ConsentUserResponse
 import org.fouryouandme.core.data.api.getApiService
+import org.fouryouandme.core.data.api.integration.IntegrationApi
+import org.fouryouandme.core.data.api.integration.response.IntegrationResponse
 import org.fouryouandme.core.data.api.optins.OptInsApi
 import org.fouryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
-import org.fouryouandme.core.data.api.wearable.WearableApi
-import org.fouryouandme.core.data.api.wearable.response.WearableResponse
+import org.fouryouandme.core.data.api.task.TaskApi
+import org.fouryouandme.core.data.api.task.response.TaskResponse
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -85,7 +91,12 @@ class ForYouAndMeInjector(
                     .add(ConsentUserResponse::class.java)
                     .add(OptInsPermissionResponse::class.java)
                     .add(OptInsResponse::class.java)
-                    .add(WearableResponse::class.java)
+                    .add(IntegrationResponse::class.java)
+                    .add(TaskResponse::class.java)
+                    .add(QuickActivityResponse::class.java)
+                    .add(QuickActivityOptionResponse::class.java)
+                    .add(SurveyResponse::class.java)
+                    .add(TaskActivityResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -113,6 +124,12 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val optInsApi: OptInsApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val integrationApi: IntegrationApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val taskApi: TaskApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val wearableApi: WearableApi =

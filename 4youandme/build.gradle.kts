@@ -62,6 +62,7 @@ dependencies {
     /* --- layout --- */
 
     implementation(Libs.constraintlayout)
+    implementation(Libs.viewpager2)
 
     /* --- android arch --- */
 
@@ -129,6 +130,10 @@ dependencies {
     /* --- permissions --- */
 
     implementation(Libs.dexter)
+
+    /* --- threeten --- */
+
+    implementation(Libs.threetenabp)
 
     /* --- test --- */
 

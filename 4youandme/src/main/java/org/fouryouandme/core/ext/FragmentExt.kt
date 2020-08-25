@@ -16,6 +16,7 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.runtime
 import org.fouryouandme.core.arch.navigation.Navigator
 
+
 /* --- resources --- */
 
 @ColorInt
@@ -58,3 +59,7 @@ fun Fragment.setStatusBar(backgroundColor: Int): Unit {
     }
 
 }
+
+/* --- parent --- */
+
+fun Fragment.sectionParent(): Fragment = requireParentFragment().requireParentFragment()

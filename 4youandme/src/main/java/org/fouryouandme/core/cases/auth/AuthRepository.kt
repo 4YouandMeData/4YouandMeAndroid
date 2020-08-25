@@ -84,7 +84,7 @@ object AuthRepository {
                     .noneToError(runtime)
                     .mapError(runtime.fx) { error ->
 
-                        if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 403)
+                        if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 401)
                             FourYouAndMeError.WrongPhoneCode {
                                 configuration
                                     .map { it.text.phoneVerification.error.errorWrongCode }
