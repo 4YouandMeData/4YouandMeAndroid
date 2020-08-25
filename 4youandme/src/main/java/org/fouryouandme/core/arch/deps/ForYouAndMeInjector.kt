@@ -132,9 +132,6 @@ class ForYouAndMeInjector(
     override val taskApi: TaskApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
-    override val wearableApi: WearableApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
-
     override val answerApi: AnswerApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 }
