@@ -41,6 +41,7 @@ class StepFragment : BaseFragment<TaskViewModel>() {
                         IntroductionStepView(requireContext())
                     is Step.CountDownStep ->
                         CountDownStepView(requireContext())
+                    is Step.ActiveStep -> TODO()
                 }
             }
             .orNull()

@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.MainThread
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.toOption
 import org.fouryouandme.researchkit.result.Result
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
@@ -73,7 +76,7 @@ abstract class Recorder(
     /**
      * The configuration that produced this recorder.
      */
-    var config: RecorderConfig? = null
+    var config: Option<RecorderConfig> = None
         protected set
 
     /**
@@ -87,7 +90,7 @@ abstract class Recorder(
     /**
      * Used to communicate with the listener if the recording completed successfully or failed
      */
-    var recorderListener: RecorderListener? = null
+    var recorderListener: Option<RecorderListener> = None
 
 
     init {
@@ -125,23 +128,22 @@ abstract class Recorder(
     @MainThread
     abstract fun cancel()
 
-    protected fun onRecorderCompleted(result: Result) {
-        recorderListener?.onComplete(this, result)
+    protected fun onRecorderCompleted(result: Result): Unit {
+        recorderListener.map { it.onComplete(this, result) }
     }
 
-    protected fun onRecorderFailed(error: String) {
-        recorderListener?.onFail(this, Throwable(error))
+    protected fun onRecorderFailed(error: String): Unit {
+        recorderListener.map { it.onFail(this, Throwable(error)) }
     }
 
-    protected fun onRecorderFailed(throwable: Throwable) {
-        recorderListener?.onFail(this, throwable)
+    protected fun onRecorderFailed(throwable: Throwable): Unit {
+        recorderListener.map { it.onFail(this, throwable) }
     }
 
-    protected fun sendBroadcast(intent: Intent) {
-        val context = recorderListener?.broadcastContext
-        if (context != null) {
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-        }
+    protected fun sendBroadcast(intent: Intent): Unit {
+        recorderListener
+            .flatMap { it.broadcastContext.toOption() }
+            .map { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
     }
 
     private fun generateUniqueFileName(): String = UUID.randomUUID().toString()
