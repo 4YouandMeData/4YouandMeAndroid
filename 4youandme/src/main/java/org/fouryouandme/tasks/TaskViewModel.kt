@@ -41,7 +41,12 @@ class TaskViewModel(
                 {
 
                     // TODO: handle dynamic task creation
-                    val task = Task.ReactionTimeTask(it, runtime.injector.imageConfiguration)
+                    val task =
+                        Task.ReactionTimeTask(
+                            it,
+                            runtime.injector.imageConfiguration,
+                            runtime.injector.moshi
+                        )
 
 
                     setState(

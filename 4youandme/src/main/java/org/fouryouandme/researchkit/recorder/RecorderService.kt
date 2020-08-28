@@ -11,7 +11,6 @@ import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.*
 import android.speech.tts.TextToSpeech
-import android.speech.tts.TextToSpeech.OnInitListener
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import arrow.core.None
@@ -21,17 +20,17 @@ import arrow.fx.IO
 import arrow.fx.extensions.fx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import org.fouryouandme.R
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.Result
-import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.task.Task
 import timber.log.Timber
 import java.io.File
 import java.util.*
 
-open class RecorderService : Service(), RecorderListener, OnInitListener {
+open class RecorderService : Service(), RecorderListener {
 
     private var state: Option<RecorderState> = None
 
@@ -43,9 +42,33 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
         tts =
             if (step.hasVoice())
                 TextToSpeech(
-                    this@RecorderService,
                     this@RecorderService
-                ).some()
+                ) { status ->
+
+                    if (status == TextToSpeech.SUCCESS) {
+
+                        tts.map {
+
+                            val languageAvailable =
+                                it.isLanguageAvailable(Locale.getDefault())
+                            // >= 0 means
+                            // LANG_AVAILABLE,
+                            // LANG_COUNTRY_AVAILABLE,
+                            // or LANG_COUNTRY_VAR_AVAILABLE
+                            if (languageAvailable >= 0)
+                                it.language = Locale.getDefault()
+                            else
+                                tts = None
+                        }
+
+                    } else {
+                        Timber.e("Failed to initialize TTS with error code $status")
+                        tts = None
+                    }
+
+                    startDelayedOperations(step)
+
+                }.some()
             else None
     }
 
@@ -63,7 +86,7 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
     private fun startDelayedOperations(step: Step.ActiveStep): Unit {
 
         // Now allow the recorder to record for as long as the active step requires
-
+        // TODO: allow different mode to detect the finish (es. number of steps)
         IO.fx {
 
             continueOn(Dispatchers.IO)
@@ -111,13 +134,13 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
 
     private fun showForegroundNotification(task: Task): Unit {
 
-        stopForeground(true)
+        //stopForeground(true)
+
+        val notificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         // Starting with API 26, notifications must be contained in a channel
         if (Build.VERSION.SDK_INT >= 26) {
-
-            val notificationManager =
-                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
@@ -145,9 +168,11 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
                 .setContentIntent(contentIntent)
 
         // TODO: set notification icon
-        //notificationBuilder.setSmallIcon(R.drawable.rsb_ic_recorder_notification)
+        notificationBuilder.setSmallIcon(R.drawable.error)
 
-        startForeground(1, notificationBuilder.build())
+        //startForeground(1, notificationBuilder.build())
+
+        notificationManager.notify(1, notificationBuilder.build())
     }
 
     /**
@@ -164,9 +189,8 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
 
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null // no need, pass everything through LocalBroadcastManager and Intents
-    }
+    override fun onBind(intent: Intent): IBinder? =
+        RecorderServiceBinder()
 
     @RequiresPermission(value = Manifest.permission.VIBRATE, conditional = true)
     private fun onRecorderDurationFinished(step: Step.ActiveStep) {
@@ -248,28 +272,6 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
 
     override val broadcastContext: Context? get() = this
 
-    // TextToSpeech initialization
-    override fun onInit(i: Int) {
-
-        if (i == TextToSpeech.SUCCESS) {
-
-            tts.map {
-
-                val languageAvailable = it.isLanguageAvailable(Locale.getDefault())
-                // >= 0 means LANG_AVAILABLE, LANG_COUNTRY_AVAILABLE, or LANG_COUNTRY_VAR_AVAILABLE
-                if (languageAvailable >= 0)
-                    it.language = Locale.getDefault()
-                else
-                    tts = None
-            }
-
-        } else {
-            Timber.e("Failed to initialize TTS with error code $i")
-            tts = None
-        }
-    }
-
-
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun vibrate(): Unit {
 
@@ -303,13 +305,10 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
         fun bind(
             outputDirectory: File,
             activeStep: Step.ActiveStep,
-            task: Task,
-            taskResult: TaskResult
+            task: Task
         ): Unit {
 
             if (activeStep.duration > 0) {
-
-                bindTTS(activeStep)
 
                 val recorders = buildRecorderList(activeStep, outputDirectory)
 
@@ -324,13 +323,12 @@ open class RecorderService : Service(), RecorderListener, OnInitListener {
                     startTime = System.currentTimeMillis(),
                     step = activeStep,
                     task = task,
-                    taskResult = taskResult,
                     output = outputDirectory,
                     recorderList = recorders
 
                 ).some()
 
-                startDelayedOperations(activeStep)
+                bindTTS(activeStep)
 
             }
 

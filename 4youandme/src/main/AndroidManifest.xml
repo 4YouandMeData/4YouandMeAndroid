@@ -19,6 +19,8 @@
 
         </activity>
 
+        <service android:name=".researchkit.recorder.RecorderService" />
+
     </application>
 
 </manifest>

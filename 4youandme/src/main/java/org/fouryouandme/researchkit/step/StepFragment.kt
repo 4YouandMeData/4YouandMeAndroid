@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import arrow.core.Option
+import arrow.core.extensions.fx
+import arrow.core.toT
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.researchkit.step.active.ActiveStepView
 import org.fouryouandme.researchkit.step.countdown.CountDownStepView
 import org.fouryouandme.researchkit.step.introduction.IntroductionStepView
 import org.fouryouandme.tasks.TaskViewModel
@@ -41,7 +45,8 @@ class StepFragment : BaseFragment<TaskViewModel>() {
                         IntroductionStepView(requireContext())
                     is Step.CountDownStep ->
                         CountDownStepView(requireContext())
-                    is Step.ActiveStep -> TODO()
+                    is Step.ActiveStep ->
+                        ActiveStepView(requireContext())
                 }
             }
             .orNull()
@@ -50,8 +55,8 @@ class StepFragment : BaseFragment<TaskViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndex(args.index)
-            .map { step ->
+        Option.fx { !viewModel.getStepByIndex(args.index) toT !viewModel.state().task }
+            .map { (step, task) ->
 
                 when (step) {
                     is Step.IntroductionStep ->
@@ -68,6 +73,8 @@ class StepFragment : BaseFragment<TaskViewModel>() {
                                 args.index
                             )
                         }
+                    is Step.ActiveStep ->
+                        (view as ActiveStepView).applyData(step, task)
                 }
             }
             .orNull()

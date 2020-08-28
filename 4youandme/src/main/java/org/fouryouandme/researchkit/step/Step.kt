@@ -66,6 +66,8 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
     class ActiveStep(
         identifier: String,
         configuration: Configuration,
+        val title: String,
+        val description: String,
         val duration: Int = 0,
         val recorderConfigurations: List<RecorderConfig>,
         val spokenInstruction: Option<String> = None,
