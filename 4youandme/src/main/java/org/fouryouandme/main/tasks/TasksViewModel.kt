@@ -72,7 +72,7 @@ class TasksViewModel(
 
         }.unsafeRunAsync()
 
-    private fun List<Task>.toItems(configuration: Configuration): List<DroidItem> {
+    private fun List<Task>.toItems(configuration: Configuration): List<DroidItem<Any>> {
 
         val quickActivities = mutableListOf<QuickActivityItem>()
 
@@ -93,7 +93,7 @@ class TasksViewModel(
 
         }
 
-        val items = mutableListOf<DroidItem>()
+        val items = mutableListOf<DroidItem<Any>>()
 
         if (quickActivities.isNotEmpty())
             items.add(

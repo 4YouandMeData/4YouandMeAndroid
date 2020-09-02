@@ -13,3 +13,10 @@ data class RecorderState(
      val task: Task,
      val output: File
 )
+
+sealed class RecordingState {
+
+     object Completed : RecordingState()
+     object Failure : RecordingState()
+
+}

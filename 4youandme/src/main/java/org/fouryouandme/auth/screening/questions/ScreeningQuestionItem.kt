@@ -9,7 +9,6 @@ import arrow.core.getOrElse
 import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.StableDroidItem
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.screening_question.*
@@ -30,14 +29,12 @@ data class ScreeningQuestionItem(
     val configuration: Configuration,
     val question: ScreeningQuestion,
     val answer: Option<String> = None
-) : StableDroidItem {
+) : DroidItem<EScreeningQuestionPayload> {
 
-    override fun stableId(position: Int): Long = position.hashCode().toLong()
-
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         if (other is ScreeningQuestionItem) question.id == other.question.id else false
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         if (other is ScreeningQuestionItem)
             question.id == other.question.id &&
                     question.text == other.question.text &&
@@ -49,7 +46,7 @@ data class ScreeningQuestionItem(
         else false
 
 
-    override fun getPayload(other: DroidItem): List<*> {
+    override fun getPayload(other: DroidItem<Any>): List<EScreeningQuestionPayload> {
 
         val payload =
             mutableListOf<EScreeningQuestionPayload>()

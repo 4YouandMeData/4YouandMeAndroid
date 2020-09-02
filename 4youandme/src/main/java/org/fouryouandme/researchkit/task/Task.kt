@@ -63,17 +63,26 @@ sealed class Task(
                     "Next"
                 ),
                 Step.ActiveStep(
-                    "active_step",
-                    configuration,
-                    "Active Step",
-                    "Cammina avanti e indietro per 10 secondi",
-                    10,
-                    listOf(
+                    identifier = "active_step",
+                    configuration = configuration,
+                    title = "Active Step",
+                    description = "Cammina avanti e indietro per 10 secondi",
+                    duration = 10,
+                    recorderConfigurations = listOf(
                         PedometerRecorderConfig(moshi),
                         AccelerometerRecorderConfig(moshi, 100.toDouble()),
                         DeviceMotionRecorderConfig(moshi, 100.toDouble())
                     ),
-                    "Cammina avanti e indietro per 10 secondi".some()
+                    spokenInstruction = "Cammina avanti e indietro per 10 secondi".some(),
+                    spokenInstructionMap =
+                    mapOf(
+                        4L to "mancano 6 secondi",
+                        7L to "ancora 3 secondi"
+                    ),
+                    finishedSpokenInstruction = "complimenti hai terminato il task".some(),
+                    shouldPlaySoundOnFinish = true,
+                    shouldVibrateOnFinish = true
+
                 ),
                 Step.CountDownStep(
                     "countdown_1",

@@ -13,6 +13,8 @@ import android.os.*
 import android.speech.tts.TextToSpeech
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
@@ -21,6 +23,8 @@ import arrow.fx.extensions.fx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
+import org.fouryouandme.core.arch.livedata.Event
+import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.Result
@@ -35,6 +39,8 @@ open class RecorderService : Service(), RecorderListener {
     private var state: Option<RecorderState> = None
 
     private var tts: Option<TextToSpeech> = None
+
+    private val stateLiveDate: MutableLiveData<Event<RecordingState>> = MutableLiveData()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int = START_NOT_STICKY
 
@@ -206,8 +212,7 @@ open class RecorderService : Service(), RecorderListener {
             continueOn(Dispatchers.IO)
             !effect { delay(step.estimateTimeInMsToSpeakEndInstruction) }
             continueOn(Dispatchers.Main)
-            //TODO: Send COMPLETED
-            stopSelf()
+            stateLiveDate.value = RecordingState.Completed.toEvent()
 
         }.unsafeRunAsync()
 
@@ -333,6 +338,8 @@ open class RecorderService : Service(), RecorderListener {
             }
 
         }
+
+        fun stateLiveData(): LiveData<Event<RecordingState>> = stateLiveDate
 
     }
 

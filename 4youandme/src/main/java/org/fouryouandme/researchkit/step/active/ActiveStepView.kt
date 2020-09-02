@@ -30,6 +30,8 @@ class ActiveStepView(context: Context) : FrameLayout(context) {
                     binder.bind(getOutputDirectory(), step, task)
                 })
 
+                binder.stateLiveData().value
+
             },
             {}
         )

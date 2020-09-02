@@ -13,21 +13,21 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
-data class DateItem(val configuration: Configuration, val date: ZonedDateTime) : DroidItem {
+data class DateItem(val configuration: Configuration, val date: ZonedDateTime) : DroidItem<Unit> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
             is DateItem -> date.isEqual(other.date)
             else -> false
         }
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
             is DateItem -> date.isEqual(other.date)
             else -> false
         }
 
-    override fun getPayload(other: DroidItem): List<*> = emptyList<Unit>()
+    override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
 }
 

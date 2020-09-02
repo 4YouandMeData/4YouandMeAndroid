@@ -27,12 +27,12 @@ data class QuickActivityItem(
     val configuration: Configuration,
     val data: QuickActivity,
     val selectedAnswer: Option<String>
-) : DroidItem {
+) : DroidItem<EQuickActivityPayload> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         other.compare<QuickActivityItem> { it.data.id == data.id }
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         other.compare<QuickActivityItem> {
             it.selectedAnswer == selectedAnswer &&
                     it.data.id == data.id &&
@@ -44,8 +44,8 @@ data class QuickActivityItem(
                     it.data.answer6 == data.answer6
         }
 
-    override fun getPayload(other: DroidItem): List<*> =
-        other.providePayload<QuickActivityItem, EQuickActivityPayload> {
+    override fun getPayload(other: DroidItem<Any>): List<EQuickActivityPayload> =
+        other.providePayload<EQuickActivityPayload, QuickActivityItem> {
             when {
                 it.selectedAnswer != selectedAnswer ->
                     listOf(SELECTED_ANSWER)

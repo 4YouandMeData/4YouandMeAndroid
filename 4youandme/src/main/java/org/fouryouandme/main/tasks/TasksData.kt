@@ -7,13 +7,13 @@ import org.fouryouandme.core.entity.configuration.Configuration
 
 data class TasksState(
     val configuration: Option<Configuration> = None,
-    val tasks: List<DroidItem> = emptyList()
+    val tasks: List<DroidItem<Any>> = emptyList()
 )
 
 sealed class TasksStateUpdate {
     data class Initialization(
         val configuration: Configuration,
-        val tasks: List<DroidItem>
+        val tasks: List<DroidItem<Any>>
     ) : TasksStateUpdate()
 }
 

@@ -13,12 +13,12 @@ data class QuickActivitiesItem(
     val id: String,
     val configuration: Configuration,
     val quickActivities: DroidAdapter
-) : DroidItem {
+) : DroidItem<Unit> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         other.compare<QuickActivitiesItem> { it.id == id }
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
 
         other.compare<QuickActivitiesItem> { it ->
 
@@ -37,7 +37,7 @@ data class QuickActivitiesItem(
 
         }
 
-    override fun getPayload(other: DroidItem): List<*> = emptyList<Unit>()
+    override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 }
 
 

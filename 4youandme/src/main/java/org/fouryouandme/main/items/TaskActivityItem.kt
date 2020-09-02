@@ -23,15 +23,15 @@ data class TaskActivityItem(
     val data: TaskActivity,
     val from: ZonedDateTime,
     val to: ZonedDateTime
-) : DroidItem {
+) : DroidItem<Unit> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
             is TaskActivityItem -> data.id == other.data.id
             else -> false
         }
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
             is TaskActivityItem ->
                 (data.id == other.data.id)
@@ -44,7 +44,7 @@ data class TaskActivityItem(
             else -> false
         }
 
-    override fun getPayload(other: DroidItem): List<*> = emptyList<Unit>()
+    override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
 }
 
