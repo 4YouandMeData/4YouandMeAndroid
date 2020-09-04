@@ -1,33 +1,35 @@
 package org.fouryouandme.researchkit.step.countdown
 
 import android.animation.ValueAnimator
-import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.FrameLayout
 import arrow.fx.IO
 import arrow.fx.extensions.io.concurrent.concurrent
-import kotlinx.android.synthetic.main.page.view.title
-import kotlinx.android.synthetic.main.step_countdown.view.*
+import kotlinx.android.synthetic.main.step_countdown.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.StepFragment
 
 
-class CountDownStepView(context: Context) : FrameLayout(context) {
+class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
 
-    init {
 
-        View.inflate(context, R.layout.step_countdown, this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        val step =
+            viewModel.getStepByIndexAs<Step.CountDownStep>(indexArg())
+
+        step.map { applyData(it) }
     }
 
-    fun applyData(
-        step: Step.CountDownStep,
-        onCounterEnd: () -> Unit
+    private fun applyData(
+        step: Step.CountDownStep
     ): Unit {
 
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
@@ -42,7 +44,7 @@ class CountDownStepView(context: Context) : FrameLayout(context) {
         progress.progressTintList =
             ColorStateList.valueOf(step.configuration.theme.primaryColorEnd.color())
 
-        startCounter(step.seconds, onCounterEnd)
+        startCounter(step.seconds) { next() }
     }
 
     private fun startCounterAnimation(seconds: Int): Unit {

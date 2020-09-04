@@ -1,8 +1,8 @@
 package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.core.arch.navigation.NavigationExecution
-import org.fouryouandme.researchkit.step.StepFragmentDirections
+import org.fouryouandme.researchkit.step.StepContainerFragmentDirections
 
 fun stepToStep(index: Int): NavigationExecution = {
-    it.navigate(StepFragmentDirections.actionStepToStep(index))
+    it.navigate(StepContainerFragmentDirections.actionStepToStep(index))
 }

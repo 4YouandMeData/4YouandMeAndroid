@@ -1,11 +1,13 @@
 ***REMOVED***
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/task_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/task_navigation"
+    tools:ignore="InvalidNavigation">
 
     <fragment
         android:id="@+id/step"
-        android:name="org.fouryouandme.researchkit.step.StepFragment"
+        android:name="org.fouryouandme.researchkit.step.StepContainerFragment"
         android:label="step">
 
         <argument

@@ -1,30 +1,32 @@
 package org.fouryouandme.researchkit.step.introduction
 
-import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.page.view.title
-import kotlinx.android.synthetic.main.step_introduction.view.*
+import kotlinx.android.synthetic.main.step_introduction.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.StepFragment
 import kotlin.math.roundToInt
 
 
-class IntroductionStepView(context: Context) : FrameLayout(context) {
+class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
 
-    init {
 
-        View.inflate(context, R.layout.step_introduction, this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        val step =
+            viewModel.getStepByIndexAs<Step.IntroductionStep>(indexArg())
+
+        step.map { applyData(it) }
     }
 
-    fun applyData(
-        step: Step.IntroductionStep,
-        nextAction: () -> Unit
+    private fun applyData(
+        step: Step.IntroductionStep
     ): Unit {
 
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
@@ -51,7 +53,8 @@ class IntroductionStepView(context: Context) : FrameLayout(context) {
         next.background = button(step.configuration.theme.primaryColorEnd.color())
         next.text = step.button
         next.setTextColor(step.configuration.theme.secondaryColor.color())
-        next.setOnClickListener { nextAction() }
+        next.setOnClickListener { next() }
 
     }
+
 }

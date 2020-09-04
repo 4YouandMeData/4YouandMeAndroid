@@ -1,18 +1,19 @@
 package org.fouryouandme.researchkit.step.active
 
-import android.content.Context
+import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
 import arrow.core.*
-import kotlinx.android.synthetic.main.step_active.view.*
+import arrow.core.extensions.fx
+import kotlinx.android.synthetic.main.step_active.*
 import org.fouryouandme.R
 import org.fouryouandme.researchkit.recorder.RecorderService
 import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.task.Task
 import java.io.File
 
-class ActiveStepView(context: Context) : FrameLayout(context) {
+class ActiveStepFragment : StepFragment(R.layout.step_active) {
 
     private var data: Option<Tuple2<Step.ActiveStep, Task>> = None
     private val stepDataObservable: StepDataObservable = StepDataObservable()
@@ -36,10 +37,13 @@ class ActiveStepView(context: Context) : FrameLayout(context) {
             {}
         )
 
-    init {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        View.inflate(context, R.layout.step_active, this)
+        val step =
+            viewModel.getStepByIndexAs<Step.ActiveStep>(indexArg())
 
+        Option.fx { !step toT !viewModel.state().task }.map { applyData(it.a, it.b) }
     }
 
     fun applyData(
@@ -60,21 +64,20 @@ class ActiveStepView(context: Context) : FrameLayout(context) {
         data = tuple.some()
         stepDataObservable.notify(tuple)
 
-        RecorderService.start(context, serviceConnection)
+        RecorderService.start(requireContext().applicationContext, serviceConnection)
 
     }
 
-    override fun onDetachedFromWindow() {
+    override fun onDestroyView() {
 
         stepDataObservable.clear()
 
-        super.onDetachedFromWindow()
-
+        super.onDestroyView()
     }
 
     /**
      * @return directory for outputting data logger files
      */
-    private fun getOutputDirectory(): File = context.applicationContext.filesDir
+    private fun getOutputDirectory(): File = requireContext().applicationContext.filesDir
 
 }

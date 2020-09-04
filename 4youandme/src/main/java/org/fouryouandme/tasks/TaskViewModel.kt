@@ -69,6 +69,9 @@ class TaskViewModel(
     fun getStepByIndex(index: Int): Option<Step> =
         state().task.flatMap { it.steps.getOrNull(index).toOption() }
 
+    inline fun <reified T : Step> getStepByIndexAs(index: Int): Option<T> =
+        getStepByIndex(index)
+            .flatMap { (it as? T).toOption() }
 
     /* --- navigation --- */
 
