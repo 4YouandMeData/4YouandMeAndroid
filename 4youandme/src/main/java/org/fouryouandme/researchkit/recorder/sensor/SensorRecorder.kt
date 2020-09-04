@@ -13,7 +13,7 @@ import arrow.core.toOption
 import com.squareup.moshi.Moshi
 import org.fouryouandme.researchkit.step.Step
 import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.io.File
@@ -114,7 +114,7 @@ abstract class SensorRecorder(
                         + ((timestampZeroReferenceNanos - uptimeNanos) * 1e-6).toLong())
 
             val timestampReferenceDate =
-                Instant.ofEpochMilli(timestampReferenceMillis).atZone(ZoneId.systemDefault())
+                Instant.ofEpochMilli(timestampReferenceMillis).atZone(ZoneOffset.UTC)
 
             json[TIMESTAMP_DATE_KEY] =
                 timestampReferenceDate.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)

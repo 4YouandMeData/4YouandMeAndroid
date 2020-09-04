@@ -70,7 +70,7 @@ abstract class JsonArrayDataRecorder(
 
         }.unsafeRunAsync()
 
-    private fun stopJsonDataLogging(): Unit =
+    fun stopJsonDataLogging(): Unit =
         IO.fx {
 
             isRecording = false
@@ -121,14 +121,12 @@ abstract class JsonArrayDataRecorder(
                 Types.newParameterizedType(
                     Map::class.java,
                     String::class.java,
-                    String::class.java
+                    Any::class.java
                 )
 
             val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(type)
 
-            val data = json.mapValues { it.value.toString() }
-
-            val jsonString = "$jsonSeparator${adapter.toJson(data)}"
+            val jsonString = "$jsonSeparator${adapter.toJson(json)}"
 
             val write =
                 openStream()
@@ -151,6 +149,41 @@ abstract class JsonArrayDataRecorder(
             }
 
         }.unsafeRunAsync()
+
+    /*private fun Map<String, Any>.toJsonString() {
+
+        val type: Type =
+            Types.newParameterizedType(
+                Map::class.java,
+                String::class.java,
+                String::class.java
+            )
+
+        val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(type)
+
+        val data = mapValues { it.value.toString() }
+
+    }
+
+    private fun Map<String, Any>.parseValue() {
+
+        val isFirstNestedJsonObject = true
+
+        val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
+
+        forEach { t, u ->  u.}
+
+        val a=  mapValues {
+
+            val  = (it.value as? Map<String, Any>)
+                .toOption()
+                .map {
+                    it.parseValue()
+
+                }.getOrElse { it.value.toString() }
+
+        }
+    }*/
 
     private fun openStream(): IO<FileOutputStream> =
         IO.fx {

@@ -2,6 +2,7 @@ package org.fouryouandme.researchkit.step.active
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toT
@@ -36,7 +37,9 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
 
                         when (it) {
                             RecordingState.Completed -> next()
-                            RecordingState.Failure -> TODO()
+                            RecordingState.Failure ->
+                                Toast.makeText(requireContext(), "Fallito", Toast.LENGTH_LONG)
+                                    .show()
                         }
 
                     }
