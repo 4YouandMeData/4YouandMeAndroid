@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import arrow.core.None
 import arrow.core.some
 import arrow.core.toOption
+import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
@@ -13,9 +14,9 @@ import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.sectionParent
 import org.fouryouandme.tasks.TaskViewModel
 
-open class StepFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
+open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(contentLayoutId) {
 
-    protected val viewModel by lazy {
+    override val viewModel by lazy {
         viewModelFactory(
             taskFragment(),
             getFactory { TaskViewModel(navigator, IORuntime) }

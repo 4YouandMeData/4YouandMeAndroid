@@ -2,36 +2,44 @@ package org.fouryouandme.researchkit.step.active
 
 import android.os.Bundle
 import android.view.View
-import arrow.core.*
+import arrow.core.Option
 import arrow.core.extensions.fx
+import arrow.core.toT
 import kotlinx.android.synthetic.main.step_active.*
 import org.fouryouandme.R
 import org.fouryouandme.researchkit.recorder.RecorderService
 import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
+import org.fouryouandme.researchkit.recorder.RecordingState
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
-import org.fouryouandme.researchkit.task.Task
 import java.io.File
 
 class ActiveStepFragment : StepFragment(R.layout.step_active) {
-
-    private var data: Option<Tuple2<Step.ActiveStep, Task>> = None
-    private val stepDataObservable: StepDataObservable = StepDataObservable()
 
     private val serviceConnection: RecorderServiceConnection =
         RecorderServiceConnection(
             { binder ->
 
-                data.map { (step, task) ->
+                val stepOption =
+                    viewModel.getStepByIndexAs<Step.ActiveStep>(indexArg())
 
-                    binder.bind(getOutputDirectory(), step, task)
-                }
+                Option.fx { !stepOption toT !viewModel.state().task }
+                    .map { (step, task) ->
 
-                stepDataObservable.observe(StepDataObserver { (step, task) ->
-                    binder.bind(getOutputDirectory(), step, task)
-                })
+                        binder.bind(getOutputDirectory(), step, task)
+                    }
 
-                binder.stateLiveData().value
+                viewModel.stateLiveData()
+
+                binder.stateLiveData()
+                    .observeEvent(ActiveStepFragment::class.java.simpleName) {
+
+                        when (it) {
+                            RecordingState.Completed -> next()
+                            RecordingState.Failure -> TODO()
+                        }
+
+                    }
 
             },
             {}
@@ -43,12 +51,11 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
         val step =
             viewModel.getStepByIndexAs<Step.ActiveStep>(indexArg())
 
-        Option.fx { !step toT !viewModel.state().task }.map { applyData(it.a, it.b) }
+        step.map { applyData(it) }
     }
 
     fun applyData(
-        step: Step.ActiveStep,
-        task: Task
+        step: Step.ActiveStep
     ): Unit {
 
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
@@ -59,20 +66,8 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
         description.text = step.description
         description.setTextColor(step.configuration.theme.primaryTextColor.color())
 
-        val tuple = step toT task
-
-        data = tuple.some()
-        stepDataObservable.notify(tuple)
-
         RecorderService.start(requireContext().applicationContext, serviceConnection)
 
-    }
-
-    override fun onDestroyView() {
-
-        stepDataObservable.clear()
-
-        super.onDestroyView()
     }
 
     /**

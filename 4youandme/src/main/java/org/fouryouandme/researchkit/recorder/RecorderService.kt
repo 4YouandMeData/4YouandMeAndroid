@@ -250,7 +250,7 @@ open class RecorderService : Service(), RecorderListener {
      */
     override fun onFail(recorder: Recorder, error: Throwable) {
         shutDownTts()
-        //TODO: Send ERROR
+        stateLiveDate.value = RecordingState.Failure.toEvent()
         stopSelf()
     }
 
