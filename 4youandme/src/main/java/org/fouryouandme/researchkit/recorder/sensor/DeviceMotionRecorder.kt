@@ -144,7 +144,7 @@ open class DeviceMotionRecorder internal constructor(
 
             val json = mutableMapOf<String, Any>()
 
-            json[SENSOR_DATA_TYPE_KEY] = sensorTypeKey
+            json[SENSOR_DATA_TYPE_KEY] = it
             json[SENSOR_EVENT_ACCURACY_KEY] = sensorEvent.accuracy
 
             val sensorJson =
