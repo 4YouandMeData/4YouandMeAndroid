@@ -1,7 +1,8 @@
-package org.fouryouandme.researchkit.recorder.sensor
+package org.fouryouandme.researchkit.recorder.sensor.accelerometer
 
 import android.hardware.Sensor
 import com.squareup.moshi.Moshi
+import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
 
@@ -19,6 +20,7 @@ class AccelerometerRecorder internal constructor(
 ) : DeviceMotionRecorder(frequency, identifier, step, outputDirectory, moshi) {
 
     override fun getSensorTypeList(availableSensorList: List<Sensor>): List<Int> =
+
         if (hasAvailableType(availableSensorList, Sensor.TYPE_ACCELEROMETER))
             listOf(Sensor.TYPE_ACCELEROMETER)
         else

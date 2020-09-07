@@ -2,11 +2,13 @@ package org.fouryouandme.researchkit.recorder
 
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.MainThread
+import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import arrow.core.None
 import arrow.core.Option
+import arrow.core.some
 import arrow.core.toOption
+import org.fouryouandme.researchkit.recorder.sensor.RecorderData
 import org.fouryouandme.researchkit.result.Result
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
@@ -69,6 +71,11 @@ abstract class Recorder(
 ) {
 
     /**
+     * live data the emit e RecorderData, which represents a data recorded by the recorder
+     */
+    protected val recorderLiveData: MutableLiveData<RecorderData> = MutableLiveData()
+
+    /**
      * A unique filename for this Recorder
      */
     protected val uniqueFilename: String
@@ -92,6 +99,16 @@ abstract class Recorder(
      */
     var recorderListener: Option<RecorderListener> = None
 
+    /**
+     * Timestamp indicating when the recorder started recording
+     */
+    var startTime: Option<Long> = None
+
+    /**
+     * Timestamp indicating when the recorder ended recording
+     */
+    var endTime: Option<Long> = None
+
 
     init {
 
@@ -107,7 +124,12 @@ abstract class Recorder(
      *
      * @param context can be app or activity, used for starting sensor
      */
-    abstract fun start(context: Context)
+    open fun start(context: Context) {
+
+        startTime = 0L.some()
+        endTime = None
+
+    }
 
     /**
      * Stops data recording, which generally triggers the return of results.
@@ -116,7 +138,11 @@ abstract class Recorder(
      * If an error occurs when stopping the recorder, it is returned through the delegate.
      * Subclasses should call `finishRecordingWithError:` rather than calling super.
      */
-    abstract fun stop()
+    open fun stop() {
+
+        endTime = System.currentTimeMillis().some()
+
+    }
 
     /**
      * A cancel will cause this recorder to be immediately stopped,
@@ -125,8 +151,13 @@ abstract class Recorder(
      *
      * Also, no callback will be invoked
      */
-    @MainThread
     abstract fun cancel()
+
+    fun onRecordDataCollected(data: RecorderData): Unit {
+
+        recorderLiveData.value = data
+
+    }
 
     protected fun onRecorderCompleted(result: Result): Unit {
         recorderListener.map { it.onComplete(this, result) }
@@ -152,5 +183,7 @@ abstract class Recorder(
      * @return a step-specific identifier that can be used for the FileResult
      */
     fun fileResultIdentifier(): String = identifier + "_" + step.identifier
+
+    fun getCurrentRecordingTime(): Option<Long> = startTime.map { System.currentTimeMillis() - it }
 
 }

@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.recorder.sensor
+package org.fouryouandme.researchkit.recorder.sensor.location
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -11,16 +11,16 @@ import android.os.Build
 import android.os.Bundle
 import arrow.core.None
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.some
 import arrow.fx.IO
 import arrow.fx.extensions.fx
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.ext.getOrFalse
+import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import org.fouryouandme.researchkit.step.Step
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.io.File
 
@@ -40,20 +40,24 @@ open class LocationRecorder(
     identifier: String,
     step: Step,
     outputDirectory: File,
-    moshi: Moshi,
+    private val moshi: Moshi,
     private val minTime: Long,
     private val minDistance: Float,
     private val usesRelativeCoordinates: Boolean,
-) : JsonArrayDataRecorder(identifier, step, outputDirectory, moshi), LocationListener {
+) : JsonArrayDataRecorder(
+    identifier,
+    step,
+    outputDirectory,
+), LocationListener {
 
     private var locationManager: Option<LocationManager> = None
 
     private var totalDistance = 0.0
     private var firstLocation: Option<Location> = None
     private var lastLocation: Option<Location> = None
-    private var startTimeNanosSinceBoot: Long = 0
 
     override fun start(context: Context) {
+        super.start(context)
 
         // reset location data
         firstLocation = None
@@ -105,21 +109,7 @@ open class LocationRecorder(
         // Let's just register for both and log all locations to the data file
         // with their corresponding accuracy and other data associated
         //startLocationTracking().unsafeRunAsync()
-        locationManager.map {
-
-            it.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                minTime,
-                minDistance,
-                this
-            )
-            it.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                minTime,
-                minDistance,
-                this
-            )
-        }
+        startLocationTracking().unsafeRunAsync()
         startJsonDataLogging()
     }
 
@@ -134,6 +124,12 @@ open class LocationRecorder(
 
                         it.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER,
+                            minTime,
+                            minDistance,
+                            this@LocationRecorder
+                        )
+                        it.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
                             minTime,
                             minDistance,
                             this@LocationRecorder
@@ -189,73 +185,34 @@ open class LocationRecorder(
         // Initialize first location
         if (firstLocation.isEmpty()) firstLocation = location.some()
 
-        // elapsedRealtimeNanos is long nanoseconds since system boot time.
-        val locationNanos = location.elapsedRealtimeNanos
-
-        val json = mutableMapOf<String, Any>()
-        val coordinateJson = mutableMapOf<String, Any>()
-
-        if (startTimeNanosSinceBoot == 0L) {
-
-            // Initialize start time.
-            startTimeNanosSinceBoot = locationNanos
-
-            // Add timestamp date, which is the ISO timestamp representing the activity start time.
-            // Location.getTime() is always epoch milliseconds, so we can use as is.
-            val timestamp =
-                Instant.ofEpochMilli(location.time).atZone(ZoneOffset.UTC)
-
-            json[TIMESTAMP_DATE_KEY] =
-                timestamp.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-
-        }
-
-        // Timestamps
-        // timestamp is seconds since start of the activity
-        // (locationNanos minus startTimeNanos, divided by a billion).
-        // uptime is a monotonically increasing timestamp in seconds, with any arbitrary zero.
-        // (We use getElapsedRealtimeNanos(), divided by a billion.)
-        json[TIMESTAMP_IN_SECONDS_KEY] = (locationNanos - startTimeNanosSinceBoot) * 1e-9
-        json[UPTIME_IN_SECONDS_KEY] = locationNanos * 1e-9
 
         // GPS coordinates
-        if (usesRelativeCoordinates) {
-            // Subtract from the firstLocation to get relative coordinates.
-            val relativeLatitude =
-                firstLocation.map { location.latitude - it.latitude }
-            val relativeLongitude =
-                firstLocation.map { location.longitude - it.longitude }
 
-            coordinateJson[RELATIVE_LATITUDE_KEY] = relativeLatitude
-            coordinateJson[RELATIVE_LONGITUDE_KEY] = relativeLongitude
-
-        } else {
-
-            // Use absolute coordinates given by the location.
-            coordinateJson[LONGITUDE_KEY] = location.longitude
-            coordinateJson[LATITUDE_KEY] = location.latitude
-
-        }
-
-        json[COORDINATE_KEY] = coordinateJson
-
-        if (location.hasAccuracy())
-            json[ACCURACY_KEY] = location.accuracy
-        if (location.hasSpeed())
-            json[SPEED_KEY] = location.speed
-        if (location.hasAltitude())
-            json[ALTITUDE_KEY] = location.altitude
-        if (location.hasBearing())
-            json[COURSE_KEY] = location.bearing
-
-        writeJsonObjectToFile(json)
+        // Subtract from the firstLocation to get relative coordinates.
+        val relativeLatitude =
+            firstLocation.map { location.latitude - it.latitude }.getOrElse { 0.toDouble() }
+        val relativeLongitude =
+            firstLocation.map { location.longitude - it.longitude }.getOrElse { 0.toDouble() }
 
         lastLocation.map { totalDistance += it.distanceTo(location).toDouble() }
 
-        // TODO: send location
-        /*sendLocationUpdateBroadcast(
-            location.longitude, location.latitude, totalDistance
-        )*/
+        val data =
+            LocationRecorderData(
+                getCurrentRecordingTime().getOrElse { 0 },
+                LocationRecorderCoordinate(location.latitude, location.longitude),
+                LocationRecorderCoordinate(relativeLatitude, relativeLongitude),
+                location.accuracy,
+                location.speed,
+                location.altitude,
+                location.bearing,
+                totalDistance
+            )
+
+        val json = moshi.adapter(LocationRecorderData::class.java).toJson(data)
+
+        onRecordDataCollected(data)
+
+        writeJsonObjectToFile(json)
 
         lastLocation = location.some()
 
@@ -276,19 +233,6 @@ open class LocationRecorder(
     companion object {
 
         private val TAG = LocationRecorder::class.java.simpleName
-
-        const val COORDINATE_KEY = "coordinate"
-        const val LONGITUDE_KEY = "longitude"
-        const val LATITUDE_KEY = "latitude"
-        const val ALTITUDE_KEY = "altitude"
-        const val ACCURACY_KEY = "accuracy"
-        const val COURSE_KEY = "course"
-        const val RELATIVE_LATITUDE_KEY = "relativeLatitude"
-        const val RELATIVE_LONGITUDE_KEY = "relativeLongitude"
-        const val SPEED_KEY = "speed"
-        const val TIMESTAMP_DATE_KEY = "timestampDate"
-        const val TIMESTAMP_IN_SECONDS_KEY = "timestamp"
-        const val UPTIME_IN_SECONDS_KEY = "uptime"
 
     }
 }

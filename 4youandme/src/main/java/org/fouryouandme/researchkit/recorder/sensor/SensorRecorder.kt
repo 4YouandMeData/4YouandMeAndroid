@@ -5,16 +5,12 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.SystemClock
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import arrow.core.toOption
-import com.squareup.moshi.Moshi
+import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import org.fouryouandme.researchkit.step.Step
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.io.File
 
@@ -40,8 +36,11 @@ abstract class SensorRecorder(
     identifier: String,
     step: Step,
     outputDirectory: File,
-    moshi: Moshi
-) : JsonArrayDataRecorder(identifier, step, outputDirectory, moshi), SensorEventListener {
+) : JsonArrayDataRecorder(
+    identifier,
+    step,
+    outputDirectory
+), SensorEventListener {
 
     private var sensorManager: Option<SensorManager> = None
     private var sensorList: MutableList<Sensor> = mutableListOf()
@@ -56,6 +55,7 @@ abstract class SensorRecorder(
     protected abstract fun getSensorTypeList(availableSensorList: List<Sensor>): List<Int>
 
     override fun start(context: Context): Unit {
+        super.start(context)
 
         sensorManager = (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
 
@@ -99,45 +99,15 @@ abstract class SensorRecorder(
 
     override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
 
-        val json = mutableMapOf<String, Any>()
-
-        if (timestampZeroReferenceNanos <= 0) {
-
-            // set timestamp reference, which timestamps are measured relative to
-            timestampZeroReferenceNanos = sensorEvent.timestamp
-
-            // record date equivalent of timestamp reference
-            val uptimeNanos: Long = SystemClock.elapsedRealtimeNanos()
-
-            val timestampReferenceMillis =
-                (System.currentTimeMillis()
-                        + ((timestampZeroReferenceNanos - uptimeNanos) * 1e-6).toLong())
-
-            val timestampReferenceDate =
-                Instant.ofEpochMilli(timestampReferenceMillis).atZone(ZoneOffset.UTC)
-
-            json[TIMESTAMP_DATE_KEY] =
-                timestampReferenceDate.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-        }
-
-        // these values are doubles
-        json[TIMESTAMP_IN_SECONDS_KEY] =
-            (sensorEvent.timestamp - timestampZeroReferenceNanos) * 1e-9
-
-        json[UPTIME_IN_SECONDS_KEY] = sensorEvent.timestamp * 1e-9
-
-        val sensorJson = recordSensorEvent(sensorEvent).plus(json)
-
-        writeJsonObjectToFile(sensorJson)
+        recordSensorEvent(sensorEvent).map { writeJsonObjectToFile(it) }
 
     }
 
     /***
-     * This method receives a SensorEvent and a json and is expected to update the
-     * json with data to be written.
+     * This method receives a SensorEvent and is expected to receive a RecorderData json.
      * @param sensorEvent
      */
-    abstract fun recordSensorEvent(sensorEvent: SensorEvent): Map<String, Any>
+    abstract fun recordSensorEvent(sensorEvent: SensorEvent): Option<String>
 
     override fun stop() {
         super.stop()

@@ -1,12 +1,9 @@
-package org.fouryouandme.researchkit.recorder.sensor
+package org.fouryouandme.researchkit.recorder.sensor.json
 
 import arrow.core.*
 import arrow.fx.IO
 import arrow.fx.extensions.fx
 import arrow.fx.typeclasses.Disposable
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.ext.accumulateError
 import org.fouryouandme.core.ext.unsafeRunAsync
@@ -16,7 +13,6 @@ import org.fouryouandme.researchkit.result.logger.DataLogger
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.reflect.Type
 import java.util.*
 
 /**
@@ -29,12 +25,9 @@ abstract class JsonArrayDataRecorder(
     identifier: String,
     step: Step,
     outputDirectory: File,
-    private val moshi: Moshi
 ) : Recorder(identifier, step, outputDirectory) {
 
     private var isFirstJsonObject = false
-    private var startTime: Long = 0
-    private var endTime: Long = 0
 
     private var writing: Option<Disposable> = None
     private val file = File(outputDirectory, uniqueFilename + JSON_FILE_SUFFIX)
@@ -44,7 +37,6 @@ abstract class JsonArrayDataRecorder(
         IO.fx {
 
             isRecording = true
-            startTime = System.currentTimeMillis()
             isFirstJsonObject = true
 
             val write =
@@ -70,11 +62,10 @@ abstract class JsonArrayDataRecorder(
 
         }.unsafeRunAsync()
 
-    fun stopJsonDataLogging(): Unit =
+    private fun stopJsonDataLogging(): Unit =
         IO.fx {
 
             isRecording = false
-            endTime = System.currentTimeMillis()
 
             val write =
                 openStream()
@@ -97,8 +88,8 @@ abstract class JsonArrayDataRecorder(
                     val fileResult =
                         FileResult(fileResultIdentifier(), file, JSON_MIME_CONTENT_TYPE)
 
-                    fileResult.startDate = Date(startTime)
-                    fileResult.endDate = Date(endTime)
+                    fileResult.startDate = Date(startTime.getOrElse { 0 })
+                    fileResult.endDate = Date(endTime.getOrElse { 0 })
 
                     recorderListener.map {
                         it.onComplete(this@JsonArrayDataRecorder, fileResult)
@@ -111,22 +102,13 @@ abstract class JsonArrayDataRecorder(
 
         }.unsafeRunAsync()
 
-    fun writeJsonObjectToFile(json: Map<String, Any>): Unit =
+    fun writeJsonObjectToFile(json: String): Unit =
         IO.fx {
 
             // append optional comma for array separation
             val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
 
-            val type: Type =
-                Types.newParameterizedType(
-                    Map::class.java,
-                    String::class.java,
-                    Any::class.java
-                )
-
-            val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(type)
-
-            val jsonString = "$jsonSeparator${adapter.toJson(json)}"
+            val jsonString = "$jsonSeparator${json}"
 
             val write =
                 openStream()
@@ -149,41 +131,6 @@ abstract class JsonArrayDataRecorder(
             }
 
         }.unsafeRunAsync()
-
-    /*private fun Map<String, Any>.toJsonString() {
-
-        val type: Type =
-            Types.newParameterizedType(
-                Map::class.java,
-                String::class.java,
-                String::class.java
-            )
-
-        val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(type)
-
-        val data = mapValues { it.value.toString() }
-
-    }
-
-    private fun Map<String, Any>.parseValue() {
-
-        val isFirstNestedJsonObject = true
-
-        val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
-
-        forEach { t, u ->  u.}
-
-        val a=  mapValues {
-
-            val  = (it.value as? Map<String, Any>)
-                .toOption()
-                .map {
-                    it.parseValue()
-
-                }.getOrElse { it.value.toString() }
-
-        }
-    }*/
 
     private fun openStream(): IO<FileOutputStream> =
         IO.fx {
@@ -221,6 +168,7 @@ abstract class JsonArrayDataRecorder(
     override fun stop() {
 
         stopJsonDataLogging()
+
     }
 
     companion object {

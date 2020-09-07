@@ -6,7 +6,9 @@ import arrow.core.toOption
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.researchkit.recorder.config.LocationRecorderConfig
+import org.fouryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
+import org.fouryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
+import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
 import org.fouryouandme.researchkit.step.Step
 
 sealed class Task(
@@ -67,10 +69,10 @@ sealed class Task(
                     description = "Cammina avanti e indietro per 10 secondi",
                     duration = 10,
                     recorderConfigurations = listOf(
-                        //PedometerRecorderConfig(moshi)
-                        //AccelerometerRecorderConfig(moshi, 100.toDouble()),
-                        //DeviceMotionRecorderConfig(moshi, 100.toDouble()),
-                        LocationRecorderConfig(moshi)
+                        PedometerRecorderConfig(moshi),
+                        AccelerometerRecorderConfig(moshi, 100.toDouble()),
+                        DeviceMotionRecorderConfig(moshi, 100.toDouble()),
+                        //LocationRecorderConfig(moshi)
                     ),
                     spokenInstruction = "Cammina avanti e indietro per 10 secondi".some(),
                     spokenInstructionMap =
