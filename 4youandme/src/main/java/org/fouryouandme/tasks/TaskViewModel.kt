@@ -90,4 +90,6 @@ class TaskViewModel(
                 }
             )
 
+    fun close(navController: NavController): Unit =
+        navigator.back(runtime, navController).unsafeRunAsync()
 }

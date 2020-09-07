@@ -61,8 +61,9 @@ open class RecorderService : Service(), RecorderListener {
                             // LANG_AVAILABLE,
                             // LANG_COUNTRY_AVAILABLE,
                             // or LANG_COUNTRY_VAR_AVAILABLE
+                            // TODO: fix language
                             if (languageAvailable >= 0)
-                                it.language = Locale.getDefault()
+                                it.language = Locale.US
                             else
                                 tts = None
                         }

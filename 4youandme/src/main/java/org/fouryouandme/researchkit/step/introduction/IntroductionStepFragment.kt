@@ -53,7 +53,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         next.background = button(step.configuration.theme.primaryColorEnd.color())
         next.text = step.button
         next.setTextColor(step.configuration.theme.secondaryColor.color())
-        next.setOnClickListener { next() }
+        next.setOnClickListener { next(step.close) }
 
     }
 

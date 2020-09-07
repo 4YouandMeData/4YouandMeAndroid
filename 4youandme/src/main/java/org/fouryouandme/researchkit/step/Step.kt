@@ -14,7 +14,8 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val title: String,
         val description: String,
         val image: Int,
-        val button: String
+        val button: String,
+        val close: Boolean = false
     ) : Step(identifier, configuration)
 
     class CountDownStep(

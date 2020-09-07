@@ -44,4 +44,9 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun tabStudyInfo(): Int = R.drawable.tab_study_info
 
+    /* --- task --- */
+
+    override fun timer(): Int = R.drawable.timer
+
+    override fun pocket(): Int = R.drawable.pocket
 }

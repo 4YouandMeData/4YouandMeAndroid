@@ -29,8 +29,13 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             .flatMap { if (it == -1) None else it.some() }
             .orNull()!!
 
-    protected open fun next(): Unit =
-        viewModel.nextStep(sectionParent().findNavController(), indexArg())
+    //TODO: FIX
+    protected open fun next(finish: Boolean = false): Unit {
+        if (!finish)
+            viewModel.nextStep(sectionParent().findNavController(), indexArg())
+        else
+            viewModel.close(taskFragment().findNavController())
+    }
 
     protected fun taskFragment(): Fragment = sectionParent().requireParentFragment()
 
