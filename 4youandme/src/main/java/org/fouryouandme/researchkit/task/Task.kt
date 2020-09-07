@@ -1,8 +1,6 @@
 package org.fouryouandme.researchkit.task
 
-import arrow.core.Option
 import arrow.core.some
-import arrow.core.toOption
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -26,20 +24,17 @@ sealed class Task(
 
     companion object {
 
-        fun byIdentifier(
-            identifier: String,
+        fun byType(
+            type: ETaskType,
             configuration: Configuration,
             imageConfiguration: ImageConfiguration,
             moshi: Moshi
-        ): Option<Task> =
-            when (identifier) {
-                "reaction_time" -> ReactionTimeTask(
-                    configuration,
-                    imageConfiguration,
-                    moshi
-                )
-                else -> null
-            }.toOption()
+        ): Task =
+            when (type) {
+                ETaskType.WALK -> ReactionTimeTask(configuration, imageConfiguration, moshi)
+                ETaskType.GAIT -> ReactionTimeTask(configuration, imageConfiguration, moshi)
+                ETaskType.VIDEO_DIARY -> ReactionTimeTask(configuration, imageConfiguration, moshi)
+            }
 
     }
 

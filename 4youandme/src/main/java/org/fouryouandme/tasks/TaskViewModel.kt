@@ -12,6 +12,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.task.ETaskType
 import org.fouryouandme.researchkit.task.Task
 
 class TaskViewModel(
@@ -27,7 +28,7 @@ class TaskViewModel(
 
     /* --- data --- */
 
-    fun initialize(): Unit =
+    fun initialize(type: ETaskType): Unit =
         runtime.fx.concurrent {
 
             !showLoading(TaskLoading.Initialization)
@@ -42,7 +43,8 @@ class TaskViewModel(
 
                     // TODO: handle dynamic task creation
                     val task =
-                        Task.ReactionTimeTask(
+                        Task.byType(
+                            type,
                             it,
                             runtime.injector.imageConfiguration,
                             runtime.injector.moshi

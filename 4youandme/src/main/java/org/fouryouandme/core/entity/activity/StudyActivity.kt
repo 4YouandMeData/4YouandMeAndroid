@@ -1,7 +1,10 @@
 package org.fouryouandme.core.entity.activity
 
+import arrow.core.None
 import arrow.core.Option
+import arrow.core.some
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.researchkit.task.ETaskType
 
 sealed class StudyActivity
 
@@ -33,5 +36,26 @@ data class TaskActivity(
     val button: Option<String>,
     val gradient: Option<HEXGradient>,
     val image: Option<String>,
-    val activityType: Option<String>
+    val activityType: Option<TaskActivityType>
 ) : StudyActivity()
+
+sealed class TaskActivityType(val typeId: String, val type: ETaskType) {
+
+    object VideoDiary : TaskActivityType("video_diary", ETaskType.VIDEO_DIARY)
+    object GaitTask : TaskActivityType("gait_task", ETaskType.GAIT)
+    object WalkTask : TaskActivityType("walk_task", ETaskType.WALK)
+
+
+    companion object {
+
+        fun fromType(type: String): Option<TaskActivityType> =
+            when (type) {
+                VideoDiary.typeId -> VideoDiary.some()
+                GaitTask.typeId -> GaitTask.some()
+                WalkTask.typeId -> WalkTask.some()
+                else -> None
+            }
+
+    }
+
+}

@@ -9,5 +9,5 @@ open class ActivityDataResponse(
     @field:Json(name = "repeat_every") val repeatEvery: Int? = null,
     @field:Json(name = "start_color") val startColor: String? = null,
     @field:Json(name = "end_color") val endColor: String? = null,
-    @field:Json(name = "task_action_button_label") val button: String? = null
+    @field:Json(name = "task_action_button_label") val button: String? = null,
 ) : Resource()

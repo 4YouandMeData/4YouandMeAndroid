@@ -48,7 +48,7 @@ data class TaskActivityItem(
 
 }
 
-class TaskActivityViewHolder(viewGroup: ViewGroup) :
+class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem) -> Unit) :
     DroidViewHolder<TaskActivityItem, Unit>(viewGroup, R.layout.task_activity_item),
     LayoutContainer {
 
@@ -82,14 +82,15 @@ class TaskActivityViewHolder(viewGroup: ViewGroup) :
             t.data.button.getOrElse { t.configuration.text.activity.activityButtonDefault }
         button.setTextColor(t.configuration.theme.primaryTextColor.color())
         button.background = button(t.configuration.theme.secondaryColor.color())
+        button.setOnClickListener { start(t) }
 
     }
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
+        fun factory(start: (TaskActivityItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { TaskActivityViewHolder(it) },
+                { TaskActivityViewHolder(it, start) },
                 { _, item -> item is TaskActivityItem }
             )
 

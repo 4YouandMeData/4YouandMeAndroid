@@ -6,6 +6,7 @@ import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import org.fouryouandme.core.entity.activity.TaskActivity
+import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.core.entity.configuration.HEXGradient
 
 @JsonApi(type = "activity")
@@ -29,6 +30,6 @@ class TaskActivityResponse(
             button.toOption(),
             Option.fx { HEXGradient(!startColor.toOption(), !endColor.toOption()) },
             image.toOption(),
-            activityType.toOption()
+            activityType.toOption().flatMap { TaskActivityType.fromType(it) }
         )
 }

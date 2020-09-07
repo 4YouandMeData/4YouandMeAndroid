@@ -34,7 +34,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
-            TaskActivityViewHolder.factory(),
+            TaskActivityViewHolder.factory { viewModel.executeTasks(rootNavController(), it) },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory()
         )

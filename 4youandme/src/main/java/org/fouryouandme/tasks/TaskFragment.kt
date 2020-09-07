@@ -12,6 +12,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.researchkit.task.ETaskType
 import org.fouryouandme.researchkit.task.Task
 
 class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
@@ -38,7 +39,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
         Option.fx { !viewModel.state().configuration to !viewModel.state().task }
             .fold(
-                { viewModel.initialize() },
+                { viewModel.initialize(typeArg()) },
                 { applyData(it.first, it.second) }
             )
 
@@ -55,5 +56,21 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         val destination = R.id.step
         navGraph.startDestination = destination
         navController.graph = navGraph
+    }
+
+    private fun typeArg(): ETaskType = arguments?.getSerializable(TASK_TYPE) as ETaskType
+
+    companion object {
+
+        const val TASK_TYPE = "type"
+
+        fun getBundle(type: ETaskType): Bundle {
+
+            val bundle = Bundle()
+            bundle.putSerializable(TASK_TYPE, type)
+            return bundle
+
+        }
+
     }
 }

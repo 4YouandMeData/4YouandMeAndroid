@@ -1,6 +1,7 @@
 package org.fouryouandme.main.tasks
 
 import arrow.core.None
+import arrow.core.getOrElse
 import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.ForIO
@@ -166,4 +167,15 @@ class TasksViewModel(
         }
 
     }
+
+    /* --- navigation --- */
+
+    fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit =
+        runtime.fx.concurrent {
+
+            !task.data.activityType.map {
+                navigator.navigateTo(runtime, rootNavController, TasksToTask(it.type))
+            }.getOrElse { just(Unit) }
+
+        }.unsafeRunAsync()
 }
