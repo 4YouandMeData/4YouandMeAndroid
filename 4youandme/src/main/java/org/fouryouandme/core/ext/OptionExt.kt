@@ -19,3 +19,6 @@ fun <T, F> Option<T>.toKind(
     }
 
 fun Option<String>.getOrEmpty(): String = getOrElse { "" }
+
+fun Option<Boolean>.getOrFalse(): Boolean = getOrElse { false }
+

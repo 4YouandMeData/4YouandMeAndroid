@@ -10,7 +10,7 @@ import org.fouryouandme.core.entity.consent.review.ConsentReview
 data class ConsentReviewState(
     val configuration: Option<Configuration> = None,
     val consentReview: Option<ConsentReview> = None,
-    val items: List<DroidItem> = emptyList()
+    val items: List<DroidItem<Any>> = emptyList()
 )
 
 sealed class ConsentReviewStateUpdate {
@@ -18,7 +18,7 @@ sealed class ConsentReviewStateUpdate {
     data class Initialization(
         val configuration: Configuration,
         val consentReview: ConsentReview,
-        val items: List<DroidItem>
+        val items: List<DroidItem<Any>>
     ) : ConsentReviewStateUpdate()
 
 }

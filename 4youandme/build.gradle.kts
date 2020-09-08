@@ -95,6 +95,7 @@ dependencies {
     /* --- moshi --- */
 
     implementation(Libs.moshi_kotlin)
+    implementation("com.squareup.moshi:moshi-adapters:1.8.0")
 
     /* --- json api --- */
 

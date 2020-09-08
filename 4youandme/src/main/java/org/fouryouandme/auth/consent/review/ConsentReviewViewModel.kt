@@ -52,7 +52,7 @@ class ConsentReviewViewModel(
                 { setError(it, ConsentReviewError.Initialization) },
                 { pair ->
 
-                    val items = mutableListOf<DroidItem>()
+                    val items = mutableListOf<DroidItem<Any>>()
 
                     items.addAll(
                         pair.first.welcomePage

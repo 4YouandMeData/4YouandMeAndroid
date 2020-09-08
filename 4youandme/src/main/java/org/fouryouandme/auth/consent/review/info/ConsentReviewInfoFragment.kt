@@ -122,7 +122,7 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
             button(configuration.theme.secondaryColor.color())
     }
 
-    private fun applyItems(items: List<DroidItem>): Unit {
+    private fun applyItems(items: List<DroidItem<Any>>): Unit {
 
         adapter.submitList(items)
 

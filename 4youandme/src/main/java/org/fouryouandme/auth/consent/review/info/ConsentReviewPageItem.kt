@@ -17,15 +17,15 @@ data class ConsentReviewPageItem(
     val configuration: Configuration,
     val title: String,
     val body: String
-) : DroidItem {
+) : DroidItem<Unit> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
             is ConsentReviewPageItem -> id == other.id
             else -> false
         }
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
             is ConsentReviewPageItem ->
                 id == other.id &&
@@ -34,7 +34,7 @@ data class ConsentReviewPageItem(
             else -> false
         }
 
-    override fun getPayload(other: DroidItem): List<*> = emptyList<Unit>()
+    override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 }
 
 fun Page.toConsentReviewPageItem(configuration: Configuration) =

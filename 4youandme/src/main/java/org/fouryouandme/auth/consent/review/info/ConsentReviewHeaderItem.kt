@@ -16,17 +16,17 @@ data class ConsentReviewHeaderItem(
     val title: String,
     val body: String,
     val subtitle: String
-) : DroidItem {
+) : DroidItem<Unit> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
             is ConsentReviewHeaderItem -> title == other.title
             else -> false
         }
 
-    override fun getPayload(other: DroidItem): List<*> = emptyList<Unit>()
+    override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
             is ConsentReviewHeaderItem ->
                 title == other.title &&

@@ -34,7 +34,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
-            TaskActivityViewHolder.factory(),
+            TaskActivityViewHolder.factory { viewModel.executeTasks(rootNavController(), it) },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory()
         )
@@ -72,7 +72,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
             )
     }
 
-    private fun applyData(configuration: Configuration, tasks: List<DroidItem>): Unit {
+    private fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit {
 
         setStatusBar(configuration.theme.primaryColorStart.color())
 
@@ -100,7 +100,7 @@ class TasksFragment : BaseFragment<TasksViewModel>(R.layout.tasks) {
         applyTasks(tasks)
     }
 
-    private fun applyTasks(tasks: List<DroidItem>): Unit {
+    private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
 
         empty.isVisible = tasks.isEmpty()
 

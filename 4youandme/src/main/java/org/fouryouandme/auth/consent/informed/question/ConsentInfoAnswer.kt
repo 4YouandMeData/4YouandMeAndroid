@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.StableDroidItem
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.consent_info_answer.*
@@ -26,21 +25,19 @@ data class ConsentAnswerItem(
     val answer: ConsentInfoAnswer,
     val isSelected: Boolean,
     val configuration: Configuration
-) : StableDroidItem {
+) : DroidItem<EConsentAnswerPayload> {
 
-    override fun stableId(position: Int): Long = position.hashCode().toLong()
-
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         if (other is ConsentAnswerItem) answer.id == other.answer.id else false
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         if (other is ConsentAnswerItem)
             answer.id == other.answer.id &&
                     answer.text == other.answer.text &&
                     isSelected == other.isSelected
         else false
 
-    override fun getPayload(other: DroidItem): List<*> {
+    override fun getPayload(other: DroidItem<Any>): List<EConsentAnswerPayload> {
 
         val payload = mutableListOf<EConsentAnswerPayload>()
 

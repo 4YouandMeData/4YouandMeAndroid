@@ -18,6 +18,8 @@ import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import org.fouryouandme.auth.splash.SplashToWelcome
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
+import org.fouryouandme.main.tasks.TasksToTask
+import org.fouryouandme.tasks.StepToStep
 
 class ForYouAndMeNavigationProvider : NavigationProvider {
 
@@ -115,6 +117,10 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is IntegrationSuccessToMain ->
                 integrationSuccessToMain()
 
+            is TasksToTask ->
+                tasksToTask(action.type)
+
+            is StepToStep -> stepToStep(action.index)
 
             else -> {
                 {}

@@ -11,11 +11,11 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.8"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.9"
 
     const val com_squareup_retrofit2: String = "2.9.0"
 
-    const val org_jetbrains_kotlin: String = "1.3.72"
+    const val org_jetbrains_kotlin: String = "1.4.0"
 
     const val androidx_navigation: String = "2.3.0"
 
@@ -27,7 +27,7 @@ object Versions {
 
     const val com_android_tools_build_gradle: String = "4.0.1"
 
-    const val androidx_test_ext_junit: String = "1.1.1"
+    const val androidx_test_ext_junit: String = "1.1.2"
 
     const val junit_junit: String = "4.13"
 
@@ -35,19 +35,19 @@ object Versions {
 
     const val arrow_integration_retrofit_adapter: String = "0.10.4"
 
-    const val logging_interceptor: String = "4.8.0"
+    const val logging_interceptor: String = "4.8.1"
 
-    const val recycler_droid_core: String = "1.7.0-beta13"
+    const val recycler_droid_core: String = "1.8.0-beta02"
 
-    const val firebase_analytics: String = "17.4.4"
+    const val firebase_analytics: String = "17.5.0"
 
-    const val constraintlayout: String = "1.1.3"
+    const val constraintlayout: String = "2.0.1"
 
     const val google_services: String = "4.3.3"
 
     const val security_crypto: String = "1.0.0-rc01"
 
-    const val espresso_core: String = "3.2.0"
+    const val espresso_core: String = "3.3.0"
 
     const val signature_pad: String = "1.3.1"
 
@@ -57,7 +57,7 @@ object Versions {
 
     const val fragment_ktx: String = "1.3.0-alpha06"
 
-    const val moshi_kotlin: String = "1.9.3"
+    const val moshi_kotlin: String = "1.10.0"
 
     const val lint_gradle: String = "27.0.1"
 
@@ -69,7 +69,7 @@ object Versions {
 
     const val viewpager2: String = "1.0.0"
 
-    const val appcompat: String = "1.1.0"
+    const val appcompat: String = "1.2.0"
 
     const val arrow_fx: String = "0.10.5"
 
@@ -88,7 +88,7 @@ object Versions {
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.5.1"
+    const val gradleLatestVersion: String = "6.6.1"
 }
 
 /**

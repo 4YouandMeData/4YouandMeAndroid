@@ -23,15 +23,15 @@ data class TaskActivityItem(
     val data: TaskActivity,
     val from: ZonedDateTime,
     val to: ZonedDateTime
-) : DroidItem {
+) : DroidItem<Unit> {
 
-    override fun areTheSame(other: DroidItem): Boolean =
+    override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
             is TaskActivityItem -> data.id == other.data.id
             else -> false
         }
 
-    override fun haveTheSameContent(other: DroidItem): Boolean =
+    override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
             is TaskActivityItem ->
                 (data.id == other.data.id)
@@ -44,11 +44,11 @@ data class TaskActivityItem(
             else -> false
         }
 
-    override fun getPayload(other: DroidItem): List<*> = emptyList<Unit>()
+    override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
 }
 
-class TaskActivityViewHolder(viewGroup: ViewGroup) :
+class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem) -> Unit) :
     DroidViewHolder<TaskActivityItem, Unit>(viewGroup, R.layout.task_activity_item),
     LayoutContainer {
 
@@ -82,14 +82,15 @@ class TaskActivityViewHolder(viewGroup: ViewGroup) :
             t.data.button.getOrElse { t.configuration.text.activity.activityButtonDefault }
         button.setTextColor(t.configuration.theme.primaryTextColor.color())
         button.background = button(t.configuration.theme.secondaryColor.color())
+        button.setOnClickListener { start(t) }
 
     }
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
+        fun factory(start: (TaskActivityItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { TaskActivityViewHolder(it) },
+                { TaskActivityViewHolder(it, start) },
                 { _, item -> item is TaskActivityItem }
             )
 

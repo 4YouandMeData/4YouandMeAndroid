@@ -61,4 +61,12 @@ interface ImageConfiguration {
     @DrawableRes
     fun tabStudyInfo(): Int
 
+    /* --- task --- */
+
+    @DrawableRes
+    fun timer(): Int
+
+    @DrawableRes
+    fun pocket(): Int
+
 }
