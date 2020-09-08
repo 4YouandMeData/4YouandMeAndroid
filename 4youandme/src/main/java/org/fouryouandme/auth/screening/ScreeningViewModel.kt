@@ -1,26 +1,24 @@
 package org.fouryouandme.auth.screening
 
 import androidx.navigation.NavController
-import arrow.core.None
-import arrow.core.getOrElse
-import arrow.core.some
-import arrow.core.toOption
+import arrow.Kind
+import arrow.core.*
 import arrow.fx.ForIO
 import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
 import org.fouryouandme.auth.screening.questions.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.common.AnswerUseCase
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.screening.ScreeningUseCase
-import org.fouryouandme.core.ext.foldToKindEither
-import org.fouryouandme.core.ext.mapResult
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.*
 
 class ScreeningViewModel(
     navigator: Navigator,
@@ -72,7 +70,7 @@ class ScreeningViewModel(
 
     /* --- validation --- */
 
-    fun validate(navController: NavController): Unit =
+    fun validate(rootNavController: RootNavController, navController: NavController): Unit =
         runtime.fx.concurrent {
 
             val correctAnswers =
@@ -84,15 +82,22 @@ class ScreeningViewModel(
                             else -> None
                         }
 
-                    answer.map { it.correct }.getOrElse { false }
-                }.fold(
-                    0,
-                    { acc, item ->
-                        acc + if (item) 1 else 0
-                    }
-                )
+                    val request =
+                        AnswerUseCase.sendAnswer(
+                            runtime,
+                            item.question.id,
+                            answer.map { it.text }.getOrEmpty(),
+                            answer.map { it.id }.getOrEmpty()
+                        ).handleAuthError(runtime, rootNavController, navigator).some()
 
-            if (correctAnswers >= state().screening.map { it.minimumAnswer }
+                    answer.map { it.correct }.getOrElse { false } toT request
+
+                }.countAndAccumulate()
+
+            //!correctAnswers.b.parSequence()  // await execution
+            correctAnswers.b.parSequence().unsafeRunAsync()
+
+            if (correctAnswers.a >= state().screening.map { it.minimumAnswer }
                     .getOrElse { state().questions.size })
                 !navigator.navigateTo(
                     runtime, navController,

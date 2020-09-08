@@ -95,7 +95,7 @@ class ConsentInfoQuestionFragment :
         recycler_view.adapter = adapter
 
         next.background = button(resources, imageConfiguration.signUpNextStep())
-        next.setOnClickListener { viewModel.nextQuestion(findNavController(), args.index) }
+        next.setOnClickListener { viewModel.nextQuestion(findNavController(), rootNavController(), args.index) }
     }
 
     private fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit {

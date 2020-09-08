@@ -1,26 +1,27 @@
 package org.fouryouandme.auth.consent.informed
 
+import android.util.Log
 import androidx.navigation.NavController
 import arrow.Kind
-import arrow.core.Option
+import arrow.core.*
 import arrow.core.extensions.fx
-import arrow.core.getOption
-import arrow.core.getOrElse
-import arrow.core.toOption
 import arrow.fx.ForIO
 import arrow.syntax.function.pipe
 import org.fouryouandme.auth.consent.informed.question.ConsentAnswerItem
 import org.fouryouandme.auth.consent.informed.question.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.common.AnswerUseCase
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.cases.consent.informed.ConsentInfoUseCase
+import org.fouryouandme.core.ext.countAndAccumulate
 import org.fouryouandme.core.ext.foldToKindEither
 import org.fouryouandme.core.ext.mapResult
 import org.fouryouandme.core.ext.unsafeRunAsync
@@ -113,28 +114,22 @@ class ConsentInfoViewModel(
 
     /* --- validation --- */
 
-    private fun validate(navController: NavController): Kind<ForIO, Unit> =
+    private fun validate(
+        navController: NavController,
+        rootNavController: RootNavController
+    ): Kind<ForIO, Unit> =
         runtime.fx.concurrent {
 
             val correctAnswers =
                 state().questions
-                    .mapValues {
-                        it.value.fold(
-                            false,
-                            { acc, answerItem ->
-                                acc || (answerItem.answer.correct && answerItem.isSelected)
-                            }
-                        )
-                    }
+                    .mapValues { it.isCorrect() toT it.getRequest(rootNavController) }
                     .toList()
-                    .fold(
-                        0,
-                        { acc, pair ->
-                            acc + if (pair.second) 1 else 0
-                        }
-                    )
+                    .map { it.second }
+                    .countAndAccumulate()
 
-            if (correctAnswers >= state().consentInfo.map { it.minimumAnswer }
+            correctAnswers.b.parSequence().unsafeRunAsync()
+
+            if (correctAnswers.a >= state().consentInfo.map { it.minimumAnswer }
                     .getOrElse { state().questions.size })
                 !navigator.navigateTo(
                     runtime, navController,
@@ -147,6 +142,28 @@ class ConsentInfoViewModel(
                 )
 
         }
+
+    private fun Map.Entry<String, List<ConsentAnswerItem>>.getRequest(
+        rootNavController: RootNavController
+    ): Option<Kind<ForIO, Either<FourYouAndMeError, Unit>>> =
+
+        value.firstOrNone { item -> item.isSelected }
+            .map {
+                AnswerUseCase.sendAnswer(
+                    runtime,
+                    key, // question id
+                    it.answer.text,
+                    it.answer.id
+                ).handleAuthError(runtime, rootNavController, navigator)
+            }
+
+    private fun Map.Entry<String, List<ConsentAnswerItem>>.isCorrect() =
+        value.fold(
+            false,
+            { acc, answerItem ->
+                acc || (answerItem.answer.correct && answerItem.isSelected)
+            }
+        )
 
     /* --- navigation --- */
 
@@ -174,7 +191,11 @@ class ConsentInfoViewModel(
             )
         }.pipe { navigator.navigateTo(runtime, navController, it) }.unsafeRunAsync()
 
-    fun nextQuestion(navController: NavController, currentIndex: Int): Unit =
+    fun nextQuestion(
+        navController: NavController,
+        rootNavController: RootNavController,
+        currentIndex: Int
+    ): Unit =
         runtime.fx.concurrent {
 
             !if (currentIndex < (state().questions.keys.size - 1))
@@ -185,7 +206,7 @@ class ConsentInfoViewModel(
                         currentIndex + 1
                     )
                 )
-            else validate(navController)
+            else validate(navController, rootNavController)
 
         }.unsafeRunAsync()
 

@@ -108,7 +108,7 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
                 requireContext().resources,
                 requireContext().imageConfiguration.signUpNextStepSecondary()
             )
-        next.setOnClickListener { viewModel.validate(findNavController()) }
+        next.setOnClickListener { viewModel.validate(rootNavController(), findNavController()) }
     }
 
     private fun applyQuestions(questions: List<ScreeningQuestionItem>): Unit {
