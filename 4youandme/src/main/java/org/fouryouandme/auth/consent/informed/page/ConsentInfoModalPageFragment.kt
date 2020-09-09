@@ -10,7 +10,9 @@ import arrow.core.extensions.list.foldable.firstOrNone
 import arrow.core.getOrElse
 import arrow.core.toOption
 import kotlinx.android.synthetic.main.consent_info.*
+import kotlinx.android.synthetic.main.consent_info_modal_page.*
 import kotlinx.android.synthetic.main.consent_info_page.*
+import kotlinx.android.synthetic.main.consent_info_page.root
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.informed.ConsentInfoFragment
 import org.fouryouandme.auth.consent.informed.ConsentInfoViewModel
@@ -22,7 +24,7 @@ import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.view.page.EPageType
 
-class ConsentInfoPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_page) {
+class ConsentInfoModalPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_modal_page) {
 
     private val args: ConsentInfoPageFragmentArgs by navArgs()
 
@@ -58,7 +60,7 @@ class ConsentInfoPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.cons
 
                 it.show()
 
-                it.showBackSecondaryButton(imageConfiguration)
+                it.showCloseButton(imageConfiguration)
                 { viewModel.back(findNavController()) }
 
             }
@@ -77,18 +79,8 @@ class ConsentInfoPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.cons
 
         consentInfo.pages.firstOrNone { it.id == args.id }
             .map { data ->
-                page.applyData(
-                    configuration = configuration,
-                    page = data,
-                    pageType = EPageType.INFO,
-                    action1 = { option ->
-                        option.fold(
-                            { viewModel.question(findNavController(), false) },
-                            { viewModel.page(findNavController(), it.id, false) })
-                    },
-                    externalAction = { viewModel.web(rootNavController(), it) },
-                    modalAction = { viewModel.modalPage(findNavController(), it.id) }
-                )
+                title.text = data.title
+                description.text = data.body
             }
 
     }

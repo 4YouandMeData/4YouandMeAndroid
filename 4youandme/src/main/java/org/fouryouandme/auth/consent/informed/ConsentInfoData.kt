@@ -44,6 +44,7 @@ sealed class ConsentInfoError {
 data class ConsentInfoWelcomeToConsentInfoPage(val id: String) : NavigationAction
 data class ConsentInfoWelcomeToConsentInfoQuestion(val index: Int) : NavigationAction
 data class ConsentInfoPageToConsentInfoPage(val id: String) : NavigationAction
+data class ConsentInfoPageToConsentInfoModalPage(val id: String) : NavigationAction
 data class ConsentInfoPageToConsentInfoQuestion(val index: Int) : NavigationAction
 data class ConsentInfoQuestionToConsentInfoQuestion(val index: Int) : NavigationAction
 object ConsentInfoQuestionToConsentInfoSuccess : NavigationAction

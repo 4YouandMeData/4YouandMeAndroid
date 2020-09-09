@@ -23,7 +23,9 @@ data class PageResponse(
     @field:Json(name = "external_link_label") val externalLinkLabel: String? = null,
     @field:Json(name = "external_link_url") val externalLinkUrl: String? = null,
     @field:Json(name = "special_link_label") val specialLinkLabel: String? = null,
-    @field:Json(name = "special_link_data") val specialLinkValue: String? = null
+    @field:Json(name = "special_link_data") val specialLinkValue: String? = null,
+    @field:Json(name = "link_modal_label") val linkModalLabel: String? = null,
+    @field:Json(name = "link_modal") val linkModalValue : HasOne<PageResponse>? = null
 ) : Resource() {
 
     fun toPage(document: Document): Option<Page> =
@@ -41,7 +43,9 @@ data class PageResponse(
                 externalLinkLabel.emptyOrBlankToNone(),
                 externalLinkUrl.emptyOrBlankToNone(),
                 specialLinkLabel.emptyOrBlankToNone(),
-                specialLinkValue.emptyOrBlankToNone()
+                specialLinkValue.emptyOrBlankToNone(),
+                linkModalLabel.emptyOrBlankToNone(),
+                linkModalValue?.get(document).toOption().flatMap { it.toPage(document) }
             )
 
         }

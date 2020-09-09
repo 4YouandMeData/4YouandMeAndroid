@@ -30,6 +30,11 @@ fun consentInfoPageToConsentInfoPage(id: String): NavigationExecution =
         it.navigate(ConsentInfoPageFragmentDirections.actionConsentInfoPageSelf(id))
     }
 
+fun consentInfoPageToConsentInfoModalPage(id: String): NavigationExecution =
+    {
+        it.navigate(ConsentInfoPageFragmentDirections.actionConsentInfoPageToConsentInfoModalPage(id))
+    }
+
 fun consentInfoPageToConsentInfoQuestion(index: Int): NavigationExecution =
     {
         it.navigate(

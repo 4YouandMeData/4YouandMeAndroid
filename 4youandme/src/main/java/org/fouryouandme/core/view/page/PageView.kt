@@ -39,7 +39,8 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         pageType: EPageType,
         action1: (Option<Page>) -> Unit,
         action2: ((Option<Page>) -> Unit)? = null,
-        externalAction: (String) -> Unit
+        externalAction: (String) -> Unit,
+        modalAction: ((Page) -> Unit)? = null
     ): Unit {
 
         val params = icon.layoutParams
@@ -68,10 +69,18 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 SUCCESS -> Gravity.CENTER
             }
 
-        external.text = page.externalLinkLabel.getOrElse { "" }
-        external.setTextColor(configuration.theme.primaryColorEnd.color())
-        external.isVisible = page.externalLinkUrl.isDefined()
-        external.setOnClickListener { page.externalLinkUrl.map { externalAction(it) } }
+        if (modalAction != null) {
+            external.text = page.linkModalLabel.getOrElse { "" }
+            external.setTextColor(configuration.theme.primaryColorEnd.color())
+            external.isVisible = page.linkModalValue.isDefined()
+            external.setOnClickListener { page.linkModalValue.map { modalAction(it) } }
+        }
+        else if (externalAction!= null) {
+            external.text = page.externalLinkLabel.getOrElse { "" }
+            external.setTextColor(configuration.theme.primaryColorEnd.color())
+            external.isVisible = page.externalLinkUrl.isDefined()
+            external.setOnClickListener { page.externalLinkUrl.map { externalAction(it) } }
+        }
 
         shadow.background =
             HEXGradient.from(

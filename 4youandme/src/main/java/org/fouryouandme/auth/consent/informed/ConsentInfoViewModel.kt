@@ -181,6 +181,13 @@ class ConsentInfoViewModel(
             )
         ).unsafeRunAsync()
 
+    fun modalPage(navController: NavController, id: String): Unit =
+        navigator.navigateTo(
+            runtime,
+            navController,
+            ConsentInfoPageToConsentInfoModalPage(id)
+        ).unsafeRunAsync()
+
     fun question(navController: NavController, fromWelcome: Boolean): Unit =
         when {
             fromWelcome -> ConsentInfoWelcomeToConsentInfoQuestion(

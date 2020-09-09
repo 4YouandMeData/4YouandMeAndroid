@@ -55,6 +55,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentInfoWelcomeToConsentInfoQuestion(action.index)
             is ConsentInfoPageToConsentInfoPage ->
                 consentInfoPageToConsentInfoPage(action.id)
+            is ConsentInfoPageToConsentInfoModalPage ->
+                consentInfoPageToConsentInfoModalPage(action.id)
             is ConsentInfoPageToConsentInfoQuestion ->
                 consentInfoPageToConsentInfoQuestion(action.index)
             is ConsentInfoQuestionToConsentInfoQuestion ->

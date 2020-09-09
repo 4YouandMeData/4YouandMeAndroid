@@ -79,6 +79,19 @@
 
         </action>
 
+        <action
+            android:id="@+id/action_consent_info_page_to_consent_info_modal_page"
+            app:destination="@id/consent_info_modal_page"
+            app:enterAnim="@anim/slide_from_top"
+            app:exitAnim="@anim/idle"
+            app:popEnterAnim="@anim/idle"
+            app:popExitAnim="@anim/slide_to_top">
+            <argument
+                android:name="id"
+                app:argType="string" />
+
+        </action>
+
     </fragment>
 
     <fragment
@@ -120,6 +133,18 @@
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/consent_info_modal_page"
+        android:name="org.fouryouandme.auth.consent.informed.page.ConsentInfoModalPageFragment"
+        android:label="consent_info_modal_page"
+        tools:layout="@layout/consent_info_modal_page">
+
+        <argument
+            android:name="id"
+            app:argType="string" />
 
     </fragment>
 
