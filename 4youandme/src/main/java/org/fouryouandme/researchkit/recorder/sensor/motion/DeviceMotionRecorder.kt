@@ -5,7 +5,10 @@ import android.hardware.SensorEvent
 import android.hardware.SensorManager
 import android.os.Build
 import arrow.core.*
+import arrow.fx.IO
+import arrow.fx.extensions.fx
 import com.squareup.moshi.Moshi
+import org.fouryouandme.core.ext.orJustUnit
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -122,50 +125,51 @@ open class DeviceMotionRecorder internal constructor(
         return sensorTypeList
     }
 
-    override fun recordSensorEvent(sensorEvent: SensorEvent): Option<String> {
+    override fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>> =
+        IO.fx {
 
-        val sensorType = sensorEvent.sensor.type
-        val sensorTypeKey = sensorTypeToDataType()[sensorType].toOption()
+            val sensorType = sensorEvent.sensor.type
+            val sensorTypeKey = sensorTypeToDataType()[sensorType].toOption()
 
-        val sensorData =
-            sensorTypeKey.flatMap {
+            val sensorData =
+                sensorTypeKey.flatMap {
 
-                when (sensorType) {
-                    Sensor.TYPE_ACCELEROMETER ->
-                        recordAccelerometerEvent(it, sensorEvent).some()
-                    Sensor.TYPE_GRAVITY ->
-                        recordGravityEvent(it, sensorEvent).some()
-                    Sensor.TYPE_LINEAR_ACCELERATION ->
-                        recordLinearAccelerometerEvent(it, sensorEvent).some()
-                    Sensor.TYPE_GYROSCOPE ->
-                        recordGyroscope(it, sensorEvent).some()
-                    Sensor.TYPE_MAGNETIC_FIELD ->
-                        recordMagneticField(it, sensorEvent).some()
-                    Sensor.TYPE_GYROSCOPE_UNCALIBRATED,
-                    Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED,
-                    Sensor.TYPE_ACCELEROMETER_UNCALIBRATED ->
-                        recordUncalibrated(it, sensorEvent).some()
-                    Sensor.TYPE_GAME_ROTATION_VECTOR ->
-                        recordGameRotationVector(it, sensorEvent).some()
-                    Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR ->
-                        recordGeomagneticRotationVector(it, sensorEvent).some()
-                    Sensor.TYPE_ROTATION_VECTOR ->
-                        recordRotationVector(it, sensorEvent).some()
-                    else -> {
-                        Timber.e("Unable to record sensor type: $sensorType")
-                        None
+                    when (sensorType) {
+                        Sensor.TYPE_ACCELEROMETER ->
+                            recordAccelerometerEvent(it, sensorEvent).some()
+                        Sensor.TYPE_GRAVITY ->
+                            recordGravityEvent(it, sensorEvent).some()
+                        Sensor.TYPE_LINEAR_ACCELERATION ->
+                            recordLinearAccelerometerEvent(it, sensorEvent).some()
+                        Sensor.TYPE_GYROSCOPE ->
+                            recordGyroscope(it, sensorEvent).some()
+                        Sensor.TYPE_MAGNETIC_FIELD ->
+                            recordMagneticField(it, sensorEvent).some()
+                        Sensor.TYPE_GYROSCOPE_UNCALIBRATED,
+                        Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED,
+                        Sensor.TYPE_ACCELEROMETER_UNCALIBRATED ->
+                            recordUncalibrated(it, sensorEvent).some()
+                        Sensor.TYPE_GAME_ROTATION_VECTOR ->
+                            recordGameRotationVector(it, sensorEvent).some()
+                        Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR ->
+                            recordGeomagneticRotationVector(it, sensorEvent).some()
+                        Sensor.TYPE_ROTATION_VECTOR ->
+                            recordRotationVector(it, sensorEvent).some()
+                        else -> {
+                            Timber.e("Unable to record sensor type: $sensorType")
+                            None
+                        }
                     }
+
                 }
 
-            }
+            if (sensorData.isEmpty())
+                Timber.e("Unable find type key for sensor type: $sensorType")
 
-        if (sensorData.isEmpty())
-            Timber.e("Unable find type key for sensor type: $sensorType")
+            sensorData.map { onRecordDataCollected(it.a) }.orJustUnit().bind()
 
-        sensorData.map { onRecordDataCollected(it.a) }
-
-        return sensorData.map { it.b }
-    }
+            sensorData.map { it.b }
+        }
 
     /**
      * @see [Sensor Types: Accelerometer]

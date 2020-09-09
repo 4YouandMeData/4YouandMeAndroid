@@ -8,6 +8,9 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import arrow.core.toOption
+import arrow.fx.IO
+import arrow.fx.extensions.fx
+import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.researchkit.recorder.sensor.RecorderData
 import org.fouryouandme.researchkit.result.Result
 import org.fouryouandme.researchkit.step.Step
@@ -153,11 +156,15 @@ abstract class Recorder(
      */
     abstract fun cancel()
 
-    fun onRecordDataCollected(data: RecorderData): Unit {
+    fun onRecordDataCollected(data: RecorderData): IO<Unit> =
+        IO.fx {
 
-        recorderLiveData.value = data
+            // set the live data value on the main thread and return to IO
+            continueOn(Dispatchers.Main)
+            recorderLiveData.value = data
+            continueOn(Dispatchers.IO)
 
-    }
+        }
 
     protected fun onRecorderCompleted(result: Result): Unit {
         recorderListener.map { it.onComplete(this, result) }

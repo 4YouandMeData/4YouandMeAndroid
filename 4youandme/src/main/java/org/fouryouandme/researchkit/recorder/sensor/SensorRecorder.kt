@@ -9,6 +9,10 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import arrow.core.toOption
+import arrow.fx.IO
+import arrow.fx.extensions.fx
+import kotlinx.coroutines.Dispatchers
+import org.fouryouandme.core.ext.orJustUnit
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -99,7 +103,16 @@ abstract class SensorRecorder(
 
     override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
 
-        recordSensorEvent(sensorEvent).map { writeJsonObjectToFile(it) }
+        IO.fx {
+
+            continueOn(Dispatchers.IO)
+
+            recordSensorEvent(sensorEvent)
+                .bind()
+                .map { writeJsonObjectToFile(it) }
+                .orJustUnit()
+                .bind()
+        }
 
     }
 
@@ -107,7 +120,7 @@ abstract class SensorRecorder(
      * This method receives a SensorEvent and is expected to receive a RecorderData json.
      * @param sensorEvent
      */
-    abstract fun recordSensorEvent(sensorEvent: SensorEvent): Option<String>
+    abstract fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>>
 
     override fun stop() {
         super.stop()
@@ -157,9 +170,6 @@ abstract class SensorRecorder(
 
         const val MANUAL_JSON_FREQUENCY = -1.0f
         private const val MICRO_SECONDS_PER_SEC = 1000000L
-        const val TIMESTAMP_IN_SECONDS_KEY = "timestamp"
-        const val UPTIME_IN_SECONDS_KEY = "uptime"
-        const val TIMESTAMP_DATE_KEY = "timestampDate"
 
     }
 }

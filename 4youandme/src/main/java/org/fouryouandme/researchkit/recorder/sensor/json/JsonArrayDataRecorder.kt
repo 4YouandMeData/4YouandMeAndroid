@@ -62,7 +62,7 @@ abstract class JsonArrayDataRecorder(
 
         }.unsafeRunAsync()
 
-    private fun stopJsonDataLogging(): Unit =
+    private fun stopJsonDataLogging(): IO<Unit> =
         IO.fx {
 
             isRecording = false
@@ -75,7 +75,7 @@ abstract class JsonArrayDataRecorder(
                     .accumulateError(fx)
                     .bind()
 
-
+            // switch to main thread before invoke the listener
             continueOn(Dispatchers.Main)
             when (write) {
 
@@ -96,13 +96,13 @@ abstract class JsonArrayDataRecorder(
                     }
 
                 }
-
             }
+            // return to IO thread
+            continueOn(Dispatchers.IO)
 
+        }
 
-        }.unsafeRunAsync()
-
-    fun writeJsonObjectToFile(json: String): Unit =
+    fun writeJsonObjectToFile(json: String): IO<Unit> =
         IO.fx {
 
             // append optional comma for array separation
@@ -119,6 +119,7 @@ abstract class JsonArrayDataRecorder(
                     .bind()
                     .map { }
 
+            // switch to main thread before invoke the listener
             continueOn(Dispatchers.Main)
             when (write) {
 
@@ -129,8 +130,12 @@ abstract class JsonArrayDataRecorder(
                 is Either.Right ->
                     isFirstJsonObject = false
             }
+            // return to IO thread
+            continueOn(Dispatchers.IO)
 
-        }.unsafeRunAsync()
+            Unit
+
+        }
 
     private fun openStream(): IO<FileOutputStream> =
         IO.fx {
@@ -167,7 +172,7 @@ abstract class JsonArrayDataRecorder(
 
     override fun stop() {
 
-        stopJsonDataLogging()
+        stopJsonDataLogging().unsafeRunAsync()
 
     }
 
