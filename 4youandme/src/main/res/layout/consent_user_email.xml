@@ -48,7 +48,7 @@
                 style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="textEmailAddress"
                 android:singleLine="true"
                 app:layout_constraintEnd_toStartOf="@id/email_validation"
                 app:layout_constraintStart_toStartOf="@id/email"
