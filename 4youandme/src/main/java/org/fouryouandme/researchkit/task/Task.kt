@@ -4,7 +4,10 @@ import arrow.core.some
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
+import org.fouryouandme.researchkit.recorder.config.LocationRecorderConfig
+import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
 import org.fouryouandme.researchkit.step.Step
 
 sealed class Task(
@@ -69,10 +72,10 @@ sealed class Task(
                     description = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.",
                     duration = 30,
                     recorderConfigurations = listOf(
-                        //PedometerRecorderConfig(moshi),
-                        //AccelerometerRecorderConfig(moshi, 100.toDouble()),
+                        PedometerRecorderConfig(moshi),
+                        AccelerometerRecorderConfig(moshi, 100.toDouble()),
                         DeviceMotionRecorderConfig(moshi, 100.toDouble()),
-                        //LocationRecorderConfig(moshi)
+                        LocationRecorderConfig(moshi)
                     ),
                     spokenInstruction = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.".some(),
                     shouldPlaySoundOnFinish = true,
