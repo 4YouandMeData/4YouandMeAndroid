@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.active
+package org.fouryouandme.researchkit.step.sensor
 
 import android.os.Bundle
 import android.view.View
@@ -6,7 +6,7 @@ import android.widget.Toast
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toT
-import kotlinx.android.synthetic.main.step_active.*
+import kotlinx.android.synthetic.main.step_sensor.*
 import org.fouryouandme.R
 import org.fouryouandme.researchkit.recorder.RecorderService
 import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
@@ -16,14 +16,14 @@ import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.tasks.TaskStateUpdate
 import java.io.File
 
-class ActiveStepFragment : StepFragment(R.layout.step_active) {
+class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
     private val serviceConnection: RecorderServiceConnection =
         RecorderServiceConnection(
             { binder ->
 
                 val stepOption =
-                    viewModel.getStepByIndexAs<Step.ActiveStep>(indexArg())
+                    viewModel.getStepByIndexAs<Step.SensorStep>(indexArg())
 
                 Option.fx { !stepOption toT !viewModel.state().task }
                     .map { (step, task) ->
@@ -31,7 +31,7 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
                         binder.bind(getOutputDirectory(), step, task)
 
                         binder.stateLiveData()
-                            .observeEvent(ActiveStepFragment::class.java.simpleName) {
+                            .observeEvent(SensorStepFragment::class.java.simpleName) {
 
                                 when (it) {
                                     is RecordingState.Completed ->
@@ -50,7 +50,7 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
                     }
 
                 viewModel.stateLiveData()
-                    .observeEvent(ActiveStepFragment::class.java.simpleName) {
+                    .observeEvent(SensorStepFragment::class.java.simpleName) {
                         when (it) {
                             is TaskStateUpdate.Cancelled ->
                                 if (it.isCancelled) binder.stop()
@@ -64,13 +64,13 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<Step.ActiveStep>(indexArg())
+            viewModel.getStepByIndexAs<Step.SensorStep>(indexArg())
 
         step.map { applyData(it) }
     }
 
     fun applyData(
-        step: Step.ActiveStep
+        step: Step.SensorStep
     ): Unit {
 
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())

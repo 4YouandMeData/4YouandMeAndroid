@@ -64,7 +64,7 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
      * not get cut off if it is too long
      *
      */
-    class ActiveStep(
+    class SensorStep(
         identifier: String,
         configuration: Configuration,
         val title: String,

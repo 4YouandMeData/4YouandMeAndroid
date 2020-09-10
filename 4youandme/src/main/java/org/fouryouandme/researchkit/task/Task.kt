@@ -65,7 +65,7 @@ sealed class Task(
                     "Gait and Balance",
                     5
                 ),
-                Step.ActiveStep(
+                Step.SensorStep(
                     identifier = "active_step_walk",
                     configuration = configuration,
                     title = "Gait and Balance",
@@ -82,7 +82,7 @@ sealed class Task(
                     shouldVibrateOnFinish = true
 
                 ),
-                Step.ActiveStep(
+                Step.SensorStep(
                     identifier = "active_step_turn",
                     configuration = configuration,
                     title = "Gait and Balance",

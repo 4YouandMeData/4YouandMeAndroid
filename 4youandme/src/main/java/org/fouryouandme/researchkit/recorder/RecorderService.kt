@@ -51,7 +51,7 @@ open class RecorderService : Service(), RecorderListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int = START_NOT_STICKY
 
-    private fun bindTTS(step: Step.ActiveStep): Unit {
+    private fun bindTTS(step: Step.SensorStep): Unit {
         if (tts.isEmpty())
             tts =
                 if (step.hasVoice())
@@ -92,7 +92,7 @@ open class RecorderService : Service(), RecorderListener {
         }
     }
 
-    private fun buildRecorderList(step: Step.ActiveStep, outputDirectory: File): List<Recorder> =
+    private fun buildRecorderList(step: Step.SensorStep, outputDirectory: File): List<Recorder> =
 
         step.recorderConfigurations.map {
 
@@ -103,7 +103,7 @@ open class RecorderService : Service(), RecorderListener {
 
         }
 
-    private fun setupTaskTimer(step: Step.ActiveStep): Unit {
+    private fun setupTaskTimer(step: Step.SensorStep): Unit {
 
         // Now allow the recorder to record for as long as the active step requires
         // TODO: allow different mode to detect the finish (es. number of steps)
@@ -120,7 +120,7 @@ open class RecorderService : Service(), RecorderListener {
     }
 
 
-    private fun setupReadInstructions(step: Step.ActiveStep): Unit {
+    private fun setupReadInstructions(step: Step.SensorStep): Unit {
 
         // play intro instruction
         step.spokenInstruction.map { speakText(it) }
@@ -215,7 +215,7 @@ open class RecorderService : Service(), RecorderListener {
         RecorderServiceBinder()
 
     @RequiresPermission(value = Manifest.permission.VIBRATE, conditional = true)
-    private fun onRecorderDurationFinished(step: Step.ActiveStep) {
+    private fun onRecorderDurationFinished(step: Step.SensorStep) {
 
         if (step.shouldVibrateOnFinish) vibrate()
         if (step.shouldPlaySoundOnFinish) playSound()
@@ -370,13 +370,13 @@ open class RecorderService : Service(), RecorderListener {
 
         fun bind(
             outputDirectory: File,
-            activeStep: Step.ActiveStep,
+            sensorStep: Step.SensorStep,
             task: Task
         ): Unit {
 
-            if (activeStep.duration > 0) {
+            if (sensorStep.duration > 0) {
 
-                val recorders = buildRecorderList(activeStep, outputDirectory)
+                val recorders = buildRecorderList(sensorStep, outputDirectory)
 
                 // clear old listeners
                 state.map { recorderState ->
@@ -387,14 +387,14 @@ open class RecorderService : Service(), RecorderListener {
 
                 state = RecorderState(
                     startTime = System.currentTimeMillis(),
-                    step = activeStep,
+                    step = sensorStep,
                     task = task,
                     output = outputDirectory,
                     recorderList = recorders
 
                 ).some()
 
-                bindTTS(activeStep)
+                bindTTS(sensorStep)
 
             }
 
