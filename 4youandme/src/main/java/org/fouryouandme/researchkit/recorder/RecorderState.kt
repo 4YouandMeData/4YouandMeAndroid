@@ -16,7 +16,7 @@ data class RecorderState(
 
 sealed class RecordingState {
 
-     object Completed : RecordingState()
-     object Failure : RecordingState()
+    data class Completed(val stepIdentifier: String) : RecordingState()
+    data class Failure(val stepIdentifier: String) : RecordingState()
 
 }

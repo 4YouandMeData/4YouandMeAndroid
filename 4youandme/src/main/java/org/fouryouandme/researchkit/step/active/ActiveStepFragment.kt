@@ -13,6 +13,7 @@ import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
 import org.fouryouandme.researchkit.recorder.RecordingState
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
+import org.fouryouandme.tasks.TaskStateUpdate
 import java.io.File
 
 class ActiveStepFragment : StepFragment(R.layout.step_active) {
@@ -28,22 +29,33 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
                     .map { (step, task) ->
 
                         binder.bind(getOutputDirectory(), step, task)
+
+                        binder.stateLiveData()
+                            .observeEvent(ActiveStepFragment::class.java.simpleName) {
+
+                                when (it) {
+                                    is RecordingState.Completed ->
+                                        if (it.stepIdentifier == step.identifier) next()
+                                    is RecordingState.Failure ->
+                                        if (it.stepIdentifier == step.identifier)
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Fallito",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                }
+
+                            }
+
                     }
 
                 viewModel.stateLiveData()
-
-                binder.stateLiveData()
                     .observeEvent(ActiveStepFragment::class.java.simpleName) {
-
                         when (it) {
-                            RecordingState.Completed -> next()
-                            RecordingState.Failure ->
-                                Toast.makeText(requireContext(), "Fallito", Toast.LENGTH_LONG)
-                                    .show()
+                            is TaskStateUpdate.Cancelled ->
+                                if (it.isCancelled) binder.stop()
                         }
-
                     }
-
             },
             {}
         )
@@ -78,4 +90,10 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
      */
     private fun getOutputDirectory(): File = requireContext().applicationContext.filesDir
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        unbindServiceIO(serviceConnection)
+
+    }
 }

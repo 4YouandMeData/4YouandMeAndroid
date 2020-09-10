@@ -65,6 +65,13 @@ class TaskViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- state --- */
+
+    fun cancel(): Unit =
+        setState(
+            state().copy(isCancelled = true),
+            TaskStateUpdate.Cancelled(true)
+        ).unsafeRunAsync()
 
     /* --- step --- */
 

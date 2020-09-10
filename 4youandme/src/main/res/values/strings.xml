@@ -19,4 +19,9 @@
 
     <string name="STEP_COUNTDOWN_description">Activity starts in</string>
 
+    <string name="TASK_cancel_title">Cancel</string>
+    <string name="TASK_cancel_description">Are you sure you want to cancel the task?</string>
+    <string name="TASK_cancel_positive">Yes</string>
+    <string name="TASK_cancel_negative">No</string>
+
 ***REMOVED***

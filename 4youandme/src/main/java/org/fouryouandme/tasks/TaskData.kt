@@ -8,7 +8,8 @@ import org.fouryouandme.researchkit.task.Task
 
 data class TaskState(
     val configuration: Option<Configuration> = None,
-    val task: Option<Task> = None
+    val task: Option<Task> = None,
+    val isCancelled: Boolean = false
 )
 
 sealed class TaskStateUpdate {
@@ -17,6 +18,8 @@ sealed class TaskStateUpdate {
         val configuration: Configuration,
         val task: Task
     ) : TaskStateUpdate()
+
+    data class Cancelled(val isCancelled: Boolean) : TaskStateUpdate()
 
 }
 

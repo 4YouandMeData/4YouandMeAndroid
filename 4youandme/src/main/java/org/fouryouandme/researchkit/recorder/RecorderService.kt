@@ -17,15 +17,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arrow.core.None
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.some
 import arrow.fx.IO
 import arrow.fx.extensions.fx
+import arrow.fx.typeclasses.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.unsafeRunAsyncCancelable
 import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.Result
 import org.fouryouandme.researchkit.step.Step
@@ -40,7 +43,11 @@ open class RecorderService : Service(), RecorderListener {
 
     private var tts: Option<TextToSpeech> = None
 
-    private val stateLiveDate: MutableLiveData<Event<RecordingState>> = MutableLiveData()
+    private var taskTimer: Option<Disposable> = None
+
+    private var middleInstruction: Option<List<Disposable>> = None
+
+    private var stateLiveDate: MutableLiveData<Event<RecordingState>> = MutableLiveData()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int = START_NOT_STICKY
 
@@ -73,7 +80,8 @@ open class RecorderService : Service(), RecorderListener {
                         tts = None
                     }
 
-                    startDelayedOperations(step)
+                    setupTaskTimer(step)
+                    setupReadInstructions(step)
 
                 }.some()
             else None
@@ -90,40 +98,42 @@ open class RecorderService : Service(), RecorderListener {
 
         }
 
-    private fun startDelayedOperations(step: Step.ActiveStep): Unit {
+    private fun setupTaskTimer(step: Step.ActiveStep): Unit {
 
         // Now allow the recorder to record for as long as the active step requires
         // TODO: allow different mode to detect the finish (es. number of steps)
-        IO.fx {
+        taskTimer =
+            IO.fx {
 
-            continueOn(Dispatchers.IO)
-            !effect { delay(step.duration * 1000L) }
-            continueOn(Dispatchers.Main)
-            onRecorderDurationFinished(step)
+                continueOn(Dispatchers.IO)
+                !effect { delay(step.duration * 1000L) }
+                continueOn(Dispatchers.Main)
+                onRecorderDurationFinished(step)
 
-        }.unsafeRunAsync()
+            }.unsafeRunAsyncCancelable().some()
 
-        readInstructions(step)
     }
 
-    private fun readInstructions(step: Step.ActiveStep): Unit {
+
+    private fun setupReadInstructions(step: Step.ActiveStep): Unit {
 
         // play intro instruction
         step.spokenInstruction.map { speakText(it) }
 
         // play instruction during the step
-        step.spokenInstructionMap.forEach { (key, value) ->
+        middleInstruction =
+            step.spokenInstructionMap.map { (key, value) ->
 
-            IO.fx {
+                IO.fx {
 
-                continueOn(Dispatchers.IO)
-                !effect { delay(key * 1000L) }
-                continueOn(Dispatchers.Main)
-                speakText(value)
+                    continueOn(Dispatchers.IO)
+                    !effect { delay(key * 1000L) }
+                    continueOn(Dispatchers.Main)
+                    speakText(value)
 
-            }.unsafeRunAsync()
+                }.unsafeRunAsyncCancelable()
 
-        }
+            }.some()
     }
 
     private fun speakText(text: String): Unit {
@@ -189,10 +199,10 @@ open class RecorderService : Service(), RecorderListener {
      * It should be treated like a recorder canceled scenario
      */
     override fun onDestroy() {
-        super.onDestroy()
 
-        shutDownTts()
-        shutDownRecorders()
+        stopRecorder()
+
+        super.onDestroy()
 
     }
 
@@ -213,7 +223,7 @@ open class RecorderService : Service(), RecorderListener {
             continueOn(Dispatchers.IO)
             !effect { delay(step.estimateTimeInMsToSpeakEndInstruction) }
             continueOn(Dispatchers.Main)
-            stateLiveDate.value = RecordingState.Completed.toEvent()
+            stateLiveDate.value = RecordingState.Completed(getStepIdentifier()).toEvent()
 
         }.unsafeRunAsync()
 
@@ -250,9 +260,10 @@ open class RecorderService : Service(), RecorderListener {
      * @param error    The error that occurred.
      */
     override fun onFail(recorder: Recorder, error: Throwable) {
-        shutDownTts()
-        stateLiveDate.value = RecordingState.Failure.toEvent()
-        stopSelf()
+
+        stateLiveDate.value = RecordingState.Failure(getStepIdentifier()).toEvent()
+        stopRecorder()
+
     }
 
     private fun shutDownTts(): Unit {
@@ -294,12 +305,33 @@ open class RecorderService : Service(), RecorderListener {
 
     }
 
-    private fun playSound() {
+    private fun playSound(): Unit {
+
         val toneG = ToneGenerator(AudioManager.STREAM_ALARM, 50) // 50 = half volume
         // Play a low and high tone for 500 ms at full volume
         toneG.startTone(ToneGenerator.TONE_CDMA_LOW_L, DEFAULT_VIBRATION_AND_SOUND_DURATION)
         toneG.startTone(ToneGenerator.TONE_CDMA_HIGH_L, DEFAULT_VIBRATION_AND_SOUND_DURATION)
+
     }
+
+    private fun stopRecorder(): Unit {
+
+        shutDownTts()
+        shutDownRecorders()
+        stopSelf()
+
+        taskTimer.map { it() }
+        taskTimer = None
+
+        middleInstruction.map { list -> list.forEach { it() } }
+        middleInstruction = None
+
+        stateLiveDate = MutableLiveData()
+
+    }
+
+    private fun getStepIdentifier(): String =
+        state.map { it.step.identifier }.getOrElse { "unknown" }
 
     /**
      * This class will be what is returned when an view binds to this service.
@@ -341,6 +373,8 @@ open class RecorderService : Service(), RecorderListener {
         }
 
         fun stateLiveData(): LiveData<Event<RecordingState>> = stateLiveDate
+
+        fun stop(): Unit = stopRecorder()
 
     }
 

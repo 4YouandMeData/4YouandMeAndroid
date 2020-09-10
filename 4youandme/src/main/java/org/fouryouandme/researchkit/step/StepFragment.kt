@@ -1,11 +1,14 @@
 package org.fouryouandme.researchkit.step
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import arrow.core.None
 import arrow.core.some
 import arrow.core.toOption
+import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -20,6 +23,21 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
         viewModelFactory(
             taskFragment(),
             getFactory { TaskViewModel(navigator, IORuntime) }
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+
+                override fun handleOnBackPressed() {
+                    showCancelDialog()
+                }
+
+            }
         )
     }
 
@@ -38,6 +56,22 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
     }
 
     protected fun taskFragment(): Fragment = sectionParent().requireParentFragment()
+
+    private fun showCancelDialog(): Unit {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.TASK_cancel_title)
+            .setMessage(R.string.TASK_cancel_description)
+            .setPositiveButton(R.string.TASK_cancel_positive)
+            { _, _ ->
+                viewModel.cancel()
+                viewModel.close(taskFragment().findNavController())
+            }
+            .setNegativeButton(R.string.TASK_cancel_negative)
+            { dialog, _ -> dialog.dismiss() }
+            .show()
+
+    }
 
     companion object {
 
