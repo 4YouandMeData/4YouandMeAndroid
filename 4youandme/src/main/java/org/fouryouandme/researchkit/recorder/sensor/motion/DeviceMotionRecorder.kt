@@ -8,7 +8,6 @@ import arrow.core.*
 import arrow.fx.IO
 import arrow.fx.extensions.fx
 import com.squareup.moshi.Moshi
-import org.fouryouandme.core.ext.orJustUnit
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -166,7 +165,7 @@ open class DeviceMotionRecorder internal constructor(
             if (sensorData.isEmpty())
                 Timber.e("Unable find type key for sensor type: $sensorType")
 
-            sensorData.map { onRecordDataCollected(it.a) }.orJustUnit().bind()
+            //sensorData.map { onRecordDataCollected(it.a) }.orJustUnit().bind()
 
             sensorData.map { it.b }
         }

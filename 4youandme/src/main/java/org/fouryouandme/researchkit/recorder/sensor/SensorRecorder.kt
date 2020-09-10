@@ -5,6 +5,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Handler
+import android.os.HandlerThread
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
@@ -51,6 +53,16 @@ abstract class SensorRecorder(
     private var sensorList: MutableList<Sensor> = mutableListOf()
     private var timestampZeroReferenceNanos: Long = 0
 
+    private val handler = HandlerThread("sensor_thread")
+
+    private val sensorHandler by lazy { Handler(handler.looper) }
+
+    init {
+
+        handler.start()
+
+    }
+
     /**
      * @param  availableSensorList the list of available sensors for the user's device
      * @return a list of sensor types that should be listened to
@@ -69,6 +81,7 @@ abstract class SensorRecorder(
     private fun startSensorRecording(context: Context): IO<Unit> =
         IO.fx {
 
+            continueOn(Dispatchers.IO)
             sensorManager =
                 (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
 
@@ -88,13 +101,15 @@ abstract class SensorRecorder(
                                     sm.registerListener(
                                         this@SensorRecorder,
                                         it,
-                                        SensorManager.SENSOR_DELAY_FASTEST
+                                        SensorManager.SENSOR_DELAY_FASTEST,
+                                        sensorHandler
                                     )
                                 else
                                     sm.registerListener(
                                         this@SensorRecorder,
                                         it,
-                                        calculateDelayBetweenSamplesInMicroSeconds()
+                                        calculateDelayBetweenSamplesInMicroSeconds(),
+                                        sensorHandler
                                     )
 
                             anySucceeded = anySucceeded or success
@@ -138,6 +153,9 @@ abstract class SensorRecorder(
 
     override fun stop() {
         super.stop()
+
+        if (handler.isAlive) handler.quitSafely()
+
         sensorList.forEach { sensor ->
             sensorManager.map { it.unregisterListener(this, sensor) }
         }
@@ -146,6 +164,9 @@ abstract class SensorRecorder(
 
     override fun cancel() {
         super.cancel()
+
+        if (handler.isAlive) handler.quitSafely()
+
         sensorList.forEach { sensor ->
             sensorManager.map { it.unregisterListener(this, sensor) }
         }
