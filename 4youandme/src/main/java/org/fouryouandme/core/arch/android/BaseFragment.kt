@@ -8,11 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import arrow.fx.IO
 import arrow.fx.extensions.fx
-import arrow.fx.extensions.io.unsafeRun.runNonBlocking
-import arrow.unsafe
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
 import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.ext.unsafeRunAsync
 
 
 abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
@@ -39,14 +38,8 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
         observe(this@BaseFragment, Observer { handle(it.peekContent()) })
 
     fun unbindServiceIO(serviceConnection: ServiceConnection): Unit =
-        unsafe {
 
-            runNonBlocking({
-
-                IO.fx {
-                    requireActivity().applicationContext.unbindService(serviceConnection)
-                }.attempt()
-
-            }) {}
-        }
+        IO.fx { requireActivity().applicationContext.unbindService(serviceConnection) }
+            .attempt()
+            .unsafeRunAsync()
 }

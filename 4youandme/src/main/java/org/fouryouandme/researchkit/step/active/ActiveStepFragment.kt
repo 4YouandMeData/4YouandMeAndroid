@@ -91,9 +91,10 @@ class ActiveStepFragment : StepFragment(R.layout.step_active) {
     private fun getOutputDirectory(): File = requireContext().applicationContext.filesDir
 
     override fun onDestroy() {
-        super.onDestroy()
 
         unbindServiceIO(serviceConnection)
+
+        super.onDestroy()
 
     }
 }

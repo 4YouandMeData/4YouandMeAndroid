@@ -176,7 +176,7 @@ open class LocationRecorder(
 
     override fun stop() {
         super.stop()
-        stopLocationListener().unsafeRunSync()
+        stopLocationListener().unsafeRunAsync()
     }
 
     // locationListener methods

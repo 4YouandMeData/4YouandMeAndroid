@@ -70,7 +70,7 @@ sealed class Task(
                     configuration = configuration,
                     title = "Gait and Balance",
                     description = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.",
-                    duration = 30,
+                    duration = 10,
                     recorderConfigurations = listOf(
                         PedometerRecorderConfig(moshi),
                         AccelerometerRecorderConfig(moshi, 100.toDouble()),
@@ -87,7 +87,7 @@ sealed class Task(
                     configuration = configuration,
                     title = "Gait and Balance",
                     description = "Turn in a full circle and then stand still for 30 seconds",
-                    duration = 30,
+                    duration = 10,
                     recorderConfigurations = listOf(
                         //PedometerRecorderConfig(moshi),
                         //AccelerometerRecorderConfig(moshi, 100.toDouble()),

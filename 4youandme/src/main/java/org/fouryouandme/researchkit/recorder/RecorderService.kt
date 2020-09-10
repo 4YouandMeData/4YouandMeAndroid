@@ -52,39 +52,44 @@ open class RecorderService : Service(), RecorderListener {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int = START_NOT_STICKY
 
     private fun bindTTS(step: Step.ActiveStep): Unit {
-        tts =
-            if (step.hasVoice())
-                TextToSpeech(
-                    this@RecorderService
-                ) { status ->
+        if (tts.isEmpty())
+            tts =
+                if (step.hasVoice())
+                    TextToSpeech(
+                        this@RecorderService
+                    ) { status ->
 
-                    if (status == TextToSpeech.SUCCESS) {
+                        if (status == TextToSpeech.SUCCESS) {
 
-                        tts.map {
+                            tts.map {
 
-                            val languageAvailable =
-                                it.isLanguageAvailable(Locale.getDefault())
-                            // >= 0 means
-                            // LANG_AVAILABLE,
-                            // LANG_COUNTRY_AVAILABLE,
-                            // or LANG_COUNTRY_VAR_AVAILABLE
-                            // TODO: fix language
-                            if (languageAvailable >= 0)
-                                it.language = Locale.US
-                            else
-                                tts = None
+                                val languageAvailable =
+                                    it.isLanguageAvailable(Locale.getDefault())
+                                // >= 0 means
+                                // LANG_AVAILABLE,
+                                // LANG_COUNTRY_AVAILABLE,
+                                // or LANG_COUNTRY_VAR_AVAILABLE
+                                // TODO: fix language
+                                if (languageAvailable >= 0)
+                                    it.language = Locale.US
+                                else
+                                    tts = None
+                            }
+
+                        } else {
+                            Timber.e("Failed to initialize TTS with error code $status")
+                            tts = None
                         }
 
-                    } else {
-                        Timber.e("Failed to initialize TTS with error code $status")
-                        tts = None
-                    }
+                        setupTaskTimer(step)
+                        setupReadInstructions(step)
 
-                    setupTaskTimer(step)
-                    setupReadInstructions(step)
-
-                }.some()
-            else None
+                    }.some()
+                else None
+        else if (step.hasVoice()) {
+            setupTaskTimer(step)
+            setupReadInstructions(step)
+        }
     }
 
     private fun buildRecorderList(step: Step.ActiveStep, outputDirectory: File): List<Recorder> =

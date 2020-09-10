@@ -105,6 +105,7 @@ abstract class JsonArrayDataRecorder(
     fun writeJsonObjectToFile(json: String): IO<Unit> =
         IO.fx {
 
+            continueOn(Dispatchers.IO)
             // append optional comma for array separation
             val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
 
@@ -119,8 +120,6 @@ abstract class JsonArrayDataRecorder(
                     .bind()
                     .map { }
 
-            // switch to main thread before invoke the listener
-            continueOn(Dispatchers.Main)
             when (write) {
 
                 is Either.Left ->
@@ -130,8 +129,6 @@ abstract class JsonArrayDataRecorder(
                 is Either.Right ->
                     isFirstJsonObject = false
             }
-            // return to IO thread
-            continueOn(Dispatchers.IO)
 
             Unit
 

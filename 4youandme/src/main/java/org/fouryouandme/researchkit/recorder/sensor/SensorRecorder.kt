@@ -13,6 +13,7 @@ import arrow.fx.IO
 import arrow.fx.extensions.fx
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.ext.orJustUnit
+import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -59,47 +60,59 @@ abstract class SensorRecorder(
     protected abstract fun getSensorTypeList(availableSensorList: List<Sensor>): List<Int>
 
     override fun start(context: Context): Unit {
+
         super.start(context)
 
-        sensorManager = (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
-
-        var anySucceeded = false
-
-        sensorManager.map { sm ->
-
-            val availableSensorList = sm.getSensorList(Sensor.TYPE_ALL)
-
-            sensorList = getSensorTypeList(availableSensorList).mapNotNull { sensorType ->
-
-                sm.getDefaultSensor(sensorType).toOption()
-                    .map {
-
-                        val success =
-                            if (isManualFrequency)
-                                sm.registerListener(
-                                    this, it, SensorManager.SENSOR_DELAY_FASTEST
-                                )
-                            else
-                                sm.registerListener(
-                                    this, it,
-                                    calculateDelayBetweenSamplesInMicroSeconds()
-                                )
-
-                        anySucceeded = anySucceeded or success
-
-                        if (success.not())
-                            Timber.e("Failed to register sensor: $it")
-
-                        it
-
-                    }.orNull()
-
-            }.toMutableList()
-        }
-
-        if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
-        else super.startJsonDataLogging()
+        startSensorRecording(context).unsafeRunAsync()
     }
+
+    private fun startSensorRecording(context: Context): IO<Unit> =
+        IO.fx {
+
+            sensorManager =
+                (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
+
+            var anySucceeded = false
+
+            sensorManager.map { sm ->
+
+                val availableSensorList = sm.getSensorList(Sensor.TYPE_ALL)
+
+                sensorList = getSensorTypeList(availableSensorList).mapNotNull { sensorType ->
+
+                    sm.getDefaultSensor(sensorType).toOption()
+                        .map {
+
+                            val success =
+                                if (isManualFrequency)
+                                    sm.registerListener(
+                                        this@SensorRecorder,
+                                        it,
+                                        SensorManager.SENSOR_DELAY_FASTEST
+                                    )
+                                else
+                                    sm.registerListener(
+                                        this@SensorRecorder,
+                                        it,
+                                        calculateDelayBetweenSamplesInMicroSeconds()
+                                    )
+
+                            anySucceeded = anySucceeded or success
+
+                            if (success.not())
+                                Timber.e("Failed to register sensor: $it")
+
+                            it
+
+                        }.orNull()
+
+                }.toMutableList()
+            }
+
+            if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
+            else super.startJsonDataLogging()
+
+        }
 
     override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
 
@@ -112,7 +125,8 @@ abstract class SensorRecorder(
                 .map { writeJsonObjectToFile(it) }
                 .orJustUnit()
                 .bind()
-        }
+
+        }.unsafeRunAsync()
 
     }
 
