@@ -200,7 +200,7 @@ open class RecorderService : Service(), RecorderListener {
      */
     override fun onDestroy() {
 
-        stopRecorder()
+        shutDownRecorder()
 
         super.onDestroy()
 
@@ -216,16 +216,18 @@ open class RecorderService : Service(), RecorderListener {
         if (step.shouldPlaySoundOnFinish) playSound()
         step.finishedSpokenInstruction.map { speakText(it) }
 
-        state.map { recorderState -> recorderState.recorderList.map { it.stop() } }
-
         IO.fx {
 
             continueOn(Dispatchers.IO)
             !effect { delay(step.estimateTimeInMsToSpeakEndInstruction) }
             continueOn(Dispatchers.Main)
             stateLiveDate.value = RecordingState.Completed(getStepIdentifier()).toEvent()
+            // reset live data value to avoid to send again the last event to new subscribers
+            stateLiveDate = MutableLiveData()
 
         }.unsafeRunAsync()
+
+        stopRecorder()
 
     }
 
@@ -262,7 +264,7 @@ open class RecorderService : Service(), RecorderListener {
     override fun onFail(recorder: Recorder, error: Throwable) {
 
         stateLiveDate.value = RecordingState.Failure(getStepIdentifier()).toEvent()
-        stopRecorder()
+        shutDownRecorder()
 
     }
 
@@ -283,6 +285,14 @@ open class RecorderService : Service(), RecorderListener {
                 it.recorderListener = None
                 it.cancel()
             }
+        }
+
+    }
+
+    private fun stopRecorders(): Unit {
+
+        state.map { recorderState ->
+            recorderState.recorderList.map { it.stop() }
         }
 
     }
@@ -316,9 +326,20 @@ open class RecorderService : Service(), RecorderListener {
 
     private fun stopRecorder(): Unit {
 
+        stopRecorders()
+
+        taskTimer.map { it() }
+        taskTimer = None
+
+        middleInstruction.map { list -> list.forEach { it() } }
+        middleInstruction = None
+
+    }
+
+    private fun shutDownRecorder(): Unit {
+
         shutDownTts()
         shutDownRecorders()
-        stopSelf()
 
         taskTimer.map { it() }
         taskTimer = None
@@ -327,6 +348,8 @@ open class RecorderService : Service(), RecorderListener {
         middleInstruction = None
 
         stateLiveDate = MutableLiveData()
+
+        stopSelf()
 
     }
 
@@ -374,7 +397,7 @@ open class RecorderService : Service(), RecorderListener {
 
         fun stateLiveData(): LiveData<Event<RecordingState>> = stateLiveDate
 
-        fun stop(): Unit = stopRecorder()
+        fun stop(): Unit = shutDownRecorder()
 
     }
 
