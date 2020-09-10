@@ -4,6 +4,7 @@ import arrow.core.None
 import arrow.core.Option
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.researchkit.recorder.RecorderConfig
+import org.fouryouandme.researchkit.step.introduction.IntroductionItem
 import java.util.*
 
 sealed class Step(val identifier: String, val configuration: Configuration) {
@@ -16,6 +17,15 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val image: Int,
         val button: String,
         val close: Boolean = false
+    ) : Step(identifier, configuration)
+
+    class IntroductionListStep(
+        identifier: String,
+        configuration: Configuration,
+        val title: String,
+        val image: Int,
+        val list: List<IntroductionItem>,
+        val button: String,
     ) : Step(identifier, configuration)
 
     class CountDownStep(

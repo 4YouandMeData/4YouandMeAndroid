@@ -43,6 +43,8 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                 when (it) {
                     is Step.IntroductionStep ->
                         IntroductionStepFragment()
+                    is Step.IntroductionListStep ->
+                        IntroductionStepFragment()
                     is Step.CountDownStep ->
                         CountDownStepFragment()
                     is Step.SensorStep ->
