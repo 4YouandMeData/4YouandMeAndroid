@@ -47,6 +47,13 @@ sealed class Task(
         ): List<Step> =
             listOf(
                 // TODO: Remove mock
+                Step.StartStep(
+                    "start_1",
+                    configuration,
+                    "Gait and Balance",
+                    "This activity measures your gait and balance as you walk and stand still. Do not continue if you cannot safely walk unassisted.",
+                    "Next"
+                ),
                 Step.IntroductionStep(
                     "introduction_1",
                     configuration,

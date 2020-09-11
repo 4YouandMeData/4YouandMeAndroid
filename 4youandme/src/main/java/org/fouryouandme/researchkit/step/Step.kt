@@ -92,4 +92,13 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
 
     }
 
+    class StartStep(
+        identifier: String,
+        configuration: Configuration,
+        val title: String,
+        val description: String,
+        val button: String,
+        val close: Boolean = false
+    ) : Step(identifier, configuration)
+
 }
