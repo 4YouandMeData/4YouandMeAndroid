@@ -50,5 +50,19 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun pocket(): Int = R.drawable.pocket
 
-    override fun videoDiary(): Int = R.drawable.video_diary
+    override fun videoDiaryIntro(): Int = R.drawable.video_diary_intro
+
+    override fun videoDiaryTime(): Int = R.drawable.video_diary_time
+
+    override fun videoDiaryClose(): Int = R.drawable.video_diary_close
+
+    override fun videoDiaryRecord(): Int = R.drawable.video_diary_record
+
+    override fun videoDiaryPause(): Int = R.drawable.video_diary_pause
+
+    override fun videoDiaryFlashOn(): Int = R.drawable.video_diary_flash_on
+
+    override fun videoDiaryFlashOff(): Int = R.drawable.video_diary_flash_off
+
+    override fun videoDiaryToggleCamera(): Int = R.drawable.video_diary_toggle_camera
 }
