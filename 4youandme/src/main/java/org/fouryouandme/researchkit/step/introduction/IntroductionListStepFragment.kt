@@ -14,6 +14,7 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.dpToPx
 import org.fouryouandme.core.ext.imageConfiguration
+import org.fouryouandme.core.ext.show
 import org.fouryouandme.core.ext.showCloseButton
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
@@ -94,6 +95,8 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
             }
 
             setBackgroundColor(step.configuration.theme.secondaryColor.color())
+
+            show()
 
         }
 
