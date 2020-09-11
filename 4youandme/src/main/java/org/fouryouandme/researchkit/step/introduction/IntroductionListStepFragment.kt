@@ -62,7 +62,7 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         recycler_view.addItemDecoration(
             LinearMarginItemDecoration(
                 topMargin = {
-                    if (it.index == 0) 30.dpToPx()
+                    if (it.index == 0) 70.dpToPx()
                     else 45.dpToPx()
                 },
                 startMargin = { 25.dpToPx() },
@@ -87,8 +87,14 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         next.setTextColor(step.configuration.theme.secondaryColor.color())
         next.setOnClickListener { next() }
 
-        taskFragment().toolbar.showCloseButton(imageConfiguration) {
-            viewModel.back(stepNavController(), taskNavController())
+        taskFragment().toolbar.apply {
+
+            showCloseButton(imageConfiguration) {
+                viewModel.back(stepNavController(), taskNavController())
+            }
+
+            setBackgroundColor(step.configuration.theme.secondaryColor.color())
+
         }
 
     }
