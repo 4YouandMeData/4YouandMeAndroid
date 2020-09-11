@@ -49,4 +49,6 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun timer(): Int = R.drawable.timer
 
     override fun pocket(): Int = R.drawable.pocket
+
+    override fun videoDiary(): Int = R.drawable.video_diary
 }

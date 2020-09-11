@@ -69,4 +69,7 @@ interface ImageConfiguration {
     @DrawableRes
     fun pocket(): Int
 
+    @DrawableRes
+    fun videoDiary(): Int
+
 }
