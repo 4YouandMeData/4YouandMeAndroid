@@ -39,7 +39,6 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="25dp"
                     android:gravity="center"
-                    android:textColor="@color/text"
                     tools:text="Title" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -50,7 +49,6 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="25dp"
-                    android:textColor="@color/text"
                     tools:text="@string/PLACEHOLDER_body" />
 
             </LinearLayout>
