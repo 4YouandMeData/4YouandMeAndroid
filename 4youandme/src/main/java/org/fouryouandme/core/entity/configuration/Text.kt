@@ -9,7 +9,8 @@ data class Text(
     val phoneVerification: PhoneVerification,
     val onboarding: Onboarding,
     val tab: Tab,
-    val activity: Activity
+    val activity: Activity,
+    val videoDiary: VideoDiary
 )
 
 data class Error(
@@ -127,4 +128,34 @@ data class Tab(
 data class Activity(
     val activityButtonDefault: String,
     val quickActivityButtonDefault: String
+)
+
+data class VideoDiary(
+    val introTitle: String,
+    val introButton: String,
+    val introParagraphTitleA: String,
+    val introParagraphBodyA: String,
+    val introParagraphTitleB: String,
+    val introParagraphBodyB: String,
+    val introParagraphTitleC: String,
+    val introParagraphBodyC: String,
+    val recorderInfoTitle: String,
+    val recorderInfoBody: String,
+    val recorderTitle: String,
+    val recorderCloseButton: String,
+    val recorderReviewButton: String,
+    val recorderSubmitButton: String,
+    val successTitle: String,
+    val discardTitle: String,
+    val discardBody: String,
+    val discardCancel: String,
+    val discardConfirm: String,
+    val missingPermissionDiscard: String,
+    val missingPermissionTitleMic: String,
+    val missingPermissionBodyMic: String,
+    val missingPermissionTitleCamera: String,
+    val missingPermissionBodyCamera: String,
+    val missingPermissionBodySettings: String,
+    val recorderStartRecordingDescription: String,
+    val recorderResumeRecordingDescription: String,
 )
