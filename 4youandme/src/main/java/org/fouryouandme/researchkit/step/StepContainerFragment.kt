@@ -17,6 +17,7 @@ import org.fouryouandme.researchkit.step.countdown.CountDownStepFragment
 import org.fouryouandme.researchkit.step.introduction.IntroductionListStepFragment
 import org.fouryouandme.researchkit.step.introduction.IntroductionStepFragment
 import org.fouryouandme.researchkit.step.sensor.SensorStepFragment
+import org.fouryouandme.researchkit.step.video.VideoDiaryStepFragment
 import org.fouryouandme.tasks.TaskViewModel
 
 class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
@@ -50,6 +51,8 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                         CountDownStepFragment()
                     is Step.SensorStep ->
                         SensorStepFragment()
+                    is Step.VideoDiaryStep ->
+                        VideoDiaryStepFragment()
                 }
             }.map { StepFragment.buildWithParams(args.index, it) }
 

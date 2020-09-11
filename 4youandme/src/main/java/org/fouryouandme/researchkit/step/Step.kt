@@ -102,4 +102,9 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
 
     }
 
+    class VideoDiaryStep(
+        identifier: String,
+        configuration: Configuration
+    ) : Step(identifier, configuration)
+
 }

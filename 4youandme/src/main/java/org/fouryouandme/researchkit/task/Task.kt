@@ -149,6 +149,10 @@ sealed class Task(
                             configuration
                         )
                     )
+                ),
+                Step.VideoDiaryStep(
+                    "video_diary",
+                    configuration
                 )
             )
     }
