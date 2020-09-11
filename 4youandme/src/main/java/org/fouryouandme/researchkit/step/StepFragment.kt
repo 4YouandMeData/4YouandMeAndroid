@@ -3,7 +3,6 @@ package org.fouryouandme.researchkit.step
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import arrow.core.None
 import arrow.core.some
@@ -13,8 +12,11 @@ import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.find
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.sectionParent
+import org.fouryouandme.tasks.TaskFragment
+import org.fouryouandme.tasks.TaskNavController
 import org.fouryouandme.tasks.TaskViewModel
 
 open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(contentLayoutId) {
@@ -52,10 +54,15 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
         if (!finish)
             viewModel.nextStep(sectionParent().findNavController(), indexArg())
         else
-            viewModel.close(taskFragment().findNavController())
+            viewModel.close(taskNavController())
     }
 
-    protected fun taskFragment(): Fragment = sectionParent().requireParentFragment()
+    protected fun taskFragment(): TaskFragment = find()
+
+    protected fun taskNavController(): TaskNavController =
+        taskFragment().navController()
+
+    protected fun stepNavController(): StepNavController = StepNavController(findNavController())
 
     private fun showCancelDialog(): Unit {
 
@@ -65,7 +72,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             .setPositiveButton(R.string.TASK_cancel_positive)
             { _, _ ->
                 viewModel.cancel()
-                viewModel.close(taskFragment().findNavController())
+                viewModel.close(taskNavController())
             }
             .setNegativeButton(R.string.TASK_cancel_negative)
             { dialog, _ -> dialog.dismiss() }

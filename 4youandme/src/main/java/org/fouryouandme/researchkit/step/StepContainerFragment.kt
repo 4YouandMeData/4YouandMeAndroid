@@ -14,6 +14,7 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.sectionParent
 import org.fouryouandme.researchkit.step.countdown.CountDownStepFragment
+import org.fouryouandme.researchkit.step.introduction.IntroductionListStepFragment
 import org.fouryouandme.researchkit.step.introduction.IntroductionStepFragment
 import org.fouryouandme.researchkit.step.sensor.SensorStepFragment
 import org.fouryouandme.tasks.TaskViewModel
@@ -44,7 +45,7 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                     is Step.IntroductionStep ->
                         IntroductionStepFragment()
                     is Step.IntroductionListStep ->
-                        IntroductionStepFragment()
+                        IntroductionListStepFragment()
                     is Step.CountDownStep ->
                         CountDownStepFragment()
                     is Step.SensorStep ->

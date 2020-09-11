@@ -9,6 +9,7 @@ import org.fouryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.LocationRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.introduction.IntroductionItem
 
 sealed class Task(
     val identifier: String,
@@ -34,7 +35,7 @@ sealed class Task(
             when (type) {
                 ETaskType.WALK -> GaitTask(configuration, imageConfiguration, moshi)
                 ETaskType.GAIT -> GaitTask(configuration, imageConfiguration, moshi)
-                ETaskType.VIDEO_DIARY -> GaitTask(configuration, imageConfiguration, moshi)
+                ETaskType.VIDEO_DIARY -> VideoDiary(configuration, imageConfiguration, moshi)
             }
 
     }
@@ -110,6 +111,46 @@ sealed class Task(
                 ),
             )
 
+    }
+
+    class VideoDiary(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        private val moshi: Moshi
+    ) : Task("video_diary", configuration, imageConfiguration) {
+
+        override fun buildSteps(
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration
+        ): List<Step> =
+            listOf(
+                Step.IntroductionListStep(
+                    "introduction",
+                    configuration,
+                    configuration.text.videoDiary.introTitle,
+                    imageConfiguration.videoDiary(),
+                    configuration.text.videoDiary.introButton,
+                    listOf(
+                        IntroductionItem(
+                            configuration.text.videoDiary.introParagraphTitleA,
+                            configuration.text.videoDiary.introParagraphBodyA,
+                            configuration
+                        ),
+
+                        IntroductionItem(
+                            configuration.text.videoDiary.introParagraphTitleB,
+                            configuration.text.videoDiary.introParagraphBodyB,
+                            configuration
+                        ),
+
+                        IntroductionItem(
+                            configuration.text.videoDiary.introParagraphTitleB,
+                            configuration.text.videoDiary.introParagraphBodyB,
+                            configuration
+                        )
+                    )
+                )
+            )
     }
 
 }

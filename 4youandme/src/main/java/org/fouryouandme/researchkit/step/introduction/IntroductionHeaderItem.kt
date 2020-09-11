@@ -52,7 +52,7 @@ class IntroductionHeaderViewHolder(
     override fun bind(t: IntroductionHeaderItem, position: Int) {
 
         title.text = t.title
-        title.setTextColor(t.configuration.theme.fourthTextColor.color())
+        title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
         image.setImageResource(t.image)
 
