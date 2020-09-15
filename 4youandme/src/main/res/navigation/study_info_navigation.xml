@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/study_info_navigation"
-    app:startDestination="@id/work_in_progress">
+    app:startDestination="@id/study_info">
 
     <fragment
-        android:id="@+id/work_in_progress"
-        android:name="org.fouryouandme.main.WorkInProgressFragment"
-        android:label="work_in_progress"
-        tools:layout="@layout/work_in_progress" />
+        android:id="@+id/study_info"
+        android:name="org.fouryouandme.studyinfo.StudyInfoFragment"
+        android:label="study_info"
+        tools:layout="@layout/study_info" />
 
 </navigation>

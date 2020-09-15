@@ -53,8 +53,8 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                         IntroductionListStepFragment()
                     is Step.CountDownStep ->
                         CountDownStepFragment()
-                    is Step.ActiveStep ->
-                        ActiveStepFragment()
+                    is Step.SensorStep ->
+                        SensorStepFragment()
                     is Step.EndStep ->
                         EndStepFragment()
                     is Step.SensorStep ->
