@@ -1,3 +1,4 @@
+import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -47,13 +48,15 @@ object Versions {
 
     const val security_crypto: String = "1.0.0-rc01"
 
+    const val moshi_adapters: String = "1.8.0" // available: "1.10.0"
+
     const val espresso_core: String = "3.3.0"
 
     const val signature_pad: String = "1.3.1"
 
-    const val arrow_optics: String = "0.10.5"
+    const val arrow_optics: String = "0.10.5" // available: "0.11.0"
 
-    const val arrow_syntax: String = "0.10.5"
+    const val arrow_syntax: String = "0.10.5" // available: "0.11.0"
 
     const val fragment_ktx: String = "1.3.0-alpha06"
 
@@ -63,7 +66,7 @@ object Versions {
 
     const val threetenabp: String = "1.2.4"
 
-    const val arrow_meta: String = "0.10.5"
+    const val arrow_meta: String = "0.10.5" // available: "0.11.0"
 
     const val span_droid: String = "0.1"
 
@@ -71,11 +74,13 @@ object Versions {
 
     const val appcompat: String = "1.2.0"
 
-    const val arrow_fx: String = "0.10.5"
+    const val arrow_fx: String = "0.10.5" // available: "0.11.0"
 
     const val core_ktx: String = "1.3.1"
 
     const val dexter: String = "6.2.1"
+
+    const val lottie: String = "3.4.2"
 
     const val timber: String = "4.7.1"
 

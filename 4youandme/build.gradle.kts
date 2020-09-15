@@ -141,4 +141,6 @@ dependencies {
     testImplementation(Libs.junit_junit)
     androidTestImplementation(Libs.androidx_test_ext_junit)
     androidTestImplementation(Libs.espresso_core)
+
+    implementation (Libs.lottie)
 }

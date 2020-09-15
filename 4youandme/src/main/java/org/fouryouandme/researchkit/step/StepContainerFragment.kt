@@ -15,6 +15,7 @@ import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.sectionParent
 import org.fouryouandme.researchkit.step.active.ActiveStepFragment
 import org.fouryouandme.researchkit.step.countdown.CountDownStepFragment
+import org.fouryouandme.researchkit.step.end.EndStepFragment
 import org.fouryouandme.researchkit.step.introduction.IntroductionStepFragment
 import org.fouryouandme.researchkit.step.start.StartStepFragment
 import org.fouryouandme.tasks.TaskViewModel
@@ -50,6 +51,8 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                         CountDownStepFragment()
                     is Step.ActiveStep ->
                         ActiveStepFragment()
+                    is Step.EndStep ->
+                        EndStepFragment()
                 }
             }.map { StepFragment.buildWithParams(args.index, it) }
 

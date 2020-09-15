@@ -1,16 +1,12 @@
 package org.fouryouandme.researchkit.step.start
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
-import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.step_introduction.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
-import kotlin.math.roundToInt
 
 
 class StartStepFragment : StepFragment(R.layout.step_start) {

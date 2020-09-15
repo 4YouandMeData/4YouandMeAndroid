@@ -109,8 +109,15 @@ sealed class Task(
                     "You have completed the activity.",
                     imageConfiguration.pocket(),
                     "Next",
-                    true
                 ),
+                Step.EndStep(
+                    "end_1",
+                    configuration,
+                    "Activity Complete",
+                    "Your data will be analyzed and you will be notified when your result are ready.",
+                    "Done",
+                    close = true
+                )
             )
 
     }
