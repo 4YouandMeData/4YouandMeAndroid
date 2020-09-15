@@ -176,47 +176,56 @@ open class LocationRecorder(
 
     override fun stop() {
         super.stop()
-        stopLocationListener().unsafeRunSync()
+        stopLocationListener().unsafeRunAsync()
     }
 
     // locationListener methods
     override fun onLocationChanged(location: Location) {
 
-        // Initialize first location
-        if (firstLocation.isEmpty()) firstLocation = location.some()
-
-
-        // GPS coordinates
-
-        // Subtract from the firstLocation to get relative coordinates.
-        val relativeLatitude =
-            firstLocation.map { location.latitude - it.latitude }.getOrElse { 0.toDouble() }
-        val relativeLongitude =
-            firstLocation.map { location.longitude - it.longitude }.getOrElse { 0.toDouble() }
-
-        lastLocation.map { totalDistance += it.distanceTo(location).toDouble() }
-
-        val data =
-            LocationRecorderData(
-                getCurrentRecordingTime().getOrElse { 0 },
-                LocationRecorderCoordinate(location.latitude, location.longitude),
-                LocationRecorderCoordinate(relativeLatitude, relativeLongitude),
-                location.accuracy,
-                location.speed,
-                location.altitude,
-                location.bearing,
-                totalDistance
-            )
-
-        val json = moshi.adapter(LocationRecorderData::class.java).toJson(data)
-
-        onRecordDataCollected(data)
-
-        writeJsonObjectToFile(json)
-
-        lastLocation = location.some()
+        recordLocationData(location).unsafeRunAsync()
 
     }
+
+    private fun recordLocationData(location: Location): IO<Unit> =
+        IO.fx {
+
+            continueOn(Dispatchers.IO)
+
+            // Initialize first location
+            if (firstLocation.isEmpty()) firstLocation = location.some()
+
+
+            // GPS coordinates
+
+            // Subtract from the firstLocation to get relative coordinates.
+            val relativeLatitude =
+                firstLocation.map { location.latitude - it.latitude }.getOrElse { 0.toDouble() }
+            val relativeLongitude =
+                firstLocation.map { location.longitude - it.longitude }.getOrElse { 0.toDouble() }
+
+            lastLocation.map { totalDistance += it.distanceTo(location).toDouble() }
+
+            val data =
+                LocationRecorderData(
+                    getCurrentRecordingTime().getOrElse { 0 },
+                    LocationRecorderCoordinate(location.latitude, location.longitude),
+                    LocationRecorderCoordinate(relativeLatitude, relativeLongitude),
+                    location.accuracy,
+                    location.speed,
+                    location.altitude,
+                    location.bearing,
+                    totalDistance
+                )
+
+            val json = moshi.adapter(LocationRecorderData::class.java).toJson(data)
+
+            !onRecordDataCollected(data)
+
+            !writeJsonObjectToFile(json)
+
+            lastLocation = location.some()
+
+        }
 
     override fun onStatusChanged(s: String, i: Int, bundle: Bundle) {
         Timber.tag(TAG).i(s)

@@ -1,6 +1,8 @@
 package org.fouryouandme.core.arch.app
 
 import android.app.Application
+import androidx.camera.camera2.Camera2Config
+import androidx.camera.core.CameraXConfig
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.fouryouandme.BuildConfig
 import org.fouryouandme.core.arch.android.AppInjector
@@ -12,7 +14,7 @@ import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 
-abstract class FourYouAndMeApp : Application(), AppInjector {
+abstract class FourYouAndMeApp : Application(), AppInjector, CameraXConfig.Provider {
 
     abstract val environment: Environment
 
@@ -34,4 +36,7 @@ abstract class FourYouAndMeApp : Application(), AppInjector {
 
         AndroidThreeTen.init(this);
     }
+
+    override fun getCameraXConfig(): CameraXConfig = Camera2Config.defaultConfig()
+
 }

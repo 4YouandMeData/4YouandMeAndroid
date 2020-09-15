@@ -12,6 +12,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.StepNavController
 import org.fouryouandme.researchkit.task.ETaskType
 import org.fouryouandme.researchkit.task.Task
 
@@ -65,6 +66,13 @@ class TaskViewModel(
 
         }.unsafeRunAsync()
 
+    /* --- state --- */
+
+    fun cancel(): Unit =
+        setState(
+            state().copy(isCancelled = true),
+            TaskStateUpdate.Cancelled(true)
+        ).unsafeRunAsync()
 
     /* --- step --- */
 
@@ -90,6 +98,15 @@ class TaskViewModel(
                 }
             )
 
-    fun close(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    fun close(taskNavController: TaskNavController): Unit =
+        navigator.back(runtime, taskNavController).unsafeRunAsync()
+
+    // TODO: check previous step
+    fun back(stepNavController: StepNavController, taskNavController: TaskNavController): Unit =
+        runtime.fx.concurrent {
+
+            if (navigator.back(runtime, stepNavController).bind().not())
+                !navigator.back(runtime, taskNavController)
+
+        }.unsafeRunAsync()
 }

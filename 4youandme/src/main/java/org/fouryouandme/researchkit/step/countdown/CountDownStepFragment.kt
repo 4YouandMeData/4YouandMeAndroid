@@ -5,19 +5,23 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
+import arrow.core.None
+import arrow.core.Option
 import arrow.fx.IO
-import arrow.fx.extensions.io.concurrent.concurrent
+import arrow.fx.extensions.fx
 import kotlinx.android.synthetic.main.step_countdown.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
-import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
+import org.fouryouandme.researchkit.step.countdown.LifecycleIO.Companion.bindToLifecycle
 
 
 class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
 
+    private var counterAnimator: Option<ValueAnimator> = None
+    private var progressAnimator: Option<ValueAnimator> = None
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,7 +58,8 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         animator.duration = seconds * 1000L
         animator.addUpdateListener { counter.text = (it.animatedValue as Int).toString() }
         animator.interpolator = LinearInterpolator()
-        animator.start()
+
+        lifecycle.addObserver(LifecycleValueAnimator(animator))
 
     }
 
@@ -67,7 +72,8 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         animator.duration = seconds * 1000L
         animator.addUpdateListener { progress.progress = it.animatedValue as Int }
         animator.interpolator = LinearInterpolator()
-        animator.start()
+
+        lifecycle.addObserver(LifecycleValueAnimator(animator))
 
     }
 
@@ -79,13 +85,14 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         startCounterAnimation(seconds)
         startCounterProgressAnimation(seconds)
 
-        IO.concurrent().fx.concurrent {
+        IO.fx {
 
             !effect { delay(seconds * 1000L + 300L) }
             continueOn(Dispatchers.Main)
             onCounterEnd()
 
-        }.unsafeRunAsync()
+        }.bindToLifecycle(this)
 
     }
+
 }

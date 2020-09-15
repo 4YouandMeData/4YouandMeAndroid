@@ -13,11 +13,13 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.sectionParent
-import org.fouryouandme.researchkit.step.active.ActiveStepFragment
 import org.fouryouandme.researchkit.step.countdown.CountDownStepFragment
 import org.fouryouandme.researchkit.step.end.EndStepFragment
+import org.fouryouandme.researchkit.step.introduction.IntroductionListStepFragment
 import org.fouryouandme.researchkit.step.introduction.IntroductionStepFragment
 import org.fouryouandme.researchkit.step.start.StartStepFragment
+import org.fouryouandme.researchkit.step.sensor.SensorStepFragment
+import org.fouryouandme.researchkit.step.video.VideoDiaryStepFragment
 import org.fouryouandme.tasks.TaskViewModel
 
 class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
@@ -47,12 +49,18 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                         StartStepFragment()
                     is Step.IntroductionStep ->
                         IntroductionStepFragment()
+                    is Step.IntroductionListStep ->
+                        IntroductionListStepFragment()
                     is Step.CountDownStep ->
                         CountDownStepFragment()
                     is Step.ActiveStep ->
                         ActiveStepFragment()
                     is Step.EndStep ->
                         EndStepFragment()
+                    is Step.SensorStep ->
+                        SensorStepFragment()
+                    is Step.VideoDiaryStep ->
+                        VideoDiaryStepFragment()
                 }
             }.map { StepFragment.buildWithParams(args.index, it) }
 

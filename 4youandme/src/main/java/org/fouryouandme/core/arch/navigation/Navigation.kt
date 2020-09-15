@@ -19,7 +19,7 @@ class Navigator(
 
     fun <F> navigateTo(
         runtime: Runtime<F>,
-        controller: RootNavController,
+        controller: ParentNavController,
         navigationAction: NavigationAction
     ): Kind<F, Unit> =
         navigateTo(runtime, controller.navController, navigationAction)
@@ -41,7 +41,7 @@ class Navigator(
             }
         }
 
-    fun <F> back(runtime: Runtime<F>, navController: RootNavController): Kind<F, Boolean> =
+    fun <F> back(runtime: Runtime<F>, navController: ParentNavController): Kind<F, Boolean> =
         back(runtime, navController.navController)
 
     fun <F> back(runtime: Runtime<F>, navController: NavController): Kind<F, Boolean> =
@@ -60,3 +60,5 @@ class Navigator(
 interface NavigationProvider {
     fun getNavigation(action: NavigationAction): NavigationExecution
 }
+
+abstract class ParentNavController(val navController: NavController)

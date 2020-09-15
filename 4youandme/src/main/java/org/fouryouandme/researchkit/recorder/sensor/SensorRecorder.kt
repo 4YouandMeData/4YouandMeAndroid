@@ -5,10 +5,17 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Handler
+import android.os.HandlerThread
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import arrow.core.toOption
+import arrow.fx.IO
+import arrow.fx.extensions.fx
+import kotlinx.coroutines.Dispatchers
+import org.fouryouandme.core.ext.orJustUnit
+import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -46,6 +53,16 @@ abstract class SensorRecorder(
     private var sensorList: MutableList<Sensor> = mutableListOf()
     private var timestampZeroReferenceNanos: Long = 0
 
+    private val handler = HandlerThread("sensor_thread")
+
+    private val sensorHandler by lazy { Handler(handler.looper) }
+
+    init {
+
+        handler.start()
+
+    }
+
     /**
      * @param  availableSensorList the list of available sensors for the user's device
      * @return a list of sensor types that should be listened to
@@ -55,51 +72,76 @@ abstract class SensorRecorder(
     protected abstract fun getSensorTypeList(availableSensorList: List<Sensor>): List<Int>
 
     override fun start(context: Context): Unit {
+
         super.start(context)
 
-        sensorManager = (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
-
-        var anySucceeded = false
-
-        sensorManager.map { sm ->
-
-            val availableSensorList = sm.getSensorList(Sensor.TYPE_ALL)
-
-            sensorList = getSensorTypeList(availableSensorList).mapNotNull { sensorType ->
-
-                sm.getDefaultSensor(sensorType).toOption()
-                    .map {
-
-                        val success =
-                            if (isManualFrequency)
-                                sm.registerListener(
-                                    this, it, SensorManager.SENSOR_DELAY_FASTEST
-                                )
-                            else
-                                sm.registerListener(
-                                    this, it,
-                                    calculateDelayBetweenSamplesInMicroSeconds()
-                                )
-
-                        anySucceeded = anySucceeded or success
-
-                        if (success.not())
-                            Timber.e("Failed to register sensor: $it")
-
-                        it
-
-                    }.orNull()
-
-            }.toMutableList()
-        }
-
-        if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
-        else super.startJsonDataLogging()
+        startSensorRecording(context).unsafeRunAsync()
     }
+
+    private fun startSensorRecording(context: Context): IO<Unit> =
+        IO.fx {
+
+            continueOn(Dispatchers.IO)
+            sensorManager =
+                (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
+
+            var anySucceeded = false
+
+            sensorManager.map { sm ->
+
+                val availableSensorList = sm.getSensorList(Sensor.TYPE_ALL)
+
+                sensorList = getSensorTypeList(availableSensorList).mapNotNull { sensorType ->
+
+                    sm.getDefaultSensor(sensorType).toOption()
+                        .map {
+
+                            val success =
+                                if (isManualFrequency)
+                                    sm.registerListener(
+                                        this@SensorRecorder,
+                                        it,
+                                        SensorManager.SENSOR_DELAY_FASTEST,
+                                        sensorHandler
+                                    )
+                                else
+                                    sm.registerListener(
+                                        this@SensorRecorder,
+                                        it,
+                                        calculateDelayBetweenSamplesInMicroSeconds(),
+                                        sensorHandler
+                                    )
+
+                            anySucceeded = anySucceeded or success
+
+                            if (success.not())
+                                Timber.e("Failed to register sensor: $it")
+
+                            it
+
+                        }.orNull()
+
+                }.toMutableList()
+            }
+
+            if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
+            else super.startJsonDataLogging()
+
+        }
 
     override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
 
-        recordSensorEvent(sensorEvent).map { writeJsonObjectToFile(it) }
+        IO.fx {
+
+            continueOn(Dispatchers.IO)
+
+            recordSensorEvent(sensorEvent)
+                .bind()
+                .map { writeJsonObjectToFile(it) }
+                .orJustUnit()
+                .bind()
+
+        }.unsafeRunAsync()
 
     }
 
@@ -107,10 +149,13 @@ abstract class SensorRecorder(
      * This method receives a SensorEvent and is expected to receive a RecorderData json.
      * @param sensorEvent
      */
-    abstract fun recordSensorEvent(sensorEvent: SensorEvent): Option<String>
+    abstract fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>>
 
     override fun stop() {
         super.stop()
+
+        if (handler.isAlive) handler.quitSafely()
+
         sensorList.forEach { sensor ->
             sensorManager.map { it.unregisterListener(this, sensor) }
         }
@@ -119,6 +164,9 @@ abstract class SensorRecorder(
 
     override fun cancel() {
         super.cancel()
+
+        if (handler.isAlive) handler.quitSafely()
+
         sensorList.forEach { sensor ->
             sensorManager.map { it.unregisterListener(this, sensor) }
         }
@@ -157,9 +205,6 @@ abstract class SensorRecorder(
 
         const val MANUAL_JSON_FREQUENCY = -1.0f
         private const val MICRO_SECONDS_PER_SEC = 1000000L
-        const val TIMESTAMP_IN_SECONDS_KEY = "timestamp"
-        const val UPTIME_IN_SECONDS_KEY = "uptime"
-        const val TIMESTAMP_DATE_KEY = "timestampDate"
 
     }
 }

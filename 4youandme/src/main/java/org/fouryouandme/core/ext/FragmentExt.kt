@@ -63,3 +63,15 @@ fun Fragment.setStatusBar(backgroundColor: Int): Unit {
 /* --- parent --- */
 
 fun Fragment.sectionParent(): Fragment = requireParentFragment().requireParentFragment()
+
+inline fun <reified T : Fragment> Fragment.find(): T {
+
+    var parent = requireParentFragment()
+
+    while (parent !is T) {
+        parent = parent.requireParentFragment()
+    }
+
+    return parent
+
+}

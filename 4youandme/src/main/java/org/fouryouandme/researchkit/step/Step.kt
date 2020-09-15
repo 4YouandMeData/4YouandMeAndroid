@@ -4,6 +4,7 @@ import arrow.core.None
 import arrow.core.Option
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.researchkit.recorder.RecorderConfig
+import org.fouryouandme.researchkit.step.introduction.IntroductionItem
 import java.util.*
 
 sealed class Step(val identifier: String, val configuration: Configuration) {
@@ -16,6 +17,15 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val image: Int,
         val button: String,
         val close: Boolean = false
+    ) : Step(identifier, configuration)
+
+    class IntroductionListStep(
+        identifier: String,
+        configuration: Configuration,
+        val title: String,
+        val image: Int,
+        val button: String,
+        val list: List<IntroductionItem>,
     ) : Step(identifier, configuration)
 
     class CountDownStep(
@@ -64,7 +74,7 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
      * not get cut off if it is too long
      *
      */
-    class ActiveStep(
+    class SensorStep(
         identifier: String,
         configuration: Configuration,
         val title: String,
@@ -108,6 +118,11 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val description: String,
         val button: String,
         val close: Boolean = false
+    ) : Step(identifier, configuration)
+
+    class VideoDiaryStep(
+        identifier: String,
+        configuration: Configuration
     ) : Step(identifier, configuration)
 
 }

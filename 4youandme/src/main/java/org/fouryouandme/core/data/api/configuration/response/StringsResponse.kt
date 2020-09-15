@@ -85,6 +85,34 @@ data class StringsResponse(
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
+    @Json(name = "VIDEO_DIARY_INTRO_TITLE") val videoDiaryIntroTitle: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_BUTTON") val videoDiaryIntroButton: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_PARAGRAPH_TITLE_A") val videoDiaryIntroParagraphTitleA: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_PARAGRAPH_BODY_A") val videoDiaryIntroParagraphBodyA: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_PARAGRAPH_TITLE_B") val videoDiaryIntroParagraphTitleB: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_PARAGRAPH_BODY_B") val videoDiaryIntroParagraphBodyB: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_PARAGRAPH_TITLE_C") val videoDiaryIntroParagraphTitleC: String? = null,
+    @Json(name = "VIDEO_DIARY_INTRO_PARAGRAPH_BODY_C") val videoDiaryIntroParagraphBodyC: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_INFO_TITLE") val videoDiaryRecorderInfoTitle: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_INFO_BODY") val videoDiaryRecorderInfoBody: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_TITLE") val videoDiaryRecorderTitle: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_CLOSE_BUTTON") val videoDiaryRecorderCloseButton: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_REVIEW_BUTTON") val videoDiaryRecorderReviewButton: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_SUBMIT_BUTTON") val videoDiaryRecorderSubmitButton: String? = null,
+    @Json(name = "VIDEO_DIARY_SUCCESS_TITLE") val videoDiarySuccessTitle: String? = null,
+    @Json(name = "VIDEO_DIARY_DISCARD_TITLE") val videoDiaryDiscardTitle: String? = null,
+    @Json(name = "VIDEO_DIARY_DISCARD_BODY") val videoDiaryDiscardBody: String? = null,
+    @Json(name = "VIDEO_DIARY_DISCARD_CANCEL") val videoDiaryDiscardCancel: String? = null,
+    @Json(name = "VIDEO_DIARY_DISCARD_CONFIRM") val videoDiaryDiscardConfirm: String? = null,
+    @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_DISCARD") val videoDiaryMissingPermissionDiscard: String? = null,
+    @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_TITLE_MIC") val videoDiaryMissingPermissionTitleMic: String? = null,
+    @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_BODY_MIC") val videoDiaryMissingPermissionBodyMic: String? = null,
+    @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_TITLE_CAMERA") val videoDiaryMissingPermissionTitleCamera: String? = null,
+    @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_BODY_CAMERA") val videoDiaryMissingPermissionBodyCamera: String? = null,
+    @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_SETTINGS") val videoDiaryMissingPermissionBodySettings: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_START_RECORDING_DESCRIPTION") val videoDiaryRecorderStartRecordingDescription: String? = null,
+    @Json(name = "VIDEO_DIARY_RECORDER_RESUME_RECORDING_DESCRIPTION") val videoDiaryRecorderResumeRecordingDescription: String? = null,
+
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
     @Json(name = "ERROR_BUTTON_RETRY") val errorButtonRetry: String? = null,
@@ -94,106 +122,235 @@ data class StringsResponse(
 
 ) {
 
-    fun toText(): Option<Text> =
-        Option.fx {
+    fun toText(): Option<Text> {
 
+        val error = toError()
+        val url = toUrl()
+        val welcome = toWelcome()
+        val intro = toIntro()
+        val signUpLater = toSignUpLater()
+        val phoneVerification = toPhoneVerification()
+        val onboarding = toOnboardig()
+        val tab = toTab()
+        val activity = toActivity()
+        val videoDiary = toVideoDiary()
+
+        return Option.fx {
             Text(
-                Error(
-                    errorTitleDefault.toOption().bind(),
-                    errorMessageDefault.toOption().bind(),
-                    errorButtonRetry.toOption().bind(),
-                    errorButtonCancel.toOption().bind(),
-                    errorMessageRemoteServer.toOption().bind(),
-                    errorMessageConnectivity.toOption().bind()
-                ),
-                Url(
-                    urlPrivacyPolicy.toOption().bind(),
-                    urlTermsOfService.toOption().bind()
-                ),
-                Welcome(welcomeStartButton.toOption().bind()),
-                Intro(
-                    introTitle.toOption().bind(),
-                    introBody.toOption().bind(),
-                    introBack.toOption().bind(),
-                    introLogin.toOption().bind()
-                ),
-                SignUpLater(
-                    setupLaterBody.toOption().bind(),
-                    setupLaterConfirmButton.toOption().bind()
-                ),
-                PhoneVerification(
-                    phoneVerificationTitle.toOption().bind(),
-                    phoneVerificationBody.toOption().bind(),
-                    phoneVerificationLegal.toOption().bind(),
-                    phoneVerificationNumberDescription.toOption().bind(),
-                    phoneVerificationLegalPrivacyPolicy.toOption().bind(),
-                    phoneVerificationLegalTermsOfService.toOption().bind(),
-                    phoneVerificationResendCode.toOption().bind(),
-                    phoneVerificationWrongNumber.toOption().bind(),
-                    phoneVerificationCodeTitle.toOption().bind(),
-                    phoneVerificationCodeBody.toOption().bind(),
-                    phoneVerificationCodeDescription.toOption().bind(),
-                    PhoneVerificationError(
-                        phoneVerificationErrorMissingNumber.toOption().bind(),
-                        phoneVerificationErrorWrongCode.toOption().bind()
-                    )
-                ),
-                Onboarding(
-                    onboardingAbortTitle.toOption().bind(),
-                    onboardingAbortButton.toOption().bind(),
-                    onboardingAbortCancel.toOption().bind(),
-                    onboardingAbortConfirm.toOption().bind(),
-                    onboradingAbortMessage.toOption().bind(),
-                    onboradingAgreeButton.toOption().bind(),
-                    onboradingDisagreeButton.toOption().bind(),
-                    OnboardingUser(
-                        onboardingUserNameTitle.toOption().bind(),
-                        onboardingNameLastNameDescription.toOption().bind(),
-                        onboardingNameFirstNameDescription.toOption().bind(),
-                        onboardingSignatureTitle.toOption().bind(),
-                        onboardingSignatureBody.toOption().bind(),
-                        onboardingSignatureClear.toOption().bind(),
-                        onboardingSignaturePlaceholder.toOption().bind(),
-                        onboardingEmailInfo.toOption().bind(),
-                        onboardingEmailDescription.toOption().bind(),
-                        onboardingEmailVerificationTitle.toOption().bind(),
-                        onboardingEmailVerificationBody.toOption().bind(),
-                        onboardingEmailVerificationCodeDescription.toOption().bind(),
-                        onboardingEmailVerificationResend.toOption().bind(),
-                        onboardingEmailVerificationWrongMail.toOption().bind(),
-                        OnboardingUserError(
-                            onboardingEmailVerificationWrongCode.toOption().bind()
-                        )
-                    ),
-                    OnboardingOptIn(
-                        onboardingOptInSubmitButton.toOption().bind(),
-                        onboardingOptInMandatoryClose.toOption().bind(),
-                        onboardingOptInMandatoryTitle.toOption().bind(),
-                        onboardingOptInMandatoryDefault.toOption().bind()
-                    ),
-                    OnboardingIntegration(
-                        onboardingIntegrationDownloadButtonDefault.toOption().bind(),
-                        onboardingIntegrationOpenAppButtonDefault.toOption().bind(),
-                        onboardingIntegrationLoginButtonDefault.toOption().bind(),
-                        onboardingIntegrationNextButtonDefault.toOption().bind()
-                    )
-                ),
-                Tab(
-                    tabFeed.toOption().bind(),
-                    tabTask.toOption().bind(),
-                    tabTaskTitle.toOption().bind(),
-                    tabTaskEmptyTitle.toOption().bind(),
-                    tabTaskEmptySubtitle.toOption().bind(),
-                    tabTaskEmptyButton.toOption().bind(),
-                    tabUserData.toOption().bind(),
-                    tabUserDataTitle.toOption().bind(),
-                    tabStudyInfo.toOption().bind(),
-                    tabStudyInfoTitle.toOption().bind()
-                ),
-                Activity(
-                    activityButtonDefault.toOption().bind(),
-                    quickActivityButtonDefault.toOption().bind()
-                )
+                error.bind(),
+                url.bind(),
+                welcome.bind(),
+                intro.bind(),
+                signUpLater.bind(),
+                phoneVerification.bind(),
+                onboarding.bind(),
+                tab.bind(),
+                activity.bind(),
+                videoDiary.bind()
+            )
+        }
+    }
+
+    private fun toError(): Option<Error> =
+        Option.fx {
+            Error(
+                errorTitleDefault.toOption().bind(),
+                errorMessageDefault.toOption().bind(),
+                errorButtonRetry.toOption().bind(),
+                errorButtonCancel.toOption().bind(),
+                errorMessageRemoteServer.toOption().bind(),
+                errorMessageConnectivity.toOption().bind()
+            )
+        }
+
+    private fun toUrl(): Option<Url> =
+        Option.fx {
+            Url(
+                urlPrivacyPolicy.toOption().bind(),
+                urlTermsOfService.toOption().bind()
+            )
+        }
+
+    private fun toWelcome(): Option<Welcome> =
+        Option.fx {
+            Welcome(welcomeStartButton.toOption().bind())
+        }
+
+    private fun toIntro(): Option<Intro> =
+        Option.fx {
+            Intro(
+                introTitle.toOption().bind(),
+                introBody.toOption().bind(),
+                introBack.toOption().bind(),
+                introLogin.toOption().bind()
+            )
+        }
+
+    private fun toSignUpLater(): Option<SignUpLater> =
+        Option.fx {
+            SignUpLater(
+                setupLaterBody.toOption().bind(),
+                setupLaterConfirmButton.toOption().bind()
+            )
+        }
+
+    private fun toPhoneVerification(): Option<PhoneVerification> {
+
+        val phoneVerificationError = toPhoneVerificationError()
+
+        return Option.fx {
+            PhoneVerification(
+                phoneVerificationTitle.toOption().bind(),
+                phoneVerificationBody.toOption().bind(),
+                phoneVerificationLegal.toOption().bind(),
+                phoneVerificationNumberDescription.toOption().bind(),
+                phoneVerificationLegalPrivacyPolicy.toOption().bind(),
+                phoneVerificationLegalTermsOfService.toOption().bind(),
+                phoneVerificationResendCode.toOption().bind(),
+                phoneVerificationWrongNumber.toOption().bind(),
+                phoneVerificationCodeTitle.toOption().bind(),
+                phoneVerificationCodeBody.toOption().bind(),
+                phoneVerificationCodeDescription.toOption().bind(),
+                phoneVerificationError.bind()
+            )
+        }
+    }
+
+    private fun toPhoneVerificationError(): Option<PhoneVerificationError> =
+        Option.fx {
+            PhoneVerificationError(
+                phoneVerificationErrorMissingNumber.toOption().bind(),
+                phoneVerificationErrorWrongCode.toOption().bind()
+            )
+        }
+
+    private fun toOnboardig(): Option<Onboarding> {
+
+        val onboardingUser = toOnboardingUser()
+        val onboardingOptIn = toOnboardingOptIn()
+        val onboardingIntegration = toOnboardingIntegration()
+
+        return Option.fx {
+
+            Onboarding(
+                onboardingAbortTitle.toOption().bind(),
+                onboardingAbortButton.toOption().bind(),
+                onboardingAbortCancel.toOption().bind(),
+                onboardingAbortConfirm.toOption().bind(),
+                onboradingAbortMessage.toOption().bind(),
+                onboradingAgreeButton.toOption().bind(),
+                onboradingDisagreeButton.toOption().bind(),
+                onboardingUser.bind(),
+                onboardingOptIn.bind(),
+                onboardingIntegration.bind()
+            )
+        }
+    }
+
+    private fun toOnboardingUser(): Option<OnboardingUser> {
+
+        val onboardingUserError = toOnboardingUserError()
+
+        return Option.fx {
+            OnboardingUser(
+                onboardingUserNameTitle.toOption().bind(),
+                onboardingNameLastNameDescription.toOption().bind(),
+                onboardingNameFirstNameDescription.toOption().bind(),
+                onboardingSignatureTitle.toOption().bind(),
+                onboardingSignatureBody.toOption().bind(),
+                onboardingSignatureClear.toOption().bind(),
+                onboardingSignaturePlaceholder.toOption().bind(),
+                onboardingEmailInfo.toOption().bind(),
+                onboardingEmailDescription.toOption().bind(),
+                onboardingEmailVerificationTitle.toOption().bind(),
+                onboardingEmailVerificationBody.toOption().bind(),
+                onboardingEmailVerificationCodeDescription.toOption().bind(),
+                onboardingEmailVerificationResend.toOption().bind(),
+                onboardingEmailVerificationWrongMail.toOption().bind(),
+                onboardingUserError.bind()
+            )
+        }
+    }
+
+    private fun toOnboardingUserError(): Option<OnboardingUserError> =
+        Option.fx {
+            OnboardingUserError(onboardingEmailVerificationWrongCode.toOption().bind())
+        }
+
+    private fun toOnboardingOptIn(): Option<OnboardingOptIn> =
+        Option.fx {
+            OnboardingOptIn(
+                onboardingOptInSubmitButton.toOption().bind(),
+                onboardingOptInMandatoryClose.toOption().bind(),
+                onboardingOptInMandatoryTitle.toOption().bind(),
+                onboardingOptInMandatoryDefault.toOption().bind()
+            )
+        }
+
+    private fun toOnboardingIntegration(): Option<OnboardingIntegration> =
+        Option.fx {
+            OnboardingIntegration(
+                onboardingIntegrationDownloadButtonDefault.toOption().bind(),
+                onboardingIntegrationOpenAppButtonDefault.toOption().bind(),
+                onboardingIntegrationLoginButtonDefault.toOption().bind(),
+                onboardingIntegrationNextButtonDefault.toOption().bind()
+            )
+        }
+
+    private fun toTab(): Option<Tab> =
+        Option.fx {
+            Tab(
+                tabFeed.toOption().bind(),
+                tabTask.toOption().bind(),
+                tabTaskTitle.toOption().bind(),
+                tabTaskEmptyTitle.toOption().bind(),
+                tabTaskEmptySubtitle.toOption().bind(),
+                tabTaskEmptyButton.toOption().bind(),
+                tabUserData.toOption().bind(),
+                tabUserDataTitle.toOption().bind(),
+                tabStudyInfo.toOption().bind(),
+                tabStudyInfoTitle.toOption().bind()
+            )
+        }
+
+    private fun toActivity(): Option<Activity> =
+        Option.fx {
+            Activity(
+                activityButtonDefault.toOption().bind(),
+                quickActivityButtonDefault.toOption().bind()
+            )
+        }
+
+    private fun toVideoDiary(): Option<VideoDiary> =
+        Option.fx {
+            VideoDiary(
+                videoDiaryIntroTitle.toOption().bind(),
+                videoDiaryIntroButton.toOption().bind(),
+                videoDiaryIntroParagraphTitleA.toOption().bind(),
+                videoDiaryIntroParagraphBodyA.toOption().bind(),
+                videoDiaryIntroParagraphTitleB.toOption().bind(),
+                videoDiaryIntroParagraphBodyB.toOption().bind(),
+                videoDiaryIntroParagraphTitleC.toOption().bind(),
+                videoDiaryIntroParagraphBodyC.toOption().bind(),
+                videoDiaryRecorderInfoTitle.toOption().bind(),
+                videoDiaryRecorderInfoBody.toOption().bind(),
+                videoDiaryRecorderTitle.toOption().bind(),
+                videoDiaryRecorderCloseButton.toOption().bind(),
+                videoDiaryRecorderReviewButton.toOption().bind(),
+                videoDiaryRecorderSubmitButton.toOption().bind(),
+                videoDiarySuccessTitle.toOption().bind(),
+                videoDiaryDiscardTitle.toOption().bind(),
+                videoDiaryDiscardBody.toOption().bind(),
+                videoDiaryDiscardCancel.toOption().bind(),
+                videoDiaryDiscardConfirm.toOption().bind(),
+                videoDiaryMissingPermissionDiscard.toOption().bind(),
+                videoDiaryMissingPermissionTitleMic.toOption().bind(),
+                videoDiaryMissingPermissionBodyMic.toOption().bind(),
+                videoDiaryMissingPermissionTitleCamera.toOption().bind(),
+                videoDiaryMissingPermissionBodyCamera.toOption().bind(),
+                videoDiaryMissingPermissionBodySettings.toOption().bind(),
+                videoDiaryRecorderStartRecordingDescription.toOption().bind(),
+                videoDiaryRecorderResumeRecordingDescription.toOption().bind(),
             )
         }
 }

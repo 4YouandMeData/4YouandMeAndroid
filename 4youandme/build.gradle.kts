@@ -136,6 +136,16 @@ dependencies {
 
     implementation(Libs.threetenabp)
 
+    /* --- camera x --- */
+
+    api("androidx.camera:camera-core:1.0.0-beta08")
+    api("androidx.camera:camera-camera2:1.0.0-beta08")
+    api("androidx.camera:camera-view:1.0.0-alpha15")
+
+    /* --- mp4 parser --- */
+
+    implementation("com.googlecode.mp4parser:isoparser:1.1.9")
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)

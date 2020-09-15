@@ -7,7 +7,10 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.some
+import arrow.fx.IO
+import arrow.fx.extensions.fx
 import com.squareup.moshi.Moshi
+import org.fouryouandme.core.ext.orJustUnit
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
@@ -62,19 +65,20 @@ open class PedometerRecorder internal constructor(
         )
     }
 
-    override fun recordSensorEvent(sensorEvent: SensorEvent): Option<String> {
+    override fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>> =
+        IO.fx {
 
-        val data =
-            when (sensorEvent.sensor.type) {
-                Sensor.TYPE_STEP_DETECTOR -> onStepTaken().some()
-                else -> None
-            }
+            val data =
+                when (sensorEvent.sensor.type) {
+                    Sensor.TYPE_STEP_DETECTOR -> onStepTaken().some()
+                    else -> None
+                }
 
-        data.map { onRecordDataCollected(it) }
+            data.map { onRecordDataCollected(it) }.orJustUnit().bind()
 
-        return data.map { it.toJson(moshi) }
+            data.map { it.toJson(moshi) }
 
-    }
+        }
 
     override fun onAccuracyChanged(sensor: Sensor, i: Int) {
         // NO-OP

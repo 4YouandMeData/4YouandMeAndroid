@@ -6,17 +6,17 @@ import org.fouryouandme.researchkit.task.Task
 import java.io.File
 
 data class RecorderState(
-     var startTime: Long = 0,
-     val recorderList: List<Recorder> = emptyList(),
-     val resultList: List<FileResult> = emptyList(),
-     val step: Step.ActiveStep,
-     val task: Task,
-     val output: File
+    var startTime: Long = 0,
+    val recorderList: List<Recorder> = emptyList(),
+    val resultList: List<FileResult> = emptyList(),
+    val step: Step.SensorStep,
+    val task: Task,
+    val output: File
 )
 
 sealed class RecordingState {
 
-     object Completed : RecordingState()
-     object Failure : RecordingState()
+    data class Completed(val stepIdentifier: String) : RecordingState()
+    data class Failure(val stepIdentifier: String) : RecordingState()
 
 }

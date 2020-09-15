@@ -69,4 +69,27 @@ interface ImageConfiguration {
     @DrawableRes
     fun pocket(): Int
 
+    @DrawableRes
+    fun videoDiaryIntro(): Int
+
+    @DrawableRes
+    fun videoDiaryTime(): Int
+
+    @DrawableRes
+    fun videoDiaryClose(): Int
+
+    @DrawableRes
+    fun videoDiaryRecord(): Int
+
+    @DrawableRes
+    fun videoDiaryPause(): Int
+
+    @DrawableRes
+    fun videoDiaryFlashOn(): Int
+
+    @DrawableRes
+    fun videoDiaryFlashOff(): Int
+
+    @DrawableRes
+    fun videoDiaryToggleCamera(): Int
 }
