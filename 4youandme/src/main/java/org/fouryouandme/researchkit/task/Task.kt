@@ -128,7 +128,7 @@ sealed class Task(
                     "introduction",
                     configuration,
                     configuration.text.videoDiary.introTitle,
-                    imageConfiguration.videoDiary(),
+                    imageConfiguration.videoDiaryIntro(),
                     configuration.text.videoDiary.introButton,
                     listOf(
                         IntroductionItem(
