@@ -3,7 +3,7 @@ package org.fouryouandme.studyinfo
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class StudyInfoState(
-    val configuration: Configuration? = null
+    val configuration: Configuration
 )
 
 sealed class StudyInfoStateUpdate {

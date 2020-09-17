@@ -10,7 +10,8 @@ data class Text(
     val onboarding: Onboarding,
     val tab: Tab,
     val activity: Activity,
-    val videoDiary: VideoDiary
+    val videoDiary: VideoDiary,
+    val studyInfo: StudyInfo
 )
 
 data class Error(
@@ -158,4 +159,10 @@ data class VideoDiary(
     val missingPermissionBodySettings: String,
     val recorderStartRecordingDescription: String,
     val recorderResumeRecordingDescription: String,
+)
+
+data class StudyInfo(
+    val contactInfo: String,
+    val rewards: String,
+    val faq: String,
 )

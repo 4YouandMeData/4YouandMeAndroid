@@ -65,4 +65,14 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun videoDiaryFlashOff(): Int = R.drawable.video_diary_flash_off
 
     override fun videoDiaryToggleCamera(): Int = R.drawable.video_diary_toggle_camera
+
+    /* --- menu item --- */
+
+    override fun contactInfo(): Int = R.drawable.contact_info
+
+    override fun rewards(): Int = R.drawable.rewards
+
+    override fun faq(): Int = R.drawable.faq
+
+    override fun arrow(): Int = R.drawable.arrow
 }

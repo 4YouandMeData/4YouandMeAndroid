@@ -112,6 +112,9 @@ data class StringsResponse(
     @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_SETTINGS") val videoDiaryMissingPermissionBodySettings: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_START_RECORDING_DESCRIPTION") val videoDiaryRecorderStartRecordingDescription: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_RESUME_RECORDING_DESCRIPTION") val videoDiaryRecorderResumeRecordingDescription: String? = null,
+    @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
+    @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String?= null,
+    @Json(name = "STUDY_INFO_FAQ") val studyInfoFaq: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -134,6 +137,7 @@ data class StringsResponse(
         val tab = toTab()
         val activity = toActivity()
         val videoDiary = toVideoDiary()
+        val studyInfo = toStudyInfo()
 
         return Option.fx {
             Text(
@@ -146,7 +150,8 @@ data class StringsResponse(
                 onboarding.bind(),
                 tab.bind(),
                 activity.bind(),
-                videoDiary.bind()
+                videoDiary.bind(),
+                studyInfo.bind()
             )
         }
     }
@@ -351,6 +356,15 @@ data class StringsResponse(
                 videoDiaryMissingPermissionBodySettings.toOption().bind(),
                 videoDiaryRecorderStartRecordingDescription.toOption().bind(),
                 videoDiaryRecorderResumeRecordingDescription.toOption().bind(),
+            )
+        }
+
+    private fun toStudyInfo(): Option<StudyInfo> =
+        Option.fx {
+            StudyInfo(
+                studyInfoContactInfo.toOption().bind(),
+                studyInfoRewards.toOption().bind(),
+                studyInfoFaq.toOption().bind()
             )
         }
 }

@@ -93,4 +93,17 @@ interface ImageConfiguration {
     @DrawableRes
     fun videoDiaryToggleCamera(): Int
 
+    /* --- menu item --- */
+
+    @DrawableRes
+    fun contactInfo(): Int
+
+    @DrawableRes
+    fun rewards(): Int
+
+    @DrawableRes
+    fun faq(): Int
+
+    @DrawableRes
+    fun arrow(): Int
 }
