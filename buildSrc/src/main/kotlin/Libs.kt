@@ -94,10 +94,10 @@ object Libs {
     const val lifecycle_viewmodel_ktx: String = "androidx.lifecycle:lifecycle-viewmodel-ktx:" +
             Versions.androidx_lifecycle
 
-    const val moshi_jsonapi_retrofit_converter: String =
-            "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
-
     const val moshi_jsonapi: String = "moe.banana:moshi-jsonapi:" + Versions.moe_banana
+
+    const val moshi_jsonapi_retrofit_converter: String =
+        "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html
@@ -123,15 +123,21 @@ object Libs {
     const val junit_junit: String = "junit:junit:" + Versions.junit_junit
 
     const val de_fayard_buildsrcversions_gradle_plugin: String =
-            "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
-            Versions.de_fayard_buildsrcversions_gradle_plugin
+        "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
+                Versions.de_fayard_buildsrcversions_gradle_plugin
 
     /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_integration_retrofit_adapter: String =
-            "io.arrow-kt:arrow-integration-retrofit-adapter:" +
-            Versions.arrow_integration_retrofit_adapter
+        "io.arrow-kt:arrow-integration-retrofit-adapter:" +
+                Versions.arrow_integration_retrofit_adapter
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_fx_coroutines: String = "io.arrow-kt:arrow-fx-coroutines:" +
+            Versions.arrow_fx_coroutines
 
     /**
      * https://square.github.io/okhttp/
@@ -155,6 +161,8 @@ object Libs {
 
     const val security_crypto: String = "androidx.security:security-crypto:" +
             Versions.security_crypto
+
+    const val camera_camera2: String = "androidx.camera:camera-camera2:" + Versions.camera_camera2
 
     /**
      * https://github.com/square/moshi
@@ -193,6 +201,10 @@ object Libs {
      */
     const val moshi_kotlin: String = "com.squareup.moshi:moshi-kotlin:" + Versions.moshi_kotlin
 
+    const val camera_core: String = "androidx.camera:camera-core:" + Versions.camera_core
+
+    const val camera_view: String = "androidx.camera:camera-view:" + Versions.camera_view
+
     /**
      * https://developer.android.com/studio
      */
@@ -225,6 +237,11 @@ object Libs {
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
     /**
+     * http://code.google.com/p/mp4parser/
+     */
+    const val isoparser: String = "com.googlecode.mp4parser:isoparser:" + Versions.isoparser
+
+    /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_fx: String = "io.arrow-kt:arrow-fx:" + Versions.arrow_fx
@@ -248,6 +265,8 @@ object Libs {
      * https://github.com/JakeWharton/timber
      */
     const val timber: String = "com.jakewharton.timber:timber:" + Versions.timber
+
+    const val toasty: String = "com.github.GrenderG:Toasty:" + Versions.toasty
 
     /**
      * https://developer.android.com/studio

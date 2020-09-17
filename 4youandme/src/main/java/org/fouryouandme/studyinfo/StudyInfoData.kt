@@ -1,6 +1,5 @@
 package org.fouryouandme.studyinfo
 
-import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class StudyInfoState(

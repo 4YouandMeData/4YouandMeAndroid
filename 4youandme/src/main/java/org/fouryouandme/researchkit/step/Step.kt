@@ -122,7 +122,29 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
 
     class VideoDiaryStep(
         identifier: String,
-        configuration: Configuration
+        configuration: Configuration,
+        val title: String,
+        val titleColor: Int,
+        val recordImage: Int,
+        val pauseImage: Int,
+        val flashOnImage: Int,
+        val flashOffImage: Int,
+        val cameraToggleImage: Int,
+        val startRecordingDescription: String,
+        val startRecordingDescriptionColor: Int,
+        val timeImage: Int,
+        val timeColor: Int,
+        val timeProgressBackgroundColor: Int,
+        val timeProgressColor: Int,
+        val infoTitle: String,
+        val infoTitleColor: Int,
+        val infoBody: String,
+        val infoBodyColor: Int,
+        val reviewButton: String,
+        val reviewButtonColor: Int,
+        val reviewButtonTextColor: Int,
+        val infoBackgroundColor: Int,
+        val closeImage: Int,
     ) : Step(identifier, configuration)
 
 }

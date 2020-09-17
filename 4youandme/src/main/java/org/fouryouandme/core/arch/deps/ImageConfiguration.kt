@@ -92,4 +92,5 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun videoDiaryToggleCamera(): Int
+
 }

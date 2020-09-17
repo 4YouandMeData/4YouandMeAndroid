@@ -64,7 +64,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
 
     protected fun stepNavController(): StepNavController = StepNavController(findNavController())
 
-    private fun showCancelDialog(): Unit {
+    protected fun showCancelDialog(): Unit {
 
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.TASK_cancel_title)

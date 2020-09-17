@@ -166,7 +166,29 @@ sealed class Task(
                 ),
                 Step.VideoDiaryStep(
                     "video_diary",
-                    configuration
+                    configuration,
+                    title = configuration.text.videoDiary.recorderTitle,
+                    titleColor = configuration.theme.secondaryColor.color(),
+                    recordImage = imageConfiguration.videoDiaryRecord(),
+                    pauseImage = imageConfiguration.videoDiaryPause(),
+                    flashOnImage = imageConfiguration.videoDiaryFlashOn(),
+                    flashOffImage = imageConfiguration.videoDiaryFlashOff(),
+                    cameraToggleImage = imageConfiguration.videoDiaryToggleCamera(),
+                    startRecordingDescription = configuration.text.videoDiary.recorderStartRecordingDescription,
+                    startRecordingDescriptionColor = configuration.theme.primaryTextColor.color(),
+                    timeImage = imageConfiguration.videoDiaryTime(),
+                    timeColor = configuration.theme.fourthTextColor.color(),
+                    timeProgressBackgroundColor = configuration.theme.deactiveColor.color(),
+                    timeProgressColor = configuration.theme.activeColor.color(),
+                    infoTitle = configuration.text.videoDiary.recorderInfoTitle,
+                    infoTitleColor = configuration.theme.fourthTextColor.color(),
+                    infoBody = configuration.text.videoDiary.recorderInfoBody,
+                    infoBodyColor = configuration.theme.primaryTextColor.color(),
+                    reviewButton = configuration.text.videoDiary.recorderReviewButton,
+                    reviewButtonColor = configuration.theme.primaryColorEnd.color(),
+                    reviewButtonTextColor = configuration.theme.secondaryColor.color(),
+                    infoBackgroundColor = configuration.theme.secondaryColor.color(),
+                    closeImage = imageConfiguration.videoDiaryClose()
                 )
             )
     }

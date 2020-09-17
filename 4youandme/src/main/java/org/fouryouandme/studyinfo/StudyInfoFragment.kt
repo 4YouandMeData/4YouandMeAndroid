@@ -3,7 +3,6 @@ package org.fouryouandme.studyinfo
 import org.fouryouandme.core.entity.configuration.Configuration
 import android.os.Bundle
 import android.view.View
-import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.study_info.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment

@@ -73,6 +73,7 @@ dependencies {
     /* --- arrow --- */
 
     implementation(Libs.arrow_fx)
+    implementation("io.arrow-kt:arrow-fx-coroutines:0.11.0")
     implementation(Libs.arrow_optics)
     implementation(Libs.arrow_syntax)
     implementation(Libs.arrow_integration_retrofit_adapter)
@@ -95,7 +96,7 @@ dependencies {
     /* --- moshi --- */
 
     implementation(Libs.moshi_kotlin)
-    implementation("com.squareup.moshi:moshi-adapters:1.8.0")
+    implementation(Libs.moshi_adapters)
 
     /* --- json api --- */
 
@@ -138,13 +139,17 @@ dependencies {
 
     /* --- camera x --- */
 
-    api("androidx.camera:camera-core:1.0.0-beta08")
-    api("androidx.camera:camera-camera2:1.0.0-beta08")
-    api("androidx.camera:camera-view:1.0.0-alpha15")
+    api(Libs.camera_core)
+    api(Libs.camera_camera2)
+    api(Libs.camera_view)
 
     /* --- mp4 parser --- */
 
-    implementation("com.googlecode.mp4parser:isoparser:1.1.9")
+    implementation(Libs.isoparser)
+
+    /* --- toasty --- */
+
+    implementation("com.github.GrenderG:Toasty:1.5.0")
 
     /* --- test --- */
 
