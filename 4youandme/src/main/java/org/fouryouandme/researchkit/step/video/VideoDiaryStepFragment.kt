@@ -40,8 +40,10 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 when (it) {
                     is VideoDiaryStateUpdate.RecordTime -> bindRecordingHeader()
-                    is VideoDiaryStateUpdate.Recording ->
+                    is VideoDiaryStateUpdate.Recording -> {
                         bindRecordingState(it.recordingState)
+                        bindRecordingHeader()
+                    }
                 }
 
             }
@@ -82,35 +84,36 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         val step = videoDiaryViewModel.state().step
 
-        record_header.setTextColor(step.recordHeaderColor)
+        record_header.setTextColor(step.titleColor)
 
         record_info.background =
-            roundTopBackground(step.recordInfoBackgroundColor, 30)
+            roundTopBackground(step.infoBackgroundColor, 30)
 
         close.setImageResource(step.closeImage)
 
-        recording_title.setTextColor(step.recordTitleColor)
+        recording_title.setTextColor(step.startRecordingDescriptionColor)
 
-        recording_time.setTextColor(step.recordTimeColor)
+        recording_time.setTextColor(step.timeColor)
 
-        recording_time_image.setImageResource(step.recordTimeImage)
+        recording_time_image.setImageResource(step.timeImage)
 
         recording_progress.progressDrawable =
-            progressDrawable(step.recordTimeProgressBackgroundColor, step.recordTimeProgressColor)
+            progressDrawable(step.timeProgressBackgroundColor, step.timeProgressColor)
         recording_progress.max = 100
         recording_progress.progress = 50
 
-        recording_info_title.text = step.recordInfoTitle
-        recording_info_title.setTextColor(step.recordInfoTitleColor)
+        recording_info_title.text = step.infoTitle
+        recording_info_title.setTextColor(step.infoTitleColor)
 
-        recording_info_body.text = step.recordInfoBody
-        recording_info_body.setTextColor(step.recordInfoBodyColor)
+        recording_info_body.text = step.infoBody
+        recording_info_body.setTextColor(step.infoBodyColor)
 
         review.background = button(step.reviewButtonColor)
         review.setTextColor(step.reviewButtonTextColor)
         review.text = step.reviewButton
 
         bindRecordingState(videoDiaryViewModel.state().recordingState)
+        bindRecordingHeader()
 
         taskFragment().toolbar.apply { hide() }
 
@@ -123,9 +126,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         when (state) {
             RecordingState.Recording -> {
 
-                record_header.isVisible = true
-
-                recording_pause.setImageResource(step.recordPauseImage)
+                recording_pause.setImageResource(step.pauseImage)
 
                 recording_pause.setOnClickListener {
 
@@ -139,11 +140,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             }
             is RecordingState.Pause -> {
 
-                record_header.isVisible = false
-
                 recording_pause.setImageResource(step.recordImage)
 
-                recording_title.text = step.recordTitlePause
+                recording_title.text = step.startRecordingDescription
 
                 val currentRecordTime =
                     DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
@@ -154,6 +153,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                     "$currentRecordTime/$maxRecordTime"
 
                 recording_time.text = recordTimeLabel
+
+                recording_progress.max = videoDiaryViewModel.state().maxRecordTimeSeconds.toInt()
+                recording_progress.progress = videoDiaryViewModel.state().recordTimeSeconds.toInt()
 
                 recording_pause.setOnClickListener {
 
@@ -171,16 +173,27 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun bindRecordingHeader(): Unit {
 
-        val currentRecordTime =
-            DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
-        val maxRecordTime =
-            DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
+        when (videoDiaryViewModel.state().recordingState) {
+            RecordingState.Recording -> {
 
-        val recordTimeLabel =
-            "$currentRecordTime/$maxRecordTime"
+                val currentRecordTime =
+                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
+                val maxRecordTime =
+                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
 
-        record_header.text = recordTimeLabel
+                val recordTimeLabel =
+                    "$currentRecordTime/$maxRecordTime"
 
+                record_header.text = recordTimeLabel
+
+            }
+            RecordingState.Pause -> {
+
+                record_header.text = videoDiaryViewModel.state().step.title
+
+            }
+            RecordingState.Review -> TODO()
+        }
     }
 
     private fun record(): Unit {
@@ -199,7 +212,6 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
 
-                    val i = 0
                     startCoroutineAsync { videoDiaryViewModel.pause() }
 
                 }
@@ -210,7 +222,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                     cause: Throwable?
                 ) {
 
-                    val i = 0
+                    startCoroutineAsync { videoDiaryViewModel.pause() }
 
                 }
 
@@ -244,6 +256,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 video_view.setVideoURI(uri)
                 video_view.setOnPreparedListener { video_view.start() }
+
             }
 
         }.unsafeRunAsync()
