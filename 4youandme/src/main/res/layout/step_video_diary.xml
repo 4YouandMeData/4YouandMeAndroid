@@ -26,8 +26,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/flash_toggle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title" />
+
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/record_header"
+        android:id="@+id/title"
         style="@style/text_h2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,13 +47,22 @@
         tools:text="0:00/2:00" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/camera_toggle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title" />
+
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/recording_pause"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toTopOf="@id/record_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/record_header" />
+        app:layout_constraintTop_toBottomOf="@id/title" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/record_info"

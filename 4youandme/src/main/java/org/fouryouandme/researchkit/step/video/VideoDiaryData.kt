@@ -11,6 +11,8 @@ data class VideoDiaryState(
     val maxRecordTimeSeconds: Long,
     val lastRecordedFilePath: String?,
     val recordingState: RecordingState = RecordingState.Pause,
+    val isFlashEnabled: Boolean,
+    val isBackCameraToggled: Boolean
 ) {
     companion object
 }
@@ -22,6 +24,10 @@ sealed class VideoDiaryStateUpdate {
     ) : VideoDiaryStateUpdate()
 
     data class Recording(val recordingState: RecordingState) : VideoDiaryStateUpdate()
+
+    data class Flash(val isFlashEnabled: Boolean) : VideoDiaryStateUpdate()
+
+    data class Camera(val isBackCameraToggled: Boolean) : VideoDiaryStateUpdate()
 
 }
 

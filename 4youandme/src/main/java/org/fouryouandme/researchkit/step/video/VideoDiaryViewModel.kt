@@ -52,7 +52,10 @@ class VideoDiaryViewModel(
                 0,
                 0,
                 120,
-                null
+                null,
+                RecordingState.Pause,
+                false,
+                true
             )
         )
 
@@ -119,9 +122,34 @@ class VideoDiaryViewModel(
 
     }
 
+    suspend fun toggleCamera(): Unit {
+
+        setStateFx(
+            VideoDiaryState.isBackCameraToggled.modify(state()) { it.not() }
+        ) { VideoDiaryStateUpdate.Camera(it.isBackCameraToggled) }
+
+        // disable the flash when the front camera is toggled
+        if (state().isBackCameraToggled)
+            setStateFx(
+                VideoDiaryState.isFlashEnabled.modify(state()) { false }
+            ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+
+    }
+
+    suspend fun toggleFlash(): Unit =
+        setStateFx(
+            VideoDiaryState.isFlashEnabled.modify(state()) { it.not() }
+        ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+
     suspend fun review(videosPath: String, outputPath: String): Unit {
 
         showLoadingFx(VideoDiaryLoading.Merge)
+
+        // disable the flash when the user start the review flow
+        if (state().isBackCameraToggled)
+            setStateFx(
+                VideoDiaryState.isFlashEnabled.modify(state()) { false }
+            ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
 
         val merge =
             Either.catch { mergeVideoDiary(videosPath, outputPath) }

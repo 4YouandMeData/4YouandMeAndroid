@@ -3,10 +3,12 @@ package org.fouryouandme.researchkit.step.video
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.VideoCapture
 import androidx.camera.view.CameraView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import arrow.core.Either
 import kotlinx.android.synthetic.main.step_video_diary.*
 import kotlinx.android.synthetic.main.task.*
 import org.fouryouandme.R
@@ -41,6 +43,10 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                         bindRecordingState(it.recordingState)
                         bindRecordingHeader()
                     }
+                    is VideoDiaryStateUpdate.Flash ->
+                        bindFlash(it.isFlashEnabled)
+                    is VideoDiaryStateUpdate.Camera ->
+                        bindCamera(it.isBackCameraToggled)
                 }
 
             }
@@ -98,7 +104,16 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         val step = videoDiaryViewModel.state().step
 
-        record_header.setTextColor(step.titleColor)
+        title.setTextColor(step.titleColor)
+
+        camera_toggle.setImageResource(imageConfiguration.videoDiaryToggleCamera())
+        camera_toggle.setOnClickListener {
+            startCoroutineAsync { videoDiaryViewModel.toggleCamera() }
+        }
+
+        flash_toggle.setOnClickListener {
+            startCoroutineAsync { videoDiaryViewModel.toggleFlash() }
+        }
 
         record_info.background =
             roundTopBackground(step.infoBackgroundColor, 30)
@@ -140,6 +155,8 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         bindRecordingState(videoDiaryViewModel.state().recordingState)
         bindRecordingHeader()
+        bindFlash(videoDiaryViewModel.state().isFlashEnabled)
+        bindCamera(videoDiaryViewModel.state().isBackCameraToggled)
 
         taskFragment().toolbar.apply { hide() }
 
@@ -151,6 +168,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         when (state) {
             RecordingState.Recording -> {
+
+                flash_toggle.isVisible = videoDiaryViewModel.state().isBackCameraToggled
+                camera_toggle.isVisible = false
 
                 recording_pause.setImageResource(step.pauseImage)
 
@@ -166,6 +186,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
             is RecordingState.Pause -> {
+
+                flash_toggle.isVisible = videoDiaryViewModel.state().isBackCameraToggled
+                camera_toggle.isVisible = true
 
                 recording_pause.setImageResource(step.recordImage)
 
@@ -200,6 +223,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             }
             RecordingState.Review -> {
 
+                flash_toggle.isVisible = false
+                camera_toggle.isVisible = false
+
                 val currentRecordTime =
                     DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
                 val maxRecordTime =
@@ -231,14 +257,41 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 val recordTimeLabel =
                     "$currentRecordTime/$maxRecordTime"
 
-                record_header.text = recordTimeLabel
+                title.text = recordTimeLabel
 
             }
             RecordingState.Pause ->
-                record_header.text = videoDiaryViewModel.state().step.title
+                title.text = videoDiaryViewModel.state().step.title
             RecordingState.Review ->
-                record_header.text = videoDiaryViewModel.state().step.title
+                title.text = videoDiaryViewModel.state().step.title
         }
+    }
+
+    private fun bindFlash(isFlashEnabled: Boolean): Unit {
+
+        startCoroutine { Either.catch { camera.enableTorch(isFlashEnabled) } }
+
+        flash_toggle.setImageResource(
+            if (isFlashEnabled) videoDiaryViewModel.state().step.flashOnImage
+            else videoDiaryViewModel.state().step.flashOffImage
+        )
+
+    }
+
+    private fun bindCamera(isBackCameraToggled: Boolean): Unit {
+
+        startCoroutine {
+
+            Either.catch {
+                camera.cameraLensFacing =
+                    if (isBackCameraToggled) CameraSelector.LENS_FACING_BACK
+                    else CameraSelector.LENS_FACING_FRONT
+            }
+
+            // enable flash button only for back camera
+            flash_toggle.isVisible = isBackCameraToggled
+        }
+
     }
 
     private fun record(file: File): Unit {
@@ -276,6 +329,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
     }
 
     private suspend fun review(): Unit {
+
 
         val mergeDirectory = File(getVideoMergeDirectoryPath())
 
