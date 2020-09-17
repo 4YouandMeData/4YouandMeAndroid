@@ -55,6 +55,13 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
 
+        videoDiaryViewModel.loadingLiveData()
+            .observeEvent {
+                when (it.task) {
+                    VideoDiaryLoading.Merge -> loading.setVisibility(it.active)
+                }
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

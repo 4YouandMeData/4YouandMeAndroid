@@ -1,16 +1,17 @@
 package org.fouryouandme.core.cases.configuration
 
 import arrow.Kind
-import arrow.core.Either
-import arrow.core.None
-import arrow.core.left
-import arrow.core.right
+import arrow.core.*
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
+import org.fouryouandme.core.cases.configuration.ConfigurationRepository.fetchConfiguration
+import org.fouryouandme.core.cases.configuration.ConfigurationRepository.loadConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.core.ext.toKind
 
 object ConfigurationUseCase {
@@ -24,12 +25,12 @@ object ConfigurationUseCase {
             !when (cachePolicy) {
 
                 CachePolicy.MemoryFirst ->
-                    Memory.configuration
+                    Memory.configuration.toOption()
                         .toKind(runtime.fx) { ConfigurationRepository.loadConfiguration(runtime) }
                         .flatMap { disk ->
 
                             disk.fold(
-                                { ConfigurationRepository.fetchConfiguration(runtime) },
+                                { fetchConfiguration(runtime) },
                                 { just(it.right()) }
                             )
 
@@ -39,14 +40,14 @@ object ConfigurationUseCase {
                     runtime.fx.concurrent {
 
                         !getConfiguration(runtime, CachePolicy.MemoryFirst)
-                        !ConfigurationRepository.fetchConfiguration(runtime)
+                        !fetchConfiguration(runtime)
 
                     }
 
                 CachePolicy.MemoryOrDisk ->
                     runtime.fx.concurrent {
 
-                        !Memory.configuration
+                        !Memory.configuration.toOption()
                             .toKind(runtime.fx) { ConfigurationRepository.loadConfiguration(runtime) }
                             .flatMap { disk ->
 
@@ -64,7 +65,7 @@ object ConfigurationUseCase {
                         .flatMap { disk ->
 
                             disk.fold(
-                                { ConfigurationRepository.fetchConfiguration(runtime) },
+                                { fetchConfiguration(runtime) },
                                 { just(it.right()) }
                             )
 
@@ -74,12 +75,43 @@ object ConfigurationUseCase {
                     runtime.fx.concurrent {
 
                         !getConfiguration(runtime, CachePolicy.DiskFirst)
-                        !ConfigurationRepository.fetchConfiguration(runtime)
+                        !fetchConfiguration(runtime)
 
                     }
 
                 CachePolicy.Network ->
-                    ConfigurationRepository.fetchConfiguration(runtime)
+                    fetchConfiguration(runtime)
             }
+        }
+
+    suspend fun ConfigurationModule.getConfiguration(
+        cachePolicy: CachePolicy
+    ): Either<FourYouAndMeError, Configuration> =
+
+        when (cachePolicy) {
+
+            CachePolicy.MemoryFirst -> {
+
+                val cachedConfig = Memory.configuration ?: loadConfiguration()
+
+                cachedConfig?.right() ?: fetchConfiguration()
+
+            }
+            CachePolicy.MemoryFirstRefresh -> {
+
+                startCoroutineAsync { fetchConfiguration() }
+                getConfiguration(CachePolicy.MemoryFirst)
+
+            }
+            CachePolicy.MemoryOrDisk ->
+                (Memory.configuration ?: loadConfiguration())?.right() ?: unknownError().left()
+            CachePolicy.DiskFirst ->
+                loadConfiguration()?.right() ?: fetchConfiguration()
+            CachePolicy.DiskFirstRefresh -> {
+                startCoroutineAsync { fetchConfiguration() }
+                getConfiguration(CachePolicy.DiskFirst)
+            }
+            CachePolicy.Network ->
+                fetchConfiguration()
         }
 }
