@@ -90,6 +90,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             roundTopBackground(step.infoBackgroundColor, 30)
 
         close.setImageResource(step.closeImage)
+        close.setOnClickListener { showCancelDialog() }
 
         recording_title.setTextColor(step.startRecordingDescriptionColor)
 
