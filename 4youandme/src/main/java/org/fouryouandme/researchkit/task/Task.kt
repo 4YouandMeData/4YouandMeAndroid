@@ -166,7 +166,29 @@ sealed class Task(
                 ),
                 Step.VideoDiaryStep(
                     "video_diary",
-                    configuration
+                    configuration,
+                    recordHeaderColor = configuration.theme.secondaryColor.color(),
+                    recordImage = imageConfiguration.videoDiaryRecord(),
+                    recordPauseImage = imageConfiguration.videoDiaryPause(),
+                    flashOnImage = imageConfiguration.videoDiaryFlashOn(),
+                    flashOffImage = imageConfiguration.videoDiaryFlashOff(),
+                    cameraToggleImage = imageConfiguration.videoDiaryToggleCamera(),
+                    recordTitle = configuration.text.videoDiary.recorderResumeRecordingDescription,
+                    recordTitlePause = configuration.text.videoDiary.recorderStartRecordingDescription,
+                    recordTitleColor = configuration.theme.primaryTextColor.color(),
+                    recordTimeImage = imageConfiguration.videoDiaryTime(),
+                    recordTimeColor = configuration.theme.fourthTextColor.color(),
+                    recordTimeProgressBackgroundColor = configuration.theme.deactiveColor.color(),
+                    recordTimeProgressColor = configuration.theme.activeColor.color(),
+                    recordInfoTitle = configuration.text.videoDiary.recorderInfoTitle,
+                    recordInfoTitleColor = configuration.theme.fourthTextColor.color(),
+                    recordInfoBody = configuration.text.videoDiary.recorderInfoBody,
+                    recordInfoBodyColor = configuration.theme.primaryTextColor.color(),
+                    reviewButton = configuration.text.videoDiary.recorderReviewButton,
+                    reviewButtonColor = configuration.theme.primaryColorEnd.color(),
+                    reviewButtonTextColor = configuration.theme.secondaryColor.color(),
+                    recordInfoBackgroundColor = configuration.theme.secondaryColor.color(),
+                    closeImage = imageConfiguration.videoDiaryClose()
                 )
             )
     }

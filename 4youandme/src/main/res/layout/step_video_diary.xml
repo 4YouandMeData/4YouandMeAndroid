@@ -1,6 +1,7 @@
 ***REMOVED***
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,42 +12,135 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
     <VideoView
         android:id="@+id/video_view"
+        style="@style/text_paragraph"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
-    <Button
-        android:id="@+id/merge"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="merge"
-        app:layout_constraintBottom_toTopOf="@id/record"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/record_header"
+        style="@style/text_h2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0:00/2:00" />
 
-    <Button
-        android:id="@+id/stop"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/recording_pause"
         android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="stop"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@id/record_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/record_header" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/record_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <Button
-        android:id="@+id/record"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="record"
-        app:layout_constraintBottom_toTopOf="@id/stop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintEnd_toEndOf="@id/review"
+            app:layout_constraintTop_toTopOf="@id/recording_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/recording_title"
+            style="@style/text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@id/recording_time_image"
+            app:layout_constraintEnd_toStartOf="@id/close"
+            app:layout_constraintStart_toStartOf="@id/review"
+            tools:text="@string/PLACEHOLDER_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/recording_time"
+            style="@style/text_paragraph"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/recording_time_image"
+            app:layout_constraintEnd_toEndOf="@id/review"
+            app:layout_constraintStart_toEndOf="@id/recording_time_image"
+            app:layout_constraintTop_toTopOf="@id/recording_time_image"
+            tools:text="00:00/2:00" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/recording_time_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@id/recording_progress"
+            app:layout_constraintStart_toStartOf="@id/review" />
+
+        <ProgressBar
+            android:id="@+id/recording_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@id/recording_info_title"
+            app:layout_constraintEnd_toEndOf="@id/review"
+            app:layout_constraintStart_toStartOf="@id/review" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/recording_info_title"
+            style="@style/text_paragraph"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@id/recording_info_body"
+            app:layout_constraintEnd_toEndOf="@id/review"
+            app:layout_constraintStart_toStartOf="@id/review"
+            tools:text="@string/PLACEHOLDER_title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/recording_info_body"
+            style="@style/text_paragraph"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@id/review"
+            app:layout_constraintEnd_toEndOf="@id/review"
+            app:layout_constraintStart_toStartOf="@id/review"
+            tools:text="@string/PLACEHOLDER_body" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/review"
+            style="@style/text_h2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Review Recording" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

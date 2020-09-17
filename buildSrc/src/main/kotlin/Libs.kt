@@ -156,6 +156,14 @@ object Libs {
     const val security_crypto: String = "androidx.security:security-crypto:" +
             Versions.security_crypto
 
+    const val camera_camera2: String = "androidx.camera:camera-camera2:" + Versions.camera_camera2
+
+    /**
+     * https://github.com/square/moshi
+     */
+    const val moshi_adapters: String = "com.squareup.moshi:moshi-adapters:" +
+            Versions.moshi_adapters
+
     /**
      * https://github.com/square/moshi
      */
@@ -193,6 +201,10 @@ object Libs {
      */
     const val moshi_kotlin: String = "com.squareup.moshi:moshi-kotlin:" + Versions.moshi_kotlin
 
+    const val camera_core: String = "androidx.camera:camera-core:" + Versions.camera_core
+
+    const val camera_view: String = "androidx.camera:camera-view:" + Versions.camera_view
+
     /**
      * https://developer.android.com/studio
      */
@@ -223,6 +235,11 @@ object Libs {
      * https://developer.android.com/jetpack/androidx
      */
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
+
+    /**
+     * http://code.google.com/p/mp4parser/
+     */
+    const val isoparser: String = "com.googlecode.mp4parser:isoparser:" + Versions.isoparser
 
     /**
      * https://github.com/arrow-kt/arrow/

@@ -18,7 +18,7 @@ object Versions {
 
     const val org_jetbrains_kotlin: String = "1.4.0"
 
-    const val androidx_navigation: String = "2.2.2"
+    const val androidx_navigation: String = "2.2.2" // available: "2.3.0"
 
     const val androidx_lifecycle: String = "2.2.0"
 
@@ -48,25 +48,31 @@ object Versions {
 
     const val security_crypto: String = "1.0.0-rc01"
 
+    const val camera_camera2: String = "1.0.0-beta08"
+
     const val moshi_adapters: String = "1.8.0" // available: "1.10.0"
 
     const val espresso_core: String = "3.3.0"
 
     const val signature_pad: String = "1.3.1"
 
-    const val arrow_optics: String = "0.10.5" // available: "0.11.0"
+    const val arrow_optics: String = "0.11.0"
 
-    const val arrow_syntax: String = "0.10.5" // available: "0.11.0"
+    const val arrow_syntax: String = "0.11.0"
 
     const val fragment_ktx: String = "1.3.0-alpha06"
 
     const val moshi_kotlin: String = "1.10.0"
 
+    const val camera_core: String = "1.0.0-beta08"
+
+    const val camera_view: String = "1.0.0-alpha15"
+
     const val lint_gradle: String = "27.0.1"
 
     const val threetenabp: String = "1.2.4"
 
-    const val arrow_meta: String = "0.10.5" // available: "0.11.0"
+    const val arrow_meta: String = "0.11.0"
 
     const val span_droid: String = "0.1"
 
@@ -74,7 +80,9 @@ object Versions {
 
     const val appcompat: String = "1.2.0"
 
-    const val arrow_fx: String = "0.10.5" // available: "0.11.0"
+    const val isoparser: String = "1.1.9" // available: "1.1.22"
+
+    const val arrow_fx: String = "0.11.0"
 
     const val core_ktx: String = "1.3.1"
 
