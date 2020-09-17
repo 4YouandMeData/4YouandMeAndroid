@@ -17,7 +17,7 @@ sealed class CachePolicy {
 
 object Memory {
 
-    var configuration: Option<Configuration> = None
+    var configuration: Configuration? = null
 
     var token: Option<String> = None
 

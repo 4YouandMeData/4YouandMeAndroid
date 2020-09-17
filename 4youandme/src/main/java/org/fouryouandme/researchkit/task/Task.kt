@@ -184,9 +184,11 @@ sealed class Task(
                     infoTitleColor = configuration.theme.fourthTextColor.color(),
                     infoBody = configuration.text.videoDiary.recorderInfoBody,
                     infoBodyColor = configuration.theme.primaryTextColor.color(),
+                    reviewTimeColor = configuration.theme.primaryTextColor.color(),
                     reviewButton = configuration.text.videoDiary.recorderReviewButton,
-                    reviewButtonColor = configuration.theme.primaryColorEnd.color(),
-                    reviewButtonTextColor = configuration.theme.secondaryColor.color(),
+                    submitButton = configuration.text.videoDiary.recorderSubmitButton,
+                    buttonColor = configuration.theme.primaryColorEnd.color(),
+                    buttonTextColor = configuration.theme.secondaryColor.color(),
                     infoBackgroundColor = configuration.theme.secondaryColor.color(),
                     closeImage = imageConfiguration.videoDiaryClose()
                 )

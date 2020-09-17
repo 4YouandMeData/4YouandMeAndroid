@@ -119,9 +119,7 @@ class VideoDiaryViewModel(
 
     }
 
-    /* --- merge --- */
-
-    private suspend fun merge(videosPath: String, outputPath: String) {
+    suspend fun review(videosPath: String, outputPath: String): Unit {
 
         showLoadingFx(VideoDiaryLoading.Merge)
 
@@ -140,6 +138,9 @@ class VideoDiaryViewModel(
         hideLoadingFx(VideoDiaryLoading.Merge)
 
     }
+
+    /* --- merge --- */
+
 
     private suspend fun mergeVideoDiary(videosPath: String, outputPath: String): String =
         evalOn(Dispatchers.IO) { // ensure that run on IO dispatcher

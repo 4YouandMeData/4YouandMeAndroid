@@ -77,12 +77,12 @@ class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem)
         body.isVisible = t.data.description.isDefined()
         body.setTextColor(t.configuration.theme.secondaryColor.color())
 
-        button.isVisible = t.data.activityType.isDefined()
-        button.text =
+        review.isVisible = t.data.activityType.isDefined()
+        review.text =
             t.data.button.getOrElse { t.configuration.text.activity.activityButtonDefault }
-        button.setTextColor(t.configuration.theme.primaryTextColor.color())
-        button.background = button(t.configuration.theme.secondaryColor.color())
-        button.setOnClickListener { start(t) }
+        review.setTextColor(t.configuration.theme.primaryTextColor.color())
+        review.background = button(t.configuration.theme.secondaryColor.color())
+        review.setOnClickListener { start(t) }
 
     }
 

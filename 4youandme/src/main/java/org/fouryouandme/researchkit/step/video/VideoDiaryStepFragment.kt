@@ -55,6 +55,13 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
 
+        videoDiaryViewModel.loadingLiveData()
+            .observeEvent {
+                when (it.task) {
+                    VideoDiaryLoading.Merge -> loading.setVisibility(it.active)
+                }
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,13 +102,18 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         record_info.background =
             roundTopBackground(step.infoBackgroundColor, 30)
+        review_info.background =
+            roundTopBackground(step.infoBackgroundColor, 30)
 
-        close.setImageResource(step.closeImage)
-        close.setOnClickListener { showCancelDialog() }
+        close_recording.setImageResource(step.closeImage)
+        close_recording.setOnClickListener { showCancelDialog() }
+        close_review.setImageResource(step.closeImage)
+        close_review.setOnClickListener { showCancelDialog() }
 
         recording_title.setTextColor(step.startRecordingDescriptionColor)
 
         recording_time.setTextColor(step.timeColor)
+        review_time.setTextColor(step.reviewTimeColor)
 
         recording_time_image.setImageResource(step.timeImage)
 
@@ -116,9 +128,15 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         recording_info_body.text = step.infoBody
         recording_info_body.setTextColor(step.infoBodyColor)
 
-        review.background = button(step.reviewButtonColor)
-        review.setTextColor(step.reviewButtonTextColor)
+        review.background = button(step.buttonColor)
+        review.setTextColor(step.buttonTextColor)
+        review.setOnClickListener { startCoroutineAsync { review() } }
         review.text = step.reviewButton
+
+        submit.background = button(step.buttonColor)
+        submit.setTextColor(step.buttonTextColor)
+        submit.setOnClickListener { }
+        submit.text = step.submitButton
 
         bindRecordingState(videoDiaryViewModel.state().recordingState)
         bindRecordingHeader()
@@ -144,6 +162,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 }
 
                 record_info.isVisible = false
+                review_info.isVisible = false
 
             }
             is RecordingState.Pause -> {
@@ -173,10 +192,28 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 }
 
+                review.isEnabled = videoDiaryViewModel.state().recordTimeSeconds > 0
+
                 record_info.isVisible = true
+                review_info.isVisible = false
 
             }
-            RecordingState.Review -> TODO()
+            RecordingState.Review -> {
+
+                val currentRecordTime =
+                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
+                val maxRecordTime =
+                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
+
+                val recordTimeLabel =
+                    "$currentRecordTime/$maxRecordTime"
+
+                review_time.text = recordTimeLabel
+
+                record_info.isVisible = false
+                review_info.isVisible = true
+
+            }
         }
 
     }
@@ -197,12 +234,10 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 record_header.text = recordTimeLabel
 
             }
-            RecordingState.Pause -> {
-
+            RecordingState.Pause ->
                 record_header.text = videoDiaryViewModel.state().step.title
-
-            }
-            RecordingState.Review -> TODO()
+            RecordingState.Review ->
+                record_header.text = videoDiaryViewModel.state().step.title
         }
     }
 
@@ -240,30 +275,18 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
-    /*private fun mergeVideoFiles(): Unit =
-        IO.fx {
+    private suspend fun review(): Unit {
 
-            val mergeDirectory = File(getVideoMergeDirectoryPath())
+        val mergeDirectory = File(getVideoMergeDirectoryPath())
 
-            if (!mergeDirectory.exists())
-                mergeDirectory.mkdir()
+        if (mergeDirectory.exists().not())
+            mergeDirectory.mkdir()
 
-            val output =
-                !mergeVideoDiary(
-                    getVideoDirectoryPath(),
-                    mergeDirectory.absolutePath
-                )
-
-            val uri = Uri.parse(output)
-
-            onMainThread {
-
-                video_view.setVideoURI(uri)
-                video_view.setOnPreparedListener { video_view.start() }
-
-            }
-
-        }.unsafeRunAsync()*/
+        videoDiaryViewModel.review(
+            getVideoDirectoryPath(),
+            mergeDirectory.absolutePath
+        )
+    }
 
     private fun createVideoFile(): File {
 
