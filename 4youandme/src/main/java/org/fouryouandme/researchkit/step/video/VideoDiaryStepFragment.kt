@@ -48,6 +48,16 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
 
+        videoDiaryViewModel.errorLiveData()
+            .observeEvent {
+
+                when (it.cause) {
+                    VideoDiaryError.RecordingError ->
+                        errorToast(it.error.message(requireContext()))
+                }
+
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -160,8 +170,10 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 recording_pause.setOnClickListener {
 
-                    startCoroutineAsync { videoDiaryViewModel.record() }
-                    record()
+                    val file = createVideoFile()
+                    startCoroutineAsync { videoDiaryViewModel.record(file.absolutePath) }
+                    record(file)
+
                 }
 
                 record_info.isVisible = true
@@ -197,14 +209,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         }
     }
 
-    private fun record(): Unit {
-
-        val directory = getVideoDirectory()
-
-        if (!directory.exists())
-            directory.mkdir()
-
-        val file = File(directory, "${System.currentTimeMillis()}.mp4")
+    private fun record(file: File): Unit {
 
         camera.startRecording(
             file,
@@ -223,7 +228,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                     cause: Throwable?
                 ) {
 
-                    startCoroutineAsync { videoDiaryViewModel.pause() }
+                    startCoroutineAsync { videoDiaryViewModel.handleRecordError() }
 
                 }
 
@@ -235,6 +240,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
     private fun pause(): Unit {
 
         camera.stopRecording()
+
     }
 
     private fun mergeVideoFiles(): Unit =
@@ -261,6 +267,18 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             }
 
         }.unsafeRunAsync()
+
+    private fun createVideoFile(): File {
+
+        val directory = getVideoDirectory()
+
+        // crate also the video directory if not exist
+        if (!directory.exists())
+            directory.mkdir()
+
+        return File(directory, "${System.currentTimeMillis()}.mp4")
+
+    }
 
     private fun getVideoDirectory(): File = File(getVideoDirectoryPath())
 

@@ -36,6 +36,8 @@ object Versions {
 
     const val arrow_integration_retrofit_adapter: String = "0.10.4"
 
+    const val arrow_fx_coroutines: String = "0.11.0"
+
     const val logging_interceptor: String = "4.8.1"
 
     const val recycler_droid_core: String = "1.8.0-beta02"
@@ -91,6 +93,8 @@ object Versions {
     const val lottie: String = "3.4.2"
 
     const val timber: String = "4.7.1"
+
+    const val toasty: String = "1.5.0"
 
     const val aapt2: String = "4.0.1-6197926"
 

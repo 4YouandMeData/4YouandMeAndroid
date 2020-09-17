@@ -94,10 +94,10 @@ object Libs {
     const val lifecycle_viewmodel_ktx: String = "androidx.lifecycle:lifecycle-viewmodel-ktx:" +
             Versions.androidx_lifecycle
 
-    const val moshi_jsonapi_retrofit_converter: String =
-            "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
-
     const val moshi_jsonapi: String = "moe.banana:moshi-jsonapi:" + Versions.moe_banana
+
+    const val moshi_jsonapi_retrofit_converter: String =
+        "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html
@@ -123,15 +123,21 @@ object Libs {
     const val junit_junit: String = "junit:junit:" + Versions.junit_junit
 
     const val de_fayard_buildsrcversions_gradle_plugin: String =
-            "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
-            Versions.de_fayard_buildsrcversions_gradle_plugin
+        "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
+                Versions.de_fayard_buildsrcversions_gradle_plugin
 
     /**
      * https://github.com/arrow-kt/arrow/
      */
     const val arrow_integration_retrofit_adapter: String =
-            "io.arrow-kt:arrow-integration-retrofit-adapter:" +
-            Versions.arrow_integration_retrofit_adapter
+        "io.arrow-kt:arrow-integration-retrofit-adapter:" +
+                Versions.arrow_integration_retrofit_adapter
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_fx_coroutines: String = "io.arrow-kt:arrow-fx-coroutines:" +
+            Versions.arrow_fx_coroutines
 
     /**
      * https://square.github.io/okhttp/
@@ -265,6 +271,8 @@ object Libs {
      * https://github.com/JakeWharton/timber
      */
     const val timber: String = "com.jakewharton.timber:timber:" + Versions.timber
+
+    const val toasty: String = "com.github.GrenderG:Toasty:" + Versions.toasty
 
     /**
      * https://developer.android.com/studio

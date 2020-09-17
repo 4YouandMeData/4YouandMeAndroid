@@ -147,6 +147,10 @@ dependencies {
 
     implementation(Libs.isoparser)
 
+    /* --- toasty --- */
+
+    implementation("com.github.GrenderG:Toasty:1.5.0")
+
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)
