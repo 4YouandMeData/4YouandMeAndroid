@@ -57,8 +57,8 @@ class ConsentReviewDisagreeFragment : BaseDialogFragment<ConsentReviewViewModel>
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        close.setImageResource(imageConfiguration.close())
-        close.setOnClickListener { viewModel.back(findNavController()) }
+        close_recording.setImageResource(imageConfiguration.close())
+        close_recording.setOnClickListener { viewModel.back(findNavController()) }
 
         disagree.setOnClickListener { viewModel.exit(rootNavController()) }
 

@@ -140,9 +140,11 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val infoTitleColor: Int,
         val infoBody: String,
         val infoBodyColor: Int,
+        val reviewTimeColor: Int,
         val reviewButton: String,
-        val reviewButtonColor: Int,
-        val reviewButtonTextColor: Int,
+        val submitButton: String,
+        val buttonColor: Int,
+        val buttonTextColor: Int,
         val infoBackgroundColor: Int,
         val closeImage: Int,
     ) : Step(identifier, configuration)

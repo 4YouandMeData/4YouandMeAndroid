@@ -114,10 +114,10 @@ class QuickActivityViewHolder(
         answer_5.setOnClickListener { t.data.answer5.map { onAnswerSelected(t, it) } }
         answer_6.setOnClickListener { t.data.answer6.map { onAnswerSelected(t, it) } }
 
-        button.isEnabled = t.selectedAnswer.isDefined()
-        button.background = button(t.configuration.theme.secondaryColor.color())
-        button.setTextColor(t.configuration.theme.primaryTextColor.color())
-        button.text =
+        review.isEnabled = t.selectedAnswer.isDefined()
+        review.background = button(t.configuration.theme.secondaryColor.color())
+        review.setTextColor(t.configuration.theme.primaryTextColor.color())
+        review.text =
             t.data.button.getOrElse { t.configuration.text.activity.quickActivityButtonDefault }
 
     }
@@ -148,7 +148,7 @@ class QuickActivityViewHolder(
                         getAnswerImage(t.selectedAnswer, t.data.answer6).orNull()
                     )
 
-                    button.isEnabled = t.selectedAnswer.isDefined()
+                    review.isEnabled = t.selectedAnswer.isDefined()
                 }
             }
         }

@@ -216,7 +216,7 @@
             tools:text="Answer 3" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button"
+            android:id="@+id/review"
             style="@style/text_h2"
             android:layout_width="wrap_content"
             android:layout_height="50dp"

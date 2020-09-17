@@ -56,7 +56,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/close"
+            android:id="@+id/close_recording"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:layout_constraintEnd_toEndOf="@id/review"
@@ -70,7 +70,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             app:layout_constraintBottom_toTopOf="@id/recording_time_image"
-            app:layout_constraintEnd_toStartOf="@id/close"
+            app:layout_constraintEnd_toStartOf="@id/close_recording"
             app:layout_constraintStart_toStartOf="@id/review"
             tools:text="@string/PLACEHOLDER_title" />
 
@@ -128,6 +128,53 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/review"
+            style="@style/text_h2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Review Recording" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/review_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/close_review"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintEnd_toEndOf="@id/submit"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/review_time"
+            style="@style/text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/submit"
+            app:layout_constraintEnd_toEndOf="@id/submit"
+            app:layout_constraintStart_toStartOf="@id/submit"
+            app:layout_constraintTop_toBottomOf="@id/close_review"
+            tools:text="00:12/2:00"
+            tools:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/submit"
             style="@style/text_h2"
             android:layout_width="0dp"
             android:layout_height="50dp"
