@@ -1,6 +1,5 @@
 package org.fouryouandme.researchkit.step.video
 
-import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
@@ -8,8 +7,6 @@ import androidx.camera.core.VideoCapture
 import androidx.camera.view.CameraView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import arrow.fx.IO
-import arrow.fx.extensions.fx
 import kotlinx.android.synthetic.main.step_video_diary.*
 import kotlinx.android.synthetic.main.task.*
 import org.fouryouandme.R
@@ -52,7 +49,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             .observeEvent {
 
                 when (it.cause) {
-                    VideoDiaryError.RecordingError ->
+                    VideoDiaryError.Recording ->
                         errorToast(it.error.message(requireContext()))
                 }
 
@@ -243,7 +240,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
-    private fun mergeVideoFiles(): Unit =
+    /*private fun mergeVideoFiles(): Unit =
         IO.fx {
 
             val mergeDirectory = File(getVideoMergeDirectoryPath())
@@ -266,7 +263,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
 
-        }.unsafeRunAsync()
+        }.unsafeRunAsync()*/
 
     private fun createVideoFile(): File {
 

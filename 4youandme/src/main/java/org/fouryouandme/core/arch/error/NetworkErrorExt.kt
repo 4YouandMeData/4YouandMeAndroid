@@ -3,17 +3,21 @@ package org.fouryouandme.core.arch.error
 import android.content.Context
 import arrow.Kind
 import arrow.core.*
+import arrow.fx.coroutines.evalOn
 import com.squareup.moshi.Json
+import kotlinx.coroutines.Dispatchers
 import okhttp3.RequestBody
 import okio.Buffer
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.ErrorModule
 import org.fouryouandme.core.entity.configuration.Text
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
+@Deprecated("use the suspend version")
 private fun <F> HttpException.toNetworkErrorHTTP(
     runtime: Runtime<F>,
     text: Option<Text>
@@ -42,15 +46,47 @@ private fun <F> HttpException.toNetworkErrorHTTP(
 
         FourYouAndMeError.NetworkErrorHTTP(
             code(),
-            request.map { it.url.toString() },
-            request.map { it.method },
-            request.flatMap { it.headers["Authorization"].toOption() },
-            requestJson,
-            responseJson,
+            request.map { it.url.toString() }.orNull(),
+            request.map { it.method }.orNull(),
+            request.flatMap { it.headers["Authorization"].toOption() }.orNull(),
+            requestJson.orNull(),
+            responseJson.orNull(),
             errorMessage
         )
     }
 
+private suspend fun HttpException.toNetworkErrorHTTP(
+    errorModule: ErrorModule,
+    text: Text?
+): FourYouAndMeError.NetworkErrorHTTP =
+    evalOn(Dispatchers.IO) {
+
+        val raw = response()?.raw()
+        val request = raw?.request
+        val response = response()
+
+        val requestJson =
+            request?.body.bodyToString().orNull()
+
+        val responseJson =
+            response?.errorBody()?.string()
+
+
+        val errorMessage = responseJson.parseErrorMessage(errorModule, text)
+
+        FourYouAndMeError.NetworkErrorHTTP(
+            code(),
+            request?.url.toString(),
+            request?.method,
+            request?.headers?.get("Authorization"),
+            requestJson,
+            responseJson,
+            errorMessage
+        )
+
+    }
+
+@Deprecated("use the suspend version")
 private fun <F> RequestBody?.bodyToString(
     runtime: Runtime<F>
 ): Kind<F, Either<Throwable, Option<String>>> =
@@ -66,11 +102,28 @@ private fun <F> RequestBody?.bodyToString(
         }.attempt()
     }
 
-internal fun defaultNetworkErrorMessage(text: Option<Text>): (Context) -> String =
-    { text.map { it.error.messageDefault }.getOrElse { it.getString(R.string.ERROR_api) } }
+private suspend fun RequestBody?.bodyToString(): Either<Throwable, String?> =
+
+    Either.catch {
+
+        evalOn(Dispatchers.IO) { // ensure that run on IO dispatcher
+
+            this?.let {
+                val buffer = Buffer()
+                it.writeTo(buffer)
+                buffer.readUtf8()
+            }
+
+        }
+
+    }
+
+internal fun defaultNetworkErrorMessage(text: Text?): (Context) -> String =
+    { text?.error?.messageDefault ?: it.getString(R.string.ERROR_api) }
 
 data class ServerErrorMessage(@Json(name = "message") val messageCode: String)
 
+@Deprecated("use the suspend verison")
 private fun <F> Option<String>.parseErrorMessage(
     runtime: Runtime<F>,
     text: Option<Text>
@@ -91,18 +144,48 @@ private fun <F> Option<String>.parseErrorMessage(
             val result = !parser.attempt()
 
             result.fold(
-                { defaultNetworkErrorMessage(text) },
+                { defaultNetworkErrorMessage(text.orNull()) },
                 { option ->
                     option.fold(
-                        { defaultNetworkErrorMessage(text) },
-                        { it.mapToMessage(text) })
+                        { defaultNetworkErrorMessage(text.orNull()) },
+                        { it.mapToMessage(text.orNull()) })
                 }
             )
         }
-    }.getOrElse { runtime.fx.concurrent { defaultNetworkErrorMessage(text) } }
+    }.getOrElse { runtime.fx.concurrent { defaultNetworkErrorMessage(text.orNull()) } }
 
 
-private fun ServerErrorMessage.mapToMessage(text: Option<Text>): (Context) -> String =
+private suspend fun String?.parseErrorMessage(
+    errorModule: ErrorModule,
+    text: Text?
+): ((Context) -> String) =
+    this?.let {
+
+        val error = parseServerErrorMessage(errorModule)
+
+        error.fold(
+            { defaultNetworkErrorMessage(text) },
+            { it?.mapToMessage(text) ?: defaultNetworkErrorMessage(text) }
+        )
+
+    } ?: defaultNetworkErrorMessage(text)
+
+private suspend fun String.parseServerErrorMessage(
+    errorModule: ErrorModule
+): Either<Throwable, ServerErrorMessage?> =
+    Either.catch {
+
+        evalOn(Dispatchers.IO) { // ensure that run on IO dispatcher
+
+            errorModule
+                .moshi
+                .adapter(ServerErrorMessage::class.java)
+                .fromJson(this)
+
+        }
+    }
+
+private fun ServerErrorMessage.mapToMessage(text: Text?): (Context) -> String =
     defaultNetworkErrorMessage(text)
 
 fun <F> Throwable.toFourYouAndMeError(
@@ -127,3 +210,20 @@ fun <F> Throwable.toFourYouAndMeError(
                 )
         }
     }
+
+suspend fun Throwable.toFourYouAndMeError(
+    errorModule: ErrorModule,
+    text: Text?
+): FourYouAndMeError =
+    when (this) {
+        is UnknownHostException ->
+            FourYouAndMeError.NetworkErrorUnknownHost(text?.error?.messageConnectivity)
+        is TimeoutException,
+        is SocketTimeoutException ->
+            FourYouAndMeError.NetworkErrorTimeOut(text?.error?.messageConnectivity)
+        is HttpException ->
+            toNetworkErrorHTTP(errorModule, text)
+        else ->
+            FourYouAndMeError.Unknown(text?.error?.messageDefault)
+    }
+

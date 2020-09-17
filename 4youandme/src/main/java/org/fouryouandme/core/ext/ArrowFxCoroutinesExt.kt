@@ -19,3 +19,6 @@ fun <T> startCoroutineCancellableAsync(block: suspend () -> T): Disposable =
 
 suspend fun <T> evalOnMain(block: suspend () -> T): T =
     evalOn(Dispatchers.Main, block)
+
+suspend fun <T> evalOnIO(block: suspend () -> T): T =
+    evalOn(Dispatchers.IO, block)

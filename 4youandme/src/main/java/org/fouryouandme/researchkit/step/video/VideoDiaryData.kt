@@ -35,6 +35,13 @@ sealed class RecordingState {
 
 sealed class VideoDiaryError {
 
-    object RecordingError : VideoDiaryError()
+    object Recording : VideoDiaryError()
+    object Merge : VideoDiaryError()
+
+}
+
+sealed class VideoDiaryLoading {
+
+    object Merge : VideoDiaryLoading()
 
 }

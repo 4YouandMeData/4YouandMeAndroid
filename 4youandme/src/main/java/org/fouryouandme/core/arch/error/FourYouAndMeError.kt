@@ -37,12 +37,12 @@ sealed class FourYouAndMeError(val title: (Context) -> String, val message: (Con
 
     data class NetworkErrorHTTP(
         val code: Int,
-        val endpoint: Option<String>,
-        val method: Option<String>,
-        val token: Option<String>,
-        val requestBody: Option<String>,
-        val responseBody: Option<String>,
-        val errorMessage: (Context) -> String = defaultNetworkErrorMessage(None)
+        val endpoint: String?,
+        val method: String?,
+        val token: String?,
+        val requestBody: String?,
+        val responseBody: String?,
+        val errorMessage: (Context) -> String = defaultNetworkErrorMessage(null)
     ) : FourYouAndMeError({ it.getString(R.string.ERROR_title) }, errorMessage)
 
     /* --- auth --- */
