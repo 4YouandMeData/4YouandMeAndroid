@@ -3,16 +3,11 @@ package org.fouryouandme.researchkit.step
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import arrow.core.Option
-import arrow.core.Tuple3
-import arrow.core.extensions.fx
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.sectionParent
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.step.countdown.CountDownStepFragment
 import org.fouryouandme.researchkit.step.end.EndStepFragment
 import org.fouryouandme.researchkit.step.introduction.IntroductionListStepFragment
@@ -30,7 +25,7 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
 
         viewModelFactory(
             sectionParent(),
-            getFactory { TaskViewModel(navigator, IORuntime) }
+            getFactory { TaskViewModel(navigator, IORuntime, injector.configurationModule()) }
         )
 
     }
@@ -42,7 +37,7 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
             viewModel.getStepByIndex(args.index)
 
         val fragment =
-            step.map {
+            step?.let {
 
                 when (it) {
                     is Step.StartStep ->
@@ -60,15 +55,14 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                     is Step.VideoDiaryStep ->
                         VideoDiaryStepFragment()
                 }
-            }.map { StepFragment.buildWithParams(args.index, it) }
+            }?.let { StepFragment.buildWithParams(args.index, it) }
 
-        Option.fx { Tuple3(!step, !fragment, !viewModel.state().task) }
-            .map {
+        mapNotNull(step, fragment) { s, f ->
 
-                val transaction = childFragmentManager.beginTransaction()
-                transaction.add(R.id.step_root, it.b, it.a.identifier)
-                transaction.commit()
+            val transaction = childFragmentManager.beginTransaction()
+            transaction.add(R.id.step_root, f, s.identifier)
+            transaction.commit()
 
-            }
+        }
     }
 }

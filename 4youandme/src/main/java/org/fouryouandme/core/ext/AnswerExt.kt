@@ -5,7 +5,6 @@ import arrow.core.Either
 import arrow.core.Option
 import arrow.core.Tuple2
 import arrow.core.toT
-import arrow.fx.ForIO
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 
 fun <F> List<Tuple2<Boolean, Option<Kind<F, Either<FourYouAndMeError, Unit>>>>>.countAndAccumulate() =

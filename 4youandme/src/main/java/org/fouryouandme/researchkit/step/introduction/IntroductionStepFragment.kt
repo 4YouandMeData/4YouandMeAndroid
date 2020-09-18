@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.step_introduction.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.button.button
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import kotlin.math.roundToInt
@@ -22,7 +23,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         val step =
             viewModel.getStepByIndexAs<Step.IntroductionStep>(indexArg())
 
-        step.map { applyData(it) }
+        step?.let { applyData(it) }
     }
 
     private fun applyData(
@@ -53,7 +54,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         next.background = button(step.configuration.theme.primaryColorEnd.color())
         next.text = step.button
         next.setTextColor(step.configuration.theme.secondaryColor.color())
-        next.setOnClickListener { next(step.close) }
+        next.setOnClickListener { startCoroutineAsync { next(step.close) } }
 
     }
 

@@ -18,6 +18,7 @@ class Navigator(
 
     private val activityActionLiveData = MutableLiveData<Event<ActivityAction>>()
 
+    @Deprecated("use the suspend version")
     fun <F> navigateTo(
         runtime: Runtime<F>,
         controller: ParentNavController,
@@ -25,6 +26,13 @@ class Navigator(
     ): Kind<F, Unit> =
         navigateTo(runtime, controller.navController, navigationAction)
 
+    suspend fun navigateTo(
+        controller: ParentNavController,
+        navigationAction: NavigationAction
+    ): Unit =
+        navigateTo(controller.navController, navigationAction)
+
+    @Deprecated("use the suspend version")
     fun <F> navigateTo(
         runtime: Runtime<F>,
         controller: NavController,
@@ -42,11 +50,34 @@ class Navigator(
             }
         }
 
+    suspend fun navigateTo(
+        controller: NavController,
+        navigationAction: NavigationAction
+    ): Unit {
+
+        evalOnMain {
+
+            val navigation =
+                navigationProvider.getNavigation(navigationAction)
+
+            navigation(controller)
+
+        }
+    }
+
+    @Deprecated("use the suspend version")
     fun <F> back(runtime: Runtime<F>, navController: ParentNavController): Kind<F, Boolean> =
         back(runtime, navController.navController)
 
+    suspend fun back(navController: ParentNavController): Boolean =
+        back(navController.navController)
+
+    @Deprecated("use the suspend version")
     fun <F> back(runtime: Runtime<F>, navController: NavController): Kind<F, Boolean> =
         runtime.fx.concurrent { navController.popBackStack() }
+
+    suspend fun back(navController: NavController): Boolean =
+        navController.popBackStack()
 
     @Deprecated("use the suspend version")
     fun <F> performAction(runtime: Runtime<F>, action: ActivityAction): Kind<F, Unit> =

@@ -11,10 +11,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.find
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.sectionParent
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskNavController
 import org.fouryouandme.tasks.TaskViewModel
@@ -24,7 +21,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
     override val viewModel by lazy {
         viewModelFactory(
             taskFragment(),
-            getFactory { TaskViewModel(navigator, IORuntime) }
+            getFactory { TaskViewModel(navigator, IORuntime, injector.configurationModule()) }
         )
     }
 
@@ -50,7 +47,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             .orNull()!!
 
     //TODO: FIX
-    protected open fun next(finish: Boolean = false): Unit {
+    protected open suspend fun next(finish: Boolean = false): Unit {
         if (!finish)
             viewModel.nextStep(sectionParent().findNavController(), indexArg())
         else
@@ -71,8 +68,10 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             .setMessage(R.string.TASK_cancel_description)
             .setPositiveButton(R.string.TASK_cancel_positive)
             { _, _ ->
-                viewModel.cancel()
-                viewModel.close(taskNavController())
+                startCoroutineAsync {
+                    viewModel.cancel()
+                    viewModel.close(taskNavController())
+                }
             }
             .setNegativeButton(R.string.TASK_cancel_negative)
             { dialog, _ -> dialog.dismiss() }

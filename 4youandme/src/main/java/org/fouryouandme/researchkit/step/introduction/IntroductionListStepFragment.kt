@@ -12,10 +12,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.dpToPx
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.show
-import org.fouryouandme.core.ext.showCloseButton
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 
@@ -36,7 +33,7 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         val step =
             viewModel.getStepByIndexAs<Step.IntroductionListStep>(indexArg())
 
-        step.map { applyData(it) }
+        step?.let { applyData(it) }
 
     }
 
@@ -86,12 +83,12 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         next.background = button(step.configuration.theme.primaryColorEnd.color())
         next.text = step.button
         next.setTextColor(step.configuration.theme.secondaryColor.color())
-        next.setOnClickListener { next() }
+        next.setOnClickListener { startCoroutineAsync { next() } }
 
         taskFragment().toolbar.apply {
 
             showCloseButton(imageConfiguration) {
-                viewModel.back(stepNavController(), taskNavController())
+                startCoroutineAsync { viewModel.back(stepNavController(), taskNavController()) }
             }
 
             setBackgroundColor(step.configuration.theme.secondaryColor.color())

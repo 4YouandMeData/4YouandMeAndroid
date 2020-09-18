@@ -1,16 +1,15 @@
 package org.fouryouandme.tasks
 
 import androidx.navigation.NavController
-import arrow.core.Option
-import arrow.core.some
-import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
+import org.fouryouandme.core.ext.foldSuspend
+import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepNavController
 import org.fouryouandme.researchkit.task.ETaskType
@@ -18,95 +17,92 @@ import org.fouryouandme.researchkit.task.Task
 
 class TaskViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val configurationModule: ConfigurationModule
 ) : BaseViewModel<
         ForIO,
         TaskState,
         TaskStateUpdate,
         TaskError,
         TaskLoading>
-    (TaskState(), navigator, runtime) {
+    (navigator = navigator, runtime = runtime) {
 
-    /* --- data --- */
+    /* --- initialization --- */
 
-    fun initialize(type: ETaskType): Unit =
-        runtime.fx.concurrent {
+    suspend fun initialize(type: ETaskType): Unit {
 
-            !showLoading(TaskLoading.Initialization)
+        showLoadingFx(TaskLoading.Initialization)
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
+        val configuration =
+            configurationModule.getConfiguration(CachePolicy.MemoryFirst)
 
 
-            !configuration.fold(
-                { setError(it, TaskError.Initialization) },
+        configuration.fold(
+            { setErrorFx(it, TaskError.Initialization) },
+            { config ->
+
+                val task =
+                    Task.byType(
+                        type,
+                        config,
+                        runtime.injector.imageConfiguration,
+                        runtime.injector.moshi
+                    )
+
+                setStateFx(
+                    TaskState(
+                        configuration = config,
+                        task = task,
+                        isCancelled = false,
+                        result = TaskResult(task.identifier, emptyMap())
+                    )
+                ) { TaskStateUpdate.Initialization(it.configuration, task) }
+            }
+        )
+
+        hideLoadingFx(TaskLoading.Initialization)
+
+    }
+
+    /* --- state --- */
+
+    suspend fun cancel(): Unit =
+        setStateFx(
+            state().copy(isCancelled = true)
+        ) { TaskStateUpdate.Cancelled(it.isCancelled) }
+
+    /* --- step --- */
+
+    fun getStepByIndex(index: Int): Step? = state().task.steps.getOrNull(index)
+
+    inline fun <reified T : Step> getStepByIndexAs(index: Int): T? = getStepByIndex(index) as? T
+
+    /* --- navigation --- */
+
+    suspend fun nextStep(navController: NavController, currentStepIndex: Int): Unit =
+        getStepByIndex(currentStepIndex + 1)
+            .foldSuspend(
+                { Unit /* TODO: Handle task completed */ },
                 {
-
-                    // TODO: handle dynamic task creation
-                    val task =
-                        Task.byType(
-                            type,
-                            it,
-                            runtime.injector.imageConfiguration,
-                            runtime.injector.moshi
-                        )
-
-
-                    setState(
-                        state().copy(
-                            configuration = it.toOption(),
-                            task = task.some()
-                        ),
-                        TaskStateUpdate.Initialization(it, task)
+                    navigator.navigateTo(
+                        navController,
+                        StepToStep(currentStepIndex + 1)
                     )
                 }
             )
 
-            !hideLoading(TaskLoading.Initialization)
-
-        }.unsafeRunAsync()
-
-    /* --- state --- */
-
-    fun cancel(): Unit =
-        setState(
-            state().copy(isCancelled = true),
-            TaskStateUpdate.Cancelled(true)
-        ).unsafeRunAsync()
-
-    /* --- step --- */
-
-    fun getStepByIndex(index: Int): Option<Step> =
-        state().task.flatMap { it.steps.getOrNull(index).toOption() }
-
-    inline fun <reified T : Step> getStepByIndexAs(index: Int): Option<T> =
-        getStepByIndex(index)
-            .flatMap { (it as? T).toOption() }
-
-    /* --- navigation --- */
-
-    fun nextStep(navController: NavController, currentStepIndex: Int): Unit =
-        getStepByIndex(currentStepIndex + 1)
-            .fold(
-                { Unit /* TODO: Handle task completed */ },
-                {
-                    navigator.navigateTo(
-                        runtime,
-                        navController,
-                        StepToStep(currentStepIndex + 1)
-                    ).unsafeRunAsync()
-                }
-            )
-
-    fun close(taskNavController: TaskNavController): Unit =
-        navigator.back(runtime, taskNavController).unsafeRunAsync()
+    suspend fun close(taskNavController: TaskNavController): Unit {
+        navigator.back(taskNavController)
+    }
 
     // TODO: check previous step
-    fun back(stepNavController: StepNavController, taskNavController: TaskNavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun back(
+        stepNavController: StepNavController,
+        taskNavController: TaskNavController
+    ): Unit {
 
-            if (navigator.back(runtime, stepNavController).bind().not())
-                !navigator.back(runtime, taskNavController)
+        if (navigator.back(stepNavController).not())
+            navigator.back(taskNavController)
 
-        }.unsafeRunAsync()
+    }
 }

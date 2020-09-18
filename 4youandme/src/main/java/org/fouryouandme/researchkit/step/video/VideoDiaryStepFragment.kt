@@ -78,7 +78,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             if (videoDiaryViewModel.isInitialized().not()) {
 
                 val step =
-                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg()).orNull()
+                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg())
 
                 step?.let { videoDiaryViewModel.initialize(it) }
 
@@ -160,11 +160,13 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 .setTitle(title)
                 .setMessage(description)
                 .setPositiveButton(settings) { _, _ ->
-                    startCoroutineAsync { videoDiaryViewModel.permissionSettings() }
-                    viewModel.close(taskNavController())
+                    startCoroutineAsync {
+                        videoDiaryViewModel.permissionSettings()
+                        viewModel.close(taskNavController())
+                    }
                 }
                 .setNegativeButton(cancel) { _, _ ->
-                    viewModel.close(taskNavController())
+                    startCoroutineAsync { viewModel.close(taskNavController()) }
                 }
                 .setCancelable(false)
                 .show()
@@ -180,7 +182,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             if (videoDiaryViewModel.isInitialized().not()) {
 
                 val step =
-                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg()).orNull()
+                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg())
 
                 step?.let { videoDiaryViewModel.initialize(it) }
 

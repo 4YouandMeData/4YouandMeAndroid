@@ -5,23 +5,18 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
-import arrow.core.None
-import arrow.core.Option
-import arrow.fx.IO
-import arrow.fx.extensions.fx
 import kotlinx.android.synthetic.main.step_countdown.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
-import org.fouryouandme.researchkit.step.countdown.LifecycleIO.Companion.bindToLifecycle
-
 
 class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
 
-    private var counterAnimator: Option<ValueAnimator> = None
-    private var progressAnimator: Option<ValueAnimator> = None
+    private var counterAnimator: ValueAnimator? = null
+    private var progressAnimator: ValueAnimator? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,7 +24,7 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         val step =
             viewModel.getStepByIndexAs<Step.CountDownStep>(indexArg())
 
-        step.map { applyData(it) }
+        step?.let { applyData(it) }
     }
 
     private fun applyData(
@@ -48,50 +43,51 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         progress.progressTintList =
             ColorStateList.valueOf(step.configuration.theme.primaryColorEnd.color())
 
-        startCounter(step.seconds) { next() }
+        startCoroutineAsync { startCounter(step.seconds) { next() } }
     }
 
-    private fun startCounterAnimation(seconds: Int): Unit {
+    private suspend fun startCounterAnimation(seconds: Int): Unit =
+        evalOnMain {
 
-        val animator = ValueAnimator.ofInt(seconds, 0)
+            val animator = ValueAnimator.ofInt(seconds, 0)
 
-        animator.duration = seconds * 1000L
-        animator.addUpdateListener { counter.text = (it.animatedValue as Int).toString() }
-        animator.interpolator = LinearInterpolator()
+            animator.duration = seconds * 1000L
+            animator.addUpdateListener { counter.text = (it.animatedValue as Int).toString() }
+            animator.interpolator = LinearInterpolator()
 
-        lifecycle.addObserver(LifecycleValueAnimator(animator))
+            lifecycle.addObserver(LifecycleValueAnimator(animator))
 
-    }
+        }
 
-    private fun startCounterProgressAnimation(seconds: Int): Unit {
+    private suspend fun startCounterProgressAnimation(seconds: Int): Unit =
+        evalOnMain {
 
-        progress.max = seconds * 1000
+            progress.max = seconds * 1000
 
-        val animator = ValueAnimator.ofInt(0, seconds * 1000)
+            val animator = ValueAnimator.ofInt(0, seconds * 1000)
 
-        animator.duration = seconds * 1000L
-        animator.addUpdateListener { progress.progress = it.animatedValue as Int }
-        animator.interpolator = LinearInterpolator()
+            animator.duration = seconds * 1000L
+            animator.addUpdateListener { progress.progress = it.animatedValue as Int }
+            animator.interpolator = LinearInterpolator()
 
-        lifecycle.addObserver(LifecycleValueAnimator(animator))
+            lifecycle.addObserver(LifecycleValueAnimator(animator))
 
-    }
+        }
 
-    private fun startCounter(
+    private suspend fun startCounter(
         seconds: Int,
-        onCounterEnd: () -> Unit
+        onCounterEnd: suspend () -> Unit
     ): Unit {
 
         startCounterAnimation(seconds)
         startCounterProgressAnimation(seconds)
 
-        IO.fx {
+        LifecycleCoroutine.startLifecycleCoroutineAsync(this) {
 
-            !effect { delay(seconds * 1000L + 300L) }
-            continueOn(Dispatchers.Main)
-            onCounterEnd()
+            delay(seconds * 1000L + 300L)
+            evalOnMain { onCounterEnd() }
 
-        }.bindToLifecycle(this)
+        }
 
     }
 
