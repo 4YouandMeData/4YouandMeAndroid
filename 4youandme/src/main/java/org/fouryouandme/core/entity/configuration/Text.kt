@@ -11,7 +11,8 @@ data class Text(
     val tab: Tab,
     val activity: Activity,
     val videoDiary: VideoDiary,
-    val studyInfo: StudyInfo
+    val studyInfo: StudyInfo,
+    val profile: Profile
 )
 
 data class Error(
@@ -165,4 +166,13 @@ data class StudyInfo(
     val contactInfo: String,
     val rewards: String,
     val faq: String,
+)
+
+data class Profile(
+    val title: String,
+    val firstItem: String,
+    val secondItem: String,
+    val thirdItem: String,
+    val fourthItem: String,
+    val disclaimer: String
 )

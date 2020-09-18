@@ -113,8 +113,14 @@ data class StringsResponse(
     @Json(name = "VIDEO_DIARY_RECORDER_START_RECORDING_DESCRIPTION") val videoDiaryRecorderStartRecordingDescription: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_RESUME_RECORDING_DESCRIPTION") val videoDiaryRecorderResumeRecordingDescription: String? = null,
     @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
-    @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String?= null,
+    @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String? = null,
     @Json(name = "STUDY_INFO_FAQ") val studyInfoFaq: String? = null,
+    @Json(name = "PROFILE_TITLE") val profileTitle: String? = null,
+    @Json(name = "ABOUT_YOU_YOUR_PREGNANCY") val aboutYouYourPregnancy: String? = null,
+    @Json(name = "ABOUT_YOU_APPS_AND_DEVICES") val aboutYouAppsAndDevices: String? = null,
+    @Json(name = "ABOUT_YOU_REVIEW_CONSENT") val aboutYouReviewConsent: String? = null,
+    @Json(name = "ABOUT_YOU_PERMISSIONS") val aboutYouPermissions: String? = null,
+    @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -138,6 +144,7 @@ data class StringsResponse(
         val activity = toActivity()
         val videoDiary = toVideoDiary()
         val studyInfo = toStudyInfo()
+        val profile = toProfile()
 
         return Option.fx {
             Text(
@@ -151,7 +158,8 @@ data class StringsResponse(
                 tab.bind(),
                 activity.bind(),
                 videoDiary.bind(),
-                studyInfo.bind()
+                studyInfo.bind(),
+                profile.bind()
             )
         }
     }
@@ -365,6 +373,18 @@ data class StringsResponse(
                 studyInfoContactInfo.toOption().bind(),
                 studyInfoRewards.toOption().bind(),
                 studyInfoFaq.toOption().bind()
+            )
+        }
+
+    private fun toProfile(): Option<Profile> =
+        Option.fx {
+            Profile(
+                profileTitle.toOption().bind(),
+                aboutYouYourPregnancy.toOption().bind(),
+                aboutYouAppsAndDevices.toOption().bind(),
+                aboutYouReviewConsent.toOption().bind(),
+                aboutYouPermissions.toOption().bind(),
+                aboutYouDisclaimer.toOption().bind()
             )
         }
 }

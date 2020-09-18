@@ -94,16 +94,17 @@
             app:layout_constraintTop_toBottomOf="@+id/thirdItem" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/disclaimer"
             style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
-            android:text="You are currently participating in the BUMP pregnancy research study. If for any reason you no longer wish to continue participating in the study, you can elect to leave this study by contacting the study team."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fourthItem" />
+            app:layout_constraintTop_toBottomOf="@id/fourthItem"
+            tools:text="You are currently participating in the BUMP pregnancy research study. If for any reason you no longer wish to continue participating in the study, you can elect to leave this study by contacting the study team." />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"

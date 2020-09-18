@@ -60,7 +60,7 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
         frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
 
-        textView.text = "Study Info"
+        textView.text = configuration.text.tab.studyInfoTitle
         textView.setTextColor(configuration.theme.secondaryColor.color())
 
         firstItem.applyData(

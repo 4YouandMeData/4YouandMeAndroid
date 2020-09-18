@@ -78,13 +78,13 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
 
         frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
 
-        textView.text = "About you"
+        textView.text = configuration.text.profile.title
         textView.setTextColor(configuration.theme.secondaryColor.color())
 
         firstItem.applyData(
             configuration,
             requireContext().imageConfiguration.contactInfo(),
-            configuration.text.studyInfo.contactInfo
+            configuration.text.profile.firstItem
         )
 
         firstItem.setOnClickListener { Log.d("item clicked", "Your Pregnancy clicked") }
@@ -92,7 +92,7 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
         secondItem.applyData(
             configuration,
             requireContext().imageConfiguration.contactInfo(),
-            configuration.text.studyInfo.contactInfo
+            configuration.text.profile.secondItem
         )
 
         secondItem.setOnClickListener { Log.d("item clicked", "Your Apps clicked") }
@@ -100,7 +100,7 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
         thirdItem.applyData(
             configuration,
             requireContext().imageConfiguration.contactInfo(),
-            configuration.text.studyInfo.contactInfo
+            configuration.text.profile.thirdItem
         )
 
         thirdItem.setOnClickListener { Log.d("item clicked", "Review Consent clicked") }
@@ -108,10 +108,12 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
         fourthItem.applyData(
             configuration,
             requireContext().imageConfiguration.contactInfo(),
-            configuration.text.studyInfo.contactInfo
+            configuration.text.profile.fourthItem
         )
 
         fourthItem.setOnClickListener { Log.d("item clicked", "Permissions clicked") }
+
+        disclaimer.text = configuration.text.profile.disclaimer
     }
 
 }
