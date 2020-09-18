@@ -190,7 +190,13 @@ sealed class Task(
                     buttonColor = configuration.theme.primaryColorEnd.color(),
                     buttonTextColor = configuration.theme.secondaryColor.color(),
                     infoBackgroundColor = configuration.theme.secondaryColor.color(),
-                    closeImage = imageConfiguration.videoDiaryClose()
+                    closeImage = imageConfiguration.videoDiaryClose(),
+                    missingPermissionCamera = configuration.text.videoDiary.missingPermissionTitleCamera,
+                    missingPermissionCameraBody = configuration.text.videoDiary.missingPermissionBodyCamera,
+                    missingPermissionMic = configuration.text.videoDiary.missingPermissionTitleMic,
+                    missingPermissionMicBody = configuration.text.videoDiary.missingPermissionBodyMic,
+                    settings = configuration.text.videoDiary.missingPermissionBodySettings,
+                    cancel = configuration.text.videoDiary.missingPermissionDiscard
                 )
             )
     }

@@ -18,6 +18,7 @@ import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.permissionSettingsAction
 import org.fouryouandme.core.ext.startCoroutineCancellableAsync
 import org.fouryouandme.researchkit.step.Step
 import org.threeten.bp.Instant
@@ -224,5 +225,13 @@ class VideoDiaryViewModel(
 
             outputFilePath
         }
+
+    /* --- navigation --- */
+
+    suspend fun permissionSettings(): Unit {
+
+        navigator.performAction(permissionSettingsAction())
+
+    }
 
 }

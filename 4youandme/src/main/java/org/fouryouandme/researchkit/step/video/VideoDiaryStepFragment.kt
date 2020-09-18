@@ -1,8 +1,10 @@
 package org.fouryouandme.researchkit.step.video
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.VideoCapture
 import androidx.camera.view.CameraView
@@ -18,6 +20,9 @@ import org.fouryouandme.core.entity.configuration.background.roundTopBackground
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.configuration.progressbar.progressDrawable
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.permission.Permission
+import org.fouryouandme.core.permission.PermissionError
+import org.fouryouandme.core.permission.requestMultiplePermission
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import java.io.File
@@ -68,15 +73,98 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 }
             }
 
+        startCoroutineAsync {
+
+            if (videoDiaryViewModel.isInitialized().not()) {
+
+                val step =
+                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg()).orNull()
+
+                step?.let { videoDiaryViewModel.initialize(it) }
+
+            }
+
+            setupCamera(videoDiaryViewModel.state().step)
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         video_view.isVisible = false
+    }
 
-        camera.bindToLifecycle(this)
-        camera.captureMode = CameraView.CaptureMode.VIDEO
+    @SuppressLint("MissingPermission")
+    private suspend fun setupCamera(step: Step.VideoDiaryStep): Unit {
+
+        val permsission =
+            requestMultiplePermission(requireContext(), Permission.Camera, Permission.RecordAudio)
+
+        permsission.fold(
+            {
+                when (it) {
+                    is PermissionError.PermissionDenied ->
+                        handleMissingPermission(it.permission, step)
+                    PermissionError.Unknown ->
+                        viewModel.close(taskNavController())
+                }
+            },
+            {
+                evalOnMain {
+                    // All permission are granted, initialize the view
+                    camera.bindToLifecycle(this)
+                    camera.captureMode = CameraView.CaptureMode.VIDEO
+                }
+            }
+        )
+    }
+
+    private suspend fun handleMissingPermission(
+        permission: Permission,
+        step: Step.VideoDiaryStep
+    ): Unit {
+
+        when (permission) {
+            Permission.Camera ->
+                showPermissionError(
+                    step.missingPermissionCamera,
+                    step.missingPermissionCameraBody,
+                    step.settings,
+                    step.cancel
+                )
+            Permission.RecordAudio ->
+                showPermissionError(
+                    step.missingPermissionMic,
+                    step.missingPermissionMicBody,
+                    step.settings,
+                    step.cancel
+                )
+        }
+
+    }
+
+    private suspend fun showPermissionError(
+        title: String,
+        description: String,
+        settings: String,
+        cancel: String
+    ): Unit {
+
+        evalOnMain {
+            AlertDialog.Builder(requireContext())
+                .setTitle(title)
+                .setMessage(description)
+                .setPositiveButton(settings) { _, _ ->
+                    startCoroutineAsync { videoDiaryViewModel.permissionSettings() }
+                    viewModel.close(taskNavController())
+                }
+                .setNegativeButton(cancel) { _, _ ->
+                    viewModel.close(taskNavController())
+                }
+                .setCancelable(false)
+                .show()
+        }
 
     }
 
@@ -94,13 +182,13 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
 
-            evalOnMain { applyData() }
+            evalOnMain { setupUI() }
 
         }
 
     }
 
-    private fun applyData(): Unit {
+    private fun setupUI(): Unit {
 
         val step = videoDiaryViewModel.state().step
 
@@ -267,6 +355,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         }
     }
 
+    // TODO: check if flash is available
     private fun bindFlash(isFlashEnabled: Boolean): Unit {
 
         startCoroutine { Either.catch { camera.enableTorch(isFlashEnabled) } }
@@ -278,6 +367,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
+    // TODO: check if camera lens is available
     private fun bindCamera(isBackCameraToggled: Boolean): Unit {
 
         startCoroutine {

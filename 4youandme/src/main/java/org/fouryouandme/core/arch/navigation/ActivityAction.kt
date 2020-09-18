@@ -3,6 +3,7 @@ package org.fouryouandme.core.arch.navigation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
@@ -61,3 +62,16 @@ fun openApp(packageName: String): ActivityAction = {
     it.startActivity(intent)
 
 }
+
+fun permissionSettingsAction(): ActivityAction = {
+
+    val intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.parse("package:${it.packageName}")
+    )
+    intent.addCategory(Intent.CATEGORY_DEFAULT)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    it.startActivity(intent)
+
+}
+

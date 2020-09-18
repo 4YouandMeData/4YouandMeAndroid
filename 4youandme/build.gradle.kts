@@ -149,7 +149,11 @@ dependencies {
 
     /* --- toasty --- */
 
-    implementation("com.github.GrenderG:Toasty:1.5.0")
+    implementation(Libs.toasty)
+
+    /* --- dexter --- */
+
+    implementation(Libs.dexter)
 
     /* --- test --- */
 
@@ -157,5 +161,5 @@ dependencies {
     androidTestImplementation(Libs.androidx_test_ext_junit)
     androidTestImplementation(Libs.espresso_core)
 
-    implementation (Libs.lottie)
+    implementation(Libs.lottie)
 }
