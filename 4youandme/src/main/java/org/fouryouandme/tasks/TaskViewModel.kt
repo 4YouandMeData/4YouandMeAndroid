@@ -9,7 +9,9 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.ext.foldSuspend
+import org.fouryouandme.researchkit.result.StepResult
 import org.fouryouandme.researchkit.result.TaskResult
+import org.fouryouandme.researchkit.result.results
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepNavController
 import org.fouryouandme.researchkit.task.ETaskType
@@ -70,6 +72,18 @@ class TaskViewModel(
         setStateFx(
             state().copy(isCancelled = true)
         ) { TaskStateUpdate.Cancelled(it.isCancelled) }
+
+    suspend fun addResult(result: StepResult): Unit {
+
+        setStateSilentFx(
+            TaskState.result.results.modify(state()) {
+                val map = it.toMutableMap()
+                map[result.identifier] = result
+                map
+            }
+        )
+
+    }
 
     /* --- step --- */
 

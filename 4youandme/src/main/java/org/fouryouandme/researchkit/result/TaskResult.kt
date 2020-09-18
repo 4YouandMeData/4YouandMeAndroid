@@ -1,5 +1,7 @@
 package org.fouryouandme.researchkit.result
 
+import arrow.optics.optics
+
 /**
  * An TaskResult object is a result that contains all the step results generated from one run of a
  * task
@@ -10,7 +12,10 @@ package org.fouryouandme.researchkit.result
  * @property results map of step identifier and step result. Collect all step results data
  * for a specific task
  */
+@optics
 data class TaskResult(
     val identifier: String,
     val results: Map<String, StepResult>
-)
+) {
+    companion object
+}
