@@ -421,7 +421,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 review_info.isVisible = false
 
             }
-            RecordingState.Uploaded -> startCoroutineAsync { next() }
+            RecordingState.Uploaded -> startCoroutineAsync { next(true) } // TODO: remove finish
         }
 
     }
