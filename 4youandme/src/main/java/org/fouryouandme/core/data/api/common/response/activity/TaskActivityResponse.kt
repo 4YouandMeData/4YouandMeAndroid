@@ -22,9 +22,9 @@ class TaskActivityResponse(
 
 ) : ActivityDataResponse(title, description, repeatEvery, startColor, endColor, button) {
 
-    fun toTaskActivity(): TaskActivity =
+    fun toTaskActivity(taskId: String): TaskActivity =
         TaskActivity(
-            id,
+            taskId,
             title.toOption(),
             description.toOption(),
             button.toOption(),

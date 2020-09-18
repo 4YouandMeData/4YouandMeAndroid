@@ -60,6 +60,8 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun videoDiaryPause(): Int = R.drawable.video_diary_pause
 
+    override fun videoDiaryPlay(): Int = R.drawable.video_diary_play
+
     override fun videoDiaryFlashOn(): Int = R.drawable.video_diary_flash_on
 
     override fun videoDiaryFlashOff(): Int = R.drawable.video_diary_flash_off

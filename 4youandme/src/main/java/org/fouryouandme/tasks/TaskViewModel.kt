@@ -31,7 +31,7 @@ class TaskViewModel(
 
     /* --- initialization --- */
 
-    suspend fun initialize(type: ETaskType): Unit {
+    suspend fun initialize(identifier: String, type: ETaskType): Unit {
 
         showLoadingFx(TaskLoading.Initialization)
 
@@ -45,6 +45,7 @@ class TaskViewModel(
 
                 val task =
                     Task.byType(
+                        identifier,
                         type,
                         config,
                         runtime.injector.imageConfiguration,

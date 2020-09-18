@@ -27,6 +27,7 @@ sealed class Task(
     companion object {
 
         fun byType(
+            identifier: String,
             type: ETaskType,
             configuration: Configuration,
             imageConfiguration: ImageConfiguration,
@@ -35,7 +36,7 @@ sealed class Task(
             when (type) {
                 ETaskType.WALK -> GaitTask(configuration, imageConfiguration, moshi)
                 ETaskType.GAIT -> GaitTask(configuration, imageConfiguration, moshi)
-                ETaskType.VIDEO_DIARY -> VideoDiary(configuration, imageConfiguration, moshi)
+                ETaskType.VIDEO_DIARY -> VideoDiary(identifier, configuration, imageConfiguration)
             }
 
     }
@@ -128,10 +129,10 @@ sealed class Task(
     }
 
     class VideoDiary(
+        identifier: String,
         configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        private val moshi: Moshi
-    ) : Task("video_diary", configuration, imageConfiguration) {
+        imageConfiguration: ImageConfiguration
+    ) : Task(identifier, configuration, imageConfiguration) {
 
         override fun buildSteps(
             configuration: Configuration,
@@ -171,6 +172,7 @@ sealed class Task(
                     titleColor = configuration.theme.secondaryColor.color(),
                     recordImage = imageConfiguration.videoDiaryRecord(),
                     pauseImage = imageConfiguration.videoDiaryPause(),
+                    playImage = imageConfiguration.videoDiaryPlay(),
                     flashOnImage = imageConfiguration.videoDiaryFlashOn(),
                     flashOffImage = imageConfiguration.videoDiaryFlashOff(),
                     cameraToggleImage = imageConfiguration.videoDiaryToggleCamera(),

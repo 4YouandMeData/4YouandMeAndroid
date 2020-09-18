@@ -3,7 +3,7 @@ package org.fouryouandme.researchkit.step.video
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.view.View
+import android.widget.MediaController
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.VideoCapture
@@ -30,8 +30,16 @@ import java.io.File
 
 class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
+    private val mediaController: MediaController by lazy { MediaController(requireContext()) }
+
     private val videoDiaryViewModel: VideoDiaryViewModel by lazy {
-        viewModelFactory(this, getFactory { VideoDiaryViewModel(navigator, IORuntime) })
+        viewModelFactory(this, getFactory {
+            VideoDiaryViewModel(
+                navigator,
+                IORuntime,
+                injector.taskModule()
+            )
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +70,10 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 when (it.cause) {
                     VideoDiaryError.Recording ->
                         errorToast(it.error.message(requireContext()))
+                    VideoDiaryError.Merge ->
+                        errorToast(it.error.message(requireContext()))
+                    VideoDiaryError.Upload ->
+                        errorToast(it.error.message(requireContext()))
                 }
 
             }
@@ -70,6 +82,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             .observeEvent {
                 when (it.task) {
                     VideoDiaryLoading.Merge -> loading.setVisibility(it.active)
+                    VideoDiaryLoading.Upload -> loading.setVisibility(it.active)
                 }
             }
 
@@ -87,12 +100,6 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
             setupCamera(videoDiaryViewModel.state().step)
         }
 
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        video_view.isVisible = false
     }
 
     @SuppressLint("MissingPermission")
@@ -244,7 +251,11 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         submit.background = button(step.buttonColor)
         submit.setTextColor(step.buttonTextColor)
-        submit.setOnClickListener { }
+        submit.setOnClickListener {
+            startCoroutineAsync {
+                videoDiaryViewModel.submit(viewModel.state().task.identifier, getVideoMergeFile())
+            }
+        }
         submit.text = step.submitButton
 
         bindRecordingState(videoDiaryViewModel.state().recordingState)
@@ -263,6 +274,11 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         when (state) {
             RecordingState.Recording -> {
 
+                recording_pause.isVisible = true
+                review_pause.isEnabled = false
+
+                video_view.isVisible = false
+
                 flash_toggle.isVisible = videoDiaryViewModel.state().isBackCameraToggled
                 camera_toggle.isVisible = false
 
@@ -279,7 +295,12 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 review_info.isVisible = false
 
             }
-            is RecordingState.Pause -> {
+            is RecordingState.RecordingPause -> {
+
+                recording_pause.isVisible = true
+                review_pause.isEnabled = false
+
+                video_view.isVisible = false
 
                 flash_toggle.isVisible = videoDiaryViewModel.state().isBackCameraToggled
                 camera_toggle.isVisible = true
@@ -315,25 +336,92 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 review_info.isVisible = false
 
             }
-            RecordingState.Review -> {
+            RecordingState.Merged -> {
 
+                recording_pause.isVisible = false
+                review_pause.isEnabled = false
                 flash_toggle.isVisible = false
                 camera_toggle.isVisible = false
+
+                review_loading.setVisibility(isVisible = true, opaque = false)
+
+                mediaController.setMediaPlayer(video_view)
+                mediaController.setAnchorView(video_view)
+                video_view.setMediaController(mediaController)
+                video_view.isVisible = true
+                video_view.setVideoPath(getVideoMergeFilePath())
+                video_view.setOnPreparedListener {
+                    review_loading.setVisibility(isVisible = false, opaque = false)
+                    it.isLooping = true
+                    startCoroutineAsync { videoDiaryViewModel.reviewPause() }
+
+                }
+            }
+            RecordingState.ReviewPause -> {
+
+                recording_pause.isVisible = false
+                review_pause.isEnabled = true
+                flash_toggle.isVisible = false
+                camera_toggle.isVisible = false
+                video_view.isVisible = true
+                camera.isVisible = false
+
+                recording_title.text = step.startRecordingDescription
 
                 val currentRecordTime =
                     DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
                 val maxRecordTime =
                     DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
+                recording_title.text = step.startRecordingDescription
 
                 val recordTimeLabel =
                     "$currentRecordTime/$maxRecordTime"
 
                 review_time.text = recordTimeLabel
 
+
+                mediaController.hide()
+                mediaController.isVisible = false
+
+                review_pause.setImageResource(step.playImage)
+                review_pause.setOnClickListener {
+                    startCoroutineAsync {
+                        video_view.start()
+                        videoDiaryViewModel.reviewPlay()
+                    }
+                }
+
                 record_info.isVisible = false
                 review_info.isVisible = true
 
             }
+            RecordingState.Review -> {
+
+                recording_pause.isVisible = false
+                review_pause.isEnabled = true
+                flash_toggle.isVisible = false
+                camera_toggle.isVisible = false
+                video_view.isVisible = true
+                camera.isVisible = false
+
+                recording_title.text = step.startRecordingDescription
+
+                mediaController.isVisible = true
+                mediaController.show()
+
+                review_pause.setImageResource(step.pauseImage)
+                review_pause.setOnClickListener {
+                    startCoroutineAsync {
+                        video_view.pause()
+                        videoDiaryViewModel.reviewPause()
+                    }
+                }
+
+                record_info.isVisible = false
+                review_info.isVisible = false
+
+            }
+            RecordingState.Uploaded -> startCoroutineAsync { next() }
         }
 
     }
@@ -354,7 +442,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 title.text = recordTimeLabel
 
             }
-            RecordingState.Pause ->
+            RecordingState.RecordingPause ->
                 title.text = videoDiaryViewModel.state().step.title
             RecordingState.Review ->
                 title.text = videoDiaryViewModel.state().step.title
@@ -432,9 +520,10 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         if (mergeDirectory.exists().not())
             mergeDirectory.mkdir()
 
-        videoDiaryViewModel.review(
+        videoDiaryViewModel.merge(
             getVideoDirectoryPath(),
-            mergeDirectory.absolutePath
+            mergeDirectory.absolutePath,
+            getVideoMergeFileName()
         )
     }
 
@@ -458,6 +547,13 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
     private fun getVideoMergeDirectoryPath(): String =
         "${getVideoDirectoryPath()}/merge"
 
+    private fun getVideoMergeFileName(): String =
+        "merged_video_diary.mp4"
+
+    private fun getVideoMergeFilePath(): String =
+        "${getVideoMergeDirectoryPath()}/${getVideoMergeFileName()}"
+
+    private fun getVideoMergeFile(): File = File(getVideoMergeFilePath())
 
     override fun onDestroy() {
 

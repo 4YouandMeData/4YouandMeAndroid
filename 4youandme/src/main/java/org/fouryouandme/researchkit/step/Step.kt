@@ -127,6 +127,7 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val titleColor: Int,
         val recordImage: Int,
         val pauseImage: Int,
+        val playImage: Int,
         val flashOnImage: Int,
         val flashOffImage: Int,
         val cameraToggleImage: Int,

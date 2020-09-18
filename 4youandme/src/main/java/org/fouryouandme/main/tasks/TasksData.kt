@@ -29,4 +29,4 @@ sealed class TasksError {
 
 /* --- navigation --- */
 
-data class TasksToTask(val type: ETaskType) : NavigationAction
+data class TasksToTask(val identifier: String, val type: ETaskType) : NavigationAction

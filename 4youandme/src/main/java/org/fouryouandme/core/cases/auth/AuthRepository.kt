@@ -6,6 +6,7 @@ import arrow.core.extensions.either.applicativeError.applicativeError
 import arrow.integrations.retrofit.adapter.unwrapBody
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.toFourYouAndMeError
@@ -19,6 +20,7 @@ import org.fouryouandme.core.data.api.auth.request.PhoneNumberRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
 import org.fouryouandme.core.data.api.auth.response.UserResponse
 import org.fouryouandme.core.entity.user.User
+import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.mapError
 import org.fouryouandme.core.ext.noneToError
 import org.fouryouandme.core.ext.unwrapEmptyToEither
@@ -147,19 +149,30 @@ object AuthRepository {
                 .putString(USER_TOKEN, token)
                 .apply()
 
-            !runtime.onMainDispatcher { Memory.token = token.toOption() }
+            !runtime.onMainDispatcher { Memory.token = token }
 
         }
 
+    @Deprecated("use suspend version")
     internal fun <F> loadToken(runtime: Runtime<F>): Kind<F, Option<String>> =
         runtime.fx.concurrent {
 
             val token =
                 runtime.injector.prefs.getString(USER_TOKEN, null).toOption()
 
-            !runtime.onMainDispatcher { Memory.token = token }
+            !runtime.onMainDispatcher { Memory.token = token.orNull() }
 
             token
 
         }
+
+    internal suspend fun AuthModule.loadToken(): String? {
+
+        val token = prefs.getString(USER_TOKEN, null)
+
+        evalOnMain { Memory.token = token }
+
+        return token
+
+    }
 }

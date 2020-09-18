@@ -174,7 +174,7 @@ class TasksViewModel(
         runtime.fx.concurrent {
 
             !task.data.activityType.map {
-                navigator.navigateTo(runtime, rootNavController, TasksToTask(it.type))
+                navigator.navigateTo(runtime, rootNavController, TasksToTask(task.data.id, it.type))
             }.getOrElse { just(Unit) }
 
         }.unsafeRunAsync()
