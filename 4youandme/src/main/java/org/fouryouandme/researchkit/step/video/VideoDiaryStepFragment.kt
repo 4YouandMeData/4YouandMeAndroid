@@ -111,11 +111,15 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 }
             },
             {
+                /* All permission are granted */
                 evalOnMain {
-                    // All permission are granted, initialize the view
+
+                    camera.isVisible = true
                     camera.bindToLifecycle(this)
                     camera.captureMode = CameraView.CaptureMode.VIDEO
+
                 }
+
             }
         )
     }
@@ -459,5 +463,4 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         super.onDestroy()
     }
-
 }
