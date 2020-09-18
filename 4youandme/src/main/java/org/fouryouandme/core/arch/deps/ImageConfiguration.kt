@@ -109,4 +109,16 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun arrow(): Int
+
+    @DrawableRes
+    fun pregnancy(): Int
+
+    @DrawableRes
+    fun devices(): Int
+
+    @DrawableRes
+    fun reviewConsent(): Int
+
+    @DrawableRes
+    fun permissions(): Int
 }

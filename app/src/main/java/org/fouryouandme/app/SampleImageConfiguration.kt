@@ -77,4 +77,12 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun faq(): Int = R.drawable.faq
 
     override fun arrow(): Int = R.drawable.arrow
+
+    override fun pregnancy(): Int = R.drawable.your_pregnancy
+
+    override fun devices(): Int = R.drawable.devices
+
+    override fun reviewConsent(): Int = R.drawable.review_consent
+
+    override fun permissions(): Int = R.drawable.permission
 }

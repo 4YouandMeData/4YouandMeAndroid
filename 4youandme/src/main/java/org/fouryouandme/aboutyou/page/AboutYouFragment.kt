@@ -83,7 +83,7 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
 
         firstItem.applyData(
             configuration,
-            requireContext().imageConfiguration.contactInfo(),
+            requireContext().imageConfiguration.pregnancy(),
             configuration.text.profile.firstItem
         )
 
@@ -91,7 +91,7 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
 
         secondItem.applyData(
             configuration,
-            requireContext().imageConfiguration.contactInfo(),
+            requireContext().imageConfiguration.devices(),
             configuration.text.profile.secondItem
         )
 
@@ -99,7 +99,7 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
 
         thirdItem.applyData(
             configuration,
-            requireContext().imageConfiguration.contactInfo(),
+            requireContext().imageConfiguration.reviewConsent(),
             configuration.text.profile.thirdItem
         )
 
@@ -107,7 +107,7 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
 
         fourthItem.applyData(
             configuration,
-            requireContext().imageConfiguration.contactInfo(),
+            requireContext().imageConfiguration.permissions(),
             configuration.text.profile.fourthItem
         )
 
