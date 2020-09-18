@@ -3,6 +3,7 @@ package org.fouryouandme.main
 import arrow.core.None
 import arrow.core.Option
 import org.fouryouandme.R
+import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class MainState(
@@ -23,3 +24,7 @@ sealed class MainLoading {
 sealed class MainError {
     object Initialization : MainError()
 }
+
+/* --- navigation --- */
+
+object MainPageToAboutYouPage : NavigationAction

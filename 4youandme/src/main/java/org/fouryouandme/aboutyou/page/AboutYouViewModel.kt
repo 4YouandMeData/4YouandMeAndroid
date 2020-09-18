@@ -1,26 +1,29 @@
-package org.fouryouandme.studyinfo
+package org.fouryouandme.aboutyou.page
 
+import androidx.navigation.NavController
+import org.fouryouandme.core.arch.navigation.Navigator
 import arrow.fx.ForIO
+import org.fouryouandme.aboutyou.AboutYouError
+import org.fouryouandme.aboutyou.AboutYouLoading
+import org.fouryouandme.aboutyou.AboutYouState
+import org.fouryouandme.aboutyou.AboutYouStateUpdate
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
-import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.ext.unsafeRunAsync
-import org.fouryouandme.main.MainPageToAboutYouPage
 
-class StudyInfoViewModel(
+class AboutYouViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
     private val configurationModule: ConfigurationModule
 ) : BaseViewModel<
         ForIO,
-        StudyInfoState,
-        StudyInfoStateUpdate,
-        StudyInfoError,
-        StudyInfoLoading>
+        AboutYouState,
+        AboutYouStateUpdate,
+        AboutYouError,
+        AboutYouLoading>
     (
     navigator = navigator,
     runtime = runtime
@@ -34,12 +37,12 @@ class StudyInfoViewModel(
             configurationModule.getConfiguration(CachePolicy.MemoryFirst)
 
         configuration.fold(
-            { setErrorFx(it, StudyInfoError.Initialization) },
+            { setErrorFx(it, AboutYouError.Initialization) },
             {
                 setStateFx(
-                    StudyInfoState(it),
+                    AboutYouState(it),
                 ) { state ->
-                    StudyInfoStateUpdate.Initialization(state.configuration)
+                    AboutYouStateUpdate.Initialization(state.configuration)
                 }
             }
         )
@@ -47,10 +50,6 @@ class StudyInfoViewModel(
 
     /* --- navigation --- */
 
-    fun aboutYouPage(navController: RootNavController): Unit =
-        navigator.navigateTo(
-            runtime,
-            navController,
-            MainPageToAboutYouPage
-        ).unsafeRunAsync()
+    fun back(navController: NavController): Unit =
+        navigator.back(runtime, navController).unsafeRunAsync()
 }

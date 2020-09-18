@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="@id/frameLayout"
         tools:src="@tools:sample/avatars" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textView"
         style="@style/text_title"
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         tools:text="Study Info" />
 
     <org.fouryouandme.core.view.menu.MenuItemView
-        android:id="@+id/contactInfoItem"
+        android:id="@+id/firstItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -45,20 +45,20 @@
         app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
     <org.fouryouandme.core.view.menu.MenuItemView
-        android:id="@+id/rewardsItem"
+        android:id="@+id/secondItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contactInfoItem" />
+        app:layout_constraintTop_toBottomOf="@+id/firstItem" />
 
     <org.fouryouandme.core.view.menu.MenuItemView
-        android:id="@+id/faqItem"
+        android:id="@+id/thirdItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rewardsItem" />
+        app:layout_constraintTop_toBottomOf="@+id/secondItem" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

@@ -28,6 +28,14 @@ fun Toolbar.showCloseButton(
     setNavigationOnClickListener { back() }
 }
 
+fun Toolbar.showCloseSecondaryButton(
+    imageConfiguration: ImageConfiguration,
+    back: () -> Unit
+) {
+    setNavigationIcon(imageConfiguration.closeSecondary())
+    setNavigationOnClickListener { back() }
+}
+
 fun Toolbar.removeBackButton(): Unit {
 
     navigationIcon = null

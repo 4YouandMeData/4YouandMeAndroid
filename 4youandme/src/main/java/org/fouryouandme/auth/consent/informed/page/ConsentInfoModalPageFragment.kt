@@ -7,11 +7,9 @@ import androidx.navigation.fragment.navArgs
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.extensions.list.foldable.firstOrNone
-import arrow.core.getOrElse
 import arrow.core.toOption
 import kotlinx.android.synthetic.main.consent_info.*
 import kotlinx.android.synthetic.main.consent_info_modal_page.*
-import kotlinx.android.synthetic.main.consent_info_page.*
 import kotlinx.android.synthetic.main.consent_info_page.root
 import org.fouryouandme.R
 import org.fouryouandme.auth.consent.informed.ConsentInfoFragment
@@ -22,7 +20,6 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.core.view.page.EPageType
 
 class ConsentInfoModalPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_modal_page) {
 

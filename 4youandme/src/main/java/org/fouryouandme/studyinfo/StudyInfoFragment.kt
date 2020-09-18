@@ -4,6 +4,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.study_info.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
@@ -17,7 +18,15 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
     override val viewModel: StudyInfoViewModel by lazy {
 
-        viewModelFactory(this, getFactory { StudyInfoViewModel(navigator, IORuntime, injector.configurationModule()) })
+        viewModelFactory(
+            this,
+            getFactory {
+                StudyInfoViewModel(
+                    navigator,
+                    IORuntime,
+                    injector.configurationModule()
+                )
+            })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +54,8 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
     private fun applyConfiguration(configuration: Configuration) {
 
+        setStatusBar(configuration.theme.primaryColorStart.color())
+
         imageView.setImageResource(imageConfiguration.logoStudySecondary())
 
         frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
@@ -52,28 +63,31 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
         textView.text = "Study Info"
         textView.setTextColor(configuration.theme.secondaryColor.color())
 
-        contactInfoItem.applyData(
+        firstItem.applyData(
             configuration,
             requireContext().imageConfiguration.contactInfo(),
             configuration.text.studyInfo.contactInfo
         )
 
-        contactInfoItem.setOnClickListener { Log.d("item clicked", "Contact Info clicked") }
+        firstItem.setOnClickListener {
+            viewModel.aboutYouPage(rootNavController())
+        }
 
-        rewardsItem.applyData(
+        secondItem.applyData(
             configuration,
             requireContext().imageConfiguration.rewards(),
             configuration.text.studyInfo.rewards
         )
 
-        rewardsItem.setOnClickListener { Log.d("item clicked", "Rewards clicked") }
+        secondItem.setOnClickListener { Log.d("item clicked", "Rewards clicked") }
 
-        faqItem.applyData(
+        thirdItem.applyData(
             configuration,
             requireContext().imageConfiguration.faq(),
             configuration.text.studyInfo.faq
         )
-        faqItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
+
+        thirdItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
 
     }
 }

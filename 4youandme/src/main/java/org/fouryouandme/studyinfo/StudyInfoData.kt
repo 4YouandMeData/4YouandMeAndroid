@@ -1,5 +1,6 @@
 package org.fouryouandme.studyinfo
 
+import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class StudyInfoState(
