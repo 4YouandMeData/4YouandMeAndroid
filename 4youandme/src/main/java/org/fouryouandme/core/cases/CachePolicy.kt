@@ -1,7 +1,5 @@
 package org.fouryouandme.core.cases
 
-import arrow.core.None
-import arrow.core.Option
 import org.fouryouandme.core.entity.configuration.Configuration
 
 sealed class CachePolicy {
@@ -19,6 +17,6 @@ object Memory {
 
     var configuration: Configuration? = null
 
-    var token: Option<String> = None
+    var token: String? = null
 
 }

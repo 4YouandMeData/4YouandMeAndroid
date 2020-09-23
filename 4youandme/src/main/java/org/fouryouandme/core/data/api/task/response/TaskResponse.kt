@@ -32,7 +32,7 @@ data class TaskResponse(
                 !activity?.get(document).toOption().flatMap {
                     when (it) {
                         is QuickActivityResponse -> it.toQuickActivity().some()
-                        is TaskActivityResponse -> it.toTaskActivity().some()
+                        is TaskActivityResponse -> it.toTaskActivity(id).some()
                         else -> None
                     }
                 }

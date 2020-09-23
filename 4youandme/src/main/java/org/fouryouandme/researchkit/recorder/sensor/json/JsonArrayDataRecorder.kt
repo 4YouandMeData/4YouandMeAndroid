@@ -11,9 +11,10 @@ import org.fouryouandme.researchkit.recorder.Recorder
 import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.logger.DataLogger
 import org.fouryouandme.researchkit.step.Step
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneOffset
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
 
 /**
  *
@@ -86,13 +87,17 @@ abstract class JsonArrayDataRecorder(
                 is Either.Right -> {
 
                     val fileResult =
-                        FileResult(fileResultIdentifier(), file, JSON_MIME_CONTENT_TYPE)
-
-                    fileResult.startDate = Date(startTime.getOrElse { 0 })
-                    fileResult.endDate = Date(endTime.getOrElse { 0 })
+                        FileResult(
+                            fileResultIdentifier(),
+                            file,
+                            JSON_MIME_CONTENT_TYPE,
+                            Instant.ofEpochMilli(startTime.getOrElse { 0 }).atZone(ZoneOffset.UTC),
+                            Instant.ofEpochMilli(endTime.getOrElse { 0 }).atZone(ZoneOffset.UTC)
+                        )
 
                     recorderListener.map {
-                        it.onComplete(this@JsonArrayDataRecorder, fileResult)
+                        //TODO: Handle result
+                        //it.onComplete(this@JsonArrayDataRecorder, fileResult)
                     }
 
                 }

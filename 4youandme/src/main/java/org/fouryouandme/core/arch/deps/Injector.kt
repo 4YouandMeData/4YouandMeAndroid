@@ -2,8 +2,10 @@ package org.fouryouandme.core.arch.deps
 
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
+import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.deps.modules.ErrorModule
+import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.common.AnswerApi
@@ -66,5 +68,23 @@ interface Injector {
             moshi,
             environment,
             errorModule()
+        )
+
+    fun authModule(): AuthModule =
+        AuthModule(
+            authApi,
+            prefs,
+            moshi,
+            environment,
+            errorModule()
+        )
+
+    fun taskModule(): TaskModule =
+        TaskModule(
+            taskApi,
+            moshi,
+            environment,
+            errorModule(),
+            authModule()
         )
 }

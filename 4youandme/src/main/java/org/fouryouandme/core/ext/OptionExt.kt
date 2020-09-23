@@ -13,7 +13,7 @@ fun <T, F> Option<T>.toKind(
 ): Kind<F, Option<T>> =
     fx.concurrent {
 
-        !fold(
+        !this@toKind.fold(
             { none() },
             { just(it.toOption()) }
         )

@@ -29,7 +29,6 @@ import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.core.ext.unsafeRunAsyncCancelable
-import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.Result
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.task.Task
@@ -244,7 +243,7 @@ open class RecorderService : Service(), RecorderListener {
      */
     override fun onComplete(recorder: Recorder, result: Result) {
 
-        // Due to the RecorderService having to store results in a SharedPreferences file
+       /* // Due to the RecorderService having to store results in a SharedPreferences file
         // We do not allow any Results other than FileResults
         check(result is FileResult) {
             "RecorderService only works with Recorders that return FileResults"
@@ -256,7 +255,7 @@ open class RecorderService : Service(), RecorderListener {
                     .mapNotNull { if (it == recorder) null else it },
                 resultList = recorderState.resultList.plus(result)
             )
-        }
+        }*/
 
     }
 

@@ -95,7 +95,7 @@ object Libs {
     const val moshi_jsonapi: String = "moe.banana:moshi-jsonapi:" + Versions.moe_banana
 
     const val moshi_jsonapi_retrofit_converter: String =
-        "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
+            "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html

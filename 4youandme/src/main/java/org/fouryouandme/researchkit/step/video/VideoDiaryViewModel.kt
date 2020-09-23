@@ -16,8 +16,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.permissionSettingsAction
+import org.fouryouandme.core.cases.task.TaskUseCase.attachVideo
 import org.fouryouandme.core.ext.startCoroutineCancellableAsync
 import org.fouryouandme.researchkit.step.Step
 import org.threeten.bp.Instant
@@ -28,7 +31,8 @@ import java.util.*
 
 class VideoDiaryViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val taskModule: TaskModule
 ) :
     BaseViewModel<
             ForIO,
@@ -52,7 +56,10 @@ class VideoDiaryViewModel(
                 0,
                 0,
                 120,
-                null
+                null,
+                RecordingState.RecordingPause,
+                false,
+                true
             )
         )
 
@@ -75,7 +82,7 @@ class VideoDiaryViewModel(
 
         timer?.invoke()
         setStateFx(
-            VideoDiaryState.recordingState.modify(state()) { RecordingState.Pause }
+            VideoDiaryState.recordingState.modify(state()) { RecordingState.RecordingPause }
         ) { VideoDiaryStateUpdate.Recording(state().recordingState) }
 
     }
@@ -119,18 +126,43 @@ class VideoDiaryViewModel(
 
     }
 
-    suspend fun review(videosPath: String, outputPath: String): Unit {
+    suspend fun toggleCamera(): Unit {
+
+        setStateFx(
+            VideoDiaryState.isBackCameraToggled.modify(state()) { it.not() }
+        ) { VideoDiaryStateUpdate.Camera(it.isBackCameraToggled) }
+
+        // disable the flash when the front camera is toggled
+        if (state().isBackCameraToggled)
+            setStateFx(
+                VideoDiaryState.isFlashEnabled.modify(state()) { false }
+            ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+
+    }
+
+    suspend fun toggleFlash(): Unit =
+        setStateFx(
+            VideoDiaryState.isFlashEnabled.modify(state()) { it.not() }
+        ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+
+    suspend fun merge(videosPath: String, outputPath: String, outputFileName: String): Unit {
 
         showLoadingFx(VideoDiaryLoading.Merge)
 
+        // disable the flash when the user start the review flow
+        if (state().isBackCameraToggled)
+            setStateFx(
+                VideoDiaryState.isFlashEnabled.modify(state()) { false }
+            ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+
         val merge =
-            Either.catch { mergeVideoDiary(videosPath, outputPath) }
+            Either.catch { mergeVideoDiary(videosPath, outputPath, outputFileName) }
 
         merge.fold(
             { setErrorFx(unknownError(), VideoDiaryError.Merge) },
             {
                 setStateFx(
-                    VideoDiaryState.recordingState.modify(state()) { RecordingState.Review }
+                    VideoDiaryState.recordingState.modify(state()) { RecordingState.Merged }
                 ) { VideoDiaryStateUpdate.Recording(it.recordingState) }
             }
         )
@@ -139,10 +171,30 @@ class VideoDiaryViewModel(
 
     }
 
+    suspend fun reviewPause(): Unit {
+
+        setStateFx(
+            VideoDiaryState.recordingState.modify(state()) { RecordingState.ReviewPause }
+        ) { VideoDiaryStateUpdate.Recording(it.recordingState) }
+
+    }
+
+    suspend fun reviewPlay(): Unit {
+
+        setStateFx(
+            VideoDiaryState.recordingState.modify(state()) { RecordingState.Review }
+        ) { VideoDiaryStateUpdate.Recording(it.recordingState) }
+
+    }
+
     /* --- merge --- */
 
 
-    private suspend fun mergeVideoDiary(videosPath: String, outputPath: String): String =
+    private suspend fun mergeVideoDiary(
+        videosPath: String,
+        outputPath: String,
+        outputFileName: String
+    ): String =
         evalOn(Dispatchers.IO) { // ensure that run on IO dispatcher
 
             val directory = File(videosPath)
@@ -181,10 +233,8 @@ class VideoDiaryViewModel(
             if (videoTracks.size > 0)
                 result.addTrack(AppendTrack(*videoTracks.toTypedArray()))
 
-
             val out = DefaultMp4Builder().build(result) as BasicContainer
 
-            val outputFileName = "merged_video_diary.mp4"
             val outputFilePath = "$outputPath/$outputFileName"
 
             val fc: FileChannel =
@@ -196,5 +246,36 @@ class VideoDiaryViewModel(
 
             outputFilePath
         }
+
+    /* --- submit --- */
+
+    suspend fun submit(taskId: String, file: File): Unit {
+
+        showLoadingFx(VideoDiaryLoading.Upload)
+
+        val upload = taskModule.attachVideo(taskId, file)
+
+        upload.fold(
+            {
+                setErrorFx(it, VideoDiaryError.Upload)
+            },
+            {
+                setStateFx(
+                    VideoDiaryState.recordingState.modify(state()) { RecordingState.Uploaded })
+                { VideoDiaryStateUpdate.Recording(it.recordingState) }
+            }
+        )
+
+        hideLoadingFx(VideoDiaryLoading.Upload)
+
+    }
+
+    /* --- navigation --- */
+
+    suspend fun permissionSettings(): Unit {
+
+        navigator.performAction(permissionSettingsAction())
+
+    }
 
 }

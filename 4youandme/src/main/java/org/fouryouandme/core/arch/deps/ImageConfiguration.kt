@@ -88,6 +88,9 @@ interface ImageConfiguration {
     fun videoDiaryPause(): Int
 
     @DrawableRes
+    fun videoDiaryPlay(): Int
+
+    @DrawableRes
     fun videoDiaryFlashOn(): Int
 
     @DrawableRes
