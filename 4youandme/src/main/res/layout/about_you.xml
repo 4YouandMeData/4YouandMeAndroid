@@ -17,7 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <View
             android:id="@+id/frameLayout"
@@ -50,61 +50,61 @@
             app:layout_constraintTop_toBottomOf="@id/imageView"
             tools:text="About you" />
 
-        <org.fouryouandme.core.view.menu.MenuItemView
-            android:id="@+id/firstItem"
+        <ScrollView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+            app:layout_constraintTop_toBottomOf="@id/frameLayout">
 
-        <org.fouryouandme.core.view.menu.MenuItemView
-            android:id="@+id/secondItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/firstItem" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/secondItem" />
+                <org.fouryouandme.core.view.menu.MenuItemView
+                    android:id="@+id/firstItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp" />
 
-        <org.fouryouandme.core.view.menu.MenuItemView
-            android:id="@+id/thirdItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/secondItem" />
+                <org.fouryouandme.core.view.menu.MenuItemView
+                    android:id="@+id/secondItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <org.fouryouandme.core.view.menu.MenuItemView
-            android:id="@+id/fourthItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/thirdItem" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/darker_gray" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/disclaimer"
-            style="@style/text_h3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fourthItem"
-            tools:text="You are currently participating in the BUMP pregnancy research study. If for any reason you no longer wish to continue participating in the study, you can elect to leave this study by contacting the study team." />
+                <org.fouryouandme.core.view.menu.MenuItemView
+                    android:id="@+id/thirdItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <org.fouryouandme.core.view.menu.MenuItemView
+                    android:id="@+id/fourthItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/disclaimer"
+                    style="@style/text_h3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="20dp"
+                    tools:text="You are currently participating in the BUMP pregnancy research study. If for any reason you no longer wish to continue participating in the study, you can elect to leave this study by contacting the study team." />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </ScrollView>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"

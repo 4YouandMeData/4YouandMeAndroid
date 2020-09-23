@@ -163,6 +163,7 @@ data class VideoDiary(
 )
 
 data class StudyInfo(
+    val aboutYou: String,
     val contactInfo: String,
     val rewards: String,
     val faq: String,

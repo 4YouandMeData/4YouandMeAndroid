@@ -66,7 +66,7 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
         firstItem.applyData(
             configuration,
             requireContext().imageConfiguration.contactInfo(),
-            configuration.text.studyInfo.contactInfo
+            configuration.text.studyInfo.aboutYou
         )
 
         firstItem.setOnClickListener {
@@ -75,19 +75,27 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
         secondItem.applyData(
             configuration,
-            requireContext().imageConfiguration.rewards(),
-            configuration.text.studyInfo.rewards
+            requireContext().imageConfiguration.contactInfo(),
+            configuration.text.studyInfo.contactInfo
         )
 
         secondItem.setOnClickListener { Log.d("item clicked", "Rewards clicked") }
 
         thirdItem.applyData(
             configuration,
+            requireContext().imageConfiguration.rewards(),
+            configuration.text.studyInfo.rewards
+        )
+
+        thirdItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
+
+        fourthItem.applyData(
+            configuration,
             requireContext().imageConfiguration.faq(),
             configuration.text.studyInfo.faq
         )
 
-        thirdItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
+        fourthItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
 
     }
 }

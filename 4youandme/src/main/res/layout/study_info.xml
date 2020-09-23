@@ -35,30 +35,54 @@
         app:layout_constraintTop_toBottomOf="@id/imageView"
         tools:text="Study Info" />
 
-    <org.fouryouandme.core.view.menu.MenuItemView
-        android:id="@+id/firstItem"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_height="0dp"
+        android:paddingBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+        app:layout_constraintTop_toBottomOf="@id/frameLayout">
 
-    <org.fouryouandme.core.view.menu.MenuItemView
-        android:id="@+id/secondItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstItem" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <org.fouryouandme.core.view.menu.MenuItemView
-        android:id="@+id/thirdItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondItem" />
+            <org.fouryouandme.core.view.menu.MenuItemView
+                android:id="@+id/firstItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/darker_gray" />
+
+
+            <org.fouryouandme.core.view.menu.MenuItemView
+                android:id="@+id/secondItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <org.fouryouandme.core.view.menu.MenuItemView
+                android:id="@+id/thirdItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <org.fouryouandme.core.view.menu.MenuItemView
+                android:id="@+id/fourthItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

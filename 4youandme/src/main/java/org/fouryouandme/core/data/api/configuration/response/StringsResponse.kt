@@ -112,6 +112,7 @@ data class StringsResponse(
     @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_SETTINGS") val videoDiaryMissingPermissionBodySettings: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_START_RECORDING_DESCRIPTION") val videoDiaryRecorderStartRecordingDescription: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_RESUME_RECORDING_DESCRIPTION") val videoDiaryRecorderResumeRecordingDescription: String? = null,
+    @Json(name = "STUDY_INFO_ABOUT_YOU") val studyInfoAboutYou: String? = null,
     @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
     @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String? = null,
     @Json(name = "STUDY_INFO_FAQ") val studyInfoFaq: String? = null,
@@ -370,6 +371,7 @@ data class StringsResponse(
     private fun toStudyInfo(): Option<StudyInfo> =
         Option.fx {
             StudyInfo(
+                studyInfoAboutYou.toOption().bind(),
                 studyInfoContactInfo.toOption().bind(),
                 studyInfoRewards.toOption().bind(),
                 studyInfoFaq.toOption().bind()
