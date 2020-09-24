@@ -7,7 +7,6 @@ import android.os.Build
 import arrow.core.Tuple2
 import arrow.core.toT
 import com.squareup.moshi.Moshi
-import org.fouryouandme.core.ext.evalOnIO
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -42,10 +41,12 @@ open class DeviceMotionRecorder internal constructor(
     outputDirectory: File,
     private val moshi: Moshi,
 ) : SensorRecorder(
+    "device_motion_thread",
     frequency,
     identifier,
     step,
     outputDirectory,
+    30000
 ) {
 
     companion object {
@@ -124,20 +125,19 @@ open class DeviceMotionRecorder internal constructor(
         return sensorTypeList
     }
 
-    override suspend fun recordSensorEvent(sensorEvent: SensorEvent): String? =
-        evalOnIO {
+    override suspend fun recordSensorEvent(sensorEvent: SensorEvent): String? {
 
-            val sensorType = sensorEvent.sensor.type
-            val sensorTypeKey = sensorTypeToDataType()[sensorType]
+        val sensorType = sensorEvent.sensor.type
+        val sensorTypeKey = sensorTypeToDataType()[sensorType]
 
-            val sensorData =
-                sensorTypeKey?.let {
+        val sensorData =
+            sensorTypeKey?.let {
 
-                    when (sensorType) {
-                        Sensor.TYPE_ACCELEROMETER ->
-                            recordAccelerometerEvent(it, sensorEvent)
-                        Sensor.TYPE_GRAVITY ->
-                            recordGravityEvent(it, sensorEvent)
+                when (sensorType) {
+                    Sensor.TYPE_ACCELEROMETER ->
+                        recordAccelerometerEvent(it, sensorEvent)
+                    Sensor.TYPE_GRAVITY ->
+                        recordGravityEvent(it, sensorEvent)
                         Sensor.TYPE_LINEAR_ACCELERATION ->
                             recordLinearAccelerometerEvent(it, sensorEvent)
                         Sensor.TYPE_GYROSCOPE ->
@@ -165,7 +165,7 @@ open class DeviceMotionRecorder internal constructor(
             if (sensorData == null)
                 Timber.e("Unable find type key for sensor type: $sensorType")
 
-            sensorData?.b
+        return sensorData?.b
 
         }
 

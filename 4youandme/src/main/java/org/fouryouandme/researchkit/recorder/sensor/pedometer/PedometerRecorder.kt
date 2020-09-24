@@ -4,7 +4,6 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import com.squareup.moshi.Moshi
-import org.fouryouandme.core.ext.evalOnIO
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
@@ -15,6 +14,7 @@ open class PedometerRecorder internal constructor(
     outputDirectory: File,
     private val moshi: Moshi
 ) : SensorRecorder(
+    "pedometer_thread",
     MANUAL_JSON_FREQUENCY.toDouble(),
     identifier,
     step,
@@ -59,18 +59,17 @@ open class PedometerRecorder internal constructor(
         )
     }
 
-    override suspend fun recordSensorEvent(sensorEvent: SensorEvent): String? =
-        evalOnIO {
+    override suspend fun recordSensorEvent(sensorEvent: SensorEvent): String? {
 
-            val data =
-                when (sensorEvent.sensor.type) {
-                    Sensor.TYPE_STEP_DETECTOR -> onStepTaken()
-                    else -> null
-                }
+        val data =
+            when (sensorEvent.sensor.type) {
+                Sensor.TYPE_STEP_DETECTOR -> onStepTaken()
+                else -> null
+            }
 
-            data?.let { onRecordDataCollected(it) }
+        data?.let { onRecordDataCollected(it) }
 
-            data?.toJson(moshi)
+        return data?.toJson(moshi)
 
         }
 

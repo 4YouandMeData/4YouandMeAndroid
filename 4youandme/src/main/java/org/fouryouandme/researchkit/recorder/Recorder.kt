@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
-import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.researchkit.recorder.sensor.RecorderData
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
@@ -153,7 +152,7 @@ abstract class Recorder(
 
     suspend fun onRecordDataCollected(data: RecorderData): Unit =
         // set the live data value on the main thread
-        evalOnMain { recorderLiveData.value = data.toEvent() }
+        recorderLiveData.postValue(data.toEvent())
 
     protected fun onRecorderFailed(error: String): Unit {
         recorderListener?.onFail(this, Throwable(error))

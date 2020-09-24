@@ -5,10 +5,12 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.step_sensor.*
 import org.fouryouandme.R
+import org.fouryouandme.core.ext.infoToast
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.recorder.RecorderService
 import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
 import org.fouryouandme.researchkit.recorder.RecordingState
+import org.fouryouandme.researchkit.recorder.SensorData
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.tasks.TaskStateUpdate
@@ -43,6 +45,15 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                                             "Fallito",
                                             Toast.LENGTH_LONG
                                         ).show()
+                            }
+
+                        }
+
+                    binder.sensorLiveData()
+                        .observeEvent(SensorStepFragment::class.java.simpleName) {
+
+                            when (it) {
+                                is SensorData.Steps -> infoToast("steps: ${it.steps}")
                             }
 
                         }

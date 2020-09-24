@@ -30,13 +30,12 @@ import java.io.File
  *
  */
 abstract class SensorRecorder(
-    /**
-     *
-     */
+    thread: String,
     private val frequency: Double,
     identifier: String,
     step: Step,
     outputDirectory: File,
+    private val batchSize: Int = 0,
 ) : JsonArrayDataRecorder(
     identifier,
     step,
@@ -47,9 +46,11 @@ abstract class SensorRecorder(
     private var sensorList: MutableList<Sensor> = mutableListOf()
     private var timestampZeroReferenceNanos: Long = 0
 
-    private val handler = HandlerThread("sensor_thread")
+    private val handler = HandlerThread(thread)
 
     private val sensorHandler by lazy { Handler(handler.looper) }
+
+    private var batch: MutableList<SensorEvent> = mutableListOf()
 
     init {
 
@@ -124,14 +125,22 @@ abstract class SensorRecorder(
 
     override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
 
-        startCoroutineAsync {
-
-            evalOnIO {
-
+        if (batchSize <= 0)
+            startCoroutineAsync {
                 recordSensorEvent(sensorEvent)?.let { writeJsonObjectToFile(it) }
+            }
+        else if (batchSize > 0 && batch.size < batchSize)
+            batch.add(sensorEvent)
+        else {
+            startCoroutineAsync {
+
+                batch.add(sensorEvent)
+                repeat(batch.size) {
+                    recordSensorEvent(sensorEvent)?.let { writeJsonObjectToFile(it) }
+                }
+                batch = mutableListOf()
 
             }
-
         }
 
     }

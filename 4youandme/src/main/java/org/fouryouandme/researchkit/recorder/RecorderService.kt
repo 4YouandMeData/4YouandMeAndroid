@@ -38,11 +38,11 @@ open class RecorderService : BaseService(), RecorderListener {
 
     private var taskTimer: Disposable? = null
 
-    private var stepCounter: Disposable? = null
-
     private var middleInstruction: List<Disposable>? = null
 
     private var stateLiveDate: MutableLiveData<Event<RecordingState>> = MutableLiveData()
+
+    private var sensorLiveDate: MutableLiveData<Event<SensorData>> = MutableLiveData()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -101,7 +101,6 @@ open class RecorderService : BaseService(), RecorderListener {
 
             val recorder = it.recorderForStep(step, outputDirectory)
             recorder.recorderListener = this
-            recorder.start(applicationContext)
             recorder
 
         }
@@ -126,6 +125,8 @@ open class RecorderService : BaseService(), RecorderListener {
                         (recorderData as? PedometerRecorderData)
                             ?.let {
 
+                                sensorLiveDate.value = SensorData.Steps(it.steps).toEvent()
+
                                 if (it.steps >= step.target.steps)
                                     startCoroutineAsync { onRecorderDurationFinished(step) }
 
@@ -133,16 +134,18 @@ open class RecorderService : BaseService(), RecorderListener {
                     }
 
                 // start also a timer for timeout = steps * 1.5
-                taskTimer =
+                /*taskTimer =
                     startCoroutineCancellableAsync {
 
                         evalOnIO { delay((step.target.steps * 1.5f).toLong() * 1000L) }
                         evalOnMain { onRecorderDurationFinished(step) }
 
-                    }
+                    }*/
             }
         }
 
+        // start recording from sensor
+        state?.recorderList?.map { it.start(applicationContext) }
 
     }
 
@@ -238,27 +241,30 @@ open class RecorderService : BaseService(), RecorderListener {
         return RecorderServiceBinder()
     }
 
-    private suspend fun onRecorderDurationFinished(step: Step.SensorStep) {
+    private suspend fun onRecorderDurationFinished(step: Step.SensorStep) =
+        evalOnMain {
 
-        if (step.shouldVibrateOnFinish) vibrate()
-        if (step.shouldPlaySoundOnFinish) playSound()
-        step.finishedSpokenInstruction?.let { speakText(it) }
+            stopRecorder()
 
-        // await some time before sending the completed event
-        startCoroutineAsync {
+            if (step.shouldVibrateOnFinish) vibrate()
+            if (step.shouldPlaySoundOnFinish) playSound()
+            step.finishedSpokenInstruction?.let { speakText(it) }
 
-            evalOnIO { delay(step.estimateTimeInMsToSpeakEndInstruction) }
-            evalOnMain {
-                stateLiveDate.value = RecordingState.Completed(getStepIdentifier()).toEvent()
-                // reset live data value to avoid to send again the last event to new subscribers
-                stateLiveDate = MutableLiveData()
+            // await some time before sending the completed event
+            startCoroutineAsync {
+
+                evalOnIO { delay(step.estimateTimeInMsToSpeakEndInstruction) }
+                evalOnMain {
+                    stateLiveDate.value = RecordingState.Completed(getStepIdentifier()).toEvent()
+                    // reset live data value to avoid to send again the
+                    // last event to new subscribers
+                    stateLiveDate = MutableLiveData()
+                    sensorLiveDate = MutableLiveData()
+                }
+
             }
 
         }
-
-        stopRecorder()
-
-    }
 
     /**
      * RecorderListener callback
@@ -367,6 +373,7 @@ open class RecorderService : BaseService(), RecorderListener {
         middleInstruction = null
 
         stateLiveDate = MutableLiveData()
+        sensorLiveDate = MutableLiveData()
 
         stopSelf()
 
@@ -409,9 +416,16 @@ open class RecorderService : BaseService(), RecorderListener {
 
             bindTTS(sensorStep)
 
+            evalOnMain {
+                stateLiveDate.value =
+                    RecordingState.Recording(sensorStep.identifier).toEvent()
+            }
+
         }
 
         fun stateLiveData(): LiveData<Event<RecordingState>> = stateLiveDate
+
+        fun sensorLiveData(): LiveData<Event<SensorData>> = sensorLiveDate
 
         suspend fun stop(): Unit = shutDownRecorder()
 

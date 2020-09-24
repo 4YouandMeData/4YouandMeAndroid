@@ -79,3 +79,5 @@ inline fun <reified T : Fragment> Fragment.find(): T {
 /* --- toast --- */
 
 fun Fragment.errorToast(message: String): Unit = requireContext().errorToast(message)
+
+fun Fragment.infoToast(message: String): Unit = requireContext().infoToast(message)
