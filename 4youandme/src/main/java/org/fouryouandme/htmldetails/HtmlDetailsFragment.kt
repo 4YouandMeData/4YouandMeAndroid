@@ -1,21 +1,16 @@
-package org.fouryouandme.htmldetails.page
+package org.fouryouandme.htmldetails
 
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.html_detail.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.integration.App
-import org.fouryouandme.auth.optin.permission.OptInPermissionFragmentArgs
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.htmldetails.HtmlDetailsStateUpdate
 
 class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_detail) {
 

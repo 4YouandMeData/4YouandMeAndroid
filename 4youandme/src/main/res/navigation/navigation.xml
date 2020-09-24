@@ -309,14 +309,15 @@
 
     <fragment
         android:id="@+id/about_you"
-        android:name="org.fouryouandme.aboutyou.page.AboutYouFragment"
+        android:name="org.fouryouandme.aboutyou.AboutYouFragment"
         android:label="AboutYouFragment"
-        tools:layout="@layout/about_you" />
+        tools:layout="@layout/about_you_menu" />
 
     <fragment
         android:id="@+id/html_details"
-        android:name="org.fouryouandme.htmldetails.page.HtmlDetailsFragment"
-        android:label="HtmlDetailsFragment">
+        android:name="org.fouryouandme.htmldetails.HtmlDetailsFragment"
+        android:label="HtmlDetailsFragment"
+        tools:layout="@layout/html_detail">
 
         <argument
             android:name="pageId"

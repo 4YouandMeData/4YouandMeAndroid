@@ -1,33 +1,21 @@
-package org.fouryouandme.aboutyou.page
+package org.fouryouandme.aboutyou.menu
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import arrow.core.toOption
-import kotlinx.android.synthetic.main.about_you.*
-import kotlinx.android.synthetic.main.about_you.root
+import kotlinx.android.synthetic.main.about_you_menu.*
+import kotlinx.android.synthetic.main.about_you_menu.root
 import org.fouryouandme.R
-import org.fouryouandme.aboutyou.AboutYouStateUpdate
+import org.fouryouandme.aboutyou.*
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
 
-class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
-    override val viewModel: AboutYouViewModel by lazy {
-        viewModelFactory(
-            requireParentFragment(),
-            getFactory {
-                AboutYouViewModel(
-                    navigator,
-                    IORuntime,
-                    injector.configurationModule()
-                )
-            }
-        )
-    }
+class AboutYouMenuFragment : AboutYouSectionFragment(R.layout.about_you_menu) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,14 +43,18 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
     }
 
     private fun setupView(): Unit {
-            requireParentFragment()
+        requireParentFragment()
             .toolbar
             .toOption()
             .map {
                 it.show()
 
                 it.showCloseSecondaryButton(imageConfiguration)
-                { viewModel.back(findNavController()) }
+                {
+                    startCoroutineAsync {
+                        viewModel.back(aboutYouMenuNavController(), aboutYouNavController())
+                    }
+                }
             }
     }
 
@@ -116,4 +108,5 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
         disclaimer.text = configuration.text.profile.disclaimer
     }
 
+    fun aboutYouMenuNavController() = AboutYouMenuNavController(findNavController())
 }
