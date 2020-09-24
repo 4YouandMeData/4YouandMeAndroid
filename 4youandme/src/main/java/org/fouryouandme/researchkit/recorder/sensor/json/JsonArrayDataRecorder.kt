@@ -1,5 +1,6 @@
 package org.fouryouandme.researchkit.recorder.sensor.json
 
+import android.content.Context
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.fx.coroutines.evalOn
@@ -35,7 +36,16 @@ abstract class JsonArrayDataRecorder(
     private val file = File(outputDirectory, uniqueFilename + JSON_FILE_SUFFIX)
     private var fileOutputStream: FileOutputStream? = null
 
-    suspend fun startJsonDataLogging(): Unit {
+    override suspend fun start(context: Context) {
+
+        startTime = 0L
+        endTime = null
+
+        startJsonDataLogging()
+
+    }
+
+    private suspend fun startJsonDataLogging(): Unit {
 
         isRecording = true
         isFirstJsonObject = true
@@ -48,7 +58,14 @@ abstract class JsonArrayDataRecorder(
 
     }
 
-    private suspend fun stopJsonDataLogging(): Unit {
+    override suspend fun stop(): FileResult? {
+
+        endTime = System.currentTimeMillis()
+
+        return stopJsonDataLogging()
+    }
+
+    private suspend fun stopJsonDataLogging(): FileResult? =
         evalOnIO {
             isRecording = false
 
@@ -57,28 +74,20 @@ abstract class JsonArrayDataRecorder(
 
             when (write) {
 
-                is Either.Left ->
+                is Either.Left -> {
                     evalOnMain { recorderListener?.onFail(this, write.a) }
-                is Either.Right -> {
-
-                    val fileResult =
-                        FileResult(
-                            fileResultIdentifier(),
-                            file,
-                            JSON_MIME_CONTENT_TYPE,
-                            Instant.ofEpochMilli(startTime ?: 0).atZone(ZoneOffset.UTC),
-                            Instant.ofEpochMilli(endTime ?: 0).atZone(ZoneOffset.UTC)
-                        )
-
-
-                    //TODO: Handle result
-                    //it.onComplete(this@JsonArrayDataRecorder, fileResult)
-
+                    null
                 }
+                is Either.Right ->
+                    FileResult(
+                        fileResultIdentifier(),
+                        file,
+                        JSON_MIME_CONTENT_TYPE,
+                        Instant.ofEpochMilli(startTime ?: 0).atZone(ZoneOffset.UTC),
+                        Instant.ofEpochMilli(endTime ?: 0).atZone(ZoneOffset.UTC)
+                    )
             }
         }
-
-    }
 
     suspend fun writeJsonObjectToFile(json: String): Unit {
 
@@ -146,12 +155,6 @@ abstract class JsonArrayDataRecorder(
 
         writing?.invoke()
         deleteFileAndClose()
-
-    }
-
-    override suspend fun stop(): Unit {
-
-        stopJsonDataLogging()
 
     }
 

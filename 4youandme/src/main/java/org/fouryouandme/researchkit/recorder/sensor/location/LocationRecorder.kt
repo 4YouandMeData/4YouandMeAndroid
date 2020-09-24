@@ -15,6 +15,7 @@ import org.fouryouandme.core.ext.evalOnIO
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
+import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
 import java.io.File
@@ -52,7 +53,6 @@ open class LocationRecorder(
     private var lastLocation: Location? = null
 
     override suspend fun start(context: Context): Unit {
-        super.start(context)
 
         // reset location data
         firstLocation = null
@@ -105,7 +105,9 @@ open class LocationRecorder(
         // with their corresponding accuracy and other data associated
         //startLocationTracking().unsafeRunAsync()
         startCoroutineAsync { startLocationTracking() }
-        startJsonDataLogging()
+
+        super.start(context)
+
     }
 
     @SuppressLint("MissingPermission")
@@ -162,9 +164,11 @@ open class LocationRecorder(
 
     }
 
-    override suspend fun stop() {
-        super.stop()
+    override suspend fun stop(): FileResult? {
         stopLocationListener()
+
+        return super.stop()
+
     }
 
     // locationListener methods

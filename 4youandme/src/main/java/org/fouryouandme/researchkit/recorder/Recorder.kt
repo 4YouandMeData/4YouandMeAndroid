@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.researchkit.recorder.sensor.RecorderData
+import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
 import java.util.*
@@ -121,12 +122,7 @@ abstract class Recorder(
      *
      * @param context can be app or activity, used for starting sensor
      */
-    open suspend fun start(context: Context) {
-
-        startTime = 0L
-        endTime = null
-
-    }
+    abstract suspend fun start(context: Context)
 
     /**
      * Stops data recording, which generally triggers the return of results.
@@ -135,11 +131,7 @@ abstract class Recorder(
      * If an error occurs when stopping the recorder, it is returned through the delegate.
      * Subclasses should call `finishRecordingWithError:` rather than calling super.
      */
-    open suspend fun stop() {
-
-        endTime = System.currentTimeMillis()
-
-    }
+    abstract suspend fun stop(): FileResult?
 
     /**
      * A cancel will cause this recorder to be immediately stopped,

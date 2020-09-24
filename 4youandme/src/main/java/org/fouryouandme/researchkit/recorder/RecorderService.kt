@@ -18,10 +18,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseService
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
-import org.fouryouandme.core.ext.evalOnIO
-import org.fouryouandme.core.ext.evalOnMain
-import org.fouryouandme.core.ext.startCoroutineAsync
-import org.fouryouandme.core.ext.startCoroutineCancellableAsync
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorderData
 import org.fouryouandme.researchkit.step.Step
@@ -302,9 +299,12 @@ open class RecorderService : BaseService(), RecorderListener {
 
     private suspend fun stopRecorders(): Unit {
 
-        state?.let { recorderState ->
-            recorderState.recorderList.map { it.stop() }
-        }
+        val results = state?.recorderList?.mapNotNull { it.stop() }
+
+        mapNotNull(state?.step?.identifier, results)
+            ?.let {
+                stateLiveDate.postValue(RecordingState.ResultCollected(it.a, it.b).toEvent())
+            }
 
     }
 
@@ -416,10 +416,10 @@ open class RecorderService : BaseService(), RecorderListener {
 
             bindTTS(sensorStep)
 
-            evalOnMain {
-                stateLiveDate.value =
-                    RecordingState.Recording(sensorStep.identifier).toEvent()
-            }
+
+            stateLiveDate.postValue(
+                RecordingState.Recording(sensorStep.identifier).toEvent()
+            )
 
         }
 

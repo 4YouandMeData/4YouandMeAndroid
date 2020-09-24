@@ -11,6 +11,7 @@ import arrow.core.toOption
 import org.fouryouandme.core.ext.evalOnIO
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
+import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
 import java.io.File
@@ -65,9 +66,8 @@ abstract class SensorRecorder(
 
     override suspend fun start(context: Context): Unit {
 
-        super.start(context)
-
         startSensorRecording(context)
+
     }
 
     private suspend fun startSensorRecording(context: Context): Unit {
@@ -115,7 +115,7 @@ abstract class SensorRecorder(
             }
 
             if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
-            else super.startJsonDataLogging()
+            else super.start(context)
 
         }
     }
@@ -133,14 +133,15 @@ abstract class SensorRecorder(
      */
     abstract suspend fun recordSensorEvent(sensorEvent: SensorEvent): String?
 
-    override suspend fun stop() {
-        super.stop()
+    override suspend fun stop(): FileResult? {
 
         if (handler.isAlive) handler.quitSafely()
 
         sensorList.forEach { sensor ->
             sensorManager?.unregisterListener(this, sensor)
         }
+
+        return super.stop()
 
     }
 

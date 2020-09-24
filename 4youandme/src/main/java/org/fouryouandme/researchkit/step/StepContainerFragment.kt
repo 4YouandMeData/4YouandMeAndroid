@@ -57,12 +57,13 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
                 }
             }?.let { StepFragment.buildWithParams(args.index, it) }
 
-        mapNotNull(step, fragment) { s, f ->
+        mapNotNull(step, fragment)
+            ?.let {
 
-            val transaction = childFragmentManager.beginTransaction()
-            transaction.add(R.id.step_root, f, s.identifier)
-            transaction.commit()
+                val transaction = childFragmentManager.beginTransaction()
+                transaction.add(R.id.step_root, it.b, it.a.identifier)
+                transaction.commit()
 
-        }
+            }
     }
 }

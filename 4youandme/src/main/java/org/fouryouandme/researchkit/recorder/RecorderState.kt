@@ -17,6 +17,12 @@ data class RecorderState(
 sealed class RecordingState {
 
     data class Recording(val stepIdentifier: String) : RecordingState()
+
+    data class ResultCollected(
+        val stepIdentifier: String,
+        val files: List<FileResult>
+    ) : RecordingState()
+
     data class Completed(val stepIdentifier: String) : RecordingState()
     data class Failure(val stepIdentifier: String) : RecordingState()
 
@@ -27,3 +33,4 @@ sealed class SensorData {
     data class Steps(val steps: Int) : SensorData()
 
 }
+

@@ -32,14 +32,19 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                     }
 
                     binder.stateLiveData()
-                        .observeEvent(SensorStepFragment::class.java.simpleName) {
+                        .observeEvent(SensorStepFragment::class.java.simpleName) { state ->
 
-                            when (it) {
+                            when (state) {
+                                is RecordingState.ResultCollected ->
+                                    if (state.stepIdentifier == step.identifier)
+                                        startCoroutineAsync {
+                                            state.files.forEach { viewModel.addResult(it) }
+                                        }
                                 is RecordingState.Completed ->
-                                    if (it.stepIdentifier == step.identifier)
+                                    if (state.stepIdentifier == step.identifier)
                                         startCoroutineAsync { next() }
                                 is RecordingState.Failure ->
-                                    if (it.stepIdentifier == step.identifier)
+                                    if (state.stepIdentifier == step.identifier)
                                         Toast.makeText(
                                             requireContext(),
                                             "Fallito",
