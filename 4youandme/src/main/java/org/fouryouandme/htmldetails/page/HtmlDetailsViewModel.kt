@@ -1,32 +1,39 @@
-package org.fouryouandme.studyinfo
+package org.fouryouandme.htmldetails.page
 
+import androidx.navigation.NavController
 import arrow.fx.ForIO
-import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.aboutyou.AboutYouError
+import org.fouryouandme.aboutyou.AboutYouState
+import org.fouryouandme.aboutyou.AboutYouStateUpdate
 import org.fouryouandme.core.arch.android.BaseViewModel
+import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.htmldetails.HtmlDetailsError
+import org.fouryouandme.htmldetails.HtmlDetailsLoading
+import org.fouryouandme.htmldetails.HtmlDetailsState
+import org.fouryouandme.htmldetails.HtmlDetailsStateUpdate
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.MainPageToHtmlDetailsPage
 
-class StudyInfoViewModel(
+class HtmlDetailsViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
     private val configurationModule: ConfigurationModule
 ) : BaseViewModel<
         ForIO,
-        StudyInfoState,
-        StudyInfoStateUpdate,
-        StudyInfoError,
-        StudyInfoLoading>
+        HtmlDetailsState,
+        HtmlDetailsStateUpdate,
+        HtmlDetailsError,
+        HtmlDetailsLoading>
     (
     navigator = navigator,
     runtime = runtime
 ) {
-
     /* --- data --- */
 
     suspend fun initialize(): Unit {
@@ -35,12 +42,12 @@ class StudyInfoViewModel(
             configurationModule.getConfiguration(CachePolicy.MemoryFirst)
 
         configuration.fold(
-            { setErrorFx(it, StudyInfoError.Initialization) },
+            { setErrorFx(it, HtmlDetailsError.Initialization) },
             {
                 setStateFx(
-                    StudyInfoState(it),
+                    HtmlDetailsState(it),
                 ) { state ->
-                    StudyInfoStateUpdate.Initialization(state.configuration)
+                    HtmlDetailsStateUpdate.Initialization(state.configuration)
                 }
             }
         )
@@ -48,17 +55,6 @@ class StudyInfoViewModel(
 
     /* --- navigation --- */
 
-    fun aboutYouPage(navController: RootNavController): Unit =
-        navigator.navigateTo(
-            runtime,
-            navController,
-            MainPageToAboutYouPage
-        ).unsafeRunAsync()
-
-    fun detailsPage(navController: RootNavController, pageId: Int): Unit =
-        navigator.navigateTo(
-            runtime,
-            navController,
-            MainPageToHtmlDetailsPage(pageId)
-        ).unsafeRunAsync()
+    fun back(navController: NavController): Unit =
+        navigator.back(runtime, navController).unsafeRunAsync()
 }

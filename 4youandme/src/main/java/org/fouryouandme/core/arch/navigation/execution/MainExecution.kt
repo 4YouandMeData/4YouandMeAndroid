@@ -5,5 +5,10 @@ import org.fouryouandme.main.MainFragmentDirections
 
 fun mainPageToAboutYouPage(): NavigationExecution =
     {
-        it.navigate(MainFragmentDirections.actionMainToAboutYouFragment())
+        it.navigate(MainFragmentDirections.actionMainToAboutYou())
+    }
+
+fun mainPageToHtmlDetailsPage(pageId: Int): NavigationExecution =
+    {
+        it.navigate(MainFragmentDirections.actionMainToHtmlDetails(pageId))
     }

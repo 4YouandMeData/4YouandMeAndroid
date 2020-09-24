@@ -79,7 +79,9 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
             configuration.text.studyInfo.contactInfo
         )
 
-        secondItem.setOnClickListener { Log.d("item clicked", "Rewards clicked") }
+        secondItem.setOnClickListener {
+            viewModel.detailsPage(rootNavController(), 0)
+        }
 
         thirdItem.applyData(
             configuration,
@@ -87,7 +89,9 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
             configuration.text.studyInfo.rewards
         )
 
-        thirdItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
+        thirdItem.setOnClickListener {
+            viewModel.detailsPage(rootNavController(), 1)
+        }
 
         fourthItem.applyData(
             configuration,
@@ -95,7 +99,9 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
             configuration.text.studyInfo.faq
         )
 
-        fourthItem.setOnClickListener { { Log.d("item clicked", "FAQ clicked") } }
+        fourthItem.setOnClickListener {
+            viewModel.detailsPage(rootNavController(), 2)
+        }
 
     }
 }

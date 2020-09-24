@@ -19,6 +19,7 @@ import org.fouryouandme.auth.splash.SplashToWelcome
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
 import org.fouryouandme.main.MainPageToAboutYouPage
+import org.fouryouandme.main.MainPageToHtmlDetailsPage
 import org.fouryouandme.main.tasks.TasksToTask
 import org.fouryouandme.tasks.StepToStep
 
@@ -127,6 +128,9 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
             is MainPageToAboutYouPage ->
                 mainPageToAboutYouPage()
+
+            is MainPageToHtmlDetailsPage ->
+                mainPageToHtmlDetailsPage(action.pageId)
 
             else -> {
                 {}

@@ -283,12 +283,21 @@
             app:popExitAnim="@anim/slide_to_right" />
 
         <action
-            android:id="@+id/action_main_to_about_you_fragment"
-            app:destination="@id/about_you_fragment"
+            android:id="@+id/action_main_to_about_you"
+            app:destination="@id/about_you"
             app:enterAnim="@anim/slide_from_top"
             app:exitAnim="@anim/idle"
             app:popEnterAnim="@anim/idle"
-            app:popExitAnim="@anim/slide_to_top"/>
+            app:popExitAnim="@anim/slide_to_top" />
+
+        <action
+            android:id="@+id/action_main_to_html_details"
+            app:destination="@id/html_details"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
 
     </fragment>
 
@@ -299,9 +308,20 @@
         tools:layout="@layout/task" />
 
     <fragment
-        android:id="@+id/about_you_fragment"
+        android:id="@+id/about_you"
         android:name="org.fouryouandme.aboutyou.page.AboutYouFragment"
         android:label="AboutYouFragment"
         tools:layout="@layout/about_you" />
+
+    <fragment
+        android:id="@+id/html_details"
+        android:name="org.fouryouandme.htmldetails.page.HtmlDetailsFragment"
+        android:label="HtmlDetailsFragment">
+
+        <argument
+            android:name="pageId"
+            app:argType="integer" />
+
+    </fragment>
 
 </navigation>

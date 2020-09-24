@@ -28,3 +28,5 @@ sealed class MainError {
 /* --- navigation --- */
 
 object MainPageToAboutYouPage : NavigationAction
+
+data class MainPageToHtmlDetailsPage(val pageId: Int) : NavigationAction
