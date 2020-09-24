@@ -1,7 +1,5 @@
 package org.fouryouandme.researchkit.step
 
-import arrow.core.None
-import arrow.core.Option
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.researchkit.recorder.RecorderConfig
 import org.fouryouandme.researchkit.step.introduction.IntroductionItem
@@ -79,10 +77,10 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         configuration: Configuration,
         val title: String,
         val description: String,
-        val duration: Int = 0,
+        val target: SensorRecorderTarget,
         val recorderConfigurations: List<RecorderConfig>,
-        val spokenInstruction: Option<String> = None,
-        val finishedSpokenInstruction: Option<String> = None,
+        val spokenInstruction: String? = null,
+        val finishedSpokenInstruction: String? = null,
         val spokenInstructionMap: Map<Long, String> = emptyMap(),
         val shouldVibrateOnFinish: Boolean = false,
         val shouldPlaySoundOnFinish: Boolean = false,
@@ -96,9 +94,17 @@ sealed class Step(val identifier: String, val configuration: Configuration) {
         val recordingUUID: UUID = UUID.randomUUID()
 
         fun hasVoice(): Boolean =
-            spokenInstruction.isDefined() ||
-                    finishedSpokenInstruction.isDefined() ||
+            spokenInstruction != null ||
+                    finishedSpokenInstruction != null ||
                     spokenInstructionMap.isNotEmpty()
+
+    }
+
+    sealed class SensorRecorderTarget {
+
+        data class Time(val duration: Int) : SensorRecorderTarget()
+
+        data class Steps(val steps: Int) : SensorRecorderTarget()
 
     }
 

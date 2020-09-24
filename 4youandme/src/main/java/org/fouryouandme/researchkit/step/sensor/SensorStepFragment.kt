@@ -25,7 +25,9 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
                 step?.let {
 
-                    binder.bind(getOutputDirectory(), step, viewModel.state().task)
+                    startCoroutineAsync {
+                        binder.bind(getOutputDirectory(), step, viewModel.state().task)
+                    }
 
                     binder.stateLiveData()
                         .observeEvent(SensorStepFragment::class.java.simpleName) {
@@ -51,7 +53,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                     .observeEvent(SensorStepFragment::class.java.simpleName) {
                         when (it) {
                             is TaskStateUpdate.Cancelled ->
-                                if (it.isCancelled) binder.stop()
+                                if (it.isCancelled) startCoroutineAsync { binder.stop() }
                         }
                     }
             },

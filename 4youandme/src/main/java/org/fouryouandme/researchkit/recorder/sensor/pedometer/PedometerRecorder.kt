@@ -3,14 +3,8 @@ package org.fouryouandme.researchkit.recorder.sensor.pedometer
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.getOrElse
-import arrow.core.some
-import arrow.fx.IO
-import arrow.fx.extensions.fx
 import com.squareup.moshi.Moshi
-import org.fouryouandme.core.ext.orJustUnit
+import org.fouryouandme.core.ext.evalOnIO
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
@@ -38,7 +32,7 @@ open class PedometerRecorder internal constructor(
             listOf(Sensor.TYPE_STEP_DETECTOR)
         else listOf()
 
-    override fun start(context: Context) {
+    override suspend fun start(context: Context) {
         super.start(context)
 
         stepCounter = 0
@@ -53,30 +47,30 @@ open class PedometerRecorder internal constructor(
      */
     private fun computeStrideLength(): Float = DEFAULT_METERS_PER_STRIDE
 
-    private fun onStepTaken(): PedometerRecorderData {
+    private suspend fun onStepTaken(): PedometerRecorderData {
 
         stepCounter++
         val distance = strideLength * stepCounter
 
         return PedometerRecorderData(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             stepCounter,
             distance
         )
     }
 
-    override fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>> =
-        IO.fx {
+    override suspend fun recordSensorEvent(sensorEvent: SensorEvent): String? =
+        evalOnIO {
 
             val data =
                 when (sensorEvent.sensor.type) {
-                    Sensor.TYPE_STEP_DETECTOR -> onStepTaken().some()
-                    else -> None
+                    Sensor.TYPE_STEP_DETECTOR -> onStepTaken()
+                    else -> null
                 }
 
-            data.map { onRecordDataCollected(it) }.orJustUnit().bind()
+            data?.let { onRecordDataCollected(it) }
 
-            data.map { it.toJson(moshi) }
+            data?.toJson(moshi)
 
         }
 

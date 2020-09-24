@@ -1,159 +1,182 @@
 package org.fouryouandme.researchkit.recorder
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.*
 import android.speech.tts.TextToSpeech
-import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.getOrElse
-import arrow.core.some
-import arrow.fx.IO
-import arrow.fx.extensions.fx
 import arrow.fx.typeclasses.Disposable
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.fouryouandme.R
+import org.fouryouandme.core.arch.android.BaseService
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.toEvent
-import org.fouryouandme.core.ext.unsafeRunAsync
-import org.fouryouandme.core.ext.unsafeRunAsyncCancelable
-import org.fouryouandme.researchkit.result.Result
+import org.fouryouandme.core.ext.evalOnIO
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.core.ext.startCoroutineCancellableAsync
+import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
+import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorderData
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.task.Task
 import timber.log.Timber
 import java.io.File
 import java.util.*
 
-open class RecorderService : Service(), RecorderListener {
+open class RecorderService : BaseService(), RecorderListener {
 
-    private var state: Option<RecorderState> = None
+    private var state: RecorderState? = null
 
-    private var tts: Option<TextToSpeech> = None
+    private var tts: TextToSpeech? = null
 
-    private var taskTimer: Option<Disposable> = None
+    private var taskTimer: Disposable? = null
 
-    private var middleInstruction: Option<List<Disposable>> = None
+    private var stepCounter: Disposable? = null
+
+    private var middleInstruction: List<Disposable>? = null
 
     private var stateLiveDate: MutableLiveData<Event<RecordingState>> = MutableLiveData()
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int = START_NOT_STICKY
-
-    private fun bindTTS(step: Step.SensorStep): Unit {
-        if (tts.isEmpty())
-            tts =
-                if (step.hasVoice())
-                    TextToSpeech(
-                        this@RecorderService
-                    ) { status ->
-
-                        if (status == TextToSpeech.SUCCESS) {
-
-                            tts.map {
-
-                                val languageAvailable =
-                                    it.isLanguageAvailable(Locale.getDefault())
-                                // >= 0 means
-                                // LANG_AVAILABLE,
-                                // LANG_COUNTRY_AVAILABLE,
-                                // or LANG_COUNTRY_VAR_AVAILABLE
-                                // TODO: fix language
-                                if (languageAvailable >= 0)
-                                    it.language = Locale.US
-                                else
-                                    tts = None
-                            }
-
-                        } else {
-                            Timber.e("Failed to initialize TTS with error code $status")
-                            tts = None
-                        }
-
-                        setupTaskTimer(step)
-                        setupReadInstructions(step)
-
-                    }.some()
-                else None
-        else if (step.hasVoice()) {
-            setupTaskTimer(step)
-            setupReadInstructions(step)
-        }
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
-    private fun buildRecorderList(step: Step.SensorStep, outputDirectory: File): List<Recorder> =
+    private suspend fun bindTTS(step: Step.SensorStep): Unit =
+        evalOnMain {
+            if (tts == null)
+                tts =
+                    if (step.hasVoice())
+                        TextToSpeech(this) { startCoroutineAsync { setupTTS(step, it) } }
+                    else null
+            else if (step.hasVoice()) {
+                setupTaskTimer(step)
+                setupReadInstructions(step)
+            }
+        }
+
+    private suspend fun setupTTS(step: Step.SensorStep, status: Int): Unit =
+        evalOnMain {
+
+            if (status == TextToSpeech.SUCCESS) {
+
+                tts?.let {
+
+                    val languageAvailable =
+                        it.isLanguageAvailable(Locale.getDefault())
+                    // >= 0 means
+                    // LANG_AVAILABLE,
+                    // LANG_COUNTRY_AVAILABLE,
+                    // or LANG_COUNTRY_VAR_AVAILABLE
+                    // TODO: fix language
+                    if (languageAvailable >= 0)
+                        it.language = Locale.US
+                    else
+                        shutDownTts()
+                }
+
+            } else {
+                Timber.e("Failed to initialize TTS with error code $status")
+                shutDownTts()
+            }
+
+            setupTaskTimer(step)
+            setupReadInstructions(step)
+
+        }
+
+    private suspend fun buildRecorderList(
+        step: Step.SensorStep,
+        outputDirectory: File
+    ): List<Recorder> =
 
         step.recorderConfigurations.map {
 
             val recorder = it.recorderForStep(step, outputDirectory)
-            recorder.recorderListener = this.some()
+            recorder.recorderListener = this
             recorder.start(applicationContext)
             recorder
 
         }
 
-    private fun setupTaskTimer(step: Step.SensorStep): Unit {
+    private suspend fun setupTaskTimer(step: Step.SensorStep): Unit {
 
-        // Now allow the recorder to record for as long as the active step requires
-        // TODO: allow different mode to detect the finish (es. number of steps)
-        taskTimer =
-            IO.fx {
+        when (step.target) {
+            is Step.SensorRecorderTarget.Time -> {
+                taskTimer =
+                    startCoroutineCancellableAsync {
 
-                continueOn(Dispatchers.IO)
-                !effect { delay(step.duration * 1000L) }
-                continueOn(Dispatchers.Main)
-                onRecorderDurationFinished(step)
+                        evalOnIO { delay(step.target.duration * 1000L) }
+                        evalOnMain { onRecorderDurationFinished(step) }
 
-            }.unsafeRunAsyncCancelable().some()
+                    }
+            }
+            is Step.SensorRecorderTarget.Steps -> {
+                state?.recorderList
+                    ?.firstOrNull { it is PedometerRecorder }
+                    ?.liveData()
+                    ?.observeEvent { recorderData ->
+                        (recorderData as? PedometerRecorderData)
+                            ?.let {
+
+                                if (it.steps >= step.target.steps)
+                                    startCoroutineAsync { onRecorderDurationFinished(step) }
+
+                            }
+                    }
+
+                // start also a timer for timeout = steps * 1.5
+                taskTimer =
+                    startCoroutineCancellableAsync {
+
+                        evalOnIO { delay((step.target.steps * 1.5f).toLong() * 1000L) }
+                        evalOnMain { onRecorderDurationFinished(step) }
+
+                    }
+            }
+        }
+
 
     }
 
 
-    private fun setupReadInstructions(step: Step.SensorStep): Unit {
+    private suspend fun setupReadInstructions(step: Step.SensorStep): Unit {
 
         // play intro instruction
-        step.spokenInstruction.map { speakText(it) }
+        step.spokenInstruction?.let { speakText(it) }
 
         // play instruction during the step
         middleInstruction =
             step.spokenInstructionMap.map { (key, value) ->
 
-                IO.fx {
+                startCoroutineCancellableAsync {
 
-                    continueOn(Dispatchers.IO)
-                    !effect { delay(key * 1000L) }
-                    continueOn(Dispatchers.Main)
-                    speakText(value)
+                    evalOnIO { delay(key * 1000L) }
+                    evalOnMain { speakText(value) }
 
-                }.unsafeRunAsyncCancelable()
+                }
 
-            }.some()
+            }
     }
 
-    private fun speakText(text: String): Unit {
+    private suspend fun speakText(text: String): Unit {
 
-        tts.map {
-            it.speak(
-                text,
-                TextToSpeech.QUEUE_FLUSH,
-                null,
-                hashCode().toString()
-            )
-        }
-
+        tts?.speak(
+            text,
+            TextToSpeech.QUEUE_FLUSH,
+            null,
+            hashCode().toString()
+        )
     }
 
-    private fun showForegroundNotification(task: Task): Unit {
+    private suspend fun showForegroundNotification(task: Task): Unit {
 
         //stopForeground(true)
 
@@ -204,58 +227,36 @@ open class RecorderService : Service(), RecorderListener {
      */
     override fun onDestroy() {
 
-        shutDownRecorder()
+        startCoroutineAsync { shutDownRecorder() }
 
         super.onDestroy()
 
     }
 
-    override fun onBind(intent: Intent): IBinder? =
-        RecorderServiceBinder()
+    override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
+        return RecorderServiceBinder()
+    }
 
-    @RequiresPermission(value = Manifest.permission.VIBRATE, conditional = true)
-    private fun onRecorderDurationFinished(step: Step.SensorStep) {
+    private suspend fun onRecorderDurationFinished(step: Step.SensorStep) {
 
         if (step.shouldVibrateOnFinish) vibrate()
         if (step.shouldPlaySoundOnFinish) playSound()
-        step.finishedSpokenInstruction.map { speakText(it) }
+        step.finishedSpokenInstruction?.let { speakText(it) }
 
-        IO.fx {
+        // await some time before sending the completed event
+        startCoroutineAsync {
 
-            continueOn(Dispatchers.IO)
-            !effect { delay(step.estimateTimeInMsToSpeakEndInstruction) }
-            continueOn(Dispatchers.Main)
-            stateLiveDate.value = RecordingState.Completed(getStepIdentifier()).toEvent()
-            // reset live data value to avoid to send again the last event to new subscribers
-            stateLiveDate = MutableLiveData()
+            evalOnIO { delay(step.estimateTimeInMsToSpeakEndInstruction) }
+            evalOnMain {
+                stateLiveDate.value = RecordingState.Completed(getStepIdentifier()).toEvent()
+                // reset live data value to avoid to send again the last event to new subscribers
+                stateLiveDate = MutableLiveData()
+            }
 
-        }.unsafeRunAsync()
-
-        stopRecorder()
-
-    }
-
-    /**
-     * RecorderListener callback
-     *
-     * @param recorder The generating recorder object.
-     * @param result   The generated result.
-     */
-    override fun onComplete(recorder: Recorder, result: Result) {
-
-       /* // Due to the RecorderService having to store results in a SharedPreferences file
-        // We do not allow any Results other than FileResults
-        check(result is FileResult) {
-            "RecorderService only works with Recorders that return FileResults"
         }
 
-        state = state.map { recorderState ->
-            recorderState.copy(
-                recorderList = recorderState.recorderList
-                    .mapNotNull { if (it == recorder) null else it },
-                resultList = recorderState.resultList.plus(result)
-            )
-        }*/
+        stopRecorder()
 
     }
 
@@ -268,43 +269,40 @@ open class RecorderService : Service(), RecorderListener {
     override fun onFail(recorder: Recorder, error: Throwable) {
 
         stateLiveDate.value = RecordingState.Failure(getStepIdentifier()).toEvent()
-        shutDownRecorder()
+        startCoroutineAsync { shutDownRecorder() }
 
     }
 
-    private fun shutDownTts(): Unit {
+    private suspend fun shutDownTts(): Unit {
 
-        tts.map {
+        tts?.let {
             if (it.isSpeaking) it.stop()
             it.shutdown()
         }
 
-        tts = None
+        tts = null
     }
 
-    private fun shutDownRecorders(): Unit {
+    private suspend fun shutDownRecorders(): Unit {
 
-        state.map { recorderState ->
+        state?.let { recorderState ->
             recorderState.recorderList.map {
-                it.recorderListener = None
+                it.recorderListener = null
                 it.cancel()
             }
         }
 
     }
 
-    private fun stopRecorders(): Unit {
+    private suspend fun stopRecorders(): Unit {
 
-        state.map { recorderState ->
+        state?.let { recorderState ->
             recorderState.recorderList.map { it.stop() }
         }
 
     }
 
-    override val broadcastContext: Context? get() = this
-
-    @RequiresPermission(Manifest.permission.VIBRATE)
-    private fun vibrate(): Unit {
+    private suspend fun vibrate(): Unit {
 
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
@@ -319,7 +317,7 @@ open class RecorderService : Service(), RecorderListener {
 
     }
 
-    private fun playSound(): Unit {
+    private suspend fun playSound(): Unit {
 
         val toneG = ToneGenerator(AudioManager.STREAM_ALARM, 50) // 50 = half volume
         // Play a low and high tone for 500 ms at full volume
@@ -328,28 +326,45 @@ open class RecorderService : Service(), RecorderListener {
 
     }
 
-    private fun stopRecorder(): Unit {
+    private suspend fun stopRecorder(): Unit {
 
+        // stop all sensor recorder
         stopRecorders()
 
-        taskTimer.map { it() }
-        taskTimer = None
+        // stop the timer
+        taskTimer?.invoke()
+        taskTimer = null
 
-        middleInstruction.map { list -> list.forEach { it() } }
-        middleInstruction = None
+        // stop step counter
+        state?.recorderList
+            ?.firstOrNull { it is PedometerRecorder }
+            ?.liveData()
+            ?.removeObservers(this)
+
+        // stop instruction
+        middleInstruction?.let { list -> list.forEach { it() } }
+        middleInstruction = null
 
     }
 
-    private fun shutDownRecorder(): Unit {
+    private suspend fun shutDownRecorder(): Unit {
 
         shutDownTts()
         shutDownRecorders()
 
-        taskTimer.map { it() }
-        taskTimer = None
+        // stop the timer
+        taskTimer?.invoke()
+        taskTimer = null
 
-        middleInstruction.map { list -> list.forEach { it() } }
-        middleInstruction = None
+        // stop step counter
+        state?.recorderList
+            ?.firstOrNull { it is PedometerRecorder }
+            ?.liveData()
+            ?.removeObservers(this)
+
+        // stop instruction
+        middleInstruction?.let { list -> list.forEach { it() } }
+        middleInstruction = null
 
         stateLiveDate = MutableLiveData()
 
@@ -358,7 +373,7 @@ open class RecorderService : Service(), RecorderListener {
     }
 
     private fun getStepIdentifier(): String =
-        state.map { it.step.identifier }.getOrElse { "unknown" }
+        state?.step?.identifier ?: "unknown"
 
     /**
      * This class will be what is returned when an view binds to this service.
@@ -367,41 +382,38 @@ open class RecorderService : Service(), RecorderListener {
      */
     inner class RecorderServiceBinder : Binder() {
 
-        fun bind(
+        suspend fun bind(
             outputDirectory: File,
             sensorStep: Step.SensorStep,
             task: Task
         ): Unit {
 
-            if (sensorStep.duration > 0) {
+            val recorders = buildRecorderList(sensorStep, outputDirectory)
 
-                val recorders = buildRecorderList(sensorStep, outputDirectory)
+            // clear old listeners
+            state?.let { recorderState ->
+                recorderState.recorderList.map { it.recorderListener = null }
+            }
 
-                // clear old listeners
-                state.map { recorderState ->
-                    recorderState.recorderList.map { it.recorderListener = None }
-                }
+            showForegroundNotification(task)
 
-                showForegroundNotification(task)
-
-                state = RecorderState(
+            state =
+                RecorderState(
                     startTime = System.currentTimeMillis(),
                     step = sensorStep,
                     task = task,
                     output = outputDirectory,
                     recorderList = recorders
 
-                ).some()
+                )
 
-                bindTTS(sensorStep)
-
-            }
+            bindTTS(sensorStep)
 
         }
 
         fun stateLiveData(): LiveData<Event<RecordingState>> = stateLiveDate
 
-        fun stop(): Unit = shutDownRecorder()
+        suspend fun stop(): Unit = shutDownRecorder()
 
     }
 

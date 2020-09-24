@@ -1,8 +1,5 @@
 package org.fouryouandme.researchkit.recorder
 
-import android.content.Context
-import org.fouryouandme.researchkit.result.Result
-
 /**
  *
  * The `RecorderListener` interface defines methods that the delegate of an `Recorder` object
@@ -12,18 +9,6 @@ import org.fouryouandme.researchkit.result.Result
  *
  */
 interface RecorderListener {
-
-    /**
-     * Tells the listener that the recorder has completed with the specified result.
-     * Typically, this method is called once when recording is stopped.
-     *
-     * @param recorder The generating recorder object.
-     * @param result   The generated result.
-     */
-    fun onComplete(
-        recorder: Recorder,
-        result: Result
-    )
 
     /**
      * Tells the listener that recording failed.
@@ -37,8 +22,4 @@ interface RecorderListener {
         error: Throwable
     )
 
-    /**
-     * @return a valid Context for the recorder to broadcast status, null if not available
-     */
-    val broadcastContext: Context?
 }

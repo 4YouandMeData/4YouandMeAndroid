@@ -12,6 +12,8 @@ suspend fun <T, A> T?.foldSuspend(nullAction: suspend () -> A, validAction: susp
     else
         validAction(this)
 
+fun <T> T?.mapNull(block: () -> T): T = this ?: block()
+
 inline fun <T1, T2, A> mapNotNull(one: T1?, two: T2?, block: (T1, T2) -> A): A? =
     if (one != null && two != null) block(one, two)
     else null

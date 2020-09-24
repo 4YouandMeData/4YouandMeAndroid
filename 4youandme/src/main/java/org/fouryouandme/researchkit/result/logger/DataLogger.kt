@@ -1,8 +1,8 @@
 package org.fouryouandme.researchkit.result.logger
 
 import arrow.core.Either
-import arrow.fx.IO
-import arrow.fx.extensions.fx
+import arrow.fx.coroutines.evalOn
+import kotlinx.coroutines.Dispatchers
 import java.io.FileOutputStream
 
 /**
@@ -15,22 +15,27 @@ object DataLogger {
 
     private const val UTF_8 = "UTF-8"
 
-    fun write(
+    suspend fun write(
         fileOutputStream: FileOutputStream,
         data: String
-    ): IO<Either<Throwable, Unit>> =
-        IO.fx { !fileOutputStream.writeIO(data).attempt() }
+    ): Either<Throwable, Unit> =
+        fileOutputStream.writeSuspend(data)
 
-    fun write(
+    suspend fun write(
         fileOutputStream: FileOutputStream,
         byteArray: ByteArray
-    ): IO<Either<Throwable, Unit>> =
-        IO.fx { !fileOutputStream.writeIO(byteArray).attempt() }
+    ): Either<Throwable, Unit> =
+        fileOutputStream.writeSuspend(byteArray)
 
-    private fun FileOutputStream.writeIO(data: String): IO<Unit> =
-        writeIO(data.toByteArray(charset(UTF_8)))
+    private suspend fun FileOutputStream.writeSuspend(data: String): Either<Throwable, Unit> =
+        writeSuspend(data.toByteArray(charset(UTF_8)))
 
-    private fun FileOutputStream.writeIO(byteArray: ByteArray): IO<Unit> =
-        IO.fx { write(byteArray) }
+    private suspend fun FileOutputStream.writeSuspend(
+        byteArray: ByteArray
+    ): Either<Throwable, Unit> =
+        Either.catch {
+            // write the bytes on IO dispatcher
+            evalOn(Dispatchers.IO) { write(byteArray) }
+        }
 
 }

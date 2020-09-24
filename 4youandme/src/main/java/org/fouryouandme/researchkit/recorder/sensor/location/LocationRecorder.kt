@@ -9,16 +9,11 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.getOrElse
-import arrow.core.some
-import arrow.fx.IO
-import arrow.fx.extensions.fx
+import arrow.core.Either
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.Dispatchers
-import org.fouryouandme.core.ext.getOrFalse
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.evalOnIO
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
@@ -50,33 +45,33 @@ open class LocationRecorder(
     outputDirectory,
 ), LocationListener {
 
-    private var locationManager: Option<LocationManager> = None
+    private var locationManager: LocationManager? = null
 
     private var totalDistance = 0.0
-    private var firstLocation: Option<Location> = None
-    private var lastLocation: Option<Location> = None
+    private var firstLocation: Location? = null
+    private var lastLocation: Location? = null
 
-    override fun start(context: Context) {
+    override suspend fun start(context: Context): Unit {
         super.start(context)
 
         // reset location data
-        firstLocation = None
-        lastLocation = None
+        firstLocation = null
+        lastLocation = null
         totalDistance = 0.0
 
         // initialize location manager
-        if (locationManager.isEmpty())
+        if (locationManager == null)
             locationManager =
-                (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).some()
+                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
 
         // check if gps is enabled
         val isGpsProviderEnabled =
-            locationManager.map { it.isProviderEnabled(LocationManager.GPS_PROVIDER) }.getOrFalse()
+            locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
 
         if (!isGpsProviderEnabled) {
 
-            recorderListener.map {
+            recorderListener?.let {
                 val errorMsg =
                     "The app needs GPS enabled to record accurate location-based data"
                 it.onFail(this, IllegalStateException(errorMsg))
@@ -95,7 +90,7 @@ open class LocationRecorder(
 
             if (hasPerm != PackageManager.PERMISSION_GRANTED) {
 
-                recorderListener.map {
+                recorderListener?.let {
                     val errorMsg =
                         "The app needs location permissions to show accurate location-based data"
                     it.onFail(this, IllegalStateException(errorMsg))
@@ -109,105 +104,97 @@ open class LocationRecorder(
         // Let's just register for both and log all locations to the data file
         // with their corresponding accuracy and other data associated
         //startLocationTracking().unsafeRunAsync()
-        startLocationTracking().unsafeRunAsync()
+        startCoroutineAsync { startLocationTracking() }
         startJsonDataLogging()
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocationTracking(): IO<Unit> =
-        IO.fx {
-            continueOn(Dispatchers.Main)
-            val start =
-                IO.fx {
-                    continueOn(Dispatchers.Main)
-                    locationManager.map {
+    private suspend fun startLocationTracking(): Unit {
+
+        val start =
+            Either.catch {
+
+                evalOnMain {
+
+                    locationManager?.let {
 
                         it.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER,
                             minTime,
                             minDistance,
-                            this@LocationRecorder
+                            this
                         )
                         it.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             minTime,
                             minDistance,
-                            this@LocationRecorder
+                            this
                         )
                     }
-
-                }.attempt().bind()
-
-            start.fold(
-                {
-                    when (it) {
-                        is SecurityException ->
-                            Timber.tag(TAG)
-                                .e(it, "fail to request location update, ignore")
-                        is IllegalArgumentException ->
-                            Timber.tag(TAG)
-                                .e(it, "gps provider does not exist ${it.message}")
-                        else ->
-                            Timber.tag(TAG)
-                                .e(it, "can't start gps tracking ${it.message}")
-
-                    }
-
-                    Unit
-                },
-                { Unit }
-            )
-        }
-
-    private fun stopLocationListener(): IO<Unit> =
-        IO.fx {
-
-            val stop =
-                IO.fx { locationManager.map { it.removeUpdates(this@LocationRecorder) } }
-                    .attempt()
-                    .bind()
-
-            stop.mapLeft {
-                Timber.tag(TAG)
-                    .e(it, "fail to remove location listener")
+                }
             }
 
+        start.mapLeft {
+            when (it) {
+                is SecurityException ->
+                    Timber.tag(TAG)
+                        .e(it, "fail to request location update, ignore")
+                is IllegalArgumentException ->
+                    Timber.tag(TAG)
+                        .e(it, "gps provider does not exist ${it.message}")
+                else ->
+                    Timber.tag(TAG)
+                        .e(it, "can't start gps tracking ${it.message}")
+
+            }
+        }
+    }
+
+    private suspend fun stopLocationListener(): Unit {
+
+        val stop =
+            Either.catch { locationManager?.removeUpdates(this) }
+
+        stop.mapLeft {
+            Timber.tag(TAG)
+                .e(it, "fail to remove location listener")
         }
 
-    override fun stop() {
+    }
+
+    override suspend fun stop() {
         super.stop()
-        stopLocationListener().unsafeRunAsync()
+        stopLocationListener()
     }
 
     // locationListener methods
     override fun onLocationChanged(location: Location) {
 
-        recordLocationData(location).unsafeRunAsync()
+        startCoroutineAsync { recordLocationData(location) }
 
     }
 
-    private fun recordLocationData(location: Location): IO<Unit> =
-        IO.fx {
+    private suspend fun recordLocationData(location: Location): Unit {
 
-            continueOn(Dispatchers.IO)
+        evalOnIO {
 
             // Initialize first location
-            if (firstLocation.isEmpty()) firstLocation = location.some()
+            if (firstLocation == null) firstLocation = location
 
 
             // GPS coordinates
 
             // Subtract from the firstLocation to get relative coordinates.
             val relativeLatitude =
-                firstLocation.map { location.latitude - it.latitude }.getOrElse { 0.toDouble() }
+                firstLocation?.let { location.latitude - it.latitude } ?: 0.toDouble()
             val relativeLongitude =
-                firstLocation.map { location.longitude - it.longitude }.getOrElse { 0.toDouble() }
+                firstLocation?.let { location.longitude - it.longitude } ?: 0.toDouble()
 
-            lastLocation.map { totalDistance += it.distanceTo(location).toDouble() }
+            lastLocation?.let { totalDistance += it.distanceTo(location).toDouble() }
 
             val data =
                 LocationRecorderData(
-                    getCurrentRecordingTime().getOrElse { 0 },
+                    getCurrentRecordingTime() ?: 0,
                     LocationRecorderCoordinate(location.latitude, location.longitude),
                     LocationRecorderCoordinate(relativeLatitude, relativeLongitude),
                     location.accuracy,
@@ -219,13 +206,14 @@ open class LocationRecorder(
 
             val json = moshi.adapter(LocationRecorderData::class.java).toJson(data)
 
-            !onRecordDataCollected(data)
+            onRecordDataCollected(data)
 
-            !writeJsonObjectToFile(json)
+            writeJsonObjectToFile(json)
 
-            lastLocation = location.some()
+            lastLocation = location
 
         }
+    }
 
     override fun onStatusChanged(s: String, i: Int, bundle: Bundle) {
         Timber.tag(TAG).i(s)

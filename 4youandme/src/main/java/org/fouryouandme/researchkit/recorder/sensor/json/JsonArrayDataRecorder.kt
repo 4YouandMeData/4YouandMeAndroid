@@ -1,12 +1,13 @@
 package org.fouryouandme.researchkit.recorder.sensor.json
 
-import arrow.core.*
-import arrow.fx.IO
-import arrow.fx.extensions.fx
+import arrow.core.Either
+import arrow.core.flatMap
+import arrow.fx.coroutines.evalOn
 import arrow.fx.typeclasses.Disposable
 import kotlinx.coroutines.Dispatchers
-import org.fouryouandme.core.ext.accumulateError
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.evalOnIO
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.mapNull
 import org.fouryouandme.researchkit.recorder.Recorder
 import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.logger.DataLogger
@@ -30,60 +31,34 @@ abstract class JsonArrayDataRecorder(
 
     private var isFirstJsonObject = false
 
-    private var writing: Option<Disposable> = None
+    private var writing: Disposable? = null
     private val file = File(outputDirectory, uniqueFilename + JSON_FILE_SUFFIX)
-    private var fileOutputStream: Option<FileOutputStream> = None
+    private var fileOutputStream: FileOutputStream? = null
 
-    fun startJsonDataLogging(): Unit =
-        IO.fx {
+    suspend fun startJsonDataLogging(): Unit {
 
-            isRecording = true
-            isFirstJsonObject = true
+        isRecording = true
+        isFirstJsonObject = true
 
-            val write =
-                openStream()
-                    .attempt()
-                    .bind()
-                    .map { DataLogger.write(it, "[") }
-                    .accumulateError(fx)
-                    .bind()
+        val write =
+            evalOnIO { openStream().flatMap { DataLogger.write(it, "[") } }
 
+        if (write is Either.Left)
+            evalOnMain { recorderListener?.onFail(this, write.a) }
 
-            continueOn(Dispatchers.Main)
-            when (write) {
+    }
 
-                is Either.Left ->
-                    recorderListener.map {
-                        it.onFail(this@JsonArrayDataRecorder, write.a)
-                    }
-                is Either.Right -> Unit
-
-            }
-
-
-        }.unsafeRunAsync()
-
-    private fun stopJsonDataLogging(): IO<Unit> =
-        IO.fx {
-
+    private suspend fun stopJsonDataLogging(): Unit {
+        evalOnIO {
             isRecording = false
 
             val write =
-                openStream()
-                    .attempt()
-                    .bind()
-                    .map { DataLogger.write(it, "]") }
-                    .accumulateError(fx)
-                    .bind()
+                openStream().flatMap { DataLogger.write(it, "]") }
 
-            // switch to main thread before invoke the listener
-            continueOn(Dispatchers.Main)
             when (write) {
 
                 is Either.Left ->
-                    recorderListener.map {
-                        it.onFail(this@JsonArrayDataRecorder, write.a)
-                    }
+                    evalOnMain { recorderListener?.onFail(this, write.a) }
                 is Either.Right -> {
 
                     val fileResult =
@@ -91,26 +66,23 @@ abstract class JsonArrayDataRecorder(
                             fileResultIdentifier(),
                             file,
                             JSON_MIME_CONTENT_TYPE,
-                            Instant.ofEpochMilli(startTime.getOrElse { 0 }).atZone(ZoneOffset.UTC),
-                            Instant.ofEpochMilli(endTime.getOrElse { 0 }).atZone(ZoneOffset.UTC)
+                            Instant.ofEpochMilli(startTime ?: 0).atZone(ZoneOffset.UTC),
+                            Instant.ofEpochMilli(endTime ?: 0).atZone(ZoneOffset.UTC)
                         )
 
-                    recorderListener.map {
-                        //TODO: Handle result
-                        //it.onComplete(this@JsonArrayDataRecorder, fileResult)
-                    }
+
+                    //TODO: Handle result
+                    //it.onComplete(this@JsonArrayDataRecorder, fileResult)
 
                 }
             }
-            // return to IO thread
-            continueOn(Dispatchers.IO)
-
         }
 
-    fun writeJsonObjectToFile(json: String): IO<Unit> =
-        IO.fx {
+    }
 
-            continueOn(Dispatchers.IO)
+    suspend fun writeJsonObjectToFile(json: String): Unit {
+
+        evalOnIO {
             // append optional comma for array separation
             val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
 
@@ -118,63 +90,61 @@ abstract class JsonArrayDataRecorder(
 
             val write =
                 openStream()
-                    .attempt()
-                    .bind()
-                    .map { DataLogger.write(it, jsonString) }
-                    .accumulateError(fx)
-                    .bind()
-                    .map { }
+                    .flatMap { DataLogger.write(it, jsonString) }
 
             when (write) {
 
                 is Either.Left ->
-                    recorderListener.map {
-                        it.onFail(this@JsonArrayDataRecorder, write.a)
+                    evalOnMain {
+                        recorderListener?.onFail(this@JsonArrayDataRecorder, write.a)
                     }
                 is Either.Right ->
                     isFirstJsonObject = false
             }
-
-            Unit
-
         }
 
-    private fun openStream(): IO<FileOutputStream> =
-        IO.fx {
+    }
 
-            if (!file.exists()) file.createNewFile()
+    private suspend fun openStream(): Either<Throwable, FileOutputStream> =
+        Either.catch {
 
-            fileOutputStream.getOrElse {
+            evalOn(Dispatchers.IO) {
 
-                val fos = FileOutputStream(file, true)
-                fileOutputStream = fos.some()
-                fos
+                if (!file.exists()) file.createNewFile()
+
+                fileOutputStream.mapNull {
+
+                    val fos = FileOutputStream(file, true)
+                    fileOutputStream = fos
+                    fos
+
+                }
 
             }
         }
 
-    private fun deleteFileAndClose(): IO<Unit> =
-        IO.fx {
+    private suspend fun deleteFileAndClose(): Unit {
 
-            !IO.fx {
+        Either.catch {
+
+            evalOn(Dispatchers.IO) {
                 file.delete()
-                fileOutputStream.map { it.close() }
-            }.attempt()
-
-            Unit
-
+                fileOutputStream?.close()
+            }
         }
-
-    override fun cancel() {
-
-        writing.map { it() }
-        deleteFileAndClose().unsafeRunAsync()
 
     }
 
-    override fun stop() {
+    override suspend fun cancel(): Unit {
 
-        stopJsonDataLogging().unsafeRunAsync()
+        writing?.invoke()
+        deleteFileAndClose()
+
+    }
+
+    override suspend fun stop(): Unit {
+
+        stopJsonDataLogging()
 
     }
 
