@@ -46,7 +46,6 @@ open class DeviceMotionRecorder internal constructor(
     identifier,
     step,
     outputDirectory,
-    30000
 ) {
 
     companion object {

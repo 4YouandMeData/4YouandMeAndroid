@@ -83,23 +83,27 @@ abstract class JsonArrayDataRecorder(
     suspend fun writeJsonObjectToFile(json: String): Unit {
 
         evalOnIO {
-            // append optional comma for array separation
-            val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
 
-            val jsonString = "$jsonSeparator${json}"
+            if (isRecording) {
 
-            val write =
-                openStream()
-                    .flatMap { DataLogger.write(it, jsonString) }
+                // append optional comma for array separation
+                val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
 
-            when (write) {
+                val jsonString = "$jsonSeparator${json}"
 
-                is Either.Left ->
-                    evalOnMain {
-                        recorderListener?.onFail(this@JsonArrayDataRecorder, write.a)
-                    }
-                is Either.Right ->
-                    isFirstJsonObject = false
+                val write =
+                    openStream()
+                        .flatMap { DataLogger.write(it, jsonString) }
+
+                when (write) {
+
+                    is Either.Left ->
+                        evalOnMain {
+                            recorderListener?.onFail(this@JsonArrayDataRecorder, write.a)
+                        }
+                    is Either.Right ->
+                        isFirstJsonObject = false
+                }
             }
         }
 

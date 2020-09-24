@@ -80,7 +80,7 @@ sealed class Task(
                     recorderConfigurations = listOf(
                         PedometerRecorderConfig(moshi),
                         //AccelerometerRecorderConfig(moshi, 100.toDouble()),
-                        DeviceMotionRecorderConfig(moshi, 100.toDouble()),
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
                         //LocationRecorderConfig(moshi)
                     ),
                     spokenInstruction = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.",
@@ -88,14 +88,14 @@ sealed class Task(
                     shouldVibrateOnFinish = true
 
                 ),
-                Step.SensorStep(
+                /*Step.SensorStep(
                     identifier = "active_step_turn",
                     configuration = configuration,
                     title = "Gait and Balance",
                     description = "Turn in a full circle and then stand still for 30 seconds",
                     target = Step.SensorRecorderTarget.Steps(10),
                     recorderConfigurations = listOf(
-                        PedometerRecorderConfig(moshi),
+                        //PedometerRecorderConfig(moshi),
                         //AccelerometerRecorderConfig(moshi, 100.toDouble()),
                         //DeviceMotionRecorderConfig(moshi, 100.toDouble()),
                         //LocationRecorderConfig(moshi)
@@ -104,7 +104,7 @@ sealed class Task(
                     shouldPlaySoundOnFinish = true,
                     shouldVibrateOnFinish = true
 
-                ),
+                ),*/
                 Step.IntroductionStep(
                     "introduction_completed",
                     configuration,
