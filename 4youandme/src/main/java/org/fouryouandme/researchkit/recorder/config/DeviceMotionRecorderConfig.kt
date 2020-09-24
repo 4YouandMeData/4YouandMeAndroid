@@ -17,6 +17,12 @@ class DeviceMotionRecorderConfig(
 ) : RecorderConfig("device_motion") {
 
     override fun recorderForStep(step: Step, outputDirectory: File): Recorder =
-        DeviceMotionRecorder(frequency, identifier, step, outputDirectory, moshi)
+        DeviceMotionRecorder(
+            frequency,
+            identifier,
+            step,
+            File(outputDirectory, "device_motion"),
+            moshi
+        )
 
 }

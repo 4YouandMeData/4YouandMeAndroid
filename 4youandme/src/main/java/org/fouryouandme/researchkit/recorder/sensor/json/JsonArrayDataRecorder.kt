@@ -114,7 +114,10 @@ abstract class JsonArrayDataRecorder(
 
             evalOn(Dispatchers.IO) {
 
-                if (!file.exists()) file.createNewFile()
+                if (outputDirectory.exists().not())
+                    outputDirectory.mkdirs()
+
+                if (file.exists().not()) file.createNewFile()
 
                 fileOutputStream.mapNull {
 

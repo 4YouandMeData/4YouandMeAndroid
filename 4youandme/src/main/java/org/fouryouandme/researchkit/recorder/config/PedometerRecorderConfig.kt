@@ -10,6 +10,11 @@ import java.io.File
 class PedometerRecorderConfig(val moshi: Moshi) : RecorderConfig("pedometer") {
 
     override fun recorderForStep(step: Step, outputDirectory: File): Recorder =
-        PedometerRecorder(identifier, step, outputDirectory, moshi)
+        PedometerRecorder(
+            identifier,
+            step,
+            File(outputDirectory, "pedometer"),
+            moshi
+        )
 
 }

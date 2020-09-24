@@ -84,6 +84,8 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
         step: Step.SensorStep
     ): Unit {
 
+        clearFolder()
+
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
 
         title.text = step.title
@@ -96,10 +98,20 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
     }
 
+    private fun clearFolder(): Unit {
+
+        val dir = getOutputDirectory()
+
+        if (dir.exists())
+            dir.deleteRecursively()
+
+    }
+
     /**
      * @return directory for outputting data logger files
      */
-    private fun getOutputDirectory(): File = requireContext().applicationContext.filesDir
+    private fun getOutputDirectory(): File =
+        File("${requireContext().applicationContext.filesDir.absolutePath}/sensors")
 
     override fun onDestroy() {
 
