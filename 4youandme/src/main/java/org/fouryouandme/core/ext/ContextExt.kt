@@ -39,3 +39,6 @@ val Context.imageConfiguration: ImageConfiguration
 
 fun Context.errorToast(message: String): Unit =
     Toasty.error(this, message, Toast.LENGTH_LONG).show()
+
+fun Context.infoToast(message: String): Unit =
+    Toasty.info(this, message, Toast.LENGTH_LONG).show()

@@ -7,16 +7,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.HandlerThread
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.some
 import arrow.core.toOption
-import arrow.fx.IO
-import arrow.fx.extensions.fx
-import kotlinx.coroutines.Dispatchers
-import org.fouryouandme.core.ext.orJustUnit
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.evalOnIO
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
+import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.step.Step
 import timber.log.Timber
 import java.io.File
@@ -36,9 +31,7 @@ import java.io.File
  *
  */
 abstract class SensorRecorder(
-    /**
-     *
-     */
+    thread: String,
     private val frequency: Double,
     identifier: String,
     step: Step,
@@ -49,11 +42,11 @@ abstract class SensorRecorder(
     outputDirectory
 ), SensorEventListener {
 
-    private var sensorManager: Option<SensorManager> = None
+    private var sensorManager: SensorManager? = null
     private var sensorList: MutableList<Sensor> = mutableListOf()
     private var timestampZeroReferenceNanos: Long = 0
 
-    private val handler = HandlerThread("sensor_thread")
+    private val handler = HandlerThread(thread)
 
     private val sensorHandler by lazy { Handler(handler.looper) }
 
@@ -71,23 +64,20 @@ abstract class SensorRecorder(
      */
     protected abstract fun getSensorTypeList(availableSensorList: List<Sensor>): List<Int>
 
-    override fun start(context: Context): Unit {
+    override suspend fun start(context: Context): Unit {
 
-        super.start(context)
+        startSensorRecording(context)
 
-        startSensorRecording(context).unsafeRunAsync()
     }
 
-    private fun startSensorRecording(context: Context): IO<Unit> =
-        IO.fx {
-
-            continueOn(Dispatchers.IO)
+    private suspend fun startSensorRecording(context: Context): Unit {
+        evalOnIO {
             sensorManager =
-                (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager).some()
+                (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
 
             var anySucceeded = false
 
-            sensorManager.map { sm ->
+            sensorManager?.let { sm ->
 
                 val availableSensorList = sm.getSensorList(Sensor.TYPE_ALL)
 
@@ -99,14 +89,14 @@ abstract class SensorRecorder(
                             val success =
                                 if (isManualFrequency)
                                     sm.registerListener(
-                                        this@SensorRecorder,
+                                        this,
                                         it,
                                         SensorManager.SENSOR_DELAY_FASTEST,
                                         sensorHandler
                                     )
                                 else
                                     sm.registerListener(
-                                        this@SensorRecorder,
+                                        this,
                                         it,
                                         calculateDelayBetweenSamplesInMicroSeconds(),
                                         sensorHandler
@@ -125,50 +115,43 @@ abstract class SensorRecorder(
             }
 
             if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
-            else super.startJsonDataLogging()
+            else super.start(context)
 
         }
+    }
 
     override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
 
-        IO.fx {
-
-            continueOn(Dispatchers.IO)
-
-            recordSensorEvent(sensorEvent)
-                .bind()
-                .map { writeJsonObjectToFile(it) }
-                .orJustUnit()
-                .bind()
-
-        }.unsafeRunAsync()
-
+        startCoroutineAsync {
+            recordSensorEvent(sensorEvent)?.let { writeJsonObjectToFile(it) }
+        }
     }
 
     /***
      * This method receives a SensorEvent and is expected to receive a RecorderData json.
      * @param sensorEvent
      */
-    abstract fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>>
+    abstract suspend fun recordSensorEvent(sensorEvent: SensorEvent): String?
 
-    override fun stop() {
-        super.stop()
+    override suspend fun stop(): FileResult? {
 
         if (handler.isAlive) handler.quitSafely()
 
         sensorList.forEach { sensor ->
-            sensorManager.map { it.unregisterListener(this, sensor) }
+            sensorManager?.unregisterListener(this, sensor)
         }
+
+        return super.stop()
 
     }
 
-    override fun cancel() {
+    override suspend fun cancel() {
         super.cancel()
 
         if (handler.isAlive) handler.quitSafely()
 
         sensorList.forEach { sensor ->
-            sensorManager.map { it.unregisterListener(this, sensor) }
+            sensorManager?.unregisterListener(this, sensor)
         }
     }
 

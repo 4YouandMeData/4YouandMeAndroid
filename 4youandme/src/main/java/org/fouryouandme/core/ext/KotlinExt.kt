@@ -1,5 +1,8 @@
 package org.fouryouandme.core.ext
 
+import arrow.core.Tuple2
+import arrow.core.toT
+
 fun <T, A> T?.fold(nullAction: () -> A, validAction: (T) -> A): A =
     if (this == null)
         nullAction()
@@ -12,7 +15,9 @@ suspend fun <T, A> T?.foldSuspend(nullAction: suspend () -> A, validAction: susp
     else
         validAction(this)
 
-inline fun <T1, T2, A> mapNotNull(one: T1?, two: T2?, block: (T1, T2) -> A): A? =
-    if (one != null && two != null) block(one, two)
+fun <T> T?.mapNull(block: () -> T): T = this ?: block()
+
+fun <T1, T2> mapNotNull(one: T1?, two: T2?): Tuple2<T1, T2>? =
+    if (one != null && two != null) one toT two
     else null
 

@@ -18,7 +18,7 @@ class LocationRecorderConfig(
         LocationRecorder(
             identifier,
             step,
-            outputDirectory,
+            File(outputDirectory, "location"),
             moshi,
             minTime,
             minDistance,

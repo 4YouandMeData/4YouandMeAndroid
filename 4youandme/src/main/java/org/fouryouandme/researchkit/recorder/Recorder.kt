@@ -1,18 +1,11 @@
 package org.fouryouandme.researchkit.recorder
 
 import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.MutableLiveData
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.some
-import arrow.core.toOption
-import arrow.fx.IO
-import arrow.fx.extensions.fx
-import kotlinx.coroutines.Dispatchers
+import org.fouryouandme.core.arch.livedata.Event
+import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.researchkit.recorder.sensor.RecorderData
-import org.fouryouandme.researchkit.result.Result
+import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.step.Step
 import java.io.File
 import java.util.*
@@ -76,7 +69,9 @@ abstract class Recorder(
     /**
      * live data the emit e RecorderData, which represents a data recorded by the recorder
      */
-    protected val recorderLiveData: MutableLiveData<RecorderData> = MutableLiveData()
+    private val recorderLiveData: MutableLiveData<Event<RecorderData>> = MutableLiveData()
+
+    fun liveData(): MutableLiveData<Event<RecorderData>> = recorderLiveData
 
     /**
      * A unique filename for this Recorder
@@ -86,7 +81,7 @@ abstract class Recorder(
     /**
      * The configuration that produced this recorder.
      */
-    var config: Option<RecorderConfig> = None
+    var config: RecorderConfig? = null
         protected set
 
     /**
@@ -100,17 +95,17 @@ abstract class Recorder(
     /**
      * Used to communicate with the listener if the recording completed successfully or failed
      */
-    var recorderListener: Option<RecorderListener> = None
+    var recorderListener: RecorderListener? = null
 
     /**
      * Timestamp indicating when the recorder started recording
      */
-    var startTime: Option<Long> = None
+    var startTime: Long? = null
 
     /**
      * Timestamp indicating when the recorder ended recording
      */
-    var endTime: Option<Long> = None
+    var endTime: Long? = null
 
 
     init {
@@ -127,12 +122,7 @@ abstract class Recorder(
      *
      * @param context can be app or activity, used for starting sensor
      */
-    open fun start(context: Context) {
-
-        startTime = 0L.some()
-        endTime = None
-
-    }
+    abstract suspend fun start(context: Context)
 
     /**
      * Stops data recording, which generally triggers the return of results.
@@ -141,11 +131,7 @@ abstract class Recorder(
      * If an error occurs when stopping the recorder, it is returned through the delegate.
      * Subclasses should call `finishRecordingWithError:` rather than calling super.
      */
-    open fun stop() {
-
-        endTime = System.currentTimeMillis().some()
-
-    }
+    abstract suspend fun stop(): FileResult?
 
     /**
      * A cancel will cause this recorder to be immediately stopped,
@@ -154,34 +140,18 @@ abstract class Recorder(
      *
      * Also, no callback will be invoked
      */
-    abstract fun cancel()
+    abstract suspend fun cancel()
 
-    fun onRecordDataCollected(data: RecorderData): IO<Unit> =
-        IO.fx {
-
-            // set the live data value on the main thread and return to IO
-            continueOn(Dispatchers.Main)
-            recorderLiveData.value = data
-            continueOn(Dispatchers.IO)
-
-        }
-
-    protected fun onRecorderCompleted(result: Result): Unit {
-        recorderListener.map { it.onComplete(this, result) }
-    }
+    suspend fun onRecordDataCollected(data: RecorderData): Unit =
+        // set the live data value on the main thread
+        recorderLiveData.postValue(data.toEvent())
 
     protected fun onRecorderFailed(error: String): Unit {
-        recorderListener.map { it.onFail(this, Throwable(error)) }
+        recorderListener?.onFail(this, Throwable(error))
     }
 
     protected fun onRecorderFailed(throwable: Throwable): Unit {
-        recorderListener.map { it.onFail(this, throwable) }
-    }
-
-    protected fun sendBroadcast(intent: Intent): Unit {
-        recorderListener
-            .flatMap { it.broadcastContext.toOption() }
-            .map { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
+        recorderListener?.onFail(this, throwable)
     }
 
     private fun generateUniqueFileName(): String = UUID.randomUUID().toString()
@@ -191,6 +161,6 @@ abstract class Recorder(
      */
     fun fileResultIdentifier(): String = identifier + "_" + step.identifier
 
-    fun getCurrentRecordingTime(): Option<Long> = startTime.map { System.currentTimeMillis() - it }
+    fun getCurrentRecordingTime(): Long? = startTime?.let { System.currentTimeMillis() - it }
 
 }

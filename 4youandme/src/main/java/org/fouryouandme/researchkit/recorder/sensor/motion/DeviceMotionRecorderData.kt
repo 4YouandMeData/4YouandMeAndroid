@@ -1,6 +1,7 @@
 package org.fouryouandme.researchkit.recorder.sensor.motion
 
 import com.squareup.moshi.Moshi
+import org.fouryouandme.core.ext.evalOnIO
 import org.fouryouandme.researchkit.recorder.sensor.RecorderData
 
 sealed class DeviceMotionRecorderData(
@@ -19,9 +20,11 @@ sealed class DeviceMotionRecorderData(
         val z: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(AccelerometerJson::class.java)
-                .toJson(AccelerometerJson.from(this))
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(AccelerometerJson::class.java)
+                    .toJson(AccelerometerJson.from(this))
+            }
     }
 
     class LinearAccelerometer(
@@ -33,10 +36,11 @@ sealed class DeviceMotionRecorderData(
         val z: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(LinearAccelerometerJson::class.java)
-                .toJson(LinearAccelerometerJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(LinearAccelerometerJson::class.java)
+                    .toJson(LinearAccelerometerJson.from(this))
+            }
     }
 
     class Gravity(
@@ -48,10 +52,11 @@ sealed class DeviceMotionRecorderData(
         val z: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(GravityJson::class.java)
-                .toJson(GravityJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(GravityJson::class.java)
+                    .toJson(GravityJson.from(this))
+            }
     }
 
     class RotationVector(
@@ -65,10 +70,11 @@ sealed class DeviceMotionRecorderData(
         val w: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(RotationVectorJson::class.java)
-                .toJson(RotationVectorJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(RotationVectorJson::class.java)
+                    .toJson(RotationVectorJson.from(this))
+            }
     }
 
     class GameRotationVector(
@@ -82,10 +88,11 @@ sealed class DeviceMotionRecorderData(
         val w: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(GameRotationVectorJson::class.java)
-                .toJson(GameRotationVectorJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(GameRotationVectorJson::class.java)
+                    .toJson(GameRotationVectorJson.from(this))
+            }
     }
 
     class GeomagneticRotationVector(
@@ -99,10 +106,11 @@ sealed class DeviceMotionRecorderData(
         val w: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(GeomagneticRotationVectorJson::class.java)
-                .toJson(GeomagneticRotationVectorJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(GeomagneticRotationVectorJson::class.java)
+                    .toJson(GeomagneticRotationVectorJson.from(this))
+            }
     }
 
     class Gyroscope(
@@ -114,10 +122,11 @@ sealed class DeviceMotionRecorderData(
         val z: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(GyroscopeJson::class.java)
-                .toJson(GyroscopeJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(GyroscopeJson::class.java)
+                    .toJson(GyroscopeJson.from(this))
+            }
     }
 
     class Uncalibrated(
@@ -132,10 +141,11 @@ sealed class DeviceMotionRecorderData(
         val zBias: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(UncalibratedJson::class.java)
-                .toJson(UncalibratedJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(UncalibratedJson::class.java)
+                    .toJson(UncalibratedJson.from(this))
+            }
     }
 
     class MagneticField(
@@ -147,10 +157,11 @@ sealed class DeviceMotionRecorderData(
         val z: Float,
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
-        fun toJson(moshi: Moshi): String =
-            moshi.adapter(MagneticFieldJson::class.java)
-                .toJson(MagneticFieldJson.from(this))
-
+        suspend fun toJson(moshi: Moshi): String =
+            evalOnIO {
+                moshi.adapter(MagneticFieldJson::class.java)
+                    .toJson(MagneticFieldJson.from(this))
+            }
     }
 
 }

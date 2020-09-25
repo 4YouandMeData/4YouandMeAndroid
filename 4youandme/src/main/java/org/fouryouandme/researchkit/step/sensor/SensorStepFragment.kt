@@ -5,10 +5,12 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.step_sensor.*
 import org.fouryouandme.R
+import org.fouryouandme.core.ext.infoToast
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.recorder.RecorderService
 import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
 import org.fouryouandme.researchkit.recorder.RecordingState
+import org.fouryouandme.researchkit.recorder.SensorData
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.tasks.TaskStateUpdate
@@ -25,22 +27,38 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
                 step?.let {
 
-                    binder.bind(getOutputDirectory(), step, viewModel.state().task)
+                    startCoroutineAsync {
+                        binder.bind(getOutputDirectory(), step, viewModel.state().task)
+                    }
 
                     binder.stateLiveData()
-                        .observeEvent(SensorStepFragment::class.java.simpleName) {
+                        .observeEvent(SensorStepFragment::class.java.simpleName) { state ->
 
-                            when (it) {
+                            when (state) {
+                                is RecordingState.ResultCollected ->
+                                    if (state.stepIdentifier == step.identifier)
+                                        startCoroutineAsync {
+                                            state.files.forEach { viewModel.addResult(it) }
+                                        }
                                 is RecordingState.Completed ->
-                                    if (it.stepIdentifier == step.identifier)
+                                    if (state.stepIdentifier == step.identifier)
                                         startCoroutineAsync { next() }
                                 is RecordingState.Failure ->
-                                    if (it.stepIdentifier == step.identifier)
+                                    if (state.stepIdentifier == step.identifier)
                                         Toast.makeText(
                                             requireContext(),
                                             "Fallito",
                                             Toast.LENGTH_LONG
                                         ).show()
+                            }
+
+                        }
+
+                    binder.sensorLiveData()
+                        .observeEvent(SensorStepFragment::class.java.simpleName) {
+
+                            when (it) {
+                                is SensorData.Steps -> infoToast("steps: ${it.steps}")
                             }
 
                         }
@@ -51,7 +69,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                     .observeEvent(SensorStepFragment::class.java.simpleName) {
                         when (it) {
                             is TaskStateUpdate.Cancelled ->
-                                if (it.isCancelled) binder.stop()
+                                if (it.isCancelled) startCoroutineAsync { binder.stop() }
                         }
                     }
             },
@@ -71,6 +89,8 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
         step: Step.SensorStep
     ): Unit {
 
+        clearFolder()
+
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
 
         title.text = step.title
@@ -83,10 +103,20 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
     }
 
+    private fun clearFolder(): Unit {
+
+        val dir = getOutputDirectory()
+
+        if (dir.exists())
+            dir.deleteRecursively()
+
+    }
+
     /**
      * @return directory for outputting data logger files
      */
-    private fun getOutputDirectory(): File = requireContext().applicationContext.filesDir
+    private fun getOutputDirectory(): File =
+        File("${requireContext().applicationContext.filesDir.absolutePath}/sensors")
 
     override fun onDestroy() {
 

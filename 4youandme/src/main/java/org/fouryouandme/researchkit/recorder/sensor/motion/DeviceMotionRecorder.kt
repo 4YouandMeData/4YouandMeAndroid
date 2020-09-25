@@ -4,9 +4,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorManager
 import android.os.Build
-import arrow.core.*
-import arrow.fx.IO
-import arrow.fx.extensions.fx
+import arrow.core.Tuple2
+import arrow.core.toT
 import com.squareup.moshi.Moshi
 import org.fouryouandme.researchkit.recorder.sensor.SensorRecorder
 import org.fouryouandme.researchkit.step.Step
@@ -42,6 +41,7 @@ open class DeviceMotionRecorder internal constructor(
     outputDirectory: File,
     private val moshi: Moshi,
 ) : SensorRecorder(
+    "device_motion_thread",
     frequency,
     identifier,
     step,
@@ -124,62 +124,60 @@ open class DeviceMotionRecorder internal constructor(
         return sensorTypeList
     }
 
-    override fun recordSensorEvent(sensorEvent: SensorEvent): IO<Option<String>> =
-        IO.fx {
+    override suspend fun recordSensorEvent(sensorEvent: SensorEvent): String? {
 
-            val sensorType = sensorEvent.sensor.type
-            val sensorTypeKey = sensorTypeToDataType()[sensorType].toOption()
+        val sensorType = sensorEvent.sensor.type
+        val sensorTypeKey = sensorTypeToDataType()[sensorType]
 
-            val sensorData =
-                sensorTypeKey.flatMap {
+        val sensorData =
+            sensorTypeKey?.let {
 
-                    when (sensorType) {
-                        Sensor.TYPE_ACCELEROMETER ->
-                            recordAccelerometerEvent(it, sensorEvent).some()
-                        Sensor.TYPE_GRAVITY ->
-                            recordGravityEvent(it, sensorEvent).some()
+                when (sensorType) {
+                    Sensor.TYPE_ACCELEROMETER ->
+                        recordAccelerometerEvent(it, sensorEvent)
+                    Sensor.TYPE_GRAVITY ->
+                        recordGravityEvent(it, sensorEvent)
                         Sensor.TYPE_LINEAR_ACCELERATION ->
-                            recordLinearAccelerometerEvent(it, sensorEvent).some()
+                            recordLinearAccelerometerEvent(it, sensorEvent)
                         Sensor.TYPE_GYROSCOPE ->
-                            recordGyroscope(it, sensorEvent).some()
+                            recordGyroscope(it, sensorEvent)
                         Sensor.TYPE_MAGNETIC_FIELD ->
-                            recordMagneticField(it, sensorEvent).some()
+                            recordMagneticField(it, sensorEvent)
                         Sensor.TYPE_GYROSCOPE_UNCALIBRATED,
                         Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED,
                         Sensor.TYPE_ACCELEROMETER_UNCALIBRATED ->
-                            recordUncalibrated(it, sensorEvent).some()
+                            recordUncalibrated(it, sensorEvent)
                         Sensor.TYPE_GAME_ROTATION_VECTOR ->
-                            recordGameRotationVector(it, sensorEvent).some()
+                            recordGameRotationVector(it, sensorEvent)
                         Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR ->
-                            recordGeomagneticRotationVector(it, sensorEvent).some()
+                            recordGeomagneticRotationVector(it, sensorEvent)
                         Sensor.TYPE_ROTATION_VECTOR ->
-                            recordRotationVector(it, sensorEvent).some()
+                            recordRotationVector(it, sensorEvent)
                         else -> {
                             Timber.e("Unable to record sensor type: $sensorType")
-                            None
+                            null
                         }
                     }
 
                 }
 
-            if (sensorData.isEmpty())
+            if (sensorData == null)
                 Timber.e("Unable find type key for sensor type: $sensorType")
 
-            //sensorData.map { onRecordDataCollected(it.a) }.orJustUnit().bind()
+        return sensorData?.b
 
-            sensorData.map { it.b }
         }
 
     /**
      * @see [Sensor Types: Accelerometer]
      * (https://source.android.com/devices/sensors/sensor-types.accelerometer)
      */
-    private fun recordAccelerometerEvent(
+    private suspend fun recordAccelerometerEvent(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.Accelerometer, String> =
         DeviceMotionRecorderData.Accelerometer(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             x = sensorEvent.values[0] / GRAVITY_SI_CONVERSION,
@@ -191,13 +189,13 @@ open class DeviceMotionRecorder internal constructor(
      * @see [Sensor Types: Accelerometer]
      * (https://source.android.com/devices/sensors/sensor-types.linear_acceleration)
      */
-    private fun recordLinearAccelerometerEvent(
+    private suspend fun recordLinearAccelerometerEvent(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.LinearAccelerometer, String> =
         // acceleration = gravity + linear-acceleration
         DeviceMotionRecorderData.LinearAccelerometer(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             x = sensorEvent.values[0] / GRAVITY_SI_CONVERSION,
@@ -210,12 +208,12 @@ open class DeviceMotionRecorder internal constructor(
      * @see [Sensor Types: Gravity ]
      * (https://source.android.com/devices/sensors/sensor-types.gravity)
      */
-    private fun recordGravityEvent(
+    private suspend fun recordGravityEvent(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.Gravity, String> =
         DeviceMotionRecorderData.Gravity(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             x = sensorEvent.values[0] / GRAVITY_SI_CONVERSION,
@@ -228,13 +226,13 @@ open class DeviceMotionRecorder internal constructor(
      * @see [https://source.android.com/devices/sensors/sensor-types.rotation_vector]
      * (https://source.android.com/devices/sensors/sensor-types.attitude_composite_sensors)
      * */
-    private fun recordRotationVector(
+    private suspend fun recordRotationVector(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.RotationVector, String> =
 
         DeviceMotionRecorderData.RotationVector(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.values[4].roundToInt(),
             referenceCoordinate = "zUp",
@@ -252,13 +250,13 @@ open class DeviceMotionRecorder internal constructor(
      * Sensor.TYPE_GAME_ROTATION_VECTOR  no magnetometer
      * @see [https://source.android.com/devices/sensors/sensor-types.game_rotation_vector]
      */
-    private fun recordGameRotationVector(
+    private suspend fun recordGameRotationVector(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.GameRotationVector, String> =
 
         DeviceMotionRecorderData.GameRotationVector(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             referenceCoordinate = "zUp",
@@ -277,13 +275,13 @@ open class DeviceMotionRecorder internal constructor(
      * magnetometer and no gyroscope
      * @see [https://source.android.com/devices/sensors/sensor-types.geomagnetic_rotation_vector]
      */
-    private fun recordGeomagneticRotationVector(
+    private suspend fun recordGeomagneticRotationVector(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.GeomagneticRotationVector, String> =
 
         DeviceMotionRecorderData.GeomagneticRotationVector(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.values[4].roundToInt(),
             referenceCoordinate = "zUp",
@@ -297,12 +295,12 @@ open class DeviceMotionRecorder internal constructor(
             w = sensorEvent.values[3],
         ).tupleWithJson()
 
-    private fun recordGyroscope(
+    private suspend fun recordGyroscope(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.Gyroscope, String> =
         DeviceMotionRecorderData.Gyroscope(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             x = sensorEvent.values[0],
@@ -311,13 +309,13 @@ open class DeviceMotionRecorder internal constructor(
         ).tupleWithJson()
 
     // used for uncalibrated gyroscope, uncalibrated accelerometer, and uncalibrated magnetic field
-    private fun recordUncalibrated(
+    private suspend fun recordUncalibrated(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.Uncalibrated, String> =
         // conceptually: _uncalibrated  = _calibrated + _bias.
         DeviceMotionRecorderData.Uncalibrated(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             xUncalibrated = sensorEvent.values[0],
@@ -328,12 +326,12 @@ open class DeviceMotionRecorder internal constructor(
             zBias = sensorEvent.values[5]
         ).tupleWithJson()
 
-    private fun recordMagneticField(
+    private suspend fun recordMagneticField(
         sensorType: String,
         sensorEvent: SensorEvent
     ): Tuple2<DeviceMotionRecorderData.MagneticField, String> =
         DeviceMotionRecorderData.MagneticField(
-            getCurrentRecordingTime().getOrElse { 0 },
+            getCurrentRecordingTime() ?: 0,
             sensorType,
             sensorEvent.accuracy,
             x = sensorEvent.values[0],
@@ -345,7 +343,8 @@ open class DeviceMotionRecorder internal constructor(
         // no-op
     }
 
-    private inline fun <reified T : DeviceMotionRecorderData> T.tupleWithJson(): Tuple2<T, String> =
+    private suspend inline fun <reified T : DeviceMotionRecorderData> T.tupleWithJson(
+    ): Tuple2<T, String> =
         this toT when (this) {
             is DeviceMotionRecorderData.Accelerometer -> this.toJson(moshi)
             is DeviceMotionRecorderData.GameRotationVector -> this.toJson(moshi)

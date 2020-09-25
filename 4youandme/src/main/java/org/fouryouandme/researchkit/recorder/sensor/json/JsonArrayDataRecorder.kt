@@ -1,12 +1,14 @@
 package org.fouryouandme.researchkit.recorder.sensor.json
 
-import arrow.core.*
-import arrow.fx.IO
-import arrow.fx.extensions.fx
+import android.content.Context
+import arrow.core.Either
+import arrow.core.flatMap
+import arrow.fx.coroutines.evalOn
 import arrow.fx.typeclasses.Disposable
 import kotlinx.coroutines.Dispatchers
-import org.fouryouandme.core.ext.accumulateError
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.ext.evalOnIO
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.mapNull
 import org.fouryouandme.researchkit.recorder.Recorder
 import org.fouryouandme.researchkit.result.FileResult
 import org.fouryouandme.researchkit.result.logger.DataLogger
@@ -30,151 +32,129 @@ abstract class JsonArrayDataRecorder(
 
     private var isFirstJsonObject = false
 
-    private var writing: Option<Disposable> = None
+    private var writing: Disposable? = null
     private val file = File(outputDirectory, uniqueFilename + JSON_FILE_SUFFIX)
-    private var fileOutputStream: Option<FileOutputStream> = None
+    private var fileOutputStream: FileOutputStream? = null
 
-    fun startJsonDataLogging(): Unit =
-        IO.fx {
+    override suspend fun start(context: Context) {
 
-            isRecording = true
-            isFirstJsonObject = true
+        startTime = 0L
+        endTime = null
 
-            val write =
-                openStream()
-                    .attempt()
-                    .bind()
-                    .map { DataLogger.write(it, "[") }
-                    .accumulateError(fx)
-                    .bind()
-
-
-            continueOn(Dispatchers.Main)
-            when (write) {
-
-                is Either.Left ->
-                    recorderListener.map {
-                        it.onFail(this@JsonArrayDataRecorder, write.a)
-                    }
-                is Either.Right -> Unit
-
-            }
-
-
-        }.unsafeRunAsync()
-
-    private fun stopJsonDataLogging(): IO<Unit> =
-        IO.fx {
-
-            isRecording = false
-
-            val write =
-                openStream()
-                    .attempt()
-                    .bind()
-                    .map { DataLogger.write(it, "]") }
-                    .accumulateError(fx)
-                    .bind()
-
-            // switch to main thread before invoke the listener
-            continueOn(Dispatchers.Main)
-            when (write) {
-
-                is Either.Left ->
-                    recorderListener.map {
-                        it.onFail(this@JsonArrayDataRecorder, write.a)
-                    }
-                is Either.Right -> {
-
-                    val fileResult =
-                        FileResult(
-                            fileResultIdentifier(),
-                            file,
-                            JSON_MIME_CONTENT_TYPE,
-                            Instant.ofEpochMilli(startTime.getOrElse { 0 }).atZone(ZoneOffset.UTC),
-                            Instant.ofEpochMilli(endTime.getOrElse { 0 }).atZone(ZoneOffset.UTC)
-                        )
-
-                    recorderListener.map {
-                        //TODO: Handle result
-                        //it.onComplete(this@JsonArrayDataRecorder, fileResult)
-                    }
-
-                }
-            }
-            // return to IO thread
-            continueOn(Dispatchers.IO)
-
-        }
-
-    fun writeJsonObjectToFile(json: String): IO<Unit> =
-        IO.fx {
-
-            continueOn(Dispatchers.IO)
-            // append optional comma for array separation
-            val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
-
-            val jsonString = "$jsonSeparator${json}"
-
-            val write =
-                openStream()
-                    .attempt()
-                    .bind()
-                    .map { DataLogger.write(it, jsonString) }
-                    .accumulateError(fx)
-                    .bind()
-                    .map { }
-
-            when (write) {
-
-                is Either.Left ->
-                    recorderListener.map {
-                        it.onFail(this@JsonArrayDataRecorder, write.a)
-                    }
-                is Either.Right ->
-                    isFirstJsonObject = false
-            }
-
-            Unit
-
-        }
-
-    private fun openStream(): IO<FileOutputStream> =
-        IO.fx {
-
-            if (!file.exists()) file.createNewFile()
-
-            fileOutputStream.getOrElse {
-
-                val fos = FileOutputStream(file, true)
-                fileOutputStream = fos.some()
-                fos
-
-            }
-        }
-
-    private fun deleteFileAndClose(): IO<Unit> =
-        IO.fx {
-
-            !IO.fx {
-                file.delete()
-                fileOutputStream.map { it.close() }
-            }.attempt()
-
-            Unit
-
-        }
-
-    override fun cancel() {
-
-        writing.map { it() }
-        deleteFileAndClose().unsafeRunAsync()
+        startJsonDataLogging()
 
     }
 
-    override fun stop() {
+    private suspend fun startJsonDataLogging(): Unit {
 
-        stopJsonDataLogging().unsafeRunAsync()
+        isRecording = true
+        isFirstJsonObject = true
+
+        val write =
+            evalOnIO { openStream().flatMap { DataLogger.write(it, "[") } }
+
+        if (write is Either.Left)
+            evalOnMain { recorderListener?.onFail(this, write.a) }
+
+    }
+
+    override suspend fun stop(): FileResult? {
+
+        endTime = System.currentTimeMillis()
+
+        return stopJsonDataLogging()
+    }
+
+    private suspend fun stopJsonDataLogging(): FileResult? =
+        evalOnIO {
+            isRecording = false
+
+            val write =
+                openStream().flatMap { DataLogger.write(it, "]") }
+
+            when (write) {
+
+                is Either.Left -> {
+                    evalOnMain { recorderListener?.onFail(this, write.a) }
+                    null
+                }
+                is Either.Right ->
+                    FileResult(
+                        fileResultIdentifier(),
+                        file,
+                        JSON_MIME_CONTENT_TYPE,
+                        Instant.ofEpochMilli(startTime ?: 0).atZone(ZoneOffset.UTC),
+                        Instant.ofEpochMilli(endTime ?: 0).atZone(ZoneOffset.UTC)
+                    )
+            }
+        }
+
+    suspend fun writeJsonObjectToFile(json: String): Unit {
+
+        evalOnIO {
+
+            if (isRecording) {
+
+                // append optional comma for array separation
+                val jsonSeparator = if (!isFirstJsonObject) JSON_OBJECT_SEPARATOR else ""
+
+                val jsonString = "$jsonSeparator${json}"
+
+                val write =
+                    openStream()
+                        .flatMap { DataLogger.write(it, jsonString) }
+
+                when (write) {
+
+                    is Either.Left ->
+                        evalOnMain {
+                            recorderListener?.onFail(this@JsonArrayDataRecorder, write.a)
+                        }
+                    is Either.Right ->
+                        isFirstJsonObject = false
+                }
+            }
+        }
+
+    }
+
+    private suspend fun openStream(): Either<Throwable, FileOutputStream> =
+        Either.catch {
+
+            evalOn(Dispatchers.IO) {
+
+                if (outputDirectory.exists().not())
+                    outputDirectory.mkdirs()
+
+                if (file.exists().not()) file.createNewFile()
+
+                fileOutputStream.mapNull {
+
+                    val fos = FileOutputStream(file, true)
+                    fileOutputStream = fos
+                    fos
+
+                }
+
+            }
+        }
+
+    private suspend fun deleteFileAndClose(): Unit {
+
+        Either.catch {
+
+            evalOn(Dispatchers.IO) {
+                file.delete()
+                fileOutputStream?.close()
+            }
+        }
+
+    }
+
+    override suspend fun cancel(): Unit {
+
+        writing?.invoke()
+        deleteFileAndClose()
 
     }
 

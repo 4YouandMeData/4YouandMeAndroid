@@ -1,12 +1,9 @@
 package org.fouryouandme.researchkit.task
 
-import arrow.core.some
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
-import org.fouryouandme.researchkit.recorder.config.LocationRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.introduction.IntroductionItem
@@ -79,35 +76,35 @@ sealed class Task(
                     configuration = configuration,
                     title = "Gait and Balance",
                     description = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.",
-                    duration = 10,
+                    target = Step.SensorRecorderTarget.Steps(10),
                     recorderConfigurations = listOf(
                         PedometerRecorderConfig(moshi),
-                        AccelerometerRecorderConfig(moshi, 100.toDouble()),
-                        DeviceMotionRecorderConfig(moshi, 100.toDouble()),
-                        LocationRecorderConfig(moshi)
+                        //AccelerometerRecorderConfig(moshi, 100.toDouble()),
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
+                        //LocationRecorderConfig(moshi)
                     ),
-                    spokenInstruction = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.".some(),
+                    spokenInstruction = "Walk back and forth in a straight line for 30 seconds. Walk as you would normally.",
                     shouldPlaySoundOnFinish = true,
                     shouldVibrateOnFinish = true
 
                 ),
-                Step.SensorStep(
+                /*Step.SensorStep(
                     identifier = "active_step_turn",
                     configuration = configuration,
                     title = "Gait and Balance",
                     description = "Turn in a full circle and then stand still for 30 seconds",
-                    duration = 10,
+                    target = Step.SensorRecorderTarget.Steps(10),
                     recorderConfigurations = listOf(
                         //PedometerRecorderConfig(moshi),
                         //AccelerometerRecorderConfig(moshi, 100.toDouble()),
                         //DeviceMotionRecorderConfig(moshi, 100.toDouble()),
                         //LocationRecorderConfig(moshi)
                     ),
-                    spokenInstruction = "Turn in a full circle and then stand still for 30 seconds".some(),
+                    spokenInstruction = "Turn in a full circle and then stand still for 30 seconds",
                     shouldPlaySoundOnFinish = true,
                     shouldVibrateOnFinish = true
 
-                ),
+                ),*/
                 Step.IntroductionStep(
                     "introduction_completed",
                     configuration,

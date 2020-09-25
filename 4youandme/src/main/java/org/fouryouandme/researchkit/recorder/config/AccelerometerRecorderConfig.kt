@@ -17,6 +17,12 @@ class AccelerometerRecorderConfig(
 ) : RecorderConfig("accelerometer") {
 
     override fun recorderForStep(step: Step, outputDirectory: File): Recorder =
-        AccelerometerRecorder(frequency, identifier, step, outputDirectory, moshi)
+        AccelerometerRecorder(
+            frequency,
+            identifier,
+            step,
+            File(outputDirectory, "accelerometer"),
+            moshi
+        )
 
 }
