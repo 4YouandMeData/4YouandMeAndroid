@@ -87,4 +87,10 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun reviewConsent(): Int = R.drawable.review_consent
 
     override fun permissions(): Int = R.drawable.permission
+
+    override fun fitbit(): Int = R.drawable.fitbit
+
+    override fun oura(): Int = R.drawable.oura
+
+    override fun deactivatedButton(): Int = R.drawable.button_circle_next_primary_deactivated
 }

@@ -45,28 +45,29 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="21dp"
+            android:layout_marginEnd="21dp"
             android:orientation="vertical">
 
-            <org.fouryouandme.core.view.menu.MenuItemView
+            <org.fouryouandme.core.view.devices.DeviceItemView
                 android:id="@+id/firstItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp" />
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="30dp" />
 
-            <org.fouryouandme.core.view.menu.MenuItemView
+            <org.fouryouandme.core.view.devices.DeviceItemView
                 android:id="@+id/secondItem"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"/>
 
-            <org.fouryouandme.core.view.menu.MenuItemView
+            <org.fouryouandme.core.view.devices.DeviceItemView
                 android:id="@+id/thirdItem"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"/>
 
-            <org.fouryouandme.core.view.menu.MenuItemView
-                android:id="@+id/fourthItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>

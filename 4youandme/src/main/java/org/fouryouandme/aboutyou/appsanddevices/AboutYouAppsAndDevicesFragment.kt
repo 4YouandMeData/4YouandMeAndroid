@@ -3,7 +3,11 @@ package org.fouryouandme.aboutyou.appsanddevices
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.about_you_menu.root
+import kotlinx.android.synthetic.main.apps_and_devices.*
 import kotlinx.android.synthetic.main.html_detail.*
+import kotlinx.android.synthetic.main.html_detail.backArrow
+import kotlinx.android.synthetic.main.html_detail.detailsToolbar
+import kotlinx.android.synthetic.main.html_detail.title
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.AboutYouSectionFragment
 import org.fouryouandme.aboutyou.AboutYouStateUpdate
@@ -42,15 +46,9 @@ class AboutYouAppsAndDevicesFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
-
         if (aboutYouViewModel.isInitialized()) {
             applyConfiguration(aboutYouViewModel.state().configuration)
         }
-    }
-
-    private fun setupView(): Unit {
-        //TODO
     }
 
     private fun applyConfiguration(configuration: Configuration) {
@@ -71,5 +69,21 @@ class AboutYouAppsAndDevicesFragment :
 
         title.setTextColor(configuration.theme.secondaryColor.color())
         title.text = configuration.text.profile.secondItem
+
+        firstItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.fitbit(),
+            "Garmin",
+            ""
+        )
+
+        secondItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.oura(),
+            "Oura",
+            ""
+        )
+
+
     }
 }

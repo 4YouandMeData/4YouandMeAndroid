@@ -124,4 +124,15 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun permissions(): Int
+
+    /*--- device item ---*/
+
+    @DrawableRes
+    fun fitbit(): Int
+
+    @DrawableRes
+    fun oura(): Int
+
+    @DrawableRes
+    fun deactivatedButton(): Int
 }

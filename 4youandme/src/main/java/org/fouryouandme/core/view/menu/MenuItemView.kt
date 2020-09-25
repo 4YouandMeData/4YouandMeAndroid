@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import kotlinx.android.synthetic.main.menu_item.view.*
 import org.fouryouandme.R
 import org.fouryouandme.core.ext.imageConfiguration
@@ -26,7 +25,7 @@ class MenuItemView(context: Context, attrs: AttributeSet?) : FrameLayout(context
     ): Unit {
         icon.setImageResource(iconRes)
 
-        description.setText(descriptionRes)
+        description.text = descriptionRes
         description.setTextColor(configuration.theme.primaryTextColor.color())
 
         arrow.setImageResource(context.imageConfiguration.arrow())
