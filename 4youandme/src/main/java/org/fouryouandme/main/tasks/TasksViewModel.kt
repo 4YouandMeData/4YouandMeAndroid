@@ -153,7 +153,12 @@ class TasksViewModel(
 
     suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
         task.data.activityType?.let {
-            navigator.navigateTo(rootNavController, TasksToTask(task.data.id))
+            navigator.navigateTo(
+                rootNavController, TasksToTask(
+                    it.type,
+                    task.data.id
+                )
+            )
         }
     }
 }

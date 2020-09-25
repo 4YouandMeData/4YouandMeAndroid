@@ -37,6 +37,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
         super.onViewCreated(view, savedInstanceState)
 
         configuration { evalOnMain { setupNavigation(it) } }
+
     }
 
     private fun setupNavigation(configuration: Configuration): Unit {

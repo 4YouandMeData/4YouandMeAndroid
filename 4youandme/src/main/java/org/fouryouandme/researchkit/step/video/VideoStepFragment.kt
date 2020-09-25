@@ -252,7 +252,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
         submit.setTextColor(step.buttonTextColor)
         submit.setOnClickListener {
             startCoroutineAsync {
-                videoViewModel.submit(viewModel.state().task.identifier, getVideoMergeFile())
+                videoViewModel.submit(viewModel.state().task.type, getVideoMergeFile())
             }
         }
         submit.text = step.submitButton

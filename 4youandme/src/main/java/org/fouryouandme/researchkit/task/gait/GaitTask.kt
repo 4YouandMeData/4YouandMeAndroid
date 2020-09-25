@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class GaitTask(
+    id: String,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -17,7 +18,7 @@ class GaitTask(
     startButtonColor: Int,
     startButtonTextColor: Int,
     private val moshi: Moshi
-) : Task(TaskIdentifiers.GAIT) {
+) : Task(TaskIdentifiers.GAIT, id) {
 
     override val steps: List<Step> by lazy {
 

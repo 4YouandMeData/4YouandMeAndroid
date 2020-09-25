@@ -15,16 +15,16 @@ class FYAMTaskBuilder(
     private val imageConfiguration: ImageConfiguration
 ) : TaskBuilder() {
 
-    override suspend fun buildByIdentifier(identifier: String): Task? {
+    override suspend fun build(type: String, id: String): Task? {
 
         val configuration =
             configurationModule.getConfiguration(CachePolicy.MemoryFirst).orNull()
 
         return configuration?.let {
 
-            when (identifier) {
+            when (type) {
                 TaskIdentifiers.VIDEO_DIARY ->
-                    buildVideoDiary(it, imageConfiguration)
+                    buildVideoDiary(id, it, imageConfiguration)
                 else -> null
 
             }
@@ -33,6 +33,7 @@ class FYAMTaskBuilder(
     }
 
     private suspend fun buildVideoDiary(
+        id: String,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration
     ): VideoDiaryTask {
@@ -56,6 +57,7 @@ class FYAMTaskBuilder(
             configuration.theme.deactiveColor.color()
 
         return VideoDiaryTask(
+            id = id,
             introBackgroundColor = secondary,
             introFooterBackgroundColor = secondary,
             introTitle = configuration.text.videoDiary.introTitle,

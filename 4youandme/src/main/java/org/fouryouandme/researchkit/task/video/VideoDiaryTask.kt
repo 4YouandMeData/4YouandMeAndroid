@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class VideoDiaryTask(
+    id: String,
     introBackgroundColor: Int,
     introFooterBackgroundColor: Int,
     introTitle: String,
@@ -50,7 +51,7 @@ class VideoDiaryTask(
     videoMissingPermissionMicBody: String,
     videoSettings: String,
     videoCancel: String,
-) : Task(TaskIdentifiers.VIDEO_DIARY) {
+) : Task(TaskIdentifiers.VIDEO_DIARY, id) {
 
 
     override val steps: List<Step> by lazy {

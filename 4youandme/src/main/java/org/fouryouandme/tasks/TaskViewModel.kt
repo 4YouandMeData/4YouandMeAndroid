@@ -28,11 +28,11 @@ class TaskViewModel(
 
     /* --- initialization --- */
 
-    suspend fun initialize(identifier: String): Unit {
+    suspend fun initialize(type: String, id: String): Unit {
 
         showLoadingFx(TaskLoading.Initialization)
 
-        taskBuilder.buildByIdentifier(identifier)
+        taskBuilder.build(type, id)
             .foldSuspend(
                 { setErrorFx(unknownError(), TaskError.Initialization) },
                 { task ->
@@ -41,7 +41,7 @@ class TaskViewModel(
                         TaskState(
                             task = task,
                             isCancelled = false,
-                            result = TaskResult(task.identifier, emptyMap())
+                            result = TaskResult(task.type, emptyMap())
                         )
                     ) { TaskStateUpdate.Initialization(it.task) }
                 }

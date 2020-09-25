@@ -45,7 +45,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         startCoroutineAsync {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(identifierArg())
+                viewModel.initialize(typeArg(), idArg())
 
             applyData()
 
@@ -68,18 +68,22 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
         }
 
-    private fun identifierArg(): String = arguments?.getString(TASK_IDENTIFIER, null)!!
+    private fun typeArg(): String = arguments?.getString(TASK_TYPE, null)!!
+    private fun idArg(): String = arguments?.getString(TASK_ID, null)!!
 
     fun navController(): TaskNavController = TaskNavController(findNavController())
 
     companion object {
 
-        const val TASK_IDENTIFIER = "identifier"
+        const val TASK_TYPE = "type"
 
-        fun getBundle(identifier: String): Bundle {
+        private const val TASK_ID = "id"
+
+        fun getBundle(type: String, id: String): Bundle {
 
             val bundle = Bundle()
-            bundle.putString(TASK_IDENTIFIER, identifier)
+            bundle.putString(TASK_TYPE, type)
+            bundle.putString(TASK_ID, id)
             return bundle
 
         }

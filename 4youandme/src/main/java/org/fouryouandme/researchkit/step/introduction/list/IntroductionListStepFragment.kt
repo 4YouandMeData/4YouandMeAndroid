@@ -50,7 +50,7 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
             )
 
         adapter.submitList(
-            listOf(IntroductionHeaderItem(step.title, step.image, step.titleColor))
+            listOf(IntroductionHeaderItem(step.title, step.titleColor, step.image))
                 .plus(step.list)
         )
 

@@ -208,7 +208,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
         val notificationBuilder =
             NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("${task.identifier} Recording")
+                .setContentTitle("${task.type} Recording")
                 .setContentText("Recording")
                 .setContentIntent(contentIntent)
 

@@ -37,7 +37,7 @@ data class TaskActivity(
     val activityType: TaskActivityType?
 ) : StudyActivity()
 
-sealed class TaskActivityType(val typeId: String, val identifier: String) {
+sealed class TaskActivityType(val typeId: String, val type: String) {
 
     object VideoDiary : TaskActivityType("video_diary", TaskIdentifiers.VIDEO_DIARY)
     object GaitTask : TaskActivityType("gait_task", TaskIdentifiers.GAIT)
