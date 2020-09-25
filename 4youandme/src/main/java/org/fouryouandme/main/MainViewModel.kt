@@ -20,10 +20,11 @@ class MainViewModel(
 
     /* --- page --- */
 
-    suspend fun setRestorePage(id: Int): Unit =
-        setStateFx(
-            state().copy(restorePage = id)
-        ) { MainStateUpdate.RestorePage(id) }
+    suspend fun setRestorePage(id: Int): Unit {
+
+        setStateFx(state().copy(restorePage = id)) { MainStateUpdate.RestorePage(id) }
+
+    }
 
     suspend fun selectFeed(): Unit =
         setStateFx(
