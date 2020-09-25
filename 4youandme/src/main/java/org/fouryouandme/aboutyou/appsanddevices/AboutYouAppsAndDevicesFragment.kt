@@ -36,7 +36,11 @@ class AboutYouAppsAndDevicesFragment :
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(AppAndDeviceViewHolder.factory())
+        DroidAdapter(AppAndDeviceViewHolder.factory {
+            startCoroutineAsync {
+                viewModel.navigateToWeb(it.link, aboutYouNavController())
+            }
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

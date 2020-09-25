@@ -25,7 +25,7 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right"/>
+            app:popExitAnim="@anim/slide_to_right" />
 
     </fragment>
 
@@ -38,6 +38,32 @@
     <fragment
         android:id="@+id/about_you_apps_and_devices"
         android:name="org.fouryouandme.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragment"
-        android:label="AboutYouAppsAndDevicesFragment" />
+        android:label="AboutYouAppsAndDevicesFragment"
+        tools:layout="@layout/apps_and_devices">
+        <action
+            android:id="@+id/action_about_you_apps_and_devices_to_integration_login"
+            app:destination="@id/integration_login"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/integration_login"
+        android:name="org.fouryouandme.auth.integration.login.IntegrationLoginFragment"
+        android:label="integration_login"
+        tools:layout="@layout/integration_login">
+
+        <argument
+            android:name="url"
+            app:argType="string" />
+
+        <argument
+            android:name="next_page"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 
 </navigation>

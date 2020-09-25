@@ -1,5 +1,6 @@
 package org.fouryouandme.aboutyou
 
+import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 
@@ -25,3 +26,7 @@ sealed class AboutYouError {
 object AboutYouMenuPageToAboutYouReviewConsentPage : NavigationAction
 
 object AboutYouMenuPageToAppsAndDevicesPage : NavigationAction
+
+data class AboutYouDataAppsAndDevicesToIntegrationLogin(
+    val url: String
+) : NavigationAction

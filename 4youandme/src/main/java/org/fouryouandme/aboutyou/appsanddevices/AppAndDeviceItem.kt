@@ -35,8 +35,15 @@ data class AppAndDeviceItem(
         }
 }
 
-class AppAndDeviceViewHolder(parent: ViewGroup) :
+class AppAndDeviceViewHolder(parent: ViewGroup, onItemClicked: (AppAndDeviceItem) -> Unit) :
     DroidViewHolder<AppAndDeviceItem, Unit>(parent, R.layout.device_item), LayoutContainer {
+
+    init {
+        itemView.setOnClickListener{
+            onItemClicked(item)
+        }
+    }
+
     override fun bind(t: AppAndDeviceItem, position: Int) {
         root.setCardBackgroundColor(t.configuration.theme.primaryColorStart.color())
 
@@ -49,20 +56,17 @@ class AppAndDeviceViewHolder(parent: ViewGroup) :
 
         //arrow.setImageResource(context.imageConfiguration.deactivatedButton())
         arrow.setImageResource(context.imageConfiguration.signUpNextStep())
-
-        itemView.setOnClickListener {
-            // TODO
-        }
     }
 
     override val containerView: View? = itemView
 
     companion object {
-        fun factory(): ViewHolderFactory = ViewHolderFactory({
-            AppAndDeviceViewHolder(it)
-        },
-            { _, item ->
-                item is AppAndDeviceItem
-            })
+        fun factory(onItemClicked: (AppAndDeviceItem) -> Unit): ViewHolderFactory =
+            ViewHolderFactory({
+                AppAndDeviceViewHolder(it, onItemClicked)
+            },
+                { _, item ->
+                    item is AppAndDeviceItem
+                })
     }
 }
