@@ -22,14 +22,13 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.permissionSettingsAction
 import org.fouryouandme.core.cases.task.TaskUseCase.attachVideo
 import org.fouryouandme.core.ext.startCoroutineCancellableAsync
-import org.fouryouandme.researchkit.step.Step
 import org.threeten.bp.Instant
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.util.*
 
-class VideoDiaryViewModel(
+class VideoViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
     private val taskModule: TaskModule
@@ -37,9 +36,9 @@ class VideoDiaryViewModel(
     BaseViewModel<
             ForIO,
             VideoDiaryState,
-            VideoDiaryStateUpdate,
-            VideoDiaryError,
-            VideoDiaryLoading>(
+            VideoStateUpdate,
+            VideoError,
+            VideoLoading>(
         navigator = navigator,
         runtime = runtime
     ) {
@@ -49,7 +48,7 @@ class VideoDiaryViewModel(
 
     /* --- initialize --- */
 
-    suspend fun initialize(step: Step.VideoDiaryStep): Unit =
+    suspend fun initialize(step: VideoStep): Unit =
         setStateSilentFx(
             VideoDiaryState(
                 step,
@@ -74,7 +73,7 @@ class VideoDiaryViewModel(
                 startRecordTimeSeconds = state().recordTimeSeconds,
                 lastRecordedFilePath = filePath
             )
-        ) { VideoDiaryStateUpdate.Recording(state().recordingState) }
+        ) { VideoStateUpdate.Recording(state().recordingState) }
 
     }
 
@@ -83,7 +82,7 @@ class VideoDiaryViewModel(
         timer?.invoke()
         setStateFx(
             VideoDiaryState.recordingState.modify(state()) { RecordingState.RecordingPause }
-        ) { VideoDiaryStateUpdate.Recording(state().recordingState) }
+        ) { VideoStateUpdate.Recording(state().recordingState) }
 
     }
 
@@ -98,7 +97,7 @@ class VideoDiaryViewModel(
     private suspend fun incrementRecordTime(): Unit =
         setStateFx(
             VideoDiaryState.recordTimeSeconds.modify(state()) { it + 1 }
-        ) { VideoDiaryStateUpdate.RecordTime(state().recordTimeSeconds) }
+        ) { VideoStateUpdate.RecordTime(state().recordTimeSeconds) }
 
 
     suspend fun handleRecordError(): Unit {
@@ -120,7 +119,7 @@ class VideoDiaryViewModel(
             )
         )
 
-        setErrorFx(unknownError(), VideoDiaryError.Recording)
+        setErrorFx(unknownError(), VideoError.Recording)
 
         pause()
 
@@ -130,44 +129,44 @@ class VideoDiaryViewModel(
 
         setStateFx(
             VideoDiaryState.isBackCameraToggled.modify(state()) { it.not() }
-        ) { VideoDiaryStateUpdate.Camera(it.isBackCameraToggled) }
+        ) { VideoStateUpdate.Camera(it.isBackCameraToggled) }
 
         // disable the flash when the front camera is toggled
         if (state().isBackCameraToggled)
             setStateFx(
                 VideoDiaryState.isFlashEnabled.modify(state()) { false }
-            ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+            ) { VideoStateUpdate.Flash(it.isFlashEnabled) }
 
     }
 
     suspend fun toggleFlash(): Unit =
         setStateFx(
             VideoDiaryState.isFlashEnabled.modify(state()) { it.not() }
-        ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+        ) { VideoStateUpdate.Flash(it.isFlashEnabled) }
 
     suspend fun merge(videosPath: String, outputPath: String, outputFileName: String): Unit {
 
-        showLoadingFx(VideoDiaryLoading.Merge)
+        showLoadingFx(VideoLoading.Merge)
 
         // disable the flash when the user start the review flow
         if (state().isBackCameraToggled)
             setStateFx(
                 VideoDiaryState.isFlashEnabled.modify(state()) { false }
-            ) { VideoDiaryStateUpdate.Flash(it.isFlashEnabled) }
+            ) { VideoStateUpdate.Flash(it.isFlashEnabled) }
 
         val merge =
             Either.catch { mergeVideoDiary(videosPath, outputPath, outputFileName) }
 
         merge.fold(
-            { setErrorFx(unknownError(), VideoDiaryError.Merge) },
+            { setErrorFx(unknownError(), VideoError.Merge) },
             {
                 setStateFx(
                     VideoDiaryState.recordingState.modify(state()) { RecordingState.Merged }
-                ) { VideoDiaryStateUpdate.Recording(it.recordingState) }
+                ) { VideoStateUpdate.Recording(it.recordingState) }
             }
         )
 
-        hideLoadingFx(VideoDiaryLoading.Merge)
+        hideLoadingFx(VideoLoading.Merge)
 
     }
 
@@ -175,7 +174,7 @@ class VideoDiaryViewModel(
 
         setStateFx(
             VideoDiaryState.recordingState.modify(state()) { RecordingState.ReviewPause }
-        ) { VideoDiaryStateUpdate.Recording(it.recordingState) }
+        ) { VideoStateUpdate.Recording(it.recordingState) }
 
     }
 
@@ -183,7 +182,7 @@ class VideoDiaryViewModel(
 
         setStateFx(
             VideoDiaryState.recordingState.modify(state()) { RecordingState.Review }
-        ) { VideoDiaryStateUpdate.Recording(it.recordingState) }
+        ) { VideoStateUpdate.Recording(it.recordingState) }
 
     }
 
@@ -251,22 +250,22 @@ class VideoDiaryViewModel(
 
     suspend fun submit(taskId: String, file: File): Unit {
 
-        showLoadingFx(VideoDiaryLoading.Upload)
+        showLoadingFx(VideoLoading.Upload)
 
         val upload = taskModule.attachVideo(taskId, file)
 
         upload.fold(
             {
-                setErrorFx(it, VideoDiaryError.Upload)
+                setErrorFx(it, VideoError.Upload)
             },
             {
                 setStateFx(
                     VideoDiaryState.recordingState.modify(state()) { RecordingState.Uploaded })
-                { VideoDiaryStateUpdate.Recording(it.recordingState) }
+                { VideoStateUpdate.Recording(it.recordingState) }
             }
         )
 
-        hideLoadingFx(VideoDiaryLoading.Upload)
+        hideLoadingFx(VideoLoading.Upload)
 
     }
 

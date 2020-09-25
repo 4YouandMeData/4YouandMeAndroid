@@ -11,7 +11,6 @@ import org.fouryouandme.researchkit.recorder.RecorderService
 import org.fouryouandme.researchkit.recorder.RecorderServiceConnection
 import org.fouryouandme.researchkit.recorder.RecordingState
 import org.fouryouandme.researchkit.recorder.SensorData
-import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.tasks.TaskStateUpdate
 import java.io.File
@@ -23,7 +22,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
             { binder ->
 
                 val step =
-                    viewModel.getStepByIndexAs<Step.SensorStep>(indexArg())
+                    viewModel.getStepByIndexAs<SensorStep>(indexArg())
 
                 step?.let {
 
@@ -80,24 +79,24 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<Step.SensorStep>(indexArg())
+            viewModel.getStepByIndexAs<SensorStep>(indexArg())
 
         step?.let { applyData(it) }
     }
 
     fun applyData(
-        step: Step.SensorStep
+        step: SensorStep
     ): Unit {
 
         clearFolder()
 
-        root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
+        root.setBackgroundColor(step.backgroundColor)
 
         title.text = step.title
-        title.setTextColor(step.configuration.theme.primaryTextColor.color())
+        title.setTextColor(step.titleColor)
 
         description.text = step.description
-        description.setTextColor(step.configuration.theme.primaryTextColor.color())
+        description.setTextColor(step.descriptionColor)
 
         RecorderService.start(requireContext().applicationContext, serviceConnection)
 

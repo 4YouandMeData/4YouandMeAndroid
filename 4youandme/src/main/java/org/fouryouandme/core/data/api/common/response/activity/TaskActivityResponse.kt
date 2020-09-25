@@ -1,13 +1,12 @@
 package org.fouryouandme.core.data.api.common.response.activity
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.ext.decodeBase64ImageFx
+import org.fouryouandme.core.ext.mapNotNull
 
 @JsonApi(type = "activity")
 class TaskActivityResponse(
@@ -22,14 +21,14 @@ class TaskActivityResponse(
 
 ) : ActivityDataResponse(title, description, repeatEvery, startColor, endColor, button) {
 
-    fun toTaskActivity(taskId: String): TaskActivity =
+    suspend fun toTaskActivity(taskId: String): TaskActivity =
         TaskActivity(
             taskId,
-            title.toOption(),
-            description.toOption(),
-            button.toOption(),
-            Option.fx { HEXGradient(!startColor.toOption(), !endColor.toOption()) },
-            image.toOption(),
-            activityType.toOption().flatMap { TaskActivityType.fromType(it) }
+            title,
+            description,
+            button,
+            mapNotNull(startColor, endColor)?.let { HEXGradient(it.a, it.b) },
+            image?.decodeBase64ImageFx()?.orNull(),
+            activityType?.let { TaskActivityType.fromType(it) }
         )
 }

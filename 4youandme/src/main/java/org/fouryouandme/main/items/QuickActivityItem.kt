@@ -3,9 +3,6 @@ package org.fouryouandme.main.items
 import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
-import arrow.core.Option
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.quick_activity_item.*
@@ -15,8 +12,7 @@ import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.decodeBase64Image
-import org.fouryouandme.core.ext.getOrEmpty
+import org.fouryouandme.core.ext.getOr
 import org.fouryouandme.main.items.EQuickActivityPayload.SELECTED_ANSWER
 
 enum class EQuickActivityPayload {
@@ -26,7 +22,7 @@ enum class EQuickActivityPayload {
 data class QuickActivityItem(
     val configuration: Configuration,
     val data: QuickActivity,
-    val selectedAnswer: Option<String>
+    val selectedAnswer: String?
 ) : DroidItem<EQuickActivityPayload> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -72,33 +68,33 @@ class QuickActivityViewHolder(
                 t.configuration.theme.primaryColorEnd
             ).drawable()
 
-        title.text = t.data.title.getOrEmpty()
+        title.text = t.data.title.orEmpty()
         title.setTextColor(t.configuration.theme.secondaryColor.color())
         title.alpha = 0.5f
 
-        body.text = t.data.description.getOrEmpty()
+        body.text = t.data.description.orEmpty()
         body.setTextColor(t.configuration.theme.secondaryColor.color())
 
-        getAnswerImage(t.selectedAnswer, t.data.answer1).map { answer_1.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer2).map { answer_2.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer3).map { answer_3.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer4).map { answer_4.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer5).map { answer_5.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer6).map { answer_6.setImageBitmap(it) }
+        getAnswerImage(t.selectedAnswer, t.data.answer1)?.let { answer_1.setImageBitmap(it) }
+        getAnswerImage(t.selectedAnswer, t.data.answer2)?.let { answer_2.setImageBitmap(it) }
+        getAnswerImage(t.selectedAnswer, t.data.answer3)?.let { answer_3.setImageBitmap(it) }
+        getAnswerImage(t.selectedAnswer, t.data.answer4)?.let { answer_4.setImageBitmap(it) }
+        getAnswerImage(t.selectedAnswer, t.data.answer5)?.let { answer_5.setImageBitmap(it) }
+        getAnswerImage(t.selectedAnswer, t.data.answer6)?.let { answer_6.setImageBitmap(it) }
 
-        answer_1.isEnabled = t.data.answer1.isDefined()
-        answer_2.isEnabled = t.data.answer2.isDefined()
-        answer_2.isEnabled = t.data.answer3.isDefined()
-        answer_4.isEnabled = t.data.answer4.isDefined()
-        answer_5.isEnabled = t.data.answer5.isDefined()
-        answer_6.isEnabled = t.data.answer6.isDefined()
+        answer_1.isEnabled = t.data.answer1 != null
+        answer_2.isEnabled = t.data.answer2 != null
+        answer_2.isEnabled = t.data.answer3 != null
+        answer_4.isEnabled = t.data.answer4 != null
+        answer_5.isEnabled = t.data.answer5 != null
+        answer_6.isEnabled = t.data.answer6 != null
 
-        answer_1_text.text = t.data.answer1.flatMap { it.text }.getOrEmpty()
-        answer_2_text.text = t.data.answer2.flatMap { it.text }.getOrEmpty()
-        answer_3_text.text = t.data.answer3.flatMap { it.text }.getOrEmpty()
-        answer_4_text.text = t.data.answer4.flatMap { it.text }.getOrEmpty()
-        answer_5_text.text = t.data.answer5.flatMap { it.text }.getOrEmpty()
-        answer_6_text.text = t.data.answer6.flatMap { it.text }.getOrEmpty()
+        answer_1_text.text = t.data.answer1?.text.orEmpty()
+        answer_2_text.text = t.data.answer2?.text.orEmpty()
+        answer_3_text.text = t.data.answer3?.text.orEmpty()
+        answer_4_text.text = t.data.answer4?.text.orEmpty()
+        answer_5_text.text = t.data.answer5?.text.orEmpty()
+        answer_6_text.text = t.data.answer6?.text.orEmpty()
 
         answer_1_text.setTextColor(t.configuration.theme.secondaryColor.color())
         answer_2_text.setTextColor(t.configuration.theme.secondaryColor.color())
@@ -107,18 +103,18 @@ class QuickActivityViewHolder(
         answer_5_text.setTextColor(t.configuration.theme.secondaryColor.color())
         answer_6_text.setTextColor(t.configuration.theme.secondaryColor.color())
 
-        answer_1.setOnClickListener { t.data.answer1.map { onAnswerSelected(t, it) } }
-        answer_2.setOnClickListener { t.data.answer2.map { onAnswerSelected(t, it) } }
-        answer_3.setOnClickListener { t.data.answer3.map { onAnswerSelected(t, it) } }
-        answer_4.setOnClickListener { t.data.answer4.map { onAnswerSelected(t, it) } }
-        answer_5.setOnClickListener { t.data.answer5.map { onAnswerSelected(t, it) } }
-        answer_6.setOnClickListener { t.data.answer6.map { onAnswerSelected(t, it) } }
+        answer_1.setOnClickListener { t.data.answer1?.let { onAnswerSelected(t, it) } }
+        answer_2.setOnClickListener { t.data.answer2?.let { onAnswerSelected(t, it) } }
+        answer_3.setOnClickListener { t.data.answer3?.let { onAnswerSelected(t, it) } }
+        answer_4.setOnClickListener { t.data.answer4?.let { onAnswerSelected(t, it) } }
+        answer_5.setOnClickListener { t.data.answer5?.let { onAnswerSelected(t, it) } }
+        answer_6.setOnClickListener { t.data.answer6?.let { onAnswerSelected(t, it) } }
 
-        review.isEnabled = t.selectedAnswer.isDefined()
+        review.isEnabled = t.selectedAnswer != null
         review.background = button(t.configuration.theme.secondaryColor.color())
         review.setTextColor(t.configuration.theme.primaryTextColor.color())
         review.text =
-            t.data.button.getOrElse { t.configuration.text.activity.quickActivityButtonDefault }
+            t.data.button.getOr { t.configuration.text.activity.quickActivityButtonDefault }
 
     }
 
@@ -130,39 +126,41 @@ class QuickActivityViewHolder(
                 SELECTED_ANSWER -> {
 
                     answer_1.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer1).orNull()
+                        getAnswerImage(t.selectedAnswer, t.data.answer1)
                     )
                     answer_2.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer2).orNull()
+                        getAnswerImage(t.selectedAnswer, t.data.answer2)
                     )
                     answer_3.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer3).orNull()
+                        getAnswerImage(t.selectedAnswer, t.data.answer3)
                     )
                     answer_4.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer4).orNull()
+                        getAnswerImage(t.selectedAnswer, t.data.answer4)
                     )
                     answer_5.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer5).orNull()
+                        getAnswerImage(t.selectedAnswer, t.data.answer5)
                     )
                     answer_6.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer6).orNull()
+                        getAnswerImage(t.selectedAnswer, t.data.answer6)
                     )
 
-                    review.isEnabled = t.selectedAnswer.isDefined()
+                    review.isEnabled = t.selectedAnswer != null
                 }
             }
         }
     }
 
     private fun getAnswerImage(
-        selectedAnswer: Option<String>,
-        answer: Option<QuickActivityAnswer>
-    ): Option<Bitmap> =
-        answer.flatMap { quickActivityAnswer ->
-            if (selectedAnswer == quickActivityAnswer.id.toOption())
-                quickActivityAnswer.selectedImage.flatMap { it.decodeBase64Image() }
+        selectedAnswer: String?,
+        answer: QuickActivityAnswer?
+    ): Bitmap? =
+        answer?.let { quickActivityAnswer ->
+
+            if (selectedAnswer == quickActivityAnswer.id)
+                quickActivityAnswer.selectedImage
             else
-                quickActivityAnswer.image.flatMap { it.decodeBase64Image() }
+                quickActivityAnswer.image
+
         }
 
     override val containerView: View? = itemView

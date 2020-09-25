@@ -1,10 +1,8 @@
 package org.fouryouandme.core.data.api.task.response
 
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.some
-import arrow.core.toOption
+import arrow.core.computations.either
+import arrow.core.flatMap
+import arrow.core.left
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi
@@ -13,6 +11,7 @@ import org.fouryouandme.core.data.api.common.response.activity.ActivityDataRespo
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
 import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.ext.toEither
 import org.threeten.bp.ZonedDateTime
 
 @JsonApi(type = "task")
@@ -23,21 +22,23 @@ data class TaskResponse(
 ) : Resource() {
 
 
-    fun toTask(): Option<Task> =
-        Option.fx {
+    suspend fun toTask(): Task? =
+        either.invoke<Unit, Task> {
+
             Task(
                 id,
-                !from.toOption().map { ZonedDateTime.parse(it) },
-                !to.toOption().map { ZonedDateTime.parse(it) },
-                !activity?.get(document).toOption().flatMap {
+                !from.toEither().map { ZonedDateTime.parse(it) },
+                !to.toEither().map { ZonedDateTime.parse(it) },
+                !activity?.get(document).toEither().flatMap {
                     when (it) {
-                        is QuickActivityResponse -> it.toQuickActivity().some()
-                        is TaskActivityResponse -> it.toTaskActivity(id).some()
-                        else -> None
+                        is QuickActivityResponse -> it.toQuickActivity().toEither()
+                        is TaskActivityResponse -> it.toTaskActivity(id).toEither()
+                        else -> Unit.left()
                     }
                 }
             )
-        }
+
+        }.orNull()
 }
 
-fun Array<TaskResponse>.toTaskItems(): List<Task> = mapNotNull { it.toTask().orNull() }
+suspend fun Array<TaskResponse>.toTaskItems(): List<Task> = mapNotNull { it.toTask() }

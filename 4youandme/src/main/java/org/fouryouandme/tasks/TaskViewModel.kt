@@ -4,23 +4,20 @@ import androidx.navigation.NavController
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
-import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
+import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.ext.foldSuspend
 import org.fouryouandme.researchkit.result.StepResult
 import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.result.results
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepNavController
-import org.fouryouandme.researchkit.task.ETaskType
-import org.fouryouandme.researchkit.task.Task
+import org.fouryouandme.researchkit.task.TaskBuilder
 
 class TaskViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
-    private val configurationModule: ConfigurationModule
+    private val taskBuilder: TaskBuilder,
 ) : BaseViewModel<
         ForIO,
         TaskState,
@@ -31,37 +28,24 @@ class TaskViewModel(
 
     /* --- initialization --- */
 
-    suspend fun initialize(identifier: String, type: ETaskType): Unit {
+    suspend fun initialize(identifier: String): Unit {
 
         showLoadingFx(TaskLoading.Initialization)
 
-        val configuration =
-            configurationModule.getConfiguration(CachePolicy.MemoryFirst)
+        taskBuilder.buildByIdentifier(identifier)
+            .foldSuspend(
+                { setErrorFx(unknownError(), TaskError.Initialization) },
+                { task ->
 
-
-        configuration.fold(
-            { setErrorFx(it, TaskError.Initialization) },
-            { config ->
-
-                val task =
-                    Task.byType(
-                        identifier,
-                        type,
-                        config,
-                        runtime.injector.imageConfiguration,
-                        runtime.injector.moshi
-                    )
-
-                setStateFx(
-                    TaskState(
-                        configuration = config,
-                        task = task,
-                        isCancelled = false,
-                        result = TaskResult(task.identifier, emptyMap())
-                    )
-                ) { TaskStateUpdate.Initialization(it.configuration, task) }
-            }
-        )
+                    setStateFx(
+                        TaskState(
+                            task = task,
+                            isCancelled = false,
+                            result = TaskResult(task.identifier, emptyMap())
+                        )
+                    ) { TaskStateUpdate.Initialization(it.task) }
+                }
+            )
 
         hideLoadingFx(TaskLoading.Initialization)
 

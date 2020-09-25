@@ -1,14 +1,12 @@
 package org.fouryouandme.core.data.api.common.response.activity
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.ext.mapNotNull
 
 @JsonApi(type = "quick_activity")
 class QuickActivityResponse(
@@ -22,13 +20,13 @@ class QuickActivityResponse(
     val options: HasMany<QuickActivityOptionResponse>? = null
 ) : ActivityDataResponse(title, description, repeatEvery, startColor, endColor, button) {
 
-    fun toQuickActivity(): QuickActivity =
+    suspend fun toQuickActivity(): QuickActivity =
         QuickActivity(
             id,
-            title.toOption(),
-            description.toOption(),
-            button.toOption(),
-            Option.fx { HEXGradient(!startColor.toOption(), !endColor.toOption()) },
+            title,
+            description,
+            button,
+            mapNotNull(startColor, endColor)?.let { HEXGradient(it.a, it.b) },
             getAnswer(1),
             getAnswer(2),
             getAnswer(3),
@@ -38,10 +36,8 @@ class QuickActivityResponse(
         )
 
 
-    private fun getAnswer(position: Int): Option<QuickActivityAnswer> =
+    private suspend fun getAnswer(position: Int): QuickActivityAnswer? =
         options?.get(document)
-            ?.firstOrNull { it.position == position }
-            .toOption()
-            .map { it.toQuickActivityAnswer() }
+            ?.firstOrNull { it.position == position }?.toQuickActivityAnswer()
 
 }

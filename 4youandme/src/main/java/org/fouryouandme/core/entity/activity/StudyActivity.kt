@@ -1,59 +1,57 @@
 package org.fouryouandme.core.entity.activity
 
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.some
+import android.graphics.Bitmap
 import org.fouryouandme.core.entity.configuration.HEXGradient
-import org.fouryouandme.researchkit.task.ETaskType
+import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 sealed class StudyActivity
 
 data class QuickActivity(
     val id: String,
-    val title: Option<String>,
-    val description: Option<String>,
-    val button: Option<String>,
-    val gradient: Option<HEXGradient>,
-    val answer1: Option<QuickActivityAnswer>,
-    val answer2: Option<QuickActivityAnswer>,
-    val answer3: Option<QuickActivityAnswer>,
-    val answer4: Option<QuickActivityAnswer>,
-    val answer5: Option<QuickActivityAnswer>,
-    val answer6: Option<QuickActivityAnswer>
+    val title: String?,
+    val description: String?,
+    val button: String?,
+    val gradient: HEXGradient?,
+    val answer1: QuickActivityAnswer?,
+    val answer2: QuickActivityAnswer?,
+    val answer3: QuickActivityAnswer?,
+    val answer4: QuickActivityAnswer?,
+    val answer5: QuickActivityAnswer?,
+    val answer6: QuickActivityAnswer?
 ) : StudyActivity()
 
 data class QuickActivityAnswer(
     val id: String,
-    val text: Option<String>,
-    val image: Option<String>,
-    val selectedImage: Option<String>
+    val text: String?,
+    val image: Bitmap?,
+    val selectedImage: Bitmap?
 )
 
 data class TaskActivity(
     val id: String,
-    val title: Option<String>,
-    val description: Option<String>,
-    val button: Option<String>,
-    val gradient: Option<HEXGradient>,
-    val image: Option<String>,
-    val activityType: Option<TaskActivityType>
+    val title: String?,
+    val description: String?,
+    val button: String?,
+    val gradient: HEXGradient?,
+    val image: Bitmap?,
+    val activityType: TaskActivityType?
 ) : StudyActivity()
 
-sealed class TaskActivityType(val typeId: String, val type: ETaskType) {
+sealed class TaskActivityType(val typeId: String, val identifier: String) {
 
-    object VideoDiary : TaskActivityType("video_diary", ETaskType.VIDEO_DIARY)
-    object GaitTask : TaskActivityType("gait_task", ETaskType.GAIT)
-    object WalkTask : TaskActivityType("walk_task", ETaskType.WALK)
+    object VideoDiary : TaskActivityType("video_diary", TaskIdentifiers.VIDEO_DIARY)
+    object GaitTask : TaskActivityType("gait_task", TaskIdentifiers.GAIT)
+    object WalkTask : TaskActivityType("walk_task", TaskIdentifiers.FITNESS)
 
 
     companion object {
 
-        fun fromType(type: String): Option<TaskActivityType> =
+        fun fromType(type: String): TaskActivityType? =
             when (type) {
-                VideoDiary.typeId -> VideoDiary.some()
-                GaitTask.typeId -> GaitTask.some()
-                WalkTask.typeId -> WalkTask.some()
-                else -> None
+                VideoDiary.typeId -> VideoDiary
+                GaitTask.typeId -> GaitTask
+                WalkTask.typeId -> WalkTask
+                else -> null
             }
 
     }

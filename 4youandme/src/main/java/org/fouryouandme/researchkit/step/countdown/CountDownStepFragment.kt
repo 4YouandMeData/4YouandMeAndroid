@@ -10,38 +10,35 @@ import kotlinx.coroutines.delay
 import org.fouryouandme.R
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.startCoroutineAsync
-import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 
 class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
-
-    private var counterAnimator: ValueAnimator? = null
-    private var progressAnimator: ValueAnimator? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<Step.CountDownStep>(indexArg())
+            viewModel.getStepByIndexAs<CountDownStep>(indexArg())
 
         step?.let { applyData(it) }
     }
 
     private fun applyData(
-        step: Step.CountDownStep
+        step: CountDownStep
     ): Unit {
 
-        root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
+        root.setBackgroundColor(step.backgroundColor)
 
         title.text = step.title
-        title.setTextColor(step.configuration.theme.primaryTextColor.color())
+        title.setTextColor(step.titleColor)
 
-        description.setTextColor(step.configuration.theme.primaryTextColor.color())
+        description.text = step.description
+        description.setTextColor(step.descriptionColor)
 
-        counter.setTextColor(step.configuration.theme.primaryTextColor.color())
+        counter.setTextColor(step.counterColor)
 
         progress.progressTintList =
-            ColorStateList.valueOf(step.configuration.theme.primaryColorEnd.color())
+            ColorStateList.valueOf(step.counterProgressColor)
 
         startCoroutineAsync { startCounter(step.seconds) { next() } }
     }

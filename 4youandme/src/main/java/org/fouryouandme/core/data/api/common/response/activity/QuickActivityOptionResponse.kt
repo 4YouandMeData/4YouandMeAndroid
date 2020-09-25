@@ -1,10 +1,10 @@
 package org.fouryouandme.core.data.api.common.response.activity
 
-import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
+import org.fouryouandme.core.ext.decodeBase64ImageFx
 
 @JsonApi(type = "quick_activity_option")
 data class QuickActivityOptionResponse(
@@ -14,11 +14,11 @@ data class QuickActivityOptionResponse(
     @field:Json(name = "selected_image") val selectedImage: String? = null
 ) : Resource() {
 
-    fun toQuickActivityAnswer(): QuickActivityAnswer =
+    suspend fun toQuickActivityAnswer(): QuickActivityAnswer =
         QuickActivityAnswer(
             id,
-            label.toOption(),
-            image.toOption(),
-            selectedImage.toOption()
+            label,
+            image?.decodeBase64ImageFx()?.orNull(),
+            selectedImage?.decodeBase64ImageFx()?.orNull()
         )
 }

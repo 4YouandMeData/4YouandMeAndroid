@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.step_introduction.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.startCoroutineAsync
-import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import kotlin.math.roundToInt
 
@@ -21,16 +20,16 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<Step.IntroductionStep>(indexArg())
+            viewModel.getStepByIndexAs<IntroductionStep>(indexArg())
 
         step?.let { applyData(it) }
     }
 
     private fun applyData(
-        step: Step.IntroductionStep
+        step: IntroductionStep
     ): Unit {
 
-        root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
+        root.setBackgroundColor(step.backgroundColor)
 
         val lp = image.layoutParams
         val displayMetrics = DisplayMetrics()
@@ -46,14 +45,14 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         image.setBackgroundColor(Color.argb(255, 227, 227, 227))
 
         title.text = step.title
-        title.setTextColor(step.configuration.theme.primaryTextColor.color())
+        title.setTextColor(step.titleColor)
 
         description.text = step.description
-        description.setTextColor(step.configuration.theme.primaryTextColor.color())
+        description.setTextColor(step.descriptionColor)
 
-        next.background = button(step.configuration.theme.primaryColorEnd.color())
+        next.background = button(step.buttonColor)
         next.text = step.button
-        next.setTextColor(step.configuration.theme.secondaryColor.color())
+        next.setTextColor(step.buttonTextColor)
         next.setOnClickListener { startCoroutineAsync { next(step.close) } }
 
     }

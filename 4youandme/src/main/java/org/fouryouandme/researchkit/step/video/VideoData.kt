@@ -1,11 +1,10 @@
 package org.fouryouandme.researchkit.step.video
 
 import arrow.optics.optics
-import org.fouryouandme.researchkit.step.Step
 
 @optics
 data class VideoDiaryState(
-    val step: Step.VideoDiaryStep,
+    val step: VideoStep,
     val startRecordTimeSeconds: Long,
     val recordTimeSeconds: Long,
     val maxRecordTimeSeconds: Long,
@@ -17,17 +16,17 @@ data class VideoDiaryState(
     companion object
 }
 
-sealed class VideoDiaryStateUpdate {
+sealed class VideoStateUpdate {
 
     data class RecordTime(
         val time: Long,
-    ) : VideoDiaryStateUpdate()
+    ) : VideoStateUpdate()
 
-    data class Recording(val recordingState: RecordingState) : VideoDiaryStateUpdate()
+    data class Recording(val recordingState: RecordingState) : VideoStateUpdate()
 
-    data class Flash(val isFlashEnabled: Boolean) : VideoDiaryStateUpdate()
+    data class Flash(val isFlashEnabled: Boolean) : VideoStateUpdate()
 
-    data class Camera(val isBackCameraToggled: Boolean) : VideoDiaryStateUpdate()
+    data class Camera(val isBackCameraToggled: Boolean) : VideoStateUpdate()
 
 }
 
@@ -42,17 +41,17 @@ sealed class RecordingState {
 
 }
 
-sealed class VideoDiaryError {
+sealed class VideoError {
 
-    object Recording : VideoDiaryError()
-    object Merge : VideoDiaryError()
-    object Upload : VideoDiaryError()
+    object Recording : VideoError()
+    object Merge : VideoError()
+    object Upload : VideoError()
 
 }
 
-sealed class VideoDiaryLoading {
+sealed class VideoLoading {
 
-    object Merge : VideoDiaryLoading()
-    object Upload : VideoDiaryLoading()
+    object Merge : VideoLoading()
+    object Upload : VideoLoading()
 
 }

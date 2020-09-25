@@ -3,7 +3,6 @@ package org.fouryouandme.main.items
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import arrow.core.getOrElse
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
@@ -14,8 +13,8 @@ import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.decodeBase64Image
-import org.fouryouandme.core.ext.getOrEmpty
+import org.fouryouandme.core.ext.getOr
+import org.fouryouandme.core.ext.startCoroutine
 import org.threeten.bp.ZonedDateTime
 
 data class TaskActivityItem(
@@ -56,33 +55,36 @@ class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem)
 
     override fun bind(t: TaskActivityItem, position: Int) {
 
-        card_content.background =
-            t.data.gradient
-                .getOrElse {
-                    HEXGradient.from(
-                        t.configuration.theme.primaryColorStart,
-                        t.configuration.theme.primaryColorEnd
-                    )
-                }.drawable()
+        startCoroutine {
 
-        val bitmap = t.data.image.flatMap { it.decodeBase64Image() }
-        bitmap.map { image.setImageBitmap(it) }
-        image.isVisible = bitmap.isDefined()
+            card_content.background =
+                t.data.gradient
+                    .getOr {
+                        HEXGradient.from(
+                            t.configuration.theme.primaryColorStart,
+                            t.configuration.theme.primaryColorEnd
+                        )
+                    }.drawable()
 
-        title.text = t.data.title.getOrEmpty()
-        title.isVisible = t.data.title.isDefined()
-        title.setTextColor(t.configuration.theme.secondaryColor.color())
+            t.data.image?.let { image.setImageBitmap(it) }
+            image.isVisible = t.data.image != null
 
-        body.text = t.data.description.getOrEmpty()
-        body.isVisible = t.data.description.isDefined()
-        body.setTextColor(t.configuration.theme.secondaryColor.color())
+            title.text = t.data.title.orEmpty()
+            title.isVisible = t.data.title != null
+            title.setTextColor(t.configuration.theme.secondaryColor.color())
 
-        review.isVisible = t.data.activityType.isDefined()
-        review.text =
-            t.data.button.getOrElse { t.configuration.text.activity.activityButtonDefault }
-        review.setTextColor(t.configuration.theme.primaryTextColor.color())
-        review.background = button(t.configuration.theme.secondaryColor.color())
-        review.setOnClickListener { start(t) }
+            body.text = t.data.description.orEmpty()
+            body.isVisible = t.data.description != null
+            body.setTextColor(t.configuration.theme.secondaryColor.color())
+
+            review.isVisible = t.data.activityType != null
+            review.text =
+                t.data.button.getOr { t.configuration.text.activity.activityButtonDefault }
+            review.setTextColor(t.configuration.theme.primaryTextColor.color())
+            review.background = button(t.configuration.theme.secondaryColor.color())
+            review.setOnClickListener { start(t) }
+
+        }
 
     }
 

@@ -16,6 +16,9 @@ data class HEXColor(val hex: String) {
 
         fun transparent(): HEXColor = HEXColor("#00FFFFFF")
 
+        fun parse(color: Int): HEXColor =
+            HEXColor(String.format("#%08X", -0x1 and color))
+
     }
 }
 

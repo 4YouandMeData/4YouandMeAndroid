@@ -10,10 +10,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.arch.navigation.setupWithNavController
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.selectedUnselectedColor
+import org.fouryouandme.core.ext.*
 
 class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
@@ -29,29 +26,17 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
-                    is MainStateUpdate.Initialization ->
-                        setupNavigation(it.configuration)
                     is MainStateUpdate.PageNavigation ->
                         bottom_navigation.selectedItemId = it.selectedPage
                 }
             }
-
-        viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
-
-        viewModel.errorLiveData()
-            .observeEvent { error.setError(it.error) { viewModel.initialize(rootNavController()) } }
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration
-            .fold(
-                { viewModel.initialize(rootNavController()) },
-                { setupNavigation(it) }
-            )
+        configuration { evalOnMain { setupNavigation(it) } }
     }
 
     private fun setupNavigation(configuration: Configuration): Unit {
@@ -100,7 +85,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
     override fun onDestroyView() {
 
-        viewModel.setRestorePage(bottom_navigation.selectedItemId)
+        startCoroutineAsync { viewModel.setRestorePage(bottom_navigation.selectedItemId) }
 
         super.onDestroyView()
     }

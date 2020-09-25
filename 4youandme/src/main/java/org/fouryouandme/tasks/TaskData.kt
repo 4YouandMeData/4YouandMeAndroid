@@ -2,13 +2,11 @@ package org.fouryouandme.tasks
 
 import arrow.optics.optics
 import org.fouryouandme.core.arch.navigation.NavigationAction
-import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.task.Task
 
 @optics
 data class TaskState(
-    val configuration: Configuration,
     val task: Task,
     val isCancelled: Boolean,
     val result: TaskResult
@@ -19,7 +17,6 @@ data class TaskState(
 sealed class TaskStateUpdate {
 
     data class Initialization(
-        val configuration: Configuration,
         val task: Task
     ) : TaskStateUpdate()
 

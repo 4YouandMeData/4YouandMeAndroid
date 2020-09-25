@@ -23,18 +23,17 @@ import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.permission.Permission
 import org.fouryouandme.core.permission.PermissionError
 import org.fouryouandme.core.permission.requestMultiplePermission
-import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 import java.io.File
 
 
-class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
+class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private val mediaController: MediaController by lazy { MediaController(requireContext()) }
 
-    private val videoDiaryViewModel: VideoDiaryViewModel by lazy {
+    private val videoViewModel: VideoViewModel by lazy {
         viewModelFactory(this, getFactory {
-            VideoDiaryViewModel(
+            VideoViewModel(
                 navigator,
                 IORuntime,
                 injector.taskModule()
@@ -47,63 +46,63 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         getVideoDirectory().deleteRecursively()
 
-        videoDiaryViewModel.stateLiveData()
+        videoViewModel.stateLiveData()
             .observeEvent {
 
                 when (it) {
-                    is VideoDiaryStateUpdate.RecordTime -> bindRecordingHeader()
-                    is VideoDiaryStateUpdate.Recording -> {
+                    is VideoStateUpdate.RecordTime -> bindRecordingHeader()
+                    is VideoStateUpdate.Recording -> {
                         bindRecordingState(it.recordingState)
                         bindRecordingHeader()
                     }
-                    is VideoDiaryStateUpdate.Flash ->
+                    is VideoStateUpdate.Flash ->
                         bindFlash(it.isFlashEnabled)
-                    is VideoDiaryStateUpdate.Camera ->
+                    is VideoStateUpdate.Camera ->
                         bindCamera(it.isBackCameraToggled)
                 }
 
             }
 
-        videoDiaryViewModel.errorLiveData()
+        videoViewModel.errorLiveData()
             .observeEvent {
 
                 when (it.cause) {
-                    VideoDiaryError.Recording ->
+                    VideoError.Recording ->
                         errorToast(it.error.message(requireContext()))
-                    VideoDiaryError.Merge ->
+                    VideoError.Merge ->
                         errorToast(it.error.message(requireContext()))
-                    VideoDiaryError.Upload ->
+                    VideoError.Upload ->
                         errorToast(it.error.message(requireContext()))
                 }
 
             }
 
-        videoDiaryViewModel.loadingLiveData()
+        videoViewModel.loadingLiveData()
             .observeEvent {
                 when (it.task) {
-                    VideoDiaryLoading.Merge -> loading.setVisibility(it.active)
-                    VideoDiaryLoading.Upload -> loading.setVisibility(it.active)
+                    VideoLoading.Merge -> loading.setVisibility(it.active)
+                    VideoLoading.Upload -> loading.setVisibility(it.active)
                 }
             }
 
         startCoroutineAsync {
 
-            if (videoDiaryViewModel.isInitialized().not()) {
+            if (videoViewModel.isInitialized().not()) {
 
                 val step =
-                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg())
+                    viewModel.getStepByIndexAs<VideoStep>(indexArg())
 
-                step?.let { videoDiaryViewModel.initialize(it) }
+                step?.let { videoViewModel.initialize(it) }
 
             }
 
-            setupCamera(videoDiaryViewModel.state().step)
+            setupCamera(videoViewModel.state().step)
         }
 
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun setupCamera(step: Step.VideoDiaryStep): Unit {
+    private suspend fun setupCamera(step: VideoStep): Unit {
 
         val permsission =
             requestMultiplePermission(requireContext(), Permission.Camera, Permission.RecordAudio)
@@ -133,7 +132,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private suspend fun handleMissingPermission(
         permission: Permission,
-        step: Step.VideoDiaryStep
+        step: VideoStep
     ): Unit {
 
         when (permission) {
@@ -168,7 +167,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 .setMessage(description)
                 .setPositiveButton(settings) { _, _ ->
                     startCoroutineAsync {
-                        videoDiaryViewModel.permissionSettings()
+                        videoViewModel.permissionSettings()
                         viewModel.close(taskNavController())
                     }
                 }
@@ -186,12 +185,12 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
         startCoroutineAsync {
 
-            if (videoDiaryViewModel.isInitialized().not()) {
+            if (videoViewModel.isInitialized().not()) {
 
                 val step =
-                    viewModel.getStepByIndexAs<Step.VideoDiaryStep>(indexArg())
+                    viewModel.getStepByIndexAs<VideoStep>(indexArg())
 
-                step?.let { videoDiaryViewModel.initialize(it) }
+                step?.let { videoViewModel.initialize(it) }
 
             }
 
@@ -203,17 +202,17 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun setupUI(): Unit {
 
-        val step = videoDiaryViewModel.state().step
+        val step = videoViewModel.state().step
 
         title.setTextColor(step.titleColor)
 
         camera_toggle.setImageResource(imageConfiguration.videoDiaryToggleCamera())
         camera_toggle.setOnClickListener {
-            startCoroutineAsync { videoDiaryViewModel.toggleCamera() }
+            startCoroutineAsync { videoViewModel.toggleCamera() }
         }
 
         flash_toggle.setOnClickListener {
-            startCoroutineAsync { videoDiaryViewModel.toggleFlash() }
+            startCoroutineAsync { videoViewModel.toggleFlash() }
         }
 
         record_info.background =
@@ -253,15 +252,15 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         submit.setTextColor(step.buttonTextColor)
         submit.setOnClickListener {
             startCoroutineAsync {
-                videoDiaryViewModel.submit(viewModel.state().task.identifier, getVideoMergeFile())
+                videoViewModel.submit(viewModel.state().task.identifier, getVideoMergeFile())
             }
         }
         submit.text = step.submitButton
 
-        bindRecordingState(videoDiaryViewModel.state().recordingState)
+        bindRecordingState(videoViewModel.state().recordingState)
         bindRecordingHeader()
-        bindFlash(videoDiaryViewModel.state().isFlashEnabled)
-        bindCamera(videoDiaryViewModel.state().isBackCameraToggled)
+        bindFlash(videoViewModel.state().isFlashEnabled)
+        bindCamera(videoViewModel.state().isBackCameraToggled)
 
         taskFragment().toolbar.apply { hide() }
 
@@ -269,7 +268,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun bindRecordingState(state: RecordingState): Unit {
 
-        val step = videoDiaryViewModel.state().step
+        val step = videoViewModel.state().step
 
         when (state) {
             RecordingState.Recording -> {
@@ -279,14 +278,14 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 video_view.isVisible = false
 
-                flash_toggle.isVisible = videoDiaryViewModel.state().isBackCameraToggled
+                flash_toggle.isVisible = videoViewModel.state().isBackCameraToggled
                 camera_toggle.isVisible = false
 
                 recording_pause.setImageResource(step.pauseImage)
 
                 recording_pause.setOnClickListener {
 
-                    startCoroutineAsync { videoDiaryViewModel.pause() }
+                    startCoroutineAsync { videoViewModel.pause() }
                     pause()
 
                 }
@@ -302,7 +301,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 video_view.isVisible = false
 
-                flash_toggle.isVisible = videoDiaryViewModel.state().isBackCameraToggled
+                flash_toggle.isVisible = videoViewModel.state().isBackCameraToggled
                 camera_toggle.isVisible = true
 
                 recording_pause.setImageResource(step.recordImage)
@@ -310,27 +309,27 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 recording_title.text = step.startRecordingDescription
 
                 val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state().recordTimeSeconds)
                 val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state().maxRecordTimeSeconds)
 
                 val recordTimeLabel =
                     "$currentRecordTime/$maxRecordTime"
 
                 recording_time.text = recordTimeLabel
 
-                recording_progress.max = videoDiaryViewModel.state().maxRecordTimeSeconds.toInt()
-                recording_progress.progress = videoDiaryViewModel.state().recordTimeSeconds.toInt()
+                recording_progress.max = videoViewModel.state().maxRecordTimeSeconds.toInt()
+                recording_progress.progress = videoViewModel.state().recordTimeSeconds.toInt()
 
                 recording_pause.setOnClickListener {
 
                     val file = createVideoFile()
-                    startCoroutineAsync { videoDiaryViewModel.record(file.absolutePath) }
+                    startCoroutineAsync { videoViewModel.record(file.absolutePath) }
                     record(file)
 
                 }
 
-                review.isEnabled = videoDiaryViewModel.state().recordTimeSeconds > 0
+                review.isEnabled = videoViewModel.state().recordTimeSeconds > 0
 
                 record_info.isVisible = true
                 review_info.isVisible = false
@@ -353,7 +352,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 video_view.setOnPreparedListener {
                     review_loading.setVisibility(isVisible = false, opaque = false)
                     it.isLooping = true
-                    startCoroutineAsync { videoDiaryViewModel.reviewPause() }
+                    startCoroutineAsync { videoViewModel.reviewPause() }
 
                 }
             }
@@ -369,9 +368,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 recording_title.text = step.startRecordingDescription
 
                 val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state().recordTimeSeconds)
                 val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state().maxRecordTimeSeconds)
                 recording_title.text = step.startRecordingDescription
 
                 val recordTimeLabel =
@@ -387,7 +386,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 review_pause.setOnClickListener {
                     startCoroutineAsync {
                         video_view.start()
-                        videoDiaryViewModel.reviewPlay()
+                        videoViewModel.reviewPlay()
                     }
                 }
 
@@ -413,7 +412,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                 review_pause.setOnClickListener {
                     startCoroutineAsync {
                         video_view.pause()
-                        videoDiaryViewModel.reviewPause()
+                        videoViewModel.reviewPause()
                     }
                 }
 
@@ -428,13 +427,13 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun bindRecordingHeader(): Unit {
 
-        when (videoDiaryViewModel.state().recordingState) {
+        when (videoViewModel.state().recordingState) {
             RecordingState.Recording -> {
 
                 val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().recordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state().recordTimeSeconds)
                 val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoDiaryViewModel.state().maxRecordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state().maxRecordTimeSeconds)
 
                 val recordTimeLabel =
                     "$currentRecordTime/$maxRecordTime"
@@ -443,9 +442,9 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
             }
             RecordingState.RecordingPause ->
-                title.text = videoDiaryViewModel.state().step.title
+                title.text = videoViewModel.state().step.title
             RecordingState.Review ->
-                title.text = videoDiaryViewModel.state().step.title
+                title.text = videoViewModel.state().step.title
         }
     }
 
@@ -455,8 +454,8 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         startCoroutine { Either.catch { camera.enableTorch(isFlashEnabled) } }
 
         flash_toggle.setImageResource(
-            if (isFlashEnabled) videoDiaryViewModel.state().step.flashOnImage
-            else videoDiaryViewModel.state().step.flashOffImage
+            if (isFlashEnabled) videoViewModel.state().step.flashOnImage
+            else videoViewModel.state().step.flashOffImage
         )
 
     }
@@ -487,7 +486,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
 
                 override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
 
-                    startCoroutineAsync { videoDiaryViewModel.pause() }
+                    startCoroutineAsync { videoViewModel.pause() }
 
                 }
 
@@ -497,7 +496,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
                     cause: Throwable?
                 ) {
 
-                    startCoroutineAsync { videoDiaryViewModel.handleRecordError() }
+                    startCoroutineAsync { videoViewModel.handleRecordError() }
 
                 }
 
@@ -520,7 +519,7 @@ class VideoDiaryStepFragment : StepFragment(R.layout.step_video_diary) {
         if (mergeDirectory.exists().not())
             mergeDirectory.mkdir()
 
-        videoDiaryViewModel.merge(
+        videoViewModel.merge(
             getVideoDirectoryPath(),
             mergeDirectory.absolutePath,
             getVideoMergeFileName()
