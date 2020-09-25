@@ -11,6 +11,7 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.navigation.ParentNavController
+import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.ext.unsafeRunAsync
@@ -34,6 +35,7 @@ class AboutYouViewModel(
 
     suspend fun initialize(): Unit {
 
+        //TODO: handle AuthError
         val configuration =
             configurationModule.getConfiguration(CachePolicy.MemoryFirst)
 
@@ -52,10 +54,10 @@ class AboutYouViewModel(
     /* --- navigation --- */
 
     suspend fun back(
-        parentNavController: ParentNavController,
+        aboutYouSectionNavController: AboutYouSectionNavController,
         aboutYouNavController: AboutYouNavController
     ): Unit {
-        if (navigator.back(parentNavController).not())
+        if (navigator.back(aboutYouSectionNavController).not())
             navigator.back(aboutYouNavController)
     }
 }

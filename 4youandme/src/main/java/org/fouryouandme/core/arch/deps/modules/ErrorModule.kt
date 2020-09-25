@@ -17,7 +17,7 @@ suspend fun <T> ErrorModule.unwrapToEither(
 ): Either<FourYouAndMeError, T> =
     Either.catch(block).mapLeft { it.toFourYouAndMeError(this, text) }
 
-suspend fun <T> Either<FourYouAndMeError, T?>.noneToError(
+suspend fun <T> Either<FourYouAndMeError, T?>.nullToError(
     error: FourYouAndMeError? = null
 ): Either<FourYouAndMeError, T> =
     fold(

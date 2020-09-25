@@ -10,9 +10,16 @@ import retrofit2.http.Path
 
 interface ConsentReviewApi {
 
+    @Deprecated(message = "use suspend version")
     @GET("api/v1/studies/{study_id}/consent")
     fun getConsent(
         @Header(Headers.AUTH) token: String,
         @Path("study_id") studyId: String
     ): CallK<ObjectDocument<ConsentReviewResponse>>
+
+    @GET("api/v1/studies/{study_id}/consent")
+    suspend fun getConsentFx(
+        @Header(Headers.AUTH) token: String,
+        @Path("study_id") studyId: String
+    ): ObjectDocument<ConsentReviewResponse>
 }

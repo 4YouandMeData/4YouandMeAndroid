@@ -10,17 +10,30 @@ import kotlinx.android.synthetic.main.about_you_menu.root
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.*
 import org.fouryouandme.core.arch.android.BaseFragment
+import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
 
-class AboutYouMenuFragment : AboutYouSectionFragment(R.layout.about_you_menu) {
+class AboutYouMenuFragment :
+    AboutYouSectionFragment<AboutYouMenuViewModel>(R.layout.about_you_menu) {
+    override val viewModel: AboutYouMenuViewModel by lazy {
+        viewModelFactory(
+            this,
+            getFactory {
+                AboutYouMenuViewModel(
+                    navigator,
+                    IORuntime,
+                )
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
+        aboutYouViewModel.stateLiveData()
             .observeEvent {
                 when (it) {
                     is AboutYouStateUpdate.Initialization -> applyConfiguration(it.configuration)
@@ -33,12 +46,8 @@ class AboutYouMenuFragment : AboutYouSectionFragment(R.layout.about_you_menu) {
 
         setupView()
 
-        startCoroutineAsync {
-            if (viewModel.isInitialized().not()) {
-                viewModel.initialize()
-            }
-
-            evalOnMain { applyConfiguration(viewModel.state().configuration) }
+        if (aboutYouViewModel.isInitialized()) {
+            applyConfiguration(aboutYouViewModel.state().configuration)
         }
     }
 
@@ -52,7 +61,7 @@ class AboutYouMenuFragment : AboutYouSectionFragment(R.layout.about_you_menu) {
                 it.showCloseSecondaryButton(imageConfiguration)
                 {
                     startCoroutineAsync {
-                        viewModel.back(aboutYouMenuNavController(), aboutYouNavController())
+                        aboutYouViewModel.back(aboutYouSectionNavController(), aboutYouNavController())
                     }
                 }
             }
@@ -95,7 +104,11 @@ class AboutYouMenuFragment : AboutYouSectionFragment(R.layout.about_you_menu) {
             configuration.text.profile.thirdItem
         )
 
-        thirdItem.setOnClickListener { Log.d("item clicked", "Review Consent clicked") }
+        thirdItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouReviewConsentPage(aboutYouSectionNavController())
+            }
+        }
 
         fourthItem.applyData(
             configuration,
@@ -108,5 +121,4 @@ class AboutYouMenuFragment : AboutYouSectionFragment(R.layout.about_you_menu) {
         disclaimer.text = configuration.text.profile.disclaimer
     }
 
-    fun aboutYouMenuNavController() = AboutYouMenuNavController(findNavController())
 }

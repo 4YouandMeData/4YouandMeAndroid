@@ -1,5 +1,6 @@
 package org.fouryouandme.aboutyou
 
+import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 
 
@@ -18,3 +19,7 @@ sealed class AboutYouLoading {
 sealed class AboutYouError {
     object Initialization : AboutYouError()
 }
+
+/* --- navigation --- */
+
+object AboutYouMenuPageToAboutYouReviewConsentPage : NavigationAction

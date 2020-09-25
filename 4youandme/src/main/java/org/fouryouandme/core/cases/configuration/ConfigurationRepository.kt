@@ -8,7 +8,7 @@ import arrow.fx.coroutines.evalOn
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
-import org.fouryouandme.core.arch.deps.modules.noneToError
+import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -54,7 +54,7 @@ object ConfigurationRepository {
         val configuration =
             errorModule.unwrapToEither { api.getConfigurationFx(environment.studyId()) }
                 .map { it.toConfiguration().orNull() }
-                .noneToError()
+                .nullToError()
 
         configuration.map {
 

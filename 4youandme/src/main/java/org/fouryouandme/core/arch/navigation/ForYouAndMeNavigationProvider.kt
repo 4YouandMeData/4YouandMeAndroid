@@ -1,5 +1,6 @@
 package org.fouryouandme.core.arch.navigation
 
+import org.fouryouandme.aboutyou.AboutYouMenuPageToAboutYouReviewConsentPage
 import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
@@ -131,6 +132,9 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
             is MainPageToHtmlDetailsPage ->
                 mainPageToHtmlDetailsPage(action.pageId)
+
+            is AboutYouMenuPageToAboutYouReviewConsentPage ->
+                aboutYouMenuPageToAboutYouReviewConsentPage()
 
             else -> {
                 {}

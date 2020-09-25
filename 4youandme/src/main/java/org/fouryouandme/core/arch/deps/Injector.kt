@@ -2,10 +2,7 @@ package org.fouryouandme.core.arch.deps
 
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
-import org.fouryouandme.core.arch.deps.modules.AuthModule
-import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
-import org.fouryouandme.core.arch.deps.modules.ErrorModule
-import org.fouryouandme.core.arch.deps.modules.TaskModule
+import org.fouryouandme.core.arch.deps.modules.*
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
 import org.fouryouandme.core.data.api.common.AnswerApi
@@ -86,5 +83,13 @@ interface Injector {
             environment,
             errorModule(),
             authModule()
+        )
+
+    fun consentReviewModule(): ConsentReviewModule =
+        ConsentReviewModule(
+            consentReviewApi,
+            errorModule(),
+            authModule(),
+            environment
         )
 }

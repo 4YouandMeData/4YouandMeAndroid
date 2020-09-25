@@ -48,17 +48,15 @@ class StudyInfoViewModel(
 
     /* --- navigation --- */
 
-    fun aboutYouPage(navController: RootNavController): Unit =
+    suspend fun aboutYouPage(navController: RootNavController): Unit =
         navigator.navigateTo(
-            runtime,
             navController,
             MainPageToAboutYouPage
-        ).unsafeRunAsync()
+        )
 
-    fun detailsPage(navController: RootNavController, pageId: Int): Unit =
+    suspend fun detailsPage(navController: RootNavController, pageId: Int): Unit =
         navigator.navigateTo(
-            runtime,
             navController,
             MainPageToHtmlDetailsPage(pageId)
-        ).unsafeRunAsync()
+        )
 }

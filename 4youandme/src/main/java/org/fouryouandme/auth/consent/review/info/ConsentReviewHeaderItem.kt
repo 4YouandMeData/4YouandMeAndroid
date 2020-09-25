@@ -2,6 +2,7 @@ package org.fouryouandme.auth.consent.review.info
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
@@ -15,7 +16,7 @@ data class ConsentReviewHeaderItem(
     val configuration: Configuration,
     val title: String,
     val body: String,
-    val subtitle: String
+    val subtitle: String,
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -37,13 +38,13 @@ data class ConsentReviewHeaderItem(
 }
 
 fun ConsentReview.toConsentReviewHeaderItem(
-    configuration: Configuration
+    configuration: Configuration,
 ): ConsentReviewHeaderItem =
     ConsentReviewHeaderItem(
         configuration,
         title,
         body,
-        pagesSubtitle
+        pagesSubtitle,
     )
 
 class ConsentReviewHeaderViewHolder(
