@@ -2,9 +2,12 @@ package org.fouryouandme.aboutyou.appsanddevices
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.about_you_menu.root
 import kotlinx.android.synthetic.main.apps_and_devices.*
-import kotlinx.android.synthetic.main.html_detail.*
 import kotlinx.android.synthetic.main.html_detail.backArrow
 import kotlinx.android.synthetic.main.html_detail.detailsToolbar
 import kotlinx.android.synthetic.main.html_detail.title
@@ -32,6 +35,10 @@ class AboutYouAppsAndDevicesFragment :
 
     }
 
+    private val adapter: DroidAdapter by lazy {
+        DroidAdapter(AppAndDeviceViewHolder.factory())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,6 +52,8 @@ class AboutYouAppsAndDevicesFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
 
         if (aboutYouViewModel.isInitialized()) {
             applyConfiguration(aboutYouViewModel.state().configuration)
@@ -70,20 +79,30 @@ class AboutYouAppsAndDevicesFragment :
         title.setTextColor(configuration.theme.secondaryColor.color())
         title.text = configuration.text.profile.secondItem
 
-        firstItem.applyData(
-            configuration,
-            requireContext().imageConfiguration.fitbit(),
-            "Garmin",
-            ""
-        )
+        adapter.submitList(viewModel.getAppAndDevices(configuration, imageConfiguration))
+    }
 
-        secondItem.applyData(
-            configuration,
-            requireContext().imageConfiguration.oura(),
-            "Oura",
-            ""
-        )
+    private fun setupRecyclerView() {
 
+        recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        recycler_view.adapter = adapter
+
+        recycler_view.addItemDecoration(
+            LinearMarginItemDecoration(
+                {
+                    if (it.index == 0) 50.dpToPx()
+                    else 30.dpToPx()
+                },
+                { 20.dpToPx() },
+                { 20.dpToPx() },
+                {
+                    if (it.index == it.itemCount) 30.dpToPx()
+                    else 0.dpToPx()
+                }
+            )
+        )
 
     }
 }
