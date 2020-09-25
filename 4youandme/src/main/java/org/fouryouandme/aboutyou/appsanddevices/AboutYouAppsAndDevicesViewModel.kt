@@ -18,14 +18,16 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
                 "1",
                 "Garmin",
                 imageConfiguration.fitbit(),
-                true
+                true,
+                ""
             ),
             AppAndDeviceItem(
                 configuration,
                 "2",
                 "Oura",
                 imageConfiguration.oura(),
-                false
+                false,
+                ""
             )
         )
 
