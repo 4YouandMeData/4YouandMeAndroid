@@ -54,10 +54,10 @@ class AboutYouViewModel(
     /* --- navigation --- */
 
     suspend fun back(
-        aboutYouSectionNavController: AboutYouSectionNavController,
-        aboutYouNavController: AboutYouNavController
+        aboutYouNavController: AboutYouNavController,
+        rootNavController: RootNavController
     ): Unit {
-        if (navigator.back(aboutYouSectionNavController).not())
-            navigator.back(aboutYouNavController)
+        if (navigator.back(aboutYouNavController).not())
+            navigator.back(rootNavController)
     }
 }

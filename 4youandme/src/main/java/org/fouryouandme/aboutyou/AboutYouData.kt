@@ -23,3 +23,5 @@ sealed class AboutYouError {
 /* --- navigation --- */
 
 object AboutYouMenuPageToAboutYouReviewConsentPage : NavigationAction
+
+object AboutYouMenuPageToAppsAndDevicesPage : NavigationAction

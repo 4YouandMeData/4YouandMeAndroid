@@ -2,7 +2,8 @@ package org.fouryouandme.aboutyou.menu
 
 import arrow.fx.ForIO
 import org.fouryouandme.aboutyou.AboutYouMenuPageToAboutYouReviewConsentPage
-import org.fouryouandme.aboutyou.AboutYouSectionNavController
+import org.fouryouandme.aboutyou.AboutYouMenuPageToAppsAndDevicesPage
+import org.fouryouandme.aboutyou.AboutYouNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.Runtime
@@ -13,9 +14,15 @@ class AboutYouMenuViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
 
     /* --- navigation --- */
 
-    suspend fun toAboutYouReviewConsentPage(navController: AboutYouSectionNavController): Unit =
+    suspend fun toAboutYouReviewConsentPage(navController: AboutYouNavController): Unit =
         navigator.navigateTo(
             navController,
             AboutYouMenuPageToAboutYouReviewConsentPage
+        )
+
+    suspend fun toAboutYouAppsAndDevicesPage(navController: AboutYouNavController): Unit =
+        navigator.navigateTo(
+            navController,
+            AboutYouMenuPageToAppsAndDevicesPage
         )
 }

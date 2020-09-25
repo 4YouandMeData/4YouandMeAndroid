@@ -61,7 +61,7 @@ class AboutYouMenuFragment :
                 it.showCloseSecondaryButton(imageConfiguration)
                 {
                     startCoroutineAsync {
-                        aboutYouViewModel.back(aboutYouSectionNavController(), aboutYouNavController())
+                        aboutYouViewModel.back(aboutYouNavController(), rootNavController())
                     }
                 }
             }
@@ -96,7 +96,12 @@ class AboutYouMenuFragment :
             configuration.text.profile.secondItem
         )
 
-        secondItem.setOnClickListener { Log.d("item clicked", "Your Apps clicked") }
+        secondItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouAppsAndDevicesPage(aboutYouNavController())
+            }
+            Log.d("item clicked", "Your Apps clicked")
+        }
 
         thirdItem.applyData(
             configuration,
@@ -106,7 +111,7 @@ class AboutYouMenuFragment :
 
         thirdItem.setOnClickListener {
             startCoroutineAsync {
-                viewModel.toAboutYouReviewConsentPage(aboutYouSectionNavController())
+                viewModel.toAboutYouReviewConsentPage(aboutYouNavController())
             }
         }
 

@@ -114,7 +114,7 @@ class AboutYouReviewConsentFragment :
 
         toolbar.showBackButton(imageConfiguration) {
             startCoroutineAsync {
-                aboutYouViewModel.back(aboutYouSectionNavController(), aboutYouNavController())
+                aboutYouViewModel.back(aboutYouNavController(), rootNavController())
             }
         }
 

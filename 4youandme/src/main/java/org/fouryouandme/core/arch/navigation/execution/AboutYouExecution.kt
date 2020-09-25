@@ -7,3 +7,8 @@ fun aboutYouMenuPageToAboutYouReviewConsentPage(): NavigationExecution =
     {
         it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouReviewConsent())
     }
+
+fun aboutYouMenuPageToAboutYouAppsAndDevicesPage(): NavigationExecution =
+    {
+        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouAppsAndDevices())
+    }

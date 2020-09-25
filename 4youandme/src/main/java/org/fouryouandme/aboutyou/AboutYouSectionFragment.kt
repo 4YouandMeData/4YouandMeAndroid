@@ -25,8 +25,6 @@ open abstract class AboutYouSectionFragment<T : BaseViewModel<*, *, *, *, *>>(co
 
     private fun aboutYouFragment() : AboutYouFragment = find()
 
-    fun aboutYouNavController(): AboutYouNavController = aboutYouFragment().aboutYouNavController()
-
-    fun aboutYouSectionNavController(): AboutYouSectionNavController = AboutYouSectionNavController(findNavController())
+    fun aboutYouNavController(): AboutYouNavController = AboutYouNavController(findNavController())
 
 }

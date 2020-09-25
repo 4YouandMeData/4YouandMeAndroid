@@ -2,7 +2,6 @@ package org.fouryouandme.aboutyou
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -32,11 +31,9 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
 
         startCoroutineAsync {
 
-            if(viewModel.isInitialized().not())
+            if (viewModel.isInitialized().not())
                 viewModel.initialize()
 
         }
     }
-
-    fun aboutYouNavController() : AboutYouNavController = AboutYouNavController(findNavController())
 }
