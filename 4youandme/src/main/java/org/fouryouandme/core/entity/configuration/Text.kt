@@ -178,5 +178,6 @@ data class Profile(
     val disclaimer: String,
     val connect: String,
     val allow: String,
-    val allowed: String
+    val allowed: String,
+    val edit: String
 )

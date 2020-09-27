@@ -125,6 +125,7 @@ data class StringsResponse(
     @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
     @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
     @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
+    @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -392,7 +393,8 @@ data class StringsResponse(
                 aboutYouDisclaimer.toOption().bind(),
                 yourAppsAndDevicesConnect.toOption().bind(),
                 permissionsAllow.toOption().bind(),
-                permissionsAllowed.toOption().bind()
+                permissionsAllowed.toOption().bind(),
+                profileUserInfoButtonEdit.toOption().bind()
             )
         }
 }

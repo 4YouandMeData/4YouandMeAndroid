@@ -143,4 +143,12 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun pushNotification(): Int
+
+    /*--- your pregnancy ---*/
+
+    @DrawableRes
+    fun editContainer(): Int
+
+    @DrawableRes
+    fun pencil(): Int
 }
