@@ -1,7 +1,9 @@
 package org.fouryouandme.core.ext
 
-import arrow.core.Tuple2
-import arrow.core.toT
+import arrow.core.*
+
+fun <T> T?.getOr(block: () -> T): T =
+    this ?: block()
 
 fun <T, A> T?.fold(nullAction: () -> A, validAction: (T) -> A): A =
     if (this == null)
@@ -20,4 +22,7 @@ fun <T> T?.mapNull(block: () -> T): T = this ?: block()
 fun <T1, T2> mapNotNull(one: T1?, two: T2?): Tuple2<T1, T2>? =
     if (one != null && two != null) one toT two
     else null
+
+fun <T> T?.toEither(): Either<Unit, T> =
+    this?.right() ?: Unit.left()
 

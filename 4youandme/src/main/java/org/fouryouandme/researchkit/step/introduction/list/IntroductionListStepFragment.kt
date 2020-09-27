@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.introduction
+package org.fouryouandme.researchkit.step.introduction.list
 
 import android.os.Bundle
 import android.view.View
@@ -13,7 +13,6 @@ import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepFragment
 
 class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_list) {
@@ -31,17 +30,17 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<Step.IntroductionListStep>(indexArg())
+            viewModel.getStepByIndexAs<IntroductionListStep>(indexArg())
 
         step?.let { applyData(it) }
 
     }
 
     private fun applyData(
-        step: Step.IntroductionListStep
+        step: IntroductionListStep
     ): Unit {
 
-        root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
+        root.setBackgroundColor(step.backgroundColor)
 
         recycler_view.layoutManager =
             LinearLayoutManager(
@@ -51,7 +50,7 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
             )
 
         adapter.submitList(
-            listOf(IntroductionHeaderItem(step.title, step.image, step.configuration))
+            listOf(IntroductionHeaderItem(step.title, step.titleColor, step.image))
                 .plus(step.list)
         )
 
@@ -75,14 +74,14 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         shadow.background =
             HEXGradient.from(
                 HEXColor.transparent(),
-                step.configuration.theme.primaryTextColor
+                HEXColor.parse(step.shadowColor)
             ).drawable(0.3f)
 
-        footer.setBackgroundColor(step.configuration.theme.secondaryColor.color())
+        footer.setBackgroundColor(step.footerBackgroundColor)
 
-        next.background = button(step.configuration.theme.primaryColorEnd.color())
+        next.background = button(step.buttonColor)
         next.text = step.button
-        next.setTextColor(step.configuration.theme.secondaryColor.color())
+        next.setTextColor(step.buttonTextColor)
         next.setOnClickListener { startCoroutineAsync { next() } }
 
         taskFragment().toolbar.apply {
@@ -91,7 +90,7 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
                 startCoroutineAsync { viewModel.back(stepNavController(), taskNavController()) }
             }
 
-            setBackgroundColor(step.configuration.theme.secondaryColor.color())
+            setBackgroundColor(step.toolbarColor)
 
             show()
 

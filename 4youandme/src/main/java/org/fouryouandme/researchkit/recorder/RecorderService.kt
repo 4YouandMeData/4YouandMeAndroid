@@ -21,7 +21,8 @@ import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorderData
-import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.sensor.SensorRecorderTarget
+import org.fouryouandme.researchkit.step.sensor.SensorStep
 import org.fouryouandme.researchkit.task.Task
 import timber.log.Timber
 import java.io.File
@@ -46,7 +47,7 @@ open class RecorderService : BaseService(), RecorderListener {
         return START_NOT_STICKY
     }
 
-    private suspend fun bindTTS(step: Step.SensorStep): Unit =
+    private suspend fun bindTTS(step: SensorStep): Unit =
         evalOnMain {
             if (tts == null)
                 tts =
@@ -59,7 +60,7 @@ open class RecorderService : BaseService(), RecorderListener {
             }
         }
 
-    private suspend fun setupTTS(step: Step.SensorStep, status: Int): Unit =
+    private suspend fun setupTTS(step: SensorStep, status: Int): Unit =
         evalOnMain {
 
             if (status == TextToSpeech.SUCCESS) {
@@ -90,7 +91,7 @@ open class RecorderService : BaseService(), RecorderListener {
         }
 
     private suspend fun buildRecorderList(
-        step: Step.SensorStep,
+        step: SensorStep,
         outputDirectory: File
     ): List<Recorder> =
 
@@ -102,10 +103,10 @@ open class RecorderService : BaseService(), RecorderListener {
 
         }
 
-    private suspend fun setupTaskTimer(step: Step.SensorStep): Unit {
+    private suspend fun setupTaskTimer(step: SensorStep): Unit {
 
         when (step.target) {
-            is Step.SensorRecorderTarget.Time -> {
+            is SensorRecorderTarget.Time -> {
                 taskTimer =
                     startCoroutineCancellableAsync {
 
@@ -114,7 +115,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
                     }
             }
-            is Step.SensorRecorderTarget.Steps -> {
+            is SensorRecorderTarget.Steps -> {
                 state?.recorderList
                     ?.firstOrNull { it is PedometerRecorder }
                     ?.liveData()
@@ -147,7 +148,7 @@ open class RecorderService : BaseService(), RecorderListener {
     }
 
 
-    private suspend fun setupReadInstructions(step: Step.SensorStep): Unit {
+    private suspend fun setupReadInstructions(step: SensorStep): Unit {
 
         // play intro instruction
         step.spokenInstruction?.let { speakText(it) }
@@ -207,7 +208,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
         val notificationBuilder =
             NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("${task.identifier} Recording")
+                .setContentTitle("${task.type} Recording")
                 .setContentText("Recording")
                 .setContentIntent(contentIntent)
 
@@ -238,7 +239,7 @@ open class RecorderService : BaseService(), RecorderListener {
         return RecorderServiceBinder()
     }
 
-    private suspend fun onRecorderDurationFinished(step: Step.SensorStep) =
+    private suspend fun onRecorderDurationFinished(step: SensorStep) =
         evalOnMain {
 
             stopRecorder()
@@ -391,7 +392,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
         suspend fun bind(
             outputDirectory: File,
-            sensorStep: Step.SensorStep,
+            sensorStep: SensorStep,
             task: Task
         ): Unit {
 

@@ -69,11 +69,12 @@ dependencies {
     implementation(Libs.lifecycle_viewmodel_ktx)
     implementation(Libs.lifecycle_livedata_ktx)
     implementation(Libs.android_arch_lifecycle_extensions)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0")
 
     /* --- arrow --- */
 
     implementation(Libs.arrow_fx)
-    implementation("io.arrow-kt:arrow-fx-coroutines:0.11.0")
+    implementation(Libs.arrow_fx_coroutines)
     implementation(Libs.arrow_optics)
     implementation(Libs.arrow_syntax)
     implementation(Libs.arrow_integration_retrofit_adapter)

@@ -4,19 +4,36 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import arrow.fx.IO
 import arrow.fx.extensions.fx
+import org.fouryouandme.core.activity.FYAMViewModel
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
 import org.fouryouandme.core.arch.navigation.RootNavController
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.ext.*
 
 
 abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
 
     protected abstract val viewModel: T
+
+    protected val fyamViewModel: FYAMViewModel by lazy {
+
+        viewModelFactory(
+            requireActivity(),
+            getSavedFactory(requireActivity()) {
+                FYAMViewModel(
+                    navigator,
+                    IORuntime,
+                    it,
+                    injector.configurationModule()
+                )
+            }
+        )
+
+    }
 
     constructor() : super()
     constructor(contentLayoutId: Int) : super(contentLayoutId)
@@ -26,6 +43,7 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
 
         viewModel.activityActions()
             .observeEvent { it(requireActivity()) }
+
     }
 
     fun rootNavController(): RootNavController =
@@ -35,11 +53,29 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
         observe(this@BaseFragment, EventObserver(handlerId) { handle(it) })
 
     fun <A> LiveData<Event<A>>.observeEventPeek(handle: (A) -> Unit): Unit =
-        observe(this@BaseFragment, Observer { handle(it.peekContent()) })
+        observe(this@BaseFragment, { handle(it.peekContent()) })
 
     fun unbindServiceIO(serviceConnection: ServiceConnection): Unit =
 
         IO.fx { requireActivity().applicationContext.unbindService(serviceConnection) }
             .attempt()
             .unsafeRunAsync()
+
+    fun name(): String = this.javaClass.simpleName
+
+    suspend fun configuration(): Configuration =
+        if (fyamViewModel.isInitialized())
+            fyamViewModel.state().configuration
+        else
+            fyamViewModel.initialize().orNull()!!
+
+    fun configuration(block: suspend (Configuration) -> Unit): Unit =
+        startCoroutineAsync {
+
+            val configuration = configuration()
+
+            block(configuration)
+
+        }
+
 }

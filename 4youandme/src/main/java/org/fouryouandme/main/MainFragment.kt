@@ -10,10 +10,7 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.arch.navigation.setupWithNavController
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.selectedUnselectedColor
+import org.fouryouandme.core.ext.*
 
 class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
@@ -23,38 +20,16 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent {
-                when (it) {
-                    is MainStateUpdate.Initialization ->
-                        setupNavigation(it.configuration)
-                    is MainStateUpdate.PageNavigation ->
-                        bottom_navigation.selectedItemId = it.selectedPage
-                }
-            }
-
-        viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
-
-        viewModel.errorLiveData()
-            .observeEvent { error.setError(it.error) { viewModel.initialize(rootNavController()) } }
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration
-            .fold(
-                { viewModel.initialize(rootNavController()) },
-                { setupNavigation(it) }
-            )
+        configuration {
+            evalOnMain { setupNavigation(it) }
+        }
+
     }
 
-    private fun setupNavigation(configuration: Configuration): Unit {
+    private suspend fun setupNavigation(configuration: Configuration): Unit {
 
         bottom_navigation.menu.clear()
 
@@ -74,8 +49,6 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
             .add(Menu.NONE, R.id.study_info_navigation, Menu.NONE, configuration.text.tab.studyInfo)
             .setIcon(imageConfiguration.tabStudyInfo())
 
-        bottom_navigation.selectedItemId = viewModel.state().restorePage
-
         bottom_navigation.itemIconTintList =
             selectedUnselectedColor(
                 configuration.theme.primaryTextColor.color(),
@@ -89,19 +62,15 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
         val navGraphIds = viewModel.getPagedIds()
 
+        bottom_navigation.selectedItemId = viewModel.state().restorePage
+
         // Setup the bottom navigation view with a list of navigation graphs
         bottom_navigation.setupWithNavController(
             navGraphIds = navGraphIds,
             fragmentManager = childFragmentManager,
             containerId = R.id.main_nav_host_container,
             intent = requireActivity().intent
-        )
+        ) { startCoroutineAsync { viewModel.setRestorePage(it.itemId) } }
     }
 
-    override fun onDestroyView() {
-
-        viewModel.setRestorePage(bottom_navigation.selectedItemId)
-
-        super.onDestroyView()
-    }
 }

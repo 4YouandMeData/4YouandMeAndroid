@@ -4,14 +4,12 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
-import arrow.core.None
-import arrow.core.some
-import arrow.core.toOption
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.researchkit.task.TaskInjector
 import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskNavController
 import org.fouryouandme.tasks.TaskViewModel
@@ -21,7 +19,13 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
     override val viewModel by lazy {
         viewModelFactory(
             taskFragment(),
-            getFactory { TaskViewModel(navigator, IORuntime, injector.configurationModule()) }
+            getFactory {
+                TaskViewModel(
+                    navigator,
+                    IORuntime,
+                    (requireContext().applicationContext as TaskInjector).provideBuilder()
+                )
+            }
         )
     }
 
@@ -42,9 +46,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
 
     protected fun indexArg(): Int =
         arguments?.getInt(INDEX, -1)
-            .toOption()
-            .flatMap { if (it == -1) None else it.some() }
-            .orNull()!!
+            ?.let { if (it == -1) null else it }!!
 
     //TODO: FIX
     protected open suspend fun next(finish: Boolean = false): Unit {

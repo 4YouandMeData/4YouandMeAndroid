@@ -1,16 +1,25 @@
 ***REMOVED***
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fyam_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/fyam_root">
+    android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/navigation" />
+        app:defaultNavHost="true" />
+
+    <org.fouryouandme.core.arch.loading.LoadingView
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <org.fouryouandme.core.arch.error.ErrorView
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

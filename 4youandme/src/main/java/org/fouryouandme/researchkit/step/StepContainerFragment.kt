@@ -7,14 +7,12 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.*
-import org.fouryouandme.researchkit.step.countdown.CountDownStepFragment
-import org.fouryouandme.researchkit.step.end.EndStepFragment
-import org.fouryouandme.researchkit.step.introduction.IntroductionListStepFragment
-import org.fouryouandme.researchkit.step.introduction.IntroductionStepFragment
-import org.fouryouandme.researchkit.step.sensor.SensorStepFragment
-import org.fouryouandme.researchkit.step.start.StartStepFragment
-import org.fouryouandme.researchkit.step.video.VideoDiaryStepFragment
+import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.find
+import org.fouryouandme.core.ext.mapNotNull
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.researchkit.task.TaskInjector
+import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskViewModel
 
 class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
@@ -24,8 +22,14 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
     override val viewModel: TaskViewModel by lazy {
 
         viewModelFactory(
-            sectionParent(),
-            getFactory { TaskViewModel(navigator, IORuntime, injector.configurationModule()) }
+            taskFragment(),
+            getFactory {
+                TaskViewModel(
+                    navigator,
+                    IORuntime,
+                    (requireContext().applicationContext as TaskInjector).provideBuilder()
+                )
+            }
         )
 
     }
@@ -37,25 +41,7 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
             viewModel.getStepByIndex(args.index)
 
         val fragment =
-            step?.let {
-
-                when (it) {
-                    is Step.StartStep ->
-                        StartStepFragment()
-                    is Step.IntroductionStep ->
-                        IntroductionStepFragment()
-                    is Step.IntroductionListStep ->
-                        IntroductionListStepFragment()
-                    is Step.CountDownStep ->
-                        CountDownStepFragment()
-                    is Step.EndStep ->
-                        EndStepFragment()
-                    is Step.SensorStep ->
-                        SensorStepFragment()
-                    is Step.VideoDiaryStep ->
-                        VideoDiaryStepFragment()
-                }
-            }?.let { StepFragment.buildWithParams(args.index, it) }
+            step?.let { it.view() }?.let { StepFragment.buildWithParams(args.index, it) }
 
         mapNotNull(step, fragment)
             ?.let {
@@ -66,4 +52,6 @@ class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
 
             }
     }
+
+    private fun taskFragment(): TaskFragment = find()
 }

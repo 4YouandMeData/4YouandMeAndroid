@@ -1,77 +1,58 @@
 package org.fouryouandme.main.tasks
 
-import arrow.core.None
-import arrow.core.getOrElse
-import arrow.core.some
-import arrow.core.toOption
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.task.TaskUseCase
+import org.fouryouandme.core.cases.task.TaskUseCase.getTasks
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
-import org.fouryouandme.core.ext.foldToKindEither
-import org.fouryouandme.core.ext.mapResult
-import org.fouryouandme.core.ext.unsafeRunAsync
 import org.fouryouandme.main.items.*
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 class TasksViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val taskModule: TaskModule
 ) : BaseViewModel<
         ForIO,
         TasksState,
         TasksStateUpdate,
         TasksError,
         TasksLoading>
-    (TasksState(), navigator, runtime) {
+    (navigator = navigator, runtime = runtime) {
 
-    /* --- data --- */
+    /* --- initialize --- */
 
-    fun initialize(rootNavController: RootNavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun initialize(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Unit {
 
-            !showLoading(TasksLoading.Initialization)
+        showLoadingFx(TasksLoading.Initialization)
 
-            val data =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
-                    .bind()
-                    .foldToKindEither(runtime.fx) { config ->
-                        TaskUseCase.getTasks(runtime).mapResult(runtime.fx) { config to it }
-                    }
-                    .handleAuthError(runtime, rootNavController, navigator)
-
-            !data.fold(
-                { setError(it, TasksError.Initialization) },
+        taskModule.getTasks()
+            .handleAuthError(rootNavController, navigator)
+            .fold(
+                { setErrorFx(it, TasksError.Initialization) },
                 {
-
-                    val tasks = it.second.toItems(it.first)
-
-                    setState(
-                        state().copy(
-                            configuration = it.first.toOption(),
-                            tasks = tasks
-                        ),
-                        TasksStateUpdate.Initialization(it.first, tasks)
-                    )
+                    setStateFx(TasksState(it.toItems(configuration)))
+                    { TasksStateUpdate.Initialization(it.tasks) }
                 }
             )
 
-            !hideLoading(TasksLoading.Initialization)
+        hideLoadingFx(TasksLoading.Initialization)
 
-        }.unsafeRunAsync()
+    }
 
     private fun List<Task>.toItems(configuration: Configuration): List<DroidItem<Any>> {
 
@@ -84,7 +65,7 @@ class TasksViewModel(
             when (it.activity) {
                 is QuickActivity ->
                     quickActivities.add(
-                        QuickActivityItem(configuration, it.activity, None)
+                        QuickActivityItem(configuration, it.activity, null)
                     )
                 is TaskActivity ->
                     taskActivities.add(
@@ -145,7 +126,7 @@ class TasksViewModel(
 
                                 is QuickActivityItem ->
                                     if (it.data.id == item.data.id)
-                                        it.copy(selectedAnswer = answer.id.some())
+                                        it.copy(selectedAnswer = answer.id)
                                     else
                                         it
 
@@ -170,12 +151,14 @@ class TasksViewModel(
 
     /* --- navigation --- */
 
-    fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit =
-        runtime.fx.concurrent {
-
-            !task.data.activityType.map {
-                navigator.navigateTo(runtime, rootNavController, TasksToTask(task.data.id, it.type))
-            }.getOrElse { just(Unit) }
-
-        }.unsafeRunAsync()
+    suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
+        task.data.activityType?.let {
+            navigator.navigateTo(
+                rootNavController, TasksToTask(
+                    it.type,
+                    task.data.id
+                )
+            )
+        }
+    }
 }

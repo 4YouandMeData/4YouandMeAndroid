@@ -1,46 +1,45 @@
-package org.fouryouandme.researchkit.step.introduction
+package org.fouryouandme.researchkit.step.introduction.list
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.step_introduction_header_item.*
+import kotlinx.android.synthetic.main.step_introduction_item.*
 import org.fouryouandme.R
-import org.fouryouandme.core.entity.configuration.Configuration
 
-data class IntroductionHeaderItem(
+data class IntroductionItem(
     val title: String,
-    @DrawableRes val image: Int,
-    val configuration: Configuration
+    val titleColor: Int,
+    val description: String,
+    val descriptionColor: Int
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
-        compare<IntroductionHeaderItem> {
+        compare<IntroductionItem> {
             it.title == title &&
-                    it.image == image
+                    it.description == description
         }
 
     override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
-        compare<IntroductionHeaderItem> {
+        compare<IntroductionItem> {
             it.title == title &&
-                    it.image == image
+                    it.description == description
         }
 
 }
 
-class IntroductionHeaderViewHolder(
+class IntroductionViewHolder(
     parent: ViewGroup
-) : DroidViewHolder<IntroductionHeaderItem, Unit>(
+) : DroidViewHolder<IntroductionItem, Unit>(
     parent,
     { layoutInflater, viewGroup, b ->
         layoutInflater.inflate(
-            R.layout.step_introduction_header_item,
+            R.layout.step_introduction_item,
             viewGroup,
             b
         )
@@ -49,12 +48,13 @@ class IntroductionHeaderViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: IntroductionHeaderItem, position: Int) {
+    override fun bind(t: IntroductionItem, position: Int) {
 
         title.text = t.title
-        title.setTextColor(t.configuration.theme.primaryTextColor.color())
+        title.setTextColor(t.titleColor)
 
-        image.setImageResource(t.image)
+        description.text = t.description
+        description.setTextColor(t.descriptionColor)
 
     }
 
@@ -62,9 +62,10 @@ class IntroductionHeaderViewHolder(
 
         fun factory(): ViewHolderFactory =
             ViewHolderFactory(
-                { IntroductionHeaderViewHolder(it) },
-                { _, item -> item is IntroductionHeaderItem }
+                { IntroductionViewHolder(it) },
+                { _, item -> item is IntroductionItem }
             )
 
     }
+
 }

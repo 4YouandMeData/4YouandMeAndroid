@@ -8,8 +8,11 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.*
-import org.fouryouandme.researchkit.task.ETaskType
+import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.researchkit.task.TaskInjector
 
 class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
@@ -18,7 +21,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
             TaskViewModel(
                 navigator,
                 IORuntime,
-                injector.configurationModule()
+                (requireContext().applicationContext as TaskInjector).provideBuilder()
             )
         })
     }
@@ -42,9 +45,10 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         startCoroutineAsync {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(identifierArg(), typeArg())
+                viewModel.initialize(typeArg(), idArg())
 
             applyData()
+
         }
 
     }
@@ -61,24 +65,25 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
             val destination = R.id.step
             navGraph.startDestination = destination
             navController.graph = navGraph
+
         }
 
-    private fun identifierArg(): String = arguments?.getString(TASK_IDENTIFIER, null)!!
-
-    private fun typeArg(): ETaskType = arguments?.getSerializable(TASK_TYPE) as ETaskType
+    private fun typeArg(): String = arguments?.getString(TASK_TYPE, null)!!
+    private fun idArg(): String = arguments?.getString(TASK_ID, null)!!
 
     fun navController(): TaskNavController = TaskNavController(findNavController())
 
     companion object {
 
-        const val TASK_IDENTIFIER = "identifier"
         const val TASK_TYPE = "type"
 
-        fun getBundle(identifier: String, type: ETaskType): Bundle {
+        private const val TASK_ID = "id"
+
+        fun getBundle(type: String, id: String): Bundle {
 
             val bundle = Bundle()
-            bundle.putString(TASK_IDENTIFIER, identifier)
-            bundle.putSerializable(TASK_TYPE, type)
+            bundle.putString(TASK_TYPE, type)
+            bundle.putString(TASK_ID, id)
             return bundle
 
         }
