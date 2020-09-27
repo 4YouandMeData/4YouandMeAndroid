@@ -1,6 +1,5 @@
 package org.fouryouandme.aboutyou
 
-import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.configuration.Configuration
 

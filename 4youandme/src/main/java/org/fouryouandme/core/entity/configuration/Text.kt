@@ -175,5 +175,6 @@ data class Profile(
     val secondItem: String,
     val thirdItem: String,
     val fourthItem: String,
-    val disclaimer: String
+    val disclaimer: String,
+    val connect: String
 )

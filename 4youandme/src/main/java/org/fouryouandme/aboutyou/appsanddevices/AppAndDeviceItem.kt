@@ -39,7 +39,7 @@ class AppAndDeviceViewHolder(parent: ViewGroup, onItemClicked: (AppAndDeviceItem
     DroidViewHolder<AppAndDeviceItem, Unit>(parent, R.layout.device_item), LayoutContainer {
 
     init {
-        itemView.setOnClickListener{
+        itemView.setOnClickListener {
             onItemClicked(item)
         }
     }
@@ -52,10 +52,15 @@ class AppAndDeviceViewHolder(parent: ViewGroup, onItemClicked: (AppAndDeviceItem
         name.text = t.name
         name.setTextColor(t.configuration.theme.secondaryTextColor.color())
 
-        connect.setTextColor(t.configuration.theme.secondaryTextColor.color())
+        connect.text = t.configuration.text.profile.connect
 
-        //arrow.setImageResource(context.imageConfiguration.deactivatedButton())
-        arrow.setImageResource(context.imageConfiguration.signUpNextStep())
+        if (t.isConnected.not()) {
+            arrow.setImageResource(context.imageConfiguration.deactivatedButton())
+            connect.setTextColor(t.configuration.theme.primaryColorEnd.color())
+        } else {
+            arrow.setImageResource(context.imageConfiguration.signUpNextStep())
+            connect.setTextColor(t.configuration.theme.secondaryTextColor.color())
+        }
     }
 
     override val containerView: View? = itemView

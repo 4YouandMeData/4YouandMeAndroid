@@ -37,8 +37,11 @@ class AboutYouAppsAndDevicesFragment :
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(AppAndDeviceViewHolder.factory {
-            startCoroutineAsync {
-                viewModel.navigateToWeb(it.link, aboutYouNavController())
+
+            if (it.isConnected) {
+                startCoroutineAsync {
+                    viewModel.navigateToWeb(it.link, aboutYouNavController())
+                }
             }
         })
     }
