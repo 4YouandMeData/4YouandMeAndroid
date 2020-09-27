@@ -15,6 +15,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
     BaseViewModel<ForIO, Empty, Empty, Empty, Empty>(Empty, navigator, runtime) {
 
+    //TODO: Fill Apps and Devices list with data provided by API
     fun getAppAndDevices(configuration: Configuration, imageConfiguration: ImageConfiguration) =
         listOf(
             AppAndDeviceItem(
@@ -30,7 +31,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
                 "2",
                 "Oura",
                 imageConfiguration.oura(),
-                false,
+                true,
                 "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/oura"
             )
         )
