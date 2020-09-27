@@ -123,6 +123,8 @@ data class StringsResponse(
     @Json(name = "ABOUT_YOU_PERMISSIONS") val aboutYouPermissions: String? = null,
     @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
     @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
+    @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
+    @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -388,7 +390,9 @@ data class StringsResponse(
                 aboutYouReviewConsent.toOption().bind(),
                 aboutYouPermissions.toOption().bind(),
                 aboutYouDisclaimer.toOption().bind(),
-                yourAppsAndDevicesConnect.toOption().bind()
+                yourAppsAndDevicesConnect.toOption().bind(),
+                permissionsAllow.toOption().bind(),
+                permissionsAllowed.toOption().bind()
             )
         }
 }

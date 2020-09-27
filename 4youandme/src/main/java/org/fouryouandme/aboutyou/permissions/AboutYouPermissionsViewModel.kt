@@ -18,22 +18,19 @@ class AboutYouPermissionsViewModel(navigator: Navigator, runtime: Runtime<ForIO>
 
     fun getPermissions(configuration: Configuration, imageConfiguration: ImageConfiguration) =
         listOf(
-            Empty
-//            AppAndDeviceItem(
-//                configuration,
-//                "1",
-//                "Garmin",
-//                imageConfiguration.fitbit(),
-//                true,
-//                "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/garmin"
-//            ),
-//            AppAndDeviceItem(
-//                configuration,
-//                "2",
-//                "Oura",
-//                imageConfiguration.oura(),
-//                true,
-//                "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/oura"
-//            )
+            PermissionsItem(
+                configuration,
+                "1",
+                "The BUMP app needs access to your phone's location",
+                imageConfiguration.location(),
+                true
+            ),
+            PermissionsItem(
+                configuration,
+                "2",
+                "Push Notifications",
+                imageConfiguration.pushNotification(),
+                false
+            )
         )
 }

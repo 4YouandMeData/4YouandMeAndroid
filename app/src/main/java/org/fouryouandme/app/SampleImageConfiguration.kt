@@ -93,4 +93,8 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun oura(): Int = R.drawable.oura
 
     override fun deactivatedButton(): Int = R.drawable.button_circle_next_primary_deactivated
+
+    override fun location(): Int = R.drawable.location
+
+    override fun pushNotification(): Int = R.drawable.push_notifications
 }

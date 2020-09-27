@@ -86,7 +86,7 @@ class AboutYouPermissionsFragment :
         title.setTextColor(configuration.theme.secondaryColor.color())
         title.text = configuration.text.profile.fourthItem
 
-       // adapter.submitList(viewModel.getPermissions(configuration, imageConfiguration))
+        adapter.submitList(viewModel.getPermissions(configuration, imageConfiguration))
     }
 
     private fun setupRecyclerView() {

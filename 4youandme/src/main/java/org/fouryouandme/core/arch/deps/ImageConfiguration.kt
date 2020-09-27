@@ -135,4 +135,12 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun deactivatedButton(): Int
+
+    /*--- permissions item ---*/
+
+    @DrawableRes
+    fun location(): Int
+
+    @DrawableRes
+    fun pushNotification(): Int
 }

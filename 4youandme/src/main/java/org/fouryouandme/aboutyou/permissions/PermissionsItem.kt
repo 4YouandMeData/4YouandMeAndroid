@@ -1,5 +1,6 @@
 package org.fouryouandme.aboutyou.permissions
 
+import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
@@ -8,7 +9,7 @@ import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.device_item.*
+import kotlinx.android.synthetic.main.permission_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
 
@@ -47,15 +48,17 @@ class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) 
 
         icon.setImageResource(t.image)
 
-        name.text = t.description
-        name.setTextColor(t.configuration.theme.secondaryTextColor.color())
+        description.text = t.description
+        description.setTextColor(t.configuration.theme.secondaryTextColor.color())
 
-        connect.text = t.configuration.text.profile.connect
+        allow.paintFlags = allow.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
         if (t.isAllowed.not()) {
-            connect.setTextColor(t.configuration.theme.primaryColorEnd.color())
+            allow.text = t.configuration.text.profile.allow
+            allow.setTextColor(t.configuration.theme.secondaryTextColor.color())
         } else {
-            connect.setTextColor(t.configuration.theme.secondaryTextColor.color())
+            allow.text = t.configuration.text.profile.allowed
+            allow.setTextColor(t.configuration.theme.primaryColorEnd.color())
         }
     }
 
