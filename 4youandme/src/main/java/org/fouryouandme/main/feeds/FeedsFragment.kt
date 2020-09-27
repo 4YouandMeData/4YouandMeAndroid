@@ -10,6 +10,8 @@ import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.feeds.*
+import kotlinx.android.synthetic.main.feeds.title
+import kotlinx.android.synthetic.main.quick_activity_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -105,10 +107,11 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             ).drawable()
 
         title.text = "Week 12"
-        title.setTextColor(configuration.theme.secondaryTextColor.color()) // TODO: set alpha to 0.6
+        title.setTextColor(configuration.theme.secondaryTextColor.color())
 
         header_text.text = "2ND TRIMESTER"
-        header_text.setTextColor(configuration.theme.primaryColorStart.color())
+        header_text.setTextColor(configuration.theme.secondaryColor.color())
+        header_text.alpha = 0.5f
 
         logo.setImageResource(imageConfiguration.logoStudySecondary())
         logo.setOnClickListener {

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.feed_header_item.view.*
+import kotlinx.android.synthetic.main.quick_activity_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
 
@@ -20,8 +21,9 @@ class FeedHeaderItemView(context: Context, attrs: AttributeSet?) : FrameLayout(c
         configuration: Configuration,
         pointsRes: String
     ): Unit {
-        header.setTextColor(configuration.theme.secondaryTextColor.color()) // TODO: set alpha to 0.6
+        header.setTextColor(configuration.theme.secondaryColor.color())
         header.text = "TODAY"
+        header.alpha = 0.5f
 
         title.setTextColor(configuration.theme.secondaryTextColor.color())
         title.text = "Pregnancy Overview"
@@ -29,8 +31,9 @@ class FeedHeaderItemView(context: Context, attrs: AttributeSet?) : FrameLayout(c
         points_counter.setTextColor(configuration.theme.secondaryTextColor.color())
         points_counter.text = pointsRes
 
-        points_label.setTextColor(configuration.theme.secondaryTextColor.color()) // TODO: set alpha to 0.6
+        points_label.setTextColor(configuration.theme.secondaryColor.color())
         points_label.text = "points"
+        points_label.alpha = 0.5f
 
     }
 
