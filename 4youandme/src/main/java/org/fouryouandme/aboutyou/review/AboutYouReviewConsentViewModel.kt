@@ -87,14 +87,4 @@ class AboutYouReviewConsentViewModel(
         return items
 
     }
-
-    /* --- navigation --- */
-
-    suspend fun back(
-        parentNavController: ParentNavController,
-        aboutYouNavController: AboutYouNavController
-    ): Unit {
-        if (navigator.back(parentNavController).not())
-            navigator.back(aboutYouNavController)
-    }
 }

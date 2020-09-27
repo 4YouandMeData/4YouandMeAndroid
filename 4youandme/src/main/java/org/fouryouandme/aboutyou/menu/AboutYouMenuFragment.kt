@@ -1,16 +1,12 @@
 package org.fouryouandme.aboutyou.menu
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import arrow.core.toOption
 import kotlinx.android.synthetic.main.about_you_menu.*
 import kotlinx.android.synthetic.main.about_you_menu.root
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.*
-import org.fouryouandme.core.arch.android.BaseFragment
-import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
