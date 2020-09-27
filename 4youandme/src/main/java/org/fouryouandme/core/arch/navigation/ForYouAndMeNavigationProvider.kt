@@ -1,9 +1,6 @@
 package org.fouryouandme.core.arch.navigation
 
-import org.fouryouandme.aboutyou.AboutYouDataAppsAndDevicesToIntegrationLogin
-import org.fouryouandme.aboutyou.AboutYouMenuPageToAboutYouReviewConsentPage
-import org.fouryouandme.aboutyou.AboutYouMenuPageToAppsAndDevicesPage
-import org.fouryouandme.aboutyou.AboutYouMenuPageToPermissionsPage
+import org.fouryouandme.aboutyou.*
 import org.fouryouandme.auth.consent.informed.*
 import org.fouryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
 import org.fouryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
@@ -143,6 +140,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 aboutYouDataAppsAndDevicesToIntegrationLogin(action.url)
             is AboutYouMenuPageToPermissionsPage ->
                 aboutYouMenuPageToPermissionsPage()
+            is AboutYouMenuPageToUserInfoPage ->
+                aboutYouMenuPageToUserInfoPage()
 
             else -> {
                 {}

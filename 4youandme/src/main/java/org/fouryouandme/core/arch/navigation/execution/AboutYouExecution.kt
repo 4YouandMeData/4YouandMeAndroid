@@ -1,6 +1,5 @@
 package org.fouryouandme.core.arch.navigation.execution
 
-import org.fouryouandme.aboutyou.AboutYouFragmentDirections
 import org.fouryouandme.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragmentDirections
 import org.fouryouandme.aboutyou.menu.AboutYouMenuFragmentDirections
 import org.fouryouandme.core.arch.navigation.NavigationExecution
@@ -17,10 +16,20 @@ fun aboutYouMenuPageToAboutYouAppsAndDevicesPage(): NavigationExecution =
 
 fun aboutYouDataAppsAndDevicesToIntegrationLogin(url: String): NavigationExecution =
     {
-        it.navigate(AboutYouAppsAndDevicesFragmentDirections.actionAboutYouAppsAndDevicesToIntegrationLogin(url, null))
+        it.navigate(
+            AboutYouAppsAndDevicesFragmentDirections.actionAboutYouAppsAndDevicesToIntegrationLogin(
+                url,
+                null
+            )
+        )
     }
 
-fun aboutYouMenuPageToPermissionsPage() : NavigationExecution =
+fun aboutYouMenuPageToPermissionsPage(): NavigationExecution =
     {
         it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouPermissions())
+    }
+
+fun aboutYouMenuPageToUserInfoPage(): NavigationExecution =
+    {
+        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouUserInfo())
     }

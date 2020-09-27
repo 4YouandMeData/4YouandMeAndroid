@@ -88,7 +88,11 @@ class AboutYouMenuFragment :
             configuration.text.profile.firstItem
         )
 
-        firstItem.setOnClickListener { Log.d("item clicked", "Your Pregnancy clicked") }
+        firstItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouUserInfoPage(aboutYouNavController())
+            }
+        }
 
         secondItem.applyData(
             configuration,
