@@ -29,3 +29,5 @@ object AboutYouMenuPageToAppsAndDevicesPage : NavigationAction
 data class AboutYouDataAppsAndDevicesToIntegrationLogin(
     val url: String
 ) : NavigationAction
+
+object AboutYouMenuPageToPermissionsPage : NavigationAction

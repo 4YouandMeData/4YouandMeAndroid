@@ -100,7 +100,6 @@ class AboutYouMenuFragment :
             startCoroutineAsync {
                 viewModel.toAboutYouAppsAndDevicesPage(aboutYouNavController())
             }
-            Log.d("item clicked", "Your Apps clicked")
         }
 
         thirdItem.applyData(
@@ -121,7 +120,11 @@ class AboutYouMenuFragment :
             configuration.text.profile.fourthItem
         )
 
-        fourthItem.setOnClickListener { Log.d("item clicked", "Permissions clicked") }
+        fourthItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouPermissionsPage(aboutYouNavController())
+            }
+        }
 
         disclaimer.text = configuration.text.profile.disclaimer
     }

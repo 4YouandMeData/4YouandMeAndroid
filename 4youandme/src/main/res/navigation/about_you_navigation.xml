@@ -27,6 +27,14 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
 
+        <action
+            android:id="@+id/action_about_you_menu_to_about_you_permissions"
+            app:destination="@id/about_you_permissions"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"/>
+
     </fragment>
 
     <fragment
@@ -65,5 +73,10 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/about_you_permissions"
+        android:name="org.fouryouandme.aboutyou.permissions.AboutYouPermissionsFragment"
+        tools:layout="@layout/permissions"
+        android:label="about_you_permissions" />
 
 </navigation>
