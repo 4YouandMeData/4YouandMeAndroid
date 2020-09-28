@@ -10,6 +10,7 @@ import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
 import org.fouryouandme.core.data.api.consent.review.ConsentReviewApi
 import org.fouryouandme.core.data.api.consent.user.ConsentUserApi
+import org.fouryouandme.core.data.api.feed.FeedApi
 import org.fouryouandme.core.data.api.integration.IntegrationApi
 import org.fouryouandme.core.data.api.optins.OptInsApi
 import org.fouryouandme.core.data.api.screening.ScreeningApi
@@ -53,6 +54,7 @@ interface Injector {
     val integrationApi: IntegrationApi
     val taskApi: TaskApi
     val answerApi: AnswerApi
+    val feedApi: FeedApi
 
     /* --- modules --- */
 
@@ -91,5 +93,14 @@ interface Injector {
             errorModule(),
             authModule(),
             environment
+        )
+
+    fun feedModule(): FeedModule =
+        FeedModule(
+            feedApi,
+            moshi,
+            environment,
+            errorModule(),
+            authModule()
         )
 }

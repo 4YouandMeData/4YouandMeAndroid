@@ -7,12 +7,12 @@ import org.fouryouandme.main.tasks.TasksLoading
 import org.fouryouandme.main.tasks.TasksStateUpdate
 
 data class FeedsState(
-    val tasks: List<DroidItem<Any>> = emptyList()
+    val feeds: List<DroidItem<Any>> = emptyList()
 )
 
 sealed class FeedsStateUpdate {
     data class Initialization(
-        val tasks: List<DroidItem<Any>>
+        val feeds: List<DroidItem<Any>>
     ) : FeedsStateUpdate()
 }
 

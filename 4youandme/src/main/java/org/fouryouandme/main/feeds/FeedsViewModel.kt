@@ -5,11 +5,11 @@ import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
-import org.fouryouandme.core.arch.deps.modules.TaskModule
+import org.fouryouandme.core.arch.deps.modules.FeedModule
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
-import org.fouryouandme.core.cases.task.TaskUseCase.getTasks
+import org.fouryouandme.core.cases.feed.FeedUseCase.getFeeds
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
@@ -24,7 +24,7 @@ import org.threeten.bp.format.DateTimeFormatter
 class FeedsViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
-    private val taskModule: TaskModule
+    private val feedModule: FeedModule
 ) : BaseViewModel<
         ForIO,
         FeedsState,
@@ -42,13 +42,13 @@ class FeedsViewModel(
 
         showLoadingFx(FeedsLoading.Initialization)
 
-        taskModule.getTasks()
+        feedModule.getFeeds()
             .handleAuthError(rootNavController, navigator)
             .fold(
                 { setErrorFx(it, FeedsError.Initialization) },
                 {
                     setStateFx(FeedsState(it.toItems(configuration)))
-                    { FeedsStateUpdate.Initialization(it.tasks) }
+                    { FeedsStateUpdate.Initialization(it.feeds) }
                 }
             )
 
@@ -57,6 +57,8 @@ class FeedsViewModel(
     }
 
     private fun List<Task>.toItems(configuration: Configuration): List<DroidItem<Any>> {
+
+        // TODO: aggiungere header
 
         val quickActivities = mutableListOf<QuickActivityItem>()
 
@@ -114,7 +116,7 @@ class FeedsViewModel(
 
     private fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
 
-        state().tasks.map { droidItem ->
+        state().feeds.map { droidItem ->
             when (droidItem) {
                 is QuickActivitiesItem -> {
 

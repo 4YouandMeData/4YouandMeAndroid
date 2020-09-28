@@ -2,7 +2,6 @@ package org.fouryouandme.main.feeds
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.graphics.alpha
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +10,6 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.feeds.*
 import kotlinx.android.synthetic.main.feeds.title
-import kotlinx.android.synthetic.main.quick_activity_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -34,7 +32,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 FeedsViewModel(
                     navigator,
                     IORuntime,
-                    injector.taskModule()
+                    injector.feedModule()
                 )
             }
         )
@@ -47,6 +45,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory()
+
+            //TODO: aggiungere feeds
+        
         )
     }
 
@@ -57,7 +58,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             .observeEvent { state ->
                 when (state) {
                     is FeedsStateUpdate.Initialization ->
-                        configuration { applyData(it, state.tasks) }
+                        configuration { applyData(it, state.feeds) }
                 }
             }
 
@@ -88,7 +89,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 viewModel.initialize(rootNavController(), configuration())
 
 
-            evalOnMain { applyData(it, viewModel.state().tasks) }
+            evalOnMain { applyData(it, viewModel.state().feeds) }
 
         }
 
