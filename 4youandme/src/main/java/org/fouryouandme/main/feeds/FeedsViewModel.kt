@@ -47,7 +47,8 @@ class FeedsViewModel(
             .fold(
                 { setErrorFx(it, FeedsError.Initialization) },
                 {
-                    setStateFx(FeedsState(it.toItems(configuration)))
+                    setStateFx(FeedsState(it.toItems(configuration)
+                        .addHeader(configuration)))
                     { FeedsStateUpdate.Initialization(it.feeds) }
                 }
             )
@@ -57,8 +58,6 @@ class FeedsViewModel(
     }
 
     private fun List<Task>.toItems(configuration: Configuration): List<DroidItem<Any>> {
-
-        // TODO: aggiungere header
 
         val quickActivities = mutableListOf<QuickActivityItem>()
 
@@ -113,6 +112,9 @@ class FeedsViewModel(
         return items
 
     }
+
+    private fun List<DroidItem<Any>>.addHeader(configuration: Configuration): List<DroidItem<Any>> =
+        listOf(FeedHeaderItem(configuration, "1", "1000")).plus(this)
 
     private fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
 

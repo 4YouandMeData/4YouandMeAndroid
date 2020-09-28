@@ -9,7 +9,6 @@ import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.feeds.*
-import kotlinx.android.synthetic.main.feeds.title
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -19,6 +18,7 @@ import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.main.MainSectionFragment
 import org.fouryouandme.main.items.DateViewHolder
+import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
 
@@ -44,10 +44,11 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
             DateViewHolder.factory(),
-            QuickActivitiesViewHolder.factory()
+            QuickActivitiesViewHolder.factory(),
+            FeedHeaderViewHolder.factory(),
 
             //TODO: aggiungere feeds
-        
+
         )
     }
 
@@ -152,8 +153,20 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         recycler_view.addItemDecoration(
             LinearMarginItemDecoration(
                 { 0 },
-                { if (it.index == 0) 0 else 20.dpToPx() },
-                { if (it.index == 0) 0 else 20.dpToPx() },
+                {
+                    when {
+                        it.isOfType<FeedHeaderItem>() -> 0
+                        it.isOfType<QuickActivitiesItem>() -> 0
+                        else -> 20.dpToPx()
+                    }
+                },
+                {
+                    when {
+                        it.isOfType<FeedHeaderItem>() -> 0
+                        it.isOfType<QuickActivitiesItem>() -> 0
+                        else -> 20.dpToPx()
+                    }
+                },
                 { 0 }
             )
         )

@@ -40,7 +40,7 @@ object Versions {
 
     const val logging_interceptor: String = "4.8.1"
 
-    const val recycler_droid_core: String = "1.8.0-beta02"
+    const val recycler_droid_core: String = "1.8.0-beta04"
 
     const val firebase_analytics: String = "17.5.0"
 
