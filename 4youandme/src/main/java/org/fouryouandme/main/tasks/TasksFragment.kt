@@ -85,40 +85,40 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             if (viewModel.isInitialized().not())
                 viewModel.initialize(rootNavController(), configuration())
 
-
-            evalOnMain { applyData(it, viewModel.state().tasks) }
+            applyData(it, viewModel.state().tasks)
 
         }
 
     }
 
-    private fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit {
+    private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.primaryColorStart.color())
+            setStatusBar(configuration.theme.primaryColorStart.color())
 
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        title.text = configuration.text.tab.tasksTitle
-        title.setTextColor(configuration.theme.secondaryColor.color())
-        title.background =
-            HEXGradient.from(
-                configuration.theme.primaryColorStart,
-                configuration.theme.primaryColorEnd
-            ).drawable()
+            title.text = configuration.text.tab.tasksTitle
+            title.setTextColor(configuration.theme.secondaryColor.color())
+            title.background =
+                HEXGradient.from(
+                    configuration.theme.primaryColorStart,
+                    configuration.theme.primaryColorEnd
+                ).drawable()
 
-        empty_title.setTextColor(configuration.theme.primaryTextColor.color())
-        empty_title.text = configuration.text.tab.tabTaskEmptyTitle
+            empty_title.setTextColor(configuration.theme.primaryTextColor.color())
+            empty_title.text = configuration.text.tab.tabTaskEmptyTitle
 
-        empty_description.setTextColor(configuration.theme.primaryTextColor.color())
-        empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
+            empty_description.setTextColor(configuration.theme.primaryTextColor.color())
+            empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
 
-        empty_button.setTextColor(configuration.theme.secondaryColor.color())
-        empty_button.background = button(configuration.theme.primaryColorEnd.color())
-        empty_button.text = configuration.text.tab.tabTaskEmptyButton
-        empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
+            empty_button.setTextColor(configuration.theme.secondaryColor.color())
+            empty_button.background = button(configuration.theme.primaryColorEnd.color())
+            empty_button.text = configuration.text.tab.tabTaskEmptyButton
+            empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
 
-        applyTasks(tasks)
-    }
+            applyTasks(tasks)
+        }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
 

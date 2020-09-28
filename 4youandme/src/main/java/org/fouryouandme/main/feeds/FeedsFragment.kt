@@ -89,53 +89,53 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             if (viewModel.isInitialized().not())
                 viewModel.initialize(rootNavController(), configuration())
 
-
-            evalOnMain { applyData(it, viewModel.state().feeds) }
+            applyData(it, viewModel.state().feeds)
 
         }
 
     }
 
-    private fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit {
+    private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.primaryColorStart.color())
+            setStatusBar(configuration.theme.primaryColorStart.color())
 
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        header.background =
-            HEXGradient.from(
-                configuration.theme.primaryColorStart,
-                configuration.theme.primaryColorEnd
-            ).drawable()
+            header.background =
+                HEXGradient.from(
+                    configuration.theme.primaryColorStart,
+                    configuration.theme.primaryColorEnd
+                ).drawable()
 
-        title.text = "Week 12"
-        title.setTextColor(configuration.theme.secondaryTextColor.color())
+            title.text = "Week 12"
+            title.setTextColor(configuration.theme.secondaryTextColor.color())
 
-        header_text.text = "2ND TRIMESTER"
-        header_text.setTextColor(configuration.theme.secondaryColor.color())
-        header_text.alpha = 0.5f
+            header_text.text = "2ND TRIMESTER"
+            header_text.setTextColor(configuration.theme.secondaryColor.color())
+            header_text.alpha = 0.5f
 
-        logo.setImageResource(imageConfiguration.logoStudySecondary())
-        logo.setOnClickListener {
-            startCoroutineAsync {
-                viewModel.aboutYouPage(rootNavController())
+            logo.setImageResource(imageConfiguration.logoStudySecondary())
+            logo.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.aboutYouPage(rootNavController())
+                }
             }
+
+
+            empty_title.setTextColor(configuration.theme.primaryTextColor.color())
+            empty_title.text = configuration.text.tab.tabTaskEmptyTitle
+
+            empty_description.setTextColor(configuration.theme.primaryTextColor.color())
+            empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
+
+            empty_button.setTextColor(configuration.theme.secondaryColor.color())
+            empty_button.background = button(configuration.theme.primaryColorEnd.color())
+            empty_button.text = configuration.text.tab.tabTaskEmptyButton
+            empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
+
+            applyTasks(tasks)
         }
-
-
-        empty_title.setTextColor(configuration.theme.primaryTextColor.color())
-        empty_title.text = configuration.text.tab.tabTaskEmptyTitle
-
-        empty_description.setTextColor(configuration.theme.primaryTextColor.color())
-        empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
-
-        empty_button.setTextColor(configuration.theme.secondaryColor.color())
-        empty_button.background = button(configuration.theme.primaryColorEnd.color())
-        empty_button.text = configuration.text.tab.tabTaskEmptyButton
-        empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
-
-        applyTasks(tasks)
-    }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
 
