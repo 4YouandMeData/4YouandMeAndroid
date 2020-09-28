@@ -16,7 +16,7 @@ object Versions {
 
     const val com_squareup_retrofit2: String = "2.9.0"
 
-    const val org_jetbrains_kotlin: String = "1.4.0"
+    const val org_jetbrains_kotlin: String = "1.4.0" // available: "1.4.10"
 
     const val androidx_navigation: String = "2.2.2" // available: "2.3.0"
 
@@ -38,7 +38,7 @@ object Versions {
 
     const val arrow_fx_coroutines: String = "0.11.0"
 
-    const val logging_interceptor: String = "4.8.1"
+    const val logging_interceptor: String = "4.8.1" // available: "4.9.0"
 
     const val recycler_droid_core: String = "1.8.0-beta04"
 
@@ -53,6 +53,8 @@ object Versions {
     const val camera_camera2: String = "1.0.0-beta08"
 
     const val moshi_adapters: String = "1.8.0" // available: "1.10.0"
+
+    const val mpandroidchart: String = "v3.1.0" // available: "3.1.0"
 
     const val espresso_core: String = "3.3.0"
 

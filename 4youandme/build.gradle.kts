@@ -162,5 +162,9 @@ dependencies {
     androidTestImplementation(Libs.androidx_test_ext_junit)
     androidTestImplementation(Libs.espresso_core)
 
+    /* --- lottie ---*/
     implementation(Libs.lottie)
+
+    /* --- chart ---*/
+    implementation (Libs.mpandroidchart)
 }
