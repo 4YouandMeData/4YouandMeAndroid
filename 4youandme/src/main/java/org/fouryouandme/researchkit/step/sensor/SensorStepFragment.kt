@@ -92,10 +92,10 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
         root.setBackgroundColor(step.backgroundColor)
 
-        title.text = step.title
+        title.text = step.title(requireContext())
         title.setTextColor(step.titleColor)
 
-        description.text = step.description
+        description.text = step.description(requireContext())
         description.setTextColor(step.descriptionColor)
 
         RecorderService.start(requireContext().applicationContext, serviceConnection)

@@ -22,11 +22,12 @@
     <string name="TASK_cancel_positive">Yes</string>
     <string name="TASK_cancel_negative">No</string>
     <string name="TASK_next">Next</string>
+    <string name="TASK_countdown">Starting activity in</string>
 
     <string name="GAIT_title">Gait and Balance</string>
     <string name="GAIT_start">This activity measures your gait and balance as you walk and stand still. Do not continue if you cannot safely walk unassisted.</string>
     <string name="GAIT_intro">Find a place where you can safely walk unassisted for about 20 steps in a straight line.\nPut your device in a pocket or bag and follow the audio instructions.</string>
-    <string name="GAIT_outbound">Walk up to %ld steps in a straight line.</string>
+    <string name="GAIT_outbound">Walk up to %1$d steps in a straight line.</string>
     <string name="GAIT_return">Turn around, and walk back to where you started.</string>
     <string name="GAIT_stand">Stand still for 20 seconds</string>
 

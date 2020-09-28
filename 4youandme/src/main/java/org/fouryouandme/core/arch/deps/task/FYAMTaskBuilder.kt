@@ -1,5 +1,7 @@
-package org.fouryouandme.core.arch.deps
+package org.fouryouandme.core.arch.deps.task
 
+import com.squareup.moshi.Moshi
+import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
@@ -8,11 +10,13 @@ import org.fouryouandme.researchkit.step.introduction.list.IntroductionItem
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskBuilder
 import org.fouryouandme.researchkit.task.TaskIdentifiers
+import org.fouryouandme.researchkit.task.gait.GaitTask
 import org.fouryouandme.researchkit.task.video.VideoDiaryTask
 
 class FYAMTaskBuilder(
     private val configurationModule: ConfigurationModule,
-    private val imageConfiguration: ImageConfiguration
+    private val imageConfiguration: ImageConfiguration,
+    private val moshi: Moshi
 ) : TaskBuilder() {
 
     override suspend fun build(type: String, id: String): Task? {
@@ -25,6 +29,8 @@ class FYAMTaskBuilder(
             when (type) {
                 TaskIdentifiers.VIDEO_DIARY ->
                     buildVideoDiary(id, it, imageConfiguration)
+                TaskIdentifiers.GAIT ->
+                    buildGait(id, configuration, imageConfiguration, moshi)
                 else -> null
 
             }
@@ -122,6 +128,67 @@ class FYAMTaskBuilder(
             videoMissingPermissionMicBody = configuration.text.videoDiary.missingPermissionBodyMic,
             videoSettings = configuration.text.videoDiary.missingPermissionBodySettings,
             videoCancel = configuration.text.videoDiary.missingPermissionDiscard
+        )
+    }
+
+    private suspend fun buildGait(
+        id: String,
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        moshi: Moshi
+    ): GaitTask {
+
+        val secondary =
+            configuration.theme.secondaryColor.color()
+
+        val primaryText =
+            configuration.theme.primaryTextColor.color()
+
+        val primaryEnd =
+            configuration.theme.primaryColorEnd.color()
+
+        val fourthText =
+            configuration.theme.fourthTextColor.color()
+
+        val active =
+            configuration.theme.activeColor.color()
+
+        val deactive =
+            configuration.theme.deactiveColor.color()
+
+        return GaitTask(
+            id = id,
+            startBackgroundColor = secondary,
+            startTitle = null,
+            startTitleColor = primaryText,
+            startDescription = null,
+            startDescriptionColor = primaryText,
+            startButton = null,
+            startButtonColor = primaryEnd,
+            startButtonTextColor = secondary,
+            introBackgroundColor = secondary,
+            introTitle = null,
+            introTitleColor = primaryText,
+            introDescription = null,
+            introDescriptionColor = primaryText,
+            introImage = imageConfiguration.pocket(),
+            introButton = null,
+            introButtonColor = primaryEnd,
+            introButtonTextColor = secondary,
+            countDownBackgroundColor = secondary,
+            countDownTitle = null,
+            countDownTitleColor = primaryText,
+            countDownDescription = null,
+            countDownDescriptionColor = primaryText,
+            countDownSeconds = 5,
+            countDownCounterColor = primaryText,
+            countDownCounterProgressColor = primaryEnd,
+            outboundBackgroundColor = secondary,
+            outboundTitle = null,
+            outboundTitleColor = primaryText,
+            outboundDescription = null,
+            outboundDescriptionColor = primaryText,
+            moshi
         )
     }
 }

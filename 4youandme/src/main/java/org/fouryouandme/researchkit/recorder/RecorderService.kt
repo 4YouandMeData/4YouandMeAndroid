@@ -151,7 +151,7 @@ open class RecorderService : BaseService(), RecorderListener {
     private suspend fun setupReadInstructions(step: SensorStep): Unit {
 
         // play intro instruction
-        step.spokenInstruction?.let { speakText(it) }
+        step.spokenInstruction?.let { speakText(it(applicationContext)) }
 
         // play instruction during the step
         middleInstruction =
