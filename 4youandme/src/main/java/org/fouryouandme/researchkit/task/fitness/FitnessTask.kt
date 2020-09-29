@@ -47,11 +47,13 @@ class FitnessTask(
     walkTitleColor: Int,
     walkDescription: String?,
     walkDescriptionColor: Int,
+    walkImage: Int?,
     sitBackgroundColor: Int,
     sitTitle: String?,
     sitTitleColor: Int,
     sitDescription: String?,
     sitDescriptionColor: Int,
+    sitImage: Int?,
     endBackgroundColor: Int,
     endTitle: String?,
     endTitleColor: Int,
@@ -127,6 +129,7 @@ class FitnessTask(
                     )
                 },
                 descriptionColor = walkDescriptionColor,
+                image = walkImage,
                 target = SensorRecorderTarget.Time(60),
                 recorderConfigurations =
                 listOf(
@@ -153,6 +156,7 @@ class FitnessTask(
                     )
                 },
                 descriptionColor = sitDescriptionColor,
+                image = sitImage,
                 target = SensorRecorderTarget.Time(10),
                 recorderConfigurations =
                 listOf(

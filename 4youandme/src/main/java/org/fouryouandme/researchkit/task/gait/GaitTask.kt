@@ -115,6 +115,7 @@ class GaitTask(
                 titleColor = outboundTitleColor,
                 description = { outboundDescription ?: it.getString(R.string.GAIT_outbound, 20) },
                 descriptionColor = outboundDescriptionColor,
+                image = null,
                 target = SensorRecorderTarget.Steps(20),
                 recorderConfigurations =
                 listOf(
@@ -136,6 +137,7 @@ class GaitTask(
                 titleColor = returnTitleColor,
                 description = { returnDescription ?: it.getString(R.string.GAIT_return) },
                 descriptionColor = returnDescriptionColor,
+                image = null,
                 target = SensorRecorderTarget.Steps(20),
                 recorderConfigurations =
                 listOf(
@@ -156,6 +158,7 @@ class GaitTask(
                 titleColor = restTitleColor,
                 description = { restDescription ?: it.getString(R.string.GAIT_stand) },
                 descriptionColor = restDescriptionColor,
+                image = null,
                 target = SensorRecorderTarget.Steps(20),
                 recorderConfigurations =
                 listOf(

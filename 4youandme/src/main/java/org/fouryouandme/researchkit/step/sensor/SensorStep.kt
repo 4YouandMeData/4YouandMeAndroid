@@ -44,6 +44,7 @@ class SensorStep(
     val titleColor: Int,
     val description: (Context) -> String,
     val descriptionColor: Int,
+    val image: Int?,
     val target: SensorRecorderTarget,
     val recorderConfigurations: List<RecorderConfig>,
     val spokenInstruction: ((Context) -> String)? = null,
