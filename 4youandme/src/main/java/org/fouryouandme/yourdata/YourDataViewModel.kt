@@ -7,6 +7,8 @@ import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
+import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.yourdata.items.YourDataHeaderItem
 
 class YourDataViewModel(
     navigator: Navigator,
@@ -40,6 +42,16 @@ class YourDataViewModel(
                 }
             }
         )
-
     }
+
+    fun getItems(configuration: Configuration) =
+        listOf(
+            YourDataHeaderItem(
+                configuration,
+                "1",
+                "You’ve participated in this study for 67 days so far",
+                "On average, you complete 82% of your weekly assigned tasks - Which makes you a MASTER CONTRIBUTOR to science. Thank you! Keep it up!",
+                "3.7"
+            )
+        )
 }

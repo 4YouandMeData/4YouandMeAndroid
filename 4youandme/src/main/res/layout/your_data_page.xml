@@ -21,40 +21,14 @@
         tools:text="Your Data"
         tools:textColor="#FFFF" />
 
-    <View
-        android:id="@+id/view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:overScrollMode="never"
+        android:clipToPadding="false"
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
-        tools:background="#FFFF"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/description1"
-        style="@style/text_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toEndOf="@id/view"
-        app:layout_constraintStart_toStartOf="@id/view"
-        app:layout_constraintTop_toTopOf="@id/view"
-        tools:text="You’ve participated in this study for 67 days so far" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/description2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        style="@style/text_paragraph"
-        app:layout_constraintStart_toStartOf="@id/view"
-        app:layout_constraintEnd_toEndOf="@id/view"
-        app:layout_constraintTop_toBottomOf="@id/description1"
-        tools:text="On average, you complete 82% of your weekly assigned tasks - Which makes you a MASTER CONTRIBUTOR to science. Thank you! Keep it up!"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"/>
-
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

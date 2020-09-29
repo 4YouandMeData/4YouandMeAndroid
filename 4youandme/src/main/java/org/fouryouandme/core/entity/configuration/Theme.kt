@@ -74,5 +74,6 @@ data class Theme(
     val primaryMenuColor: HEXColor,
     val secondaryMenuColor: HEXColor,
     val activeColor: HEXColor,
-    val deactiveColor: HEXColor
+    val deactiveColor: HEXColor,
+    val fourthColor: HEXColor
 )

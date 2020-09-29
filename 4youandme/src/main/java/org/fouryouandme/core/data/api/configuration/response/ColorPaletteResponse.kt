@@ -21,7 +21,8 @@ data class ColorPaletteResponse(
     @Json(name="tertiary_color_end") val tertiaryColorEnd: String? = null,
     @Json(name="fourth_text_color") val fourthTextColor: String? = null,
     @Json(name="tertiary_text_color") val tertiaryTextColor: String? = null,
-    @Json(name="secondary_text_color") val secondaryTextColor: String? = null
+    @Json(name="secondary_text_color") val secondaryTextColor: String? = null,
+    @Json(name="fourth_color") val fourthColor: String? = null
 
 ) {
 
@@ -41,7 +42,8 @@ data class ColorPaletteResponse(
                 primaryMenuColor.toOption().bind().toHEXColor(),
                 secondaryMenuColor.toOption().bind().toHEXColor(),
                 activeColor.toOption().bind().toHEXColor(),
-                deactiveColor.toOption().bind().toHEXColor()
+                deactiveColor.toOption().bind().toHEXColor(),
+                fourthColor.toOption().bind().toHEXColor()
             )
 
         }

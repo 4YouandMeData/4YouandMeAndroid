@@ -2,12 +2,23 @@ package org.fouryouandme.yourdata
 
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
+import kotlinx.android.synthetic.main.apps_and_devices.*
+import kotlinx.android.synthetic.main.your_data_page.*
+import kotlinx.android.synthetic.main.your_data_page.recycler_view
+import kotlinx.android.synthetic.main.your_data_page.root
+import kotlinx.android.synthetic.main.your_data_page.title
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.yourdata.items.YourDataHeaderViewHolder
 
 class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page) {
 
@@ -25,6 +36,10 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page
         )
     }
 
+    private val adapter: DroidAdapter by lazy {
+        DroidAdapter(YourDataHeaderViewHolder.factory())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,12 +55,13 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
+
         startCoroutineAsync {
-            if (viewModel.isInitialized().not()) {
+            if (viewModel.isInitialized().not())
                 viewModel.initialize()
 
-                applyConfiguration(viewModel.state().configuration)
-            }
+            applyConfiguration(viewModel.state().configuration)
         }
     }
 
@@ -54,6 +70,42 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page
 
             setStatusBar(configuration.theme.primaryColorStart.color())
 
+            root.setBackgroundColor(configuration.theme.fourthColor.color())
+
+            title.text = configuration.text.tab.userDataTitle
+            title.setTextColor(configuration.theme.secondaryColor.color())
+            title.background =
+                HEXGradient.from(
+                    configuration.theme.primaryColorStart,
+                    configuration.theme.primaryColorEnd
+                ).drawable()
+
+            adapter.submitList(viewModel.getItems(configuration))
         }
     }
+
+    private fun setupRecyclerView() {
+
+        recycler_view.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        recycler_view.adapter = adapter
+
+//        recycler_view.addItemDecoration(
+//            LinearMarginItemDecoration(
+//                {
+//                    if (it.index == 0) 0.dpToPx()
+//                    else 30.dpToPx()
+//                },
+//                { 20.dpToPx() },
+//                { 20.dpToPx() },
+//                {
+//                    if (it.index == it.itemCount) 30.dpToPx()
+//                    else 0.dpToPx()
+//                }
+//            )
+//        )
+
+    }
+
 }
