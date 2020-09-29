@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_data_navigation"
-    app:startDestination="@id/work_in_progress">
+    app:startDestination="@id/yourDataFragment">
 
     <fragment
-        android:id="@+id/work_in_progress"
-        android:name="org.fouryouandme.main.WorkInProgressFragment"
-        android:label="work_in_progress"
-        tools:layout="@layout/work_in_progress" />
+        android:id="@+id/yourDataFragment"
+        android:name="org.fouryouandme.yourdata.YourDataFragment"
+        android:label="YourDataFragment"
+        tools:layout="@layout/your_data_page"/>
 
 </navigation>

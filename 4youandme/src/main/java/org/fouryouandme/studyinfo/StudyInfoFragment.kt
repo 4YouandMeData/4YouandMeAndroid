@@ -1,17 +1,13 @@
 package org.fouryouandme.studyinfo
 
-import org.fouryouandme.core.entity.configuration.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.study_info.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.entity.configuration.StudyInfo
-import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
 
 class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) {
@@ -26,7 +22,8 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
                     IORuntime,
                     injector.configurationModule()
                 )
-            })
+            }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
