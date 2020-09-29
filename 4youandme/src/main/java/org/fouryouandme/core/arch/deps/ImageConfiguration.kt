@@ -99,6 +99,15 @@ interface ImageConfiguration {
     @DrawableRes
     fun videoDiaryToggleCamera(): Int
 
+    @DrawableRes
+    fun heartBeat(): Int
+
+    @DrawableRes
+    fun sittingMan(): Int
+
+    @DrawableRes
+    fun walkingMan(): Int
+
     /* --- menu item --- */
 
     @DrawableRes

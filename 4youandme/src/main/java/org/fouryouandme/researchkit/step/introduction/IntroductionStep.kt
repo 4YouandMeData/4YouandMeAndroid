@@ -1,16 +1,17 @@
 package org.fouryouandme.researchkit.step.introduction
 
+import android.content.Context
 import org.fouryouandme.researchkit.step.Step
 
 class IntroductionStep(
     identifier: String,
     val backgroundColor: Int,
-    val title: String,
+    val title: (Context) -> String,
     val titleColor: Int,
-    val description: String,
+    val description: (Context) -> String,
     val descriptionColor: Int,
     val image: Int,
-    val button: String,
+    val button: (Context) -> String,
     val buttonColor: Int,
     val buttonTextColor: Int,
     val close: Boolean = false

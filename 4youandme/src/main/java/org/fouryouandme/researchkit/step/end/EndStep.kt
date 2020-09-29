@@ -1,15 +1,16 @@
 package org.fouryouandme.researchkit.step.end
 
+import android.content.Context
 import org.fouryouandme.researchkit.step.Step
 
 class EndStep(
     identifier: String,
     val backgroundColor: Int,
-    val title: String,
+    val title: (Context) -> String,
     val titleColor: Int,
-    val description: String,
+    val description: (Context) -> String,
     val descriptionColor: Int,
-    val button: String,
+    val button: (Context) -> String,
     val buttonColor: Int,
     val buttonTextColor: Int,
     val close: Boolean = false,

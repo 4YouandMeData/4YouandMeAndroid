@@ -70,6 +70,12 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun videoDiaryToggleCamera(): Int = R.drawable.video_diary_toggle_camera
 
+    override fun heartBeat(): Int = R.drawable.heartbeat
+
+    override fun sittingMan(): Int = R.drawable.sittingman
+
+    override fun walkingMan(): Int = R.drawable.walkingman
+
     /* --- menu item --- */
 
     override fun contactInfo(): Int = R.drawable.contact_info

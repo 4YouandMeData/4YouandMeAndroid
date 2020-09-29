@@ -132,13 +132,13 @@ open class RecorderService : BaseService(), RecorderListener {
                     }
 
                 // start also a timer for timeout = steps * 1.5
-                /*taskTimer =
+                taskTimer =
                     startCoroutineCancellableAsync {
 
                         evalOnIO { delay((step.target.steps * 1.5f).toLong() * 1000L) }
                         evalOnMain { onRecorderDurationFinished(step) }
 
-                    }*/
+                    }
             }
         }
 
@@ -151,7 +151,7 @@ open class RecorderService : BaseService(), RecorderListener {
     private suspend fun setupReadInstructions(step: SensorStep): Unit {
 
         // play intro instruction
-        step.spokenInstruction?.let { speakText(it) }
+        step.spokenInstruction?.let { speakText(it(applicationContext)) }
 
         // play instruction during the step
         middleInstruction =

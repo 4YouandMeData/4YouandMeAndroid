@@ -22,12 +22,26 @@
     <string name="TASK_cancel_positive">Yes</string>
     <string name="TASK_cancel_negative">No</string>
     <string name="TASK_next">Next</string>
+    <string name="TASK_countdown">Starting activity in</string>
+    <string name="TASK_get_started">Get Started</string>
 
     <string name="GAIT_title">Gait and Balance</string>
     <string name="GAIT_start">This activity measures your gait and balance as you walk and stand still. Do not continue if you cannot safely walk unassisted.</string>
     <string name="GAIT_intro">Find a place where you can safely walk unassisted for about 20 steps in a straight line.\nPut your device in a pocket or bag and follow the audio instructions.</string>
-    <string name="GAIT_outbound">Walk up to %ld steps in a straight line.</string>
+    <string name="GAIT_outbound">Walk up to %1$d steps in a straight line.</string>
     <string name="GAIT_return">Turn around, and walk back to where you started.</string>
     <string name="GAIT_stand">Stand still for 20 seconds</string>
+    <string name="GAIT_end_title">Activity Complete</string>
+    <string name="GAIT_end_description">Your data will be analyzed and you will be notified when your results are ready.</string>
+    <string name="GAIT_button">Done</string>
+
+    <string name="FITNESS_title">Fitness</string>
+    <string name="FITNESS_start">This activity monitors your heart rate and measures how far you can walk in %1$s.</string>
+    <string name="FITNESS_intro">Walk outdoors at your fastest possible pace for %1$s. When you’re done, sit and rest comfortably for %2$s. To begin, tap Get Started.</string>
+    <string name="FITNESS_walk">Walk as fast as you can for %s.</string>
+    <string name="FITNESS_sit">Sit comfortably for %s.</string>
+    <string name="FITNESS_end_title">Activity Complete</string>
+    <string name="FITNESS_end_description">Your data will be analyzed and you will be notified when your results are ready.</string>
+    <string name="FITNESS_button">Done</string>
 
 ***REMOVED***

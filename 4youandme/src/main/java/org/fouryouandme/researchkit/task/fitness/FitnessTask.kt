@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.task.gait
+package org.fouryouandme.researchkit.task.fitness
 
 import com.squareup.moshi.Moshi
 import org.fouryouandme.R
@@ -11,17 +11,17 @@ import org.fouryouandme.researchkit.step.end.EndStep
 import org.fouryouandme.researchkit.step.introduction.IntroductionStep
 import org.fouryouandme.researchkit.step.sensor.SensorRecorderTarget
 import org.fouryouandme.researchkit.step.sensor.SensorStep
-import org.fouryouandme.researchkit.step.start.StartStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskIdentifiers
 
-class GaitTask(
+class FitnessTask(
     id: String,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
     startDescription: String?,
     startDescriptionColor: Int,
+    startImage: Int,
     startButton: String?,
     startButtonColor: Int,
     startButtonTextColor: Int,
@@ -42,21 +42,18 @@ class GaitTask(
     countDownSeconds: Int,
     countDownCounterColor: Int,
     countDownCounterProgressColor: Int,
-    outboundBackgroundColor: Int,
-    outboundTitle: String?,
-    outboundTitleColor: Int,
-    outboundDescription: String?,
-    outboundDescriptionColor: Int,
-    returnBackgroundColor: Int,
-    returnTitle: String?,
-    returnTitleColor: Int,
-    returnDescription: String?,
-    returnDescriptionColor: Int,
-    restBackgroundColor: Int,
-    restTitle: String?,
-    restTitleColor: Int,
-    restDescription: String?,
-    restDescriptionColor: Int,
+    walkBackgroundColor: Int,
+    walkTitle: String?,
+    walkTitleColor: Int,
+    walkDescription: String?,
+    walkDescriptionColor: Int,
+    walkImage: Int?,
+    sitBackgroundColor: Int,
+    sitTitle: String?,
+    sitTitleColor: Int,
+    sitDescription: String?,
+    sitDescriptionColor: Int,
+    sitImage: Int?,
     endBackgroundColor: Int,
     endTitle: String?,
     endTitleColor: Int,
@@ -69,39 +66,51 @@ class GaitTask(
     endCheckMarkBackgroundColor: Int,
     endCheckMarkColor: Int,
     private val moshi: Moshi
-) : Task(TaskIdentifiers.GAIT, id) {
+) : Task(TaskIdentifiers.FITNESS, id) {
 
     override val steps: List<Step> by lazy {
 
         listOf(
-            StartStep(
-                identifier = GAIT_START,
+            IntroductionStep(
+                identifier = FITNESS_START,
                 backgroundColor = startBackgroundColor,
-                title = { startTitle ?: it.getString(R.string.GAIT_title) },
+                title = { startTitle ?: it.getString(R.string.FITNESS_title) },
                 titleColor = startTitleColor,
-                description = { startDescription ?: it.getString(R.string.GAIT_start) },
+                description = {
+                    startDescription ?: it.getString(
+                        R.string.FITNESS_start,
+                        "one minute"
+                    )
+                },
                 descriptionColor = startDescriptionColor,
+                image = startImage,
                 button = { startButton ?: it.getString(R.string.TASK_next) },
                 buttonColor = startButtonColor,
                 buttonTextColor = startButtonTextColor,
             ),
             IntroductionStep(
-                identifier = GAIT_INTRO,
+                identifier = FITNESS_INTRO,
                 backgroundColor = introBackgroundColor,
-                title = { introTitle ?: it.getString(R.string.GAIT_title) },
+                title = { introTitle ?: it.getString(R.string.FITNESS_title) },
                 titleColor = introTitleColor,
-                description = { introDescription ?: it.getString(R.string.GAIT_intro) },
+                description = {
+                    introDescription ?: it.getString(
+                        R.string.FITNESS_intro,
+                        "one minute",
+                        "ten seconds"
+                    )
+                },
                 descriptionColor = introDescriptionColor,
                 image = introImage,
-                button = { introButton ?: it.getString(R.string.TASK_next) },
+                button = { introButton ?: it.getString(R.string.TASK_get_started) },
                 buttonColor = introButtonColor,
-                buttonTextColor = introButtonTextColor
+                buttonTextColor = introButtonTextColor,
             ),
             CountDownStep(
-                identifier = GAIT_COUNT_DOWN,
+                identifier = FITNESS_COUNT_DOWN,
                 backgroundColor = countDownBackgroundColor,
                 titleColor = countDownTitleColor,
-                title = { countDownTitle ?: it.getString(R.string.GAIT_title) },
+                title = { countDownTitle ?: it.getString(R.string.FITNESS_title) },
                 description = { countDownDescription ?: it.getString(R.string.TASK_countdown) },
                 descriptionColor = countDownDescriptionColor,
                 seconds = countDownSeconds,
@@ -109,14 +118,19 @@ class GaitTask(
                 counterProgressColor = countDownCounterProgressColor
             ),
             SensorStep(
-                identifier = GAIT_OUTBOUND,
-                backgroundColor = outboundBackgroundColor,
-                title = { outboundTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = outboundTitleColor,
-                description = { outboundDescription ?: it.getString(R.string.GAIT_outbound, 20) },
-                descriptionColor = outboundDescriptionColor,
-                image = null,
-                target = SensorRecorderTarget.Steps(20),
+                identifier = FITNESS_WALK,
+                backgroundColor = walkBackgroundColor,
+                title = { walkTitle ?: it.getString(R.string.FITNESS_title) },
+                titleColor = walkTitleColor,
+                description = {
+                    walkDescription ?: it.getString(
+                        R.string.FITNESS_walk,
+                        "one minute"
+                    )
+                },
+                descriptionColor = walkDescriptionColor,
+                image = walkImage,
+                target = SensorRecorderTarget.Time(60),
                 recorderConfigurations =
                 listOf(
                     DeviceMotionRecorderConfig(moshi, 10.toDouble()),
@@ -124,42 +138,26 @@ class GaitTask(
                     PedometerRecorderConfig(moshi)
                 ),
                 spokenInstruction = {
-                    outboundDescription ?: it.getString(
-                        R.string.GAIT_outbound,
-                        20
+                    walkDescription ?: it.getString(
+                        R.string.FITNESS_walk,
+                        "one minute"
                     )
                 }
             ),
             SensorStep(
-                identifier = GAIT_RETURN,
-                backgroundColor = returnBackgroundColor,
-                title = { returnTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = returnTitleColor,
-                description = { returnDescription ?: it.getString(R.string.GAIT_return) },
-                descriptionColor = returnDescriptionColor,
-                image = null,
-                target = SensorRecorderTarget.Steps(20),
-                recorderConfigurations =
-                listOf(
-                    DeviceMotionRecorderConfig(moshi, 10.toDouble()),
-                    AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                    PedometerRecorderConfig(moshi)
-                ),
-                spokenInstruction = {
-                    returnDescription ?: it.getString(
-                        R.string.GAIT_return
+                identifier = FITNESS_SIT,
+                backgroundColor = sitBackgroundColor,
+                title = { sitTitle ?: it.getString(R.string.FITNESS_title) },
+                titleColor = sitTitleColor,
+                description = {
+                    sitDescription ?: it.getString(
+                        R.string.FITNESS_sit,
+                        "ten seconds"
                     )
-                }
-            ),
-            SensorStep(
-                identifier = GAIT_REST,
-                backgroundColor = restBackgroundColor,
-                title = { restTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = restTitleColor,
-                description = { restDescription ?: it.getString(R.string.GAIT_stand) },
-                descriptionColor = restDescriptionColor,
-                image = null,
-                target = SensorRecorderTarget.Steps(20),
+                },
+                descriptionColor = sitDescriptionColor,
+                image = sitImage,
+                target = SensorRecorderTarget.Time(10),
                 recorderConfigurations =
                 listOf(
                     DeviceMotionRecorderConfig(moshi, 10.toDouble()),
@@ -167,19 +165,20 @@ class GaitTask(
                     PedometerRecorderConfig(moshi)
                 ),
                 spokenInstruction = {
-                    returnDescription ?: it.getString(
-                        R.string.GAIT_stand
+                    sitDescription ?: it.getString(
+                        R.string.FITNESS_sit,
+                        "ten seconds"
                     )
                 }
             ),
             EndStep(
-                identifier = GAIT_END,
+                identifier = FITNESS_END,
                 backgroundColor = endBackgroundColor,
-                title = { endTitle ?: it.getString(R.string.GAIT_end_title) },
+                title = { endTitle ?: it.getString(R.string.FITNESS_end_title) },
                 titleColor = endTitleColor,
-                description = { endDescription ?: it.getString(R.string.GAIT_end_description) },
+                description = { endDescription ?: it.getString(R.string.FITNESS_end_description) },
                 descriptionColor = endDescriptionColor,
-                button = { endButton ?: it.getString(R.string.GAIT_button) },
+                button = { endButton ?: it.getString(R.string.FITNESS_button) },
                 buttonColor = endButtonColor,
                 buttonTextColor = endButtonTextColor,
                 close = endClose,
@@ -187,25 +186,20 @@ class GaitTask(
                 checkMarkColor = endCheckMarkColor
             )
         )
-
     }
 
     companion object {
 
-        const val GAIT_START: String = "gait_start"
+        const val FITNESS_START: String = "fitness_start"
 
-        const val GAIT_INTRO: String = "gait_intro"
+        const val FITNESS_INTRO: String = "fitness_intro"
 
-        const val GAIT_COUNT_DOWN: String = "gait_count_down"
+        const val FITNESS_COUNT_DOWN: String = "fitness_count_down"
 
-        const val GAIT_OUTBOUND: String = "gait_outbound"
+        const val FITNESS_WALK: String = "fitness_walk"
 
-        const val GAIT_RETURN: String = "gait_return"
+        const val FITNESS_SIT: String = "fitness_sit"
 
-        const val GAIT_REST: String = "gait_rest"
-
-        const val GAIT_END: String = "gait_end"
-
+        const val FITNESS_END: String = "fitness_end"
     }
-
 }

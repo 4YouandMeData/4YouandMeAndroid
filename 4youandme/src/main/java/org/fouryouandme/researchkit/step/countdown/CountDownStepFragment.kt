@@ -29,10 +29,10 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
 
         root.setBackgroundColor(step.backgroundColor)
 
-        title.text = step.title
+        title.text = step.title(requireContext())
         title.setTextColor(step.titleColor)
 
-        description.text = step.description
+        description.text = step.description(requireContext())
         description.setTextColor(step.descriptionColor)
 
         counter.setTextColor(step.counterColor)

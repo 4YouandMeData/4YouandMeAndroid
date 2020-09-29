@@ -1,9 +1,15 @@
 package org.fouryouandme.researchkit.step.sensor
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
-import kotlinx.android.synthetic.main.step_sensor.*
+import androidx.fragment.app.FragmentActivity
+import kotlinx.android.synthetic.main.step_sensor.description
+import kotlinx.android.synthetic.main.step_sensor.image
+import kotlinx.android.synthetic.main.step_sensor.root
+import kotlinx.android.synthetic.main.step_sensor.title
 import org.fouryouandme.R
 import org.fouryouandme.core.ext.infoToast
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -14,6 +20,7 @@ import org.fouryouandme.researchkit.recorder.SensorData
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.tasks.TaskStateUpdate
 import java.io.File
+import kotlin.math.roundToInt
 
 class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
@@ -92,10 +99,29 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
         root.setBackgroundColor(step.backgroundColor)
 
-        title.text = step.title
+        if (step.image != null) {
+            image.visibility = View.VISIBLE
+            val lp = image.layoutParams
+            val displayMetrics = DisplayMetrics()
+
+            (context as FragmentActivity).windowManager
+                .defaultDisplay
+                .getMetrics(displayMetrics)
+
+            val height = displayMetrics.heightPixels
+            lp.height = (height * 0.4).roundToInt()
+            image.layoutParams = lp
+            image.setImageResource(step.image)
+            image.setBackgroundColor(Color.argb(255, 227, 227, 227))
+        }
+        else{
+            image.visibility = View.GONE
+        }
+
+        title.text = step.title(requireContext())
         title.setTextColor(step.titleColor)
 
-        description.text = step.description
+        description.text = step.description(requireContext())
         description.setTextColor(step.descriptionColor)
 
         RecorderService.start(requireContext().applicationContext, serviceConnection)

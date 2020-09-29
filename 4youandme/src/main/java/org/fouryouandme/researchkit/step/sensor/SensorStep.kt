@@ -1,5 +1,6 @@
 package org.fouryouandme.researchkit.step.sensor
 
+import android.content.Context
 import org.fouryouandme.researchkit.recorder.RecorderConfig
 import org.fouryouandme.researchkit.step.Step
 import java.util.*
@@ -39,13 +40,14 @@ import java.util.*
 class SensorStep(
     identifier: String,
     val backgroundColor: Int,
-    val title: String,
+    val title: (Context) -> String,
     val titleColor: Int,
-    val description: String,
+    val description: (Context) -> String,
     val descriptionColor: Int,
+    val image: Int?,
     val target: SensorRecorderTarget,
     val recorderConfigurations: List<RecorderConfig>,
-    val spokenInstruction: String? = null,
+    val spokenInstruction: ((Context) -> String)? = null,
     val finishedSpokenInstruction: String? = null,
     val spokenInstructionMap: Map<Long, String> = emptyMap(),
     val shouldVibrateOnFinish: Boolean = false,

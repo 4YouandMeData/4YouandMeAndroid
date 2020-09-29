@@ -6,7 +6,11 @@ import androidx.camera.core.CameraXConfig
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.fouryouandme.BuildConfig
 import org.fouryouandme.core.arch.android.AppInjector
-import org.fouryouandme.core.arch.deps.*
+import org.fouryouandme.core.arch.deps.Environment
+import org.fouryouandme.core.arch.deps.ForYouAndMeInjector
+import org.fouryouandme.core.arch.deps.ImageConfiguration
+import org.fouryouandme.core.arch.deps.Injector
+import org.fouryouandme.core.arch.deps.task.FYAMTaskBuilder
 import org.fouryouandme.researchkit.task.TaskBuilder
 import org.fouryouandme.researchkit.task.TaskInjector
 import timber.log.Timber
@@ -39,5 +43,9 @@ abstract class FourYouAndMeApp : Application(), AppInjector, TaskInjector, Camer
     override fun getCameraXConfig(): CameraXConfig = Camera2Config.defaultConfig()
 
     override fun provideBuilder(): TaskBuilder =
-        FYAMTaskBuilder(injector.configurationModule(), injector.imageConfiguration)
+        FYAMTaskBuilder(
+            injector.configurationModule(),
+            injector.imageConfiguration,
+            injector.moshi
+        )
 }
