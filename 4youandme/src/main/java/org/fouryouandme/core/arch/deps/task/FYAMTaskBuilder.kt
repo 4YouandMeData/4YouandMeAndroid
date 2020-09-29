@@ -10,6 +10,7 @@ import org.fouryouandme.researchkit.step.introduction.list.IntroductionItem
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskBuilder
 import org.fouryouandme.researchkit.task.TaskIdentifiers
+import org.fouryouandme.researchkit.task.fitness.FitnessTask
 import org.fouryouandme.researchkit.task.gait.GaitTask
 import org.fouryouandme.researchkit.task.video.VideoDiaryTask
 
@@ -31,6 +32,8 @@ class FYAMTaskBuilder(
                     buildVideoDiary(id, it, imageConfiguration)
                 TaskIdentifiers.GAIT ->
                     buildGait(id, configuration, imageConfiguration, moshi)
+                TaskIdentifiers.FITNESS ->
+                    buildFitness(id, configuration, imageConfiguration, moshi)
                 else -> null
 
             }
@@ -188,6 +191,105 @@ class FYAMTaskBuilder(
             outboundTitleColor = primaryText,
             outboundDescription = null,
             outboundDescriptionColor = primaryText,
+            returnBackgroundColor = secondary,
+            returnTitle = null,
+            returnTitleColor = primaryText,
+            returnDescription = null,
+            returnDescriptionColor = primaryText,
+            restBackgroundColor = secondary,
+            restTitle = null,
+            restTitleColor = primaryText,
+            restDescription = null,
+            restDescriptionColor = primaryText,
+            endBackgroundColor = secondary,
+            endTitle = null,
+            endTitleColor = primaryText,
+            endDescription = null,
+            endDescriptionColor = primaryText,
+            endButton = null,
+            endButtonColor = primaryEnd,
+            endButtonTextColor = secondary,
+            endClose = false,
+            endCheckMarkBackgroundColor = primaryEnd,
+            endCheckMarkColor = secondary,
+            moshi
+        )
+    }
+
+    private suspend fun buildFitness(
+        id: String,
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        moshi: Moshi
+    ): FitnessTask {
+
+        val secondary =
+            configuration.theme.secondaryColor.color()
+
+        val primaryText =
+            configuration.theme.primaryTextColor.color()
+
+        val primaryEnd =
+            configuration.theme.primaryColorEnd.color()
+
+        val fourthText =
+            configuration.theme.fourthTextColor.color()
+
+        val active =
+            configuration.theme.activeColor.color()
+
+        val deactive =
+            configuration.theme.deactiveColor.color()
+
+        return FitnessTask(
+            id = id,
+            startBackgroundColor = secondary,
+            startTitle = null,
+            startTitleColor = primaryText,
+            startDescription = null,
+            startDescriptionColor = primaryText,
+            startImage = imageConfiguration.heartBeat(),
+            startButton = null,
+            startButtonColor = primaryEnd,
+            startButtonTextColor = secondary,
+            introBackgroundColor = secondary,
+            introTitle = null,
+            introTitleColor = primaryText,
+            introDescription = null,
+            introDescriptionColor = primaryText,
+            introImage = imageConfiguration.walkingMan(),
+            introButton = null,
+            introButtonColor = primaryEnd,
+            introButtonTextColor = secondary,
+            countDownBackgroundColor = secondary,
+            countDownTitle = null,
+            countDownTitleColor = primaryText,
+            countDownDescription = null,
+            countDownDescriptionColor = primaryText,
+            countDownSeconds = 5,
+            countDownCounterColor = primaryEnd,
+            countDownCounterProgressColor = secondary,
+            walkBackgroundColor = secondary,
+            walkTitle = null,
+            walkTitleColor = primaryText,
+            walkDescription = null,
+            walkDescriptionColor = primaryText,
+            sitBackgroundColor = secondary,
+            sitTitle = null,
+            sitTitleColor = primaryText,
+            sitDescription = null,
+            sitDescriptionColor = primaryText,
+            endBackgroundColor = secondary,
+            endTitle = null,
+            endTitleColor = primaryText,
+            endDescription = null,
+            endDescriptionColor = primaryText,
+            endButton = null,
+            endButtonColor = primaryEnd,
+            endButtonTextColor = secondary,
+            endClose = false,
+            endCheckMarkBackgroundColor = primaryEnd,
+            endCheckMarkColor = secondary,
             moshi
         )
     }

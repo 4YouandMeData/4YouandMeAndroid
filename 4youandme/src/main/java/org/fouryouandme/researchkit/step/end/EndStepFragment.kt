@@ -35,14 +35,14 @@ class EndStepFragment : StepFragment(R.layout.step_end) {
 
         root.setBackgroundColor(step.backgroundColor)
 
-        title.text = step.title
+        title.text = step.title(requireContext())
         title.setTextColor(step.titleColor)
 
-        description.text = step.description
+        description.text = step.description(requireContext())
         description.setTextColor(step.descriptionColor)
 
         next.background = button(step.buttonColor)
-        next.text = step.button
+        next.text = step.button(requireContext())
         next.setTextColor(step.buttonTextColor)
         next.setOnClickListener { startCoroutineAsync { next(step.close) } }
 

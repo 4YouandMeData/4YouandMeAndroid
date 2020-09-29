@@ -132,13 +132,13 @@ open class RecorderService : BaseService(), RecorderListener {
                     }
 
                 // start also a timer for timeout = steps * 1.5
-                /*taskTimer =
+                taskTimer =
                     startCoroutineCancellableAsync {
 
                         evalOnIO { delay((step.target.steps * 1.5f).toLong() * 1000L) }
                         evalOnMain { onRecorderDurationFinished(step) }
 
-                    }*/
+                    }
             }
         }
 
