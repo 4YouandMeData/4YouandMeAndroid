@@ -2,6 +2,7 @@ package org.fouryouandme.core.data.api.task
 
 import okhttp3.MultipartBody
 import org.fouryouandme.core.data.api.Headers
+import org.fouryouandme.core.data.api.task.request.TaskResultRequest
 import org.fouryouandme.core.data.api.task.response.TaskResponse
 import retrofit2.http.*
 
@@ -19,6 +20,14 @@ interface TaskApi {
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,
         @Part file: MultipartBody.Part
+    ): Unit
+
+    @PATCH("api/v1/tasks/{id}")
+    suspend fun <T> updateTask(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String,
+        @Body request: TaskResultRequest<T>
+
     ): Unit
 
 }

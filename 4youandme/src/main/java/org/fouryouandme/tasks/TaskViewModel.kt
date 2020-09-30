@@ -5,19 +5,23 @@ import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.unknownError
+import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.foldSuspend
 import org.fouryouandme.researchkit.result.StepResult
 import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.result.results
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.StepNavController
-import org.fouryouandme.researchkit.task.TaskBuilder
+import org.fouryouandme.researchkit.task.TaskConfiguration
+import org.fouryouandme.researchkit.task.TaskHandleResult
+import timber.log.Timber
 
 class TaskViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
-    private val taskBuilder: TaskBuilder,
+    private val taskConfiguration: TaskConfiguration,
 ) : BaseViewModel<
         ForIO,
         TaskState,
@@ -32,7 +36,7 @@ class TaskViewModel(
 
         showLoadingFx(TaskLoading.Initialization)
 
-        taskBuilder.build(type, id)
+        taskConfiguration.build(type, id)
             .foldSuspend(
                 { setErrorFx(unknownError(), TaskError.Initialization) },
                 { task ->
@@ -41,6 +45,7 @@ class TaskViewModel(
                         TaskState(
                             task = task,
                             isCancelled = false,
+                            isCompleted = false,
                             result = TaskResult(task.type, emptyMap())
                         )
                     ) { TaskStateUpdate.Initialization(it.task) }
@@ -57,6 +62,27 @@ class TaskViewModel(
         setStateFx(
             state().copy(isCancelled = true)
         ) { TaskStateUpdate.Cancelled(it.isCancelled) }
+
+    suspend fun end(): Unit {
+
+        showLoadingFx(TaskLoading.Result)
+
+        val result =
+            taskConfiguration.handleTaskResult(state().result, state().task.type, state().task.id)
+
+        evalOnMain { taskConfiguration.taskResultLiveData.value = result.toEvent() }
+
+        when (result) {
+            TaskHandleResult.Handled ->
+                setStateFx(TaskState.isCompleted.modify(state()) { true })
+                { TaskStateUpdate.Completed }
+            is TaskHandleResult.Error ->
+                setErrorFx(unknownError(), TaskError.Result)
+        }
+
+        hideLoadingFx(TaskLoading.Result)
+
+    }
 
     suspend fun addResult(result: StepResult): Unit {
 
@@ -81,7 +107,7 @@ class TaskViewModel(
     suspend fun nextStep(navController: NavController, currentStepIndex: Int): Unit =
         getStepByIndex(currentStepIndex + 1)
             .foldSuspend(
-                { Unit /* TODO: Handle task completed */ },
+                { Timber.tag(TAG).e("No more step, please add an EndStep to this task") },
                 {
                     navigator.navigateTo(
                         navController,
@@ -103,5 +129,10 @@ class TaskViewModel(
         if (navigator.back(stepNavController).not())
             navigator.back(taskNavController)
 
+    }
+
+    companion object {
+
+        private const val TAG: String = "Research Kit"
     }
 }

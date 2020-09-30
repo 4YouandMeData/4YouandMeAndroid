@@ -14,5 +14,4 @@ class IntroductionStep(
     val button: (Context) -> String,
     val buttonColor: Int,
     val buttonTextColor: Int,
-    val close: Boolean = false
 ) : Step(identifier, { IntroductionStepFragment() })

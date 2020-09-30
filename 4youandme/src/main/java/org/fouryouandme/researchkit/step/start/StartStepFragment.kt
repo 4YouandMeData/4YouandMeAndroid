@@ -36,7 +36,7 @@ class StartStepFragment : StepFragment(R.layout.step_start) {
         next.background = button(step.buttonColor)
         next.text = step.button(requireContext())
         next.setTextColor(step.buttonTextColor)
-        next.setOnClickListener { startCoroutineAsync { next(step.close) } }
+        next.setOnClickListener { startCoroutineAsync { next() } }
 
     }
 

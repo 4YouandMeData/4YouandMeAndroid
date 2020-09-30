@@ -44,7 +44,7 @@ class EndStepFragment : StepFragment(R.layout.step_end) {
         next.background = button(step.buttonColor)
         next.text = step.button(requireContext())
         next.setTextColor(step.buttonTextColor)
-        next.setOnClickListener { startCoroutineAsync { next(step.close) } }
+        next.setOnClickListener { startCoroutineAsync { viewModel.end() } }
 
         animationView.addValueCallback(
             KeyPath("Shape Outlines", "**"),

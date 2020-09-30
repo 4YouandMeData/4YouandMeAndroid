@@ -7,6 +7,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
+import org.fouryouandme.core.data.api.task.request.TaskResultRequest
 import org.fouryouandme.core.data.api.task.response.toTaskItems
 import org.fouryouandme.core.entity.task.Task
 import java.io.File
@@ -41,4 +43,11 @@ object TaskRepository {
         return errorModule.unwrapToEither { api.attach(token, taskId, body) }
 
     }
+
+    internal suspend fun TaskModule.uploadGaitTask(
+        token: String,
+        taskId: String,
+        result: GaitUpdateRequest
+    ): Either<FourYouAndMeError, Unit> =
+        errorModule.unwrapToEither { api.updateTask(token, taskId, TaskResultRequest(result)) }
 }

@@ -12,7 +12,6 @@ import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
-import org.fouryouandme.researchkit.task.TaskInjector
 
 class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
@@ -21,7 +20,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
             TaskViewModel(
                 navigator,
                 IORuntime,
-                (requireContext().applicationContext as TaskInjector).provideBuilder()
+                taskConfiguration()
             )
         })
     }
@@ -30,10 +29,12 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent(TaskFragment::class.java.simpleName) {
-                when (it) {
+            .observeEvent(TaskFragment::class.java.simpleName) { stateUpdate ->
+                when (stateUpdate) {
                     is TaskStateUpdate.Initialization ->
                         startCoroutineAsync { applyData() }
+                    is TaskStateUpdate.Completed ->
+                        startCoroutineAsync { viewModel.close(taskNavController()) }
                 }
             }
 
@@ -71,7 +72,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
     private fun typeArg(): String = arguments?.getString(TASK_TYPE, null)!!
     private fun idArg(): String = arguments?.getString(TASK_ID, null)!!
 
-    fun navController(): TaskNavController = TaskNavController(findNavController())
+    fun taskNavController(): TaskNavController = TaskNavController(findNavController())
 
     companion object {
 

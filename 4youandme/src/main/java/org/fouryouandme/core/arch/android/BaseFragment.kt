@@ -13,6 +13,8 @@ import org.fouryouandme.core.arch.livedata.EventObserver
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.researchkit.task.TaskConfiguration
+import org.fouryouandme.researchkit.task.TaskInjector
 
 
 abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
@@ -77,5 +79,8 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
             block(configuration)
 
         }
+
+    fun taskConfiguration(): TaskConfiguration =
+        (requireContext().applicationContext as TaskInjector).provideBuilder()
 
 }

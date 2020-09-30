@@ -159,12 +159,11 @@ class GaitTask(
                 description = { restDescription ?: it.getString(R.string.GAIT_stand) },
                 descriptionColor = restDescriptionColor,
                 image = null,
-                target = SensorRecorderTarget.Steps(20),
+                target = SensorRecorderTarget.Time(20),
                 recorderConfigurations =
                 listOf(
                     DeviceMotionRecorderConfig(moshi, 10.toDouble()),
                     AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                    PedometerRecorderConfig(moshi)
                 ),
                 spokenInstruction = {
                     returnDescription ?: it.getString(
