@@ -5,12 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
-import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.apps_and_devices.*
 import kotlinx.android.synthetic.main.your_data_page.*
-import kotlinx.android.synthetic.main.your_data_page.recycler_view
-import kotlinx.android.synthetic.main.your_data_page.root
-import kotlinx.android.synthetic.main.your_data_page.title
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -18,6 +13,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.yourdata.items.YourDataButtonsViewHolder
 import org.fouryouandme.yourdata.items.YourDataHeaderViewHolder
 
 class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page) {
@@ -37,7 +33,10 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(YourDataHeaderViewHolder.factory())
+        DroidAdapter(
+            YourDataHeaderViewHolder.factory(),
+            YourDataButtonsViewHolder.factory()
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +79,7 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page
                     configuration.theme.primaryColorEnd
                 ).drawable()
 
-            adapter.submitList(viewModel.getItems(configuration))
+            adapter.submitList(viewModel.getItems(configuration, imageConfiguration))
         }
     }
 

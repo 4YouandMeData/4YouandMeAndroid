@@ -107,4 +107,6 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun editContainer(): Int = R.drawable.edit_container
 
     override fun pencil(): Int = R.drawable.pencil
+
+    override fun buttonBackground(): Int = R.drawable.button_background
 }

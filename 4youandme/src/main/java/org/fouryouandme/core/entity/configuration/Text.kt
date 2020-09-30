@@ -12,7 +12,8 @@ data class Text(
     val activity: Activity,
     val videoDiary: VideoDiary,
     val studyInfo: StudyInfo,
-    val profile: Profile
+    val profile: Profile,
+    val yourData: YourData
 )
 
 data class Error(
@@ -180,4 +181,8 @@ data class Profile(
     val allow: String,
     val allowed: String,
     val edit: String
+)
+
+data class YourData(
+    val dataPeriodTitle: String
 )

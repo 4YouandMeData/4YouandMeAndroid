@@ -126,6 +126,7 @@ data class StringsResponse(
     @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
     @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
     @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
+    @Json(name = "TAB_USER_DATA_PERIOD_TITLE") val tabUserDataPeriodTitle: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -150,6 +151,7 @@ data class StringsResponse(
         val videoDiary = toVideoDiary()
         val studyInfo = toStudyInfo()
         val profile = toProfile()
+        val yourData = toYourData()
 
         return Option.fx {
             Text(
@@ -164,7 +166,8 @@ data class StringsResponse(
                 activity.bind(),
                 videoDiary.bind(),
                 studyInfo.bind(),
-                profile.bind()
+                profile.bind(),
+                yourData.bind()
             )
         }
     }
@@ -395,6 +398,13 @@ data class StringsResponse(
                 permissionsAllow.toOption().bind(),
                 permissionsAllowed.toOption().bind(),
                 profileUserInfoButtonEdit.toOption().bind()
+            )
+        }
+
+    private fun toYourData(): Option<YourData> =
+        Option.fx {
+            YourData(
+                tabUserDataPeriodTitle.toOption().bind()
             )
         }
 }
