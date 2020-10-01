@@ -12,13 +12,13 @@ class LocationRecorderConfig(
     private val minTime: Long = DEFAULT_MIN_TIME,
     private val minDistance: Float = DEFAULT_LOCATION_DISTANCE.toFloat(),
     private val usesRelativeCoordinates: Boolean = DEFAULT_USES_RELATIVE_COORDINATE,
-) : RecorderConfig("location") {
+) : RecorderConfig(LocationRecorder.LOCATION_IDENTIFIER) {
 
     override fun recorderForStep(step: Step, outputDirectory: File): Recorder =
         LocationRecorder(
             identifier,
             step,
-            File(outputDirectory, "location"),
+            File(outputDirectory, LocationRecorder.LOCATION_IDENTIFIER),
             moshi,
             minTime,
             minDistance,

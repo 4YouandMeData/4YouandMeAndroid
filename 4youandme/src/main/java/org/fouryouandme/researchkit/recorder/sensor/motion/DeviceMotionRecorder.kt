@@ -50,6 +50,8 @@ open class DeviceMotionRecorder internal constructor(
 
     companion object {
 
+        const val DEVICE_MOTION_IDENTIFIER: String = "device_motion"
+
         const val GRAVITY_SI_CONVERSION = SensorManager.GRAVITY_EARTH
 
         val rotationVectorType: List<Int> =

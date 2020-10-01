@@ -235,5 +235,7 @@ open class LocationRecorder(
 
         private val TAG = LocationRecorder::class.java.simpleName
 
+        const val LOCATION_IDENTIFIER: String = "location"
+
     }
 }

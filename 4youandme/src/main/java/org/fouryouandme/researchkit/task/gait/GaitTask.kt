@@ -5,6 +5,9 @@ import org.fouryouandme.R
 import org.fouryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
+import org.fouryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerRecorder
+import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
+import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.countdown.CountDownStep
 import org.fouryouandme.researchkit.step.end.EndStep
@@ -204,6 +207,35 @@ class GaitTask(
         const val GAIT_REST: String = "gait_rest"
 
         const val GAIT_END: String = "gait_end"
+
+
+        /* --- result keys --- */
+
+        const val GAIT_OUTBOUND_PEDOMETER: String =
+            "${PedometerRecorder.PEDOMETER_IDENTIFIER}_${GAIT_OUTBOUND}"
+
+        const val GAIT_OUTBOUND_DEVICE_MOTION: String =
+            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${GAIT_OUTBOUND}"
+
+        const val GAIT_OUTBOUND_ACCELEROMETER: String =
+            "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${GAIT_OUTBOUND}"
+
+
+        const val GAIT_RETURN_PEDOMETER: String =
+            "${PedometerRecorder.PEDOMETER_IDENTIFIER}_${GAIT_RETURN}"
+
+        const val GAIT_RETURN_DEVICE_MOTION: String =
+            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${GAIT_RETURN}"
+
+        const val GAIT_RETURN_ACCELEROMETER: String =
+            "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${GAIT_RETURN}"
+
+
+        const val GAIT_REST_DEVICE_MOTION: String =
+            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${GAIT_REST}"
+
+        const val GAIT_REST_ACCELEROMETER: String =
+            "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${GAIT_REST}"
 
     }
 

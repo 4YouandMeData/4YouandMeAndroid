@@ -1,4 +1,3 @@
-import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -40,7 +39,7 @@ object Versions {
 
     const val logging_interceptor: String = "4.8.1"
 
-    const val recycler_droid_core: String = "1.8.0-beta04"
+    const val recycler_droid_core: String = "1.8.0-beta06"
 
     const val firebase_analytics: String = "17.5.0"
 

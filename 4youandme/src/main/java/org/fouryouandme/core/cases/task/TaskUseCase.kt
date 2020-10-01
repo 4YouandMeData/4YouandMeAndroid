@@ -27,7 +27,7 @@ object TaskUseCase {
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap { attachVideo(it, taskId, file) }
 
-    suspend fun <T> TaskModule.updateGaitTask(
+    suspend fun TaskModule.updateGaitTask(
         taskId: String,
         result: GaitUpdateRequest
     ): Either<FourYouAndMeError, Unit> =

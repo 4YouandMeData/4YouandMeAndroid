@@ -6,8 +6,6 @@ data class GaitUpdateRequest(
     @Json(name = "gait_outbound") val gaitOutbound: GaitOutboundRequest,
     @Json(name = "gait_return") val gaitReturn: GaitReturnRequest,
     @Json(name = "gait_rest") val gaitRest: GaitRestRequest,
-    @Json(name = "start_time") val startTime: Double,
-    @Json(name = "end_time") val endTime: Double
 )
 
 data class GaitOutboundRequest(

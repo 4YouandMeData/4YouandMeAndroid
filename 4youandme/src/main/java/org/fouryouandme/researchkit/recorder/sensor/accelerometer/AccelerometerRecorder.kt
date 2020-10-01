@@ -26,4 +26,11 @@ class AccelerometerRecorder internal constructor(
         else
             emptyList()
 
+
+    companion object {
+
+        const val ACCELEROMETER_IDENTIFIER: String = "accelerometer"
+
+    }
+
 }

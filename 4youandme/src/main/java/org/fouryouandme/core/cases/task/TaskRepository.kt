@@ -49,5 +49,5 @@ object TaskRepository {
         taskId: String,
         result: GaitUpdateRequest
     ): Either<FourYouAndMeError, Unit> =
-        errorModule.unwrapToEither { api.updateTask(token, taskId, TaskResultRequest(result)) }
+        errorModule.unwrapToEither { api.updateGaitTask(token, taskId, TaskResultRequest(result)) }
 }

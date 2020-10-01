@@ -172,4 +172,5 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
         )
 
     }
+
 }

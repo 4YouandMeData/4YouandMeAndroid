@@ -3,6 +3,7 @@ package org.fouryouandme.core.arch.deps.task
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
+import org.fouryouandme.core.arch.deps.modules.ErrorModule
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.cases.CachePolicy
@@ -17,7 +18,8 @@ class FYAMTaskConfiguration(
     private val configurationModule: ConfigurationModule,
     private val imageConfiguration: ImageConfiguration,
     private val moshi: Moshi,
-    private val taskModule: TaskModule
+    private val taskModule: TaskModule,
+    private val errorModule: ErrorModule
 ) : TaskConfiguration() {
 
     override suspend fun build(type: String, id: String): Task? {
@@ -49,7 +51,7 @@ class FYAMTaskConfiguration(
 
         when (type) {
             TaskIdentifiers.VIDEO_DIARY -> TaskHandleResult.Handled
-            TaskIdentifiers.GAIT -> sendGaitData(taskModule, id, result)
+            TaskIdentifiers.GAIT -> sendGaitData(taskModule, errorModule, id, result)
             TaskIdentifiers.FITNESS -> TaskHandleResult.Handled
             else -> TaskHandleResult.Error(unknownError().message)
 

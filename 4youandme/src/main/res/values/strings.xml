@@ -21,6 +21,8 @@
     <string name="TASK_cancel_description">Are you sure you want to cancel the task?</string>
     <string name="TASK_cancel_positive">Yes</string>
     <string name="TASK_cancel_negative">No</string>
+    <string name="TASK_error_retry">Retry</string>
+    <string name="TASK_error_cancel">Cancel</string>
     <string name="TASK_next">Next</string>
     <string name="TASK_countdown">Starting activity in</string>
     <string name="TASK_get_started">Get Started</string>

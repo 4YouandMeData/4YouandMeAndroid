@@ -14,14 +14,14 @@ import java.io.File
 class DeviceMotionRecorderConfig(
     private val moshi: Moshi,
     private val frequency: Double
-) : RecorderConfig("device_motion") {
+) : RecorderConfig(DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER) {
 
     override fun recorderForStep(step: Step, outputDirectory: File): Recorder =
         DeviceMotionRecorder(
             frequency,
             identifier,
             step,
-            File(outputDirectory, "device_motion"),
+            File(outputDirectory, DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER),
             moshi
         )
 
