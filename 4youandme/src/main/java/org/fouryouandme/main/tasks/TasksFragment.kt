@@ -85,9 +85,9 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
         configuration {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), configuration())
-
-            applyData(it, viewModel.state().tasks)
+                viewModel.initialize(rootNavController(), it)
+            else
+                applyData(it, viewModel.state().tasks)
 
         }
 

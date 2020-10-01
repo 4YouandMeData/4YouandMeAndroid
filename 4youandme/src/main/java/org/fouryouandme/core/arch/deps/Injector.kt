@@ -15,6 +15,7 @@ import org.fouryouandme.core.data.api.integration.IntegrationApi
 import org.fouryouandme.core.data.api.optins.OptInsApi
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.task.TaskApi
+import org.fouryouandme.core.data.api.yourdata.YourDataApi
 import org.fouryouandme.researchkit.task.TaskConfiguration
 
 interface Injector {
@@ -56,6 +57,7 @@ interface Injector {
     val taskApi: TaskApi
     val answerApi: AnswerApi
     val feedApi: FeedApi
+    val yourDataApi: YourDataApi
 
     /* --- task --- */
 
@@ -104,6 +106,14 @@ interface Injector {
         FeedModule(
             feedApi,
             moshi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun yourDataModule(): YourDataModule =
+        YourDataModule(
+            yourDataApi,
             environment,
             errorModule(),
             authModule()

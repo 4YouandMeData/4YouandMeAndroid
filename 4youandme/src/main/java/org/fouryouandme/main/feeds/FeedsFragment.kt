@@ -85,9 +85,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         configuration {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), configuration())
-
-            applyData(it, viewModel.state().feeds)
+                viewModel.initialize(rootNavController(), it)
+            else
+                applyData(it, viewModel.state().feeds)
 
         }
 

@@ -10,13 +10,14 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.your_data_header_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.yourdata.YourData
 
 data class YourDataHeaderItem(
     val configuration: Configuration,
     val id: String,
-    val title: String,
-    val description: String,
-    val rating: String?
+    val title: String?,
+    val description: String?,
+    val rating: Float?
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -32,6 +33,15 @@ data class YourDataHeaderItem(
         }
 }
 
+fun YourData.toYourDataHeaderItem(configuration: Configuration): YourDataHeaderItem =
+    YourDataHeaderItem(
+        configuration,
+        id,
+        title,
+        body,
+        starts?.toFloat()
+    )
+
 class YourDataHeaderViewHolder(parent: ViewGroup) :
     DroidViewHolder<YourDataHeaderItem, Unit>(parent, R.layout.your_data_header_item),
     LayoutContainer {
@@ -39,13 +49,14 @@ class YourDataHeaderViewHolder(parent: ViewGroup) :
     override fun bind(t: YourDataHeaderItem, position: Int) {
         root.setBackgroundColor(t.configuration.theme.secondaryColor.color())
 
-        title.text = t.title
+        title.text = t.title.orEmpty()
         title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        description.text = t.description
+        description.text = t.description.orEmpty()
         description.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        rating.rating = t.rating?.toFloat() ?: 0.0f
+        rating.rating = t.rating ?: 0f
+
     }
 
     override val containerView: View? = itemView

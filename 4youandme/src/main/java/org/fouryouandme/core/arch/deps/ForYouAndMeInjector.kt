@@ -39,6 +39,7 @@ import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 import org.fouryouandme.core.data.api.task.TaskApi
 import org.fouryouandme.core.data.api.task.response.TaskResponse
+import org.fouryouandme.core.data.api.yourdata.YourDataApi
 import org.fouryouandme.researchkit.task.TaskConfiguration
 
 class ForYouAndMeInjector(
@@ -140,6 +141,8 @@ class ForYouAndMeInjector(
     override val feedApi: FeedApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
+    override val yourDataApi: YourDataApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
 
     /* --- task --- */
 

@@ -1,13 +1,13 @@
 package org.fouryouandme.yourdata
 
-import org.fouryouandme.core.entity.configuration.Configuration
+import com.giacomoparisi.recyclerdroid.core.DroidItem
 
 data class YourDataState(
-    val configuration: Configuration
+    val items: List<DroidItem<Any>>
 )
 
 sealed class YourDataStateUpdate {
-    data class Initialization(val configuration: Configuration) : YourDataStateUpdate()
+    data class Initialization(val items: List<DroidItem<Any>>) : YourDataStateUpdate()
 }
 
 sealed class YourDataLoading {

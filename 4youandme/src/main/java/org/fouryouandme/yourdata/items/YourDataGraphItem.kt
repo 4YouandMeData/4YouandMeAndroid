@@ -7,7 +7,6 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
@@ -93,7 +92,7 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
         set1.setDrawCircles(true)
         set1.setDrawCircleHole(true)
 
-        set1.color = Color.RED
+        set1.color = t.configuration.theme.primaryTextColor.color()
         set1.setCircleColor(Color.RED)
         set1.lineWidth = 2f
         set1.circleRadius = 6f
