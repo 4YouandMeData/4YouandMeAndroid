@@ -5,6 +5,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.picker.PickerStep
 import org.fouryouandme.researchkit.task.Task
+import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 
 // TODO: handle dynamic task creation
 fun buildSurvey(
@@ -19,10 +20,11 @@ fun buildSurvey(
                     "number",
                     listOf("1", "2", "3", "4", "5", "More than 5"),
                     configuration.theme.secondaryColor.color(),
+                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
                     { "Select a number" },
                     configuration.theme.primaryTextColor.color(),
                     configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary()
+                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
                 )
             )
 

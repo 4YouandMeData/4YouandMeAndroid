@@ -2,11 +2,13 @@ package org.fouryouandme.researchkit.step.picker
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.step_number.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.step.StepFragment
+import org.fouryouandme.researchkit.utils.applyImage
 
 class PickerStepFragment : StepFragment(R.layout.step_number) {
 
@@ -25,6 +27,9 @@ class PickerStepFragment : StepFragment(R.layout.step_number) {
 
         root.setBackgroundColor(step.backgroundColor)
 
+        step.image?.let { icon.applyImage(it) }
+        icon.isVisible = step.image != null
+
         question.text = step.question(requireContext())
         question.setTextColor(step.questionColor)
 
@@ -34,7 +39,7 @@ class PickerStepFragment : StepFragment(R.layout.step_number) {
 
         shadow.background = shadow(step.shadowColor)
 
-        button.setImageResource(step.buttonImage)
+        button.applyImage(step.buttonImage)
         button.setOnClickListener {
             startCoroutineAsync { next() }
         }
