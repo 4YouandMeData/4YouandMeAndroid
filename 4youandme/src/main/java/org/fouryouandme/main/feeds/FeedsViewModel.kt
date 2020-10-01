@@ -47,7 +47,13 @@ class FeedsViewModel(
             .fold(
                 { setErrorFx(it, FeedsError.Initialization) },
                 { list ->
-                    setStateFx(FeedsState(list.toItems(configuration).addHeader(configuration)))
+                    setStateFx(
+                        FeedsState(
+                            list.toItems(configuration)
+                                .addHeader(configuration)
+                                .addEmptyItem(configuration)
+                        )
+                    )
                     { FeedsStateUpdate.Initialization(it.feeds) }
                 }
             )
@@ -153,6 +159,12 @@ class FeedsViewModel(
         }
 
     }
+
+    private fun List<DroidItem<Any>>.addEmptyItem(
+        configuration: Configuration
+    ): List<DroidItem<Any>> =
+        if (size <= 1) plus(listOf(FeedEmptyItem(configuration)))
+        else this
 
     /* --- navigation --- */
 

@@ -79,6 +79,7 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
         setupList()
 
+        // TODO: add the empty view as item
         empty.isVisible = false
 
         configuration {
