@@ -21,6 +21,7 @@ import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
+import org.fouryouandme.researchkit.task.TaskHandleResult
 
 
 class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
@@ -93,6 +94,22 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        taskConfiguration().taskResultLiveData
+            .value
+            ?.getContentByHandler(name())
+            ?.let { event ->
+                event.map {
+                    if (it.t is TaskHandleResult.Handled)
+                        startCoroutineAsync {
+                            viewModel.initialize(rootNavController(), configuration())
+                        }
+                }
+            }
     }
 
     private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =

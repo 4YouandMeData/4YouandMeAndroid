@@ -5,6 +5,9 @@ import org.fouryouandme.R
 import org.fouryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
 import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
+import org.fouryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerRecorder
+import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
+import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.countdown.CountDownStep
 import org.fouryouandme.researchkit.step.end.EndStep
@@ -162,7 +165,6 @@ class FitnessTask(
                 listOf(
                     DeviceMotionRecorderConfig(moshi, 10.toDouble()),
                     AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                    PedometerRecorderConfig(moshi)
                 ),
                 spokenInstruction = {
                     sitDescription ?: it.getString(
@@ -201,5 +203,25 @@ class FitnessTask(
         const val FITNESS_SIT: String = "fitness_sit"
 
         const val FITNESS_END: String = "fitness_end"
+
+
+        /* --- result keys --- */
+
+        const val FITNESS_WALK_PEDOMETER: String =
+            "${PedometerRecorder.PEDOMETER_IDENTIFIER}_${FITNESS_WALK}"
+
+        const val FITNESS_WALK_DEVICE_MOTION: String =
+            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${FITNESS_WALK}"
+
+        const val FITNESS_WALK_ACCELEROMETER: String =
+            "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${FITNESS_WALK}"
+        
+
+        const val FITNESS_SIT_DEVICE_MOTION: String =
+            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${FITNESS_SIT}"
+
+        const val FITNESS_SIT_ACCELEROMETER: String =
+            "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${FITNESS_SIT}"
+
     }
 }

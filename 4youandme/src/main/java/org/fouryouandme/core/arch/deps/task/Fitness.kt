@@ -1,8 +1,21 @@
 package org.fouryouandme.core.arch.deps.task
 
+import arrow.core.computations.either
+import arrow.core.flatMap
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
+import org.fouryouandme.core.arch.deps.modules.ErrorModule
+import org.fouryouandme.core.arch.deps.modules.TaskModule
+import org.fouryouandme.core.cases.task.TaskUseCase.updateFitnessTask
+import org.fouryouandme.core.data.api.task.request.FitnessSitRequest
+import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
+import org.fouryouandme.core.data.api.task.request.FitnessWalkRequest
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.ext.invokeAsFourYouAndMeError
+import org.fouryouandme.core.ext.readJson
+import org.fouryouandme.researchkit.result.FileResult
+import org.fouryouandme.researchkit.result.TaskResult
+import org.fouryouandme.researchkit.task.TaskHandleResult
 import org.fouryouandme.researchkit.task.fitness.FitnessTask
 
 suspend fun FYAMTaskConfiguration.buildFitness(
@@ -74,4 +87,69 @@ suspend fun FYAMTaskConfiguration.buildFitness(
         endCheckMarkColor = secondary,
         moshi
     )
+}
+
+suspend fun FYAMTaskConfiguration.sendFitnessData(
+    taskModule: TaskModule,
+    errorModule: ErrorModule,
+    taskId: String,
+    result: TaskResult
+): TaskHandleResult {
+
+
+    // parse all file result content
+
+    val walkPedometer =
+        result.results[FitnessTask.FITNESS_WALK_PEDOMETER] as? FileResult
+    val walkPedometerJson =
+        walkPedometer?.file.readJson(errorModule)
+
+    val walkAccelerometer =
+        result.results[FitnessTask.FITNESS_WALK_ACCELEROMETER] as? FileResult
+    val walkAccelerometerJson =
+        walkAccelerometer?.file.readJson(errorModule)
+
+    val walkDeviceMotion =
+        result.results[FitnessTask.FITNESS_WALK_DEVICE_MOTION] as? FileResult
+    val walkDeviceMotionJson =
+        walkDeviceMotion?.file.readJson(errorModule)
+
+
+    val sitAccelerometer =
+        result.results[FitnessTask.FITNESS_SIT_ACCELEROMETER] as? FileResult
+    val sitAccelerometerJson =
+        sitAccelerometer?.file.readJson(errorModule)
+
+    val sitDeviceMotion =
+        result.results[FitnessTask.FITNESS_SIT_DEVICE_MOTION] as? FileResult
+    val sitDeviceMotionJson =
+        sitDeviceMotion?.file.readJson(errorModule)
+
+    // build the request object for the api
+
+    val request =
+        either.invokeAsFourYouAndMeError {
+
+            FitnessUpdateRequest(
+                FitnessWalkRequest(
+                    deviceMotion = !walkDeviceMotionJson,
+                    accelerometer = !walkAccelerometerJson,
+                    pedometer = !walkPedometerJson,
+                ),
+                FitnessSitRequest(
+                    deviceMotion = !sitDeviceMotionJson,
+                    accelerometer = !sitAccelerometerJson,
+                ),
+            )
+        }
+
+    // upload data to task api
+
+    val response =
+        request.flatMap { taskModule.updateFitnessTask(taskId, it) }
+
+    // convert the result to TaskHandleResult
+
+    return response.fold({ TaskHandleResult.Error(it.message) }, { TaskHandleResult.Handled })
+
 }

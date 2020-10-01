@@ -52,7 +52,7 @@ class FYAMTaskConfiguration(
         when (type) {
             TaskIdentifiers.VIDEO_DIARY -> TaskHandleResult.Handled
             TaskIdentifiers.GAIT -> sendGaitData(taskModule, errorModule, id, result)
-            TaskIdentifiers.FITNESS -> TaskHandleResult.Handled
+            TaskIdentifiers.FITNESS -> sendFitnessData(taskModule, errorModule, id, result)
             else -> TaskHandleResult.Error(unknownError().message)
 
         }

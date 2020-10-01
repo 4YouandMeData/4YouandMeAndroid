@@ -7,6 +7,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
 import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
 import org.fouryouandme.core.data.api.task.request.TaskResultRequest
 import org.fouryouandme.core.data.api.task.response.toTaskItems
@@ -50,4 +51,17 @@ object TaskRepository {
         result: GaitUpdateRequest
     ): Either<FourYouAndMeError, Unit> =
         errorModule.unwrapToEither { api.updateGaitTask(token, taskId, TaskResultRequest(result)) }
+
+    internal suspend fun TaskModule.uploadFitnessTask(
+        token: String,
+        taskId: String,
+        result: FitnessUpdateRequest
+    ): Either<FourYouAndMeError, Unit> =
+        errorModule.unwrapToEither {
+            api.updateFitnessTask(
+                token,
+                taskId,
+                TaskResultRequest(result)
+            )
+        }
 }
