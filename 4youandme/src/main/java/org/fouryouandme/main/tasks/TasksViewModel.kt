@@ -13,6 +13,7 @@ import org.fouryouandme.core.cases.task.TaskUseCase.getTasks
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
+import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.main.items.*
@@ -44,8 +45,8 @@ class TasksViewModel(
             .handleAuthError(rootNavController, navigator)
             .fold(
                 { setErrorFx(it, TasksError.Initialization) },
-                {
-                    setStateFx(TasksState(it.toItems(configuration)))
+                { list ->
+                    setStateFx(TasksState(list.toItems(configuration)))
                     { TasksStateUpdate.Initialization(it.tasks) }
                 }
             )
@@ -105,6 +106,24 @@ class TasksViewModel(
             items.addAll(value)
 
         }
+
+        // TODO : remove survey mock
+        items.add(
+            TaskActivityItem(
+                configuration,
+                TaskActivity(
+                    "100",
+                    "Survey",
+                    "Survey Test",
+                    "Start Now",
+                    null,
+                    null,
+                    TaskActivityType.Survey
+                ),
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+            )
+        )
 
         return items
 

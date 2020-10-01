@@ -8,6 +8,7 @@ import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
+import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskConfiguration
@@ -36,6 +37,9 @@ class FYAMTaskConfiguration(
                     buildGait(id, configuration, imageConfiguration, moshi)
                 TaskIdentifiers.FITNESS ->
                     buildFitness(id, configuration, imageConfiguration, moshi)
+                TaskActivityType.Survey.typeId ->
+                    // TODO: fetch survey and handle dynamic creation
+                    buildSurvey(id, configuration, imageConfiguration)
                 else -> null
 
             }

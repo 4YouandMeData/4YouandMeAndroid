@@ -1,6 +1,5 @@
 package org.fouryouandme.tasks
 
-import androidx.navigation.NavController
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
@@ -104,13 +103,13 @@ class TaskViewModel(
 
     /* --- navigation --- */
 
-    suspend fun nextStep(navController: NavController, currentStepIndex: Int): Unit =
+    suspend fun nextStep(taskNavController: TaskNavController, currentStepIndex: Int): Unit =
         getStepByIndex(currentStepIndex + 1)
             .foldSuspend(
                 { Timber.tag(TAG).e("No more step, please add an EndStep to this task") },
                 {
                     navigator.navigateTo(
-                        navController,
+                        taskNavController,
                         StepToStep(currentStepIndex + 1)
                     )
                 }
