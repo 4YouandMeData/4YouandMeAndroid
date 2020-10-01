@@ -15,10 +15,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.yourdata.items.YourDataButtonsViewHolder
-import org.fouryouandme.yourdata.items.YourDataGraphViewHolder
-import org.fouryouandme.yourdata.items.YourDataHeaderItem
-import org.fouryouandme.yourdata.items.YourDataHeaderViewHolder
+import org.fouryouandme.yourdata.items.*
 
 class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
 
@@ -137,12 +134,14 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
                 startMargin = {
                     when {
                         it.isOfType<YourDataHeaderItem>() -> 0.dpToPx()
+                        it.isOfType<YourDataGraphItem>() -> 0.dpToPx()
                         else -> 20.dpToPx()
                     }
                 },
                 endMargin = {
                     when {
                         it.isOfType<YourDataHeaderItem>() -> 0.dpToPx()
+                        it.isOfType<YourDataGraphItem>() -> 0.dpToPx()
                         else -> 20.dpToPx()
                     }
                 },

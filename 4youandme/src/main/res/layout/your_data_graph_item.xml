@@ -12,6 +12,8 @@
         style="@style/text_paragraph"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="@id/root"
         app:layout_constraintStart_toStartOf="@id/root"
         app:layout_constraintTop_toTopOf="@id/root"
@@ -19,7 +21,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="280dp"
+        android:layout_margin="20dp"
         android:layout_marginTop="30dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
