@@ -14,7 +14,6 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
-import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.main.MainSectionFragment
 import org.fouryouandme.main.items.DateViewHolder
@@ -139,24 +138,18 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 }
             }
 
-
             empty_title.setTextColor(configuration.theme.primaryTextColor.color())
-            empty_title.text = configuration.text.tab.tabTaskEmptyTitle
+            empty_title.text = configuration.text.tab.feedEmptyTitle
 
             empty_description.setTextColor(configuration.theme.primaryTextColor.color())
-            empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
-
-            empty_button.setTextColor(configuration.theme.secondaryColor.color())
-            empty_button.background = button(configuration.theme.primaryColorEnd.color())
-            empty_button.text = configuration.text.tab.tabTaskEmptyButton
-            empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
+            empty_description.text = configuration.text.tab.feedEmptySubTitle
 
             applyTasks(tasks)
         }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
 
-        empty.isVisible = tasks.isEmpty()
+        empty.isVisible = tasks.size <= 1
 
         adapter.submitList(tasks)
     }
