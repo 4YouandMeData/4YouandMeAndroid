@@ -10,8 +10,7 @@ import org.fouryouandme.core.arch.deps.Environment
 import org.fouryouandme.core.arch.deps.ForYouAndMeInjector
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Injector
-import org.fouryouandme.core.arch.deps.task.FYAMTaskBuilder
-import org.fouryouandme.researchkit.task.TaskBuilder
+import org.fouryouandme.researchkit.task.TaskConfiguration
 import org.fouryouandme.researchkit.task.TaskInjector
 import timber.log.Timber
 import timber.log.Timber.DebugTree
@@ -37,15 +36,10 @@ abstract class FourYouAndMeApp : Application(), AppInjector, TaskInjector, Camer
         if (BuildConfig.DEBUG)
             Timber.plant(DebugTree())
 
-        AndroidThreeTen.init(this);
+        AndroidThreeTen.init(this)
     }
 
     override fun getCameraXConfig(): CameraXConfig = Camera2Config.defaultConfig()
 
-    override fun provideBuilder(): TaskBuilder =
-        FYAMTaskBuilder(
-            injector.configurationModule(),
-            injector.imageConfiguration,
-            injector.moshi
-        )
+    override fun provideBuilder(): TaskConfiguration = injector.taskConfiguration
 }

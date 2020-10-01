@@ -2,17 +2,20 @@ package org.fouryouandme.tasks
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.task.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
-import org.fouryouandme.researchkit.task.TaskInjector
+import java.io.File
 
 class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
@@ -21,7 +24,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
             TaskViewModel(
                 navigator,
                 IORuntime,
-                (requireContext().applicationContext as TaskInjector).provideBuilder()
+                taskConfiguration()
             )
         })
     }
@@ -30,12 +33,40 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent(TaskFragment::class.java.simpleName) {
-                when (it) {
+            .observeEvent(name()) { stateUpdate ->
+                when (stateUpdate) {
                     is TaskStateUpdate.Initialization ->
                         startCoroutineAsync { applyData() }
+                    is TaskStateUpdate.Completed ->
+                        startCoroutineAsync { viewModel.close(taskNavController()) }
                 }
             }
+
+        viewModel.loadingLiveData()
+            .observeEvent(name()) {
+                when (it.task) {
+                    TaskLoading.Initialization ->
+                        task_loading.setVisibility(it.active, false)
+                    TaskLoading.Result ->
+                        task_loading.setVisibility(it.active)
+                }
+            }
+
+        viewModel.errorLiveData()
+            .observeEvent(name()) {
+                when (it.cause) {
+                    TaskError.Initialization ->
+                        errorAlert(it.error) {
+                            viewModel.initialize(
+                                typeArg(),
+                                idArg()
+                            )
+                        }
+                    TaskError.Result -> errorAlert(it.error) { viewModel.end() }
+                }
+            }
+
+        clearSensorFolder()
 
     }
 
@@ -68,10 +99,48 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
         }
 
+
+    private fun errorAlert(error: FourYouAndMeError, retry: suspend () -> Unit): Unit {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(error.title(requireContext()))
+            .setMessage(error.message(requireContext()))
+            .setPositiveButton(R.string.TASK_error_retry)
+            { dialog, _ ->
+                startCoroutineAsync { retry() }
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.TASK_error_cancel)
+            { _, _ ->
+                startCoroutineAsync {
+                    viewModel.cancel()
+                    viewModel.close(taskNavController())
+                }
+            }
+            .setCancelable(false)
+            .show()
+
+    }
+
+    private fun clearSensorFolder(): Unit {
+
+        val dir = getSensorOutputDirectory()
+
+        if (dir.exists())
+            dir.deleteRecursively()
+
+    }
+
+    /**
+     * @return directory for outputting data logger files
+     */
+    fun getSensorOutputDirectory(): File =
+        File("${requireContext().applicationContext.filesDir.absolutePath}/sensors")
+
     private fun typeArg(): String = arguments?.getString(TASK_TYPE, null)!!
     private fun idArg(): String = arguments?.getString(TASK_ID, null)!!
 
-    fun navController(): TaskNavController = TaskNavController(findNavController())
+    fun taskNavController(): TaskNavController = TaskNavController(findNavController())
 
     companion object {
 

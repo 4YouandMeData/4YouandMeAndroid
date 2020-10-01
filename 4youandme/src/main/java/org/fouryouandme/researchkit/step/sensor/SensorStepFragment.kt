@@ -6,10 +6,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.step_sensor.description
-import kotlinx.android.synthetic.main.step_sensor.image
-import kotlinx.android.synthetic.main.step_sensor.root
-import kotlinx.android.synthetic.main.step_sensor.title
+import kotlinx.android.synthetic.main.step_sensor.*
 import org.fouryouandme.R
 import org.fouryouandme.core.ext.infoToast
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -19,7 +16,6 @@ import org.fouryouandme.researchkit.recorder.RecordingState
 import org.fouryouandme.researchkit.recorder.SensorData
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.tasks.TaskStateUpdate
-import java.io.File
 import kotlin.math.roundToInt
 
 class SensorStepFragment : StepFragment(R.layout.step_sensor) {
@@ -34,7 +30,11 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                 step?.let {
 
                     startCoroutineAsync {
-                        binder.bind(getOutputDirectory(), step, viewModel.state().task)
+                        binder.bind(
+                            taskFragment().getSensorOutputDirectory(),
+                            step,
+                            viewModel.state().task
+                        )
                     }
 
                     binder.stateLiveData()
@@ -95,8 +95,6 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
         step: SensorStep
     ): Unit {
 
-        clearFolder()
-
         root.setBackgroundColor(step.backgroundColor)
 
         if (step.image != null) {
@@ -127,21 +125,6 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
         RecorderService.start(requireContext().applicationContext, serviceConnection)
 
     }
-
-    private fun clearFolder(): Unit {
-
-        val dir = getOutputDirectory()
-
-        if (dir.exists())
-            dir.deleteRecursively()
-
-    }
-
-    /**
-     * @return directory for outputting data logger files
-     */
-    private fun getOutputDirectory(): File =
-        File("${requireContext().applicationContext.filesDir.absolutePath}/sensors")
 
     override fun onDestroy() {
 

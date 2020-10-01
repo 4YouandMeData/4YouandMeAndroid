@@ -8,6 +8,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import moe.banana.jsonapi2.ResourceAdapterFactory
 import org.fouryouandme.core.arch.app.FourYouAndMeApp
+import org.fouryouandme.core.arch.deps.task.FYAMTaskConfiguration
 import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
@@ -38,6 +39,7 @@ import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 import org.fouryouandme.core.data.api.task.TaskApi
 import org.fouryouandme.core.data.api.task.response.TaskResponse
+import org.fouryouandme.researchkit.task.TaskConfiguration
 
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
@@ -103,7 +105,6 @@ class ForYouAndMeInjector(
             .add(KotlinJsonAdapterFactory())
             .build()
 
-
     /* --- api --- */
 
     override val configurationApi: ConfigurationApi =
@@ -138,5 +139,17 @@ class ForYouAndMeInjector(
 
     override val feedApi: FeedApi =
         getApiService(environment.getApiBaseUrl(), moshi)
+
+
+    /* --- task --- */
+
+    override val taskConfiguration: TaskConfiguration =
+        FYAMTaskConfiguration(
+            configurationModule(),
+            imageConfiguration,
+            moshi,
+            taskModule(),
+            errorModule()
+        )
 
 }

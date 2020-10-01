@@ -2,7 +2,6 @@ package org.fouryouandme.main.feeds
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
@@ -14,13 +13,13 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
-import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.main.MainSectionFragment
 import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
+import org.fouryouandme.researchkit.task.TaskHandleResult
 
 
 class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
@@ -46,6 +45,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),
+            FeedEmptyViewHolder.factory()
 
             //TODO: aggiungere feeds
 
@@ -82,8 +82,6 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         setupList()
 
-        empty.isVisible = false
-
         configuration {
 
             if (viewModel.isInitialized().not())
@@ -93,6 +91,22 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        taskConfiguration().taskResultLiveData
+            .value
+            ?.getContentByHandler(name())
+            ?.let { event ->
+                event.map {
+                    if (it.t is TaskHandleResult.Handled)
+                        startCoroutineAsync {
+                            viewModel.initialize(rootNavController(), configuration())
+                        }
+                }
+            }
     }
 
     private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
@@ -122,26 +136,13 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 }
             }
 
-
-            empty_title.setTextColor(configuration.theme.primaryTextColor.color())
-            empty_title.text = configuration.text.tab.tabTaskEmptyTitle
-
-            empty_description.setTextColor(configuration.theme.primaryTextColor.color())
-            empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
-
-            empty_button.setTextColor(configuration.theme.secondaryColor.color())
-            empty_button.background = button(configuration.theme.primaryColorEnd.color())
-            empty_button.text = configuration.text.tab.tabTaskEmptyButton
-            empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
-
             applyTasks(tasks)
         }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
 
-        empty.isVisible = tasks.isEmpty()
-
         adapter.submitList(tasks)
+
     }
 
     private fun setupList(): Unit {
@@ -152,22 +153,32 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         recycler_view.invalidateItemDecorations()
         recycler_view.addItemDecoration(
             LinearMarginItemDecoration(
-                { 0 },
-                {
+                topMargin = {
+                    when {
+                        it.isOfType<FeedEmptyItem>() -> 50.dpToPx()
+                        else -> 0.dpToPx()
+                    }
+                },
+                startMargin = {
                     when {
                         it.isOfType<FeedHeaderItem>() -> 0
                         it.isOfType<QuickActivitiesItem>() -> 0
                         else -> 20.dpToPx()
                     }
                 },
-                {
+                endMargin = {
                     when {
                         it.isOfType<FeedHeaderItem>() -> 0
                         it.isOfType<QuickActivitiesItem>() -> 0
                         else -> 20.dpToPx()
                     }
                 },
-                { 0 }
+                bottomMargin = {
+                    when {
+                        it.isOfType<FeedEmptyItem>() -> 20.dpToPx()
+                        else -> 0.dpToPx()
+                    }
+                }
             )
         )
 

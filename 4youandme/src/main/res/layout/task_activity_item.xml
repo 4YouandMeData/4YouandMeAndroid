@@ -34,7 +34,7 @@
             android:layout_below="@id/image"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:text="@string/PLACEHOLDER_title"
+            tools:text="@string/PLACEHOLDER_title"
             tools:textColor="#FFF" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -45,7 +45,7 @@
             android:layout_below="@id/title"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="@string/PLACEHOLDER_body"
+            tools:text="@string/PLACEHOLDER_body"
             tools:textColor="#FFF" />
 
         <androidx.appcompat.widget.AppCompatButton

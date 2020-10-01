@@ -29,20 +29,18 @@ open class Event<T>(private val content: T) {
     /**
      * Returns the content and prevents its use again from the same handler.
      */
-    fun getContentByHandler(handlerId: String): Either<Handled<T>, ToHandle<T>> {
+    fun getContentByHandler(handlerId: String): Either<Handled<T>, ToHandle<T>> =
 
-        val value =
-            when (val value = handle) {
-                is ToHandle -> {
-                    if (handledBy.firstOrNone { it == handlerId }.isEmpty()) value.right()
-                    else Handled<T>().left()
-                }
-                is Handled ->
-                    value.left()
+        when (val value = handle) {
+            is ToHandle -> {
+                if (handledBy.firstOrNone { it == handlerId }.isEmpty()) {
+                    handledBy = handledBy.plus(handlerId)
+                    value.right()
+                } else Handled<T>().left()
             }
-
-        return value
-    }
+            is Handled ->
+                value.left()
+        }
 
     /**
      * Returns the content, even if it's already been handled.

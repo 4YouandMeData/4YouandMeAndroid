@@ -92,5 +92,8 @@ open class PedometerRecorder internal constructor(
          */
         const val HEIGHT_FACTOR_FOR_STRIDE_LENGTH_MALE = 0.413f
         const val HEIGHT_FACTOR_FOR_STRIDE_LENGTH_FEMALE = 0.415f
+
+        const val PEDOMETER_IDENTIFIER: String = "pedometer"
+
     }
 }

@@ -17,7 +17,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
-import org.fouryouandme.main.tasks.*
+import org.fouryouandme.main.tasks.TasksToTask
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -46,9 +46,14 @@ class FeedsViewModel(
             .handleAuthError(rootNavController, navigator)
             .fold(
                 { setErrorFx(it, FeedsError.Initialization) },
-                {
-                    setStateFx(FeedsState(it.toItems(configuration)
-                        .addHeader(configuration)))
+                { list ->
+                    setStateFx(
+                        FeedsState(
+                            list.toItems(configuration)
+                                .addHeader(configuration)
+                                .addEmptyItem(configuration)
+                        )
+                    )
                     { FeedsStateUpdate.Initialization(it.feeds) }
                 }
             )
@@ -154,6 +159,12 @@ class FeedsViewModel(
         }
 
     }
+
+    private fun List<DroidItem<Any>>.addEmptyItem(
+        configuration: Configuration
+    ): List<DroidItem<Any>> =
+        if (size <= 1) plus(listOf(FeedEmptyItem(configuration)))
+        else this
 
     /* --- navigation --- */
 

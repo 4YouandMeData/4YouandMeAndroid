@@ -22,6 +22,7 @@ import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
+import org.fouryouandme.researchkit.task.TaskHandleResult
 
 class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
@@ -52,7 +53,7 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent { state ->
+            .observeEvent(name()) { state ->
                 when (state) {
                     is TasksStateUpdate.Initialization ->
                         configuration { applyData(it, state.tasks) }
@@ -63,7 +64,7 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             .observeEvent { loading.setVisibility(it.active, false) }
 
         viewModel.errorLiveData()
-            .observeEvent {
+            .observeEvent(name()) {
                 error.setError(it.error) {
                     startCoroutineAsync {
                         viewModel.initialize(rootNavController(), configuration())
@@ -78,6 +79,7 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
         setupList()
 
+        // TODO: add the empty view as item
         empty.isVisible = false
 
         configuration {
@@ -89,6 +91,22 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        taskConfiguration().taskResultLiveData
+            .value
+            ?.getContentByHandler(name())
+            ?.let { event ->
+                event.map {
+                    if (it.t is TaskHandleResult.Handled)
+                        startCoroutineAsync {
+                            viewModel.initialize(rootNavController(), configuration())
+                        }
+                }
+            }
     }
 
     private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
@@ -155,4 +173,5 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
         )
 
     }
+
 }

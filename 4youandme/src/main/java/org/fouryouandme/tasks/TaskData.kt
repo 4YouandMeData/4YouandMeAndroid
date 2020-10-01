@@ -9,6 +9,7 @@ import org.fouryouandme.researchkit.task.Task
 data class TaskState(
     val task: Task,
     val isCancelled: Boolean,
+    val isCompleted: Boolean,
     val result: TaskResult
 ) {
     companion object
@@ -22,16 +23,20 @@ sealed class TaskStateUpdate {
 
     data class Cancelled(val isCancelled: Boolean) : TaskStateUpdate()
 
+    object Completed : TaskStateUpdate()
+
 }
 
 sealed class TaskLoading {
 
     object Initialization : TaskLoading()
+    object Result : TaskLoading()
 }
 
 sealed class TaskError {
 
     object Initialization : TaskError()
+    object Result : TaskError()
 
 }
 

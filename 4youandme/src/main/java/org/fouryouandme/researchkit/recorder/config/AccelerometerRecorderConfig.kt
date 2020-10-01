@@ -14,14 +14,14 @@ import java.io.File
 class AccelerometerRecorderConfig(
     private val moshi: Moshi,
     private val frequency: Double
-) : RecorderConfig("accelerometer") {
+) : RecorderConfig(AccelerometerRecorder.ACCELEROMETER_IDENTIFIER) {
 
     override fun recorderForStep(step: Step, outputDirectory: File): Recorder =
         AccelerometerRecorder(
             frequency,
             identifier,
             step,
-            File(outputDirectory, "accelerometer"),
+            File(outputDirectory, AccelerometerRecorder.ACCELEROMETER_IDENTIFIER),
             moshi
         )
 

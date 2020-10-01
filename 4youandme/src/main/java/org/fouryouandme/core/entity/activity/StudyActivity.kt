@@ -42,7 +42,7 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
     object VideoDiary : TaskActivityType("video_diary", TaskIdentifiers.VIDEO_DIARY)
     object GaitTask : TaskActivityType("gait_task", TaskIdentifiers.GAIT)
     object WalkTask : TaskActivityType("walk_task", TaskIdentifiers.FITNESS)
-
+    object Survey : TaskActivityType("survey", "survey")
 
     companion object {
 

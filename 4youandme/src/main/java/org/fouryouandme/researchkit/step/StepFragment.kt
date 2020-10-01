@@ -8,7 +8,10 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.find
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.task.TaskInjector
 import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskNavController
@@ -48,18 +51,14 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
         arguments?.getInt(INDEX, -1)
             ?.let { if (it == -1) null else it }!!
 
-    //TODO: FIX
-    protected open suspend fun next(finish: Boolean = false): Unit {
-        if (!finish)
-            viewModel.nextStep(sectionParent().findNavController(), indexArg())
-        else
-            viewModel.close(taskNavController())
+    protected open suspend fun next(): Unit {
+        viewModel.nextStep(taskNavController(), indexArg())
     }
 
     protected fun taskFragment(): TaskFragment = find()
 
     protected fun taskNavController(): TaskNavController =
-        taskFragment().navController()
+        taskFragment().taskNavController()
 
     protected fun stepNavController(): StepNavController = StepNavController(findNavController())
 
