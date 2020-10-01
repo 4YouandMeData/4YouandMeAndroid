@@ -14,6 +14,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.yourdata.items.YourDataButtonsViewHolder
+import org.fouryouandme.yourdata.items.YourDataGraphViewHolder
 import org.fouryouandme.yourdata.items.YourDataHeaderViewHolder
 
 class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page) {
@@ -35,7 +36,8 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data_page
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
             YourDataHeaderViewHolder.factory(),
-            YourDataButtonsViewHolder.factory()
+            YourDataButtonsViewHolder.factory(),
+            YourDataGraphViewHolder.factory()
         )
     }
 

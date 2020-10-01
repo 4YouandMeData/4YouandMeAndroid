@@ -10,6 +10,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.yourdata.items.YourDataButtonsItem
+import org.fouryouandme.yourdata.items.YourDataGraphItem
 import org.fouryouandme.yourdata.items.YourDataHeaderItem
 
 class YourDataViewModel(
@@ -60,6 +61,11 @@ class YourDataViewModel(
                 imageConfiguration,
                 "2",
                 configuration.text.yourData.dataPeriodTitle,
+            ),
+            YourDataGraphItem(
+                configuration,
+                "3",
+                "Your Weight"
             )
         )
 }
