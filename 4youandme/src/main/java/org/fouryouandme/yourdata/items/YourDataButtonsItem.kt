@@ -53,7 +53,7 @@ class YourDataButtonsViewHolder(
         title.text = t.configuration.text.yourData.dataPeriodTitle
         title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        filter_day.text = "DAY"
+        filter_day.text = t.configuration.text.yourData.periodDay
         filter_day.setTextColor(
             if (t.selectedPeriod == YourDataPeriod.Day) selectedTextColor else textColor
         )
@@ -67,7 +67,7 @@ class YourDataButtonsViewHolder(
             )
         filter_day.setOnClickListener { onPeriodClicked(YourDataPeriod.Day) }
 
-        filter_week.text = "WEEK"
+        filter_week.text = t.configuration.text.yourData.periodWeek
         filter_week.setTextColor(
             if (t.selectedPeriod == YourDataPeriod.Week) selectedTextColor else textColor
         )
@@ -76,7 +76,7 @@ class YourDataButtonsViewHolder(
         )
         filter_week.setOnClickListener { onPeriodClicked(YourDataPeriod.Week) }
 
-        filter_month.text = "MONTH"
+        filter_month.text = t.configuration.text.yourData.periodMonth
         filter_month.setTextColor(
             if (t.selectedPeriod == YourDataPeriod.Month) selectedTextColor else textColor
         )
@@ -85,7 +85,7 @@ class YourDataButtonsViewHolder(
         )
         filter_month.setOnClickListener { onPeriodClicked(YourDataPeriod.Month) }
 
-        filter_year.text = "YEAR"
+        filter_year.text = t.configuration.text.yourData.periodYear
         filter_year.setTextColor(
             if (t.selectedPeriod == YourDataPeriod.Year) selectedTextColor else textColor
         )

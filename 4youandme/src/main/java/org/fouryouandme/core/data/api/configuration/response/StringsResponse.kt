@@ -114,21 +114,32 @@ data class StringsResponse(
     @Json(name = "VIDEO_DIARY_MISSING_PERMISSION_SETTINGS") val videoDiaryMissingPermissionBodySettings: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_START_RECORDING_DESCRIPTION") val videoDiaryRecorderStartRecordingDescription: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_RESUME_RECORDING_DESCRIPTION") val videoDiaryRecorderResumeRecordingDescription: String? = null,
+
     @Json(name = "STUDY_INFO_ABOUT_YOU") val studyInfoAboutYou: String? = null,
     @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
     @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String? = null,
     @Json(name = "STUDY_INFO_FAQ") val studyInfoFaq: String? = null,
+
     @Json(name = "PROFILE_TITLE") val profileTitle: String? = null,
+
     @Json(name = "ABOUT_YOU_YOUR_PREGNANCY") val aboutYouYourPregnancy: String? = null,
     @Json(name = "ABOUT_YOU_APPS_AND_DEVICES") val aboutYouAppsAndDevices: String? = null,
     @Json(name = "ABOUT_YOU_REVIEW_CONSENT") val aboutYouReviewConsent: String? = null,
     @Json(name = "ABOUT_YOU_PERMISSIONS") val aboutYouPermissions: String? = null,
     @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
+
     @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
+
     @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
     @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
+
     @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
+
     @Json(name = "TAB_USER_DATA_PERIOD_TITLE") val tabUserDataPeriodTitle: String? = null,
+    @Json(name = "TAB_USER_DATA_PERIOD_DAY") val tabUserDataPeriodDay: String? = null,
+    @Json(name = "TAB_USER_DATA_PERIOD_WEEK") val tabUserDataPeriodWeek: String? = null,
+    @Json(name = "TAB_USER_DATA_PERIOD_MONTH") val tabUserDataPeriodMonth: String? = null,
+    @Json(name = "TAB_USER_DATA_PERIOD_YEAR") val tabUserDataPeriodYear: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -139,6 +150,7 @@ data class StringsResponse(
 
 ) {
 
+    // TODO: refactor without option
     fun toText(): Option<Text> {
 
         val error = toError()
@@ -408,7 +420,11 @@ data class StringsResponse(
     private fun toYourData(): Option<YourData> =
         Option.fx {
             YourData(
-                tabUserDataPeriodTitle.toOption().bind()
+                tabUserDataPeriodTitle.toOption().bind(),
+                tabUserDataPeriodDay.toOption().bind(),
+                tabUserDataPeriodWeek.toOption().bind(),
+                tabUserDataPeriodMonth.toOption().bind(),
+                tabUserDataPeriodYear.toOption().bind()
             )
         }
 }

@@ -186,5 +186,9 @@ data class Profile(
 )
 
 data class YourData(
-    val dataPeriodTitle: String
+    val dataPeriodTitle: String,
+    val periodDay: String,
+    val periodWeek: String,
+    val periodMonth: String,
+    val periodYear: String
 )
