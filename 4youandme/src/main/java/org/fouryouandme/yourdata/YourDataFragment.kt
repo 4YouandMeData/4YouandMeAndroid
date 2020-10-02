@@ -37,8 +37,13 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
         DroidAdapter(
             YourDataHeaderViewHolder.factory(),
             YourDataButtonsViewHolder.factory
-            { startCoroutineAsync { viewModel.selectPeriod(it) } },
-            YourDataGraphViewHolder.factory()
+            { period ->
+                configuration { viewModel.selectPeriod(rootNavController(), it, period) }
+            },
+            YourDataGraphViewHolder.factory(),
+            YourDataGraphErrorViewHolder.factory {
+                configuration { viewModel.updateGraphs(rootNavController(), it) }
+            }
         )
     }
 
@@ -61,6 +66,8 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
                 when (it.task) {
                     YourDataLoading.Initialization ->
                         loading.setVisibility(it.active, false)
+                    YourDataLoading.Period ->
+                        loading.setVisibility(it.active, true)
                 }
             }
 

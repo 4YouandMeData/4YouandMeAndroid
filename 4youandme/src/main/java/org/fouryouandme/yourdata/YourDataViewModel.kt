@@ -1,5 +1,6 @@
 package org.fouryouandme.yourdata
 
+import arrow.core.Either
 import arrow.core.toT
 import arrow.fx.ForIO
 import arrow.fx.coroutines.parMapN
@@ -10,6 +11,7 @@ import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.YourDataModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
@@ -19,6 +21,7 @@ import org.fouryouandme.core.cases.yourdata.YourDataUseCase.getYourData
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.yourdata.UserDataAggregation
 import org.fouryouandme.yourdata.items.YourDataButtonsItem
+import org.fouryouandme.yourdata.items.YourDataGraphErrorItem
 import org.fouryouandme.yourdata.items.YourDataGraphItem
 import org.fouryouandme.yourdata.items.toYourDataHeaderItem
 
@@ -84,10 +87,10 @@ class YourDataViewModel(
                         listOf(data.toYourDataHeaderItem(configuration))
                             .addButtons(configuration, defaultPeriod)
                             .addGraph(
-                                userAggregation.orNull()!!,
+                                userAggregation,
                                 configuration,
                                 defaultPeriod
-                            ), // TODO: handle error
+                            ),
                         defaultPeriod
                     )
                 ) { YourDataStateUpdate.Initialization(it.items) }
@@ -104,31 +107,87 @@ class YourDataViewModel(
         plus(YourDataButtonsItem(configuration, "your_data_buttons", defaultPeriod))
 
     private fun List<DroidItem<Any>>.addGraph(
-        data: List<UserDataAggregation>,
+        data: Either<FourYouAndMeError, List<UserDataAggregation>>,
         configuration: Configuration,
         period: YourDataPeriod
     ): List<DroidItem<Any>> =
-        plus(data.map { YourDataGraphItem(configuration, it, period) })
+        data.fold(
+            { plus(YourDataGraphErrorItem(configuration, "your_data_graph_error", it)) },
+            { list ->
+                plus(list.map { YourDataGraphItem(configuration, it, period) })
+            }
+        )
 
     /* --- state update --- */
 
-    suspend fun selectPeriod(period: YourDataPeriod): Unit {
+    suspend fun selectPeriod(
+        rootNavController: RootNavController,
+        configuration: Configuration,
+        period: YourDataPeriod
+    ): Unit {
 
         if (state().period != period) {
 
+            showLoadingFx(YourDataLoading.Period)
+
             val items =
-                state().items.map {
-                    if (it is YourDataButtonsItem) it.copy(selectedPeriod = period)
-                    else it
+                state().items.mapNotNull {
+                    when (it) {
+                        is YourDataButtonsItem -> it.copy(selectedPeriod = period)
+                        is YourDataGraphErrorItem -> null
+                        is YourDataGraphItem -> null
+                        else -> it
+                    }
                 }
 
-            setStateFx(state().copy(items = items, period = period))
+            val userAggregationRequest =
+                yourDataModule.getUserDataAggregation(period)
+                    .nullToError()
+                    .handleAuthError(rootNavController, navigator)
+
+            setStateFx(
+                state().copy(
+                    items = items.addGraph(userAggregationRequest, configuration, period),
+                    period = period
+                )
+            )
             { YourDataStateUpdate.Period(it.items) }
 
-            // TODO: fetch new user aggregation data
-
+            hideLoadingFx(YourDataLoading.Period)
 
         }
+
+    }
+
+    suspend fun updateGraphs(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Unit {
+
+        showLoadingFx(YourDataLoading.Period)
+
+        val items =
+            state().items.mapNotNull {
+                when (it) {
+                    is YourDataGraphErrorItem -> null
+                    is YourDataGraphItem -> null
+                    else -> it
+                }
+            }
+
+        val userAggregationRequest =
+            yourDataModule.getUserDataAggregation(state().period)
+                .nullToError()
+                .handleAuthError(rootNavController, navigator)
+
+        setStateFx(
+            state().copy(
+                items = items.addGraph(userAggregationRequest, configuration, state().period),
+            )
+        )
+        { YourDataStateUpdate.Period(it.items) }
+
+        hideLoadingFx(YourDataLoading.Period)
 
     }
 }
