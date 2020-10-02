@@ -9,15 +9,14 @@ import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.your_data_buttons_item.*
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.deps.ImageConfiguration
+import org.fouryouandme.core.cases.yourdata.YourDataPeriod
 import org.fouryouandme.core.entity.configuration.Configuration
-
+import org.fouryouandme.core.entity.configuration.background.roundBackground
 
 data class YourDataButtonsItem(
     val configuration: Configuration,
-    val imageConfiguration: ImageConfiguration,
     val id: String,
-    val title: String
+    val selectedPeriod: YourDataPeriod
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -33,34 +32,72 @@ data class YourDataButtonsItem(
         }
 }
 
-class YourDataButtonsViewHolder(parent: ViewGroup) :
-    DroidViewHolder<YourDataButtonsItem, Unit>(parent, R.layout.your_data_buttons_item),
-    LayoutContainer {
+class YourDataButtonsViewHolder(
+    parent: ViewGroup,
+    private val onPeriodClicked: (YourDataPeriod) -> Unit
+) : DroidViewHolder<YourDataButtonsItem, Unit>(
+    parent,
+    R.layout.your_data_buttons_item
+), LayoutContainer {
 
     override fun bind(t: YourDataButtonsItem, position: Int) {
+
+        val selectedBgColor = t.configuration.theme.activeColor.color()
+        val bgColor = t.configuration.theme.secondaryColor.color()
+
+        val selectedTextColor = t.configuration.theme.secondaryColor.color()
+        val textColor = t.configuration.theme.fourthTextColor.color()
+
         root.setBackgroundColor(t.configuration.theme.fourthColor.color())
 
-        title.text = t.title
+        title.text = t.configuration.text.yourData.dataPeriodTitle
         title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        buttons.setBackgroundResource(t.imageConfiguration.buttonBackground())
-
         filter_day.text = "DAY"
-        filter_day.setTextColor(t.configuration.theme.primaryTextColor.color())
-        filter_day.isSelected = true
-
+        filter_day.setTextColor(
+            if (t.selectedPeriod == YourDataPeriod.Day) selectedTextColor else textColor
+        )
+        filter_day.background =
+            roundBackground(
+                if (t.selectedPeriod == YourDataPeriod.Day) selectedBgColor else bgColor,
+                20,
+                0,
+                0,
+                20
+            )
+        filter_day.setOnClickListener { onPeriodClicked(YourDataPeriod.Day) }
 
         filter_week.text = "WEEK"
-        filter_week.setTextColor(t.configuration.theme.primaryTextColor.color())
-        filter_week.isSelected = false
+        filter_week.setTextColor(
+            if (t.selectedPeriod == YourDataPeriod.Week) selectedTextColor else textColor
+        )
+        filter_week.setBackgroundColor(
+            if (t.selectedPeriod == YourDataPeriod.Week) selectedBgColor else bgColor
+        )
+        filter_week.setOnClickListener { onPeriodClicked(YourDataPeriod.Week) }
 
         filter_month.text = "MONTH"
-        filter_month.setTextColor(t.configuration.theme.primaryTextColor.color())
-        filter_month.isSelected = false
+        filter_month.setTextColor(
+            if (t.selectedPeriod == YourDataPeriod.Month) selectedTextColor else textColor
+        )
+        filter_month.setBackgroundColor(
+            if (t.selectedPeriod == YourDataPeriod.Month) selectedBgColor else bgColor
+        )
+        filter_month.setOnClickListener { onPeriodClicked(YourDataPeriod.Month) }
 
         filter_year.text = "YEAR"
-        filter_year.setTextColor(t.configuration.theme.primaryTextColor.color())
-        filter_year.isSelected = false
+        filter_year.setTextColor(
+            if (t.selectedPeriod == YourDataPeriod.Year) selectedTextColor else textColor
+        )
+        filter_year.background =
+            roundBackground(
+                if (t.selectedPeriod == YourDataPeriod.Year) selectedBgColor else bgColor,
+                0,
+                20,
+                20,
+                0
+            )
+        filter_year.setOnClickListener { onPeriodClicked(YourDataPeriod.Year) }
 
     }
 
@@ -68,9 +105,9 @@ class YourDataButtonsViewHolder(parent: ViewGroup) :
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
+        fun factory(onPeriodClicked: (YourDataPeriod) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { YourDataButtonsViewHolder(it) },
+                { YourDataButtonsViewHolder(it, onPeriodClicked) },
                 { _, item -> item is YourDataButtonsItem }
             )
 

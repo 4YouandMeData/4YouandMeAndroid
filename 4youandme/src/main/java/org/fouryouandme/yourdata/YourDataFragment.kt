@@ -36,7 +36,8 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
             YourDataHeaderViewHolder.factory(),
-            YourDataButtonsViewHolder.factory(),
+            YourDataButtonsViewHolder.factory
+            { startCoroutineAsync { viewModel.selectPeriod(it) } },
             YourDataGraphViewHolder.factory()
         )
     }
@@ -49,6 +50,9 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
                 when (stateUpdate) {
                     is YourDataStateUpdate.Initialization ->
                         configuration { applyConfiguration(it, stateUpdate.items) }
+                    is YourDataStateUpdate.Period ->
+                        startCoroutineAsync { applyItems(stateUpdate.items) }
+
                 }
             }
 
@@ -152,5 +156,8 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
         )
 
     }
+
+    private suspend fun applyItems(items: List<DroidItem<Any>>): Unit =
+        evalOnMain { adapter.submitList(items) }
 
 }

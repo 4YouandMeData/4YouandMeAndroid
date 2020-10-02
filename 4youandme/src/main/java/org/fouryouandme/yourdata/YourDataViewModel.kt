@@ -3,6 +3,7 @@ package org.fouryouandme.yourdata
 import arrow.core.toT
 import arrow.fx.ForIO
 import arrow.fx.coroutines.parMapN
+import com.giacomoparisi.recyclerdroid.core.DroidItem
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.ImageConfiguration
@@ -80,12 +81,14 @@ class YourDataViewModel(
                 setStateFx(
                     YourDataState(
                         listOf(data.toYourDataHeaderItem(configuration))
+                            .addButtons(configuration, defaultPeriod)
                             .plus(
                                 getItems(
                                     configuration,
-                                    imageConfiguration
-                                )
-                            )
+
+                                    )
+                            ),
+                        defaultPeriod
                     )
                 ) { YourDataStateUpdate.Initialization(it.items) }
             }
@@ -94,18 +97,40 @@ class YourDataViewModel(
         hideLoadingFx(YourDataLoading.Initialization)
     }
 
-    fun getItems(configuration: Configuration, imageConfiguration: ImageConfiguration) =
+    private fun List<DroidItem<Any>>.addButtons(
+        configuration: Configuration,
+        defaultPeriod: YourDataPeriod
+    ): List<DroidItem<Any>> =
+        plus(YourDataButtonsItem(configuration, "your_data_buttons", defaultPeriod))
+
+    fun getItems(configuration: Configuration) =
         listOf(
-            YourDataButtonsItem(
-                configuration,
-                imageConfiguration,
-                "2",
-                configuration.text.yourData.dataPeriodTitle,
-            ),
             YourDataGraphItem(
                 configuration,
                 "3",
                 "Your Weight"
             )
         )
+
+    /* --- state update --- */
+
+    suspend fun selectPeriod(period: YourDataPeriod): Unit {
+
+        if (state().period != period) {
+
+            val items =
+                state().items.map {
+                    if (it is YourDataButtonsItem) it.copy(selectedPeriod = period)
+                    else it
+                }
+
+            setStateFx(state().copy(items = items, period = period))
+            { YourDataStateUpdate.Period(it.items) }
+
+            // TODO: fetch new user aggregation data
+
+
+        }
+
+    }
 }
