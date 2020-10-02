@@ -49,7 +49,7 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
             .observeEvent(name()) { stateUpdate ->
                 when (stateUpdate) {
                     is YourDataStateUpdate.Initialization ->
-                        configuration { applyConfiguration(it, stateUpdate.items) }
+                        startCoroutineAsync { applyItems(stateUpdate.items) }
                     is YourDataStateUpdate.Period ->
                         startCoroutineAsync { applyItems(stateUpdate.items) }
 
@@ -90,17 +90,19 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
 
         configuration {
 
+            applyConfiguration(it)
+
             if (viewModel.isInitialized().not())
                 viewModel.initialize(rootNavController(), it, imageConfiguration)
-            else
-                applyConfiguration(it, viewModel.state().items)
+            else {
+                applyItems(viewModel.state().items)
+            }
 
         }
     }
 
     private suspend fun applyConfiguration(
-        configuration: Configuration,
-        items: List<DroidItem<Any>>
+        configuration: Configuration
     ) {
         evalOnMain {
 
@@ -115,8 +117,6 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
                     configuration.theme.primaryColorStart,
                     configuration.theme.primaryColorEnd
                 ).drawable()
-
-            adapter.submitList(items)
         }
     }
 
