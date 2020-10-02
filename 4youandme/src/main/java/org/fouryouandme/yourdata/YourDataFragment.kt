@@ -95,17 +95,19 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
 
         setupRecyclerView()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         configuration {
 
             applyConfiguration(it)
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), it, imageConfiguration)
-            else {
-                applyItems(viewModel.state().items)
-            }
+            viewModel.initialize(rootNavController(), it, imageConfiguration)
 
         }
+
     }
 
     private suspend fun applyConfiguration(
