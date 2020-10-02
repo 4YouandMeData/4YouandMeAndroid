@@ -39,7 +39,7 @@ fun YourData.toYourDataHeaderItem(configuration: Configuration): YourDataHeaderI
         id,
         title,
         body,
-        starts?.toFloat()
+        starts
     )
 
 class YourDataHeaderViewHolder(parent: ViewGroup) :

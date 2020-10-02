@@ -25,5 +25,5 @@ data class YourDataInfoResponse(
 data class YourDataAttributesResponse(
     @Json(name = "title") val title: String? = null,
     @Json(name = "body") val body: String? = null,
-    @Json(name = "stars") val stars: Int? = null,
+    @Json(name = "stars") val stars: Float? = null,
 )
