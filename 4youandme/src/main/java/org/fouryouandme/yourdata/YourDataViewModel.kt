@@ -17,6 +17,7 @@ import org.fouryouandme.core.cases.yourdata.YourDataPeriod
 import org.fouryouandme.core.cases.yourdata.YourDataUseCase.getUserDataAggregation
 import org.fouryouandme.core.cases.yourdata.YourDataUseCase.getYourData
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.yourdata.UserDataAggregation
 import org.fouryouandme.yourdata.items.YourDataButtonsItem
 import org.fouryouandme.yourdata.items.YourDataGraphItem
 import org.fouryouandme.yourdata.items.toYourDataHeaderItem
@@ -82,12 +83,11 @@ class YourDataViewModel(
                     YourDataState(
                         listOf(data.toYourDataHeaderItem(configuration))
                             .addButtons(configuration, defaultPeriod)
-                            .plus(
-                                getItems(
-                                    configuration,
-
-                                    )
-                            ),
+                            .addGraph(
+                                userAggregation.orNull()!!,
+                                configuration,
+                                defaultPeriod
+                            ), // TODO: handle error
                         defaultPeriod
                     )
                 ) { YourDataStateUpdate.Initialization(it.items) }
@@ -103,14 +103,12 @@ class YourDataViewModel(
     ): List<DroidItem<Any>> =
         plus(YourDataButtonsItem(configuration, "your_data_buttons", defaultPeriod))
 
-    fun getItems(configuration: Configuration) =
-        listOf(
-            YourDataGraphItem(
-                configuration,
-                "3",
-                "Your Weight"
-            )
-        )
+    private fun List<DroidItem<Any>>.addGraph(
+        data: List<UserDataAggregation>,
+        configuration: Configuration,
+        period: YourDataPeriod
+    ): List<DroidItem<Any>> =
+        plus(data.map { YourDataGraphItem(configuration, it, period) })
 
     /* --- state update --- */
 
