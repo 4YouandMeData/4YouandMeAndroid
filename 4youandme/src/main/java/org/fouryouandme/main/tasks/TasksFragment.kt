@@ -22,7 +22,6 @@ import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
-import org.fouryouandme.researchkit.task.TaskHandleResult
 
 class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
@@ -82,31 +81,14 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
         // TODO: add the empty view as item
         empty.isVisible = false
 
-        configuration {
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), it)
-            else
-                applyData(it, viewModel.state().tasks)
-
-        }
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        taskConfiguration().taskResultLiveData
-            .value
-            ?.getContentByHandler(name())
-            ?.let { event ->
-                event.map {
-                    if (it.t is TaskHandleResult.Handled)
-                        startCoroutineAsync {
-                            viewModel.initialize(rootNavController(), configuration())
-                        }
-                }
-            }
+        configuration { viewModel.initialize(rootNavController(), it) }
+
     }
 
     private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
