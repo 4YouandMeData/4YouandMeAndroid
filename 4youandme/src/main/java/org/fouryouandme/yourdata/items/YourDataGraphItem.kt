@@ -32,14 +32,16 @@ data class YourDataGraphItem(
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
         other.compare<YourDataGraphItem> {
-            it.userData.id == userData.id
+            it.userData.id == userData.id &&
+                    it.period == it.period
         }
 
     override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         other.compare<YourDataGraphItem> {
-            it.userData == this.userData
+            it.userData == this.userData &&
+                    it.period == it.period
         }
 }
 
@@ -129,6 +131,8 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
 
         val lineData = LineData(set1)
         chart.data = lineData
+        chart.notifyDataSetChanged()
+        chart.invalidate()
     }
 
     private fun configureXAxis(configuration: Configuration) {
