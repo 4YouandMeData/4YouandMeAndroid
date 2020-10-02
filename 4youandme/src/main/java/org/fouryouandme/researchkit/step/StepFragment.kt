@@ -52,7 +52,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             ?.let { if (it == -1) null else it }!!
 
     protected open suspend fun next(): Unit {
-        viewModel.nextStep(taskNavController(), indexArg())
+        viewModel.nextStep(stepNavController(), indexArg())
     }
 
     protected fun taskFragment(): TaskFragment = find()

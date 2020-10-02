@@ -103,13 +103,13 @@ class TaskViewModel(
 
     /* --- navigation --- */
 
-    suspend fun nextStep(taskNavController: TaskNavController, currentStepIndex: Int): Unit =
+    suspend fun nextStep(stepNavController: StepNavController, currentStepIndex: Int): Unit =
         getStepByIndex(currentStepIndex + 1)
             .foldSuspend(
                 { Timber.tag(TAG).e("No more step, please add an EndStep to this task") },
                 {
                     navigator.navigateTo(
-                        taskNavController,
+                        stepNavController,
                         StepToStep(currentStepIndex + 1)
                     )
                 }
