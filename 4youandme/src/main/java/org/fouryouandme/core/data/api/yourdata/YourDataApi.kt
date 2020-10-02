@@ -1,6 +1,7 @@
 package org.fouryouandme.core.data.api.yourdata
 
 import org.fouryouandme.core.data.api.Headers
+import org.fouryouandme.core.data.api.yourdata.response.UserDataAggregationResponse
 import org.fouryouandme.core.data.api.yourdata.response.YourDataResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -13,5 +14,12 @@ interface YourDataApi {
         @Header(Headers.AUTH) token: String,
         @Path("study_id") studyId: String
     ): YourDataResponse
+
+    @GET("/api/v1/studies/{study_id}/user_data_aggregations/{period}")
+    suspend fun getUserDataAggregation(
+        @Header(Headers.AUTH) token: String,
+        @Path("study_id") studyId: String,
+        @Path("period") period: String
+    ): UserDataAggregationResponse
 
 }

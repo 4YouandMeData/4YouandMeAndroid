@@ -1,10 +1,31 @@
 package org.fouryouandme.core.data.api.yourdata.response
 
+import arrow.core.Either
 import com.squareup.moshi.Json
+import org.fouryouandme.core.entity.yourdata.UserDataAggregation
 
 data class UserDataAggregationResponse(
     @Json(name = "data") val data: List<UserDataAggregationDataResponse>? = null
-)
+) {
+
+    suspend fun toUserAggregations(): List<UserDataAggregation>? =
+        data?.mapNotNull {
+
+            Either.catch {
+                UserDataAggregation(
+                    id = it.id!!,
+                    type = it.type!!,
+                    title = it.attributes?.title!!,
+                    color = it.attributes.color,
+                    data = it.attributes.data?.data!!,
+                    xLabels = it.attributes.data.xLabels!!,
+                    yLabels = it.attributes.data.yLabels!!
+                )
+            }.orNull()
+
+        }
+
+}
 
 data class UserDataAggregationDataResponse(
     @Json(name = "id") val id: String? = null,
