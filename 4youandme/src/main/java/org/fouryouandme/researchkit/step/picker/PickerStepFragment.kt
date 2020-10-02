@@ -3,14 +3,16 @@ package org.fouryouandme.researchkit.step.picker
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.step_number.*
+import kotlinx.android.synthetic.main.step_picker.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
+import org.threeten.bp.ZonedDateTime
 
-class PickerStepFragment : StepFragment(R.layout.step_number) {
+class PickerStepFragment : StepFragment(R.layout.step_picker) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,6 +26,8 @@ class PickerStepFragment : StepFragment(R.layout.step_number) {
     private fun applyData(
         step: PickerStep
     ): Unit {
+
+        val start = ZonedDateTime.now()
 
         root.setBackgroundColor(step.backgroundColor)
 
@@ -41,7 +45,10 @@ class PickerStepFragment : StepFragment(R.layout.step_number) {
 
         button.applyImage(step.buttonImage)
         button.setOnClickListener {
-            startCoroutineAsync { next() }
+            startCoroutineAsync {
+                viewModel.addResult(SingleAnswerResult(step.identifier, start, ZonedDateTime.now(), step.questionId, number_picker.displayedValues[number_picker.value]))
+                next()
+            }
         }
 
     }

@@ -9,6 +9,7 @@ class PickerStep(
     val values: List<String>,
     val backgroundColor: Int,
     val image: ImageResource?,
+    val questionId: String,
     val question: (Context) -> String,
     val questionColor: Int,
     val shadowColor: Int,

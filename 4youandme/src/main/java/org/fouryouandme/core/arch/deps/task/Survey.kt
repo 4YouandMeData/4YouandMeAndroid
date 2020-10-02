@@ -21,11 +21,13 @@ fun buildSurvey(
                     listOf("1", "2", "3", "4", "5", "More than 5"),
                     configuration.theme.secondaryColor.color(),
                     imageConfiguration.videoDiaryIntro().toAndroidResource(),
+                    "1",
                     { "Select a number" },
                     configuration.theme.primaryTextColor.color(),
                     configuration.theme.primaryTextColor.color(),
                     imageConfiguration.signUpNextStepSecondary().toAndroidResource()
                 )
+            // TODO: choose one step
             )
 
 
