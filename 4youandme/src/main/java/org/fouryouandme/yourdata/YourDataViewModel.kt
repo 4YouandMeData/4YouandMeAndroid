@@ -1,6 +1,9 @@
 package org.fouryouandme.yourdata
 
+import arrow.core.toT
 import arrow.fx.ForIO
+import arrow.fx.coroutines.parMapN
+import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Runtime
@@ -9,6 +12,8 @@ import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.cases.yourdata.YourDataPeriod
+import org.fouryouandme.core.cases.yourdata.YourDataUseCase.getUserDataAggregation
 import org.fouryouandme.core.cases.yourdata.YourDataUseCase.getYourData
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.yourdata.items.YourDataButtonsItem
@@ -40,17 +45,41 @@ class YourDataViewModel(
 
         showLoadingFx(YourDataLoading.Initialization)
 
-        val yourData =
-            yourDataModule.getYourData()
-                .nullToError()
-                .handleAuthError(rootNavController, navigator)
+        val defaultPeriod = YourDataPeriod.Day
+
+        val yourDataRequest =
+            suspend {
+                yourDataModule.getYourData()
+                    .nullToError()
+                    .handleAuthError(rootNavController, navigator)
+            }
+
+
+        val userAggregationRequest =
+            suspend {
+                yourDataModule.getUserDataAggregation(defaultPeriod)
+                    .nullToError()
+                    .handleAuthError(rootNavController, navigator)
+            }
+
+
+        val (yourData, userAggregation) =
+            parMapN(
+                Dispatchers.IO,
+                yourDataRequest,
+                userAggregationRequest,
+                { yourData,
+                  userDataAggregation ->
+                    yourData toT userDataAggregation
+                }
+            )
 
         yourData.fold(
             { setErrorFx(it, YourDataError.Initialization) },
-            {
+            { data ->
                 setStateFx(
                     YourDataState(
-                        listOf(it.toYourDataHeaderItem(configuration))
+                        listOf(data.toYourDataHeaderItem(configuration))
                             .plus(
                                 getItems(
                                     configuration,
