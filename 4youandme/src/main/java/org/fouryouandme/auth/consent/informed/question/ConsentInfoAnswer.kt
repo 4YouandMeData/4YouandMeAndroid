@@ -81,8 +81,8 @@ class ConsentAnswerViewHolder(
 
     override fun bind(t: ConsentAnswerItem, position: Int) {
 
-        answer.text = t.answer.text
-        answer.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_text.text = t.answer.text
+        answer_text.setTextColor(t.configuration.theme.secondaryColor.color())
 
         answer_button.isChecked = t.isSelected
         answer_button.buttonTintList =
