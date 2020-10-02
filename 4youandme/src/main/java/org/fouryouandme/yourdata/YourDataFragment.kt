@@ -65,7 +65,7 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
             .observeEvent(name()) {
                 when (it.task) {
                     YourDataLoading.Initialization ->
-                        loading.setVisibility(it.active, false)
+                        loading.setVisibility(it.active, viewModel.isInitialized())
                     YourDataLoading.Period ->
                         loading.setVisibility(it.active, true)
                 }

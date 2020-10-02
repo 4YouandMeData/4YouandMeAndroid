@@ -55,19 +55,27 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             .observeEvent(name()) { state ->
                 when (state) {
                     is TasksStateUpdate.Initialization ->
-                        configuration { applyData(it, state.tasks) }
+                        applyTasks(state.tasks)
                 }
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
+            .observeEvent(name()) {
+                when (it.task) {
+                    TasksLoading.Initialization ->
+                        loading.setVisibility(it.active, viewModel.isInitialized())
+                }
+            }
 
         viewModel.errorLiveData()
             .observeEvent(name()) {
-                error.setError(it.error) {
-                    startCoroutineAsync {
-                        viewModel.initialize(rootNavController(), configuration())
-                    }
+                when (it.cause) {
+                    TasksError.Initialization ->
+                        error.setError(it.error) {
+                            startCoroutineAsync {
+                                viewModel.initialize(rootNavController(), configuration())
+                            }
+                        }
                 }
             }
 
@@ -87,11 +95,15 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
     override fun onResume() {
         super.onResume()
 
-        configuration { viewModel.initialize(rootNavController(), it) }
+        configuration {
+
+            applyData(it)
+            viewModel.initialize(rootNavController(), it)
+        }
 
     }
 
-    private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
+    private suspend fun applyData(configuration: Configuration): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
@@ -117,7 +129,6 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             empty_button.text = configuration.text.tab.tabTaskEmptyButton
             empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
 
-            applyTasks(tasks)
         }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
