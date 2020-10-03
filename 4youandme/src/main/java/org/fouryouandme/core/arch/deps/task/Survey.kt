@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
+import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 
@@ -99,6 +100,16 @@ fun buildSurvey(
                     imageConfiguration.videoDiaryIntro().toAndroidResource(),
                     "1",
                     { "Select one or more answers" },
+                    configuration.theme.primaryTextColor.color(),
+                    configuration.theme.primaryTextColor.color(),
+                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
+                ),
+                TextInputStep(
+                    "text input ",
+                    configuration.theme.secondaryColor.color(),
+                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
+                    "1",
+                    { "Insert text" },
                     configuration.theme.primaryTextColor.color(),
                     configuration.theme.primaryTextColor.color(),
                     imageConfiguration.signUpNextStepSecondary().toAndroidResource()
