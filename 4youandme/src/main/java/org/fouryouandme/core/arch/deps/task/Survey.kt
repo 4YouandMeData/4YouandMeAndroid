@@ -7,6 +7,7 @@ import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
+import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
 import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
@@ -110,6 +111,16 @@ fun buildSurvey(
                     imageConfiguration.videoDiaryIntro().toAndroidResource(),
                     "1",
                     { "Insert text" },
+                    configuration.theme.primaryTextColor.color(),
+                    configuration.theme.primaryTextColor.color(),
+                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
+                ),
+                DatePickerStep(
+                    "date",
+                    configuration.theme.secondaryColor.color(),
+                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
+                    "1",
+                    { "Pick a date" },
                     configuration.theme.primaryTextColor.color(),
                     configuration.theme.primaryTextColor.color(),
                     imageConfiguration.signUpNextStepSecondary().toAndroidResource()
