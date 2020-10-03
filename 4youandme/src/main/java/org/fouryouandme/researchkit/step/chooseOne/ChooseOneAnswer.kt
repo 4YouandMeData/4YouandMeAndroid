@@ -8,7 +8,7 @@ import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.chosse_one_answer.*
+import kotlinx.android.synthetic.main.choose_one_answer.*
 import org.fouryouandme.R
 
 data class ChooseOneAnswer(
@@ -40,7 +40,7 @@ data class ChooseOneAnswerItem(
 }
 
 class ChooseOneAnswerViewHolder(parent: ViewGroup, private val onAnswerClicked: (ChooseOneAnswerItem) -> Unit) :
-    DroidViewHolder<ChooseOneAnswerItem, Unit>(parent, R.layout.chosse_one_answer),
+    DroidViewHolder<ChooseOneAnswerItem, Unit>(parent, R.layout.choose_one_answer),
     LayoutContainer {
 
     override fun bind(t: ChooseOneAnswerItem, position: Int) {

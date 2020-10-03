@@ -7,19 +7,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import kotlinx.android.synthetic.main.apps_and_devices.*
-import kotlinx.android.synthetic.main.step_picker.*
-import kotlinx.android.synthetic.main.step_picker.root
+import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
+import kotlinx.android.synthetic.main.step_choose_one.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.background.shadow
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.evalOnMain
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.core.ext.*
+import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
+import org.threeten.bp.ZonedDateTime
 
 class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
@@ -85,6 +83,9 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
         step: ChooseOneStep
     ): Unit =
         evalOnMain {
+
+            val start = ZonedDateTime.now()
+
             root.setBackgroundColor(step.backgroundColor)
 
             step.image?.let { icon.applyImage(it) }
@@ -100,7 +101,21 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
                 startCoroutineAsync { next() }
             }
 
-
+            button.setOnClickListener {
+                startCoroutineAsync {
+                    //TODO: add answer id to the response
+                    viewModel.addResult(
+                        SingleAnswerResult(
+                            step.identifier,
+                            start,
+                            ZonedDateTime.now(),
+                            step.questionId,
+                            chooseOneStepViewModel.getSelectedAnswer()?.text ?: ""
+                        )
+                    )
+                    next()
+                }
+            }
         }
 
     private suspend fun setupRecyclerView() =
@@ -112,20 +127,20 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
             recycler_view.adapter = adapter
 
-//        recycler_view.addItemDecoration(
-//            LinearMarginItemDecoration(
-//                {
-//                    if (it.index == 0) 50.dpToPx()
-//                    else 30.dpToPx()
-//                },
-//                { 20.dpToPx() },
-//                { 20.dpToPx() },
-//                {
-//                    if (it.index == it.itemCount) 30.dpToPx()
-//                    else 0.dpToPx()
-//                }
-//            )
-//        )
+        recycler_view.addItemDecoration(
+            LinearMarginItemDecoration(
+                {
+                    if (it.index == 0) 30.dpToPx()
+                    else 0.dpToPx()
+                },
+                { 20.dpToPx() },
+                { 20.dpToPx() },
+                {
+                    if (it.index == it.itemCount) 30.dpToPx()
+                    else 0.dpToPx()
+                }
+            )
+        )
 
         }
 
