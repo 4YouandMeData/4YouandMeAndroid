@@ -161,8 +161,4 @@ interface ImageConfiguration {
     @DrawableRes
     fun pencil(): Int
 
-    /*--- your data ---*/
-    @DrawableRes
-    fun buttonBackground(): Int
-
 }

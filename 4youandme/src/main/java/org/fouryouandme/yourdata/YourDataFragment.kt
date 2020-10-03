@@ -36,8 +36,14 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
             YourDataHeaderViewHolder.factory(),
-            YourDataButtonsViewHolder.factory(),
-            YourDataGraphViewHolder.factory()
+            YourDataButtonsViewHolder.factory
+            { period ->
+                configuration { viewModel.selectPeriod(rootNavController(), it, period) }
+            },
+            YourDataGraphViewHolder.factory(),
+            YourDataGraphErrorViewHolder.factory {
+                configuration { viewModel.updateGraphs(rootNavController(), it) }
+            }
         )
     }
 
@@ -48,7 +54,10 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
             .observeEvent(name()) { stateUpdate ->
                 when (stateUpdate) {
                     is YourDataStateUpdate.Initialization ->
-                        configuration { applyConfiguration(it, stateUpdate.items) }
+                        startCoroutineAsync { applyItems(stateUpdate.items) }
+                    is YourDataStateUpdate.Period ->
+                        startCoroutineAsync { applyItems(stateUpdate.items) }
+
                 }
             }
 
@@ -56,7 +65,9 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
             .observeEvent(name()) {
                 when (it.task) {
                     YourDataLoading.Initialization ->
-                        loading.setVisibility(it.active, false)
+                        loading.setVisibility(it.active, viewModel.isInitialized())
+                    YourDataLoading.Period ->
+                        loading.setVisibility(it.active, true)
                 }
             }
 
@@ -84,19 +95,23 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
 
         setupRecyclerView()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         configuration {
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), it, imageConfiguration)
-            else
-                applyConfiguration(it, viewModel.state().items)
+            applyConfiguration(it)
+
+            viewModel.initialize(rootNavController(), it, imageConfiguration)
 
         }
+
     }
 
     private suspend fun applyConfiguration(
-        configuration: Configuration,
-        items: List<DroidItem<Any>>
+        configuration: Configuration
     ) {
         evalOnMain {
 
@@ -111,8 +126,6 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
                     configuration.theme.primaryColorStart,
                     configuration.theme.primaryColorEnd
                 ).drawable()
-
-            adapter.submitList(items)
         }
     }
 
@@ -152,5 +165,8 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
         )
 
     }
+
+    private suspend fun applyItems(items: List<DroidItem<Any>>): Unit =
+        evalOnMain { adapter.submitList(items) }
 
 }

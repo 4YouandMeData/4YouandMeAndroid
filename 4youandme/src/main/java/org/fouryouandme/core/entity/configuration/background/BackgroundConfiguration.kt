@@ -5,45 +5,41 @@ import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.dpToPx
 
-fun roundBackground(color: Int, radiusDp: Int = 20): GradientDrawable {
+fun roundBackground(
+    color: Int,
+    topStartDp: Int,
+    topEndDp: Int,
+    bottomEndDp: Int,
+    bottomStartDp: Int,
+): GradientDrawable {
 
-    val radiusPx = radiusDp.dpToPx().toFloat()
+    val topStartPx = topStartDp.dpToPx().toFloat()
+    val topEndPx = topEndDp.dpToPx().toFloat()
+    val bottomEndPx = bottomEndDp.dpToPx().toFloat()
+    val bottomStartPx = bottomStartDp.dpToPx().toFloat()
 
     val drawable = GradientDrawable()
     drawable.setColor(color)
     drawable.cornerRadii =
         arrayOf(
-            radiusPx,
-            radiusPx,
-            radiusPx,
-            radiusPx,
-            radiusPx,
-            radiusPx,
-            radiusPx,
-            radiusPx
+            topStartPx,
+            topStartPx,
+            topEndPx,
+            topEndPx,
+            bottomEndPx,
+            bottomEndPx,
+            bottomStartPx,
+            bottomStartPx
         ).toFloatArray()
     return drawable
 
 }
 
-fun roundTopBackground(color: Int, radiusDp: Int = 30): GradientDrawable {
+fun roundBackground(color: Int, radiusDp: Int = 20): GradientDrawable =
+    roundBackground(color, radiusDp, radiusDp, radiusDp, radiusDp)
 
-    val radiusPx = radiusDp.dpToPx().toFloat()
-
-    val drawable = GradientDrawable()
-    drawable.setColor(color)
-    drawable.cornerRadii = arrayOf(
-        radiusPx,
-        radiusPx,
-        radiusPx,
-        radiusPx,
-        0f,
-        0f,
-        0f,
-        0f
-    ).toFloatArray()
-    return drawable
-}
+fun roundTopBackground(color: Int, radiusDp: Int = 30): GradientDrawable =
+    roundBackground(color, radiusDp, radiusDp, 0, 0)
 
 fun shadow(color: Int): GradientDrawable =
     HEXGradient.from(

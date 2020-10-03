@@ -19,7 +19,6 @@ import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
-import org.fouryouandme.researchkit.task.TaskHandleResult
 
 
 class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
@@ -56,22 +55,30 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent { state ->
+            .observeEvent(name()) { state ->
                 when (state) {
                     is FeedsStateUpdate.Initialization ->
-                        configuration { applyData(it, state.feeds) }
+                        applyTasks(state.feeds)
                 }
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
+            .observeEvent(name()) {
+                when (it.task) {
+                    FeedsLoading.Initialization ->
+                        loading.setVisibility(it.active, viewModel.isInitialized())
+                }
+            }
 
         viewModel.errorLiveData()
-            .observeEvent {
-                error.setError(it.error) {
-                    startCoroutineAsync {
-                        viewModel.initialize(rootNavController(), configuration())
-                    }
+            .observeEvent(name()) {
+                when (it.cause) {
+                    FeedsError.Initialization ->
+                        error.setError(it.error) {
+                            startCoroutineAsync {
+                                viewModel.initialize(rootNavController(), configuration())
+                            }
+                        }
                 }
             }
 
@@ -82,34 +89,19 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         setupList()
 
-        configuration {
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), it)
-            else
-                applyData(it, viewModel.state().feeds)
-
-        }
-
     }
 
     override fun onResume() {
         super.onResume()
 
-        taskConfiguration().taskResultLiveData
-            .value
-            ?.getContentByHandler(name())
-            ?.let { event ->
-                event.map {
-                    if (it.t is TaskHandleResult.Handled)
-                        startCoroutineAsync {
-                            viewModel.initialize(rootNavController(), configuration())
-                        }
-                }
-            }
+        configuration {
+
+            applyData(it)
+            viewModel.initialize(rootNavController(), it)
+        }
     }
 
-    private suspend fun applyData(configuration: Configuration, tasks: List<DroidItem<Any>>): Unit =
+    private suspend fun applyData(configuration: Configuration): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
@@ -136,7 +128,6 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 }
             }
 
-            applyTasks(tasks)
         }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
