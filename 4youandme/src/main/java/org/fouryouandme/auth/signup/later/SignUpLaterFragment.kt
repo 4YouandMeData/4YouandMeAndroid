@@ -12,6 +12,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.setStatusBar
@@ -61,7 +62,7 @@ class SignUpLaterFragment : BaseFragment<SignUpLaterViewModel>(R.layout.sign_up_
             ).drawable()
 
         description.setTextColor(configuration.theme.secondaryColor.color())
-        description.text = configuration.text.signUpLater.body
+        description.setHtmlText(configuration.text.signUpLater.body, true)
 
         divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
 

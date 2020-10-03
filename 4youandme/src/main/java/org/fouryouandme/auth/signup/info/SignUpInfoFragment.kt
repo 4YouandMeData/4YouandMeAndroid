@@ -11,6 +11,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.html.setHtmlText
 
 class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_info) {
 
@@ -67,10 +68,10 @@ class SignUpInfoFragment : BaseFragment<SignUpInfoViewModel>(R.layout.sign_up_in
             ).drawable()
 
         title.setTextColor(configuration.theme.secondaryColor.color())
-        title.text = configuration.text.intro.title
+        title.setHtmlText(configuration.text.intro.title, true)
 
         description.setTextColor(configuration.theme.secondaryColor.color())
-        description.text = configuration.text.intro.body
+        description.setHtmlText(configuration.text.intro.body, true)
 
         divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
 

@@ -21,6 +21,7 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.dpToPx
+import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.view.page.EPageType.*
 
@@ -56,10 +57,10 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
         decodedByte.map { icon.setImageBitmap(it) }
 
-        title.text = page.title
+        title.setHtmlText(page.title, true)
         title.setTextColor(configuration.theme.primaryTextColor.color())
 
-        description.text = page.body
+        description.setHtmlText(page.body, true)
         description.setTextColor(configuration.theme.primaryTextColor.color())
 
         description.gravity =

@@ -26,6 +26,7 @@ import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.configuration.checkbox.checkbox
 import org.fouryouandme.core.entity.optins.OptIns
 import org.fouryouandme.core.ext.IORuntime
+import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.removeBackButton
 import org.fouryouandme.core.ext.setStatusBar
@@ -113,10 +114,10 @@ class OptInPermissionFragment : BaseFragment<OptInViewModel>(R.layout.opt_in_per
 
                 decodedByte.map { icon.setImageBitmap(it) }
 
-                title.text = permission.title
+                title.setHtmlText(permission.title, true)
                 title.setTextColor(configuration.theme.primaryTextColor.color())
 
-                description.text = permission.body
+                description.setHtmlText(permission.body, true)
                 description.setTextColor(configuration.theme.primaryTextColor.color())
 
                 agree.buttonTintList =

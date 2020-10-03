@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.consent_review_header.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.review.ConsentReview
+import org.fouryouandme.core.ext.html.setHtmlText
 
 data class ConsentReviewHeaderItem(
     val configuration: Configuration,
@@ -60,10 +61,10 @@ class ConsentReviewHeaderViewHolder(
 
     override fun bind(t: ConsentReviewHeaderItem, position: Int) {
 
-        title.text = t.title
+        title.setHtmlText(t.title, true)
         title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        body.text = t.body
+        body.setHtmlText(t.body, true)
         body.setTextColor(t.configuration.theme.fourthTextColor.color())
 
         subtitle.text = t.subtitle
