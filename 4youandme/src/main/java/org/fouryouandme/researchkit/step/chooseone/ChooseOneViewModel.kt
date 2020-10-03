@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.chooseOne
+package org.fouryouandme.researchkit.step.chooseone
 
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel

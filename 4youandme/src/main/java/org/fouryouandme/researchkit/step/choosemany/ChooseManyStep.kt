@@ -1,12 +1,12 @@
-package org.fouryouandme.researchkit.step.chooseOne
+package org.fouryouandme.researchkit.step.choosemany
 
 import android.content.Context
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.utils.ImageResource
 
-class ChooseOneStep(
+class ChooseManyStep(
     identifier: String,
-    val values: List<ChooseOneAnswer>,
+    val values: List<ChooseManyAnswer>,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -14,4 +14,4 @@ class ChooseOneStep(
     val questionColor: Int,
     val shadowColor: Int,
     val buttonImage: ImageResource
-) : Step(identifier, { ChooseOneStepFragment() })
+) : Step(identifier, { ChooseManyStepFragment() })

@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.chooseOne
+package org.fouryouandme.researchkit.step.choosemany
 
 import android.content.res.ColorStateList
 import android.view.View
@@ -8,17 +8,17 @@ import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.choose_one_answer.*
+import kotlinx.android.synthetic.main.choose_many_answer.*
 import org.fouryouandme.R
 
-data class ChooseOneAnswer(
+data class ChooseManyAnswer(
     val id: String,
     val text: String,
     val textColor: Int,
     val buttonColor: Int
 )
 
-data class ChooseOneAnswerItem(
+data class ChooseManyAnswerItem(
     val id: String,
     val text: String,
     val isSelected: Boolean,
@@ -27,23 +27,23 @@ data class ChooseOneAnswerItem(
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
-        other.compare<ChooseOneAnswerItem> {
+        other.compare<ChooseManyAnswerItem> {
             it.id == id
         }
 
     override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
-        other.compare<ChooseOneAnswerItem> {
+        other.compare<ChooseManyAnswerItem> {
             it == this
         }
 }
 
-class ChooseOneAnswerViewHolder(parent: ViewGroup, private val onAnswerClicked: (ChooseOneAnswerItem) -> Unit) :
-    DroidViewHolder<ChooseOneAnswerItem, Unit>(parent, R.layout.choose_one_answer),
+class ChooseManyAnswerViewHolder(parent: ViewGroup, private val onAnswerClicked: (ChooseManyAnswerItem) -> Unit) :
+    DroidViewHolder<ChooseManyAnswerItem, Unit>(parent, R.layout.choose_many_answer),
     LayoutContainer {
 
-    override fun bind(t: ChooseOneAnswerItem, position: Int) {
+    override fun bind(t: ChooseManyAnswerItem, position: Int) {
 
         answer_text.text = t.text
         answer_text.setTextColor(t.textColor)
@@ -66,10 +66,10 @@ class ChooseOneAnswerViewHolder(parent: ViewGroup, private val onAnswerClicked: 
 
     companion object {
 
-        fun factory(onAnswerClicked: (ChooseOneAnswerItem) -> Unit): ViewHolderFactory =
+        fun factory(onAnswerClicked: (ChooseManyAnswerItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { ChooseOneAnswerViewHolder(it, onAnswerClicked) },
-                { _, droidItem -> droidItem is ChooseOneAnswerItem }
+                { ChooseManyAnswerViewHolder(it, onAnswerClicked) },
+                { _, droidItem -> droidItem is ChooseManyAnswerItem }
             )
     }
 }

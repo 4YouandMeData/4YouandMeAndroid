@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.chooseOne
+package org.fouryouandme.researchkit.step.choosemany
 
 import android.os.Bundle
 import android.view.View
@@ -8,25 +8,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.step_choose_one.*
+import kotlinx.android.synthetic.main.step_choose_many.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.researchkit.result.SingleAnswerResult
+import org.fouryouandme.researchkit.result.MultipleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
 
-class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
+class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
-    private val chooseOneStepViewModel: ChooseOneViewModel by lazy {
+    private val chooseManyStepViewModel: ChooseManyViewModel by lazy {
 
         viewModelFactory(
             this,
             getFactory {
-                ChooseOneViewModel(
+                ChooseManyViewModel(
                     navigator,
                     IORuntime
                 )
@@ -36,11 +36,11 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(ChooseOneAnswerViewHolder.factory {
+        DroidAdapter(ChooseManyAnswerViewHolder.factory {
 
             startCoroutineAsync {
 
-                chooseOneStepViewModel.answer(it.id)
+                chooseManyStepViewModel.answer(it.id)
 
             }
 
@@ -50,11 +50,11 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        chooseOneStepViewModel.stateLiveData()
+        chooseManyStepViewModel.stateLiveData()
             .observeEvent(name()) {
                 when (it) {
-                    is ChooseOneStepStateUpdate.Initialization -> applyItems(it.items)
-                    is ChooseOneStepStateUpdate.Answer -> applyItems(it.items)
+                    is ChooseManyStepStateUpdate.Initialization -> applyItems(it.items)
+                    is ChooseManyStepStateUpdate.Answer -> applyItems(it.items)
                 }
             }
     }
@@ -67,12 +67,12 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
             setupRecyclerView()
 
             val step =
-                viewModel.getStepByIndexAs<ChooseOneStep>(indexArg())
+                viewModel.getStepByIndexAs<ChooseManyStep>(indexArg())
 
             step?.let {
 
-                if (chooseOneStepViewModel.isInitialized().not())
-                    chooseOneStepViewModel.initialize(it.values)
+                if (chooseManyStepViewModel.isInitialized().not())
+                    chooseManyStepViewModel.initialize(it.values)
 
                 applyData(it)
             }
@@ -80,7 +80,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
     }
 
     private suspend fun applyData(
-        step: ChooseOneStep
+        step: ChooseManyStep
     ): Unit =
         evalOnMain {
 
@@ -105,14 +105,15 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
                 startCoroutineAsync {
                     //TODO: add answer id to the response
                     viewModel.addResult(
-                        SingleAnswerResult(
+                        MultipleAnswerResult(
                             step.identifier,
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            chooseOneStepViewModel.getSelectedAnswer()?.text ?: ""
+                            chooseManyStepViewModel.getSelectedAnswer().map { it.text }
                         )
                     )
+
                     next()
                 }
             }
@@ -127,26 +128,26 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
             recycler_view.adapter = adapter
 
-        recycler_view.addItemDecoration(
-            LinearMarginItemDecoration(
-                {
-                    if (it.index == 0) 30.dpToPx()
-                    else 0.dpToPx()
-                },
-                { 20.dpToPx() },
-                { 20.dpToPx() },
-                {
-                    if (it.index == it.itemCount) 30.dpToPx()
-                    else 0.dpToPx()
-                }
+            recycler_view.addItemDecoration(
+                LinearMarginItemDecoration(
+                    {
+                        if (it.index == 0) 30.dpToPx()
+                        else 0.dpToPx()
+                    },
+                    { 20.dpToPx() },
+                    { 20.dpToPx() },
+                    {
+                        if (it.index == it.itemCount) 30.dpToPx()
+                        else 0.dpToPx()
+                    }
+                )
             )
-        )
 
         }
 
     private fun applyItems(items: List<DroidItem<Any>>): Unit {
 
-        button.isEnabled = chooseOneStepViewModel.getSelectedAnswer() != null
+        button.isEnabled = chooseManyStepViewModel.getSelectedAnswer() != null
 
         adapter.submitList(items)
     }

@@ -3,8 +3,10 @@ package org.fouryouandme.core.arch.deps.task
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.researchkit.step.Step
-import org.fouryouandme.researchkit.step.chooseOne.ChooseOneAnswer
-import org.fouryouandme.researchkit.step.chooseOne.ChooseOneStep
+import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
+import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
+import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
+import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
@@ -61,6 +63,42 @@ fun buildSurvey(
                     imageConfiguration.videoDiaryIntro().toAndroidResource(),
                     "1",
                     { "Select an answer" },
+                    configuration.theme.primaryTextColor.color(),
+                    configuration.theme.primaryTextColor.color(),
+                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
+                ),
+                ChooseManyStep(
+                    "choose many",
+                    listOf(
+                        ChooseManyAnswer(
+                            "1",
+                            "Answer 1",
+                            configuration.theme.primaryTextColor.color(),
+                            configuration.theme.primaryColorEnd.color()
+                        ),
+                        ChooseManyAnswer(
+                            "2",
+                            "Answer 2",
+                            configuration.theme.primaryTextColor.color(),
+                            configuration.theme.primaryColorEnd.color()
+                        ),
+                        ChooseManyAnswer(
+                            "3",
+                            "Answer 3",
+                            configuration.theme.primaryTextColor.color(),
+                            configuration.theme.primaryColorEnd.color()
+                        ),
+                        ChooseManyAnswer(
+                            "4",
+                            "Answer 4",
+                            configuration.theme.primaryTextColor.color(),
+                            configuration.theme.primaryColorEnd.color()
+                        )
+                    ),
+                    configuration.theme.secondaryColor.color(),
+                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
+                    "1",
+                    { "Select one or more answers" },
                     configuration.theme.primaryTextColor.color(),
                     configuration.theme.primaryTextColor.color(),
                     imageConfiguration.signUpNextStepSecondary().toAndroidResource()

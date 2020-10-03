@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.chooseOne
+package org.fouryouandme.researchkit.step.chooseone
 
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 
