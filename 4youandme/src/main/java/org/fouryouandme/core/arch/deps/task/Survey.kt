@@ -9,6 +9,7 @@ import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
 import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
+import org.fouryouandme.researchkit.step.scale.ScaleStep
 import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
@@ -121,6 +122,19 @@ fun buildSurvey(
                     imageConfiguration.videoDiaryIntro().toAndroidResource(),
                     "1",
                     { "Pick a date" },
+                    configuration.theme.primaryTextColor.color(),
+                    configuration.theme.primaryTextColor.color(),
+                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
+                ),
+                ScaleStep(
+                    "scale",
+                    0,
+                    100,
+                    configuration.theme.primaryColorEnd.color(),
+                    configuration.theme.secondaryColor.color(),
+                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
+                    "1",
+                    { "Select a value" },
                     configuration.theme.primaryTextColor.color(),
                     configuration.theme.primaryTextColor.color(),
                     imageConfiguration.signUpNextStepSecondary().toAndroidResource()
