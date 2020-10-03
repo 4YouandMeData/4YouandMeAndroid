@@ -1,13 +1,14 @@
-package org.fouryouandme.researchkit.step.range
+package org.fouryouandme.researchkit.step.scale
 
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.step_range.*
+import kotlinx.android.synthetic.main.step_scale.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.evalOnMain
@@ -16,8 +17,9 @@ import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
+import kotlin.math.absoluteValue
 
-class RangeStepFragment : StepFragment(R.layout.step_range) {
+class ScaleStepFragment : StepFragment(R.layout.step_scale) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,7 +27,7 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
         startCoroutineAsync {
 
             val step =
-                viewModel.getStepByIndexAs<RangeStep>(indexArg())
+                viewModel.getStepByIndexAs<ScaleStep>(indexArg())
 
             step?.let { applyData(it) }
         }
@@ -33,7 +35,7 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun applyData(
-        step: RangeStep
+        step: ScaleStep
     ): Unit =
 
         evalOnMain {
@@ -50,20 +52,17 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
             value.text = step.minValue.toString()
 
             slider.progressTintList = ColorStateList.valueOf(step.progressColor)
-            slider.min = step.minValue
-            slider.max = step.maxValue
+            slider.min = 0
+            slider.max = (step.maxValue.minus(step.minValue)).absoluteValue.div(step.interval)
             slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    value.text = i.toString()
+                    value.text = i.times(step.interval).plus(step.minValue).toString()
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
-
-            min_label.text = "${step.minValue}% likely"
-            max_label.text = "${step.maxValue}% likely"
 
             shadow.background = shadow(step.shadowColor)
 
