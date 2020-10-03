@@ -1,10 +1,10 @@
-package org.fouryouandme.researchkit.step.scale
+package org.fouryouandme.researchkit.step.range
 
 import android.content.Context
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.utils.ImageResource
 
-class ScaleStep(
+class RangeStep(
     identifier: String,
     val minValue: Int,
     val maxValue: Int,
@@ -16,4 +16,4 @@ class ScaleStep(
     val questionColor: Int,
     val shadowColor: Int,
     val buttonImage: ImageResource
-) : Step(identifier, { ScaleStepFragment() })
+) : Step(identifier, { RangeStepFragment() })

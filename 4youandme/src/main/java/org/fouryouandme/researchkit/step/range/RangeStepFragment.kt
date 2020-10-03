@@ -1,4 +1,4 @@
-package org.fouryouandme.researchkit.step.scale
+package org.fouryouandme.researchkit.step.range
 
 import android.content.res.ColorStateList
 import android.os.Build
@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.step_scale.*
+import kotlinx.android.synthetic.main.step_range.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.evalOnMain
@@ -17,7 +17,7 @@ import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
 
-class ScaleStepFragment : StepFragment(R.layout.step_scale) {
+class RangeStepFragment : StepFragment(R.layout.step_range) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,7 +25,7 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
         startCoroutineAsync {
 
             val step =
-                viewModel.getStepByIndexAs<ScaleStep>(indexArg())
+                viewModel.getStepByIndexAs<RangeStep>(indexArg())
 
             step?.let { applyData(it) }
         }
@@ -33,7 +33,7 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun applyData(
-        step: ScaleStep
+        step: RangeStep
     ): Unit =
 
         evalOnMain {
@@ -64,7 +64,7 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
             })
 
             min_label.text = "${step.minValue}% likely"
-            max_label.text = "${step.minValue}% likely"
+            max_label.text = "${step.maxValue}% likely"
 
             shadow.background = shadow(step.shadowColor)
 

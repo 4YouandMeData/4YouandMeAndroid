@@ -9,7 +9,7 @@ import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
 import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
-import org.fouryouandme.researchkit.step.scale.ScaleStep
+import org.fouryouandme.researchkit.step.range.RangeStep
 import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
@@ -126,7 +126,7 @@ fun buildSurvey(
                     configuration.theme.primaryTextColor.color(),
                     imageConfiguration.signUpNextStepSecondary().toAndroidResource()
                 ),
-                ScaleStep(
+                RangeStep(
                     "scale",
                     0,
                     100,
