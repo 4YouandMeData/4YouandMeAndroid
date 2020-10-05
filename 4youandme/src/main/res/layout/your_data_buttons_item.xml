@@ -29,18 +29,6 @@
         tools:background="#FFFFFF">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/filter_day"
-            style="@style/text_h3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            tools:text="DAY" />
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/filter_week"
             style="@style/text_h3"
             android:layout_width="0dp"

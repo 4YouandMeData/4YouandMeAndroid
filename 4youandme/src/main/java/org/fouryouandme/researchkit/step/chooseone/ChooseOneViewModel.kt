@@ -36,13 +36,6 @@ class ChooseOneViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
             else it
         }
 
-//        val items = state().items.map {
-//            if (it is ChooseOneAnswerItem) {
-//                if (it.id == answerId) it.copy(isSelected = it.isSelected.not())
-//                else it
-//            } else it
-//        }
-
         setStateFx(state().copy(items = items)) { ChooseOneStepStateUpdate.Answer(it.items) }
 
     }

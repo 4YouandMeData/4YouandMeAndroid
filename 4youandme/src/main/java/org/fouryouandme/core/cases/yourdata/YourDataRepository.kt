@@ -28,7 +28,6 @@ object YourDataRepository {
 
 sealed class YourDataPeriod(val value: String) {
 
-    object Day : YourDataPeriod("last_day")
     object Week : YourDataPeriod("last_week")
     object Month : YourDataPeriod("last_month")
     object Year : YourDataPeriod("last_year")

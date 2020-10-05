@@ -17,6 +17,7 @@ import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.result.MultipleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
+import org.fouryouandme.researchkit.utils.applyImageAsButton
 import org.threeten.bp.ZonedDateTime
 
 class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
@@ -96,7 +97,7 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
             shadow.background = shadow(step.shadowColor)
 
-            button.applyImage(step.buttonImage)
+            button.applyImageAsButton(step.buttonImage)
             button.setOnClickListener {
                 startCoroutineAsync { next() }
             }
@@ -147,7 +148,7 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
     private fun applyItems(items: List<DroidItem<Any>>): Unit {
 
-        button.isEnabled = chooseManyStepViewModel.getSelectedAnswer() != null
+        button.isEnabled = chooseManyStepViewModel.getSelectedAnswer().isEmpty().not()
 
         adapter.submitList(items)
     }

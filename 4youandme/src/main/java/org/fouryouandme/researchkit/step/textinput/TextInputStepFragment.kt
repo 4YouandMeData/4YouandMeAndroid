@@ -11,6 +11,7 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
+import org.fouryouandme.researchkit.utils.applyImageAsButton
 import org.threeten.bp.ZonedDateTime
 
 class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
@@ -44,7 +45,7 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
 
             shadow.background = shadow(step.shadowColor)
 
-            button.applyImage(step.buttonImage)
+            button.applyImageAsButton(step.buttonImage)
             button.setOnClickListener {
                 startCoroutineAsync {
                     viewModel.addResult(

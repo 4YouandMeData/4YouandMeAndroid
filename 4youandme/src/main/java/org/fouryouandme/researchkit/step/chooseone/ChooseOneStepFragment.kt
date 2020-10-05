@@ -17,6 +17,7 @@ import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
+import org.fouryouandme.researchkit.utils.applyImageAsButton
 import org.threeten.bp.ZonedDateTime
 
 class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
@@ -96,7 +97,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
             shadow.background = shadow(step.shadowColor)
 
-            button.applyImage(step.buttonImage)
+            button.applyImageAsButton(step.buttonImage)
             button.setOnClickListener {
                 startCoroutineAsync { next() }
             }

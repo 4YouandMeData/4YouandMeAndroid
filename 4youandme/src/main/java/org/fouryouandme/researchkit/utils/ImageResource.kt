@@ -3,6 +3,7 @@ package org.fouryouandme.researchkit.utils
 import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import org.fouryouandme.core.entity.configuration.button.button
 
 sealed class ImageResource {
 
@@ -27,3 +28,9 @@ fun Button.applyImage(imageResource: ImageResource): Unit =
     when (imageResource) {
         is ImageResource.AndroidResource -> setBackgroundResource(imageResource.image)
     }
+
+fun ImageView.applyImageAsButton(imageResource: ImageResource): Unit {
+    when (imageResource) {
+        is ImageResource.AndroidResource -> background = button(context.resources, imageResource.image)
+    }
+}

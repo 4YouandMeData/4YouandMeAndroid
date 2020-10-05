@@ -50,7 +50,7 @@ class YourDataViewModel(
 
         showLoadingFx(YourDataLoading.Initialization)
 
-        val defaultPeriod = YourDataPeriod.Day
+        val defaultPeriod = YourDataPeriod.Week
 
         val yourDataRequest =
             suspend {

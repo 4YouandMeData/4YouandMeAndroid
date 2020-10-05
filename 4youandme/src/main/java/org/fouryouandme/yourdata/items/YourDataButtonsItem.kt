@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.your_data_buttons_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.cases.yourdata.YourDataPeriod
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.configuration.YourData
 import org.fouryouandme.core.entity.configuration.background.roundBackground
 
 data class YourDataButtonsItem(
@@ -53,27 +54,19 @@ class YourDataButtonsViewHolder(
         title.text = t.configuration.text.yourData.dataPeriodTitle
         title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        filter_day.text = t.configuration.text.yourData.periodDay
-        filter_day.setTextColor(
-            if (t.selectedPeriod == YourDataPeriod.Day) selectedTextColor else textColor
-        )
-        filter_day.background =
-            roundBackground(
-                if (t.selectedPeriod == YourDataPeriod.Day) selectedBgColor else bgColor,
-                20,
-                0,
-                0,
-                20
-            )
-        filter_day.setOnClickListener { onPeriodClicked(YourDataPeriod.Day) }
-
         filter_week.text = t.configuration.text.yourData.periodWeek
         filter_week.setTextColor(
             if (t.selectedPeriod == YourDataPeriod.Week) selectedTextColor else textColor
         )
-        filter_week.setBackgroundColor(
-            if (t.selectedPeriod == YourDataPeriod.Week) selectedBgColor else bgColor
-        )
+        filter_week.background =
+                roundBackground(
+                    if (t.selectedPeriod == YourDataPeriod.Week) selectedBgColor else bgColor,
+                    20,
+                    0,
+                    0,
+                    20
+                )
+
         filter_week.setOnClickListener { onPeriodClicked(YourDataPeriod.Week) }
 
         filter_month.text = t.configuration.text.yourData.periodMonth

@@ -94,7 +94,6 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
         val end = ZonedDateTime.now().minusDays(1)
         val start =
             when (t.period) {
-                YourDataPeriod.Day -> end.minusHours(24)
                 YourDataPeriod.Week -> end.minusDays(7)
                 YourDataPeriod.Month -> end.minusMonths(1)
                 YourDataPeriod.Year -> end.minusYears(1)
