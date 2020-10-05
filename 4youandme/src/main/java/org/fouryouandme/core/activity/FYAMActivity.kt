@@ -37,7 +37,9 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
         viewModel.errorLiveData()
             .observeEvent {
-                error.setError(it.error) { startCoroutineAsync { viewModel.initialize() } }
+                error.setError(it.error) {
+                    startCoroutineAsync { viewModel.initialize(rootNavController()) }
+                }
             }
 
         viewModel.stateLiveData()
@@ -50,7 +52,7 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
         startCoroutineAsync {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize()
+                viewModel.initialize(rootNavController())
 
         }
 

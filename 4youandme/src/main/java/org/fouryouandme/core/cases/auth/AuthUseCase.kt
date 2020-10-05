@@ -1,33 +1,31 @@
 package org.fouryouandme.core.cases.auth
 
 import arrow.Kind
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import arrow.core.toOption
+import arrow.core.*
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
 import org.fouryouandme.core.cases.auth.AuthRepository.loadToken
+import org.fouryouandme.core.cases.auth.AuthRepository.login
+import org.fouryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
+import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.toKind
 
 object AuthUseCase {
 
-    fun <F> verifyPhoneNumber(
-        runtime: Runtime<F>,
-        phone: String
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        AuthRepository.verifyPhoneNumber(runtime, phone)
+    suspend fun AuthModule.verifyPhoneNumber(phone: String): Either<FourYouAndMeError, Unit> =
+        configurationModule.getConfiguration(CachePolicy.MemoryFirst)
+            .flatMap { verifyPhoneNumber(it, phone) }
 
-    fun <F> login(
-        runtime: Runtime<F>,
+    suspend fun AuthModule.login(
         phone: String,
         code: String
-    ): Kind<F, Either<FourYouAndMeError, User>> =
-        AuthRepository.login(runtime, phone, code)
+    ): Either<FourYouAndMeError, User> =
+        configurationModule.getConfiguration(CachePolicy.MemoryFirst)
+            .flatMap { login(it, phone, code) }
 
     @Deprecated("use suspend version")
     internal fun <F> getToken(

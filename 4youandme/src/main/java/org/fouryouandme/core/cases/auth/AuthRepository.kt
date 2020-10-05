@@ -1,157 +1,89 @@
 package org.fouryouandme.core.cases.auth
 
 import arrow.Kind
-import arrow.core.*
-import arrow.core.extensions.either.applicativeError.applicativeError
-import arrow.integrations.retrofit.adapter.unwrapBody
-import org.fouryouandme.R
+import arrow.core.Either
+import arrow.core.Option
+import arrow.core.toOption
+import arrow.syntax.function.pipe
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
+import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.FourYouAndMeError
-import org.fouryouandme.core.arch.error.toFourYouAndMeError
-import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
 import org.fouryouandme.core.data.api.Headers
 import org.fouryouandme.core.data.api.auth.request.LoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneLoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
 import org.fouryouandme.core.data.api.auth.response.UserResponse
+import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.evalOnMain
-import org.fouryouandme.core.ext.mapError
-import org.fouryouandme.core.ext.noneToError
-import org.fouryouandme.core.ext.unwrapEmptyToEither
+import org.fouryouandme.core.ext.mapNotNull
 import retrofit2.Response
 
 object AuthRepository {
 
-    fun <F> verifyPhoneNumber(
-        runtime: Runtime<F>,
+    suspend fun AuthModule.verifyPhoneNumber(
+        configuration: Configuration,
         phone: String
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        runtime.fx.concurrent {
+    ): Either<FourYouAndMeError, Unit> =
+        PhoneNumberVerificationRequest(PhoneNumberRequest(phone))
+            .pipe { suspend { api.verifyPhoneNumber(environment.studyId(), it) } }
+            .pipe { errorModule.unwrapToEither(block = it) }
+            .mapLeft {
 
-            val configuration =
-                ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
-                    .bind()
-                    .toOption()
-
-            !runtime.injector.authApi
-                .verifyPhoneNumber(
-                    runtime.injector.environment.studyId(),
-                    PhoneNumberVerificationRequest(PhoneNumberRequest(phone))
-                )
-                .async(runtime.fx.M)
-                .attempt()
-                .unwrapEmptyToEither(runtime)
-                .mapError(runtime.fx) { error ->
-
-                    if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 404)
-                        FourYouAndMeError.MissingPhoneNumber {
-                            configuration
-                                .map { it.text.phoneVerification.error.errorMissingNumber }
-                                .getOrElse {
-                                    runtime.app.getString(R.string.ERROR_generic)
-                                }
-                        }
-                    else
-                        error
-                }
-        }
-
-    fun <F> login(
-        runtime: Runtime<F>,
-        phone: String,
-        code: String
-    ): Kind<F, Either<FourYouAndMeError, User>> =
-        runtime.fx.concurrent {
-
-            val configuration =
-                ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
-                    .bind()
-                    .toOption()
-
-            val user =
-                !runtime.injector.authApi
-                    .login(
-                        runtime.injector.environment.studyId(),
-                        LoginRequest(PhoneLoginRequest(phone, code))
-                    )
-                    .async(runtime.fx.M)
-                    .attempt()
-                    .unwrapUser(runtime)
-                    .noneToError(runtime)
-                    .mapError(runtime.fx) { error ->
-
-                        if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 401)
-                            FourYouAndMeError.WrongPhoneCode {
-                                configuration
-                                    .map { it.text.phoneVerification.error.errorWrongCode }
-                                    .getOrElse {
-                                        runtime.app.getString(R.string.ERROR_generic)
-                                    }
-                            }
-                        else
-                            error
+                if (it is FourYouAndMeError.NetworkErrorHTTP && it.code == 404)
+                    FourYouAndMeError.MissingPhoneNumber {
+                        configuration.text.phoneVerification.error.errorMissingNumber
                     }
+                else it
 
-            !user.fold({ just(Unit) }, { it.save(runtime) })
+            }
 
-            user
-        }
+    suspend fun AuthModule.login(
+        configuration: Configuration,
+        phone: String,
+        code: String,
+    ): Either<FourYouAndMeError, User> =
+        suspend { api.login(environment.studyId(), LoginRequest(PhoneLoginRequest(phone, code))) }
+            .pipe { errorModule.unwrapToEither(block = it) }
+            .map { it.unwrapUser() }
+            .nullToError()
+            .mapLeft { error ->
 
-    private fun <F> Kind<F, Either<Throwable, Response<UserResponse>>>.unwrapUser(
-        runtime: Runtime<F>
-    ): Kind<F, Either<FourYouAndMeError, Option<User>>> =
-        runtime.fx.concurrent {
+                if (error is FourYouAndMeError.NetworkErrorHTTP && error.code == 401)
+                    FourYouAndMeError.WrongPhoneCode {
+                        configuration.text.phoneVerification.error.errorWrongCode
+                    }
+                else
+                    error
+            }
+            .map { it.also { save(it) } }
 
-            val request =
-                !this@unwrapUser
+    private suspend fun Response<UserResponse>.unwrapUser(): User? =
 
-            val response = request.fold(
-                { Throwable().left() },
-                { response ->
-
-                    response.unwrapBody(Either.applicativeError())
-                        .flatMap { userResponse ->
-                            response.headers()[Headers.AUTH]
-                                .toOption()
-                                .fold({ Throwable().left() }, { userResponse.toUser(it).right() })
-                        }
-
-                })
-
-            val configuration =
-                ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryOrDisk)
-                    .bind()
-                    .toOption()
-
-            !toFourYouAndMeError(runtime, response, configuration.map { it.text })
-        }
+        mapNotNull(body(), headers()[Headers.AUTH])
+            ?.let { (user, token) ->
+                user.toUser(token)
+            }
 
 
-    /* --- user --- */
+/* --- user --- */
 
-    private const val USER_EMAIL = "user_email"
-    private const val USER_ID = "user_id"
     private const val USER_TOKEN = "user_token"
 
-    private fun <F> User.save(runtime: Runtime<F>): Kind<F, Unit> =
-        runtime.fx.concurrent {
+    private suspend fun AuthModule.save(user: User): Unit {
+        user.apply {
 
-            runtime.injector.prefs
-                .edit()
-                .putString(USER_EMAIL, email)
-                .putString(USER_ID, id.toString())
-                .putString(USER_TOKEN, token)
-                .apply()
+            prefs.edit().putString(USER_TOKEN, token).apply()
 
-            !runtime.onMainDispatcher { Memory.token = token }
+            evalOnMain { Memory.token = token }
 
         }
+    }
 
     @Deprecated("use suspend version")
     internal fun <F> loadToken(runtime: Runtime<F>): Kind<F, Option<String>> =

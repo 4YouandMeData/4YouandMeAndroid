@@ -82,7 +82,8 @@ interface Injector {
             prefs,
             moshi,
             environment,
-            errorModule()
+            errorModule(),
+            configurationModule()
         )
 
     fun taskModule(): TaskModule =

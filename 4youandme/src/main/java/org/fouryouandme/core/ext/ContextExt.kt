@@ -14,6 +14,7 @@ import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Injector
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.runtime
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.Navigator
 
 /* --- resources --- */
@@ -39,6 +40,9 @@ val Context.imageConfiguration: ImageConfiguration
 
 fun Context.errorToast(message: String): Unit =
     Toasty.error(this, message, Toast.LENGTH_LONG).show()
+
+fun Context.errorToast(error: FourYouAndMeError): Unit =
+    Toasty.error(this, error.message(this), Toast.LENGTH_LONG).show()
 
 fun Context.infoToast(message: String): Unit =
     Toasty.info(this, message, Toast.LENGTH_LONG).show()

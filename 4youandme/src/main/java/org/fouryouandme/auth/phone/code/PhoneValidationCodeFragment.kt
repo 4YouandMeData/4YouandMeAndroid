@@ -30,21 +30,13 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
     override val viewModel: PhoneValidationCodeViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { PhoneValidationCodeViewModel(navigator, IORuntime) }
+            getFactory { PhoneValidationCodeViewModel(navigator, IORuntime, injector.authModule()) }
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent {
-
-                when (it) {
-                    is PhoneValidationCodeStateUpdate.Initialization ->
-                        applyConfiguration(it.configuration)
-                }
-            }
 
         viewModel.loadingLiveData()
             .observeEvent {
@@ -55,20 +47,20 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
             }
 
         viewModel.errorLiveData()
-            .observeEvent {
-                when (it.cause) {
+            .observeEvent { payload ->
+                when (payload.cause) {
                     PhoneValidationCodeError.Auth -> {
 
-                        when (it.error) {
+                        when (payload.error) {
 
                             is FourYouAndMeError.WrongPhoneCode ->
-                                setWrongCodeErrorVisibility(true)
+                                configuration { setWrongCodeErrorVisibility(it, true) }
                             else ->
-                                viewModel.toastError(it.error)
+                                errorToast(payload.error)
                         }
                     }
                     PhoneValidationCodeError.ResendCode ->
-                        viewModel.toastError(it.error)
+                        errorToast(payload.error)
                 }
             }
 
@@ -77,151 +69,156 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration
-            .fold({ viewModel.initialize() }, { applyConfiguration(it) })
+        configuration {
 
-        setupView()
-    }
+            applyConfiguration(it)
 
-    private fun setupView() {
-
-        toolbar.showBackButton(imageConfiguration) { viewModel.back(findNavController()) }
-
-        phone.setText(args.phone)
-
-        next.setOnClickListener {
-            viewModel.auth(findNavController(), ccp.fullNumberWithPlus, code.text.toString())
-        }
-
-        resend.setOnClickListener {
-            viewModel.resendCode(ccp.fullNumberWithPlus)
+            setupView()
         }
     }
 
-    private fun applyConfiguration(configuration: Configuration): Unit {
+    private suspend fun setupView(): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.activeColor.color())
+            toolbar.showBackButton(imageConfiguration) {
+                startCoroutineAsync { viewModel.back(findNavController()) }
+            }
 
-        root.setBackgroundColor(configuration.theme.activeColor.color())
+            phone.setText(args.phone)
 
-        title.setTextColor(configuration.theme.secondaryColor.color())
-        title.text = configuration.text.phoneVerification.codeTitle
+            next.setOnClickListenerAsync {
+                viewModel.auth(findNavController(), ccp.fullNumberWithPlus, code.text.toString())
+            }
 
-        description.setTextColor(configuration.theme.secondaryColor.color())
-        description.text = configuration.text.phoneVerification.codeBody
-
-        ccp.contentColor = configuration.theme.secondaryColor.color()
-        ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
-        ccp.ccpDialogShowTitle = false
-        ccp.enableDialogInitialScrollToSelection(true)
-        ccp.setDialogBackgroundColor(configuration.theme.primaryColorStart.color())
-        ccp.setDialogTextColor(configuration.theme.secondaryColor.color())
-        ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
-        ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
-        ccp.setTextSize(15f.spToPx(requireContext()))
-        ccp.setDialogKeyboardAutoPopup(false)
-        ccp.registerCarrierNumberEditText(phone)
-        ccp.setNumberAutoFormattingEnabled(true)
-
-        ccp.setCcpClickable(false)
-        ccp.setCountryForNameCode(args.countryCode)
-
-        phone_description.text =
-            configuration.text.phoneVerification.wrongNumber
-        phone_description.setTextColor(configuration.theme.secondaryColor.color())
-
-        phone_validation.imageTintList =
-            ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-        phone_validation.setImageResource(imageConfiguration.entryValid())
-
-        phone.setTextColor(configuration.theme.secondaryColor.color())
-        phone.setHintTextColor(configuration.theme.secondaryColor.color())
-        phone.backgroundTintList =
-            ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-        phone.autoCloseKeyboard()
-
-        phone.isEnabled = false
-
-        change_phone.setOnClickListener { viewModel.back(findNavController()) }
-
-        code_description.setTextColor(configuration.theme.secondaryColor.color())
-        code_description.text =
-            configuration.text.phoneVerification.codeDescription
-
-        code_validation.setImageResource(
-            if (code.length() == 6) imageConfiguration.entryValid()
-            else imageConfiguration.entryWrong()
-        )
-
-        code.setTextColor(configuration.theme.secondaryColor.color())
-        code.setHintTextColor(configuration.theme.secondaryColor.color())
-        code.backgroundTintList =
-            ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-        code.autoCloseKeyboard()
-        code.addTextChangedListener {
-
-            next.isEnabled = it?.toString()?.length == 6
-
-            setWrongCodeErrorVisibility(false)
-
+            resend.setOnClickListenerAsync { viewModel.resendCode(ccp.fullNumberWithPlus) }
         }
-        code.setOnFocusChangeListener { _, hasFocus ->
+
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
+        evalOnMain {
+
+            setStatusBar(configuration.theme.activeColor.color())
+
+            root.setBackgroundColor(configuration.theme.activeColor.color())
+
+            title.setTextColor(configuration.theme.secondaryColor.color())
+            title.text = configuration.text.phoneVerification.codeTitle
+
+            description.setTextColor(configuration.theme.secondaryColor.color())
+            description.text = configuration.text.phoneVerification.codeBody
+
+            ccp.contentColor = configuration.theme.secondaryColor.color()
+            ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
+            ccp.ccpDialogShowTitle = false
+            ccp.enableDialogInitialScrollToSelection(true)
+            ccp.setDialogBackgroundColor(configuration.theme.primaryColorStart.color())
+            ccp.setDialogTextColor(configuration.theme.secondaryColor.color())
+            ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
+            ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
+            ccp.setTextSize(15f.spToPx(requireContext()))
+            ccp.setDialogKeyboardAutoPopup(false)
+            ccp.registerCarrierNumberEditText(phone)
+            ccp.setNumberAutoFormattingEnabled(true)
+
+            ccp.setCcpClickable(false)
+            ccp.setCountryForNameCode(args.countryCode)
+
+            phone_description.text =
+                configuration.text.phoneVerification.wrongNumber
+            phone_description.setTextColor(configuration.theme.secondaryColor.color())
+
+            phone_validation.imageTintList =
+                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+            phone_validation.setImageResource(imageConfiguration.entryValid())
+
+            phone.setTextColor(configuration.theme.secondaryColor.color())
+            phone.setHintTextColor(configuration.theme.secondaryColor.color())
+            phone.backgroundTintList =
+                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+            phone.autoCloseKeyboard()
+
+            phone.isEnabled = false
+
+            change_phone.setOnClickListenerAsync { viewModel.back(findNavController()) }
+
+            code_description.setTextColor(configuration.theme.secondaryColor.color())
+            code_description.text =
+                configuration.text.phoneVerification.codeDescription
 
             code_validation.setImageResource(
-                when {
-                    hasFocus -> 0
-                    hasFocus.not() && code.length() == 6 -> imageConfiguration.entryValid()
-                    else -> imageConfiguration.entryWrong()
-                }
+                if (code.length() == 6) imageConfiguration.entryValid()
+                else imageConfiguration.entryWrong()
             )
-        }
 
-        resend.setTextColor(configuration.theme.secondaryColor.color())
-        resend.text =
-            SpanDroid()
-                .append(
-                    configuration.text.phoneVerification.resendCode,
-                    spanList(requireContext()) {
-                        click {}
-                        typeface(R.font.helvetica)
-                        custom(ForegroundColorSpan(configuration.theme.secondaryColor.color()))
-                        custom(UnderlineSpan())
+            code.setTextColor(configuration.theme.secondaryColor.color())
+            code.setHintTextColor(configuration.theme.secondaryColor.color())
+            code.backgroundTintList =
+                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+            code.autoCloseKeyboard()
+            code.addTextChangedListener { editable ->
+
+                next.isEnabled = editable?.toString()?.length == 6
+
+                configuration { setWrongCodeErrorVisibility(it, false) }
+
+            }
+            code.setOnFocusChangeListener { _, hasFocus ->
+
+                code_validation.setImageResource(
+                    when {
+                        hasFocus -> 0
+                        hasFocus.not() && code.length() == 6 -> imageConfiguration.entryValid()
+                        else -> imageConfiguration.entryWrong()
                     }
                 )
-                .toSpannableString()
+            }
 
-        next.background =
-            button(resources, imageConfiguration.signUpNextStep())
-        next.isEnabled = code.text?.toString()?.length == 6
+            resend.setTextColor(configuration.theme.secondaryColor.color())
+            resend.text =
+                SpanDroid()
+                    .append(
+                        configuration.text.phoneVerification.resendCode,
+                        spanList(requireContext()) {
+                            click {}
+                            typeface(R.font.helvetica)
+                            custom(ForegroundColorSpan(configuration.theme.secondaryColor.color()))
+                            custom(UnderlineSpan())
+                        }
+                    )
+                    .toSpannableString()
 
-        wrong_code_error.text =
-            configuration.text.phoneVerification.error.errorWrongCode
-        wrong_code_error.setTextColor(configuration.theme.primaryTextColor.color())
-    }
+            next.background =
+                button(resources, imageConfiguration.signUpNextStep())
+            next.isEnabled = code.text?.toString()?.length == 6
 
-    private fun setWrongCodeErrorVisibility(visible: Boolean): Unit {
-
-        viewModel.state().configuration.map {
-
-            code.setTextColor(
-                if (visible) it.theme.primaryTextColor.color()
-                else it.theme.secondaryColor.color()
-            )
-
+            wrong_code_error.text =
+                configuration.text.phoneVerification.error.errorWrongCode
+            wrong_code_error.setTextColor(configuration.theme.primaryTextColor.color())
         }
 
-        if (visible)
-            wrong_code_error
-                .animate()
-                .alpha(1f)
-                .setDuration(500L)
-                .start()
-        else
-            wrong_code_error
-                .animate()
-                .alpha(0f)
-                .setDuration(500L)
-                .start()
+    private suspend fun setWrongCodeErrorVisibility(
+        configuration: Configuration,
+        visible: Boolean
+    ): Unit =
+        evalOnMain {
 
-    }
+            code.setTextColor(
+                if (visible) configuration.theme.primaryTextColor.color()
+                else configuration.theme.secondaryColor.color()
+            )
+
+
+            if (visible)
+                wrong_code_error
+                    .animate()
+                    .alpha(1f)
+                    .setDuration(500L)
+                    .start()
+            else
+                wrong_code_error
+                    .animate()
+                    .alpha(0f)
+                    .setDuration(500L)
+                    .start()
+
+        }
 }

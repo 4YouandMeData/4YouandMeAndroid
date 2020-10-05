@@ -14,6 +14,7 @@ import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.Injector
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.runtime
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.Navigator
 
 
@@ -79,5 +80,7 @@ inline fun <reified T : Fragment> Fragment.find(): T {
 /* --- toast --- */
 
 fun Fragment.errorToast(message: String): Unit = requireContext().errorToast(message)
+
+fun Fragment.errorToast(error: FourYouAndMeError): Unit = requireContext().errorToast(error)
 
 fun Fragment.infoToast(message: String): Unit = requireContext().infoToast(message)

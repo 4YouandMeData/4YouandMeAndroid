@@ -1,5 +1,6 @@
 package org.fouryouandme.core.arch.deps.modules
 
+import android.app.Application
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.Environment
@@ -10,5 +11,6 @@ data class AuthModule(
     val prefs: SharedPreferences,
     val moshi: Moshi,
     val environment: Environment,
-    val errorModule: ErrorModule
+    val errorModule: ErrorModule,
+    val configurationModule: ConfigurationModule
 )

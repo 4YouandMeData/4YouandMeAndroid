@@ -1,24 +1,20 @@
 package org.fouryouandme.auth.phone
 
 import androidx.navigation.NavController
-import arrow.Kind
-import arrow.core.some
-import arrow.core.toOption
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.toastAction
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.auth.AuthUseCase
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
 
 class EnterPhoneViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val authModule: AuthModule
 ) : BaseViewModel<
         ForIO,
         EnterPhoneState,
@@ -27,84 +23,58 @@ class EnterPhoneViewModel(
         EnterPhoneLoading>
     (EnterPhoneState(), navigator, runtime) {
 
-    /* --- data --- */
+    /* --- state update --- */
 
-    fun initialize(): Unit =
-        runtime.fx.concurrent {
+    suspend fun setCountryNameCode(code: String): Unit =
+        setStateFx(
+            state().copy(countryNameCode = code)
+        ) { EnterPhoneStateUpdate.CountryCode(code) }
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
-
-            !configuration.fold(
-                { setError(it, EnterPhoneError.Initialization) },
-                {
-                    setState(
-                        state().copy(configuration = it.toOption()),
-                        EnterPhoneStateUpdate.Initialization(it)
-                    )
-                }
-            )
-
-        }.unsafeRunAsync()
-
-    fun setCountryNameCode(code: String): Unit =
-        setState(
-            state().copy(countryNameCode = code.some()),
-            EnterPhoneStateUpdate.CountryCode(code)
-        ).unsafeRunAsync()
-
-    fun setLegalCheckbox(isChecked: Boolean): Unit =
-        setState(
-            state().copy(legalCheckbox = isChecked),
-            EnterPhoneStateUpdate.LegalCheckBox(isChecked)
-        ).unsafeRunAsync()
+    suspend fun setLegalCheckbox(isChecked: Boolean): Unit =
+        setStateFx(
+            state().copy(legalCheckbox = isChecked)
+        ) { EnterPhoneStateUpdate.LegalCheckBox(isChecked) }
 
     /* --- auth --- */
 
-    fun verifyNumber(
+    suspend fun verifyNumber(
         navController: NavController,
         phoneAndCode: String,
         phone: String,
         countryCode: String
-    ): Unit =
-        runtime.fx.concurrent {
+    ): Unit {
 
-            !showLoading(EnterPhoneLoading.PhoneNumberVerification)
+        showLoadingFx(EnterPhoneLoading.PhoneNumberVerification)
 
-            val auth =
-                !AuthUseCase.verifyPhoneNumber(
-                    runtime,
-                    phoneAndCode
-                )
-
-            !auth.fold(
-                { setError(it, EnterPhoneError.PhoneNumberVerification) },
+        authModule.verifyPhoneNumber(phoneAndCode)
+            .fold(
+                { setErrorFx(it, EnterPhoneError.PhoneNumberVerification) },
                 { phoneValidationCode(navController, phone, countryCode) }
             )
 
-            !hideLoading(EnterPhoneLoading.PhoneNumberVerification)
+        hideLoadingFx(EnterPhoneLoading.PhoneNumberVerification)
 
-        }.unsafeRunAsync()
+    }
 
     /* --- navigation --- */
 
-    fun back(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun back(navController: NavController): Unit {
+        navigator.back(navController)
+    }
 
-    private fun phoneValidationCode(
+    private suspend fun phoneValidationCode(
         navController: NavController,
         phone: String,
         countryCode: String
-    ): Kind<ForIO, Unit> =
+    ): Unit =
         navigator.navigateTo(
-            runtime,
             navController,
             EnterPhoneToPhoneValidationCode(phone, countryCode)
         )
 
-    fun web(navController: NavController, url: String): Unit =
-        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
+    suspend fun web(navController: NavController, url: String): Unit =
+        navigator.navigateTo(navController, AnywhereToWeb(url))
 
-    fun toastError(error: FourYouAndMeError): Unit =
-        navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()
+    suspend fun toastError(error: FourYouAndMeError): Unit =
+        navigator.performAction(toastAction(error))
 }

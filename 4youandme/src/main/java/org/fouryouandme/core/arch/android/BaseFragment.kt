@@ -69,7 +69,7 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
         if (fyamViewModel.isInitialized())
             fyamViewModel.state().configuration
         else
-            fyamViewModel.initialize().orNull()!!
+            fyamViewModel.initialize(rootNavController()).orNull()!!
 
     fun configuration(block: suspend (Configuration) -> Unit): Unit =
         startCoroutineAsync {
