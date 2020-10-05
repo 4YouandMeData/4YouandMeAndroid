@@ -11,6 +11,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.background.roundBackground
 import org.fouryouandme.core.entity.page.Page
+import org.fouryouandme.core.ext.html.setHtmlText
 
 data class ConsentReviewPageItem(
     val id: String,
@@ -60,10 +61,10 @@ class ConsentReviewPageViewHolder(
 
     override fun bind(t: ConsentReviewPageItem, position: Int) {
 
-        title.text = t.title
+        title.setHtmlText( t.title, true)
         title.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        body.text = t.body
+        body.setHtmlText(t.body, true)
         body.setTextColor(t.configuration.theme.primaryTextColor.color())
 
         root.background =

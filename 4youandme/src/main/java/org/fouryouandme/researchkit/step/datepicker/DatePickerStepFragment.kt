@@ -1,9 +1,14 @@
-package org.fouryouandme.researchkit.step.picker
+package org.fouryouandme.researchkit.step.datepicker
 
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.step_picker.*
+import kotlinx.android.synthetic.main.step_date.*
+import kotlinx.android.synthetic.main.step_picker.button
+import kotlinx.android.synthetic.main.step_picker.icon
+import kotlinx.android.synthetic.main.step_picker.question
+import kotlinx.android.synthetic.main.step_picker.root
+import kotlinx.android.synthetic.main.step_picker.shadow
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.evalOnMain
@@ -12,8 +17,10 @@ import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
-class PickerStepFragment : StepFragment(R.layout.step_picker) {
+class DatePickerStepFragment : StepFragment(R.layout.step_date) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -21,14 +28,14 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
         startCoroutineAsync {
 
             val step =
-                viewModel.getStepByIndexAs<PickerStep>(indexArg())
+                viewModel.getStepByIndexAs<DatePickerStep>(indexArg())
 
             step?.let { applyData(it) }
         }
     }
 
     private suspend fun applyData(
-        step: PickerStep
+        step: DatePickerStep
     ): Unit =
 
         evalOnMain {
@@ -42,10 +49,6 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
             question.text = step.question(requireContext())
             question.setTextColor(step.questionColor)
 
-            number_picker.minValue = 0
-            number_picker.maxValue = step.values.size - 1
-            number_picker.displayedValues = step.values.toTypedArray()
-
             shadow.background = shadow(step.shadowColor)
 
             button.applyImage(step.buttonImage)
@@ -57,13 +60,27 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            number_picker.displayedValues[number_picker.value]
+                            getFormattedSelectedDate()
                         )
                     )
+
                     next()
                 }
             }
 
         }
 
+    private fun getFormattedSelectedDate(): String {
+
+        val year = date_picker.year
+        val month = date_picker.month
+        val day = date_picker.dayOfMonth
+
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+
+        val format = SimpleDateFormat("yyyy-MM-dd")
+
+        return format.format(calendar.time)
+    }
 }

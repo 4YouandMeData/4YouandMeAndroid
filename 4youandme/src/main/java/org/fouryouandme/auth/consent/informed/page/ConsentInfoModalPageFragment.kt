@@ -20,6 +20,7 @@ import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.html.setHtmlText
 
 class ConsentInfoModalPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_modal_page) {
 
@@ -76,8 +77,8 @@ class ConsentInfoModalPageFragment : BaseFragment<ConsentInfoViewModel>(R.layout
 
         consentInfo.pages.firstOrNone { it.id == args.id }
             .map { data ->
-                title.text = data.title
-                description.text = data.body
+                title.setHtmlText(data.title, true)
+                description.setHtmlText(data.body, true)
             }
 
     }

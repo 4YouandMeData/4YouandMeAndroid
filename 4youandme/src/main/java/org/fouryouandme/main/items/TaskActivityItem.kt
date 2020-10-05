@@ -14,6 +14,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.getOr
+import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.startCoroutine
 import org.threeten.bp.ZonedDateTime
 
@@ -69,11 +70,11 @@ class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem)
             t.data.image?.let { image.setImageBitmap(it) }
             image.isVisible = t.data.image != null
 
-            title.text = t.data.title.orEmpty()
+            title.setHtmlText(t.data.title.orEmpty(), true)
             title.isVisible = t.data.title != null
             title.setTextColor(t.configuration.theme.secondaryColor.color())
 
-            body.text = t.data.description.orEmpty()
+            body.setHtmlText(t.data.description.orEmpty(), true)
             body.isVisible = t.data.description != null
             body.setTextColor(t.configuration.theme.secondaryColor.color())
 

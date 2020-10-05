@@ -27,6 +27,7 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.html.setHtmlText
 
 class ConsentInfoQuestionFragment :
     BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_question) {
@@ -113,12 +114,13 @@ class ConsentInfoQuestionFragment :
             .map { it.showAbort(configuration, configuration.theme.secondaryColor.color()) }
 
         question.setTextColor(configuration.theme.secondaryColor.color())
-        question.text =
+        question.setHtmlText(
             consentInfo.questions
                 .getOrNull(args.index)
                 .toOption()
                 .map { it.text }
-                .getOrElse { "" }
+                .getOrElse { "" },
+            true)
 
         shadow.background =
             HEXGradient.from(

@@ -33,11 +33,17 @@
             android:gravity="center"
             tools:text="Title " />
 
-        <NumberPicker
-            android:id="@+id/number_picker"
-            android:layout_width="wrap_content"
+        <DatePicker
+            android:id="@+id/date_picker"
+            style="@style/text_paragraph"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner" />
+
 
     </LinearLayout>
 

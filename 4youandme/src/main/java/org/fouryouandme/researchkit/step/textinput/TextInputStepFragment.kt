@@ -1,9 +1,9 @@
-package org.fouryouandme.researchkit.step.picker
+package org.fouryouandme.researchkit.step.textinput
 
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.step_picker.*
+import kotlinx.android.synthetic.main.step_text_input.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.evalOnMain
@@ -13,7 +13,7 @@ import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
 
-class PickerStepFragment : StepFragment(R.layout.step_picker) {
+class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -21,14 +21,14 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
         startCoroutineAsync {
 
             val step =
-                viewModel.getStepByIndexAs<PickerStep>(indexArg())
+                viewModel.getStepByIndexAs<TextInputStep>(indexArg())
 
             step?.let { applyData(it) }
         }
     }
 
     private suspend fun applyData(
-        step: PickerStep
+        step: TextInputStep
     ): Unit =
 
         evalOnMain {
@@ -42,10 +42,6 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
             question.text = step.question(requireContext())
             question.setTextColor(step.questionColor)
 
-            number_picker.minValue = 0
-            number_picker.maxValue = step.values.size - 1
-            number_picker.displayedValues = step.values.toTypedArray()
-
             shadow.background = shadow(step.shadowColor)
 
             button.applyImage(step.buttonImage)
@@ -57,7 +53,7 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            number_picker.displayedValues[number_picker.value]
+                            text_input.text.toString() ?: ""
                         )
                     )
                     next()

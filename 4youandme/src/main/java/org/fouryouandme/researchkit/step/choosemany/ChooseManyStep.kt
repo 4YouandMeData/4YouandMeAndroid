@@ -1,12 +1,12 @@
-package org.fouryouandme.researchkit.step.picker
+package org.fouryouandme.researchkit.step.choosemany
 
 import android.content.Context
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.utils.ImageResource
 
-class PickerStep(
+class ChooseManyStep(
     identifier: String,
-    val values: List<String>,
+    val values: List<ChooseManyAnswer>,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -14,4 +14,4 @@ class PickerStep(
     val questionColor: Int,
     val shadowColor: Int,
     val buttonImage: ImageResource
-) : Step(identifier, { PickerStepFragment() })
+) : Step(identifier, { ChooseManyStepFragment() })

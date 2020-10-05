@@ -57,7 +57,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
         decodedByte.map { icon.setImageBitmap(it) }
 
-        title.text = page.title
+        title.setHtmlText(page.title, true)
         title.setTextColor(configuration.theme.primaryTextColor.color())
 
         description.setHtmlText(page.body, true)

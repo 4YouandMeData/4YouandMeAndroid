@@ -1,9 +1,13 @@
-package org.fouryouandme.researchkit.step.picker
+package org.fouryouandme.researchkit.step.range
 
+import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.SeekBar
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.step_picker.*
+import kotlinx.android.synthetic.main.step_range.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.evalOnMain
@@ -13,7 +17,7 @@ import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
 
-class PickerStepFragment : StepFragment(R.layout.step_picker) {
+class RangeStepFragment : StepFragment(R.layout.step_range) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -21,14 +25,15 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
         startCoroutineAsync {
 
             val step =
-                viewModel.getStepByIndexAs<PickerStep>(indexArg())
+                viewModel.getStepByIndexAs<RangeStep>(indexArg())
 
             step?.let { applyData(it) }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun applyData(
-        step: PickerStep
+        step: RangeStep
     ): Unit =
 
         evalOnMain {
@@ -42,9 +47,23 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
             question.text = step.question(requireContext())
             question.setTextColor(step.questionColor)
 
-            number_picker.minValue = 0
-            number_picker.maxValue = step.values.size - 1
-            number_picker.displayedValues = step.values.toTypedArray()
+            value.text = step.minValue.toString()
+
+            slider.progressTintList = ColorStateList.valueOf(step.progressColor)
+            slider.min = step.minValue
+            slider.max = step.maxValue
+            slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                    value.text = i.toString()
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            })
+
+            min_label.text = "${step.minValue}% likely"
+            max_label.text = "${step.maxValue}% likely"
 
             shadow.background = shadow(step.shadowColor)
 
@@ -57,7 +76,7 @@ class PickerStepFragment : StepFragment(R.layout.step_picker) {
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            number_picker.displayedValues[number_picker.value]
+                            slider.progress.toString()
                         )
                     )
                     next()
