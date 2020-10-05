@@ -42,6 +42,7 @@ object AuthRepository {
                 else it
 
             }
+            .map { Unit }
 
     suspend fun AuthModule.login(
         configuration: Configuration,
@@ -100,8 +101,7 @@ object AuthRepository {
 
     internal suspend fun AuthModule.loadToken(): String? {
 
-        // TODO: !!! REMOVE DEFAULT TOKEN, TEMPORARY USED WHILE USER DATA IS NOT IMPLEMENTED
-        val token = prefs.getString(USER_TOKEN, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMCIsInNjcCI6InVzZXIiLCJhdWQiOm51bGwsImlhdCI6MTYwMDQ0NTA1MywiZXhwIjoxNjk1MTE1OTA5LCJqdGkiOiI0ZTJhNDU0Mi1jMjQzLTRkOWYtYWE1OS1lNThiYjIxNGUxYjkifQ.EMOqB0EvbXvm2RpSvagIWuQm_6R6rG8Pv26-kSb9s2M")
+        val token = prefs.getString(USER_TOKEN, "")
 
         evalOnMain { Memory.token = token }
 

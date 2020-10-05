@@ -26,8 +26,8 @@ data class UserResponse(
 }
 
 data class UserDataResponse(
-    @Json(name = "id") val id: Int? = null,
-    @Json(name = "type") val type: Int? = null,
+    @Json(name = "id") val id: String? = null,
+    @Json(name = "type") val type: String? = null,
     @Json(name = "attributes") val attributes: UserAttributesResponse? = null
 )
 

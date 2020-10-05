@@ -13,7 +13,7 @@ interface AuthApi {
     suspend fun verifyPhoneNumber(
         @Path("study_id") studyId: String,
         @Body request: PhoneNumberVerificationRequest
-    ): Unit
+    ): Response<Unit>
 
     @POST("api/v1/studies/{study_id}/auth/login")
     suspend fun login(

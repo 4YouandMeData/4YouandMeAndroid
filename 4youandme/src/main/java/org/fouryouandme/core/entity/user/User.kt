@@ -1,7 +1,7 @@
 package org.fouryouandme.core.entity.user
 
 data class User(
-    val id: Int,
+    val id: String,
     val email: String?,
     val phoneNumber: String?,
     val daysInStudy: Int,
