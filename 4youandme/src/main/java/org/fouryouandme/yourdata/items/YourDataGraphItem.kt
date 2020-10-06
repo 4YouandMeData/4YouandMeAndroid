@@ -12,6 +12,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.your_data_graph_item.*
@@ -20,9 +21,14 @@ import org.fouryouandme.core.cases.yourdata.YourDataPeriod
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.yourdata.UserDataAggregation
+import org.threeten.bp.LocalDate
+import org.threeten.bp.Month
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.TextStyle
 import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 data class YourDataGraphItem(
     val configuration: Configuration,
@@ -76,7 +82,7 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
 
         }
 
-        configureXAxis(t.configuration)
+        configureXAxis(t.configuration, t.userData, t.period)
 
         //val xAxisFormatter: ValueFormatter = DayAxisValueFormatter(currentFilter, valueList)
 
@@ -134,7 +140,11 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
         chart.invalidate()
     }
 
-    private fun configureXAxis(configuration: Configuration) {
+    private fun configureXAxis(
+        configuration: Configuration,
+        data: UserDataAggregation,
+        period: YourDataPeriod
+    ) {
 
         chart.xAxis.apply {
 
@@ -143,12 +153,13 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
             axisLineColor = configuration.theme.primaryTextColor.color()
             textColor = configuration.theme.primaryTextColor.color()
             yOffset = 10f
-            labelCount = 4
-            axisMinimum = 0f
-            axisMaximum = 4f
+           // labelCount = data.data.size - 1
+            valueFormatter = IndexAxisValueFormatter(getFormattedXAxisLabels(data, period))
 
+            setLabelCount(7, true)
         }
     }
+
 
     private fun configureYAxis(
         configuration: Configuration,
@@ -173,11 +184,36 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
             setDrawGridLines(false)
             setDrawLimitLinesBehindData(true)
             addLimitLine(ll1)
-            axisMaximum = 200f
-            axisMinimum = 0f
-
+//            axisMaximum = 200f
+//            axisMinimum = 0f
         }
 
+    }
+
+    private fun getFormattedXAxisLabels(
+        data: UserDataAggregation,
+        period: YourDataPeriod
+    ): List<String> {
+
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
+        return when (period) {
+
+            is YourDataPeriod.Week -> data.xLabels.map {
+                LocalDate.parse(it, formatter)
+                    .dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            }
+
+            is YourDataPeriod.Month -> data.xLabels.map {
+                LocalDate.parse(it, formatter)
+                    .dayOfMonth.toString()
+            }
+
+            is YourDataPeriod.Year -> data.xLabels.map {
+                LocalDate.parse(it, formatter)
+                    .month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            }
+        }
     }
 
     override val containerView: View? = itemView
