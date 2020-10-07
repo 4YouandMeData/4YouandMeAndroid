@@ -8,10 +8,10 @@ import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.arch.navigation.toastAction
 import org.fouryouandme.core.cases.auth.AuthUseCase.login
 import org.fouryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
-import org.fouryouandme.core.ext.unsafeRunAsync
 
 class PhoneValidationCodeViewModel(
     navigator: Navigator,
@@ -28,7 +28,12 @@ class PhoneValidationCodeViewModel(
 
     /* --- auth --- */
 
-    suspend fun auth(navController: NavController, phone: String, code: String): Unit {
+    suspend fun auth(
+        rootNavController: RootNavController,
+        navController: NavController,
+        phone: String,
+        code: String
+    ): Unit {
 
         showLoadingFx(PhoneValidationCodeLoading.Auth)
 
@@ -36,7 +41,10 @@ class PhoneValidationCodeViewModel(
 
         auth.fold(
             { setErrorFx(it, PhoneValidationCodeError.Auth) },
-            { screeningQuestions(navController) }
+            {
+                if (it.onBoardingCompleted) main(rootNavController)
+                else screeningQuestions(navController)
+            }
         )
 
         hideLoadingFx(PhoneValidationCodeLoading.Auth)
@@ -68,6 +76,9 @@ class PhoneValidationCodeViewModel(
 
     private suspend fun screeningQuestions(navController: NavController): Unit =
         navigator.navigateTo(navController, PhoneValidationCodeToScreening)
+
+    private suspend fun main(rootNavController: RootNavController): Unit =
+        navigator.navigateTo(rootNavController, PhoneValidationCodeToMain)
 
     suspend fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(toastAction(error))

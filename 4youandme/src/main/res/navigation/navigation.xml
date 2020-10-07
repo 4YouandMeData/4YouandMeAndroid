@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/main">
+    app:startDestination="@id/splash">
 
     <action
         android:id="@+id/action_global_splash"
@@ -64,6 +64,9 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right"
             app:popUpTo="@id/navigation" />
+        <action
+            android:id="@+id/action_splash_to_main"
+            app:destination="@id/main" />
 
     </fragment>
 
@@ -166,6 +169,16 @@
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_phone_validation_code_to_main"
+            app:destination="@id/main"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@id/phone_validation_code"
+            app:popUpToInclusive="true" />
 
 
     </fragment>

@@ -87,7 +87,12 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
             phone.setText(args.phone)
 
             next.setOnClickListenerAsync {
-                viewModel.auth(findNavController(), ccp.fullNumberWithPlus, code.text.toString())
+                viewModel.auth(
+                    rootNavController(),
+                    findNavController(),
+                    ccp.fullNumberWithPlus,
+                    code.text.toString()
+                )
             }
 
             resend.setOnClickListenerAsync { viewModel.resendCode(ccp.fullNumberWithPlus) }
