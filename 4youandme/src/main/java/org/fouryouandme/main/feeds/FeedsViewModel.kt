@@ -53,7 +53,7 @@ class FeedsViewModel(
                 { list ->
                     setStateFx(
                         FeedsState(
-                            list.toItems(configuration)
+                            list.toItems(rootNavController, configuration)
                                 .addHeader(configuration)
                                 .addEmptyItem(configuration)
                         )
@@ -66,7 +66,10 @@ class FeedsViewModel(
 
     }
 
-    private fun List<Task>.toItems(configuration: Configuration): List<DroidItem<Any>> {
+    private fun List<Task>.toItems(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): List<DroidItem<Any>> {
 
         val quickActivities = mutableListOf<QuickActivityItem>()
 
@@ -98,7 +101,13 @@ class FeedsViewModel(
                         QuickActivityViewHolder.factory(
                             { item, answer -> selectAnswer(item, answer) },
                             { item ->
-                                startCoroutineAsync { submitAnswer(item) }
+                                startCoroutineAsync {
+                                    submitAnswer(
+                                        item,
+                                        rootNavController,
+                                        configuration
+                                    )
+                                }
                             }
                         )
                     ).also { it.submitList(quickActivities.toList()) }
@@ -168,10 +177,25 @@ class FeedsViewModel(
 
     }
 
-    private suspend fun submitAnswer(item: QuickActivityItem) {
+    private suspend fun submitAnswer(
+        item: QuickActivityItem,
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ) {
         if (item.selectedAnswer.isNullOrEmpty().not()) {
 
+            showLoadingFx(FeedsLoading.QuickActivityUpload)
             taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
+                .fold(
+                    {
+                        setErrorFx(it, FeedsError.QuickActivityUpload)
+                    },
+                    {
+                        initialize(rootNavController, configuration)
+                    }
+                )
+
+            hideLoadingFx(FeedsLoading.QuickActivityUpload)
         }
     }
 

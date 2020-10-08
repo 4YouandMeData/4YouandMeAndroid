@@ -31,7 +31,7 @@ data class TaskResponse(
                 !to.toEither().map { ZonedDateTime.parse(it) },
                 !activity?.get(document).toEither().flatMap {
                     when (it) {
-                        is QuickActivityResponse -> it.toQuickActivity().toEither()
+                        is QuickActivityResponse -> it.toQuickActivity(id).toEither()
                         is TaskActivityResponse -> it.toTaskActivity(id).toEither()
                         else -> Unit.left()
                     }

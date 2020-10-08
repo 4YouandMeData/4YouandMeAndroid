@@ -64,6 +64,8 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
                 when (it.task) {
                     TasksLoading.Initialization ->
                         loading.setVisibility(it.active, viewModel.isInitialized())
+                    TasksLoading.QuickActivityUpload ->
+                        loading.setVisibility(it.active, true)
                 }
             }
 
@@ -76,6 +78,8 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
                                 viewModel.initialize(rootNavController(), configuration())
                             }
                         }
+                    TasksError.QuickActivityUpload ->
+                        errorToast(it.error)
                 }
             }
 

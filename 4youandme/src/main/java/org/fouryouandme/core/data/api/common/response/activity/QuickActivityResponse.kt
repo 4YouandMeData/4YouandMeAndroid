@@ -20,7 +20,7 @@ class QuickActivityResponse(
     val options: HasMany<QuickActivityOptionResponse>? = null
 ) : ActivityDataResponse(title, description, repeatEvery, startColor, endColor, button) {
 
-    suspend fun toQuickActivity(): QuickActivity =
+    suspend fun toQuickActivity(id: String): QuickActivity =
         QuickActivity(
             id,
             title,

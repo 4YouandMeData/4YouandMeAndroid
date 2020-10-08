@@ -8,6 +8,12 @@ import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.feeds.*
+import kotlinx.android.synthetic.main.feeds.error
+import kotlinx.android.synthetic.main.feeds.loading
+import kotlinx.android.synthetic.main.feeds.recycler_view
+import kotlinx.android.synthetic.main.feeds.root
+import kotlinx.android.synthetic.main.feeds.title
+import kotlinx.android.synthetic.main.tasks.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -68,6 +74,8 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 when (it.task) {
                     FeedsLoading.Initialization ->
                         loading.setVisibility(it.active, viewModel.isInitialized())
+                    FeedsLoading.QuickActivityUpload ->
+                        loading.setVisibility(it.active, true)
                 }
             }
 
@@ -80,6 +88,8 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                                 viewModel.initialize(rootNavController(), configuration())
                             }
                         }
+                    FeedsError.QuickActivityUpload ->
+                        errorToast(it.error)
                 }
             }
 

@@ -2,9 +2,6 @@ package org.fouryouandme.main.feeds
 
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.navigation.NavigationAction
-import org.fouryouandme.main.tasks.TasksError
-import org.fouryouandme.main.tasks.TasksLoading
-import org.fouryouandme.main.tasks.TasksStateUpdate
 
 data class FeedsState(
     val feeds: List<DroidItem<Any>> = emptyList()
@@ -18,10 +15,12 @@ sealed class FeedsStateUpdate {
 
 sealed class FeedsLoading {
     object Initialization : FeedsLoading()
+    object QuickActivityUpload : FeedsLoading()
 }
 
 sealed class FeedsError {
     object Initialization : FeedsError()
+    object QuickActivityUpload : FeedsError()
 }
 
 /* --- navigation --- */

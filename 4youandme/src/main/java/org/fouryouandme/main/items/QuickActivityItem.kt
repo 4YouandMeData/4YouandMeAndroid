@@ -61,6 +61,12 @@ class QuickActivityViewHolder(
     R.layout.quick_activity_item
 ), LayoutContainer {
 
+    init {
+
+        R.id.review.getView<View>().setOnClickListener { onSubmitClicked(item) }
+
+    }
+
     override fun bind(t: QuickActivityItem, position: Int) {
 
         card_content.background =
@@ -116,8 +122,6 @@ class QuickActivityViewHolder(
         review.setTextColor(t.configuration.theme.primaryTextColor.color())
         review.text =
             t.data.button.getOr { t.configuration.text.activity.quickActivityButtonDefault }
-
-        review.setOnClickListener { onSubmitClicked(t) }
 
     }
 
