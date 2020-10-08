@@ -8,7 +8,10 @@ import org.fouryouandme.R
 import org.fouryouandme.auth.optin.OptInSectionFragment
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.optins.OptIns
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.hide
+import org.fouryouandme.core.ext.setStatusBar
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.core.view.page.EPageType
 
 class OptInWelcomeFragment : OptInSectionFragment(R.layout.opt_in_welcome) {
@@ -27,15 +30,8 @@ class OptInWelcomeFragment : OptInSectionFragment(R.layout.opt_in_welcome) {
     private suspend fun setupView(): Unit =
         evalOnMain {
 
-            optInFragment().toolbar.showBackSecondaryButton(imageConfiguration) {
-                startCoroutineAsync {
-                    viewModel.back(
-                        optInNavController(),
-                        authNavController(),
-                        rootNavController()
-                    )
-                }
-            }
+            optInFragment().toolbar.hide()
+
         }
 
     private suspend fun applyConfiguration(configuration: Configuration, optIns: OptIns): Unit =
