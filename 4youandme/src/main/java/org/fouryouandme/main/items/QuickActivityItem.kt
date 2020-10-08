@@ -54,7 +54,8 @@ data class QuickActivityItem(
 
 class QuickActivityViewHolder(
     viewGroup: ViewGroup,
-    val onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit
+    val onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit,
+    val onSubmitClicked: (QuickActivityItem) -> Unit
 ) : DroidViewHolder<QuickActivityItem, EQuickActivityPayload>(
     viewGroup,
     R.layout.quick_activity_item
@@ -116,6 +117,8 @@ class QuickActivityViewHolder(
         review.text =
             t.data.button.getOr { t.configuration.text.activity.quickActivityButtonDefault }
 
+        review.setOnClickListener { onSubmitClicked(t) }
+
     }
 
     override fun bind(t: QuickActivityItem, position: Int, payloads: List<EQuickActivityPayload>) {
@@ -168,10 +171,11 @@ class QuickActivityViewHolder(
     companion object {
 
         fun factory(
-            onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit
+            onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit,
+            onSubmitClicked: (QuickActivityItem) -> Unit
         ): ViewHolderFactory =
             ViewHolderFactory(
-                { QuickActivityViewHolder(it, onAnswerSelected) },
+                { QuickActivityViewHolder(it, onAnswerSelected, onSubmitClicked) },
                 { _, item -> item is QuickActivityItem }
             )
 

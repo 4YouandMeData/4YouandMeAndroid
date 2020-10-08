@@ -10,12 +10,14 @@ import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.task.TaskUseCase.getTasks
+import org.fouryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.items.*
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -84,9 +86,13 @@ class TasksViewModel(
                     "quick_activities",
                     configuration,
                     DroidAdapter(
-                        QuickActivityViewHolder.factory { item, answer ->
-                            selectAnswer(item, answer)
-                        }).also { it.submitList(quickActivities.toList()) }
+                        QuickActivityViewHolder.factory(
+                            { item, answer -> selectAnswer(item, answer) },
+                            { item ->
+                                startCoroutineAsync { submitAnswer(item) }
+                            }
+                        )
+                    ).also { it.submitList(quickActivities.toList()) }
                 )
             )
 
@@ -166,6 +172,13 @@ class TasksViewModel(
             }
         }
 
+    }
+
+    private suspend fun submitAnswer(item: QuickActivityItem) {
+        if (item.selectedAnswer.isNullOrEmpty().not()) {
+
+            taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
+        }
     }
 
     /* --- navigation --- */

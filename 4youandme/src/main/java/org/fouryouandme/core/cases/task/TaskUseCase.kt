@@ -10,8 +10,10 @@ import org.fouryouandme.core.cases.task.TaskRepository.attachVideo
 import org.fouryouandme.core.cases.task.TaskRepository.getTasks
 import org.fouryouandme.core.cases.task.TaskRepository.uploadFitnessTask
 import org.fouryouandme.core.cases.task.TaskRepository.uploadGaitTask
+import org.fouryouandme.core.cases.task.TaskRepository.uploadQuickActivity
 import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
 import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
+import org.fouryouandme.core.data.api.task.request.QuickActivityUpdateRequest
 import org.fouryouandme.core.entity.task.Task
 import java.io.File
 
@@ -42,5 +44,12 @@ object TaskUseCase {
     ): Either<FourYouAndMeError, Unit> =
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap { uploadFitnessTask(it, taskId, result) }
+
+    suspend fun TaskModule.updateQuickActivity(
+        taskId: String,
+        answerId: Int
+    ): Either<FourYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap { uploadQuickActivity(it, taskId, answerId) }
 
 }

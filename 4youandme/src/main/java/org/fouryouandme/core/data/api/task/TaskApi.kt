@@ -4,6 +4,7 @@ import okhttp3.MultipartBody
 import org.fouryouandme.core.data.api.Headers
 import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
 import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
+import org.fouryouandme.core.data.api.task.request.QuickActivityUpdateRequest
 import org.fouryouandme.core.data.api.task.request.TaskResultRequest
 import org.fouryouandme.core.data.api.task.response.TaskResponse
 import retrofit2.http.*
@@ -39,6 +40,13 @@ interface TaskApi {
         @Body request: TaskResultRequest<FitnessUpdateRequest>
 
     ): Unit
+
+    @PATCH("api/v1/tasks/{id}")
+    suspend fun updateQuickActivity(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String,
+        @Body request: TaskResultRequest<QuickActivityUpdateRequest>
+    )
 
 }
 

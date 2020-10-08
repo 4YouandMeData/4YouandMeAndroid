@@ -6,15 +6,18 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.FeedModule
+import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.feed.FeedUseCase.getFeeds
+import org.fouryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
 import org.fouryouandme.main.tasks.TasksToTask
@@ -24,7 +27,8 @@ import org.threeten.bp.format.DateTimeFormatter
 class FeedsViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
-    private val feedModule: FeedModule
+    private val feedModule: FeedModule,
+    private val taskModule: TaskModule
 ) : BaseViewModel<
         ForIO,
         FeedsState,
@@ -91,9 +95,13 @@ class FeedsViewModel(
                     "quick_activities",
                     configuration,
                     DroidAdapter(
-                        QuickActivityViewHolder.factory { item, answer ->
-                            selectAnswer(item, answer)
-                        }).also { it.submitList(quickActivities.toList()) }
+                        QuickActivityViewHolder.factory(
+                            { item, answer -> selectAnswer(item, answer) },
+                            { item ->
+                                startCoroutineAsync { submitAnswer(item) }
+                            }
+                        )
+                    ).also { it.submitList(quickActivities.toList()) }
                 )
             )
 
@@ -158,6 +166,13 @@ class FeedsViewModel(
             }
         }
 
+    }
+
+    private suspend fun submitAnswer(item: QuickActivityItem) {
+        if (item.selectedAnswer.isNullOrEmpty().not()) {
+
+            taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
+        }
     }
 
     private fun List<DroidItem<Any>>.addEmptyItem(

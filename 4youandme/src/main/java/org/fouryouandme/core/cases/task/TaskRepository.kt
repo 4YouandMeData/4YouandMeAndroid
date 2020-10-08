@@ -9,6 +9,7 @@ import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
 import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
+import org.fouryouandme.core.data.api.task.request.QuickActivityUpdateRequest
 import org.fouryouandme.core.data.api.task.request.TaskResultRequest
 import org.fouryouandme.core.data.api.task.response.toTaskItems
 import org.fouryouandme.core.entity.task.Task
@@ -62,6 +63,19 @@ object TaskRepository {
                 token,
                 taskId,
                 TaskResultRequest(result)
+            )
+        }
+
+    internal suspend fun TaskModule.uploadQuickActivity(
+        token: String,
+        taskId: String,
+        answerId: Int
+    ): Either<FourYouAndMeError, Unit> =
+        errorModule.unwrapToEither {
+            api.updateQuickActivity(
+                token,
+                taskId,
+                TaskResultRequest(QuickActivityUpdateRequest(answerId))
             )
         }
 }

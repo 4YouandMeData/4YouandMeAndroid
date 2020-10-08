@@ -30,7 +30,8 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 FeedsViewModel(
                     navigator,
                     IORuntime,
-                    injector.feedModule()
+                    injector.feedModule(),
+                    injector.taskModule()
                 )
             }
         )
