@@ -78,7 +78,7 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
             childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.opt_in_navigation)
+        val graph = inflater.inflate(R.navigation.consent_info_navigation)
         navHostFragment.navController.graph = graph
 
     }

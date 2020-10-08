@@ -1,96 +1,95 @@
 package org.fouryouandme.auth.consent.review
 
-import androidx.navigation.NavController
-import arrow.core.toOption
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.auth.consent.review.info.toConsentReviewHeaderItem
 import org.fouryouandme.auth.consent.review.info.toConsentReviewPageItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.ConsentReviewModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.consent.review.ConsentReviewUseCase
+import org.fouryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
+import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.page.Page
-import org.fouryouandme.core.ext.foldToKindEither
-import org.fouryouandme.core.ext.mapResult
-import org.fouryouandme.core.ext.unsafeRunAsync
 
 class ConsentReviewViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val consentReviewModule: ConsentReviewModule
 ) : BaseViewModel<
         ForIO,
         ConsentReviewState,
         ConsentReviewStateUpdate,
         ConsentReviewError,
         ConsentReviewLoading>
-    (ConsentReviewState(), navigator, runtime) {
+    (navigator = navigator, runtime = runtime) {
 
-    /* --- data --- */
+    /* --- initialize --- */
 
-    fun initialize(navController: RootNavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun initialize(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Either<FourYouAndMeError, ConsentReviewState> {
 
-            !showLoading(ConsentReviewLoading.Initialization)
+        showLoadingFx(ConsentReviewLoading.Initialization)
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
+        val state =
+            consentReviewModule.getConsent()
+                .nullToError()
+                .handleAuthError(rootNavController, navigator)
+                .fold(
+                    {
+                        setErrorFx(it, ConsentReviewError.Initialization)
+                        it.left()
+                    },
+                    { consentReview ->
 
-            val initialization =
-                !configuration.foldToKindEither(runtime.fx) { config ->
+                        val items = mutableListOf<DroidItem<Any>>()
 
-                    ConsentReviewUseCase.getConsent(runtime)
-                        .mapResult(runtime.fx) { it to config }
+                        items.addAll(
+                            consentReview.welcomePage
+                                .toItems()
+                                .map { it.toConsentReviewPageItem(configuration) }
+                        )
 
-                }.handleAuthError(runtime, navController, navigator)
+                        items.add(0, consentReview.toConsentReviewHeaderItem(configuration))
 
-            !initialization.fold(
-                { setError(it, ConsentReviewError.Initialization) },
-                { pair ->
+                        val state =
+                            ConsentReviewState(consentReview, items)
 
-                    val items = mutableListOf<DroidItem<Any>>()
+                        setStateFx(state)
+                        { ConsentReviewStateUpdate.Initialization(it.consentReview, it.items) }
 
-                    items.addAll(
-                        pair.first.welcomePage
-                            .toItems()
-                            .map { it.toConsentReviewPageItem(pair.second) }
-                    )
+                        state.right()
 
-                    items.add(0, pair.first.toConsentReviewHeaderItem(pair.second))
+                    }
+                )
 
-                    setState(
-                        state().copy(
-                            configuration = pair.second.toOption(),
-                            consentReview = pair.first.toOption(),
-                            items = items
-                        ),
-                        ConsentReviewStateUpdate.Initialization(pair.second, pair.first, items)
-                    )
-                }
-            )
+        hideLoadingFx(ConsentReviewLoading.Initialization)
 
-            !hideLoading(ConsentReviewLoading.Initialization)
+        return state
 
-        }.unsafeRunAsync()
-
+    }
 
     private fun Page.toItems(): MutableList<Page> {
 
-        var page = this.toOption()
+        var page = this
 
         val items = mutableListOf(this)
 
-        while (page.flatMap { it.link1 }.isDefined()) {
+        while (page.link1 != null) {
 
-            val nextPage = page.flatMap { it.link1 }
+            items.add(page.link1!!)
 
-            nextPage.map { items.add(it) }
-
-            page = nextPage
+            page = page.link1!!
 
         }
 
@@ -100,23 +99,31 @@ class ConsentReviewViewModel(
 
     /* --- navigation --- */
 
-    fun disagree(navController: NavController): Unit =
+    suspend fun disagree(consentReviewNavController: ConsentReviewNavController): Unit =
         navigator.navigateTo(
-            runtime,
-            navController,
+            consentReviewNavController,
             ConsentReviewInfoToConsentReviewDisagree
-        ).unsafeRunAsync()
+        )
 
-    fun exit(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, ConsentReviewDisagreeToAuth).unsafeRunAsync()
-
-    fun optIns(rootNavController: RootNavController): Unit =
+    suspend fun exit(rootNavController: RootNavController): Unit =
         navigator.navigateTo(
-            runtime,
             rootNavController,
-            ConsentReviewToOptIns
-        ).unsafeRunAsync()
+            ConsentReviewDisagreeToAuth
+        )
 
-    fun back(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun optIns(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(
+            authNavController,
+            ConsentReviewToOptIns
+        )
+
+    suspend fun back(
+        consentReviewNavController: ConsentReviewNavController,
+        authNavController: AuthNavController,
+        rootNavController: RootNavController
+    ): Unit {
+        if (navigator.back(consentReviewNavController).not())
+            if (navigator.back(authNavController).not())
+                navigator.back(rootNavController)
+    }
 }
