@@ -5,7 +5,7 @@ data class UserDataAggregation(
     val type: String,
     val title: String,
     val color: String?,
-    val data: List<Int?>,
+    val data: List<Float?>,
     val xLabels: List<String>,
     val yLabels: List<String>
 )

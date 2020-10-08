@@ -41,7 +41,7 @@ data class UserDataAggregationAttributesResponse(
 )
 
 data class UserDataAggregationAttributesDataResponse(
-    @Json(name = "data") val data: List<Int?>? = null,
+    @Json(name = "data") val data: List<Float?>? = null,
     @Json(name = "x_labels") val xLabels: List<String>? = null,
     @Json(name = "y_labels") val yLabels: List<String>? = null
 )
