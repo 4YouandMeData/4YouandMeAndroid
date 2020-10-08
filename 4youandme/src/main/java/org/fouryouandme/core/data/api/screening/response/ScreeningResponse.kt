@@ -1,8 +1,7 @@
 package org.fouryouandme.core.data.api.screening.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
+
+import arrow.core.Either
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
@@ -25,27 +24,19 @@ data class ScreeningResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toScreening(document: ObjectDocument<ScreeningResponse>): Option<Screening> =
-        Option.fx {
+    suspend fun toScreening(document: ObjectDocument<ScreeningResponse>): Screening? =
+        Either.catch {
 
             Screening(
-                !minimumAnswer.toOption(),
-                !questions?.get(document)
-                    ?.mapNotNull { it.toScreeningQuestion(document).orNull() }
-                    .toOption(),
-                !pages?.get(document)
-                    ?.mapNotNull { it.toPage(document).orNull() }
-                    .toOption(),
-                !welcomePage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) },
-                !successPage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) },
-                !failurePage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) }
+                minimumAnswer!!,
+                questions?.get(document)
+                    ?.mapNotNull { it.toScreeningQuestion(document) } ?: emptyList(),
+                pages?.get(document)
+                    ?.mapNotNull { it.toPage(document) } ?: emptyList(),
+                welcomePage?.get(document)?.toPage(document)!!,
+                successPage?.get(document)?.toPage(document)!!,
+                failurePage?.get(document)?.toPage(document)!!
             )
 
-        }
+        }.orNull()
 }

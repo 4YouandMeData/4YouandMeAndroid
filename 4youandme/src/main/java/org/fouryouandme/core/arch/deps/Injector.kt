@@ -86,6 +86,22 @@ interface Injector {
             configurationModule()
         )
 
+    fun screeningModule(): ScreeningModule =
+        ScreeningModule(
+            screeningApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun answerModule(): AnswerModule =
+        AnswerModule(
+            answerApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
     fun taskModule(): TaskModule =
         TaskModule(
             taskApi,

@@ -12,7 +12,12 @@ import org.fouryouandme.core.entity.configuration.Text
 data class ErrorModule(val moshi: Moshi)
 
 suspend fun <T> ErrorModule.unwrapToEither(
-    text: Text? = null,
+    block: suspend () -> T
+): Either<FourYouAndMeError, T> =
+    unwrapToEither(null, block)
+
+suspend fun <T> ErrorModule.unwrapToEither(
+    text: Text?,
     block: suspend () -> T
 ): Either<FourYouAndMeError, T> =
     Either.catch(block).mapLeft { it.toFourYouAndMeError(this, text) }

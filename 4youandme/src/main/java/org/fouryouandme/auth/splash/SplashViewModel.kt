@@ -1,40 +1,57 @@
 package org.fouryouandme.auth.splash
 
-import androidx.navigation.NavController
-import arrow.Kind
 import arrow.fx.ForIO
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.AuthModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
+import org.fouryouandme.core.cases.auth.AuthUseCase.isLogged
 
 class SplashViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
-) : BaseViewModel<ForIO, Empty, Empty, SplashError, SplashLoading>
+    runtime: Runtime<ForIO>,
+    private val authModule: AuthModule
+) : BaseViewModel<ForIO, Empty, Empty, Empty, SplashLoading>
     (Empty, navigator, runtime) {
 
-    fun initialize(navController: NavController): Unit =
+    suspend fun auth(
+        rootNavController: RootNavController,
+        authNavController: AuthNavController
+    ): Unit {
 
-        runtime.fx.concurrent {
+        showLoadingFx(SplashLoading.Auth)
 
-            !showLoading(SplashLoading.Configuration)
+        if (authModule.isLogged()) {
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.DiskFirst)
+            val user =
+                authModule.getUser().nullToError()
 
-            !configuration.fold(
-                { setError(it, SplashError.Configuration) },
-                { welcome(navController) }
+
+            user.fold(
+                { welcome(authNavController) },
+                {
+                    if (it.onBoardingCompleted) main(rootNavController)
+                    else screening(authNavController)
+                }
             )
 
-            !hideLoading(SplashLoading.Configuration)
+        } else welcome(authNavController)
 
-        }.unsafeRunAsync()
+        hideLoadingFx(SplashLoading.Auth)
 
-    private fun welcome(navController: NavController): Kind<ForIO, Unit> =
-        navigator.navigateTo(runtime, navController, SplashToWelcome)
+    }
+
+    private suspend fun main(rootNavController: RootNavController): Unit =
+        navigator.navigateTo(rootNavController, SplashToMain)
+
+    private suspend fun welcome(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, SplashToWelcome)
+
+    private suspend fun screening(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, SplashToScreening)
 }

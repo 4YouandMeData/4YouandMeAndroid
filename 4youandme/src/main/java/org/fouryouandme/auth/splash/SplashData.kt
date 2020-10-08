@@ -4,17 +4,12 @@ import org.fouryouandme.core.arch.navigation.NavigationAction
 
 sealed class SplashLoading {
 
-    object Configuration : SplashLoading()
+    object Auth : SplashLoading()
 
 }
-
-sealed class SplashError {
-
-    object Configuration : SplashError()
-
-}
-
 
 /* --- navigation --- */
 
 object SplashToWelcome : NavigationAction
+object SplashToScreening : NavigationAction
+object SplashToMain : NavigationAction

@@ -1,43 +1,36 @@
 package org.fouryouandme.core.cases.common
 
-import arrow.Kind
 import arrow.core.Either
-import org.fouryouandme.core.arch.deps.Runtime
+import arrow.core.flatMap
+import org.fouryouandme.core.arch.deps.modules.AnswerModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.auth.AuthUseCase
-import org.fouryouandme.core.ext.foldToKindEither
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
+import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
+import org.fouryouandme.core.cases.common.AnswerRepository.uploadAnswer
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+
 
 object AnswerUseCase {
-    internal fun <F> sendAnswer(
-        runtime: Runtime<F>,
+
+    internal suspend fun AnswerModule.sendAnswer(
         questionId: String,
         answerText: String,
         possibleAnswerId: String
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        runtime.fx.concurrent {
-            val token = !AuthUseCase.getToken(runtime, CachePolicy.MemoryFirst)
+    ): Either<FourYouAndMeError, Unit> =
 
-            val tz: TimeZone = TimeZone.getTimeZone("UTC")
-            val df: DateFormat = SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm'Z'",
-                Locale.getDefault()
-            )
-            df.timeZone = tz
-            val nowAsISO: String = df.format(Date())
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap {
 
-            !token.foldToKindEither(runtime.fx) {
-                AnswerRepository.sendAnswer(
-                    runtime,
+                uploadAnswer(
                     it,
                     questionId,
                     answerText,
-                    nowAsISO,
+                    ZonedDateTime.now(ZoneOffset.UTC)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm'Z'")),
                     possibleAnswerId
                 )
+
             }
-        }
 }

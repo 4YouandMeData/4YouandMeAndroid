@@ -3,76 +3,67 @@ package org.fouryouandme.auth.welcome
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.welcome.*
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.android.BaseFragment
+import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.setStatusBar
+import org.fouryouandme.core.ext.*
 
-class WelcomeFragment : BaseFragment<WelcomeViewModel>(R.layout.welcome) {
+class WelcomeFragment : AuthSectionFragment<WelcomeViewModel>(R.layout.welcome) {
 
     override val viewModel: WelcomeViewModel by lazy {
         viewModelFactory(this, getFactory { WelcomeViewModel(navigator, IORuntime) })
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent {
-
-                when (it) {
-                    is WelcomeStateUpdate.Initialization -> applyConfiguration(it.configuration)
-                }
-            }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration
-            .fold({ viewModel.initialize() }, { applyConfiguration(it) })
+        configuration {
 
-        setupView()
+            setupView()
+            applyConfiguration(it)
+
+        }
     }
 
-    private fun setupView() {
+    private suspend fun setupView(): Unit =
+        evalOnMain {
 
-        logo.setImageResource(imageConfiguration.logoStudy())
-        welcome_image.setImageResource(imageConfiguration.logoStudySecondary())
+            logo.setImageResource(imageConfiguration.logoStudy())
+            welcome_image.setImageResource(imageConfiguration.logoStudySecondary())
 
-    }
+        }
 
-    private fun applyConfiguration(configuration: Configuration): Unit {
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.primaryColorStart.color())
+            setStatusBar(configuration.theme.primaryColorStart.color())
 
-        root.background =
-            HEXGradient.from(
-                configuration.theme.primaryColorStart,
-                configuration.theme.primaryColorEnd
-            ).drawable()
+            root.background =
+                HEXGradient.from(
+                    configuration.theme.primaryColorStart,
+                    configuration.theme.primaryColorEnd
+                ).drawable()
 
-        start.background =
-            button(configuration.theme.secondaryColor.color())
-        start.text = configuration.text.welcome.startButton
-        start.setTextColor(configuration.theme.primaryColorEnd.color())
-        start.isAllCaps = false
-        start.setOnClickListener { viewModel.signUpInfo(findNavController()) }
+            start.background =
+                button(configuration.theme.secondaryColor.color())
+            start.text = configuration.text.welcome.startButton
+            start.setTextColor(configuration.theme.primaryColorEnd.color())
+            start.isAllCaps = false
+            start.setOnClickListener {
+                startCoroutineAsync { viewModel.signUpInfo(authNavController()) }
+            }
 
-        start.alpha = 0f
-        start.animate()
-            .alpha(1f)
-            .setDuration(800L)
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .start()
-    }
+            start.alpha = 0f
+            start.animate()
+                .alpha(1f)
+                .setDuration(800L)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .start()
+
+        }
 }

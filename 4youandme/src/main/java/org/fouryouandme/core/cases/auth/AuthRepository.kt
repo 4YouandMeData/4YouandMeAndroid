@@ -108,4 +108,9 @@ object AuthRepository {
         return token
 
     }
+
+    internal suspend fun AuthModule.fetchUser(token: String): Either<FourYouAndMeError, User?> =
+        suspend { api.getUser(token) }
+            .pipe { errorModule.unwrapToEither(it) }
+            .map { it.toUser(token) }
 }
