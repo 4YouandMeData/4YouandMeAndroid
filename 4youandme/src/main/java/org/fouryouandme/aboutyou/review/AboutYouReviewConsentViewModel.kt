@@ -71,9 +71,9 @@ class AboutYouReviewConsentViewModel(
 
         val items = mutableListOf(this)
 
-        while (page.flatMap { it.link1 }.isDefined()) {
+        while (page.flatMap { it.link1.toOption() }.isDefined()) {
 
-            val nextPage = page.flatMap { it.link1 }
+            val nextPage = page.flatMap { it.link1.toOption() }
 
             nextPage.map { items.add(it) }
 
