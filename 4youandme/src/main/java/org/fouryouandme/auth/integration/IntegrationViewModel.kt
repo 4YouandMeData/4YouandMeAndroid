@@ -1,180 +1,177 @@
 package org.fouryouandme.auth.integration
 
-import androidx.navigation.NavController
-import arrow.core.Option
+import arrow.core.Either
 import arrow.core.getOrElse
-import arrow.core.some
-import arrow.core.toOption
+import arrow.core.left
+import arrow.core.right
 import arrow.fx.ForIO
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.AuthModule
+import org.fouryouandme.core.arch.deps.modules.IntegrationModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
+import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.arch.navigation.openApp
 import org.fouryouandme.core.arch.navigation.playStoreAction
 import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.auth.AuthUseCase
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.integration.IntegrationUseCase
+import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
+import org.fouryouandme.core.cases.integration.IntegrationUseCase.getIntegration
 import org.fouryouandme.core.entity.page.Page
-import org.fouryouandme.core.ext.foldToKindEither
-import org.fouryouandme.core.ext.mapResult
-import org.fouryouandme.core.ext.unsafeRunAsync
 
 
 class IntegrationViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val authModule: AuthModule,
+    private val integrationModule: IntegrationModule
 ) : BaseViewModel<
         ForIO,
         IntegrationState,
         IntegrationStateUpdate,
         IntegrationError,
         IntegrationLoading>
-    (IntegrationState(), navigator, runtime) {
+    (navigator = navigator, runtime = runtime) {
 
     /* --- data --- */
 
-    fun initialize(rootNavController: RootNavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun initialize(
+        rootNavController: RootNavController
+    ): Either<FourYouAndMeError, IntegrationState> {
 
-            !showLoading(IntegrationLoading.Initialization)
+        showLoadingFx(IntegrationLoading.Initialization)
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
+        val state =
+            integrationModule.getIntegration()
+                .nullToError()
+                .handleAuthError(rootNavController, navigator)
+                .fold(
+                    {
+                        setErrorFx(it, IntegrationError.Initialization)
+                        it.left()
+                    },
+                    { integration ->
 
-            val initialization =
-                !configuration.foldToKindEither(runtime.fx) { config ->
+                        val cookies =
+                            authModule.getToken(CachePolicy.MemoryOrDisk)
+                                .map { mapOf("token" to it) }
+                                .getOrElse { emptyMap() }
 
-                    IntegrationUseCase.getIntegration(runtime)
-                        .mapResult(runtime.fx) { it to config }
+                        val state =
+                            IntegrationState(integration, cookies)
 
-                }.handleAuthError(runtime, rootNavController, navigator)
+                        setStateFx(state)
+                        { IntegrationStateUpdate.Initialization(it.integration) }
 
-            !initialization.fold(
-                { setError(it, IntegrationError.Initialization) },
-                { pair ->
-                    setState(
-                        state().copy(
-                            integration = pair.first.toOption(),
-                            configuration = pair.second.toOption()
-                        ),
-                        IntegrationStateUpdate.Initialization(pair.second, pair.first)
-                    )
-                }
-            )
+                        state.right()
 
-            !hideLoading(IntegrationLoading.Initialization)
+                    }
+                )
 
-        }.unsafeRunAsync()
+        hideLoadingFx(IntegrationLoading.Initialization)
 
-    fun getCookies(): Unit =
-        runtime.fx.concurrent {
+        return state
 
-            val cookies =
-                !AuthUseCase.getToken(runtime, CachePolicy.MemoryOrDisk)
-                    .mapResult(runtime.fx) { mapOf("token" to it) }
-                    .map { it.getOrElse { emptyMap() } }
+    }
 
-            !setState(
-                state().copy(cookies = cookies.some()),
-                IntegrationStateUpdate.Cookies(cookies)
-            )
+    suspend fun getCookies(): Unit {
 
-        }.unsafeRunAsync()
+        val cookies =
+            authModule.getToken(CachePolicy.MemoryOrDisk).map { mapOf("token" to it) }
+                .getOrElse { emptyMap() }
+
+        setStateFx(state().copy(cookies = cookies)) { IntegrationStateUpdate.Cookies(cookies) }
+
+    }
 
     /* --- navigation --- */
 
-    fun back(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun back(
+        integrationNavController: IntegrationNavController,
+        authNavController: AuthNavController,
+        rootNavController: RootNavController
+    ): Unit {
+        if (navigator.back(integrationNavController).not())
+            if (navigator.back(authNavController).not())
+                navigator.back(rootNavController)
+    }
 
-    fun nextPage(
-        navController: NavController,
-        page: Option<Page>,
+    suspend fun nextPage(
+        integrationNavController: IntegrationNavController,
+        page: Page?,
         fromWelcome: Boolean = false
-    ): Unit =
-        runtime.fx.concurrent {
+    ): Unit {
 
-            !page.fold(
-                {
-                    navigator.navigateTo(
-                        runtime,
-                        navController,
-                        if (fromWelcome) IntegrationWelcomeToIntegrationSuccess
-                        else IntegrationPageToIntegrationSuccess
-                    )
-                },
-                {
-                    navigator.navigateTo(
-                        runtime,
-                        navController,
-                        if (fromWelcome) IntegrationWelcomeToIntegrationPage(it.id)
-                        else IntegrationPageToIntegrationPage(it.id)
-                    )
-                })
-
-        }.unsafeRunAsync()
-
-
-    fun handleSpecialLink(specialLinkAction: SpecialLinkAction): Unit =
-        runtime.fx.concurrent {
-
-            !when (specialLinkAction) {
-                is SpecialLinkAction.OpenApp ->
-                    navigator.performAction(
-                        runtime,
-                        openApp(specialLinkAction.app.packageName)
-                    )
-                is SpecialLinkAction.Download ->
-                    navigator.performAction(
-                        runtime,
-                        playStoreAction(specialLinkAction.app.packageName)
-                    )
-
-            }
-
-        }.unsafeRunAsync()
-
-    fun login(
-        navController: NavController,
-        link: String,
-        nextPage: Option<Page>,
-        fromWelcome: Boolean
-    ): Unit =
-        navigator.navigateTo(
-            runtime,
-            navController,
-            if (fromWelcome) IntegrationWelcomeToIntegrationLogin(link, nextPage.map { it.id })
-            else IntegrationPageToIntegrationLogin(link, nextPage.map { it.id })
-        ).unsafeRunAsync()
-
-    fun handleLogin(
-        navController: NavController,
-        nextPageId: Option<String>
-    ): Unit =
-        runtime.fx.concurrent {
-
-            !nextPageId.fold(
-                {
-                    navigator.navigateTo(
-                        runtime,
-                        navController,
-                        IntegrationLoginToIntegrationSuccess
-                    )
-                },
-                {
-                    navigator.navigateTo(
-                        runtime,
-                        navController,
-                        IntegrationLoginToIntegrationPage(it)
-                    )
-                }
+        if (page == null)
+            navigator.navigateTo(
+                integrationNavController,
+                if (fromWelcome) IntegrationWelcomeToIntegrationSuccess
+                else IntegrationPageToIntegrationSuccess
+            )
+        else
+            navigator.navigateTo(
+                integrationNavController,
+                if (fromWelcome) IntegrationWelcomeToIntegrationPage(page.id)
+                else IntegrationPageToIntegrationPage(page.id)
             )
 
-        }.unsafeRunAsync()
 
-    fun openMain(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(runtime, rootNavController, IntegrationSuccessToMain).unsafeRunAsync()
+    }
+
+
+    suspend fun handleSpecialLink(specialLinkAction: SpecialLinkAction): Unit {
+
+        when (specialLinkAction) {
+            is SpecialLinkAction.OpenApp ->
+                navigator.performAction(openApp(specialLinkAction.app.packageName))
+            is SpecialLinkAction.Download ->
+                navigator.performAction(playStoreAction(specialLinkAction.app.packageName))
+        }
+
+    }
+
+    suspend fun pageToLogin(
+        integrationNavController: IntegrationNavController,
+        link: String,
+        nextPage: Page?,
+    ): Unit =
+        navigator.navigateTo(
+            integrationNavController,
+            IntegrationPageToIntegrationLogin(link, nextPage?.id)
+        )
+
+    suspend fun welcomeToLogin(
+        integrationNavController: IntegrationNavController,
+        link: String,
+        nextPage: Page?
+    ): Unit =
+        navigator.navigateTo(
+            integrationNavController,
+            IntegrationWelcomeToIntegrationLogin(link, nextPage?.id)
+        )
+
+    suspend fun handleLogin(
+        integrationNavController: IntegrationNavController,
+        nextPageId: String?
+    ): Unit {
+
+        if (nextPageId == null)
+            navigator.navigateTo(
+                integrationNavController,
+                IntegrationLoginToIntegrationSuccess
+            )
+        else
+            navigator.navigateTo(
+                integrationNavController,
+                IntegrationLoginToIntegrationPage(nextPageId)
+            )
+
+    }
+
+    suspend fun openMain(rootNavController: RootNavController): Unit =
+        navigator.navigateTo(rootNavController, IntegrationSuccessToMain)
 
 }

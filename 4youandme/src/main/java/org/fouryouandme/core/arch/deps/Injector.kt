@@ -102,6 +102,14 @@ interface Injector {
             authModule()
         )
 
+    fun integrationModule(): IntegrationModule =
+        IntegrationModule(
+            integrationApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
     fun answerModule(): AnswerModule =
         AnswerModule(
             answerApi,

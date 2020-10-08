@@ -40,7 +40,12 @@ class OptInFragment : BaseFragment<OptInViewModel>(R.layout.opt_in) {
             }
 
         viewModel.loadingLiveData()
-            .observeEvent(name()) { loading.setVisibility(it.active, false) }
+            .observeEvent(name()) {
+                when (it.task) {
+                    OptInLoading.Initialization ->
+                        loading.setVisibility(it.active, false)
+                }
+            }
 
         viewModel.errorLiveData()
             .observeEvent(name()) { payload ->

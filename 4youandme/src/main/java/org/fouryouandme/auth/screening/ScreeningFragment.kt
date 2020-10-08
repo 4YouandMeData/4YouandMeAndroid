@@ -41,7 +41,12 @@ class ScreeningFragment : AuthSectionFragment<ScreeningViewModel>(R.layout.scree
             }
 
         viewModel.loadingLiveData()
-            .observeEvent(name()) { loading.setVisibility(it.active, false) }
+            .observeEvent(name()) {
+                when (it.task) {
+                    ScreeningLoading.Initialization ->
+                        loading.setVisibility(it.active, false)
+                }
+            }
 
         viewModel.errorLiveData()
             .observeEvent(name()) { payload ->

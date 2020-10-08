@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import arrow.core.*
-import arrow.core.extensions.fx
 import kotlinx.android.synthetic.main.integration_page_view.view.*
 import org.fouryouandme.R
 import org.fouryouandme.auth.integration.App
@@ -31,9 +29,9 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
     fun applyData(
         configuration: Configuration,
         page: Page,
-        nextAction: (Option<Page>) -> Unit,
+        nextAction: (Page?) -> Unit,
         specialLinkAction: (SpecialLinkAction) -> Unit,
-        externalLinkAction: (String, Option<Page>) -> Unit
+        externalLinkAction: (String, Page?) -> Unit
     ): Unit {
 
         title.setHtmlText(page.title, true)
@@ -51,54 +49,48 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
 
         val specialAction = page.specialLinkValue.parseSpecialLink()
 
-        when {
-            specialAction is Some -> {
+        if (specialAction != null) {
 
-                next.isVisible = false
+            next.isVisible = false
 
-                button_1_text.isVisible = true
-                button_1_text.text =
-                    page.specialLinkLabel
-                        .getOrElse {
-                            when (specialAction.t) {
-                                is SpecialLinkAction.OpenApp ->
-                                    configuration.text.onboarding.integration.openAppDefault
-                                is SpecialLinkAction.Download ->
-                                    configuration.text.onboarding.integration.downloadButtonDefault
+            button_1_text.isVisible = true
+            button_1_text.text =
+                page.specialLinkLabel
+                    ?: when (specialAction) {
+                        is SpecialLinkAction.OpenApp ->
+                            configuration.text.onboarding.integration.openAppDefault
+                        is SpecialLinkAction.Download ->
+                            configuration.text.onboarding.integration.downloadButtonDefault
+                    }
+            button_1_text.setOnClickListener { specialLinkAction(specialAction) }
 
-                            }
-                        }
-                button_1_text.setOnClickListener { specialLinkAction(specialAction.t) }
+            button_2_text.isVisible = true
+            button_2_text.text =
+                page.link1Label ?: configuration.text.onboarding.integration.nextDefault
 
-                button_2_text.isVisible = true
-                button_2_text.text =
-                    page.link1Label
-                        .getOrElse { configuration.text.onboarding.integration.nextDefault }
+        }
 
+        when (val externalUrl = page.externalLinkUrl) {
+
+            null -> {
+                next.isVisible = true
+                button_1_text.isVisible = false
+                button_2_text.isVisible = false
             }
-            page.externalLinkUrl is Some -> {
-
+            else -> {
                 next.isVisible = false
 
                 button_1_text.isVisible = true
                 button_1_text.text =
                     page.externalLinkLabel
-                        .getOrElse { configuration.text.onboarding.integration.loginButtonDefault }
+                        ?: configuration.text.onboarding.integration.loginButtonDefault
                 button_1_text.setOnClickListener {
-                    externalLinkAction.invoke(page.externalLinkUrl.t, page.link1)
+                    externalLinkAction.invoke(externalUrl, page.link1)
                 }
 
                 button_2_text.isVisible = true
                 button_2_text.text =
-                    page.link1Label
-                        .getOrElse { configuration.text.onboarding.integration.nextDefault }
-
-            }
-            else -> {
-
-                next.isVisible = true
-                button_1_text.isVisible = false
-                button_2_text.isVisible = false
+                    page.link1Label ?: configuration.text.onboarding.integration.nextDefault
 
             }
         }
@@ -120,21 +112,20 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
 
     }
 
-    private fun Option<String>.parseSpecialLink(): Option<SpecialLinkAction> =
-        Option.fx {
-            !when {
-                bind().contains("open", true) ->
-                    SpecialLinkAction.OpenApp(!bind().parseApp()).some()
-                bind().contains("download", true) ->
-                    SpecialLinkAction.Download(!bind().parseApp()).some()
-                else -> None
-            }
+    private fun String?.parseSpecialLink(): SpecialLinkAction? =
+        when {
+            this == null -> null
+            contains("open", true) ->
+                parseApp()?.let { SpecialLinkAction.OpenApp(it) }
+            contains("download", true) ->
+                parseApp()?.let { SpecialLinkAction.Download(it) }
+            else -> null
         }
 
-    private fun String.parseApp(): Option<App> =
+    private fun String.parseApp(): App? =
         when {
-            contains("oura", true) -> App.Oura.some()
-            contains("fitbit", true) -> App.Fitbit.some()
-            else -> None
+            contains("oura", true) -> App.Oura
+            contains("fitbit", true) -> App.Fitbit
+            else -> null
         }
 }
