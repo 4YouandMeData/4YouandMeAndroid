@@ -3,7 +3,6 @@ package org.fouryouandme.auth.integration.page
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import arrow.core.firstOrNone
 import kotlinx.android.synthetic.main.integration.*
 import kotlinx.android.synthetic.main.integration_page.*
 import org.fouryouandme.R
@@ -51,8 +50,8 @@ class IntegrationPageFragment : IntegrationSectionFragment(R.layout.integration_
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            integration.pages.firstOrNone { it.id == args.id }
-                .map { integrationPage ->
+            integration.pages.firstOrNull { it.id == args.id }
+                ?.let { integrationPage ->
                     page.applyData(
                         configuration,
                         integrationPage,

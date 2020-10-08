@@ -14,6 +14,7 @@ import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.page.Page
+import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.imageConfiguration
 
@@ -26,91 +27,92 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
 
     }
 
-    fun applyData(
+    suspend fun applyData(
         configuration: Configuration,
         page: Page,
         nextAction: (Page?) -> Unit,
         specialLinkAction: (SpecialLinkAction) -> Unit,
         externalLinkAction: (String, Page?) -> Unit
-    ): Unit {
+    ): Unit =
+        evalOnMain {
 
-        title.setHtmlText(page.title, true)
-        title.setTextColor(configuration.theme.primaryTextColor.color())
+            title.setHtmlText(page.title, true)
+            title.setTextColor(configuration.theme.primaryTextColor.color())
 
-        description.setHtmlText(page.body, true)
-        description.setTextColor(configuration.theme.primaryTextColor.color())
+            description.setHtmlText(page.body, true)
+            description.setTextColor(configuration.theme.primaryTextColor.color())
 
-        shadow.background =
-            HEXGradient.from(
-                HEXColor.transparent(),
-                configuration.theme.primaryTextColor
-            ).drawable(0.3f)
+            shadow.background =
+                HEXGradient.from(
+                    HEXColor.transparent(),
+                    configuration.theme.primaryTextColor
+                ).drawable(0.3f)
 
 
-        val specialAction = page.specialLinkValue.parseSpecialLink()
+            val specialAction = page.specialLinkValue.parseSpecialLink()
 
-        if (specialAction != null) {
+            when {
+                specialAction != null -> {
 
-            next.isVisible = false
+                    next.isVisible = false
 
-            button_1_text.isVisible = true
-            button_1_text.text =
-                page.specialLinkLabel
-                    ?: when (specialAction) {
-                        is SpecialLinkAction.OpenApp ->
-                            configuration.text.onboarding.integration.openAppDefault
-                        is SpecialLinkAction.Download ->
-                            configuration.text.onboarding.integration.downloadButtonDefault
-                    }
-            button_1_text.setOnClickListener { specialLinkAction(specialAction) }
+                    button_1_text.isVisible = true
+                    button_1_text.text =
+                        page.specialLinkLabel
+                            ?: when (specialAction) {
+                                is SpecialLinkAction.OpenApp ->
+                                    configuration.text.onboarding.integration.openAppDefault
+                                is SpecialLinkAction.Download ->
+                                    configuration.text.onboarding.integration.downloadButtonDefault
+                            }
+                    button_1_text.setOnClickListener { specialLinkAction(specialAction) }
 
-            button_2_text.isVisible = true
-            button_2_text.text =
-                page.link1Label ?: configuration.text.onboarding.integration.nextDefault
+                    button_2_text.isVisible = true
+                    button_2_text.text =
+                        page.link1Label ?: configuration.text.onboarding.integration.nextDefault
 
-        }
-
-        when (val externalUrl = page.externalLinkUrl) {
-
-            null -> {
-                next.isVisible = true
-                button_1_text.isVisible = false
-                button_2_text.isVisible = false
-            }
-            else -> {
-                next.isVisible = false
-
-                button_1_text.isVisible = true
-                button_1_text.text =
-                    page.externalLinkLabel
-                        ?: configuration.text.onboarding.integration.loginButtonDefault
-                button_1_text.setOnClickListener {
-                    externalLinkAction.invoke(externalUrl, page.link1)
                 }
+                page.externalLinkUrl != null -> {
+                    next.isVisible = false
 
-                button_2_text.isVisible = true
-                button_2_text.text =
-                    page.link1Label ?: configuration.text.onboarding.integration.nextDefault
+                    button_1_text.isVisible = true
+                    button_1_text.text =
+                        page.externalLinkLabel
+                            ?: configuration.text.onboarding.integration.loginButtonDefault
+                    button_1_text.setOnClickListener {
+                        externalLinkAction.invoke(page.externalLinkUrl, page.link1)
+                    }
 
+                    button_2_text.isVisible = true
+                    button_2_text.text =
+                        page.link1Label ?: configuration.text.onboarding.integration.nextDefault
+
+                }
+                else -> {
+
+                    next.isVisible = true
+                    button_1_text.isVisible = false
+                    button_2_text.isVisible = false
+
+                }
             }
+
+            next.background =
+                button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
+
+            button_1_text.background = button(configuration.theme.primaryColorEnd.color())
+            button_1_text.setTextColor(configuration.theme.secondaryColor.color())
+
+            button_2_text.background = button(configuration.theme.secondaryColor.color())
+            button_2_text.setTextColor(configuration.theme.primaryColorEnd.color())
+
+            button_2_text.setOnClickListener { nextAction(page.link1) }
+            next.setOnClickListener { nextAction(page.link1) }
+
+            page_root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            footer.setBackgroundColor(configuration.theme.secondaryColor.color())
+
         }
-
-        next.background =
-            button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
-
-        button_1_text.background = button(configuration.theme.primaryColorEnd.color())
-        button_1_text.setTextColor(configuration.theme.secondaryColor.color())
-
-        button_2_text.background = button(configuration.theme.secondaryColor.color())
-        button_2_text.setTextColor(configuration.theme.primaryColorEnd.color())
-
-        button_2_text.setOnClickListener { nextAction(page.link1) }
-        next.setOnClickListener { nextAction(page.link1) }
-
-        page_root.setBackgroundColor(configuration.theme.secondaryColor.color())
-        footer.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-    }
 
     private fun String?.parseSpecialLink(): SpecialLinkAction? =
         when {

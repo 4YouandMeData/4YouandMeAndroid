@@ -29,8 +29,8 @@ class SplashViewModel(
         if (authModule.isLogged()) {
 
             val user =
-                authModule.getUser().nullToError()
-
+                authModule.getUser()
+                    .nullToError()
 
             user.fold(
                 { welcome(authNavController) },

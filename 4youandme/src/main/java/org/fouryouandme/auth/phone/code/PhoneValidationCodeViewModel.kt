@@ -42,9 +42,8 @@ class PhoneValidationCodeViewModel(
         auth.fold(
             { setErrorFx(it, PhoneValidationCodeError.Auth) },
             {
-                //if (it.onBoardingCompleted) main(rootNavController)
-                ///else screeningQuestions(authNavController)
-                screeningQuestions(authNavController)
+                if (it.onBoardingCompleted) main(rootNavController)
+                else screeningQuestions(authNavController)
             }
         )
 

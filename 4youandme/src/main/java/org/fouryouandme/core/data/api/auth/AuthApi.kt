@@ -21,7 +21,7 @@ interface AuthApi {
         @Body request: LoginRequest
     ): Response<UserResponse>
 
-    @GET("v1/users/me")
+    @GET("api/v1/users/me")
     suspend fun getUser(@Header(Headers.AUTH) token: String): UserResponse
 
 }

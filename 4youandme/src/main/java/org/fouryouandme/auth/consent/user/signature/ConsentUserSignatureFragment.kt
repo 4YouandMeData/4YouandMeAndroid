@@ -14,10 +14,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.evalOnMain
-import org.fouryouandme.core.ext.imageConfiguration
-import org.fouryouandme.core.ext.showBackSecondaryButton
-import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.core.ext.*
 
 class ConsentUserSignatureFragment : ConsentUserSectionFragment(
     R.layout.consent_user_signature
@@ -86,6 +83,8 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
 
     private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
+
+            setStatusBar(configuration.theme.secondaryColor.color())
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 

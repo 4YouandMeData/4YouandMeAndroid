@@ -17,6 +17,7 @@ import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
+import org.fouryouandme.auth.splash.SplashToMain
 import org.fouryouandme.auth.splash.SplashToWelcome
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
@@ -35,6 +36,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is AnywhereToWeb -> anywhereToWeb(action.url)
 
             is SplashToWelcome -> splashToWelcome()
+            is SplashToMain -> splashToMain()
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
