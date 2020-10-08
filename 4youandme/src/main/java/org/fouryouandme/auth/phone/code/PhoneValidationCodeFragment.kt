@@ -12,7 +12,7 @@ import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.phone_validation_code.*
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.android.BaseFragment
+import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -21,7 +21,7 @@ import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
 
 
-class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
+class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewModel>(
     R.layout.phone_validation_code
 ) {
 

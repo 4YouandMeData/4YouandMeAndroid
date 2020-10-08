@@ -12,7 +12,7 @@ import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.enter_phone.*
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.android.BaseFragment
+import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -22,7 +22,7 @@ import org.fouryouandme.core.entity.configuration.checkbox.checkbox
 import org.fouryouandme.core.ext.*
 
 
-class EnterPhoneFragment : BaseFragment<EnterPhoneViewModel>(R.layout.enter_phone) {
+class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.enter_phone) {
 
     override val viewModel: EnterPhoneViewModel by lazy {
         viewModelFactory(this, getFactory {
