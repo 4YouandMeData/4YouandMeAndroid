@@ -1,121 +1,55 @@
 package org.fouryouandme.core.cases.consent.user
 
-import arrow.Kind
 import arrow.core.Either
-import org.fouryouandme.core.arch.deps.Runtime
+import arrow.core.flatMap
+import org.fouryouandme.core.arch.deps.modules.ConsentUserModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.auth.AuthUseCase
+import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
+import org.fouryouandme.core.cases.consent.user.ConsentUserRepository.confirmEmail
+import org.fouryouandme.core.cases.consent.user.ConsentUserRepository.createUserConsent
+import org.fouryouandme.core.cases.consent.user.ConsentUserRepository.fetchConsent
+import org.fouryouandme.core.cases.consent.user.ConsentUserRepository.resendConfirmationEmail
+import org.fouryouandme.core.cases.consent.user.ConsentUserRepository.updateUserConsent
 import org.fouryouandme.core.entity.consent.user.ConsentUser
-import org.fouryouandme.core.ext.foldToKindEither
 
 object ConsentUserUseCase {
 
-    fun <F> getConsent(runtime: Runtime<F>): Kind<F, Either<FourYouAndMeError, ConsentUser>> =
-        runtime.fx.concurrent {
+    suspend fun ConsentUserModule.getConsent(): Either<FourYouAndMeError, ConsentUser?> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap { fetchConsent(it, environment.studyId()) }
 
-            val token =
-                !AuthUseCase.getToken(runtime, CachePolicy.MemoryFirst)
-
-            !token.foldToKindEither(runtime.fx) {
-
-                ConsentUserRepository.getConsent(
-                    runtime,
-                    it,
-                    runtime.injector.environment.studyId()
-                )
-
-            }
-
-        }
-
-    fun <F> createUserConsent(
-        runtime: Runtime<F>,
+    suspend fun ConsentUserModule.createUserConsent(
         email: String
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        runtime.fx.concurrent {
-
-            val token =
-                !AuthUseCase.getToken(runtime, CachePolicy.MemoryFirst)
-
-            !token.foldToKindEither(runtime.fx) {
-
-                ConsentUserRepository.createUserConsent(
-                    runtime,
-                    it,
-                    runtime.injector.environment.studyId(),
-                    email
-                )
-
+    ): Either<FourYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap {
+                createUserConsent(it, environment.studyId(), email)
             }
 
-        }
-
-    internal fun <F> updateUserConsent(
-        runtime: Runtime<F>,
+    internal suspend fun ConsentUserModule.updateUserConsent(
         firstName: String,
         lastName: String,
         signatureBase64: String
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        runtime.fx.concurrent {
-
-            val token =
-                !AuthUseCase.getToken(runtime, CachePolicy.MemoryFirst)
-
-            !token.foldToKindEither(runtime.fx) {
-
-                ConsentUserRepository.updateUserConsent(
-                    runtime,
-                    it,
-                    runtime.injector.environment.studyId(),
-                    firstName,
-                    lastName,
-                    signatureBase64
-                )
-
+    ): Either<FourYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap {
+                updateUserConsent(it, environment.studyId(), firstName, lastName, signatureBase64)
             }
 
-        }
-
-    internal fun <F> confirmEmail(
-        runtime: Runtime<F>,
+    internal suspend fun ConsentUserModule.confirmEmail(
         code: String
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        runtime.fx.concurrent {
-
-            val token =
-                !AuthUseCase.getToken(runtime, CachePolicy.MemoryFirst)
-
-            !token.foldToKindEither(runtime.fx) {
-
-                ConsentUserRepository.confirmEmail(
-                    runtime,
-                    it,
-                    runtime.injector.environment.studyId(),
-                    code
-                )
-
+    ): Either<FourYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap {
+                confirmEmail(it, environment.studyId(), code)
             }
 
-        }
-
-    internal fun <F> resendConfirmationEmail(
-        runtime: Runtime<F>
-    ): Kind<F, Either<FourYouAndMeError, Unit>> =
-        runtime.fx.concurrent {
-
-            val token =
-                !AuthUseCase.getToken(runtime, CachePolicy.MemoryFirst)
-
-            !token.foldToKindEither(runtime.fx) {
-
-                ConsentUserRepository.resendConfirmationEmail(
-                    runtime,
-                    it,
-                    runtime.injector.environment.studyId()
-                )
-
+    internal suspend fun ConsentUserModule.resendConfirmationEmail(
+    ): Either<FourYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap {
+                resendConfirmationEmail(it, environment.studyId())
             }
 
-        }
 }

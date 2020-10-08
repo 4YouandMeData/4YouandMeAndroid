@@ -110,6 +110,14 @@ interface Injector {
             authModule()
         )
 
+    fun consentUserModule(): ConsentUserModule =
+        ConsentUserModule(
+            consentUserApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
     fun answerModule(): AnswerModule =
         AnswerModule(
             answerApi,

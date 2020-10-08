@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.screening
+package org.fouryouandme.auth.consent.user
 
 import androidx.navigation.fragment.findNavController
 import org.fouryouandme.auth.AuthNavController
@@ -11,39 +11,37 @@ import org.fouryouandme.core.ext.find
 import org.fouryouandme.core.ext.injector
 import org.fouryouandme.core.ext.navigator
 
-abstract class ScreeningSectionFragment(
+abstract class ConsentUserSectionFragment(
     contentLayoutId: Int
-) : BaseFragment<ScreeningViewModel>(contentLayoutId) {
+) : BaseFragment<ConsentUserViewModel>(contentLayoutId) {
 
-    override val viewModel: ScreeningViewModel by lazy {
+    override val viewModel: ConsentUserViewModel by lazy {
         viewModelFactory(
-            screeningFragment(),
+            consentUserFragment(),
             getFactory {
-                ScreeningViewModel(
+                ConsentUserViewModel(
                     navigator,
                     IORuntime,
-                    injector.screeningModule(),
-                    injector.answerModule()
+                    injector.consentUserModule()
                 )
             }
         )
     }
 
-    fun authNavController(): AuthNavController = screeningFragment().authNavController()
+    fun authNavController(): AuthNavController = consentUserFragment().authNavController()
 
-    fun screeningFragment(): ScreeningFragment = find()
+    fun consentUserFragment(): ConsentUserFragment = find()
 
-    fun screeningNavController(): ScreeningNavController =
-        ScreeningNavController(findNavController())
+    fun consentUserNavController(): ConsentUserNavController =
+        ConsentUserNavController(findNavController())
 
-    fun screeningAndConfiguration(block: suspend (Configuration, ScreeningState) -> Unit) {
+    fun consentUserAndConfiguration(block: suspend (Configuration, ConsentUserState) -> Unit) {
 
         configuration { config ->
 
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), config).orNull()
-                    ?.let { block(config, it) }
+                viewModel.initialize(rootNavController()).orNull()?.let { block(config, it) }
             else
                 block(config, viewModel.state())
 

@@ -126,9 +126,9 @@
         app:layout_constraintTop_toTopOf="@id/footer" />
 
     <org.fouryouandme.core.arch.loading.LoadingView
-        android:id="@+id/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/consent_user_signature_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

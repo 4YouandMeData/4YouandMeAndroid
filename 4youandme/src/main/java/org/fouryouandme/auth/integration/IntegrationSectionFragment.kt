@@ -1,7 +1,8 @@
 package org.fouryouandme.auth.integration
 
 import androidx.navigation.fragment.findNavController
-import org.fouryouandme.auth.AuthSectionFragment
+import org.fouryouandme.auth.AuthNavController
+import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -12,7 +13,7 @@ import org.fouryouandme.core.ext.navigator
 
 abstract class IntegrationSectionFragment(
     contentLayoutId: Int
-) : AuthSectionFragment<IntegrationViewModel>(contentLayoutId) {
+) : BaseFragment<IntegrationViewModel>(contentLayoutId) {
 
     override val viewModel: IntegrationViewModel by lazy {
         viewModelFactory(
@@ -27,6 +28,8 @@ abstract class IntegrationSectionFragment(
             }
         )
     }
+
+    fun authNavController(): AuthNavController = integrationFragment().authNavController()
 
     fun integrationFragment(): IntegrationFragment = find()
 

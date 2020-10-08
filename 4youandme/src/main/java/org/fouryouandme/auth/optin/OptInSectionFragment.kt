@@ -1,7 +1,8 @@
 package org.fouryouandme.auth.optin
 
 import androidx.navigation.fragment.findNavController
-import org.fouryouandme.auth.AuthSectionFragment
+import org.fouryouandme.auth.AuthNavController
+import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -12,7 +13,7 @@ import org.fouryouandme.core.ext.navigator
 
 abstract class OptInSectionFragment(
     contentLayoutId: Int
-) : AuthSectionFragment<OptInViewModel>(contentLayoutId) {
+) : BaseFragment<OptInViewModel>(contentLayoutId) {
 
     override val viewModel: OptInViewModel by lazy {
         viewModelFactory(
@@ -26,6 +27,8 @@ abstract class OptInSectionFragment(
             }
         )
     }
+
+    fun authNavController(): AuthNavController = optInFragment().authNavController()
 
     fun optInFragment(): OptInFragment = find()
 

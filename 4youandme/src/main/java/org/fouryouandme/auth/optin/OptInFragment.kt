@@ -5,7 +5,7 @@ import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.screening.*
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.android.BaseFragment
+import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.ext.IORuntime
@@ -13,7 +13,7 @@ import org.fouryouandme.core.ext.injector
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
 
-class OptInFragment : BaseFragment<OptInViewModel>(R.layout.opt_in) {
+class OptInFragment : AuthSectionFragment<OptInViewModel>(R.layout.opt_in) {
 
     override val viewModel: OptInViewModel by lazy {
         viewModelFactory(
