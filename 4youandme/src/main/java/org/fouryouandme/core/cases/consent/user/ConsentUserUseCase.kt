@@ -39,14 +39,14 @@ object ConsentUserUseCase {
 
     internal suspend fun ConsentUserModule.confirmEmail(
         code: String
-    ): Either<FourYouAndMeError, Unit> =
+    ): Either<FourYouAndMeError, Unit?> =
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap {
                 confirmEmail(it, environment.studyId(), code)
             }
 
     internal suspend fun ConsentUserModule.resendConfirmationEmail(
-    ): Either<FourYouAndMeError, Unit> =
+    ): Either<FourYouAndMeError, Unit?> =
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap {
                 resendConfirmationEmail(it, environment.studyId())

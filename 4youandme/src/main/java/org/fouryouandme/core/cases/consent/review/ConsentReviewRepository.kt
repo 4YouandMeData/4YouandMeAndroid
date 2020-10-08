@@ -14,6 +14,6 @@ object ConsentReviewRepository {
         studyId: String
     ): Either<FourYouAndMeError, ConsentReview> =
         errorModule.unwrapToEither { api.getConsentFx(token, studyId) }
-            .map { it.get().toConsentReview(it).orNull() }
+            .map { it.get().toConsentReview(it) }
             .nullToError()
 }

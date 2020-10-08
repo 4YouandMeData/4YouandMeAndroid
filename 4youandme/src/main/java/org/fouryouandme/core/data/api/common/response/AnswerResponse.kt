@@ -15,7 +15,7 @@ data class AnswerResponse(
 
     suspend fun toScreeningAnswer(): ScreeningAnswer? =
         Either.catch {
-            ScreeningAnswer(id, text!!, !correct!!)
+            ScreeningAnswer(id, text!!, correct!!)
         }.orNull()
 
     suspend fun toConsentAnswer(): ConsentInfoAnswer? =

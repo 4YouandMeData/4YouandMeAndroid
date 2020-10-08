@@ -102,7 +102,7 @@ class ConsentInfoQuestionFragment :
             consentInfoFragment()
                 .showAbort(
                     configuration,
-                    configuration.theme.primaryColorEnd.color()
+                    configuration.theme.secondaryColor.color()
                 )
 
             question.setTextColor(configuration.theme.secondaryColor.color())

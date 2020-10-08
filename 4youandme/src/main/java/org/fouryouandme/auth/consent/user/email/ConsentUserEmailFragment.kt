@@ -100,6 +100,8 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
     private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
 
+            setStatusBar(configuration.theme.secondaryColor.color())
+
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             email.text = configuration.text.onboarding.user.emailDescription

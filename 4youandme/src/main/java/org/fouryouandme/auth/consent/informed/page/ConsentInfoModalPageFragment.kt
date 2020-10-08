@@ -37,7 +37,7 @@ class ConsentInfoModalPageFragment : ConsentInfoSectionFragment(R.layout.consent
 
                 show()
 
-                showBackSecondaryButton(imageConfiguration) {
+                showCloseButton(imageConfiguration) {
                     startCoroutineAsync {
                         viewModel.back(
                             consentInfoNavController(),

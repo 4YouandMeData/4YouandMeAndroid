@@ -1,7 +1,7 @@
 package org.fouryouandme.auth.phone.code
 
-import androidx.navigation.NavController
 import arrow.fx.ForIO
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.Runtime
@@ -30,7 +30,7 @@ class PhoneValidationCodeViewModel(
 
     suspend fun auth(
         rootNavController: RootNavController,
-        navController: NavController,
+        authNavController: AuthNavController,
         phone: String,
         code: String
     ): Unit {
@@ -42,8 +42,9 @@ class PhoneValidationCodeViewModel(
         auth.fold(
             { setErrorFx(it, PhoneValidationCodeError.Auth) },
             {
-                if (it.onBoardingCompleted) main(rootNavController)
-                else screeningQuestions(navController)
+                //if (it.onBoardingCompleted) main(rootNavController)
+                ///else screeningQuestions(authNavController)
+                screeningQuestions(authNavController)
             }
         )
 
@@ -70,12 +71,16 @@ class PhoneValidationCodeViewModel(
 
     /* --- navigation --- */
 
-    suspend fun back(navController: NavController): Unit {
-        navigator.back(navController)
+    suspend fun back(
+        authNavController: AuthNavController,
+        rootNavController: RootNavController
+    ): Unit {
+        if (navigator.back(authNavController).not())
+            navigator.back(rootNavController)
     }
 
-    private suspend fun screeningQuestions(navController: NavController): Unit =
-        navigator.navigateTo(navController, PhoneValidationCodeToScreening)
+    private suspend fun screeningQuestions(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, PhoneValidationCodeToScreening)
 
     private suspend fun main(rootNavController: RootNavController): Unit =
         navigator.navigateTo(rootNavController, PhoneValidationCodeToMain)

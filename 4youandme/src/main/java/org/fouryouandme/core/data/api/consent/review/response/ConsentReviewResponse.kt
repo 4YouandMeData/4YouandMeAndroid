@@ -1,8 +1,6 @@
 package org.fouryouandme.core.data.api.consent.review.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
+import arrow.core.Either
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
@@ -21,23 +19,20 @@ data class ConsentReviewResponse(
 
 ) : Resource() {
 
-    fun toConsentReview(document: ObjectDocument<ConsentReviewResponse>): Option<ConsentReview> =
-        Option.fx {
+    suspend fun toConsentReview(document: ObjectDocument<ConsentReviewResponse>): ConsentReview? =
+        Either.catch {
 
             ConsentReview(
-                !title.toOption(),
-                !body.toOption(),
-                !pagesSubtitle.toOption(),
-                !disagreeModalBody.toOption(),
-                !disagreeModalButton.toOption(),
-                !pages?.get(document)
-                    ?.mapNotNull { it.toPage(document).orNull() }
-                    .toOption(),
-                !welcomePage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) }
+                title!!,
+                body!!,
+                pagesSubtitle!!,
+                disagreeModalBody!!,
+                disagreeModalButton!!,
+                pages?.get(document)
+                    ?.mapNotNull { it.toPage(document) }!!,
+                welcomePage?.get(document)?.toPage(document)!!
             )
 
-        }
+        }.orNull()
 
 }

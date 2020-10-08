@@ -35,51 +35,45 @@ class ConsentInfoFailureFragment : ConsentInfoSectionFragment(R.layout.consent_i
                 configuration = configuration,
                 page = consentInfo.failurePage,
                 pageType = EPageType.FAILURE,
-                action1 = { option ->
-                    option.fold(
-                        {
-                            startCoroutineAsync {
-                                viewModel.back(
-                                    consentInfoNavController(),
-                                    authNavController(),
-                                    rootNavController()
-                                )
-                            }
-                        },
-                        {
-                            if (it.id == consentInfo.welcomePage.id)
-                                startCoroutineAsync {
-                                    viewModel.restartFromWelcome(consentInfoNavController())
-                                }
-                            else
-                                startCoroutineAsync {
-                                    viewModel.restartFromPage(consentInfoNavController(), it.id)
-                                }
+                action1 = { page ->
+                    if (page == null) {
+                        startCoroutineAsync {
+                            viewModel.back(
+                                consentInfoNavController(),
+                                authNavController(),
+                                rootNavController()
+                            )
                         }
-                    )
+                    } else {
+                        if (page.id == consentInfo.welcomePage.id)
+                            startCoroutineAsync {
+                                viewModel.restartFromWelcome(consentInfoNavController())
+                            }
+                        else
+                            startCoroutineAsync {
+                                viewModel.restartFromPage(consentInfoNavController(), page.id)
+                            }
+                    }
                 },
-                action2 = { option ->
-                    option.fold(
-                        {
-                            startCoroutineAsync {
-                                viewModel.back(
-                                    consentInfoNavController(),
-                                    authNavController(),
-                                    rootNavController()
-                                )
-                            }
-                        },
-                        {
-                            if (it.id == consentInfo.welcomePage.id)
-                                startCoroutineAsync {
-                                    viewModel.restartFromWelcome(consentInfoNavController())
-                                }
-                            else
-                                startCoroutineAsync {
-                                    viewModel.restartFromPage(consentInfoNavController(), it.id)
-                                }
+                action2 = { page ->
+                    if (page == null) {
+                        startCoroutineAsync {
+                            viewModel.back(
+                                consentInfoNavController(),
+                                authNavController(),
+                                rootNavController()
+                            )
                         }
-                    )
+                    } else {
+                        if (page.id == consentInfo.welcomePage.id)
+                            startCoroutineAsync {
+                                viewModel.restartFromWelcome(consentInfoNavController())
+                            }
+                        else
+                            startCoroutineAsync {
+                                viewModel.restartFromPage(consentInfoNavController(), page.id)
+                            }
+                    }
                 },
                 externalAction = {
                     startCoroutineAsync { viewModel.web(rootNavController(), it) }

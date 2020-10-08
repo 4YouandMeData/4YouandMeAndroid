@@ -47,7 +47,7 @@ class ScreeningSuccessFragment : ScreeningSectionFragment(R.layout.screening_pag
                 configuration = configuration,
                 page = screening.successPage,
                 pageType = EPageType.SUCCESS,
-                action1 = { startCoroutineAsync { viewModel.consentInfo(rootNavController()) } },
+                action1 = { startCoroutineAsync { viewModel.consentInfo(authNavController()) } },
                 externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
             )
 

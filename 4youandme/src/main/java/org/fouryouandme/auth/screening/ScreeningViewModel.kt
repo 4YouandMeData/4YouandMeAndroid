@@ -175,8 +175,8 @@ class ScreeningViewModel(
             else ScreeningPageToScreeningPage(id)
         )
 
-    suspend fun consentInfo(navController: RootNavController): Unit =
-        navigator.navigateTo(navController, ScreeningToConsentInfo)
+    suspend fun consentInfo(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, ScreeningToConsentInfo)
 
     suspend fun abort(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, AnywhereToWelcome)

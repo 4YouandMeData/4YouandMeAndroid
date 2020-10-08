@@ -12,6 +12,7 @@ import org.fouryouandme.auth.optin.OptInPermissionToOptInSuccess
 import org.fouryouandme.auth.optin.OptInToConsentUser
 import org.fouryouandme.auth.optin.OptInWelcomeToOptInPermission
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
+import org.fouryouandme.auth.phone.code.PhoneValidationCodeToMain
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
@@ -42,6 +43,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 action.countryCode
             )
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
+            is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)

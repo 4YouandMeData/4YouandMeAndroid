@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/auth_navigation">
+    android:id="@+id/auth_navigation"
+    app:startDestination="@id/splash">
 
     <action
         android:id="@+id/action_global_welcome"
@@ -128,7 +129,9 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@id/auth_navigation"
+            app:popUpToInclusive="true" />
 
     </fragment>
 

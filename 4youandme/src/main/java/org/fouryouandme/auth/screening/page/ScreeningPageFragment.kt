@@ -3,12 +3,9 @@ package org.fouryouandme.auth.screening.page
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import arrow.core.extensions.list.foldable.firstOrNone
-import arrow.core.toOption
 import kotlinx.android.synthetic.main.screening.*
 import kotlinx.android.synthetic.main.screening_page.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.informed.ConsentInfoFragment
 import org.fouryouandme.auth.screening.ScreeningSectionFragment
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.screening.Screening
@@ -53,12 +50,11 @@ class ScreeningPageFragment : ScreeningSectionFragment(R.layout.screening_page) 
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            (requireParentFragment().requireParentFragment() as? ConsentInfoFragment)
-                .toOption()
-                .map { it.showAbort(configuration, configuration.theme.primaryColorEnd.color()) }
+            screeningFragment()
+                .showAbort(configuration, configuration.theme.primaryColorEnd.color())
 
-            screening.pages.firstOrNone { it.id == args.id }
-                .map { data ->
+            screening.pages.firstOrNull { it.id == args.id }
+                ?.let { data ->
                     page.applyData(
                         configuration,
                         data,

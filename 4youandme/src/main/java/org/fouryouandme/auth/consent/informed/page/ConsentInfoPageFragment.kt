@@ -3,7 +3,6 @@ package org.fouryouandme.auth.consent.informed.page
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import arrow.core.extensions.list.foldable.firstOrNone
 import kotlinx.android.synthetic.main.consent_info.*
 import kotlinx.android.synthetic.main.consent_info_page.*
 import org.fouryouandme.R
@@ -63,8 +62,8 @@ class ConsentInfoPageFragment : ConsentInfoSectionFragment(R.layout.consent_info
                     configuration.theme.primaryColorEnd.color()
                 )
 
-            consentInfo.pages.firstOrNone { it.id == args.id }
-                .map { data ->
+            consentInfo.pages.firstOrNull { it.id == args.id }
+                ?.let { data ->
                     page.applyData(
                         configuration = configuration,
                         page = data,

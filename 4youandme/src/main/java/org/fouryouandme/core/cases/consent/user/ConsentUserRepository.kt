@@ -3,6 +3,7 @@ package org.fouryouandme.core.cases.consent.user
 import arrow.core.Either
 import arrow.syntax.function.pipe
 import org.fouryouandme.core.arch.deps.modules.ConsentUserModule
+import org.fouryouandme.core.arch.deps.modules.unwrapResponse
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.data.api.consent.user.request.ConfirmUserConsentEmailRequest
@@ -50,17 +51,19 @@ object ConsentUserRepository {
         token: String,
         studyId: String,
         code: String
-    ): Either<FourYouAndMeError, Unit> =
+    ): Either<FourYouAndMeError, Unit?> =
         UserConsentRequest(ConfirmUserConsentEmailRequest(code))
             .pipe { suspend { api.confirmEmail(token, studyId, it) } }
             .pipe { errorModule.unwrapToEither(it) }
+            .pipe { errorModule.unwrapResponse(it) }
 
     internal suspend fun ConsentUserModule.resendConfirmationEmail(
         token: String,
         studyId: String
-    ): Either<FourYouAndMeError, Unit> =
+    ): Either<FourYouAndMeError, Unit?> =
         suspend { api.resendConfirmationEmail(token, studyId) }
             .pipe { errorModule.unwrapToEither(it) }
+            .pipe { errorModule.unwrapResponse(it) }
 
 
 }

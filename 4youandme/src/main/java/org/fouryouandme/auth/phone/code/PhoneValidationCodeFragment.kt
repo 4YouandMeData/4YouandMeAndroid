@@ -6,7 +6,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
@@ -81,7 +80,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
         evalOnMain {
 
             toolbar.showBackButton(imageConfiguration) {
-                startCoroutineAsync { viewModel.back(findNavController()) }
+                startCoroutineAsync { viewModel.back(authNavController(), rootNavController()) }
             }
 
             phone.setText(args.phone)
@@ -89,7 +88,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
             next.setOnClickListenerAsync {
                 viewModel.auth(
                     rootNavController(),
-                    findNavController(),
+                    authNavController(),
                     ccp.fullNumberWithPlus,
                     code.text.toString()
                 )
@@ -143,7 +142,9 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
 
             phone.isEnabled = false
 
-            change_phone.setOnClickListenerAsync { viewModel.back(findNavController()) }
+            change_phone.setOnClickListenerAsync {
+                viewModel.back(authNavController(), rootNavController())
+            }
 
             code_description.setTextColor(configuration.theme.secondaryColor.color())
             code_description.text =

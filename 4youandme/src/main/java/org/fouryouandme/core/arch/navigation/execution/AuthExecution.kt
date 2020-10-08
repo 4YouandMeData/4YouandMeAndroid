@@ -30,3 +30,7 @@ fun phoneValidationCodeToScreening(): NavigationExecution = {
     it.navigate(R.id.action_phone_validation_code_to_screening)
 }
 
+fun phoneValidationCodeToMain(): NavigationExecution = {
+    it.navigate(R.id.action_auth_to_main)
+}
+

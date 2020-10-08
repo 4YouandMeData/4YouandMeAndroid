@@ -84,7 +84,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
         evalOnMain {
 
             toolbar.showBackButton(imageConfiguration) {
-                startCoroutineAsync { viewModel.back(findNavController()) }
+                startCoroutineAsync { viewModel.back(authNavController(), rootNavController()) }
             }
 
             next.setOnClickListenerAsync {
@@ -223,7 +223,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
 
                                 startCoroutineAsync {
                                     viewModel.web(
-                                        findNavController(),
+                                        rootNavController(),
                                         if (privacyIndex > termsIndex) url.privacy
                                         else url.terms
                                     )
@@ -246,7 +246,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                             click {
                                 startCoroutineAsync {
                                     viewModel.web(
-                                        findNavController(),
+                                        rootNavController(),
                                         if (privacyIndex > termsIndex) url.terms
                                         else url.privacy
                                     )

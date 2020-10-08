@@ -51,22 +51,20 @@ class ConsentInfoWelcomeFragment :
                 configuration = configuration,
                 page = consentInfo.welcomePage,
                 pageType = EPageType.INFO,
-                action1 = { option ->
-                    option.fold(
-                        {
-                            startCoroutineAsync {
-                                viewModel.question(consentInfoNavController(), true)
-                            }
-                        },
-                        {
-                            startCoroutineAsync {
-                                viewModel.page(
-                                    consentInfoNavController(),
-                                    it.id,
-                                    true
-                                )
-                            }
-                        })
+                action1 = { page ->
+                    if (page == null) {
+                        startCoroutineAsync {
+                            viewModel.question(consentInfoNavController(), true)
+                        }
+                    } else {
+                        startCoroutineAsync {
+                            viewModel.page(
+                                consentInfoNavController(),
+                                page.id,
+                                true
+                            )
+                        }
+                    }
                 },
                 externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
             )

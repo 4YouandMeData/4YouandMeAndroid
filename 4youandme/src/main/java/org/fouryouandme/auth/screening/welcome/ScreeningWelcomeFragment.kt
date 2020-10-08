@@ -28,16 +28,7 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
     private suspend fun setupView(): Unit =
         evalOnMain {
 
-            screeningFragment().toolbar.showBackSecondaryButton(imageConfiguration)
-            {
-                startCoroutineAsync {
-                    viewModel.back(
-                        screeningNavController(),
-                        authNavController(),
-                        rootNavController()
-                    )
-                }
-            }
+            screeningFragment().toolbar.hide()
 
         }
 

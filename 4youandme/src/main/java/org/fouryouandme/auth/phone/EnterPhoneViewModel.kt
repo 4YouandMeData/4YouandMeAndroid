@@ -2,12 +2,14 @@ package org.fouryouandme.auth.phone
 
 import androidx.navigation.NavController
 import arrow.fx.ForIO
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.arch.navigation.toastAction
 import org.fouryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
 
@@ -58,8 +60,12 @@ class EnterPhoneViewModel(
 
     /* --- navigation --- */
 
-    suspend fun back(navController: NavController): Unit {
-        navigator.back(navController)
+    suspend fun back(
+        authNavController: AuthNavController,
+        rootNavController: RootNavController
+    ): Unit {
+        if (navigator.back(authNavController).not())
+            navigator.back(rootNavController)
     }
 
     private suspend fun phoneValidationCode(
@@ -72,8 +78,8 @@ class EnterPhoneViewModel(
             EnterPhoneToPhoneValidationCode(phone, countryCode)
         )
 
-    suspend fun web(navController: NavController, url: String): Unit =
-        navigator.navigateTo(navController, AnywhereToWeb(url))
+    suspend fun web(rootNavController: RootNavController, url: String): Unit =
+        navigator.navigateTo(rootNavController, AnywhereToWeb(url))
 
     suspend fun toastError(error: FourYouAndMeError): Unit =
         navigator.performAction(toastAction(error))

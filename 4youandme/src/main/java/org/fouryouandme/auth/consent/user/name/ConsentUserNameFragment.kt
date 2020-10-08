@@ -58,6 +58,8 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
     private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
 
+            setStatusBar(configuration.theme.primaryColorEnd.color())
+
             root.background =
                 HEXGradient.from(
                     configuration.theme.primaryColorStart,
