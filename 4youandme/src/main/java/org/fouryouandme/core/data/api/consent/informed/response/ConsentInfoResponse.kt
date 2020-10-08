@@ -1,8 +1,6 @@
 package org.fouryouandme.core.data.api.consent.informed.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
+import arrow.core.Either
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
@@ -25,28 +23,20 @@ data class ConsentInfoResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toConsentInfo(document: ObjectDocument<ConsentInfoResponse>): Option<ConsentInfo> =
-        Option.fx {
+    suspend fun toConsentInfo(document: ObjectDocument<ConsentInfoResponse>): ConsentInfo? =
+        Either.catch {
 
             ConsentInfo(
-                !minimumAnswer.toOption(),
-                !questions?.get(document)
-                    ?.mapNotNull { it.toConsentQuestion(document).orNull() }
-                    .toOption(),
-                !pages?.get(document)
-                    ?.mapNotNull { it.toPage(document).orNull() }
-                    .toOption(),
-                !welcomePage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) },
-                !successPage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) },
-                !failurePage?.get(document)
-                    .toOption()
-                    .flatMap { it.toPage(document) }
+                minimumAnswer!!,
+                questions?.get(document)
+                    ?.mapNotNull { it.toConsentQuestion(document) }!!,
+                pages?.get(document)
+                    ?.mapNotNull { it.toPage(document) }!!,
+                welcomePage?.get(document)?.toPage(document)!!,
+                successPage?.get(document)?.toPage(document)!!,
+                failurePage?.get(document)?.toPage(document)!!
             )
 
-        }
+        }.orNull()
 }
 

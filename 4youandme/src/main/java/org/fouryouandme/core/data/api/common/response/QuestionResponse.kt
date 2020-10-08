@@ -2,9 +2,6 @@ package org.fouryouandme.core.data.api.common.response
 
 import arrow.core.Either
 import arrow.core.Nel
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
@@ -35,17 +32,16 @@ data class QuestionResponse(
 
         }.orNull()
 
-    fun toConsentQuestion(
+    suspend fun toConsentQuestion(
         document: ObjectDocument<ConsentInfoResponse>
-    ): Option<ConsentInfoQuestion> =
-        Option.fx {
+    ): ConsentInfoQuestion? =
+        Either.catch {
             ConsentInfoQuestion(
                 id,
-                !text.toOption(),
-                !answer?.get(document)
-                    ?.mapNotNull { it.toConsentAnswer().orNull() }
-                    .toOption()
-                    .flatMap { Nel.fromList(it) }
+                text!!,
+                answer?.get(document)
+                    ?.mapNotNull { it.toConsentAnswer() }
+                    ?.let { Nel.fromListUnsafe(it) }!!
             )
-        }
+        }.orNull()
 }

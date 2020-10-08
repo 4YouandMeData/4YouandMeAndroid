@@ -1,9 +1,6 @@
 package org.fouryouandme.core.data.api.common.response
 
 import arrow.core.Either
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
@@ -21,12 +18,12 @@ data class AnswerResponse(
             ScreeningAnswer(id, text!!, !correct!!)
         }.orNull()
 
-    fun toConsentAnswer(): Option<ConsentInfoAnswer> =
-        Option.fx {
+    suspend fun toConsentAnswer(): ConsentInfoAnswer? =
+        Either.catch {
             ConsentInfoAnswer(
                 id,
-                !text.toOption(),
-                !correct.toOption()
+                text!!,
+                correct!!
             )
-        }
+        }.orNull()
 }

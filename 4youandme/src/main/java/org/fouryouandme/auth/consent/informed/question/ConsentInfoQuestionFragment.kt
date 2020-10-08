@@ -2,25 +2,17 @@ package org.fouryouandme.auth.consent.informed.question
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Option
-import arrow.core.extensions.fx
 import arrow.core.getOrElse
 import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.consent_info.*
 import kotlinx.android.synthetic.main.consent_info_question.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.informed.ConsentInfoFragment
+import org.fouryouandme.auth.consent.informed.ConsentInfoSectionFragment
 import org.fouryouandme.auth.consent.informed.ConsentInfoStateUpdate
-import org.fouryouandme.auth.consent.informed.ConsentInfoViewModel
-import org.fouryouandme.core.arch.android.BaseFragment
-import org.fouryouandme.core.arch.android.getFactory
-import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
@@ -30,25 +22,14 @@ import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.ext.html.setHtmlText
 
 class ConsentInfoQuestionFragment :
-    BaseFragment<ConsentInfoViewModel>(R.layout.consent_info_question) {
+    ConsentInfoSectionFragment(R.layout.consent_info_question) {
 
     private val args: ConsentInfoQuestionFragmentArgs by navArgs()
-
-    override val viewModel: ConsentInfoViewModel by lazy {
-        viewModelFactory(
-            requireParentFragment(),
-            getFactory {
-                ConsentInfoViewModel(
-                    navigator,
-                    IORuntime
-                )
-            })
-    }
 
     private val adapter: StableDroidAdapter by lazy {
         StableDroidAdapter(
             ConsentAnswerViewHolder.factory {
-                viewModel.answer(args.index, it.answer.id)
+                startCoroutineAsync { viewModel.answer(args.index, it.answer.id) }
             }
         )
     }
@@ -57,88 +38,101 @@ class ConsentInfoQuestionFragment :
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observe(this,
-                Observer { event ->
-                    when (event.peekContent()) {
-                        is ConsentInfoStateUpdate.Questions ->
-                            viewModel.getAnswers(args.index).map { applyAnswer(it) }
-                    }
+            .observeEvent(name()) { update ->
+                when (update) {
+                    is ConsentInfoStateUpdate.Questions ->
+                        startCoroutineAsync {
+                            viewModel.getAnswers(args.index)?.let { applyAnswer(it) }
+                        }
                 }
-            )
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
+        consentInfoAndConfiguration { config, state ->
 
-        Option.fx { !viewModel.state().configuration to !viewModel.state().consentInfo }
-            .map { applyData(it.first, it.second) }
+            setupView()
+            applyData(config, state.consentInfo)
+            if (adapter.itemCount <= 0)
+                viewModel.getAnswers(args.index)?.let { applyAnswer(it) }
 
-        if (adapter.itemCount <= 0)
-            viewModel.getAnswers(args.index).map { applyAnswer(it) }
+        }
     }
 
-    fun setupView(): Unit {
+    suspend fun setupView(): Unit =
+        evalOnMain {
 
-        requireParentFragment()
-            .requireParentFragment()
-            .toolbar
-            .toOption()
-            .map { it.removeBackButton() }
+            consentInfoFragment().toolbar.removeBackButton()
 
-        recycler_view.layoutManager =
-            LinearLayoutManager(
-                requireContext(),
-                RecyclerView.VERTICAL,
-                false
+            recycler_view.layoutManager =
+                LinearLayoutManager(
+                    requireContext(),
+                    RecyclerView.VERTICAL,
+                    false
+                )
+            recycler_view.adapter = adapter
+
+            next.background = button(resources, imageConfiguration.signUpNextStep())
+            next.setOnClickListener {
+
+                startCoroutineAsync {
+                    viewModel.nextQuestion(
+                        consentInfoNavController(),
+                        rootNavController(),
+                        args.index
+                    )
+                }
+            }
+        }
+
+    private suspend fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit =
+        evalOnMain {
+
+            setStatusBar(configuration.theme.primaryColorStart.color())
+
+            root.background =
+                HEXGradient.from(
+                    configuration.theme.primaryColorStart,
+                    configuration.theme.primaryColorEnd
+                ).drawable()
+
+            consentInfoFragment()
+                .showAbort(
+                    configuration,
+                    configuration.theme.primaryColorEnd.color()
+                )
+
+            question.setTextColor(configuration.theme.secondaryColor.color())
+            question.setHtmlText(
+                consentInfo.questions
+                    .getOrNull(args.index)
+                    .toOption()
+                    .map { it.text }
+                    .getOrElse { "" },
+                true
             )
-        recycler_view.adapter = adapter
 
-        next.background = button(resources, imageConfiguration.signUpNextStep())
-        next.setOnClickListener { viewModel.nextQuestion(findNavController(), rootNavController(), args.index) }
-    }
+            shadow.background =
+                HEXGradient.from(
+                    HEXColor.transparent(),
+                    configuration.theme.primaryColorEnd
+                ).drawable()
 
-    private fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit {
+        }
 
-        setStatusBar(configuration.theme.primaryColorStart.color())
+    private suspend fun applyAnswer(answers: List<ConsentAnswerItem>): Unit =
+        evalOnMain {
 
-        root.background =
-            HEXGradient.from(
-                configuration.theme.primaryColorStart,
-                configuration.theme.primaryColorEnd
-            ).drawable()
+            adapter.submitList(answers)
 
-        (requireParentFragment().requireParentFragment() as? ConsentInfoFragment)
-            .toOption()
-            .map { it.showAbort(configuration, configuration.theme.secondaryColor.color()) }
-
-        question.setTextColor(configuration.theme.secondaryColor.color())
-        question.setHtmlText(
-            consentInfo.questions
-                .getOrNull(args.index)
-                .toOption()
-                .map { it.text }
-                .getOrElse { "" },
-            true)
-
-        shadow.background =
-            HEXGradient.from(
-                HEXColor.transparent(),
-                configuration.theme.primaryColorEnd
-            ).drawable()
-
-    }
-
-    private fun applyAnswer(answers: List<ConsentAnswerItem>): Unit {
-
-        adapter.submitList(answers)
-
-        next.isEnabled =
-            answers.fold(
-                false,
-                { acc, answer -> acc || answer.isSelected }
-            )
-    }
+            next.isEnabled =
+                answers.fold(
+                    false,
+                    { acc, answer -> acc || answer.isSelected }
+                )
+        }
 
 }
