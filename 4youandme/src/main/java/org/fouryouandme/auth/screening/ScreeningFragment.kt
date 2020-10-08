@@ -33,7 +33,7 @@ class ScreeningFragment : AuthSectionFragment<ScreeningViewModel>(R.layout.scree
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent { update ->
+            .observeEvent(name()) { update ->
                 when (update) {
                     is ScreeningStateUpdate.Initialization ->
                         startCoroutineAsync { setupNavigation() }
@@ -41,10 +41,10 @@ class ScreeningFragment : AuthSectionFragment<ScreeningViewModel>(R.layout.scree
             }
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
+            .observeEvent(name()) { loading.setVisibility(it.active, false) }
 
         viewModel.errorLiveData()
-            .observeEvent { payload ->
+            .observeEvent(name()) { payload ->
                 when (payload.cause) {
                     ScreeningError.Initialization ->
                         error.setError(payload.error)

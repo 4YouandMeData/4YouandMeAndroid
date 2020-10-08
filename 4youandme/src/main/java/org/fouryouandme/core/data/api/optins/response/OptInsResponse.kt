@@ -1,9 +1,6 @@
 package org.fouryouandme.core.data.api.optins.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.getOrElse
-import arrow.core.toOption
+import arrow.core.Either
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 import org.fouryouandme.core.data.api.common.response.PageResponse
@@ -16,17 +13,16 @@ data class OptInsResponse(
     @field:Json(name = "permissions") val permissions: HasMany<OptInsPermissionResponse>? = null
 ) : Resource() {
 
-    fun toOptIns(document: ObjectDocument<OptInsResponse>): Option<OptIns> =
-        Option.fx {
+    suspend fun toOptIns(document: ObjectDocument<OptInsResponse>): OptIns? =
+        Either.catch {
 
             OptIns(
-                !welcomePage.toOption().flatMap { it.get(document).toPage(document) },
-                !successPage.toOption().flatMap { it.get(document).toPage(document) },
+                welcomePage?.get(document)?.toPage(document)!!,
+                successPage?.get(document)?.toPage(document)!!,
                 permissions?.get(document)
-                    .toOption()
-                    .map { it.toOptInsPermissions() }
-                    .getOrElse { emptyList() }
+                    ?.toOptInsPermissions()
+                    ?: emptyList()
             )
 
-        }
+        }.orNull()
 }

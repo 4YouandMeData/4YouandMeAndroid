@@ -94,6 +94,14 @@ interface Injector {
             authModule()
         )
 
+    fun optInModule(): OptInModule =
+        OptInModule(
+            optInsApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
     fun answerModule(): AnswerModule =
         AnswerModule(
             answerApi,

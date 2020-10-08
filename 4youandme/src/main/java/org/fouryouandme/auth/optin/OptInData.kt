@@ -1,23 +1,16 @@
 package org.fouryouandme.auth.optin
 
-import arrow.core.None
-import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
-import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.optins.OptIns
 
 data class OptInState(
-    val configuration: Option<Configuration> = None,
-    val optIns: Option<OptIns> = None,
-    val permissions: Map<Int, Boolean> = emptyMap()
+    val optIns: OptIns,
+    val permissions: Map<Int, Boolean>
 )
 
 sealed class OptInStateUpdate {
 
-    data class Initialization(
-        val configuration: Configuration,
-        val optIns: OptIns
-    ) : OptInStateUpdate()
+    data class Initialization(val optIns: OptIns) : OptInStateUpdate()
 
     data class Permissions(val permissions: Map<Int, Boolean>) : OptInStateUpdate()
 
