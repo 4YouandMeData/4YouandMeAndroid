@@ -35,7 +35,10 @@ class AboutYouUserInfoFragment :
     private val adapter: DroidAdapter by lazy {
 
         DroidAdapter(
-            EntryStringViewHolder.factory()
+            EntryStringViewHolder.factory(),
+            EntryDateViewHolder.factory { item, date ->
+                startCoroutineAsync { viewModel.updateDateItem(item.id, date) }
+            }
         )
 
     }
@@ -51,6 +54,8 @@ class AboutYouUserInfoFragment :
                             bindEditMode(it, update.isEditing)
                             applyItems(update.items)
                         }
+                    is AboutYouUserInfoStateUpdate.Items ->
+                        startCoroutineAsync { applyItems(update.items) }
                 }
             }
 

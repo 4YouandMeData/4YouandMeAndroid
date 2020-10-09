@@ -3,7 +3,6 @@ package org.fouryouandme.aboutyou.userInfo
 import android.content.res.ColorStateList
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
@@ -52,13 +51,9 @@ class EntryStringViewHolder(
             ColorStateList.valueOf(t.configuration.theme.primaryTextColor.color())
 
         validation.setImageResource(
-            if (t.value.isNotEmpty())
-                t.imageConfiguration.entryValid()
-            else
-                t.imageConfiguration.entryWrong()
+            if (t.isEditable) t.imageConfiguration.entryWrong()
+            else t.imageConfiguration.entryValid()
         )
-
-        validation.isVisible = t.isEditable
 
     }
 

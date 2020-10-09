@@ -1,5 +1,6 @@
 package org.fouryouandme.aboutyou.userInfo
 
+import arrow.core.Either
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
@@ -10,6 +11,9 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.entity.user.UserCustomDataType
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 
 class AboutYouUserInfoViewModel(
     navigator: Navigator,
@@ -41,7 +45,16 @@ class AboutYouUserInfoViewModel(
                             it.value.orEmpty(),
                             false
                         )
-                    UserCustomDataType.Date -> null
+                    UserCustomDataType.Date ->
+                        EntryDateItem(
+                            it.identifier,
+                            configuration,
+                            imageConfiguration,
+                            it.name,
+                            Either.catch { Instant.parse(it.value).atZone(ZoneOffset.UTC) }
+                                .orNull(),
+                            false
+                        )
                     is UserCustomDataType.Items -> null
                 }
 
@@ -79,9 +92,30 @@ class AboutYouUserInfoViewModel(
 
             when (it) {
                 is EntryStringItem -> it.copy(isEditable = isEditable)
+                is EntryDateItem -> it.copy(isEditable = isEditable)
                 else -> it
             }
 
         }
+
+
+    /* --- update --- */
+
+    suspend fun updateDateItem(id: String, date: ZonedDateTime): Unit {
+
+        val items =
+            state().items.map {
+
+                when (it) {
+                    is EntryDateItem -> if (it.id == id) it.copy(value = date) else it
+                    else -> it
+                }
+
+            }
+
+        setStateFx(state().copy(items = items))
+        { AboutYouUserInfoStateUpdate.Items(items) }
+
+    }
 
 }
