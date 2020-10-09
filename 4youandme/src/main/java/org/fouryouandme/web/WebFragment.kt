@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.*
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.web.*
 import org.fouryouandme.R
@@ -30,56 +29,55 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent {
-
-                when (it) {
-                    is WebStateUpdate.Initialization -> applyConfiguration(it.configuration)
-                }
-            }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration
-            .fold({ viewModel.initialize() }, { applyConfiguration(it) })
-
-        toolbar.showCloseButton(imageConfiguration) {
-            if (web_view.canGoBack())
-                web_view.goBack()
-            else
-                viewModel.back(findNavController())
+        configuration {
+            applyConfiguration(it)
+            setupToolbar()
+            setupWebView()
         }
 
-        setupWebView()
     }
 
-    private fun applyConfiguration(configuration: Configuration): Unit {
+    private suspend fun setupToolbar(): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.secondaryColor.color())
+            toolbar.showCloseButton(imageConfiguration) {
+                if (web_view.canGoBack())
+                    web_view.goBack()
+                else
+                    startCoroutineAsync { viewModel.back(rootNavController()) }
+            }
 
-        toolbar.setBackgroundColor(configuration.theme.secondaryColor.color())
+        }
 
-        progress_bar.progressTintList =
-            ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
+        evalOnMain {
 
-        loadPage()
-    }
+            setStatusBar(configuration.theme.secondaryColor.color())
+
+            toolbar.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+            progress_bar.progressTintList =
+                ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
+
+            loadPage()
+        }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView() {
-        web_view
-            .also { it.settings.domStorageEnabled = true }
-            .also { it.settings.javaScriptEnabled = true }
-            .also { it.webViewClient = getWebClient() }
-            .also { it.webChromeClient = getWebChromeClient() }
-    }
+    private suspend fun setupWebView(): Unit =
+        evalOnMain {
 
-    private fun loadPage(): Unit = web_view.loadUrl(args.url)
+            web_view
+                .also { it.settings.domStorageEnabled = true }
+                .also { it.settings.javaScriptEnabled = true }
+                .also { it.webViewClient = getWebClient() }
+                .also { it.webChromeClient = getWebChromeClient() }
+
+        }
+
+    private suspend fun loadPage(): Unit = evalOnMain { web_view.loadUrl(args.url) }
 
     private fun getWebClient(): WebViewClient =
         object : WebViewClient() {
@@ -135,5 +133,6 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
         super.onDestroyView()
 
         web_view.destroy()
+
     }
 }
