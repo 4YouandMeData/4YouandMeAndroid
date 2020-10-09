@@ -1,11 +1,13 @@
 package org.fouryouandme.core.entity.user
 
+import org.fouryouandme.core.ext.StudyIntegration
+
 data class User(
     val id: String,
     val email: String?,
     val phoneNumber: String?,
     val daysInStudy: Int,
-    val identities: List<String>,
+    val identities: List<StudyIntegration>,
     val onBoardingCompleted: Boolean,
     val token: String,
     val customData: List<UserCustomData>

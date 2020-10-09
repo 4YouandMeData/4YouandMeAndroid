@@ -15,7 +15,6 @@ import org.fouryouandme.core.ext.imageConfiguration
 
 data class AppAndDeviceItem(
     val configuration: Configuration,
-    val id: String,
     val name: String,
     @DrawableRes val image: Int,
     val isConnected: Boolean,
@@ -24,7 +23,7 @@ data class AppAndDeviceItem(
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
         other.compare<AppAndDeviceItem> {
-            it.id == id
+            it.name == name
         }
 
     override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()

@@ -59,8 +59,48 @@ class AboutYouAppsAndDevicesFragment :
 
         refreshUserAndConfiguration { config, user ->
 
+            val integrations = config.getStudyIntegrations()
+                .map {
+                    when (it) {
+                        StudyIntegration.Garmin -> viewModel.createGarminItem(
+                            config,
+                            imageConfiguration,
+                            user.identities.contains(StudyIntegration.Garmin)
+                        )
 
+                        StudyIntegration.Fitbit -> viewModel.createFitbitItem(
+                            config,
+                            imageConfiguration,
+                            user.identities.contains(StudyIntegration.Fitbit)
+                        )
 
+                        StudyIntegration.Oura -> viewModel.createOuraItem(
+                            config,
+                            imageConfiguration,
+                            user.identities.contains(StudyIntegration.Oura)
+                        )
+
+                        StudyIntegration.Instagram -> viewModel.createInstagramItem(
+                            config,
+                            imageConfiguration,
+                            user.identities.contains(StudyIntegration.Instagram)
+                        )
+
+                        StudyIntegration.RescueTime -> viewModel.createRescueTimeItem(
+                            config,
+                            imageConfiguration,
+                            user.identities.contains(StudyIntegration.RescueTime)
+                        )
+
+                        StudyIntegration.Twitter -> viewModel.createTwitterItem(
+                            config,
+                            imageConfiguration,
+                            user.identities.contains(StudyIntegration.Twitter)
+                        )
+                    }
+                }
+
+            adapter.submitList(integrations)
         }
     }
 
@@ -84,7 +124,7 @@ class AboutYouAppsAndDevicesFragment :
             title.setTextColor(configuration.theme.secondaryColor.color())
             title.text = configuration.text.profile.secondItem
 
-            adapter.submitList(viewModel.getAppAndDevices(configuration, imageConfiguration))
+            // adapter.submitList(viewModel.getAppAndDevices(configuration, imageConfiguration))
         }
 
     private suspend fun setupRecyclerView() =

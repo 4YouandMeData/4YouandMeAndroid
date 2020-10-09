@@ -8,6 +8,7 @@ import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.entity.user.UserCustomData
 import org.fouryouandme.core.entity.user.UserCustomDataItem
 import org.fouryouandme.core.entity.user.UserCustomDataType
+import org.fouryouandme.core.ext.StudyIntegration
 import org.fouryouandme.core.ext.mapNotNull
 
 @JsonApi(type = "user")
@@ -28,7 +29,8 @@ data class UserResponse(
                 email = email,
                 phoneNumber = phoneNumber,
                 daysInStudy = daysInStudy ?: 0,
-                identities = identities ?: emptyList(),
+                identities =
+                identities?.mapNotNull { StudyIntegration.fromIdentifier(it) } ?: emptyList(),
                 onBoardingCompleted = onBoardingCompleted!!,
                 token = token,
                 customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList()

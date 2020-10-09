@@ -13,26 +13,87 @@ import org.fouryouandme.core.entity.configuration.Configuration
 class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
     BaseViewModel<ForIO, Empty, Empty, Empty, Empty>(Empty, navigator, runtime) {
 
-    //TODO: Fill Apps and Devices list with data provided by API
-    fun getAppAndDevices(configuration: Configuration, imageConfiguration: ImageConfiguration) =
-        listOf(
-            AppAndDeviceItem(
-                configuration,
-                "1",
-                "Garmin",
-                imageConfiguration.fitbit(),
-                true,
-                "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/garmin"
-            ),
-            AppAndDeviceItem(
-                configuration,
-                "2",
-                "Oura",
-                imageConfiguration.oura(),
-                true,
-                "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/oura"
-            )
+    /*--- data ---*/
+
+    fun createGarminItem(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        isConnected: Boolean
+    ): AppAndDeviceItem =
+        AppAndDeviceItem(
+            configuration,
+            "Garmin",
+            imageConfiguration.fitbit(),
+            isConnected,
+            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/garmin"
         )
+
+    fun createFitbitItem(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        isConnected: Boolean
+    ): AppAndDeviceItem =
+        AppAndDeviceItem(
+            configuration,
+            "Fitbit",
+            imageConfiguration.fitbit(),
+            isConnected,
+            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/fitbit"
+        )
+
+    fun createOuraItem(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        isConnected: Boolean
+    ): AppAndDeviceItem =
+        AppAndDeviceItem(
+            configuration,
+            "Oura",
+            imageConfiguration.oura(),
+            isConnected,
+            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/oura"
+        )
+
+    fun createInstagramItem(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        isConnected: Boolean
+    ): AppAndDeviceItem =
+        AppAndDeviceItem(
+            configuration,
+            "Instagram",
+            imageConfiguration.oura(),
+            isConnected,
+            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/instagram"
+        )
+
+    fun createRescueTimeItem(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        isConnected: Boolean
+    ): AppAndDeviceItem =
+    AppAndDeviceItem(
+        configuration,
+        "RescueTime",
+        imageConfiguration.oura(),
+        isConnected,
+        "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/rescuetime"
+    )
+
+    fun createTwitterItem(
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration,
+        isConnected: Boolean
+    ): AppAndDeviceItem =
+        AppAndDeviceItem(
+            configuration,
+            "Twitter",
+            imageConfiguration.oura(),
+            isConnected,
+            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/twitter"
+        )
+
+/*--- navigation ---*/
 
     suspend fun navigateToWeb(url: String, navController: AboutYouNavController) {
         navigator.navigateTo(navController, AboutYouDataAppsAndDevicesToIntegrationLogin(url))

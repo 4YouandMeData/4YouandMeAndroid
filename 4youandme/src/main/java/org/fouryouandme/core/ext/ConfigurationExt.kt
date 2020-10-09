@@ -26,8 +26,8 @@ sealed class StudyIntegration(val identifier: String) {
 
 }
 
-fun getStudyIntegrations(configuration: Configuration): List<StudyIntegration> =
-    configuration.text.profile.oauth
+fun Configuration.getStudyIntegrations(): List<StudyIntegration> =
+    text.profile.oauth
         .split(";")
         .map { it.trim() }
         .mapNotNull { StudyIntegration.fromIdentifier(it) }
