@@ -9,6 +9,7 @@ import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
 import org.fouryouandme.core.cases.auth.AuthUseCase.isLogged
 
@@ -29,7 +30,7 @@ class SplashViewModel(
         if (authModule.isLogged()) {
 
             val user =
-                authModule.getUser()
+                authModule.getUser(CachePolicy.Network)
                     .nullToError()
 
             user.fold(
