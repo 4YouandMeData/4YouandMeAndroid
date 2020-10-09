@@ -54,6 +54,16 @@ class AboutYouAppsAndDevicesFragment :
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        refreshUserAndConfiguration { config, user ->
+
+
+
+        }
+    }
+
     private suspend fun applyConfiguration(configuration: Configuration) =
         evalOnMain {
 
