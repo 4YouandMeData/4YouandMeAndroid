@@ -20,9 +20,17 @@ sealed class AboutYouUserInfoStateUpdate {
 
 }
 
+
 sealed class AboutYouUserInfoError {
 
     object Initialization : AboutYouUserInfoError()
+    object Upload : AboutYouUserInfoError()
+
+}
+
+sealed class AboutYouUserInfoLoading {
+
+    object Upload : AboutYouUserInfoLoading()
 
 }
 

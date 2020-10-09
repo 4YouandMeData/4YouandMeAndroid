@@ -25,7 +25,8 @@ class AboutYouUserInfoFragment :
             getFactory {
                 AboutYouUserInfoViewModel(
                     navigator,
-                    IORuntime
+                    IORuntime,
+                    injector.authModule()
                 )
             }
         )
@@ -35,7 +36,9 @@ class AboutYouUserInfoFragment :
     private val adapter: DroidAdapter by lazy {
 
         DroidAdapter(
-            EntryStringViewHolder.factory(),
+            EntryStringViewHolder.factory { item, text ->
+                startCoroutineAsync { viewModel.updateTextItem(item.id, text) }
+            },
             EntryDateViewHolder.factory { item, date ->
                 startCoroutineAsync { viewModel.updateDateItem(item.id, date) }
             },
@@ -62,12 +65,27 @@ class AboutYouUserInfoFragment :
                 }
             }
 
+        viewModel.loadingLiveData()
+            .observeEvent(name()) {
+                when (it.task) {
+                    AboutYouUserInfoLoading.Upload ->
+                        loading.setVisibility(it.active, true)
+                }
+            }
+
+        viewModel.errorLiveData()
+            .observeEvent(name()) {
+                when (it.cause) {
+                    AboutYouUserInfoError.Upload -> errorToast(it.error)
+                }
+            }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userAndConfiguration { config, user ->
+        refreshUserAndConfiguration { config, user ->
 
             setupRecyclerView()
             applyConfiguration(config)
@@ -106,7 +124,7 @@ class AboutYouUserInfoFragment :
             title.text = configuration.text.profile.firstItem
 
             edit_save_button.setImageResource(imageConfiguration.editContainer())
-            edit_save_button.setOnClickListenerAsync { viewModel.toggleEdit() }
+            edit_save_button.setOnClickListenerAsync { viewModel.toggleEdit(rootNavController()) }
 
             pencil.setImageResource(imageConfiguration.pencil())
 

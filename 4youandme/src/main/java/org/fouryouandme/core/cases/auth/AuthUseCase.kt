@@ -15,6 +15,7 @@ import org.fouryouandme.core.cases.auth.AuthRepository.updateUser
 import org.fouryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.entity.user.User
+import org.fouryouandme.core.entity.user.UserCustomData
 
 object AuthUseCase {
 
@@ -71,6 +72,12 @@ object AuthUseCase {
 
     internal suspend fun AuthModule.isLogged(): Boolean =
         getToken(CachePolicy.MemoryFirst).isRight()
+
+    internal suspend fun AuthModule.updateUser(
+        data: List<UserCustomData>
+    ): Either<FourYouAndMeError, Unit> =
+        getToken(CachePolicy.MemoryFirst)
+            .flatMap { updateUser(it, data) }
 
     // use only for test
     internal suspend fun AuthModule.resetUserCustomData(): Either<FourYouAndMeError, Unit> =
