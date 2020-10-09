@@ -19,38 +19,36 @@
             android:layout_marginStart="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/flag_afghanistan" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/edit_button"
+            android:id="@+id/edit_save_button"
             android:layout_width="65dp"
             android:layout_height="24dp"
             android:layout_marginEnd="21dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/flag_algeria" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/edit_text"
+            android:id="@+id/edit_save_text"
             style="@style/text_h3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/edit_button"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_save_button"
             app:layout_constraintEnd_toStartOf="@id/pencil"
-            app:layout_constraintStart_toStartOf="@id/edit_button"
-            app:layout_constraintTop_toTopOf="@+id/edit_button"
+            app:layout_constraintStart_toStartOf="@+id/edit_save_button"
+            app:layout_constraintTop_toTopOf="@+id/edit_save_button"
             tools:text="Edit" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/pencil"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/edit_button"
-            app:layout_constraintEnd_toEndOf="@id/edit_button"
-            app:layout_constraintStart_toEndOf="@id/edit_text"
-            app:layout_constraintTop_toTopOf="@id/edit_button" />
+            app:layout_constraintBottom_toBottomOf="@id/edit_save_button"
+            app:layout_constraintEnd_toEndOf="@id/edit_save_button"
+            app:layout_constraintStart_toEndOf="@id/edit_save_text"
+            app:layout_constraintTop_toTopOf="@id/edit_save_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -89,162 +87,23 @@
             app:layout_constraintTop_toBottomOf="@id/imageView"
             tools:text="Your Pregnancy" />
 
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frameLayout"
-            app:layout_constraintVertical_bias="0.0">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="21dp"
-                android:layout_marginEnd="21dp">
-
-                <!--first item-->
-
-                <TextView
-                    android:id="@+id/first_header"
-                    style="@style/text_paragraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="21dp"
-                    app:layout_constraintBottom_toTopOf="@id/first_entry"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@string/PLACEHOLDER_title" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/first_entry"
-                    style="@style/text_paragraph"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:singleLine="false"
-                    app:layout_constraintEnd_toStartOf="@id/first_validation"
-                    app:layout_constraintStart_toStartOf="@id/first_header"
-                    app:layout_constraintTop_toBottomOf="@id/first_header" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/first_validation"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:layout_constraintBottom_toBottomOf="@id/first_entry"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <View
-                    android:id="@+id/first_line"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/first_entry"
-                    app:layout_constraintTop_toBottomOf="@id/first_entry" />
-
-                <!--first item end-->
-
-                <!--second item-->
-
-                <TextView
-                    android:id="@+id/second_header"
-                    style="@style/text_paragraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="21dp"
-                    app:layout_constraintBottom_toTopOf="@id/second_entry"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/first_line"
-                    tools:text="@string/PLACEHOLDER_title" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/second_entry"
-                    style="@style/text_paragraph"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:inputType="textPersonName"
-                    android:singleLine="true"
-                    app:layout_constraintEnd_toStartOf="@id/second_validation"
-                    app:layout_constraintStart_toStartOf="@id/second_header"
-                    app:layout_constraintTop_toBottomOf="@id/second_header" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/second_validation"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:layout_constraintBottom_toBottomOf="@id/second_entry"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <View
-                    android:id="@+id/second_line"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/second_entry"
-                    app:layout_constraintTop_toBottomOf="@id/second_entry" />
-
-                <!--second item end-->
-
-                <!--third item-->
-
-                <TextView
-                    android:id="@+id/third_header"
-                    style="@style/text_paragraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="21dp"
-                    app:layout_constraintBottom_toTopOf="@id/third_entry"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/second_line"
-                    tools:text="@string/PLACEHOLDER_title" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/third_entry"
-                    style="@style/text_paragraph"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:inputType="textPersonName"
-                    android:singleLine="true"
-                    app:layout_constraintEnd_toStartOf="@id/third_validation"
-                    app:layout_constraintStart_toStartOf="@id/third_header"
-                    app:layout_constraintTop_toBottomOf="@id/third_header" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/third_validation"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:layout_constraintBottom_toBottomOf="@id/third_entry"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <View
-                    android:id="@+id/third_line"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="21dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/third_entry"
-                    app:layout_constraintTop_toBottomOf="@id/third_entry" />
-
-                <!--third item end-->
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.35" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

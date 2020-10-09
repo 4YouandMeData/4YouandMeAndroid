@@ -134,6 +134,7 @@ data class StringsResponse(
     @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
 
     @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
+    @Json(name = "PROFILE_USER_INFO_BUTTON_SUBMIT") val profileUserInfoButtonSubmit: String? = null,
 
     @Json(name = "TAB_USER_DATA_PERIOD_TITLE") val tabUserDataPeriodTitle: String? = null,
     @Json(name = "TAB_USER_DATA_PERIOD_DAY") val tabUserDataPeriodDay: String? = null,
@@ -416,6 +417,7 @@ data class StringsResponse(
                 permissionsAllow.toOption().bind(),
                 permissionsAllowed.toOption().bind(),
                 profileUserInfoButtonEdit.toOption().bind(),
+                profileUserInfoButtonSubmit.toOption().bind(),
                 oauthAvailableInterations.toOption().bind()
             )
         }

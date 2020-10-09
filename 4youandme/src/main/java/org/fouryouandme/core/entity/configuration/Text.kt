@@ -183,6 +183,7 @@ data class Profile(
     val allow: String,
     val allowed: String,
     val edit: String,
+    val submit: String,
     val oauth: String
 )
 
