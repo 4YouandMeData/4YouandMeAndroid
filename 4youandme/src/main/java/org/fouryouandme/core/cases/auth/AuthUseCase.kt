@@ -1,8 +1,9 @@
 package org.fouryouandme.core.cases.auth
 
-import arrow.Kind
-import arrow.core.*
-import org.fouryouandme.core.arch.deps.Runtime
+import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
+import arrow.core.right
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
@@ -13,7 +14,6 @@ import org.fouryouandme.core.cases.auth.AuthRepository.login
 import org.fouryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.entity.user.User
-import org.fouryouandme.core.ext.toKind
 
 object AuthUseCase {
 
@@ -27,30 +27,6 @@ object AuthUseCase {
     ): Either<FourYouAndMeError, User> =
         configurationModule.getConfiguration(CachePolicy.MemoryFirst)
             .flatMap { login(it, phone, code) }
-
-    @Deprecated("use suspend version")
-    internal fun <F> getToken(
-        runtime: Runtime<F>,
-        cachePolicy: CachePolicy
-    ): Kind<F, Either<FourYouAndMeError, String>> =
-        runtime.fx.concurrent {
-
-            when (cachePolicy) {
-                CachePolicy.MemoryFirst ->
-                    !Memory.token.toOption().toKind(runtime.fx) { loadToken(runtime) }
-                CachePolicy.MemoryFirstRefresh ->
-                    !Memory.token.toOption().toKind(runtime.fx) { loadToken(runtime) }
-                CachePolicy.MemoryOrDisk ->
-                    !Memory.token.toOption().toKind(runtime.fx) { loadToken(runtime) }
-                CachePolicy.DiskFirst ->
-                    !Memory.token.toOption().toKind(runtime.fx) { loadToken(runtime) }
-                CachePolicy.DiskFirstRefresh ->
-                    !Memory.token.toOption().toKind(runtime.fx) { loadToken(runtime) }
-                CachePolicy.Network ->
-                    !Memory.token.toOption().toKind(runtime.fx) { loadToken(runtime) }
-            }.toEither { FourYouAndMeError.UserNotLoggedIn }
-
-        }
 
     internal suspend fun AuthModule.getToken(
         cachePolicy: CachePolicy

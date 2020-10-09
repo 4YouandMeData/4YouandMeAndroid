@@ -1,16 +1,11 @@
 package org.fouryouandme.core.cases.auth
 
-import arrow.Kind
 import arrow.core.Either
-import arrow.core.Option
-import arrow.core.toOption
 import arrow.syntax.function.pipe
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.deps.modules.unwrapResponse
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
-import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.Memory
 import org.fouryouandme.core.data.api.Headers
@@ -87,19 +82,6 @@ object AuthRepository {
 
         }
     }
-
-    @Deprecated("use suspend version")
-    internal fun <F> loadToken(runtime: Runtime<F>): Kind<F, Option<String>> =
-        runtime.fx.concurrent {
-
-            val token =
-                runtime.injector.prefs.getString(USER_TOKEN, null).toOption()
-
-            !runtime.onMainDispatcher { Memory.token = token.orNull() }
-
-            token
-
-        }
 
     internal suspend fun AuthModule.loadToken(): String? {
 
