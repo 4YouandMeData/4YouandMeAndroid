@@ -1,6 +1,7 @@
 package org.fouryouandme.core.cases
 
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.user.User
 
 sealed class CachePolicy {
 
@@ -18,5 +19,7 @@ object Memory {
     var configuration: Configuration? = null
 
     var token: String? = null
+
+    var user: User? = null
 
 }

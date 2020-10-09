@@ -66,6 +66,7 @@ object AuthRepository {
                     error
             }
             .map { it.also { save(it) } }
+            .map { it.also { Memory.user = it } }
 
     private suspend fun Response<UserResponse>.unwrapUser(): User? =
 
@@ -112,6 +113,7 @@ object AuthRepository {
                     it.toUser(token).right()
 
             }
+            .map { it.also { Memory.user = it } }
 
     // TODO: remove this and handle default configuration from server
     private fun defaultUserCustomData(): List<UserCustomData> =

@@ -46,9 +46,27 @@ object AuthUseCase {
                 Memory.token ?: loadToken()
         }?.right() ?: FourYouAndMeError.UserNotLoggedIn.left()
 
-    internal suspend fun AuthModule.getUser(): Either<FourYouAndMeError, User?> =
-        getToken(CachePolicy.MemoryFirst)
-            .flatMap { fetchUser(it) }
+    internal suspend fun AuthModule.getUser(
+        cachePolicy: CachePolicy
+    ): Either<FourYouAndMeError, User?> =
+        when (cachePolicy) {
+            CachePolicy.MemoryFirst ->
+                if (Memory.user != null) Memory.user.right()
+                else getUser(CachePolicy.Network)
+            CachePolicy.MemoryFirstRefresh ->
+                if (Memory.user != null) Memory.user.right().also { getUser(CachePolicy.Network) }
+                else getUser(CachePolicy.Network)
+            CachePolicy.MemoryOrDisk -> Memory.user.right()
+            CachePolicy.DiskFirst ->
+                if (Memory.user != null) Memory.user.right()
+                else getUser(CachePolicy.Network)
+            CachePolicy.DiskFirstRefresh ->
+                if (Memory.user != null) Memory.user.right().also { getUser(CachePolicy.Network) }
+                else getUser(CachePolicy.Network)
+            CachePolicy.Network ->
+                getToken(CachePolicy.MemoryFirst)
+                    .flatMap { fetchUser(it) }
+        }
 
     internal suspend fun AuthModule.isLogged(): Boolean =
         getToken(CachePolicy.MemoryFirst).isRight()
