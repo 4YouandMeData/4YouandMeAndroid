@@ -67,6 +67,40 @@ class AboutYouViewModel(
 
     }
 
+    suspend fun refreshUser(
+        rootNavController: RootNavController,
+        refreshFromNetwork: Boolean
+    ): Either<FourYouAndMeError, AboutYouState> {
+
+        showLoadingFx(AboutYouLoading.Refresh)
+
+        val state =
+            authModule.getUser(
+                if (refreshFromNetwork) CachePolicy.Network
+                else CachePolicy.MemoryFirst
+            )
+                .nullToError()
+                .handleAuthError(rootNavController, navigator)
+                .fold(
+                    {
+                        setErrorFx(it, AboutYouError.Refresh)
+                        it.left()
+                    },
+                    { user ->
+
+                        val state = AboutYouState(user)
+
+                        setStateFx(state) { AboutYouStateUpdate.Refresh(it.user) }
+
+                        state.right()
+                    }
+                )
+
+        hideLoadingFx(AboutYouLoading.Refresh)
+
+        return state
+    }
+
     /* --- navigation --- */
 
     suspend fun back(
