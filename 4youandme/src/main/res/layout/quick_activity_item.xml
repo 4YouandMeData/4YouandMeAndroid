@@ -54,88 +54,7 @@
             tools:textColor="#FFF" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/answer_1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintEnd_toStartOf="@id/guideline_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/answer_2"
-            tools:src="@color/background" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/answer_1_text"
-            style="@style/text_h3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:lines="2"
-            android:maxLines="2"
-            app:layout_constraintEnd_toStartOf="@id/guideline_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/answer_1"
-            tools:text="Answer 1" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/answer_2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintEnd_toStartOf="@id/guideline_2"
-            app:layout_constraintStart_toEndOf="@id/guideline_1"
-            app:layout_constraintTop_toBottomOf="@id/body"
-            tools:src="@color/background" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/answer_2_text"
-            style="@style/text_h3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:lines="2"
-            android:maxLines="2"
-            app:layout_constraintEnd_toStartOf="@id/guideline_2"
-            app:layout_constraintStart_toEndOf="@id/guideline_1"
-            app:layout_constraintTop_toBottomOf="@id/answer_2"
-            tools:text="Answer 2 very long" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/answer_3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline_2"
-            app:layout_constraintTop_toTopOf="@id/answer_2"
-            tools:src="@color/background" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/answer_3_text"
-            style="@style/text_h3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:lines="2"
-            android:maxLines="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline_2"
-            app:layout_constraintTop_toBottomOf="@id/answer_1"
-            tools:text="Answer 3" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/answer_4"
+            android:id="@+id/answer_6"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="10dp"
@@ -145,7 +64,7 @@
             tools:src="@color/background" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/answer_4_text"
+            android:id="@+id/answer_6_text"
             style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -157,19 +76,19 @@
             android:maxLines="2"
             app:layout_constraintEnd_toStartOf="@id/guideline_1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/answer_4"
-            tools:text="Answer 4 very very very very long" />
+            app:layout_constraintTop_toBottomOf="@id/answer_6"
+            tools:text="Answer 6" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/answer_5"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toStartOf="@id/guideline_2"
             app:layout_constraintStart_toEndOf="@id/guideline_1"
-            app:layout_constraintTop_toBottomOf="@id/answer_2_text"
+            app:layout_constraintTop_toBottomOf="@id/body"
             tools:src="@color/background" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -187,10 +106,10 @@
             app:layout_constraintEnd_toStartOf="@id/guideline_2"
             app:layout_constraintStart_toEndOf="@id/guideline_1"
             app:layout_constraintTop_toBottomOf="@id/answer_5"
-            tools:text="Answer 5" />
+            tools:text="Answer 5 very long" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/answer_6"
+            android:id="@+id/answer_4"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -200,7 +119,7 @@
             tools:src="@color/background" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/answer_6_text"
+            android:id="@+id/answer_4_text"
             style="@style/text_h3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -212,8 +131,89 @@
             android:maxLines="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline_2"
-            app:layout_constraintTop_toBottomOf="@id/answer_5"
-            tools:text="Answer 3" />
+            app:layout_constraintTop_toBottomOf="@id/answer_4"
+            tools:text="Answer 4" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/answer_3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/answer_2"
+            tools:src="@color/background" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/answer_3_text"
+            style="@style/text_h3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:maxLines="2"
+            app:layout_constraintEnd_toStartOf="@id/guideline_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/answer_3"
+            tools:text="Answer 3 very very very very long" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/answer_2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_2"
+            app:layout_constraintStart_toEndOf="@id/guideline_1"
+            app:layout_constraintTop_toBottomOf="@id/answer_5_text"
+            tools:src="@color/background" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/answer_2_text"
+            style="@style/text_h3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:maxLines="2"
+            app:layout_constraintEnd_toStartOf="@id/guideline_2"
+            app:layout_constraintStart_toEndOf="@id/guideline_1"
+            app:layout_constraintTop_toBottomOf="@id/answer_2"
+            tools:text="Answer 2" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/answer_1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_2"
+            app:layout_constraintTop_toTopOf="@id/answer_2"
+            tools:src="@color/background" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/answer_1_text"
+            style="@style/text_h3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:maxLines="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_2"
+            app:layout_constraintTop_toBottomOf="@id/answer_2"
+            tools:text="Answer 1" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/review"
