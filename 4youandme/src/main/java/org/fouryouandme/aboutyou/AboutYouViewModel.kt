@@ -1,30 +1,71 @@
 package org.fouryouandme.aboutyou
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.Runtime
-import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
+import org.fouryouandme.core.arch.deps.modules.AuthModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
+import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
+import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
 
 class AboutYouViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
-    private val configurationModule: ConfigurationModule
+    private val authModule: AuthModule
 ) : BaseViewModel<
         ForIO,
-        Empty,
-        Empty,
-        Empty,
-        Empty>
+        AboutYouState,
+        AboutYouStateUpdate,
+        AboutYouError,
+        AboutYouLoading>
     (
-    Empty,
     navigator = navigator,
     runtime = runtime
 ) {
+
+    /* --- initialization --- */
+
+    suspend fun initialize(
+        rootNavController: RootNavController,
+        refreshFromNetwork: Boolean
+    ): Either<FourYouAndMeError, AboutYouState> {
+
+        showLoadingFx(AboutYouLoading.Initialization)
+
+        val state =
+            authModule.getUser(
+                if (refreshFromNetwork) CachePolicy.Network
+                else CachePolicy.MemoryFirst
+            )
+                .nullToError()
+                .handleAuthError(rootNavController, navigator)
+                .fold(
+                    {
+                        setErrorFx(it, AboutYouError.Initialization)
+                        it.left()
+                    },
+                    { user ->
+
+                        val state = AboutYouState(user)
+
+                        setStateFx(state) { AboutYouStateUpdate.Initialization(it.user) }
+
+                        state.right()
+                    }
+                )
+
+        hideLoadingFx(AboutYouLoading.Initialization)
+
+        return state
+
+    }
 
     /* --- navigation --- */
 
