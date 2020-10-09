@@ -3,10 +3,6 @@ package org.fouryouandme.auth.screening.questions
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
@@ -28,7 +24,7 @@ enum class EScreeningQuestionPayload {
 data class ScreeningQuestionItem(
     val configuration: Configuration,
     val question: ScreeningQuestion,
-    val answer: Option<String> = None
+    val answer: String? = null
 ) : DroidItem<EScreeningQuestionPayload> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -42,7 +38,7 @@ data class ScreeningQuestionItem(
                     question.answers1.text == other.question.answers1.text &&
                     question.answers2.id == other.question.answers2.id &&
                     question.answers2.text == other.question.answers2.text &&
-                    answer.getOrElse { "" } == other.answer.getOrElse { "" }
+                    answer.orEmpty() == other.answer.orEmpty()
         else false
 
 
@@ -52,7 +48,7 @@ data class ScreeningQuestionItem(
             mutableListOf<EScreeningQuestionPayload>()
 
         if (other is ScreeningQuestionItem)
-            if (answer.getOrElse { "" } != other.answer.getOrElse { "" })
+            if (answer.orEmpty() != other.answer.orEmpty())
                 payload.add(ANSWER)
 
         return payload
@@ -80,12 +76,12 @@ class ScreeningQuestionViewHolder(
 
         itemView.findViewById<RadioButton>(R.id.answer_1_button)
             .setOnClickListener {
-                onAnswer(item.copy(answer = item.question.answers1.id.toOption()))
+                onAnswer(item.copy(answer = item.question.answers1.id))
             }
 
         itemView.findViewById<RadioButton>(R.id.answer_2_button)
             .setOnClickListener {
-                onAnswer(item.copy(answer = item.question.answers2.id.toOption()))
+                onAnswer(item.copy(answer = item.question.answers2.id))
             }
     }
 
@@ -100,8 +96,8 @@ class ScreeningQuestionViewHolder(
         answer_2_text.text = t.question.answers2.text
         answer_2_text.setTextColor(t.configuration.theme.primaryTextColor.color())
 
-        answer_1_button.isChecked = t.question.answers1.id == t.answer.getOrElse { "" }
-        answer_2_button.isChecked = t.question.answers2.id == t.answer.getOrElse { "" }
+        answer_1_button.isChecked = t.question.answers1.id == t.answer.orEmpty()
+        answer_2_button.isChecked = t.question.answers2.id == t.answer.orEmpty()
 
         divider.setBackgroundColor(t.configuration.theme.deactiveColor.color())
 
@@ -117,9 +113,9 @@ class ScreeningQuestionViewHolder(
             when (it) {
                 ANSWER -> {
                     answer_1_button.isChecked =
-                        t.question.answers1.id == t.answer.getOrElse { "" }
+                        t.question.answers1.id == t.answer.orEmpty()
                     answer_2_button.isChecked =
-                        t.question.answers2.id == t.answer.getOrElse { "" }
+                        t.question.answers2.id == t.answer.orEmpty()
                 }
                 NONE -> bind(t, position)
             }

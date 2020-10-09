@@ -1,15 +1,13 @@
 package org.fouryouandme.core.data.api.common.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
+import arrow.core.Either
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.Document
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.entity.page.Page
-import org.fouryouandme.core.ext.emptyOrBlankToNone
+import org.fouryouandme.core.ext.emptyOrBlankToNull
 
 @JsonApi(type = "page")
 data class PageResponse(
@@ -25,29 +23,29 @@ data class PageResponse(
     @field:Json(name = "special_link_label") val specialLinkLabel: String? = null,
     @field:Json(name = "special_link_data") val specialLinkValue: String? = null,
     @field:Json(name = "link_modal_label") val linkModalLabel: String? = null,
-    @field:Json(name = "link_modal") val linkModalValue : HasOne<PageResponse>? = null
+    @field:Json(name = "link_modal") val linkModalValue: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toPage(document: Document): Option<Page> =
-        Option.fx {
+    suspend fun toPage(document: Document): Page? =
+        Either.catch {
 
             Page(
                 id,
-                !title.toOption(),
-                !body.toOption(),
-                image.toOption(),
-                link1?.get(document).toOption().flatMap { it.toPage(document) },
-                link1Label.emptyOrBlankToNone(),
-                link2?.get(document).toOption().flatMap { it.toPage(document) },
-                link2Label.emptyOrBlankToNone(),
-                externalLinkLabel.emptyOrBlankToNone(),
-                externalLinkUrl.emptyOrBlankToNone(),
-                specialLinkLabel.emptyOrBlankToNone(),
-                specialLinkValue.emptyOrBlankToNone(),
-                linkModalLabel.emptyOrBlankToNone(),
-                linkModalValue?.get(document).toOption().flatMap { it.toPage(document) }
+                title!!,
+                body!!,
+                image,
+                link1?.get(document)?.toPage(document),
+                link1Label.emptyOrBlankToNull(),
+                link2?.get(document)?.toPage(document),
+                link2Label.emptyOrBlankToNull(),
+                externalLinkLabel.emptyOrBlankToNull(),
+                externalLinkUrl.emptyOrBlankToNull(),
+                specialLinkLabel.emptyOrBlankToNull(),
+                specialLinkValue.emptyOrBlankToNull(),
+                linkModalLabel.emptyOrBlankToNull(),
+                linkModalValue?.get(document)?.toPage(document)
             )
 
-        }
+        }.orNull()
 
 }

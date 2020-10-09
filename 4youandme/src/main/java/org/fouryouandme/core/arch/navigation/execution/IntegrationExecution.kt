@@ -1,7 +1,6 @@
 package org.fouryouandme.core.arch.navigation.execution
 
-import arrow.core.Option
-import org.fouryouandme.auth.integration.IntegrationFragmentDirections
+import org.fouryouandme.auth.AuthFragmentDirections
 import org.fouryouandme.auth.integration.login.IntegrationLoginFragmentDirections
 import org.fouryouandme.auth.integration.page.IntegrationPageFragmentDirections
 import org.fouryouandme.auth.integration.welcome.IntegrationWelcomeFragmentDirections
@@ -13,12 +12,12 @@ fun integrationWelcomeToIntegrationPage(id: String): NavigationExecution = {
 
 fun integrationWelcomeToIntegrationLogin(
     url: String,
-    nextPageId: Option<String>
+    nextPageId: String?
 ): NavigationExecution = {
     it.navigate(
         IntegrationWelcomeFragmentDirections.actionIntegrationWelcomeToIntegrationLogin(
             url,
-            nextPageId.orNull()
+            nextPageId
         )
     )
 }
@@ -33,12 +32,12 @@ fun integrationPageToIntegrationPage(id: String): NavigationExecution = {
 
 fun integrationPageToIntegrationLogin(
     url: String,
-    nextPageId: Option<String>
+    nextPageId: String?
 ): NavigationExecution = {
     it.navigate(
         IntegrationPageFragmentDirections.actionIntegrationPageToIntegrationLogin(
             url,
-            nextPageId.orNull()
+            nextPageId
         )
     )
 }
@@ -56,5 +55,5 @@ fun integrationLoginToIntegrationSuccess(): NavigationExecution = {
 }
 
 fun integrationSuccessToMain(): NavigationExecution = {
-    it.navigate(IntegrationFragmentDirections.actionIntegrationToMain())
+    it.navigate(AuthFragmentDirections.actionAuthToMain())
 }

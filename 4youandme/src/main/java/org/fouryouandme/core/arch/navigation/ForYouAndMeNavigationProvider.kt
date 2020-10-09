@@ -12,10 +12,12 @@ import org.fouryouandme.auth.optin.OptInPermissionToOptInSuccess
 import org.fouryouandme.auth.optin.OptInToConsentUser
 import org.fouryouandme.auth.optin.OptInWelcomeToOptInPermission
 import org.fouryouandme.auth.phone.EnterPhoneToPhoneValidationCode
+import org.fouryouandme.auth.phone.code.PhoneValidationCodeToMain
 import org.fouryouandme.auth.phone.code.PhoneValidationCodeToScreening
 import org.fouryouandme.auth.screening.*
 import org.fouryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import org.fouryouandme.auth.signup.info.SignUpInfoToSignUpLater
+import org.fouryouandme.auth.splash.SplashToMain
 import org.fouryouandme.auth.splash.SplashToWelcome
 import org.fouryouandme.auth.welcome.WelcomeToSignUpInfo
 import org.fouryouandme.core.arch.navigation.execution.*
@@ -34,6 +36,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is AnywhereToWeb -> anywhereToWeb(action.url)
 
             is SplashToWelcome -> splashToWelcome()
+            is SplashToMain -> splashToMain()
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
@@ -42,6 +45,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 action.countryCode
             )
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
+            is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)

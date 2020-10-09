@@ -8,109 +8,108 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.*
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import arrow.core.toOption
 import kotlinx.android.synthetic.main.integration.*
 import kotlinx.android.synthetic.main.integration_login.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.integration.IntegrationStateUpdate
-import org.fouryouandme.auth.integration.IntegrationViewModel
-import org.fouryouandme.core.arch.android.BaseFragment
-import org.fouryouandme.core.arch.android.getFactory
-import org.fouryouandme.core.arch.android.viewModelFactory
+import org.fouryouandme.auth.integration.IntegrationSectionFragment
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
 import timber.log.Timber
 import java.net.URL
 
-class IntegrationLoginFragment : BaseFragment<IntegrationViewModel>(R.layout.integration_login) {
+class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration_login) {
 
     private val args: IntegrationLoginFragmentArgs by navArgs()
-
-    override val viewModel: IntegrationViewModel by lazy {
-        viewModelFactory(
-            requireParentFragment(),
-            getFactory { IntegrationViewModel(navigator, IORuntime) }
-        )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent(IntegrationLoginFragment::class.java.simpleName) {
-                when (it) {
-                    is IntegrationStateUpdate.Cookies -> setupWebView(it.cookies)
-                }
-            }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state().configuration
-            .map { applyConfiguration(it) }
+        integrationAndConfiguration { config, state ->
 
-        viewModel.state().cookies
-            .fold(
-                { viewModel.getCookies() },
-                { setupWebView(it) }
-            )
+            setupToolbar()
+            applyConfiguration(config)
+            setupWebView(state.cookies)
 
-        requireParentFragment().requireParentFragment()
-            .toolbar
-            .toOption()
-            .map {
-                it.showCloseButton(imageConfiguration) { viewModel.back(findNavController()) }
-            }
-
-    }
-
-    private fun applyConfiguration(configuration: Configuration): Unit {
-
-        setStatusBar(configuration.theme.secondaryColor.color())
-
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-        progress_bar.progressTintList =
-            ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
-
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView(cookies: Map<String, String>) {
-
-        val cookieManager =
-            CookieManager.getInstance()
-        cookies.forEach {
-
-            val host = "${URL(args.url).protocol}://${URL(args.url).host}/"
-            val cookie = "${it.key}=${it.value}"
-
-            cookieManager.setCookie(host, cookie)
-            cookieManager.flush()
         }
 
-        web_view
-            .also { it.settings.domStorageEnabled = true }
-            .also { it.settings.javaScriptEnabled = true }
-            .also { it.webViewClient = getWebClient() }
-            .also { it.webChromeClient = getWebChromeClient() }
-            .also {
-                it.addJavascriptInterface(
-                    IntegrationLoginInterface(
-                        { viewModel.handleLogin(findNavController(), args.nextPage.toOption()) },
-                        { viewModel.back(findNavController()) }
-                    ),
-                    "Android"
-                )
-            }
-
-        loadPage()
     }
 
-    private fun loadPage(): Unit = web_view.loadUrl(args.url)
+    private suspend fun setupToolbar(): Unit =
+        evalOnMain {
+
+            integrationFragment()
+                .toolbar
+                .showCloseButton(imageConfiguration) {
+                    startCoroutineAsync {
+                        viewModel.back(
+                            integrationNavController(),
+                            authNavController(),
+                            rootNavController()
+                        )
+                    }
+                }
+
+        }
+
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
+        evalOnMain {
+
+            setStatusBar(configuration.theme.secondaryColor.color())
+
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+            progress_bar.progressTintList =
+                ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
+
+        }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private suspend fun setupWebView(cookies: Map<String, String>): Unit =
+        evalOnMain {
+
+            val cookieManager =
+                CookieManager.getInstance()
+            cookies.forEach {
+
+                val host = "${URL(args.url).protocol}://${URL(args.url).host}/"
+                val cookie = "${it.key}=${it.value}"
+
+                cookieManager.setCookie(host, cookie)
+                cookieManager.flush()
+            }
+
+            web_view
+                .also { it.settings.domStorageEnabled = true }
+                .also { it.settings.javaScriptEnabled = true }
+                .also { it.webViewClient = getWebClient() }
+                .also { it.webChromeClient = getWebChromeClient() }
+                .also {
+                    it.addJavascriptInterface(
+                        IntegrationLoginInterface(
+                            {
+                                startCoroutineAsync {
+                                    viewModel.handleLogin(integrationNavController(), args.nextPage)
+                                }
+                            },
+                            {
+                                startCoroutineAsync {
+                                    viewModel.back(
+                                        integrationNavController(),
+                                        authNavController(),
+                                        rootNavController()
+                                    )
+                                }
+                            }
+                        ),
+                        "Android"
+                    )
+                }
+
+            loadPage()
+        }
+
+    private suspend fun loadPage(): Unit = evalOnMain { web_view.loadUrl(args.url) }
 
     private fun getWebClient(): WebViewClient =
         object : WebViewClient() {
@@ -166,5 +165,6 @@ class IntegrationLoginFragment : BaseFragment<IntegrationViewModel>(R.layout.int
         super.onDestroyView()
 
         web_view.destroy()
+
     }
 }

@@ -1,52 +1,29 @@
 package org.fouryouandme.auth.signup.info
 
-import androidx.navigation.NavController
-import arrow.core.toOption
 import arrow.fx.ForIO
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
+import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.ext.unsafeRunAsync
 
 class SignUpInfoViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>
 ) : BaseViewModel<
         ForIO,
-        SignUpInfoState,
-        SignUpInfoStateUpdate,
-        SignUpInfoError,
-        SignUpInfoError>
-    (SignUpInfoState(), navigator, runtime) {
-
-    fun initialize(): Unit =
-        runtime.fx.concurrent {
-
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
-
-            !configuration.fold(
-                { setError(it, SignUpInfoError.Initialization) },
-                {
-                    setState(
-                        state().copy(configuration = it.toOption()),
-                        SignUpInfoStateUpdate.Initialization(it)
-                    )
-                }
-            )
-
-        }.unsafeRunAsync()
+        Empty,
+        Empty,
+        Empty,
+        Empty>
+    (Empty, navigator, runtime) {
 
     /* --- navigation --- */
 
-    fun back(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun signUpLater(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, SignUpInfoToSignUpLater)
 
-    fun signUpLater(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, SignUpInfoToSignUpLater).unsafeRunAsync()
+    suspend fun enterPhone(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, SignUpInfoToEnterPhone)
 
-    fun enterPhone(navController: NavController): Unit =
-        navigator.navigateTo(runtime, navController, SignUpInfoToEnterPhone).unsafeRunAsync()
 }

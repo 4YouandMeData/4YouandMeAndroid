@@ -1,179 +1,202 @@
 package org.fouryouandme.auth.screening
 
-import androidx.navigation.NavController
-import arrow.Kind
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import arrow.core.toT
 import arrow.fx.ForIO
+import arrow.fx.coroutines.parSequence
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
 import org.fouryouandme.auth.screening.questions.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.AnswerModule
+import org.fouryouandme.core.arch.deps.modules.ScreeningModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.AnywhereToWelcome
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.common.AnswerUseCase
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.screening.ScreeningUseCase
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.cases.common.AnswerUseCase.sendAnswer
+import org.fouryouandme.core.cases.screening.ScreeningUseCase.getScreening
+import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.ext.countAndAccumulate
+import org.fouryouandme.core.ext.startCoroutineAsync
 
 class ScreeningViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val screeningModule: ScreeningModule,
+    private val answerModule: AnswerModule
 ) : BaseViewModel<
         ForIO,
         ScreeningState,
         ScreeningStateUpdate,
         ScreeningError,
         ScreeningLoading>
-    (ScreeningState(), navigator, runtime) {
+    (navigator = navigator, runtime = runtime) {
 
-    /* --- data --- */
+    /* --- initialize --- */
 
-    fun initialize(navController: RootNavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun initialize(
+        navController: RootNavController,
+        configuration: Configuration
+    ): Either<FourYouAndMeError, ScreeningState> {
 
-            !showLoading(ScreeningLoading.Initialization)
+        showLoadingFx(ScreeningLoading.Initialization)
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
+        val state =
+            screeningModule.getScreening()
+                .nullToError()
+                .handleAuthError(navController, navigator)
+                .fold(
+                    {
+                        setErrorFx(it, ScreeningError.Initialization)
+                        it.left()
+                    },
+                    { screening ->
 
-            val initialization =
-                !configuration.foldToKindEither(runtime.fx) { config ->
+                        val state =
+                            ScreeningState(
+                                screening,
+                                screening.questions.map { it.toItem(configuration) }
+                            )
 
-                    ScreeningUseCase.getScreening(runtime)
-                        .mapResult(runtime.fx) { it to config }
+                        setStateFx(state)
+                        { ScreeningStateUpdate.Initialization(it.screening) }
 
-                }.handleAuthError(runtime, navController, navigator)
+                        state.right()
 
-            !initialization.fold(
-                { setError(it, ScreeningError.Initialization) },
-                { pair ->
-                    setState(
-                        state().copy(
-                            configuration = pair.second.toOption(),
-                            screening = pair.first.toOption(),
-                            questions = pair.first.questions.map { it.toItem(pair.second) }
-                        ),
-                        ScreeningStateUpdate.Initialization(pair.second, pair.first)
-                    )
-                }
-            )
+                    }
+                )
 
-            !hideLoading(ScreeningLoading.Initialization)
+        hideLoadingFx(ScreeningLoading.Initialization)
 
-        }.unsafeRunAsync()
+        return state
+
+    }
 
 
     /* --- validation --- */
 
-    fun validate(rootNavController: RootNavController, navController: NavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun validate(
+        rootNavController: RootNavController,
+        screeningNavController: ScreeningNavController
+    ): Unit {
 
-            val correctAnswers =
-                state().questions.map { item ->
-                    val answer =
-                        when (item.answer.getOrElse { "" }) {
-                            item.question.answers1.id -> item.question.answers1.some()
-                            item.question.answers2.id -> item.question.answers2.some()
-                            else -> None
-                        }
+        val correctAnswers =
+            state().questions.map { item ->
+                val answer =
+                    when (item.answer) {
+                        item.question.answers1.id -> item.question.answers1
+                        item.question.answers2.id -> item.question.answers2
+                        else -> null
+                    }
 
-                    val request =
-                        AnswerUseCase.sendAnswer(
-                            runtime,
+                val request =
+                    suspend {
+                        answerModule.sendAnswer(
                             item.question.id,
-                            answer.map { it.text }.getOrEmpty(),
-                            answer.map { it.id }.getOrEmpty()
-                        ).handleAuthError(runtime, rootNavController, navigator).some()
+                            answer?.text.orEmpty(),
+                            answer?.id.orEmpty()
+                        ).handleAuthError(rootNavController, navigator)
+                    }
 
-                    answer.map { it.correct }.getOrElse { false } toT request
+                (answer?.correct ?: false) toT request
 
-                }.countAndAccumulate()
+            }.countAndAccumulate()
 
-            //!correctAnswers.b.parSequence()  // await execution
-            correctAnswers.b.parSequence().unsafeRunAsync()
+        //correctAnswers.b.parSequence()  // await execution
+        startCoroutineAsync { correctAnswers.b.parSequence() }
 
-            if (correctAnswers.a >= state().screening.map { it.minimumAnswer }
-                    .getOrElse { state().questions.size })
-                !navigator.navigateTo(
-                    runtime, navController,
-                    ScreeningQuestionsToScreeningSuccess
-                )
-            else
-                !navigator.navigateTo(
-                    runtime, navController,
-                    ScreeningQuestionsToScreeningFailure
-                )
+        if (correctAnswers.a >= state().screening.minimumAnswer)
+            navigator.navigateTo(
+                screeningNavController,
+                ScreeningQuestionsToScreeningSuccess
+            )
+        else
+            navigator.navigateTo(
+                screeningNavController,
+                ScreeningQuestionsToScreeningFailure
+            )
 
-        }.unsafeRunAsync()
+    }
 
 
     /* --- state update --- */
 
-    fun answer(item: ScreeningQuestionItem): Unit {
+    suspend fun answer(item: ScreeningQuestionItem): Unit {
 
         val questions =
             state().questions.map { if (it.question.id == item.question.id) item else it }
 
-        setState(
-            state().copy(questions = questions),
-            ScreeningStateUpdate.Questions(questions)
-        ).unsafeRunAsync()
+        setStateFx(state().copy(questions = questions))
+        { ScreeningStateUpdate.Questions(questions) }
 
     }
 
 
     /* --- navigation --- */
 
-    fun back(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun back(
+        screeningNavController: ScreeningNavController,
+        authNavController: AuthNavController,
+        rootNavController: RootNavController
+    ): Unit {
 
-    fun questions(navController: NavController, fromWelcome: Boolean): Unit =
+        if (navigator.back(screeningNavController).not())
+            if (navigator.back(authNavController).not())
+                navigator.back(rootNavController)
+
+    }
+
+
+    suspend fun questions(
+        screeningNavController: ScreeningNavController,
+        fromWelcome: Boolean
+    ): Unit =
         navigator.navigateTo(
-            runtime,
-            navController,
+            screeningNavController,
             if (fromWelcome) ScreeningWelcomeToScreeningQuestions
             else ScreeningPageToScreeningQuestions
-        ).unsafeRunAsync()
+        )
 
-    fun page(navController: NavController, id: String, fromWelcome: Boolean): Unit =
+    suspend fun page(
+        screeningNavController: ScreeningNavController,
+        id: String,
+        fromWelcome: Boolean
+    ): Unit =
         navigator.navigateTo(
-            runtime,
-            navController,
+            screeningNavController,
             if (fromWelcome) ScreeningWelcomeToScreeningPage(id)
             else ScreeningPageToScreeningPage(id)
-        ).unsafeRunAsync()
+        )
 
-    fun consentInfo(navController: RootNavController): Unit =
-        navigator.navigateTo(runtime, navController, ScreeningToConsentInfo).unsafeRunAsync()
+    suspend fun consentInfo(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, ScreeningToConsentInfo)
 
-    fun abort(navController: RootNavController): Unit =
-        navigator.navigateTo(runtime, navController, AnywhereToWelcome).unsafeRunAsync()
+    suspend fun abort(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, AnywhereToWelcome)
 
-    fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
+    suspend fun web(navController: RootNavController, url: String): Unit =
+        navigator.navigateTo(navController, AnywhereToWeb(url))
 
-    fun retryFromWelcome(navController: NavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun retryFromWelcome(screeningNavController: ScreeningNavController): Unit {
 
-            // reset old answers
-            val questions =
-                state().questions.map { it.copy(answer = None) }
+        // reset old answers
+        val questions =
+            state().questions.map { it.copy(answer = null) }
 
-            !setState(
-                state().copy(questions = questions),
-                ScreeningStateUpdate.Questions(questions)
-            )
+        setStateFx(state().copy(questions = questions))
+        { ScreeningStateUpdate.Questions(questions) }
 
-            !navigator.navigateTo(
-                runtime,
-                navController,
-                ScreeningFailureToScreeningWelcome
-            )
+        navigator.navigateTo(
+            screeningNavController,
+            ScreeningFailureToScreeningWelcome
+        )
 
-        }.unsafeRunAsync()
+    }
 }

@@ -15,6 +15,10 @@ fun String?.emptyOrBlankToNone(): Option<String> =
     if (isNullOrBlank() || isNullOrEmpty()) None
     else toOption()
 
+fun String?.emptyOrBlankToNull(): String? =
+    if (isNullOrBlank() || isNullOrEmpty()) null
+    else this
+
 @Deprecated(message = "use suspend version")
 fun String.decodeBase64Image(): Option<Bitmap> =
     IO.concurrent().fx.concurrent {

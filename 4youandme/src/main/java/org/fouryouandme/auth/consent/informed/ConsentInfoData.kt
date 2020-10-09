@@ -1,22 +1,17 @@
 package org.fouryouandme.auth.consent.informed
 
-import arrow.core.None
-import arrow.core.Option
 import org.fouryouandme.auth.consent.informed.question.ConsentAnswerItem
 import org.fouryouandme.core.arch.navigation.NavigationAction
-import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.informed.ConsentInfo
 
 data class ConsentInfoState(
-    val configuration: Option<Configuration> = None,
-    val consentInfo: Option<ConsentInfo> = None,
-    val questions: Map<String, List<ConsentAnswerItem>> = emptyMap()
+    val consentInfo: ConsentInfo,
+    val questions: Map<String, List<ConsentAnswerItem>>
 )
 
 sealed class ConsentInfoStateUpdate {
 
     data class Initialization(
-        val configuration: Configuration,
         val questions: Map<String, List<ConsentAnswerItem>>,
         val consentInfo: ConsentInfo
     ) : ConsentInfoStateUpdate()

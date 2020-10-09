@@ -21,13 +21,13 @@ class Navigator(
     @Deprecated("use the suspend version")
     fun <F> navigateTo(
         runtime: Runtime<F>,
-        controller: ParentNavController,
+        controller: FYAMNavController,
         navigationAction: NavigationAction
     ): Kind<F, Unit> =
         navigateTo(runtime, controller.navController, navigationAction)
 
     suspend fun navigateTo(
-        controller: ParentNavController,
+        controller: FYAMNavController,
         navigationAction: NavigationAction
     ): Unit =
         navigateTo(controller.navController, navigationAction)
@@ -66,10 +66,10 @@ class Navigator(
     }
 
     @Deprecated("use the suspend version")
-    fun <F> back(runtime: Runtime<F>, navController: ParentNavController): Kind<F, Boolean> =
+    fun <F> back(runtime: Runtime<F>, navController: FYAMNavController): Kind<F, Boolean> =
         back(runtime, navController.navController)
 
-    suspend fun back(navController: ParentNavController): Boolean =
+    suspend fun back(navController: FYAMNavController): Boolean =
         back(navController.navController)
 
     @Deprecated("use the suspend version")
@@ -97,4 +97,4 @@ interface NavigationProvider {
     fun getNavigation(action: NavigationAction): NavigationExecution
 }
 
-abstract class ParentNavController(val navController: NavController)
+abstract class FYAMNavController(val navController: NavController)

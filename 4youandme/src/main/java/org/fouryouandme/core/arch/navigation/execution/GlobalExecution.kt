@@ -6,7 +6,7 @@ import org.fouryouandme.core.arch.navigation.NavigationExecution
 
 fun anywhereToAuth(): NavigationExecution = {
 
-    it.navigate(R.id.action_global_splash)
+    it.navigate(R.id.action_global_auth)
 }
 
 fun anywhereToWelcome(): NavigationExecution = {

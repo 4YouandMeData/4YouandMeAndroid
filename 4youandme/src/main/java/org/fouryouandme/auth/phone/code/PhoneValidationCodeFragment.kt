@@ -6,13 +6,12 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.phone_validation_code.*
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.android.BaseFragment
+import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -21,7 +20,7 @@ import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
 
 
-class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
+class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewModel>(
     R.layout.phone_validation_code
 ) {
 
@@ -81,13 +80,18 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
         evalOnMain {
 
             toolbar.showBackButton(imageConfiguration) {
-                startCoroutineAsync { viewModel.back(findNavController()) }
+                startCoroutineAsync { viewModel.back(authNavController(), rootNavController()) }
             }
 
             phone.setText(args.phone)
 
             next.setOnClickListenerAsync {
-                viewModel.auth(findNavController(), ccp.fullNumberWithPlus, code.text.toString())
+                viewModel.auth(
+                    rootNavController(),
+                    authNavController(),
+                    ccp.fullNumberWithPlus,
+                    code.text.toString()
+                )
             }
 
             resend.setOnClickListenerAsync { viewModel.resendCode(ccp.fullNumberWithPlus) }
@@ -138,7 +142,9 @@ class PhoneValidationCodeFragment : BaseFragment<PhoneValidationCodeViewModel>(
 
             phone.isEnabled = false
 
-            change_phone.setOnClickListenerAsync { viewModel.back(findNavController()) }
+            change_phone.setOnClickListenerAsync {
+                viewModel.back(authNavController(), rootNavController())
+            }
 
             code_description.setTextColor(configuration.theme.secondaryColor.color())
             code_description.text =

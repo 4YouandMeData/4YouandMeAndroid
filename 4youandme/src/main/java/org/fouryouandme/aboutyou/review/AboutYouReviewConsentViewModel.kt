@@ -3,15 +3,12 @@ package org.fouryouandme.aboutyou.review
 import arrow.core.toOption
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import org.fouryouandme.aboutyou.AboutYouNavController
-import org.fouryouandme.auth.consent.review.info.toConsentReviewHeaderItem
 import org.fouryouandme.auth.consent.review.info.toConsentReviewPageItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.deps.modules.ConsentReviewModule
 import org.fouryouandme.core.arch.navigation.Navigator
-import org.fouryouandme.core.arch.navigation.ParentNavController
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -74,9 +71,9 @@ class AboutYouReviewConsentViewModel(
 
         val items = mutableListOf(this)
 
-        while (page.flatMap { it.link1 }.isDefined()) {
+        while (page.flatMap { it.link1.toOption() }.isDefined()) {
 
-            val nextPage = page.flatMap { it.link1 }
+            val nextPage = page.flatMap { it.link1.toOption() }
 
             nextPage.map { items.add(it) }
 

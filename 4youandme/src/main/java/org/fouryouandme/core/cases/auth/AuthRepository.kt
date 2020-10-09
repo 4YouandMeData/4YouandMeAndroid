@@ -8,6 +8,7 @@ import arrow.syntax.function.pipe
 import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
+import org.fouryouandme.core.arch.deps.modules.unwrapResponse
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.deps.onMainDispatcher
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -32,7 +33,8 @@ object AuthRepository {
     ): Either<FourYouAndMeError, Unit> =
         PhoneNumberVerificationRequest(PhoneNumberRequest(phone))
             .pipe { suspend { api.verifyPhoneNumber(environment.studyId(), it) } }
-            .pipe { errorModule.unwrapToEither(block = it) }
+            .pipe { errorModule.unwrapToEither(it) }
+            .pipe { errorModule.unwrapResponse(it) }
             .mapLeft {
 
                 if (it is FourYouAndMeError.NetworkErrorHTTP && it.code == 404)
@@ -108,4 +110,9 @@ object AuthRepository {
         return token
 
     }
+
+    internal suspend fun AuthModule.fetchUser(token: String): Either<FourYouAndMeError, User?> =
+        suspend { api.getUser(token) }
+            .pipe { errorModule.unwrapToEither(it) }
+            .map { it.toUser(token) }
 }

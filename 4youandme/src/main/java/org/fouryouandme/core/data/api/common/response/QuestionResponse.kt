@@ -1,9 +1,7 @@
 package org.fouryouandme.core.data.api.common.response
 
+import arrow.core.Either
 import arrow.core.Nel
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
@@ -20,35 +18,30 @@ data class QuestionResponse(
     @field:Json(name = "possible_answers") val answer: HasMany<AnswerResponse>? = null
 ) : Resource() {
 
-    fun toScreeningQuestion(
+    suspend fun toScreeningQuestion(
         document: ObjectDocument<ScreeningResponse>
-    ): Option<ScreeningQuestion> =
-        Option.fx {
+    ): ScreeningQuestion? =
+        Either.catch {
+
             ScreeningQuestion(
                 id,
-                !text.toOption(),
-                !answer?.get(document)
-                    ?.getOrNull(0)
-                    .toOption()
-                    .flatMap { it.toScreeningAnswer() },
-                !answer?.get(document)
-                    ?.getOrNull(1)
-                    .toOption()
-                    .flatMap { it.toScreeningAnswer() }
+                text!!,
+                answer?.get(document)?.getOrNull(0)?.toScreeningAnswer()!!,
+                answer.get(document)?.getOrNull(1)?.toScreeningAnswer()!!
             )
-        }
 
-    fun toConsentQuestion(
+        }.orNull()
+
+    suspend fun toConsentQuestion(
         document: ObjectDocument<ConsentInfoResponse>
-    ): Option<ConsentInfoQuestion> =
-        Option.fx {
+    ): ConsentInfoQuestion? =
+        Either.catch {
             ConsentInfoQuestion(
                 id,
-                !text.toOption(),
-                !answer?.get(document)
-                    ?.mapNotNull { it.toConsentAnswer().orNull() }
-                    .toOption()
-                    .flatMap { Nel.fromList(it) }
+                text!!,
+                answer?.get(document)
+                    ?.mapNotNull { it.toConsentAnswer() }
+                    ?.let { Nel.fromListUnsafe(it) }!!
             )
-        }
+        }.orNull()
 }

@@ -86,6 +86,54 @@ interface Injector {
             configurationModule()
         )
 
+    fun screeningModule(): ScreeningModule =
+        ScreeningModule(
+            screeningApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun optInModule(): OptInModule =
+        OptInModule(
+            optInsApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun integrationModule(): IntegrationModule =
+        IntegrationModule(
+            integrationApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun consentUserModule(): ConsentUserModule =
+        ConsentUserModule(
+            consentUserApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun consentInfoModule(): ConsentInfoModule =
+        ConsentInfoModule(
+            consentInfoApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun answerModule(): AnswerModule =
+        AnswerModule(
+            answerApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
     fun taskModule(): TaskModule =
         TaskModule(
             taskApi,

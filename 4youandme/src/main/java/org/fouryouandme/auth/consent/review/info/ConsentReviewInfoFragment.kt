@@ -2,42 +2,22 @@ package org.fouryouandme.auth.consent.review.info
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Option
-import arrow.core.extensions.fx
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.consent_review_info.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.consent.review.ConsentReviewError
-import org.fouryouandme.auth.consent.review.ConsentReviewStateUpdate
-import org.fouryouandme.auth.consent.review.ConsentReviewViewModel
-import org.fouryouandme.core.arch.android.BaseFragment
-import org.fouryouandme.core.arch.android.getFactory
-import org.fouryouandme.core.arch.android.viewModelFactory
+import org.fouryouandme.auth.consent.review.ConsentReviewSectionFragment
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.setStatusBar
+import org.fouryouandme.core.ext.startCoroutineAsync
 
-class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.consent_review_info) {
-
-    override val viewModel: ConsentReviewViewModel by lazy {
-        viewModelFactory(
-            requireParentFragment(),
-            getFactory {
-                ConsentReviewViewModel(
-                    navigator,
-                    IORuntime
-                )
-            }
-        )
-    }
+class ConsentReviewInfoFragment : ConsentReviewSectionFragment(R.layout.consent_review_info) {
 
     private val adapter: StableDroidAdapter by lazy {
         StableDroidAdapter(
@@ -46,85 +26,65 @@ class ConsentReviewInfoFragment : BaseFragment<ConsentReviewViewModel>(R.layout.
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent {
-                when (it) {
-                    is ConsentReviewStateUpdate.Initialization -> {
-                        applyConfiguration(it.configuration)
-                        applyItems(it.items)
-                    }
-                }
-            }
-
-        viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
-
-        viewModel.errorLiveData()
-            .observeEvent {
-                when (it.cause) {
-                    ConsentReviewError.Initialization ->
-                        error.setError(it.error) { viewModel.initialize(rootNavController()) }
-                }
-            }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
+        consentReviewAndConfiguration { config, state ->
 
-        Option.fx { !viewModel.state().configuration to viewModel.state().items }
-            .fold(
-                { viewModel.initialize(rootNavController()) },
-                {
-                    applyConfiguration(it.first)
-                    applyItems(it.second)
-                }
-            )
-    }
+            setupView()
+            applyConfiguration(config)
+            applyItems(state.items)
 
-    private fun setupView(): Unit {
-
-        recycler_view.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recycler_view.adapter = adapter
-
-        disagree.setOnClickListener { viewModel.disagree(findNavController()) }
-        agree.setOnClickListener { viewModel.optIns(rootNavController()) }
+        }
 
     }
 
-    private fun applyConfiguration(
+    private suspend fun setupView(): Unit =
+        evalOnMain {
+
+            recycler_view.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            recycler_view.adapter = adapter
+
+            disagree.setOnClickListener {
+                startCoroutineAsync { viewModel.disagree(consentReviewNavController()) }
+            }
+            agree.setOnClickListener {
+                startCoroutineAsync { viewModel.optIns(authNavController()) }
+            }
+
+        }
+
+    private suspend fun applyConfiguration(
         configuration: Configuration
-    ): Unit {
+    ): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.secondaryColor.color())
+            setStatusBar(configuration.theme.secondaryColor.color())
 
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-        shadow.background =
-            HEXGradient.from(
-                HEXColor.transparent(),
-                configuration.theme.primaryTextColor
-            ).drawable(0.1f)
+            shadow.background =
+                HEXGradient.from(
+                    HEXColor.transparent(),
+                    configuration.theme.primaryTextColor
+                ).drawable(0.1f)
 
-        agree.text = configuration.text.onboarding.agreeButton
-        agree.setTextColor(configuration.theme.secondaryColor.color())
-        agree.background =
-            button(configuration.theme.primaryColorEnd.color())
+            agree.text = configuration.text.onboarding.agreeButton
+            agree.setTextColor(configuration.theme.secondaryColor.color())
+            agree.background =
+                button(configuration.theme.primaryColorEnd.color())
 
-        disagree.text = configuration.text.onboarding.disagreeButton
-        disagree.setTextColor(configuration.theme.primaryColorEnd.color())
-        disagree.background =
-            button(configuration.theme.secondaryColor.color())
-    }
+            disagree.text = configuration.text.onboarding.disagreeButton
+            disagree.setTextColor(configuration.theme.primaryColorEnd.color())
+            disagree.background =
+                button(configuration.theme.secondaryColor.color())
+        }
 
-    private fun applyItems(items: List<DroidItem<Any>>): Unit {
+    private suspend fun applyItems(items: List<DroidItem<Any>>): Unit =
+        evalOnMain {
 
-        adapter.submitList(items)
+            adapter.submitList(items)
 
-    }
+        }
 }

@@ -2,47 +2,27 @@ package org.fouryouandme.auth.screening.questions
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.screening.*
 import kotlinx.android.synthetic.main.screening_questions.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.screening.ScreeningFragment
+import org.fouryouandme.auth.screening.ScreeningSectionFragment
 import org.fouryouandme.auth.screening.ScreeningStateUpdate
-import org.fouryouandme.auth.screening.ScreeningViewModel
-import org.fouryouandme.core.arch.android.BaseFragment
-import org.fouryouandme.core.arch.android.getFactory
-import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.screening.Screening
 import org.fouryouandme.core.ext.*
 
 
-class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
+class ScreeningQuestionsFragment : ScreeningSectionFragment(
     R.layout.screening_questions
 ) {
 
     private val adapter: StableDroidAdapter by lazy {
         StableDroidAdapter(
-            ScreeningQuestionViewHolder.factory { viewModel.answer(it) }
-        )
-    }
-
-    override val viewModel: ScreeningViewModel by lazy {
-        viewModelFactory(
-            requireParentFragment(),
-            getFactory {
-                ScreeningViewModel(
-                    navigator,
-                    IORuntime
-                )
-            }
+            ScreeningQuestionViewHolder.factory { startCoroutineAsync { viewModel.answer(it) } }
         )
     }
 
@@ -50,9 +30,10 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
-            .observeEvent {
+            .observeEvent(name()) {
                 when (it) {
-                    is ScreeningStateUpdate.Questions -> applyQuestions(it.questions)
+                    is ScreeningStateUpdate.Questions ->
+                        startCoroutineAsync { applyQuestions(it.questions) }
                 }
             }
     }
@@ -60,66 +41,79 @@ class ScreeningQuestionsFragment : BaseFragment<ScreeningViewModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
-
-        Option.fx { !viewModel.state().configuration to !viewModel.state().screening }
-            .map {
-                applyConfiguration(it.first)
-                showQuestions(it.first, it.second)
-            }
+        screeningAndConfiguration { config, state ->
+            setupView()
+            applyConfiguration(configuration())
+            showQuestions(config, state.screening)
+        }
     }
 
-    private fun showQuestions(configuration: Configuration, screening: Screening): Unit {
+    private suspend fun showQuestions(configuration: Configuration, screening: Screening): Unit =
+        evalOnMain {
 
-        if (adapter.itemCount <= 0)
-            applyQuestions(screening.questions.map { it.toItem(configuration) })
-    }
+            if (adapter.itemCount <= 0)
+                applyQuestions(screening.questions.map { it.toItem(configuration) })
+        }
 
-    private fun applyConfiguration(configuration: Configuration): Unit {
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
+        evalOnMain {
 
-        setStatusBar(configuration.theme.secondaryColor.color())
+            setStatusBar(configuration.theme.secondaryColor.color())
 
-        (requireParentFragment().requireParentFragment() as? ScreeningFragment)
-            .toOption()
-            .map { it.showAbort(configuration, configuration.theme.primaryColorEnd.color()) }
-
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
-        footer.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-    }
-
-    private fun setupView(): Unit {
-
-        requireParentFragment()
-            .requireParentFragment()
-            .toolbar
-            .toOption()
-            .map {
-                it.showBackSecondaryButton(imageConfiguration)
-                { viewModel.back(findNavController()) }
-            }
-
-        recycler_view.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recycler_view.adapter = adapter
-
-        next.background =
-            button(
-                requireContext().resources,
-                requireContext().imageConfiguration.signUpNextStepSecondary()
-            )
-        next.setOnClickListener { viewModel.validate(rootNavController(), findNavController()) }
-    }
-
-    private fun applyQuestions(questions: List<ScreeningQuestionItem>): Unit {
-
-        adapter.submitList(questions)
-
-        next.isEnabled =
-            questions.fold(
-                true,
-                { acc, item -> acc && item.answer.isDefined() }
+            screeningFragment().showAbort(
+                configuration,
+                configuration.theme.primaryColorEnd.color()
             )
 
-    }
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            footer.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+        }
+
+    private suspend fun setupView(): Unit =
+        evalOnMain {
+
+            screeningFragment().toolbar.showBackSecondaryButton(imageConfiguration)
+            {
+                startCoroutineAsync {
+                    viewModel.back(
+                        screeningNavController(),
+                        authNavController(),
+                        rootNavController()
+                    )
+                }
+            }
+
+            recycler_view.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            recycler_view.adapter = adapter
+
+            next.background =
+                button(
+                    requireContext().resources,
+                    requireContext().imageConfiguration.signUpNextStepSecondary()
+                )
+
+            next.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.validate(
+                        rootNavController(),
+                        screeningNavController()
+                    )
+                }
+            }
+        }
+
+    private suspend fun applyQuestions(questions: List<ScreeningQuestionItem>): Unit =
+        evalOnMain {
+
+            adapter.submitList(questions)
+
+            next.isEnabled =
+                questions.fold(
+                    true,
+                    { acc, item -> acc && item.answer != null }
+                )
+
+        }
 }

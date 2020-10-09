@@ -1,14 +1,10 @@
 package org.fouryouandme.auth.consent.user
 
-import arrow.core.None
-import arrow.core.Option
 import org.fouryouandme.core.arch.navigation.NavigationAction
-import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.consent.user.ConsentUser
 
 data class ConsentUserState(
-    val configuration: Option<Configuration> = None,
-    val consent: Option<ConsentUser> = None,
+    val consent: ConsentUser,
     val firstName: String = "",
     val lastName: String = "",
     val email: String = ""
@@ -16,9 +12,7 @@ data class ConsentUserState(
 
 sealed class ConsentUserStateUpdate {
 
-    data class Initialization(
-        val configuration: Configuration
-    ) : ConsentUserStateUpdate()
+    data class Initialization(val consent: ConsentUser) : ConsentUserStateUpdate()
 
     data class FirstName(val firstName: String) : ConsentUserStateUpdate()
 

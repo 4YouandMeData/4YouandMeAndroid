@@ -1,12 +1,9 @@
 package org.fouryouandme.auth.optin
 
-import androidx.navigation.NavController
-import arrow.Kind
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.firstOrNone
+import arrow.core.Either
 import arrow.core.getOrElse
-import arrow.core.toOption
+import arrow.core.left
+import arrow.core.right
 import arrow.fx.ForIO
 import com.karumi.dexter.DexterBuilder
 import com.karumi.dexter.MultiplePermissionsReport
@@ -14,165 +11,157 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
 import com.karumi.dexter.listener.single.BasePermissionListener
+import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.OptInModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.*
-import org.fouryouandme.core.cases.CachePolicy
-import org.fouryouandme.core.cases.configuration.ConfigurationUseCase
-import org.fouryouandme.core.cases.optins.OptInsUseCase
-import org.fouryouandme.core.ext.foldToKindEither
-import org.fouryouandme.core.ext.mapResult
-import org.fouryouandme.core.ext.unsafeRunAsync
+import org.fouryouandme.core.cases.optins.OptInsUseCase.getOptIns
+import org.fouryouandme.core.cases.optins.OptInsUseCase.setPermission
+import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.ext.mapNotNull
+import org.fouryouandme.core.ext.startCoroutineAsync
 
 
 class OptInViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>
+    runtime: Runtime<ForIO>,
+    private val optInModule: OptInModule
 ) : BaseViewModel<
         ForIO,
         OptInState,
         OptInStateUpdate,
         OptInError,
         OptInLoading>
-    (OptInState(), navigator, runtime) {
+    (navigator = navigator, runtime = runtime) {
 
     /* --- data --- */
 
-    fun initialize(rootNavController: RootNavController): Unit =
-        runtime.fx.concurrent {
+    suspend fun initialize(
+        rootNavController: RootNavController
+    ): Either<FourYouAndMeError, OptInState> {
 
-            !showLoading(OptInLoading.Initialization)
+        showLoadingFx(OptInLoading.Initialization)
 
-            val configuration =
-                !ConfigurationUseCase.getConfiguration(runtime, CachePolicy.MemoryFirst)
+        val state =
+            optInModule.getOptIns()
+                .nullToError()
+                .handleAuthError(rootNavController, navigator)
+                .fold(
+                    {
+                        setErrorFx(it, OptInError.Initialization)
+                        it.left()
+                    },
+                    { optIns ->
 
-            val initialization =
-                !configuration.foldToKindEither(runtime.fx) { config ->
+                        val state = OptInState(optIns, emptyMap())
 
-                    OptInsUseCase.getOptIns(runtime)
-                        .mapResult(runtime.fx) { it to config }
+                        setStateFx(state) { OptInStateUpdate.Initialization(it.optIns) }
 
-                }.handleAuthError(runtime, rootNavController, navigator)
+                        state.right()
+                    }
+                )
 
-            !initialization.fold(
-                { setError(it, OptInError.Initialization) },
-                { pair ->
-                    setState(
-                        state().copy(
-                            optIns = pair.first.toOption(),
-                            configuration = pair.second.toOption()
-                        ),
-                        OptInStateUpdate.Initialization(pair.second, pair.first)
-                    )
-                }
-            )
+        hideLoadingFx(OptInLoading.Initialization)
 
-            !hideLoading(OptInLoading.Initialization)
+        return state
 
-        }.unsafeRunAsync()
+    }
 
     /* --- permission --- */
 
-    private fun setPermission(
+    private suspend fun setPermission(
         rootNavController: RootNavController,
-        navController: NavController,
+        optInNavController: OptInNavController,
         index: Int,
         permissionId: String,
         agree: Boolean
-    ): Kind<ForIO, Unit> =
-        runtime.fx.concurrent {
+    ): Unit {
 
-            !showLoading(OptInLoading.PermissionSet)
+        showLoadingFx(OptInLoading.PermissionSet)
 
-            val set =
-                !OptInsUseCase.setPermission(runtime, permissionId, agree)
-                    .handleAuthError(runtime, rootNavController, navigator)
-
-            !set.fold(
-                { setError(it, OptInError.PermissionSet) },
-                { nextPermission(navController, index) }
+        optInModule.setPermission(permissionId, agree)
+            .handleAuthError(rootNavController, navigator).fold(
+                { setErrorFx(it, OptInError.PermissionSet) },
+                { nextPermission(optInNavController, index) }
             )
 
-            !hideLoading(OptInLoading.PermissionSet)
+        hideLoadingFx(OptInLoading.PermissionSet)
 
-        }
+    }
 
-    fun requestPermissions(
+    suspend fun requestPermissions(
+        configuration: Configuration,
         rootNavController: RootNavController,
-        navController: NavController,
+        optInNavController: OptInNavController,
         dexter: DexterBuilder.Permission,
         index: Int
     ): Unit {
 
-        Option.fx {
+        mapNotNull(
+            state().permissions[index],
+            state().optIns.permissions.getOrNull(index)
+        )
+            ?.let { (agree, optIn) ->
 
-            val agree = !state().permissions[index].toOption()
-            val optIn =
-                !state().optIns
-                    .bind()
-                    .permissions
-                    .getOrNull(index)
-                    .toOption()
+                if (agree) {
 
-
-            if (agree) {
-
-                when (optIn.systemPermissions.size) {
-                    0 ->
-                        setPermission(
-                            rootNavController,
-                            navController,
-                            index,
-                            optIn.id,
-                            agree
-                        ).unsafeRunAsync()
-                    1 ->
-                        dexter.withPermission(optIn.systemPermissions[0])
-                            .withListener(
-                                permissionListener(
-                                    rootNavController,
-                                    navController,
-                                    index,
-                                    optIn.id,
-                                    agree
-                                )
+                    when (optIn.systemPermissions.size) {
+                        0 ->
+                            setPermission(
+                                rootNavController,
+                                optInNavController,
+                                index,
+                                optIn.id,
+                                agree
                             )
-                            .check()
-                    else ->
-                        dexter.withPermissions(optIn.systemPermissions)
-                            .withListener(
-                                multiplePermissionListener(
-                                    rootNavController,
-                                    navController,
-                                    index,
-                                    optIn.id,
-                                    agree
+                        1 ->
+                            dexter.withPermission(optIn.systemPermissions[0])
+                                .withListener(
+                                    permissionListener(
+                                        rootNavController,
+                                        optInNavController,
+                                        index,
+                                        optIn.id,
+                                        agree
+                                    )
                                 )
-                            )
-                            .check()
-                }
+                                .check()
+                        else ->
+                            dexter.withPermissions(optIn.systemPermissions)
+                                .withListener(
+                                    multiplePermissionListener(
+                                        rootNavController,
+                                        optInNavController,
+                                        index,
+                                        optIn.id,
+                                        agree
+                                    )
+                                )
+                                .check()
+                    }
 
-            } else {
+                } else {
 
-                if (optIn.mandatory) state().configuration.map {
-                    alert(
-                        it.text.onboarding.optIn.mandatoryTitle,
-                        optIn.mandatoryDescription
-                            .getOrElse { it.text.onboarding.optIn.mandatoryDefault },
-                        it.text.onboarding.optIn.mandatoryClose
-                    )
+                    if (optIn.mandatory)
+                        alert(
+                            configuration.text.onboarding.optIn.mandatoryTitle,
+                            optIn.mandatoryDescription
+                                .getOrElse { configuration.text.onboarding.optIn.mandatoryDefault },
+                            configuration.text.onboarding.optIn.mandatoryClose
+                        )
+                    else nextPermission(optInNavController, index)
                 }
-                else nextPermission(navController, index).unsafeRunAsync()
             }
-        }
 
     }
 
     private fun permissionListener(
         rootNavController: RootNavController,
-        navController: NavController,
+        optInNavController: OptInNavController,
         index: Int,
         permissionId: String,
         agree: Boolean
@@ -180,29 +169,33 @@ class OptInViewModel(
         object : BasePermissionListener() {
 
             override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                setPermission(
-                    rootNavController,
-                    navController,
-                    index,
-                    permissionId,
-                    agree
-                ).unsafeRunAsync()
+                startCoroutineAsync {
+                    setPermission(
+                        rootNavController,
+                        optInNavController,
+                        index,
+                        permissionId,
+                        agree
+                    )
+                }
             }
 
             override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                setPermission(
-                    rootNavController,
-                    navController,
-                    index,
-                    permissionId,
-                    agree
-                ).unsafeRunAsync()
+                startCoroutineAsync {
+                    setPermission(
+                        rootNavController,
+                        optInNavController,
+                        index,
+                        permissionId,
+                        agree
+                    )
+                }
             }
         }
 
     private fun multiplePermissionListener(
         rootNavController: RootNavController,
-        navController: NavController,
+        optInNavController: OptInNavController,
         index: Int,
         permissionId: String,
         agree: Boolean
@@ -210,100 +203,75 @@ class OptInViewModel(
         object : BaseMultiplePermissionsListener() {
 
             override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                setPermission(
-                    rootNavController,
-                    navController,
-                    index,
-                    permissionId,
-                    agree
-                ).unsafeRunAsync()
+                startCoroutineAsync {
+                    setPermission(
+                        rootNavController,
+                        optInNavController,
+                        index,
+                        permissionId,
+                        agree
+                    )
+                }
             }
 
         }
 
-    /* --- state --- */
-
-    fun setPermissionState(id: Int, agree: Boolean): Unit {
+    suspend fun setPermissionState(id: Int, agree: Boolean): Unit {
 
         val map =
-            state().permissions.toMutableMap()
-                .also { it[id] = agree }
+            state().permissions.toMutableMap().also { it[id] = agree }
 
-        setState(
-            state().copy(permissions = map),
-            OptInStateUpdate.Permissions(map)
-        ).unsafeRunAsync()
+        setStateFx(state().copy(permissions = map))
+        { OptInStateUpdate.Permissions(map) }
 
     }
 
     /* --- navigation --- */
 
-    fun back(navController: NavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun back(
+        optInNavController: OptInNavController,
+        authNavController: AuthNavController,
+        rootNavController: RootNavController
+    ): Unit {
+        if (navigator.back(optInNavController).not())
+            if (navigator.back(authNavController).not())
+                navigator.back(rootNavController)
+    }
 
-    fun sectionBack(navController: RootNavController): Unit =
-        navigator.back(runtime, navController).unsafeRunAsync()
+    suspend fun permission(optInNavController: OptInNavController): Unit {
 
-    fun permission(navController: NavController): Unit =
-        runtime.fx.concurrent {
+        if (state().optIns.permissions.firstOrNull() != null)
+            navigator.navigateTo(optInNavController, OptInWelcomeToOptInPermission(0))
 
-            !state().optIns.flatMap { it.permissions.firstOrNone() }
-                .fold(
-                    { just(Unit) },
-                    {
-                        navigator.navigateTo(
-                            runtime,
-                            navController,
-                            OptInWelcomeToOptInPermission(0)
-                        )
-                    }
-                )
+    }
 
-        }.unsafeRunAsync()
-
-    private fun nextPermission(
-        navController: NavController,
+    private suspend fun nextPermission(
+        optInNavController: OptInNavController,
         currentIndex: Int
-    ): Kind<ForIO, Unit> =
-        runtime.fx.concurrent {
+    ): Unit {
 
-            !if (state().optIns
-                    .map {
-                        it.permissions.size >
-                                (currentIndex + 1)
-                    }
-                    .getOrElse { false }
+        if (state().optIns.permissions.size > (currentIndex + 1))
+            navigator.navigateTo(
+                optInNavController,
+                OptInPermissionToOptInPermission(currentIndex + 1)
             )
-                navigator.navigateTo(
-                    runtime,
-                    navController,
-                    OptInPermissionToOptInPermission(currentIndex + 1)
-                )
-            else success(navController)
+        else success(optInNavController)
 
-        }
+    }
 
-    private fun success(navController: NavController): Kind<ForIO, Unit> =
-        navigator.navigateTo(
-            runtime,
-            navController,
-            OptInPermissionToOptInSuccess
-        )
+    private suspend fun success(optInNavController: OptInNavController): Unit =
+        navigator.navigateTo(optInNavController, OptInPermissionToOptInSuccess)
 
-    fun consentUser(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(
-            runtime,
-            rootNavController,
-            OptInToConsentUser
-        ).unsafeRunAsync()
+    suspend fun consentUser(authNavController: AuthNavController): Unit =
+        navigator.navigateTo(authNavController, OptInToConsentUser)
 
-    fun toastError(error: FourYouAndMeError): Unit =
-        navigator.performAction(runtime, toastAction(error)).unsafeRunAsync()
+    suspend fun toastError(error: FourYouAndMeError): Unit =
+        navigator.performAction(toastAction(error))
 
-    private fun alert(title: String, message: String, close: String): Unit =
-        navigator.performAction(runtime, alertAction(title, message, close)).unsafeRunAsync()
+    private suspend fun alert(title: String, message: String, close: String): Unit =
+        navigator.performAction(alertAction(title, message, close))
 
-    fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateTo(runtime, navController, AnywhereToWeb(url)).unsafeRunAsync()
+    suspend fun web(navController: RootNavController, url: String): Unit =
+        navigator.navigateTo(navController, AnywhereToWeb(url))
 
 }

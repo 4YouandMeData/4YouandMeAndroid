@@ -12,6 +12,7 @@ import org.fouryouandme.core.arch.deps.task.FYAMTaskConfiguration
 import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
+import org.fouryouandme.core.data.api.auth.response.UserResponse
 import org.fouryouandme.core.data.api.common.AnswerApi
 import org.fouryouandme.core.data.api.common.response.AnswerResponse
 import org.fouryouandme.core.data.api.common.response.PageResponse
@@ -101,6 +102,7 @@ class ForYouAndMeInjector(
                     .add(QuickActivityOptionResponse::class.java)
                     .add(SurveyResponse::class.java)
                     .add(TaskActivityResponse::class.java)
+                    .add(UserResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())

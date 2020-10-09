@@ -7,6 +7,7 @@ import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
+import org.fouryouandme.core.cases.auth.AuthRepository.fetchUser
 import org.fouryouandme.core.cases.auth.AuthRepository.loadToken
 import org.fouryouandme.core.cases.auth.AuthRepository.login
 import org.fouryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
@@ -68,5 +69,12 @@ object AuthUseCase {
             CachePolicy.Network ->
                 Memory.token ?: loadToken()
         }?.right() ?: FourYouAndMeError.UserNotLoggedIn.left()
+
+    internal suspend fun AuthModule.getUser(): Either<FourYouAndMeError, User?> =
+        getToken(CachePolicy.MemoryFirst)
+            .flatMap { fetchUser(it) }
+
+    internal suspend fun AuthModule.isLogged(): Boolean =
+        getToken(CachePolicy.MemoryFirst).isRight()
 
 }

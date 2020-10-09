@@ -3,20 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/main">
+    app:startDestination="@id/auth">
 
     <action
-        android:id="@+id/action_global_splash"
-        app:destination="@id/splash"
-        app:enterAnim="@anim/slide_from_right"
-        app:exitAnim="@anim/slide_to_left"
-        app:popEnterAnim="@anim/slide_from_left"
-        app:popExitAnim="@anim/slide_to_right"
-        app:popUpTo="@id/navigation" />
-
-    <action
-        android:id="@+id/action_global_welcome"
-        app:destination="@id/welcome"
+        android:id="@+id/action_global_auth"
+        app:destination="@id/auth"
         app:enterAnim="@anim/slide_from_right"
         app:exitAnim="@anim/slide_to_left"
         app:popEnterAnim="@anim/slide_from_left"
@@ -51,220 +42,19 @@
     </fragment>
 
     <fragment
-        android:id="@+id/splash"
-        android:name="org.fouryouandme.auth.splash.SplashFragment"
-        android:label="splash"
-        tools:layout="@layout/splash">
+        android:id="@+id/auth"
+        android:name="org.fouryouandme.auth.AuthFragment"
+        android:label="auth"
+        tools:layout="@layout/auth">
 
         <action
-            android:id="@+id/action_splash_to_welcome"
-            app:destination="@id/welcome"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/navigation" />
-
-    </fragment>
-
-
-    <fragment
-        android:id="@+id/welcome"
-        android:name="org.fouryouandme.auth.welcome.WelcomeFragment"
-        android:label="welcome"
-        tools:layout="@layout/welcome">
-
-        <action
-            android:id="@+id/action_welcome_to_sign_up_info"
-            app:destination="@id/sign_up_info"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/sign_up_info"
-        android:name="org.fouryouandme.auth.signup.info.SignUpInfoFragment"
-        android:label="sign_up_info"
-        tools:layout="@layout/sign_up_info">
-
-        <action
-            android:id="@+id/action_sign_up_info_to_sign_up_later"
-            app:destination="@id/sign_up_later"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/welcome" />
-
-        <action
-            android:id="@+id/action_sign_up_info_to_enter_phone"
-            app:destination="@id/enter_phone"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/sign_up_later"
-        android:name="org.fouryouandme.auth.signup.later.SignUpLaterFragment"
-        android:label="sign_up_later"
-        tools:layout="@layout/sign_up_later" />
-
-    <fragment
-        android:id="@+id/enter_phone"
-        android:name="org.fouryouandme.auth.phone.EnterPhoneFragment"
-        android:label="enter_phone"
-        tools:layout="@layout/enter_phone">
-
-        <action
-            android:id="@+id/action_enter_phone_to_phone_validation_code"
-            app:destination="@id/phone_validation_code"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right">
-
-            <argument
-                android:name="phone"
-                app:argType="string"
-                app:nullable="false" />
-
-            <argument
-                android:name="countryCode"
-                app:argType="string"
-                app:nullable="false" />
-
-        </action>
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/phone_validation_code"
-        android:name="org.fouryouandme.auth.phone.code.PhoneValidationCodeFragment"
-        android:label="phone_validation_code"
-        tools:layout="@layout/phone_validation_code">
-
-        <argument
-            android:name="phone"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="countryCode"
-            app:argType="string"
-            app:nullable="false" />
-
-        <action
-            android:id="@+id/action_phone_validation_code_to_screening"
-            app:destination="@id/screening"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/screening"
-        android:name="org.fouryouandme.auth.screening.ScreeningFragment"
-        android:label="screening"
-        tools:layout="@layout/screening">
-
-        <action
-            android:id="@+id/action_screening_to_consent_info"
-            app:destination="@id/consent_info"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/consent_info"
-        android:name="org.fouryouandme.auth.consent.informed.ConsentInfoFragment"
-        android:label="consent_info"
-        tools:layout="@layout/consent_info">
-
-        <action
-            android:id="@+id/action_consent_info_to_consent_review"
-            app:destination="@id/consent_review"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/consent_review"
-        android:name="org.fouryouandme.auth.consent.review.ConsentReviewFragment"
-        android:label="consent_review"
-        tools:layout="@layout/consent_review">
-
-        <action
-            android:id="@+id/action_consent_review_to_opt_in"
-            app:destination="@id/opt_in"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/opt_in"
-        android:name="org.fouryouandme.auth.optin.OptInFragment"
-        android:label="opt_in"
-        tools:layout="@layout/opt_in">
-
-        <action
-            android:id="@+id/action_opt_in_to_consent_user"
-            app:destination="@id/consent_user"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/consent_user"
-        android:name="org.fouryouandme.auth.consent.user.ConsentUserFragment"
-        android:label="consent_user"
-        tools:layout="@layout/consent_user">
-
-        <action
-            android:id="@+id/action_consent_user_to_integration"
-            app:destination="@id/integration"
-            app:enterAnim="@anim/slide_from_right"
-            app:exitAnim="@anim/slide_to_left"
-            app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/integration"
-        android:name="org.fouryouandme.auth.integration.IntegrationFragment"
-        android:label="integration"
-        tools:layout="@layout/integration">
-
-        <action
-            android:id="@+id/action_integration_to_main"
+            android:id="@+id/action_auth_to_main"
             app:destination="@id/main"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/navigation"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/navigation" />
 
     </fragment>
 

@@ -13,7 +13,7 @@ fun consentReviewInfoToConsentReviewDisagree(): NavigationExecution = {
 
 fun consentReviewDisagreeToAuth(): NavigationExecution = {
     it.navigate(
-        NavigationDirections.actionGlobalSplash()
+        NavigationDirections.actionGlobalAuth()
     )
 }
 

@@ -9,8 +9,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import arrow.core.Option
-import arrow.core.getOrElse
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.page.view.*
@@ -21,6 +19,7 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.dpToPx
+import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.imageConfiguration
 import org.fouryouandme.core.view.page.EPageType.*
@@ -34,63 +33,63 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
     }
 
-    fun applyData(
+    suspend fun applyData(
         configuration: Configuration,
         page: Page,
         pageType: EPageType,
-        action1: (Option<Page>) -> Unit,
-        action2: ((Option<Page>) -> Unit)? = null,
+        action1: (Page?) -> Unit,
+        action2: ((Page?) -> Unit)? = null,
         externalAction: (String) -> Unit,
         modalAction: ((Page) -> Unit)? = null
-    ): Unit {
+    ): Unit =
 
-        val params = icon.layoutParams
+        evalOnMain {
 
-        params.height = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
-        params.width = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
+            val params = icon.layoutParams
 
-        icon.layoutParams = params
+            params.height = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
+            params.width = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
 
-        val decodedString = page.image.map { Base64.decode(it, Base64.DEFAULT) }
-        val decodedByte =
-            decodedString.map { BitmapFactory.decodeByteArray(it, 0, it.size) }
+            icon.layoutParams = params
 
-        decodedByte.map { icon.setImageBitmap(it) }
+            val decodedString = page.image?.let { Base64.decode(it, Base64.DEFAULT) }
+            val decodedByte =
+                decodedString?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 
-        title.setHtmlText(page.title, true)
-        title.setTextColor(configuration.theme.primaryTextColor.color())
+            decodedByte?.let { icon.setImageBitmap(it) }
 
-        description.setHtmlText(page.body, true)
-        description.setTextColor(configuration.theme.primaryTextColor.color())
+            title.setHtmlText(page.title, true)
+            title.setTextColor(configuration.theme.primaryTextColor.color())
 
-        description.gravity =
-            when (pageType) {
-                INFO -> Gravity.START
-                FAILURE -> Gravity.CENTER
-                SUCCESS -> Gravity.CENTER
+            description.setHtmlText(page.body, true)
+            description.setTextColor(configuration.theme.primaryTextColor.color())
+
+            description.gravity =
+                when (pageType) {
+                    INFO -> Gravity.START
+                    FAILURE -> Gravity.CENTER
+                    SUCCESS -> Gravity.CENTER
+                }
+
+            if (modalAction != null) {
+                external.text = page.linkModalLabel.orEmpty()
+                external.setTextColor(configuration.theme.primaryColorEnd.color())
+                external.isVisible = page.linkModalValue != null
+                external.setOnClickListener { page.linkModalValue?.let { modalAction(it) } }
+            } else if (externalAction != null) {
+                external.text = page.externalLinkLabel.orEmpty()
+                external.setTextColor(configuration.theme.primaryColorEnd.color())
+                external.isVisible = page.externalLinkUrl != null
+                external.setOnClickListener { page.externalLinkUrl?.let { externalAction(it) } }
             }
 
-        if (modalAction != null) {
-            external.text = page.linkModalLabel.getOrElse { "" }
-            external.setTextColor(configuration.theme.primaryColorEnd.color())
-            external.isVisible = page.linkModalValue.isDefined()
-            external.setOnClickListener { page.linkModalValue.map { modalAction(it) } }
-        }
-        else if (externalAction!= null) {
-            external.text = page.externalLinkLabel.getOrElse { "" }
-            external.setTextColor(configuration.theme.primaryColorEnd.color())
-            external.isVisible = page.externalLinkUrl.isDefined()
-            external.setOnClickListener { page.externalLinkUrl.map { externalAction(it) } }
-        }
+            shadow.background =
+                HEXGradient.from(
+                    HEXColor.transparent(),
+                    configuration.theme.primaryTextColor
+                ).drawable(0.3f)
 
-        shadow.background =
-            HEXGradient.from(
-                HEXColor.transparent(),
-                configuration.theme.primaryTextColor
-            ).drawable(0.3f)
-
-        (page.link1Label).fold(
-            {
+            if (page.link1Label == null) {
                 next.isVisible = true
                 next_text.isVisible = false
 
@@ -105,24 +104,20 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                     )
 
                 next.setOnClickListener { action1(page.link1) }
-            },
-            {
+            } else {
                 next.isVisible = false
                 next_text.isVisible = true
 
                 next_text.setTextColor(configuration.theme.secondaryColor.color())
                 next_text.background =
                     button(configuration.theme.primaryColorEnd.color())
-                next_text.text = it
+                next_text.text = page.link1Label
                 next_text.setOnClickListener { action1(page.link1) }
             }
-        )
 
-        (page.link2Label).fold(
-            {
+            if (page.link2Label == null)
                 next_2_text.isVisible = false
-            },
-            {
+            else {
                 if (action2 != null) {
                     next_2_text.isVisible = true
 
@@ -130,7 +125,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                     next_2_text.text =
                         SpanDroid()
                             .append(
-                                it,
+                                page.link2Label,
                                 spanList(context) { custom(UnderlineSpan()) }
                             )
                             .toSpannableString()
@@ -138,10 +133,9 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
                 } else next_2_text.isVisible = false
             }
-        )
 
-        page_root.setBackgroundColor(configuration.theme.secondaryColor.color())
-        footer.setBackgroundColor(configuration.theme.secondaryColor.color())
+            page_root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            footer.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-    }
+        }
 }
