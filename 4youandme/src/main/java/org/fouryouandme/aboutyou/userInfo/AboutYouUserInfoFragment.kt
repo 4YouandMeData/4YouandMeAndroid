@@ -9,6 +9,7 @@ import org.fouryouandme.aboutyou.AboutYouSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.*
 
 class AboutYouUserInfoFragment :
@@ -31,12 +32,12 @@ class AboutYouUserInfoFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
-            applyConfiguration(it)
+        userAndConfiguration { config, user ->
+            applyConfiguration(config, user)
         }
     }
 
-    private suspend fun applyConfiguration(configuration: Configuration) =
+    private suspend fun applyConfiguration(configuration: Configuration, user: User): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())

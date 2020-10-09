@@ -2,13 +2,14 @@ package org.fouryouandme.aboutyou.menu
 
 import android.os.Bundle
 import android.view.View
-import arrow.core.toOption
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.about_you_menu.*
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.AboutYouSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.*
 
 class AboutYouMenuFragment :
@@ -28,30 +29,31 @@ class AboutYouMenuFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
+        userAndConfiguration { config, user ->
             setupView()
-            applyConfiguration(it)
+            applyConfiguration(config, user)
         }
     }
 
     private suspend fun setupView(): Unit =
         evalOnMain {
-            requireParentFragment()
-                .toolbar
-                .toOption()
-                .map {
-                    it.show()
 
-                    it.showCloseSecondaryButton(imageConfiguration)
+            toolbar
+                .apply {
+
+                    show()
+
+                    showCloseSecondaryButton(imageConfiguration)
                     {
                         startCoroutineAsync {
                             aboutYouViewModel.back(aboutYouNavController(), rootNavController())
                         }
                     }
                 }
+
         }
 
-    private suspend fun applyConfiguration(configuration: Configuration) =
+    private suspend fun applyConfiguration(configuration: Configuration, user: User): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
@@ -78,6 +80,8 @@ class AboutYouMenuFragment :
                     viewModel.toAboutYouUserInfoPage(aboutYouNavController())
                 }
             }
+
+            firstItem.isVisible = user.customData.isNotEmpty()
 
             secondItem.applyData(
                 configuration,
