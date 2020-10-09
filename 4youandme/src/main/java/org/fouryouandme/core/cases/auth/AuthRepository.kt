@@ -1,6 +1,8 @@
 package org.fouryouandme.core.cases.auth
 
 import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.right
 import arrow.syntax.function.pipe
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
@@ -13,9 +15,13 @@ import org.fouryouandme.core.data.api.auth.request.LoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneLoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
+import org.fouryouandme.core.data.api.auth.request.UserUpdateRequest.Companion.asRequest
 import org.fouryouandme.core.data.api.auth.response.UserResponse
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.user.User
+import org.fouryouandme.core.entity.user.UserCustomData
+import org.fouryouandme.core.entity.user.UserCustomDataItem
+import org.fouryouandme.core.entity.user.UserCustomDataType
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.mapNotNull
 import retrofit2.Response
@@ -96,5 +102,51 @@ object AuthRepository {
     internal suspend fun AuthModule.fetchUser(token: String): Either<FourYouAndMeError, User?> =
         suspend { api.getUser(token) }
             .pipe { errorModule.unwrapToEither(it) }
-            .map { it.toUser(token) }
+            .flatMap {
+
+                // if user has empty custom data update it with default configuration
+                if (it.customData == null || it.customData.isEmpty())
+                    updateUser(token, defaultUserCustomData())
+                        .flatMap { fetchUser(token) }
+                else
+                    it.toUser(token).right()
+
+            }
+
+    // TODO: remove this and handle default configuration from server
+    private fun defaultUserCustomData(): List<UserCustomData> =
+        listOf(
+            UserCustomData(
+                identifier = "1",
+                type = UserCustomDataType.Date,
+                name = "Your due date",
+                value = null
+            ),
+            UserCustomData(
+                identifier = "2",
+                type =
+                UserCustomDataType.Items(
+                    listOf(
+                        UserCustomDataItem(identifier = "It's a Boy!", value = "1"),
+                        UserCustomDataItem(identifier = "It's a Girl!", value = "2"),
+                    )
+                ),
+                name = "Your baby's gender",
+                value = null
+            ),
+            UserCustomData(
+                identifier = "3",
+                type = UserCustomDataType.String,
+                name = "Your baby's name",
+                value = null
+            ),
+        )
+
+    internal suspend fun AuthModule.updateUser(
+        token: String,
+        data: List<UserCustomData>
+    ): Either<FourYouAndMeError, Unit> =
+        suspend { api.updateUser(token, data.asRequest()) }
+            .pipe { errorModule.unwrapToEither(it) }
+
 }

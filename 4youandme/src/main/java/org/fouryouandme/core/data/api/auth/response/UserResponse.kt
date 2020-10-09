@@ -65,7 +65,8 @@ data class UserCustomDataResponse(
                                     }
                             } ?: emptyList()
 
-                        UserCustomDataType.Items(items)
+                        if (items.isEmpty()) null
+                        else UserCustomDataType.Items(items)
                     }
                     else -> null
                 }

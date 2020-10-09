@@ -1,7 +1,7 @@
 package org.fouryouandme.core.data.api.auth.request
 
 import com.squareup.moshi.Json
-import org.fouryouandme.core.data.api.auth.request.UserCustomDataItemRequest.Companion.toRequest
+import org.fouryouandme.core.data.api.auth.request.UserCustomDataItemRequest.Companion.asRequest
 import org.fouryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_DATE
 import org.fouryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_ITEMS
 import org.fouryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_STRING
@@ -30,7 +30,7 @@ data class UserUpdateRequest(
                         val items =
                             when (data.type) {
                                 is UserCustomDataType.Items ->
-                                    data.type.items.map { it.toRequest() }
+                                    data.type.items.map { it.asRequest() }
                                 else ->
                                     emptyList()
                             }
@@ -70,7 +70,7 @@ data class UserCustomDataItemRequest(
 
     companion object {
 
-        fun UserCustomDataItem.toRequest(): UserCustomDataItemRequest =
+        fun UserCustomDataItem.asRequest(): UserCustomDataItemRequest =
             UserCustomDataItemRequest(identifier, value)
 
     }
