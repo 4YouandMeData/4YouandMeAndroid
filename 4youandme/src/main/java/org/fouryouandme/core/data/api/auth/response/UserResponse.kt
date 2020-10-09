@@ -5,6 +5,10 @@ import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.entity.user.User
+import org.fouryouandme.core.entity.user.UserCustomData
+import org.fouryouandme.core.entity.user.UserCustomDataItem
+import org.fouryouandme.core.entity.user.UserCustomDataType
+import org.fouryouandme.core.ext.mapNotNull
 
 @JsonApi(type = "user")
 data class UserResponse(
@@ -26,7 +30,8 @@ data class UserResponse(
                 daysInStudy = daysInStudy ?: 0,
                 identities = identities ?: emptyList(),
                 onBoardingCompleted = onBoardingCompleted!!,
-                token = token
+                token = token,
+                customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList()
             )
 
         }.orNull()
@@ -39,9 +44,43 @@ data class UserCustomDataResponse(
     @field:Json(name = "name") val name: String? = null,
     @field:Json(name = "type") val type: String? = null,
     @field:Json(name = "items") val items: List<UserCustomDataItemResponse>? = null,
-)
+) {
+
+    suspend fun toUserCustomData(): UserCustomData? =
+        Either.catch {
+
+            val type =
+                when (type) {
+                    USER_CUSTOM_DATA_TYPE_STRING ->
+                        UserCustomDataType.String
+                    USER_CUSTOM_DATA_TYPE_DATE ->
+                        UserCustomDataType.Date
+                    USER_CUSTOM_DATA_TYPE_ITEMS -> {
+
+                        val items =
+                            items?.mapNotNull {
+                                mapNotNull(it.identifier, it.value)
+                                    ?.let { (id, itemValue) ->
+                                        UserCustomDataItem(id, itemValue)
+                                    }
+                            } ?: emptyList()
+
+                        UserCustomDataType.Items(items)
+                    }
+                    else -> null
+                }
+
+            UserCustomData(identifier!!, value, name!!, type!!)
+
+        }.orNull()
+
+}
 
 data class UserCustomDataItemResponse(
     @field:Json(name = "identifier") val identifier: String? = null,
     @field:Json(name = "value") val value: String? = null,
 )
+
+const val USER_CUSTOM_DATA_TYPE_STRING = "string"
+const val USER_CUSTOM_DATA_TYPE_DATE = "date"
+const val USER_CUSTOM_DATA_TYPE_ITEMS = "items"

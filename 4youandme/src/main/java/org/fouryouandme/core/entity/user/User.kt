@@ -27,6 +27,6 @@ sealed class UserCustomDataType {
 
     object String : UserCustomDataType()
     object Date : UserCustomDataType()
-    data class Items(val items: List<UserCustomDataItem>)
+    data class Items(val items: List<UserCustomDataItem>) : UserCustomDataType()
 
 }
