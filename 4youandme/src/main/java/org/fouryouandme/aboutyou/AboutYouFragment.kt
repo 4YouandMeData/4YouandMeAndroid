@@ -44,6 +44,8 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
                 when (it.task) {
                     AboutYouLoading.Initialization ->
                         loading.setVisibility(it.active, false)
+                    AboutYouLoading.Refresh ->
+                        loading.setVisibility(it.active, true)
                 }
             }
 
@@ -56,6 +58,14 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
                             view.hide()
                             startCoroutineAsync {
                                 viewModel.initialize(rootNavController(), true)
+                            }
+                        }
+                    AboutYouError.Refresh ->
+                        error.setError(payload.error)
+                        { view ->
+                            view.hide()
+                            startCoroutineAsync {
+                                viewModel.refreshUser(rootNavController(), true)
                             }
                         }
                 }

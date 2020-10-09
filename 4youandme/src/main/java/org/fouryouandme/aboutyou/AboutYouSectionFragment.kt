@@ -35,8 +35,12 @@ abstract class AboutYouSectionFragment<T : BaseViewModel<*, *, *, *, *>>(content
     fun refreshUserAndConfiguration(block: suspend (Configuration, User) -> Unit): Unit =
         configuration { config ->
 
-            aboutYouViewModel.initialize(rootNavController(), true)
-                .map { block(config, it.user) }
+            if (aboutYouViewModel.isInitialized())
+                aboutYouViewModel.refreshUser(rootNavController(), true)
+                    .map { block(config, it.user) }
+            else
+                aboutYouViewModel.initialize(rootNavController(), true)
+                    .map { block(config, it.user) }
 
         }
 
