@@ -129,8 +129,8 @@ object AuthRepository {
                 type =
                 UserCustomDataType.Items(
                     listOf(
-                        UserCustomDataItem(identifier = "It's a Boy!", value = "1"),
-                        UserCustomDataItem(identifier = "It's a Girl!", value = "2"),
+                        UserCustomDataItem(identifier = "1", value = "It's a Boy!"),
+                        UserCustomDataItem(identifier = "2", value = "It's a Girl!"),
                     )
                 ),
                 name = "Your baby's gender",

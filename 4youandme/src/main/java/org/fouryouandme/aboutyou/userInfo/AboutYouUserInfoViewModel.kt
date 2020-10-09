@@ -33,29 +33,40 @@ class AboutYouUserInfoViewModel(
     ) {
 
         val items =
-            user.customData.mapNotNull {
+            user.customData.map { data ->
 
-                when (it.type) {
+                when (data.type) {
                     UserCustomDataType.String ->
                         EntryStringItem(
-                            it.identifier,
+                            data.identifier,
                             configuration,
                             imageConfiguration,
-                            it.name,
-                            it.value.orEmpty(),
+                            data.name,
+                            data.value.orEmpty(),
                             false
                         )
                     UserCustomDataType.Date ->
                         EntryDateItem(
-                            it.identifier,
+                            data.identifier,
                             configuration,
                             imageConfiguration,
-                            it.name,
-                            Either.catch { Instant.parse(it.value).atZone(ZoneOffset.UTC) }
+                            data.name,
+                            Either.catch { Instant.parse(data.value).atZone(ZoneOffset.UTC) }
                                 .orNull(),
                             false
                         )
-                    is UserCustomDataType.Items -> null
+                    is UserCustomDataType.Items ->
+                        EntryPickerItem(
+                            data.identifier,
+                            configuration,
+                            imageConfiguration,
+                            data.name,
+                            data.type.items
+                                .firstOrNull { it.identifier == data.value }
+                                ?.let { EntryPickerValue(it.identifier, it.value) },
+                            data.type.items.map { EntryPickerValue(it.identifier, it.value) },
+                            false
+                        )
                 }
 
             }
@@ -93,6 +104,7 @@ class AboutYouUserInfoViewModel(
             when (it) {
                 is EntryStringItem -> it.copy(isEditable = isEditable)
                 is EntryDateItem -> it.copy(isEditable = isEditable)
+                is EntryPickerItem -> it.copy(isEditable = isEditable)
                 else -> it
             }
 
@@ -108,6 +120,25 @@ class AboutYouUserInfoViewModel(
 
                 when (it) {
                     is EntryDateItem -> if (it.id == id) it.copy(value = date) else it
+                    else -> it
+                }
+
+            }
+
+        setStateFx(state().copy(items = items))
+        { AboutYouUserInfoStateUpdate.Items(items) }
+
+    }
+
+    suspend fun updatePickerItem(id: String, value: EntryPickerValue): Unit {
+
+        val items =
+            state().items.map {
+
+                when (it) {
+                    is EntryPickerItem ->
+                        if (it.id == id) it.copy(value = value)
+                        else it
                     else -> it
                 }
 

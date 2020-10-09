@@ -38,6 +38,9 @@ class AboutYouUserInfoFragment :
             EntryStringViewHolder.factory(),
             EntryDateViewHolder.factory { item, date ->
                 startCoroutineAsync { viewModel.updateDateItem(item.id, date) }
+            },
+            EntryPickerViewHolder.factory { item, value ->
+                startCoroutineAsync { viewModel.updatePickerItem(item.id, value) }
             }
         )
 
