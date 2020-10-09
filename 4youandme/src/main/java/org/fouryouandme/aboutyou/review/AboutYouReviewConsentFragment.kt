@@ -9,7 +9,6 @@ import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.about_you_review_consent.*
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.AboutYouSectionFragment
-import org.fouryouandme.aboutyou.AboutYouStateUpdate
 import org.fouryouandme.auth.consent.review.info.ConsentReviewHeaderViewHolder
 import org.fouryouandme.auth.consent.review.info.ConsentReviewPageViewHolder
 import org.fouryouandme.core.arch.android.getFactory
@@ -44,13 +43,6 @@ class AboutYouReviewConsentFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        aboutYouViewModel.stateLiveData()
-            .observeEvent(AboutYouReviewConsentFragment::class.java.simpleName) {
-                when (it) {
-                    is AboutYouStateUpdate.Initialization -> initialize()
-                }
-            }
-
         viewModel.stateLiveData()
             .observeEvent {
                 when (it) {
@@ -70,10 +62,11 @@ class AboutYouReviewConsentFragment :
                 when (it.cause) {
                     AboutYouReviewConsentError.Initialization ->
                         error.setError(it.error) {
-                            suspend {
+                            it.hide()
+                            configuration {
                                 viewModel.initialize(
                                     rootNavController(),
-                                    aboutYouViewModel.state().configuration
+                                    it
                                 )
                             }
                         }
@@ -84,53 +77,44 @@ class AboutYouReviewConsentFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
-
-        if (aboutYouViewModel.isInitialized())
-            initialize()
-    }
-
-    private fun initialize(): Unit {
-
-        startCoroutineAsync {
+        configuration {
+            setupView()
 
             if (viewModel.isInitialized().not()) {
                 viewModel.initialize(
                     rootNavController(),
-                    aboutYouViewModel.state().configuration
+                    it
                 )
             }
 
-            evalOnMain {
-                applyConfiguration(aboutYouViewModel.state().configuration)
-                applyItems(viewModel.state().items)
+            applyConfiguration(it)
+            applyItems(viewModel.state().items)
+        }
+    }
+
+    private suspend fun setupView(): Unit =
+        evalOnMain {
+
+            toolbar.showBackButton(imageConfiguration) {
+                startCoroutineAsync {
+                    aboutYouViewModel.back(aboutYouNavController(), rootNavController())
+                }
             }
 
+            recycler_view.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            recycler_view.adapter = adapter
         }
 
-    }
+    private suspend fun applyConfiguration(configuration: Configuration) =
+        evalOnMain {
 
-    private fun setupView(): Unit {
+            setStatusBar(configuration.theme.primaryColorStart.color())
 
-        toolbar.showBackButton(imageConfiguration) {
-            startCoroutineAsync {
-                aboutYouViewModel.back(aboutYouNavController(), rootNavController())
-            }
+            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
         }
-
-        recycler_view.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recycler_view.adapter = adapter
-    }
-
-    private fun applyConfiguration(configuration: Configuration) {
-
-        setStatusBar(configuration.theme.primaryColorStart.color())
-
-        toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
-    }
 
     private fun applyItems(items: List<DroidItem<Any>>): Unit {
 

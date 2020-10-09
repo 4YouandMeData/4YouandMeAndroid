@@ -146,7 +146,9 @@ data class StringsResponse(
     @Json(name = "ERROR_BUTTON_RETRY") val errorButtonRetry: String? = null,
     @Json(name = "ERROR_BUTTON_CANCEL") val errorButtonCancel: String? = null,
     @Json(name = "ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteServer: String? = null,
-    @Json(name = "ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null
+    @Json(name = "ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null,
+
+    @Json(name = "OAUTH_AVAILABLE_INTERATIONS") val oauthAvailableInterations: String? = null
 
 ) {
 
@@ -413,7 +415,8 @@ data class StringsResponse(
                 yourAppsAndDevicesConnect.toOption().bind(),
                 permissionsAllow.toOption().bind(),
                 permissionsAllowed.toOption().bind(),
-                profileUserInfoButtonEdit.toOption().bind()
+                profileUserInfoButtonEdit.toOption().bind(),
+                oauthAvailableInterations.toOption().bind()
             )
         }
 

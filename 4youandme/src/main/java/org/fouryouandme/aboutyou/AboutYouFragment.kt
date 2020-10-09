@@ -25,15 +25,4 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
             }
         )
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        startCoroutineAsync {
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize()
-
-        }
-    }
 }

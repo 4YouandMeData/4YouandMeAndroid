@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.View
 import arrow.core.toOption
 import kotlinx.android.synthetic.main.about_you_menu.*
-import kotlinx.android.synthetic.main.about_you_menu.root
 import org.fouryouandme.R
-import org.fouryouandme.aboutyou.*
+import org.fouryouandme.aboutyou.AboutYouSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
@@ -26,107 +25,97 @@ class AboutYouMenuFragment :
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        aboutYouViewModel.stateLiveData()
-            .observeEvent {
-                when (it) {
-                    is AboutYouStateUpdate.Initialization -> applyConfiguration(it.configuration)
-                }
-            }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
-
-        if (aboutYouViewModel.isInitialized()) {
-            applyConfiguration(aboutYouViewModel.state().configuration)
+        configuration {
+            setupView()
+            applyConfiguration(it)
         }
     }
 
-    private fun setupView(): Unit {
-        requireParentFragment()
-            .toolbar
-            .toOption()
-            .map {
-                it.show()
+    private suspend fun setupView(): Unit =
+        evalOnMain {
+            requireParentFragment()
+                .toolbar
+                .toOption()
+                .map {
+                    it.show()
 
-                it.showCloseSecondaryButton(imageConfiguration)
-                {
-                    startCoroutineAsync {
-                        aboutYouViewModel.back(aboutYouNavController(), rootNavController())
+                    it.showCloseSecondaryButton(imageConfiguration)
+                    {
+                        startCoroutineAsync {
+                            aboutYouViewModel.back(aboutYouNavController(), rootNavController())
+                        }
                     }
                 }
-            }
-    }
-
-    private fun applyConfiguration(configuration: Configuration) {
-
-        setStatusBar(configuration.theme.primaryColorStart.color())
-
-        root.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-        toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-        imageView.setImageResource(imageConfiguration.logoStudySecondary())
-
-        frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-        textView.text = configuration.text.profile.title
-        textView.setTextColor(configuration.theme.secondaryColor.color())
-
-        firstItem.applyData(
-            configuration,
-            requireContext().imageConfiguration.pregnancy(),
-            configuration.text.profile.firstItem
-        )
-
-        firstItem.setOnClickListener {
-            startCoroutineAsync {
-                viewModel.toAboutYouUserInfoPage(aboutYouNavController())
-            }
         }
 
-        secondItem.applyData(
-            configuration,
-            requireContext().imageConfiguration.devices(),
-            configuration.text.profile.secondItem
-        )
+    private suspend fun applyConfiguration(configuration: Configuration) =
+        evalOnMain {
 
-        secondItem.setOnClickListener {
-            startCoroutineAsync {
-                viewModel.toAboutYouAppsAndDevicesPage(aboutYouNavController())
+            setStatusBar(configuration.theme.primaryColorStart.color())
+
+            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+
+            imageView.setImageResource(imageConfiguration.logoStudySecondary())
+
+            frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
+
+            textView.text = configuration.text.profile.title
+            textView.setTextColor(configuration.theme.secondaryColor.color())
+
+            firstItem.applyData(
+                configuration,
+                requireContext().imageConfiguration.pregnancy(),
+                configuration.text.profile.firstItem
+            )
+
+            firstItem.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.toAboutYouUserInfoPage(aboutYouNavController())
+                }
             }
-        }
 
-        thirdItem.applyData(
-            configuration,
-            requireContext().imageConfiguration.reviewConsent(),
-            configuration.text.profile.thirdItem
-        )
+            secondItem.applyData(
+                configuration,
+                requireContext().imageConfiguration.devices(),
+                configuration.text.profile.secondItem
+            )
 
-        thirdItem.setOnClickListener {
-            startCoroutineAsync {
-                viewModel.toAboutYouReviewConsentPage(aboutYouNavController())
+            secondItem.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.toAboutYouAppsAndDevicesPage(aboutYouNavController())
+                }
             }
-        }
 
-        fourthItem.applyData(
-            configuration,
-            requireContext().imageConfiguration.permissions(),
-            configuration.text.profile.fourthItem
-        )
+            thirdItem.applyData(
+                configuration,
+                requireContext().imageConfiguration.reviewConsent(),
+                configuration.text.profile.thirdItem
+            )
 
-        fourthItem.setOnClickListener {
-            startCoroutineAsync {
-                viewModel.toAboutYouPermissionsPage(aboutYouNavController())
+            thirdItem.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.toAboutYouReviewConsentPage(aboutYouNavController())
+                }
             }
-        }
 
-        disclaimer.text = configuration.text.profile.disclaimer
-    }
+            fourthItem.applyData(
+                configuration,
+                requireContext().imageConfiguration.permissions(),
+                configuration.text.profile.fourthItem
+            )
+
+            fourthItem.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.toAboutYouPermissionsPage(aboutYouNavController())
+                }
+            }
+
+            disclaimer.text = configuration.text.profile.disclaimer
+        }
 
 }

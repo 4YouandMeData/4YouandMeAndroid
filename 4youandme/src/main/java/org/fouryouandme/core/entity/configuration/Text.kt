@@ -182,7 +182,8 @@ data class Profile(
     val connect: String,
     val allow: String,
     val allowed: String,
-    val edit: String
+    val edit: String,
+    val oauth: String
 )
 
 data class YourData(
