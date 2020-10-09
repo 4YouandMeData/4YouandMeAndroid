@@ -94,7 +94,7 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun permissions(): Int = R.drawable.permission
 
-    override fun fitbit(): Int = R.drawable.fitbit
+    override fun smartwatch(): Int = R.drawable.fitbit
 
     override fun oura(): Int = R.drawable.oura
 
@@ -108,4 +108,9 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun pencil(): Int = R.drawable.pencil
 
+    override fun instagram(): Int = R.drawable.instagram
+
+    override fun rescuetime(): Int = R.drawable.rescuetime
+
+    override fun twitter(): Int = R.drawable.twitter
 }

@@ -65,37 +65,37 @@ class AboutYouAppsAndDevicesFragment :
                         StudyIntegration.Garmin -> viewModel.createGarminItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Garmin)
+                            user.identities.contains(StudyIntegration.Garmin).not()
                         )
 
                         StudyIntegration.Fitbit -> viewModel.createFitbitItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Fitbit)
+                            user.identities.contains(StudyIntegration.Fitbit).not()
                         )
 
                         StudyIntegration.Oura -> viewModel.createOuraItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Oura)
+                            user.identities.contains(StudyIntegration.Oura).not()
                         )
 
                         StudyIntegration.Instagram -> viewModel.createInstagramItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Instagram)
+                            user.identities.contains(StudyIntegration.Instagram).not()
                         )
 
                         StudyIntegration.RescueTime -> viewModel.createRescueTimeItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.RescueTime)
+                            user.identities.contains(StudyIntegration.RescueTime).not()
                         )
 
                         StudyIntegration.Twitter -> viewModel.createTwitterItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Twitter)
+                            user.identities.contains(StudyIntegration.Twitter).not()
                         )
                     }
                 }

@@ -137,10 +137,19 @@ interface ImageConfiguration {
     /*--- device item ---*/
 
     @DrawableRes
-    fun fitbit(): Int
+    fun smartwatch(): Int
 
     @DrawableRes
     fun oura(): Int
+
+    @DrawableRes
+    fun instagram(): Int
+
+    @DrawableRes
+    fun rescuetime(): Int
+
+    @DrawableRes
+    fun twitter(): Int
 
     @DrawableRes
     fun deactivatedButton(): Int

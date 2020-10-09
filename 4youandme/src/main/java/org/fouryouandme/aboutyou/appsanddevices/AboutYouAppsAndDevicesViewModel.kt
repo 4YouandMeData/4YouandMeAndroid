@@ -23,7 +23,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
         AppAndDeviceItem(
             configuration,
             "Garmin",
-            imageConfiguration.fitbit(),
+            imageConfiguration.smartwatch(),
             isConnected,
             "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/garmin"
         )
@@ -36,7 +36,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
         AppAndDeviceItem(
             configuration,
             "Fitbit",
-            imageConfiguration.fitbit(),
+            imageConfiguration.smartwatch(),
             isConnected,
             "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/fitbit"
         )
@@ -62,7 +62,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
         AppAndDeviceItem(
             configuration,
             "Instagram",
-            imageConfiguration.oura(),
+            imageConfiguration.instagram(),
             isConnected,
             "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/instagram"
         )
@@ -75,7 +75,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
     AppAndDeviceItem(
         configuration,
         "RescueTime",
-        imageConfiguration.oura(),
+        imageConfiguration.rescuetime(),
         isConnected,
         "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/rescuetime"
     )
@@ -88,7 +88,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
         AppAndDeviceItem(
             configuration,
             "Twitter",
-            imageConfiguration.oura(),
+            imageConfiguration.twitter(),
             isConnected,
             "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/twitter"
         )
