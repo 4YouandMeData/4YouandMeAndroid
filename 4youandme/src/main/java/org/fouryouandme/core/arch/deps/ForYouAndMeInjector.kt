@@ -38,6 +38,8 @@ import org.fouryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import org.fouryouandme.core.data.api.optins.response.OptInsResponse
 import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
+import org.fouryouandme.core.data.api.studyinfo.StudyInfoApi
+import org.fouryouandme.core.data.api.studyinfo.response.StudyInfoResponse
 import org.fouryouandme.core.data.api.task.TaskApi
 import org.fouryouandme.core.data.api.task.response.TaskResponse
 import org.fouryouandme.core.data.api.yourdata.YourDataApi
@@ -103,6 +105,7 @@ class ForYouAndMeInjector(
                     .add(SurveyResponse::class.java)
                     .add(TaskActivityResponse::class.java)
                     .add(UserResponse::class.java)
+                    .add(StudyInfoResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -144,6 +147,9 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val yourDataApi: YourDataApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val studyInfoApi: StudyInfoApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
     /* --- task --- */

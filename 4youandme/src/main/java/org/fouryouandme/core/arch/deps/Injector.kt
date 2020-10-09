@@ -14,6 +14,7 @@ import org.fouryouandme.core.data.api.feed.FeedApi
 import org.fouryouandme.core.data.api.integration.IntegrationApi
 import org.fouryouandme.core.data.api.optins.OptInsApi
 import org.fouryouandme.core.data.api.screening.ScreeningApi
+import org.fouryouandme.core.data.api.studyinfo.StudyInfoApi
 import org.fouryouandme.core.data.api.task.TaskApi
 import org.fouryouandme.core.data.api.yourdata.YourDataApi
 import org.fouryouandme.researchkit.task.TaskConfiguration
@@ -58,6 +59,7 @@ interface Injector {
     val answerApi: AnswerApi
     val feedApi: FeedApi
     val yourDataApi: YourDataApi
+    val studyInfoApi: StudyInfoApi
 
     /* --- task --- */
 
@@ -163,6 +165,14 @@ interface Injector {
     fun yourDataModule(): YourDataModule =
         YourDataModule(
             yourDataApi,
+            environment,
+            errorModule(),
+            authModule()
+        )
+
+    fun studyInfoModule(): StudyInfoModule =
+        StudyInfoModule(
+            studyInfoApi,
             environment,
             errorModule(),
             authModule()

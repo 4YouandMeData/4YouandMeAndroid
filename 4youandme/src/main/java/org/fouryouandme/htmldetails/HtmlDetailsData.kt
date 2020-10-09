@@ -1,13 +1,14 @@
 package org.fouryouandme.htmldetails
 
-import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.studyinfo.StudyInfo
+
 
 data class HtmlDetailsState(
-    val configuration: Configuration
+    val studyInfo: StudyInfo
 )
 
 sealed class HtmlDetailsStateUpdate {
-    data class Initialization(val configuration: Configuration) : HtmlDetailsStateUpdate()
+    data class Initialization(val studyInfo: StudyInfo) : HtmlDetailsStateUpdate()
 }
 
 sealed class HtmlDetailsLoading {
