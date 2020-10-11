@@ -16,6 +16,7 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import java.text.SimpleDateFormat
 import java.util.*
@@ -76,11 +77,18 @@ class DatePickerStepFragment : StepFragment(R.layout.step_date) {
         val month = date_picker.month
         val day = date_picker.dayOfMonth
 
-        val calendar = Calendar.getInstance()
-        calendar.set(year, month, day)
+        val date =
+            ZonedDateTime.of(
+                year,
+                month + 1,  // +1 because Android starts to count months from 0
+                day,
+                0,
+                0,
+                0,
+                0,
+                ZoneOffset.UTC
+            )
 
-        val format = SimpleDateFormat("yyyy-MM-dd")
-
-        return format.format(calendar.time)
+        return date.toString()
     }
 }
