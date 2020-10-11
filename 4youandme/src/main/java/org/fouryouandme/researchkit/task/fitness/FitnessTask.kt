@@ -32,6 +32,7 @@ class FitnessTask(
     welcomeStartButton: String?,
     welcomeStartButtonColor: Int,
     welcomeStartButtonTextColor: Int,
+    welcomeShadowColor: Int,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -106,7 +107,8 @@ class FitnessTask(
                     welcomeStartButton ?: it.getString(R.string.TASK_welcome_start_button)
                 },
                 startButtonColor = welcomeStartButtonColor,
-                startButtonTextColor = welcomeStartButtonTextColor
+                startButtonTextColor = welcomeStartButtonTextColor,
+                shadowColor = welcomeShadowColor
             ),
             IntroductionStep(
                 identifier = FITNESS_START,

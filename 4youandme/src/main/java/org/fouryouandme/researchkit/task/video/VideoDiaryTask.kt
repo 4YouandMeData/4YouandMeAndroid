@@ -1,5 +1,6 @@
 package org.fouryouandme.researchkit.task.video
 
+import org.fouryouandme.R
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.introduction.list.IntroductionItem
 import org.fouryouandme.researchkit.step.introduction.list.IntroductionListStep
@@ -17,6 +18,9 @@ class VideoDiaryTask(
     introButton: String,
     introButtonColor: Int,
     introButtonTextColor: Int,
+    introRemindButton: String,
+    introRemindButtonColor: Int,
+    introRemindButtonTextColor: Int,
     introList: List<IntroductionItem>,
     introShadowColor: Int,
     introToolbarColor: Int,
@@ -67,6 +71,11 @@ class VideoDiaryTask(
                 button = introButton,
                 buttonColor = introButtonColor,
                 buttonTextColor = introButtonTextColor,
+                remindButton = {
+                    introRemindButton ?: it.getString(R.string.TASK_welcome_remind_button)
+                },
+                remindButtonColor = introRemindButtonColor,
+                remindButtonTextColor = introRemindButtonTextColor,
                 list = introList,
                 shadowColor = introShadowColor,
                 toolbarColor = introToolbarColor,

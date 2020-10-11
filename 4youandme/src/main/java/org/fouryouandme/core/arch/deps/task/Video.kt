@@ -39,6 +39,9 @@ suspend fun FYAMTaskConfiguration.buildVideoDiary(
         introButton = configuration.text.videoDiary.introButton,
         introButtonColor = primaryEnd,
         introButtonTextColor = secondary,
+        introRemindButton = configuration.text.task.remindButton,
+        introRemindButtonColor = secondary,
+        introRemindButtonTextColor = primaryEnd,
         introList =
         listOf(
             IntroductionItem(

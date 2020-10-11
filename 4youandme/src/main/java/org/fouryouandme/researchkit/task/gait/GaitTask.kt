@@ -33,6 +33,7 @@ class GaitTask(
     welcomeStartButton: String?,
     welcomeStartButtonColor: Int,
     welcomeStartButtonTextColor: Int,
+    welcomeShadowColor: Int,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -96,14 +97,21 @@ class GaitTask(
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.GAIT_welcome_title) },
                 titleColor = welcomeTitleColor,
-                description = { welcomeDescription ?: it.getString(R.string.GAIT_welcome_description) },
+                description = {
+                    welcomeDescription ?: it.getString(R.string.GAIT_welcome_description)
+                },
                 descriptionColor = welcomeDescriptionColor,
-                remindButton = { welcomeRemindButton ?: it.getString(R.string.TASK_welcome_remind_button) },
+                remindButton = {
+                    welcomeRemindButton ?: it.getString(R.string.TASK_welcome_remind_button)
+                },
                 remindButtonColor = welcomeRemindButtonColor,
                 remindButtonTextColor = welcomeRemindButtonTextColor,
-                startButton = { welcomeStartButton ?: it.getString(R.string.TASK_welcome_start_button) },
+                startButton = {
+                    welcomeStartButton ?: it.getString(R.string.TASK_welcome_start_button)
+                },
                 startButtonColor = welcomeStartButtonColor,
-                startButtonTextColor = welcomeStartButtonTextColor
+                startButtonTextColor = welcomeStartButtonTextColor,
+                shadowColor = welcomeShadowColor
             ),
             StartStep(
                 identifier = GAIT_START,

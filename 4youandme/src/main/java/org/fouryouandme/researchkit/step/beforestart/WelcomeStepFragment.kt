@@ -3,7 +3,11 @@ package org.fouryouandme.researchkit.step.beforestart
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.step_welcome.*
+import kotlinx.android.synthetic.main.step_welcome.root
+import kotlinx.android.synthetic.main.step_welcome.shadow
 import org.fouryouandme.R
+import org.fouryouandme.core.entity.configuration.HEXColor
+import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.core.ext.html.setHtmlText
@@ -61,6 +65,12 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
             start_now.background = button(step.startButtonColor)
             start_now.text = step.startButton(requireContext())
             start_now.setTextColor(step.startButtonTextColor)
+
+            shadow.background =
+                HEXGradient.from(
+                    HEXColor.transparent(),
+                    HEXColor.parse(step.shadowColor)
+                ).drawable(0.3f)
 
         }
 

@@ -49,6 +49,7 @@ suspend fun FYAMTaskConfiguration.buildFitness(
         welcomeStartButton = configuration.text.task.startButton,
         welcomeStartButtonColor = primaryEnd,
         welcomeStartButtonTextColor = secondary,
+        welcomeShadowColor = primaryText,
         startBackgroundColor = secondary,
         startTitle = null,
         startTitleColor = primaryText,
