@@ -52,4 +52,7 @@
     <string name="FITNESS_end_description">Your data will be analyzed and you will be notified when your results are ready.</string>
     <string name="FITNESS_button">Done</string>
 
+    <string name="CAMCOG_welcome_title">"2-Back Task"</string>
+    <string name="CAMCOG_welcome_description">"About this activity\nTwice each day, we’ll ask you to complete this task in which you’ll be asked to recall a series of numbers.\nWhy this activity\nThis activity will help us understand your attention and memory and how they change throughout your pregnancy."</string>
+
 ***REMOVED***

@@ -121,6 +121,9 @@ data class StringsResponse(
     @Json(name = "TASK_WALK_INTRO_TITLE") val taskWalkIntroTitle: String? = null,
     @Json(name = "TASK_WALK_INTRO_BODY") val taskWalkIntroBody: String? = null,
 
+    @Json(name = "CAMCOG_TASK_TITLE") val camCogTaskTitle: String? = null,
+    @Json(name = "CAMCOG_TASK_BODY") val camCogTaskBody: String? = null,
+
     @Json(name = "TASK_REMIND_ME_LATER") val taskRemindMeLater: String? = null,
     @Json(name = "TASK_START_BUTTON") val taskStartButton: String? = null,
 
@@ -181,6 +184,7 @@ data class StringsResponse(
         val task = toTask()
         val gaitActivity = toGaitActivity()
         val fitnessActivity = toFitnessActivity()
+        val camCogActivity = toCamCogActivity()
 
         return Option.fx {
             Text(
@@ -199,7 +203,8 @@ data class StringsResponse(
                 yourData.bind(),
                 task.bind(),
                 gaitActivity.bind(),
-                fitnessActivity.bind()
+                fitnessActivity.bind(),
+                camCogActivity.bind()
             )
         }
     }
@@ -469,6 +474,14 @@ data class StringsResponse(
             FitnessActivity(
                 taskWalkIntroTitle.toOption().bind(),
                 taskWalkIntroBody.toOption().bind()
+            )
+        }
+
+    private fun toCamCogActivity(): Option<CamCogActivity> =
+        Option.fx {
+            CamCogActivity(
+                camCogTaskTitle.toOption().bind(),
+                camCogTaskBody.toOption().bind()
             )
         }
 }
