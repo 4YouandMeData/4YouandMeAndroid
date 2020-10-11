@@ -106,18 +106,18 @@ class AboutYouUserInfoFragment :
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            detailsToolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
 
-            frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
+            header.setBackgroundColor(configuration.theme.primaryColorStart.color())
 
             imageView.setImageResource(imageConfiguration.logoStudySecondary())
 
-            backArrow.setImageResource(imageConfiguration.back())
-            backArrow.setOnClickListener {
+            toolbar.showBackButton(imageConfiguration) {
 
                 startCoroutineAsync {
                     aboutYouViewModel.back(aboutYouNavController(), rootNavController())
                 }
+
             }
 
             title.setTextColor(configuration.theme.secondaryColor.color())
