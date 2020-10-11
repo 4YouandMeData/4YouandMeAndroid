@@ -43,6 +43,9 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
     object GaitTask : TaskActivityType("gait_task", TaskIdentifiers.GAIT)
     object WalkTask : TaskActivityType("walk_task", TaskIdentifiers.FITNESS)
     object Survey : TaskActivityType("survey", "survey")
+    object CamCogPvt : TaskActivityType("camcog_pvt", TaskIdentifiers.CAMCOG)
+    object CamCogNbx : TaskActivityType("camcog_nbx", TaskIdentifiers.CAMCOG)
+    object CamCogEbt : TaskActivityType("camcog_ebt", TaskIdentifiers.CAMCOG)
 
     companion object {
 
@@ -51,6 +54,9 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
                 VideoDiary.typeId -> VideoDiary
                 GaitTask.typeId -> GaitTask
                 WalkTask.typeId -> WalkTask
+                CamCogPvt.typeId -> CamCogPvt
+                CamCogEbt.typeId -> CamCogEbt
+                CamCogNbx.typeId -> CamCogNbx
                 else -> null
             }
 

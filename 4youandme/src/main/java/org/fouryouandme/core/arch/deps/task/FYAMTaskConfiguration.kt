@@ -40,6 +40,8 @@ class FYAMTaskConfiguration(
                 TaskActivityType.Survey.typeId ->
                     // TODO: fetch survey and handle dynamic creation
                     buildSurvey(id, configuration, imageConfiguration)
+                TaskIdentifiers.CAMCOG ->
+                    buildCamCog(id, configuration, imageConfiguration)
                 else -> null
 
             }
