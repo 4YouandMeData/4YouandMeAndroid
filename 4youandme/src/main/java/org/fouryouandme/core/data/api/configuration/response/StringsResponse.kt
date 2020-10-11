@@ -115,6 +115,12 @@ data class StringsResponse(
     @Json(name = "VIDEO_DIARY_RECORDER_START_RECORDING_DESCRIPTION") val videoDiaryRecorderStartRecordingDescription: String? = null,
     @Json(name = "VIDEO_DIARY_RECORDER_RESUME_RECORDING_DESCRIPTION") val videoDiaryRecorderResumeRecordingDescription: String? = null,
 
+    @Json(name = "TASK_GAIT_INTRO_TITLE") val taskGaitIntroTitle: String? = null,
+    @Json(name = "TASK_GAIT_INTRO_BODY") val taskGaitIntroBody: String? = null,
+
+    @Json(name = "TASK_REMIND_ME_LATER") val taskRemindMeLater: String? = null,
+    @Json(name = "TASK_START_BUTTON") val taskStartButton: String? = null,
+
     @Json(name = "STUDY_INFO_ABOUT_YOU") val studyInfoAboutYou: String? = null,
     @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
     @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String? = null,
@@ -169,6 +175,8 @@ data class StringsResponse(
         val studyInfo = toStudyInfo()
         val profile = toProfile()
         val yourData = toYourData()
+        val task = toTask()
+        val gaitActivity = toGaitActivity()
 
         return Option.fx {
             Text(
@@ -184,7 +192,9 @@ data class StringsResponse(
                 videoDiary.bind(),
                 studyInfo.bind(),
                 profile.bind(),
-                yourData.bind()
+                yourData.bind(),
+                task.bind(),
+                gaitActivity.bind()
             )
         }
     }
@@ -430,6 +440,22 @@ data class StringsResponse(
                 tabUserDataPeriodWeek.toOption().bind(),
                 tabUserDataPeriodMonth.toOption().bind(),
                 tabUserDataPeriodYear.toOption().bind()
+            )
+        }
+
+    private fun toTask(): Option<Task> =
+        Option.fx {
+            Task(
+                taskRemindMeLater.toOption().bind(),
+                taskStartButton.toOption().bind()
+            )
+        }
+
+    private  fun toGaitActivity(): Option<GaitActivity> =
+        Option.fx {
+            GaitActivity(
+                taskGaitIntroTitle.toOption().bind(),
+                taskGaitIntroBody.toOption().bind()
             )
         }
 }

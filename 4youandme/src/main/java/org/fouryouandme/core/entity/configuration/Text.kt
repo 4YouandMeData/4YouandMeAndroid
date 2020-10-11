@@ -13,7 +13,9 @@ data class Text(
     val videoDiary: VideoDiary,
     val studyInfo: StudyInfo,
     val profile: Profile,
-    val yourData: YourData
+    val yourData: YourData,
+    val task: Task,
+    val gaitActivity: GaitActivity
 )
 
 data class Error(
@@ -193,4 +195,14 @@ data class YourData(
     val periodWeek: String,
     val periodMonth: String,
     val periodYear: String
+)
+
+data class Task(
+    val remindButton: String,
+    val startButton: String
+)
+
+data class GaitActivity(
+    val introTitle: String,
+    val introBody: String,
 )

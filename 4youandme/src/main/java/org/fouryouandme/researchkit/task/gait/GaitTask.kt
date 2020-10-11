@@ -9,6 +9,7 @@ import org.fouryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerR
 import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.beforestart.WelcomeStep
 import org.fouryouandme.researchkit.step.countdown.CountDownStep
 import org.fouryouandme.researchkit.step.end.EndStep
 import org.fouryouandme.researchkit.step.introduction.IntroductionStep
@@ -20,6 +21,18 @@ import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class GaitTask(
     id: String,
+    welcomeBackgroundColor: Int,
+    welcomeImage: Int,
+    welcomeTitle: String?,
+    welcomeTitleColor: Int,
+    welcomeDescription: String?,
+    welcomeDescriptionColor: Int,
+    welcomeRemindButton: String?,
+    welcomeRemindButtonColor: Int,
+    welcomeRemindButtonTextColor: Int,
+    welcomeStartButton: String?,
+    welcomeStartButtonColor: Int,
+    welcomeStartButtonTextColor: Int,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -77,6 +90,21 @@ class GaitTask(
     override val steps: List<Step> by lazy {
 
         listOf(
+            WelcomeStep(
+                identifier = GAIT_WELCOME,
+                backgroundColor = welcomeBackgroundColor,
+                image = welcomeImage,
+                title = { welcomeTitle ?: it.getString(R.string.GAIT_welcome_title) },
+                titleColor = welcomeTitleColor,
+                description = { welcomeDescription ?: it.getString(R.string.GAIT_welcome_description) },
+                descriptionColor = welcomeDescriptionColor,
+                remindButton = { welcomeRemindButton ?: it.getString(R.string.TASK_welcome_remind_button) },
+                remindButtonColor = welcomeRemindButtonColor,
+                remindButtonTextColor = welcomeRemindButtonTextColor,
+                startButton = { welcomeStartButton ?: it.getString(R.string.TASK_welcome_start_button) },
+                startButtonColor = welcomeStartButtonColor,
+                startButtonTextColor = welcomeStartButtonTextColor
+            ),
             StartStep(
                 identifier = GAIT_START,
                 backgroundColor = startBackgroundColor,
@@ -193,6 +221,8 @@ class GaitTask(
     }
 
     companion object {
+
+        const val GAIT_WELCOME: String = "gait_welcome"
 
         const val GAIT_START: String = "gait_start"
 

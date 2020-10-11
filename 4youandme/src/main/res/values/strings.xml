@@ -26,7 +26,11 @@
     <string name="TASK_next">Next</string>
     <string name="TASK_countdown">Starting activity in</string>
     <string name="TASK_get_started">Get Started</string>
+    <string name="TASK_welcome_remind_button">"Remind me"</string>
+    <string name="TASK_welcome_start_button">"Start Now"</string>
 
+    <string name="GAIT_welcome_title">Gait Activity</string>
+    <string name="GAIT_welcome_description">"About this activity\nThis activity measures your gait and balance as you walk and stand still. Do not continue if you cannot safely walk unassisted.\nWhy this activity\nThe way you walk and stand will give us clues about how your body is changing during pregnancy.\nPlease remember that the gait task is only for the purpose of research. We will analyze the data after the study is over. If you need medical care, please talk to your physician."</string>
     <string name="GAIT_title">Gait and Balance</string>
     <string name="GAIT_start">This activity measures your gait and balance as you walk and stand still. Do not continue if you cannot safely walk unassisted.</string>
     <string name="GAIT_intro">Find a place where you can safely walk unassisted for about 20 steps in a straight line.\nPut your device in a pocket or bag and follow the audio instructions.</string>

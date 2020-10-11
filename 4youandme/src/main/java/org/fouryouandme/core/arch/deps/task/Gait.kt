@@ -37,6 +37,18 @@ suspend fun FYAMTaskConfiguration.buildGait(
 
     return GaitTask(
         id = id,
+        welcomeBackgroundColor = secondary,
+        welcomeImage = imageConfiguration.videoDiaryIntro(),
+        welcomeTitle = configuration.text.gaitActivity.introTitle,
+        welcomeTitleColor = primaryText,
+        welcomeDescription = configuration.text.gaitActivity.introBody,
+        welcomeDescriptionColor = primaryText,
+        welcomeRemindButton = configuration.text.task.remindButton,
+        welcomeRemindButtonColor = secondary,
+        welcomeRemindButtonTextColor = primaryEnd,
+        welcomeStartButton = configuration.text.task.startButton,
+        welcomeStartButtonColor = primaryEnd,
+        welcomeStartButtonTextColor = secondary,
         startBackgroundColor = secondary,
         startTitle = null,
         startTitleColor = primaryText,
