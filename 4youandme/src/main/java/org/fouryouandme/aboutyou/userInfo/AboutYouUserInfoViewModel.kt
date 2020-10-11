@@ -1,6 +1,5 @@
 package org.fouryouandme.aboutyou.userInfo
 
-import android.util.Log
 import arrow.core.Either
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
@@ -127,8 +126,6 @@ class AboutYouUserInfoViewModel(
     /* --- update --- */
 
     suspend fun updateTextItem(id: String, text: String): Unit {
-
-        Log.d("TEXT_UPDATE", text)
 
         val items =
             state().items.map {

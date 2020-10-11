@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import arrow.fx.coroutines.Disposable
+import arrow.fx.coroutines.cancelBoundary
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
@@ -69,13 +70,12 @@ class EntryStringViewHolder(
             }
 
             override fun afterTextChanged(s: Editable?) {
-                disposable?.let {
-                    it()
-                }
+                disposable?.let { it() }
                 disposable =
                     startCoroutineCancellableAsync {
 
-                        delay(1000)
+                        delay(500)
+                        cancelBoundary()
                         onTextChange(t, entry.text?.toString().orEmpty())
 
                     }
