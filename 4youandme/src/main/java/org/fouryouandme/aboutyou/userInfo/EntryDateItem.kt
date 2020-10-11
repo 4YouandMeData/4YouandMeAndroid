@@ -71,7 +71,7 @@ class EntryDateViewHolder(
                     val date =
                         ZonedDateTime.of(
                             year,
-                            month,
+                            month + 1,  // +1 because Android starts to count months from 0
                             dayOfMonth,
                             0,
                             0,
