@@ -1,5 +1,6 @@
 package org.fouryouandme.core.arch.deps.task
 
+import android.content.Context
 import arrow.core.computations.either
 import arrow.core.flatMap
 import com.squareup.moshi.Moshi
@@ -36,6 +37,18 @@ suspend fun FYAMTaskConfiguration.buildFitness(
 
     return FitnessTask(
         id = id,
+        welcomeBackgroundColor = secondary,
+        welcomeImage = imageConfiguration.videoDiaryIntro(),
+        welcomeTitle = configuration.text.gaitActivity.introTitle,
+        welcomeTitleColor = primaryText,
+        welcomeDescription = configuration.text.gaitActivity.introBody,
+        welcomeDescriptionColor = primaryText,
+        welcomeRemindButton = configuration.text.task.remindButton,
+        welcomeRemindButtonColor = secondary,
+        welcomeRemindButtonTextColor = primaryEnd,
+        welcomeStartButton = configuration.text.task.startButton,
+        welcomeStartButtonColor = primaryEnd,
+        welcomeStartButtonTextColor = secondary,
         startBackgroundColor = secondary,
         startTitle = null,
         startTitleColor = primaryText,

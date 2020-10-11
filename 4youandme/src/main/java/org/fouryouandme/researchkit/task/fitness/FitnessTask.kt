@@ -9,6 +9,7 @@ import org.fouryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerR
 import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.beforestart.WelcomeStep
 import org.fouryouandme.researchkit.step.countdown.CountDownStep
 import org.fouryouandme.researchkit.step.end.EndStep
 import org.fouryouandme.researchkit.step.introduction.IntroductionStep
@@ -19,6 +20,18 @@ import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class FitnessTask(
     id: String,
+    welcomeBackgroundColor: Int,
+    welcomeImage: Int,
+    welcomeTitle: String?,
+    welcomeTitleColor: Int,
+    welcomeDescription: String?,
+    welcomeDescriptionColor: Int,
+    welcomeRemindButton: String?,
+    welcomeRemindButtonColor: Int,
+    welcomeRemindButtonTextColor: Int,
+    welcomeStartButton: String?,
+    welcomeStartButtonColor: Int,
+    welcomeStartButtonTextColor: Int,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -74,6 +87,27 @@ class FitnessTask(
     override val steps: List<Step> by lazy {
 
         listOf(
+            WelcomeStep(
+                identifier = FITNESS_WELCOME,
+                backgroundColor = welcomeBackgroundColor,
+                image = welcomeImage,
+                title = { welcomeTitle ?: it.getString(R.string.FITNESS_welcome_title) },
+                titleColor = welcomeTitleColor,
+                description = {
+                    welcomeDescription ?: it.getString(R.string.FITNESS_welcome_description)
+                },
+                descriptionColor = welcomeDescriptionColor,
+                remindButton = {
+                    welcomeRemindButton ?: it.getString(R.string.TASK_welcome_remind_button)
+                },
+                remindButtonColor = welcomeRemindButtonColor,
+                remindButtonTextColor = welcomeRemindButtonTextColor,
+                startButton = {
+                    welcomeStartButton ?: it.getString(R.string.TASK_welcome_start_button)
+                },
+                startButtonColor = welcomeStartButtonColor,
+                startButtonTextColor = welcomeStartButtonTextColor
+            ),
             IntroductionStep(
                 identifier = FITNESS_START,
                 backgroundColor = startBackgroundColor,
@@ -192,6 +226,8 @@ class FitnessTask(
 
     companion object {
 
+        const val FITNESS_WELCOME: String = "fitness_welcome"
+
         const val FITNESS_START: String = "fitness_start"
 
         const val FITNESS_INTRO: String = "fitness_intro"
@@ -215,7 +251,7 @@ class FitnessTask(
 
         const val FITNESS_WALK_ACCELEROMETER: String =
             "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${FITNESS_WALK}"
-        
+
 
         const val FITNESS_SIT_DEVICE_MOTION: String =
             "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${FITNESS_SIT}"

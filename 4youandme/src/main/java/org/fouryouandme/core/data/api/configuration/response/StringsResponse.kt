@@ -118,6 +118,9 @@ data class StringsResponse(
     @Json(name = "TASK_GAIT_INTRO_TITLE") val taskGaitIntroTitle: String? = null,
     @Json(name = "TASK_GAIT_INTRO_BODY") val taskGaitIntroBody: String? = null,
 
+    @Json(name = "TASK_WALK_INTRO_TITLE") val taskWalkIntroTitle: String? = null,
+    @Json(name = "TASK_WALK_INTRO_BODY") val taskWalkIntroBody: String? = null,
+
     @Json(name = "TASK_REMIND_ME_LATER") val taskRemindMeLater: String? = null,
     @Json(name = "TASK_START_BUTTON") val taskStartButton: String? = null,
 
@@ -177,6 +180,7 @@ data class StringsResponse(
         val yourData = toYourData()
         val task = toTask()
         val gaitActivity = toGaitActivity()
+        val fitnessActivity = toFitnessActivity()
 
         return Option.fx {
             Text(
@@ -194,7 +198,8 @@ data class StringsResponse(
                 profile.bind(),
                 yourData.bind(),
                 task.bind(),
-                gaitActivity.bind()
+                gaitActivity.bind(),
+                fitnessActivity.bind()
             )
         }
     }
@@ -451,11 +456,19 @@ data class StringsResponse(
             )
         }
 
-    private  fun toGaitActivity(): Option<GaitActivity> =
+    private fun toGaitActivity(): Option<GaitActivity> =
         Option.fx {
             GaitActivity(
                 taskGaitIntroTitle.toOption().bind(),
                 taskGaitIntroBody.toOption().bind()
+            )
+        }
+
+    private fun toFitnessActivity(): Option<FitnessActivity> =
+        Option.fx {
+            FitnessActivity(
+                taskWalkIntroTitle.toOption().bind(),
+                taskWalkIntroBody.toOption().bind()
             )
         }
 }
