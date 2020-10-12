@@ -105,7 +105,9 @@ class TasksViewModel(
                 )
             )
 
-        taskActivities.groupBy(
+        taskActivities
+            .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
+            .groupBy(
             { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
             { it }
         ).forEach { (key, value) ->
