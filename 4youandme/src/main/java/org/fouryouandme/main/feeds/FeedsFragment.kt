@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.feeds.loading
 import kotlinx.android.synthetic.main.feeds.recycler_view
 import kotlinx.android.synthetic.main.feeds.root
 import kotlinx.android.synthetic.main.feeds.title
-import kotlinx.android.synthetic.main.tasks.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
@@ -136,6 +135,13 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             logo.setOnClickListener {
                 startCoroutineAsync {
                     viewModel.aboutYouPage(rootNavController())
+                }
+            }
+
+            swipe_refresh.setOnRefreshListener {
+                startCoroutineAsync {
+                    viewModel.initialize(rootNavController(), configuration)
+                    swipe_refresh.isRefreshing = false
                 }
             }
 

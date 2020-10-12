@@ -133,6 +133,13 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             empty_button.text = configuration.text.tab.tabTaskEmptyButton
             empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
 
+            swipe_refresh.setOnRefreshListener {
+                startCoroutineAsync {
+                    viewModel.initialize(rootNavController(), configuration)
+                    swipe_refresh.isRefreshing = false
+                }
+            }
+
         }
 
     private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {

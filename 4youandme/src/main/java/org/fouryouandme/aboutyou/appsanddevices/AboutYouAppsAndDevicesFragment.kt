@@ -124,7 +124,6 @@ class AboutYouAppsAndDevicesFragment :
             title.setTextColor(configuration.theme.secondaryColor.color())
             title.text = configuration.text.profile.secondItem
 
-            // adapter.submitList(viewModel.getAppAndDevices(configuration, imageConfiguration))
         }
 
     private suspend fun setupRecyclerView() =
