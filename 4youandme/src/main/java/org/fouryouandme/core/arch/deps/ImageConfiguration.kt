@@ -152,6 +152,9 @@ interface ImageConfiguration {
     fun twitter(): Int
 
     @DrawableRes
+    fun garmin(): Int
+
+    @DrawableRes
     fun deactivatedButton(): Int
 
     /*--- permissions item ---*/

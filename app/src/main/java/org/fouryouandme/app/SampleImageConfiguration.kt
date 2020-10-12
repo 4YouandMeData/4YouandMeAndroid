@@ -113,4 +113,6 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun rescuetime(): Int = R.drawable.rescuetime
 
     override fun twitter(): Int = R.drawable.twitter
+
+    override fun garmin(): Int = R.drawable.garmin
 }

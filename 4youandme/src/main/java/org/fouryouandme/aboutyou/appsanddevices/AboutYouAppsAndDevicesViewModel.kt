@@ -23,7 +23,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
         AppAndDeviceItem(
             configuration,
             "Garmin",
-            imageConfiguration.smartwatch(),
+            imageConfiguration.garmin(),
             isConnected,
             "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/garmin"
         )
