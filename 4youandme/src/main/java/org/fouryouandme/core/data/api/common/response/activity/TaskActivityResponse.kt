@@ -13,13 +13,12 @@ class TaskActivityResponse(
     title: String? = null,
     description: String? = null,
     repeatEvery: Int? = null,
-    startColor: String? = null,
-    endColor: String? = null,
+    cardColor: String? = null,
     button: String? = null,
     @field:Json(name = "activity_type") val activityType: String? = null,
     @field:Json(name = "image") val image: String? = null
 
-) : ActivityDataResponse(title, description, repeatEvery, startColor, endColor, button) {
+) : ActivityDataResponse(title, description, repeatEvery, cardColor, button) {
 
     suspend fun toTaskActivity(taskId: String): TaskActivity =
         TaskActivity(
@@ -27,7 +26,7 @@ class TaskActivityResponse(
             title,
             description,
             button,
-            mapNotNull(startColor, endColor)?.let { HEXGradient(it.a, it.b) },
+            mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
             image?.decodeBase64ImageFx()?.orNull(),
             activityType?.let { TaskActivityType.fromType(it) }
         )

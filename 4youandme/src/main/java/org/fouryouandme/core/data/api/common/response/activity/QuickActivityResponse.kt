@@ -13,12 +13,11 @@ class QuickActivityResponse(
     title: String? = null,
     description: String? = null,
     repeatEvery: Int? = null,
-    startColor: String? = null,
-    endColor: String? = null,
+    cardColor: String? = null,
     button: String? = null,
     @field:Json(name = "quick_activity_options")
     val options: HasMany<QuickActivityOptionResponse>? = null
-) : ActivityDataResponse(title, description, repeatEvery, startColor, endColor, button) {
+) : ActivityDataResponse(title, description, repeatEvery, cardColor, button) {
 
     suspend fun toQuickActivity(id: String): QuickActivity =
         QuickActivity(
@@ -26,7 +25,7 @@ class QuickActivityResponse(
             title,
             description,
             button,
-            mapNotNull(startColor, endColor)?.let { HEXGradient(it.a, it.b) },
+            mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
             getAnswer(1),
             getAnswer(2),
             getAnswer(3),
