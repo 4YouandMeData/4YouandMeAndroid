@@ -1,17 +1,18 @@
 package org.fouryouandme.core.ext.web
 
 import android.webkit.JavascriptInterface
+import org.fouryouandme.researchkit.step.web.WebStepInterface
 
 
-class IntegrationLoginInterface(val success: () -> Unit, val failure: () -> Unit) {
+class CamCogInterface : WebStepInterface() {
 
     @JavascriptInterface
     fun integrationLogin(value: String) {
 
         when (value) {
-            "success" -> success()
-            "failure" -> failure()
-            else -> failure()
+            "success" -> close()
+            "failure" -> close()
+            else -> close()
         }
 
     }

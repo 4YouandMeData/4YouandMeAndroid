@@ -160,6 +160,7 @@ class ForYouAndMeInjector(
             imageConfiguration,
             moshi,
             taskModule(),
+            authModule(),
             errorModule()
         )
 
