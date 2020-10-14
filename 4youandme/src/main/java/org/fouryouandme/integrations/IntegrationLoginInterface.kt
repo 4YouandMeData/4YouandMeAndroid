@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.integration.login
+package org.fouryouandme.integrations
 
 import android.webkit.JavascriptInterface
 
