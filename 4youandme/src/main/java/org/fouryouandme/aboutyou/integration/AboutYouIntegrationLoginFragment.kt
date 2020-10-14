@@ -11,8 +11,8 @@ import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.integrations.getIntegrationCookies
-import org.fouryouandme.integrations.setupIntegrationLoginWebView
+import org.fouryouandme.core.ext.web.getIntegrationCookies
+import org.fouryouandme.core.ext.web.setupWebViewWithCookies
 
 class AboutYouIntegrationLoginFragment :
     AboutYouSectionFragment<AboutYouIntegrationLoginViewModel>(
@@ -73,8 +73,7 @@ class AboutYouIntegrationLoginFragment :
     private suspend fun setupWebView(cookies: Map<String, String>): Unit =
         evalOnMain {
 
-            setupIntegrationLoginWebView(
-                web_view,
+            web_view.setupWebViewWithCookies(
                 progress_bar,
                 args.url,
                 cookies,

@@ -21,7 +21,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
 import org.fouryouandme.core.cases.integration.IntegrationUseCase.getIntegration
 import org.fouryouandme.core.entity.page.Page
-import org.fouryouandme.integrations.asIntegrationCookies
+import org.fouryouandme.core.ext.web.asIntegrationCookies
 
 
 class IntegrationViewModel(

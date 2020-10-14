@@ -1,4 +1,4 @@
-package org.fouryouandme.integrations
+package org.fouryouandme.core.ext.web
 
 import android.webkit.JavascriptInterface
 
@@ -6,7 +6,7 @@ import android.webkit.JavascriptInterface
 class IntegrationLoginInterface(val success: () -> Unit, val failure: () -> Unit) {
 
     @JavascriptInterface
-    fun wearableLogin(value: String) {
+    fun integrationLogin(value: String) {
 
         when (value) {
             "success" -> success()

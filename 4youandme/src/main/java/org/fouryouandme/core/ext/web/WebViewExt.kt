@@ -1,4 +1,4 @@
-package org.fouryouandme.integrations
+package org.fouryouandme.core.ext.web
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -13,8 +13,7 @@ import java.net.URL
 
 
 @SuppressLint("SetJavaScriptEnabled")
-suspend fun setupIntegrationLoginWebView(
-    webView: WebView,
+suspend fun WebView.setupWebViewWithCookies(
     progressBar: ProgressBar,
     url: String,
     cookies: Map<String, String>,
@@ -34,22 +33,20 @@ suspend fun setupIntegrationLoginWebView(
             cookieManager.flush()
         }
 
-        webView
-            .also { it.settings.domStorageEnabled = true }
-            .also { it.settings.javaScriptEnabled = true }
-            .also { it.webViewClient = getWebClient() }
-            .also { it.webChromeClient = getWebChromeClient(progressBar) }
-            .also {
-                it.addJavascriptInterface(
-                    IntegrationLoginInterface(
-                        { success() },
-                        { failure() }
-                    ),
-                    "Android"
-                )
-            }
+        settings.domStorageEnabled = true
+        settings.javaScriptEnabled = true
+        webViewClient = getWebClient()
+        webChromeClient = getWebChromeClient(progressBar)
 
-        webView.loadUrl(url)
+        addJavascriptInterface(
+            IntegrationLoginInterface(
+                { success() },
+                { failure() }
+            ),
+            "Android"
+        )
+
+        loadUrl(url)
     }
 
 private fun getWebClient(): WebViewClient =

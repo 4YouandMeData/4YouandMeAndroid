@@ -10,7 +10,7 @@ import org.fouryouandme.R
 import org.fouryouandme.auth.integration.IntegrationSectionFragment
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
-import org.fouryouandme.integrations.setupIntegrationLoginWebView
+import org.fouryouandme.core.ext.web.setupWebViewWithCookies
 
 class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration_login) {
 
@@ -61,8 +61,7 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
     private suspend fun setupWebView(cookies: Map<String, String>): Unit =
         evalOnMain {
 
-            setupIntegrationLoginWebView(
-                web_view,
+            web_view.setupWebViewWithCookies(
                 progress_bar,
                 args.url,
                 cookies,
