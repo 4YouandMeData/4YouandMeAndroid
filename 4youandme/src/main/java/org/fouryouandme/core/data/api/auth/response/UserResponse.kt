@@ -18,7 +18,8 @@ data class UserResponse(
     @field:Json(name = "days_in_study") val daysInStudy: Int? = null,
     @field:Json(name = "identities") val identities: List<String>? = null,
     @field:Json(name = "on_boarding_completed") val onBoardingCompleted: Boolean? = null,
-    @field:Json(name = "custom_data") val customData: List<UserCustomDataResponse>? = null
+    @field:Json(name = "custom_data") val customData: List<UserCustomDataResponse>? = null,
+    @field:Json(name = "points") val points: Int? = null
 ) : Resource() {
 
     suspend fun toUser(token: String): User? =
@@ -33,7 +34,8 @@ data class UserResponse(
                 identities?.mapNotNull { StudyIntegration.fromIdentifier(it) } ?: emptyList(),
                 onBoardingCompleted = onBoardingCompleted!!,
                 token = token,
-                customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList()
+                customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList(),
+                points = points!!
             )
 
         }.orNull()

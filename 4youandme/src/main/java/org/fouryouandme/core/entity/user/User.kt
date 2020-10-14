@@ -10,7 +10,8 @@ data class User(
     val identities: List<StudyIntegration>,
     val onBoardingCompleted: Boolean,
     val token: String,
-    val customData: List<UserCustomData>
+    val customData: List<UserCustomData>,
+    val points: Int
 )
 
 data class UserCustomData(

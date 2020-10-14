@@ -23,6 +23,7 @@ import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
@@ -80,7 +81,7 @@ class FeedsViewModel(
                 setStateFx(
                     FeedsState(
                         list.toItems(rootNavController, configuration)
-                            .addHeader(configuration)
+                            .addHeader(configuration, user.orNull())
                             .addEmptyItem(configuration),
                         user = user.orNull()
                     )
@@ -164,8 +165,12 @@ class FeedsViewModel(
 
     }
 
-    private fun List<DroidItem<Any>>.addHeader(configuration: Configuration): List<DroidItem<Any>> =
-        listOf(FeedHeaderItem(configuration, "1", "1000")).plus(this)
+    private fun List<DroidItem<Any>>.addHeader(
+        configuration: Configuration,
+        user: User?
+    ): List<DroidItem<Any>> =
+        listOf(FeedHeaderItem(configuration, "1", user?.points?.toString()))
+            .plus(this)
 
     private fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
 
