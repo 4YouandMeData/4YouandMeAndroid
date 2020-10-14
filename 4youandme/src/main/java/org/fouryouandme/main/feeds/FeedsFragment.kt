@@ -2,28 +2,26 @@ package org.fouryouandme.main.feeds
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.feeds.*
-import kotlinx.android.synthetic.main.feeds.error
-import kotlinx.android.synthetic.main.feeds.loading
-import kotlinx.android.synthetic.main.feeds.recycler_view
-import kotlinx.android.synthetic.main.feeds.root
-import kotlinx.android.synthetic.main.feeds.title
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.main.MainSectionFragment
 import org.fouryouandme.main.items.DateViewHolder
 import org.fouryouandme.main.items.QuickActivitiesItem
 import org.fouryouandme.main.items.QuickActivitiesViewHolder
 import org.fouryouandme.main.items.TaskActivityViewHolder
+import java.text.MessageFormat
 
 
 class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
@@ -64,8 +62,10 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         viewModel.stateLiveData()
             .observeEvent(name()) { state ->
                 when (state) {
-                    is FeedsStateUpdate.Initialization ->
+                    is FeedsStateUpdate.Initialization -> {
                         applyTasks(state.feeds)
+                        configuration { applyUser(it, state.user) }
+                    }
                 }
             }
 
@@ -107,12 +107,12 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         configuration {
 
-            applyData(it)
+            applyConfiguration(it)
             viewModel.initialize(rootNavController(), it)
         }
     }
 
-    private suspend fun applyData(configuration: Configuration): Unit =
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
@@ -125,10 +125,8 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                     configuration.theme.primaryColorEnd
                 ).drawable()
 
-            title.text = "Week 12"
             title.setTextColor(configuration.theme.secondaryTextColor.color())
 
-            header_text.text = "2ND TRIMESTER"
             header_text.setTextColor(configuration.theme.secondaryColor.color())
             header_text.alpha = 0.5f
 
@@ -145,6 +143,28 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                     swipe_refresh.isRefreshing = false
                 }
             }
+
+        }
+
+    private suspend fun applyUser(configuration: Configuration, user: User?): Unit =
+        evalOnMain {
+
+            val pregnancyMonths = viewModel.getPregnancyMonths(user)
+            val pregnancyTrimester = pregnancyMonths?.let { "${(it / 3) + 1}nd" }
+
+            header_text.text =
+                pregnancyTrimester?.let {
+                    MessageFormat.format(configuration.text.tab.feedTitle, it)
+                }
+            header_text.isVisible = pregnancyTrimester != null && pregnancyMonths >= 0
+
+            val pregnancyWeeks = viewModel.getPregnancyWeeks(user)
+
+            title.text =
+                pregnancyWeeks?.let {
+                    MessageFormat.format(configuration.text.tab.feedSubTitle, it)
+                }
+            title.isVisible = pregnancyWeeks != null && pregnancyWeeks >= 0
 
         }
 

@@ -121,6 +121,8 @@ data class OnboardingUserError(
 
 data class Tab(
     val feed: String,
+    val feedTitle: String,
+    val feedSubTitle: String,
     val feedEmptyTitle: String,
     val feedEmptySubTitle: String,
     val feedHeaderTitle: String,

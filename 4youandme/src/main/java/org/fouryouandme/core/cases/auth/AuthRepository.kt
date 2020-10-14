@@ -18,10 +18,7 @@ import org.fouryouandme.core.data.api.auth.request.PhoneNumberVerificationReques
 import org.fouryouandme.core.data.api.auth.request.UserUpdateRequest.Companion.asRequest
 import org.fouryouandme.core.data.api.auth.response.UserResponse
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.user.User
-import org.fouryouandme.core.entity.user.UserCustomData
-import org.fouryouandme.core.entity.user.UserCustomDataItem
-import org.fouryouandme.core.entity.user.UserCustomDataType
+import org.fouryouandme.core.entity.user.*
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.mapNotNull
 import retrofit2.Response
@@ -119,13 +116,13 @@ object AuthRepository {
     private fun defaultUserCustomData(): List<UserCustomData> =
         listOf(
             UserCustomData(
-                identifier = "1",
+                identifier = PREGNANCY_END_DATE_IDENTIFIER,
                 type = UserCustomDataType.Date,
                 name = "Your due date",
                 value = null
             ),
             UserCustomData(
-                identifier = "2",
+                identifier = BABY_GENDER_IDENTIFIER,
                 type =
                 UserCustomDataType.Items(
                     listOf(
@@ -137,7 +134,7 @@ object AuthRepository {
                 value = null
             ),
             UserCustomData(
-                identifier = "3",
+                identifier = BABY_NAME_IDENTIFIER,
                 type = UserCustomDataType.String,
                 name = "Your baby's name",
                 value = null

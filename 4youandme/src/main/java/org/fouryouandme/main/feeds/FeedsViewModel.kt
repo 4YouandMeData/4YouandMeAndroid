@@ -1,5 +1,6 @@
 package org.fouryouandme.main.feeds
 
+import arrow.core.Either
 import arrow.core.toT
 import arrow.fx.ForIO
 import arrow.fx.coroutines.parMapN
@@ -23,13 +24,18 @@ import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
 import org.fouryouandme.main.tasks.TasksToTask
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 class FeedsViewModel(
     navigator: Navigator,
@@ -56,7 +62,7 @@ class FeedsViewModel(
 
         val userRequest =
             suspend {
-                authModule.getUser(CachePolicy.MemoryFirst)
+                authModule.getUser(CachePolicy.Network)
                     .handleAuthError(rootNavController, navigator)
             }
 
@@ -86,7 +92,7 @@ class FeedsViewModel(
                         user = user.orNull()
                     )
                 )
-                { FeedsStateUpdate.Initialization(it.feeds) }
+                { FeedsStateUpdate.Initialization(it.feeds, it.user) }
             }
         )
 
@@ -238,6 +244,35 @@ class FeedsViewModel(
     ): List<DroidItem<Any>> =
         if (size <= 1) plus(listOf(FeedEmptyItem(configuration)))
         else this
+
+    /* --- date --- */
+
+    suspend fun getPregnancyWeeks(user: User?): Long? =
+        user?.getPregnancyEndDate()
+            ?.getPregnancyStartDate()
+            ?.differenceInWeeksFromNow()
+
+    suspend fun getPregnancyMonths(user: User?): Long? =
+        user?.getPregnancyEndDate()
+            ?.getPregnancyStartDate()
+            ?.differenceInMothsFromNow()
+
+    private suspend fun User.getPregnancyEndDate(): ZonedDateTime? =
+        Either.catch {
+            getCustomDataByIdentifier(PREGNANCY_END_DATE_IDENTIFIER)
+                ?.value
+                ?.let { Instant.parse(it) }
+                ?.atZone(ZoneOffset.UTC)
+        }.orNull()
+
+    private suspend fun ZonedDateTime.getPregnancyStartDate(): ZonedDateTime? =
+        minusDays(280)
+
+    private suspend fun ZonedDateTime.differenceInMothsFromNow(): Long =
+        ChronoUnit.MONTHS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
+
+    private suspend fun ZonedDateTime.differenceInWeeksFromNow(): Long =
+        ChronoUnit.WEEKS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
 
     /* --- navigation --- */
 

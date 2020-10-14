@@ -11,7 +11,8 @@ data class FeedsState(
 
 sealed class FeedsStateUpdate {
     data class Initialization(
-        val feeds: List<DroidItem<Any>>
+        val feeds: List<DroidItem<Any>>,
+        val user: User?
     ) : FeedsStateUpdate()
 }
 

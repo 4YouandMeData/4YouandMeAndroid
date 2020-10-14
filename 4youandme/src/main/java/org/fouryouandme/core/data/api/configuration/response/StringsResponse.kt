@@ -69,6 +69,8 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingIntegrationNextButtonDefault: String? = null,
 
     @Json(name = "TAB_FEED") val tabFeed: String? = null,
+    @Json(name = "TAB_FEED_TITLE") val tabFeedTitle: String? = null,
+    @Json(name = "TAB_FEED_SUBTITLE") val tabFeedSubTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_TITLE") val tabFeedEmptyTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_SUBTITLE") val tabFeedEmptySubTitle: String? = null,
     @Json(name = "TAB_FEED_HEADER_TITLE") val tabFeedHeaderTitle: String? = null,
@@ -365,6 +367,8 @@ data class StringsResponse(
         Option.fx {
             Tab(
                 tabFeed.toOption().bind(),
+                tabFeedTitle.toOption().bind(),
+                tabFeedSubTitle.toOption().bind(),
                 tabFeedEmptyTitle.toOption().bind(),
                 tabFeedEmptySubTitle.toOption().bind(),
                 tabFeedHeaderTitle.toOption().bind(),
