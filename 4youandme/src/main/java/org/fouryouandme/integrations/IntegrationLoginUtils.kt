@@ -6,6 +6,7 @@ import android.os.Build
 import android.webkit.*
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
+import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.evalOnMain
 import timber.log.Timber
 import java.net.URL
@@ -102,3 +103,9 @@ private fun getWebChromeClient(progressBar: ProgressBar): WebChromeClient =
 
         }
     }
+
+fun String.asIntegrationCookies(): Map<String, String> = mapOf("token" to this)
+
+fun User.getIntegrationCookies(): Map<String, String> = token.asIntegrationCookies()
+
+

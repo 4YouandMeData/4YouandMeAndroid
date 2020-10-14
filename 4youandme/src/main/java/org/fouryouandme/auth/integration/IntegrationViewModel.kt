@@ -21,6 +21,7 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
 import org.fouryouandme.core.cases.integration.IntegrationUseCase.getIntegration
 import org.fouryouandme.core.entity.page.Page
+import org.fouryouandme.integrations.asIntegrationCookies
 
 
 class IntegrationViewModel(
@@ -57,7 +58,7 @@ class IntegrationViewModel(
 
                         val cookies =
                             authModule.getToken(CachePolicy.MemoryOrDisk)
-                                .map { mapOf("token" to it) }
+                                .map { it.asIntegrationCookies() }
                                 .getOrElse { emptyMap() }
 
                         val state =

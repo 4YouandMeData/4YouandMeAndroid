@@ -1,7 +1,7 @@
 package org.fouryouandme.aboutyou.appsanddevices
 
 import arrow.fx.ForIO
-import org.fouryouandme.aboutyou.AboutYouDataAppsAndDevicesToIntegrationLogin
+import org.fouryouandme.aboutyou.AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin
 import org.fouryouandme.aboutyou.AboutYouNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
@@ -96,6 +96,6 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
 /*--- navigation ---*/
 
     suspend fun navigateToWeb(url: String, navController: AboutYouNavController) {
-        navigator.navigateTo(navController, AboutYouDataAppsAndDevicesToIntegrationLogin(url))
+        navigator.navigateTo(navController, AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(url))
     }
 }

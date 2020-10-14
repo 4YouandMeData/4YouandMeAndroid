@@ -14,13 +14,11 @@ fun aboutYouMenuPageToAboutYouAppsAndDevicesPage(): NavigationExecution =
         it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouAppsAndDevices())
     }
 
-fun aboutYouDataAppsAndDevicesToIntegrationLogin(url: String): NavigationExecution =
+fun aboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(url: String): NavigationExecution =
     {
         it.navigate(
-            AboutYouAppsAndDevicesFragmentDirections.actionAboutYouAppsAndDevicesToIntegrationLogin(
-                url,
-                null
-            )
+            AboutYouAppsAndDevicesFragmentDirections
+                .actionAboutYouAppsAndDevicesToAboutYouIntegrationLogin(url)
         )
     }
 
