@@ -1,15 +1,21 @@
 package org.fouryouandme.main.feeds
 
+import arrow.core.toT
 import arrow.fx.ForIO
+import arrow.fx.coroutines.parMapN
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.Runtime
+import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.FeedModule
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
 import org.fouryouandme.core.cases.feed.FeedUseCase.getFeeds
 import org.fouryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivity
@@ -28,7 +34,8 @@ class FeedsViewModel(
     navigator: Navigator,
     runtime: Runtime<ForIO>,
     private val feedModule: FeedModule,
-    private val taskModule: TaskModule
+    private val taskModule: TaskModule,
+    private val authModule: AuthModule
 ) : BaseViewModel<
         ForIO,
         FeedsState,
@@ -46,21 +53,41 @@ class FeedsViewModel(
 
         showLoadingFx(FeedsLoading.Initialization)
 
-        feedModule.getFeeds()
-            .handleAuthError(rootNavController, navigator)
-            .fold(
-                { setErrorFx(it, FeedsError.Initialization) },
-                { list ->
-                    setStateFx(
-                        FeedsState(
-                            list.toItems(rootNavController, configuration)
-                                .addHeader(configuration)
-                                .addEmptyItem(configuration)
-                        )
+        val userRequest =
+            suspend {
+                authModule.getUser(CachePolicy.MemoryFirst)
+                    .handleAuthError(rootNavController, navigator)
+            }
+
+        val feedRequest =
+            suspend {
+                feedModule.getFeeds()
+                    .handleAuthError(rootNavController, navigator)
+            }
+
+        val (user, feed) =
+            parMapN(
+                Dispatchers.IO,
+                userRequest,
+                feedRequest,
+                { user, feed ->
+                    user toT feed
+                })
+
+        feed.fold(
+            { setErrorFx(it, FeedsError.Initialization) },
+            { list ->
+                setStateFx(
+                    FeedsState(
+                        list.toItems(rootNavController, configuration)
+                            .addHeader(configuration)
+                            .addEmptyItem(configuration),
+                        user = user.orNull()
                     )
-                    { FeedsStateUpdate.Initialization(it.feeds) }
-                }
-            )
+                )
+                { FeedsStateUpdate.Initialization(it.feeds) }
+            }
+        )
 
         hideLoadingFx(FeedsLoading.Initialization)
 
@@ -117,21 +144,21 @@ class FeedsViewModel(
         taskActivities
             .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
             .groupBy(
-            { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
-            { it }
-        ).forEach { (key, value) ->
+                { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
+                { it }
+            ).forEach { (key, value) ->
 
-            items.add(
-                DateItem(
-                    configuration, ZonedDateTime.parse(
-                        key,
-                        DateTimeFormatter.ISO_ZONED_DATE_TIME
+                items.add(
+                    DateItem(
+                        configuration, ZonedDateTime.parse(
+                            key,
+                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+                        )
                     )
                 )
-            )
-            items.addAll(value)
+                items.addAll(value)
 
-        }
+            }
 
         return items
 
