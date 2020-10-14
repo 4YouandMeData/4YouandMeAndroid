@@ -96,7 +96,7 @@ object Libs {
      * https://developer.android.com/topic/libraries/architecture/index.html
      */
     const val lifecycle_viewmodel_savedstate: String =
-        "androidx.lifecycle:lifecycle-viewmodel-savedstate:" + Versions.androidx_lifecycle
+            "androidx.lifecycle:lifecycle-viewmodel-savedstate:" + Versions.androidx_lifecycle
 
     /**
      * https://github.com/square/moshi/

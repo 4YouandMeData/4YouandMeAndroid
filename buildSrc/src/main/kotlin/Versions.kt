@@ -27,11 +27,11 @@ object Versions {
 
     const val android_arch_lifecycle_extensions: String = "1.1.1"
 
-    const val com_android_tools_build_gradle: String = "4.0.2"
+    const val com_android_tools_build_gradle: String = "4.1.0"
 
     const val androidx_test_ext_junit: String = "1.1.2"
 
-    const val junit_junit: String = "4.13"
+    const val junit_junit: String = "4.13.1"
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
@@ -69,7 +69,7 @@ object Versions {
 
     const val camera_view: String = "1.0.0-alpha15"
 
-    const val lint_gradle: String = "27.0.2"
+    const val lint_gradle: String = "27.1.0"
 
     const val threetenabp: String = "1.2.4"
 
@@ -95,7 +95,7 @@ object Versions {
 
     const val toasty: String = "1.5.0"
 
-    const val aapt2: String = "4.0.2-6197926"
+    const val aapt2: String = "4.1.0-6503028"
 
     const val ccp: String = "2.4.1"
 
