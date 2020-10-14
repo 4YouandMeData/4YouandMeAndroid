@@ -109,6 +109,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
             applyConfiguration(it)
             viewModel.initialize(rootNavController(), it)
+
         }
     }
 
