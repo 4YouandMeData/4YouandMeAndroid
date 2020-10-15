@@ -328,10 +328,8 @@ class FeedsViewModel(
     suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
         task.data.activityType?.let {
             navigator.navigateTo(
-                rootNavController, TasksToTask(
-                    it.type,
-                    task.data.id
-                )
+                rootNavController,
+                TasksToTask(it.type, task.data.taskId, task.data.activityId)
             )
         }
     }

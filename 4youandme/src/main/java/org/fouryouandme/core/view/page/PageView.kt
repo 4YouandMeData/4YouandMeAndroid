@@ -39,7 +39,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         pageType: EPageType,
         action1: (Page?) -> Unit,
         action2: ((Page?) -> Unit)? = null,
-        externalAction: (String) -> Unit,
+        externalAction: ((String) -> Unit)? = null,
         modalAction: ((Page) -> Unit)? = null
     ): Unit =
 
@@ -81,7 +81,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 external.setTextColor(configuration.theme.primaryColorEnd.color())
                 external.isVisible = page.externalLinkUrl != null
                 external.setOnClickListener { page.externalLinkUrl?.let { externalAction(it) } }
-            }
+            } else external.isVisible = false
 
             shadow.background =
                 HEXGradient.from(

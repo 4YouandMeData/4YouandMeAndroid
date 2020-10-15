@@ -15,4 +15,25 @@ data class Page(
     val specialLinkValue: String?,
     val linkModalLabel: String?,
     val linkModalValue: Page?
-)
+) {
+
+    fun asList(): MutableList<Page> {
+
+        var page = this
+
+        val items = mutableListOf(this)
+
+        while (page.link1 != null) {
+
+            items.add(page.link1!!)
+
+            page = page.link1!!
+
+        }
+
+        return items
+
+    }
+
+
+}

@@ -13,6 +13,7 @@ data class Survey(
 )
 
 data class SurveyBlock(
+    val id: String,
     val introPage: Page,
     val successPage: Page?,
     val questions: List<SurveyQuestion>,

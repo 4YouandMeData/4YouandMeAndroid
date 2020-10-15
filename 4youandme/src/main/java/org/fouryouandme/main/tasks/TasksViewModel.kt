@@ -107,21 +107,21 @@ class TasksViewModel(
         taskActivities
             .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
             .groupBy(
-            { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
-            { it }
-        ).forEach { (key, value) ->
+                { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
+                { it }
+            ).forEach { (key, value) ->
 
-            items.add(
-                DateItem(
-                    configuration, ZonedDateTime.parse(
-                        key,
-                        DateTimeFormatter.ISO_ZONED_DATE_TIME
+                items.add(
+                    DateItem(
+                        configuration, ZonedDateTime.parse(
+                            key,
+                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+                        )
                     )
                 )
-            )
-            items.addAll(value)
+                items.addAll(value)
 
-        }
+            }
 
         return items
 
@@ -193,10 +193,8 @@ class TasksViewModel(
     suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
         task.data.activityType?.let {
             navigator.navigateTo(
-                rootNavController, TasksToTask(
-                    it.type,
-                    task.data.id
-                )
+                rootNavController,
+                TasksToTask(it.type, task.data.taskId, task.data.activityId)
             )
         }
     }

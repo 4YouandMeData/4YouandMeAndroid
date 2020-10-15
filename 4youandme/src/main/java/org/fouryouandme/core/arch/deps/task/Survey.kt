@@ -2,159 +2,84 @@ package org.fouryouandme.core.arch.deps.task
 
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.survey.Survey
+import org.fouryouandme.core.entity.survey.SurveyQuestion
+import org.fouryouandme.core.researchkit.step.FYAMPageStep
+import org.fouryouandme.core.view.page.EPageType
 import org.fouryouandme.researchkit.step.Step
-import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
-import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
-import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
-import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
 import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
-import org.fouryouandme.researchkit.step.picker.PickerStep
-import org.fouryouandme.researchkit.step.range.RangeStep
-import org.fouryouandme.researchkit.step.scale.ScaleStep
-import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
+import org.fouryouandme.researchkit.utils.ImageResource
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 
 // TODO: handle dynamic task creation
 fun buildSurvey(
     id: String,
     configuration: Configuration,
-    imageConfiguration: ImageConfiguration
+    imageConfiguration: ImageConfiguration,
+    survey: Survey
 ): Task =
     object : Task("survey", id) {
-        override val steps: List<Step> =
-            listOf(
-                PickerStep(
-                    "number",
-                    listOf("1", "2", "3", "4", "5", "More than 5"),
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Select a number" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                ),
-                ChooseOneStep(
-                    "choose one",
-                    listOf(
-                        ChooseOneAnswer(
-                            "1",
-                            "Answer 1",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        ),
-                        ChooseOneAnswer(
-                            "2",
-                            "Answer 2",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        ),
-                        ChooseOneAnswer(
-                            "3",
-                            "Answer 3",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        ),
-                        ChooseOneAnswer(
-                            "4",
-                            "Answer 4",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        )
-                    ),
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Select an answer" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                ),
-                ChooseManyStep(
-                    "choose many",
-                    listOf(
-                        ChooseManyAnswer(
-                            "1",
-                            "Answer 1",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        ),
-                        ChooseManyAnswer(
-                            "2",
-                            "Answer 2",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        ),
-                        ChooseManyAnswer(
-                            "3",
-                            "Answer 3",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        ),
-                        ChooseManyAnswer(
-                            "4",
-                            "Answer 4",
-                            configuration.theme.primaryTextColor.color(),
-                            configuration.theme.primaryColorEnd.color()
-                        )
-                    ),
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Select one or more answers" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                ),
-                TextInputStep(
-                    "text input ",
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Insert text" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                ),
-                DatePickerStep(
-                    "date",
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Pick a date" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                ),
-                RangeStep(
-                    "range",
-                    0,
-                    100,
-                    configuration.theme.primaryColorEnd.color(),
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Select a value" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                ),
-                ScaleStep(
-                    "scale",
-                    10,
-                    20,
-                    2,
-                    configuration.theme.primaryColorEnd.color(),
-                    configuration.theme.secondaryColor.color(),
-                    imageConfiguration.videoDiaryIntro().toAndroidResource(),
-                    "1",
-                    { "Select a value" },
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.primaryTextColor.color(),
-                    imageConfiguration.signUpNextStepSecondary().toAndroidResource()
-                )
-            )
 
+        override val steps: List<Step> by lazy {
+
+            val steps = mutableListOf<Step>()
+
+            survey.surveyBlocks.forEach { surveyBlock ->
+
+                val intro =
+                    surveyBlock.introPage.asList().mapIndexed { index, page ->
+                        FYAMPageStep(
+                            getSurveyStepId(surveyBlock.id, "intro_$index"),
+                            configuration,
+                            page,
+                            EPageType.INFO
+                        )
+                    }
+
+                val questions =
+                    surveyBlock.questions.mapIndexed { index, question ->
+
+                        when (question) {
+                            is SurveyQuestion.Date ->
+                                DatePickerStep(
+                                    getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    configuration.theme.secondaryColor.color(),
+                                    question.image?.let { ImageResource.Base64(it) },
+                                    question.id,
+                                    { question.text },
+                                    configuration.theme.primaryTextColor.color(),
+                                    configuration.theme.primaryTextColor.color(),
+                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                )
+                        }
+
+                    }
+
+                val success =
+                    surveyBlock.successPage?.let {
+
+                        FYAMPageStep(
+                            getSurveyStepId(surveyBlock.id, "success"),
+                            configuration,
+                            it,
+                            EPageType.SUCCESS
+                        )
+
+                    }
+
+                steps.addAll(intro)
+                steps.addAll(questions)
+                success?.let { steps.add(it) }
+
+            }
+
+
+            steps
+
+        }
 
     }
+
+private fun getSurveyStepId(blockId: String, stepId: String): String =
+    "survey_block_${blockId}_${stepId}"

@@ -28,7 +28,8 @@ data class QuickActivityAnswer(
 )
 
 data class TaskActivity(
-    val id: String,
+    val taskId: String,
+    val activityId: String,
     val title: String?,
     val description: String?,
     val button: String?,

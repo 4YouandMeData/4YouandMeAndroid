@@ -215,6 +215,7 @@ class ForYouAndMeInjector(
             imageConfiguration,
             moshi,
             taskModule(),
+            surveyModule(),
             authModule(),
             errorModule()
         )

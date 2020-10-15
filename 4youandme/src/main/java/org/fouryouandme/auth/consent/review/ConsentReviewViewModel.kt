@@ -18,7 +18,6 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.page.Page
 
 class ConsentReviewViewModel(
     navigator: Navigator,
@@ -56,7 +55,7 @@ class ConsentReviewViewModel(
 
                         items.addAll(
                             consentReview.welcomePage
-                                .toItems()
+                                .asList()
                                 .map { it.toConsentReviewPageItem(configuration) }
                         )
 
@@ -76,24 +75,6 @@ class ConsentReviewViewModel(
         hideLoadingFx(ConsentReviewLoading.Initialization)
 
         return state
-
-    }
-
-    private fun Page.toItems(): MutableList<Page> {
-
-        var page = this
-
-        val items = mutableListOf(this)
-
-        while (page.link1 != null) {
-
-            items.add(page.link1!!)
-
-            page = page.link1!!
-
-        }
-
-        return items
 
     }
 

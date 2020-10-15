@@ -59,7 +59,8 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
                         errorAlert(it.error) {
                             viewModel.initialize(
                                 typeArg(),
-                                idArg()
+                                idArg(),
+                                dataArg()
                             )
                         }
                     TaskError.Result -> errorAlert(it.error) { viewModel.end() }
@@ -76,9 +77,9 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         startCoroutineAsync {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(typeArg(), idArg())
-
-            applyData()
+                viewModel.initialize(typeArg(), idArg(), dataArg())
+            else
+                applyData()
 
         }
 
@@ -113,7 +114,6 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
             .setNegativeButton(R.string.TASK_error_cancel)
             { _, _ ->
                 startCoroutineAsync {
-                    viewModel.cancel()
                     viewModel.close(taskNavController())
                 }
             }
@@ -138,7 +138,12 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         File("${requireContext().applicationContext.filesDir.absolutePath}/sensors")
 
     private fun typeArg(): String = arguments?.getString(TASK_TYPE, null)!!
+
     private fun idArg(): String = arguments?.getString(TASK_ID, null)!!
+
+    @Suppress("UNCHECKED_CAST")
+    private fun dataArg(): HashMap<String, String> =
+        (arguments?.getSerializable(TASK_DATA) as HashMap<String, String>)
 
     fun taskNavController(): TaskNavController = TaskNavController(findNavController())
 
@@ -148,11 +153,14 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
         private const val TASK_ID = "id"
 
-        fun getBundle(type: String, id: String): Bundle {
+        private const val TASK_DATA = "data"
+
+        fun getBundle(type: String, id: String, data: HashMap<String, String>): Bundle {
 
             val bundle = Bundle()
             bundle.putString(TASK_TYPE, type)
             bundle.putString(TASK_ID, id)
+            bundle.putSerializable(TASK_DATA, data)
             return bundle
 
         }

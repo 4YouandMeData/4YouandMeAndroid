@@ -23,6 +23,7 @@ class TaskActivityResponse(
     suspend fun toTaskActivity(taskId: String): TaskActivity =
         TaskActivity(
             taskId,
+            id,
             title,
             description,
             button,

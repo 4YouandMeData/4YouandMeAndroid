@@ -31,11 +31,11 @@ class TaskViewModel(
 
     /* --- initialization --- */
 
-    suspend fun initialize(type: String, id: String): Unit {
+    suspend fun initialize(type: String, id: String, data: Map<String, String>): Unit {
 
         showLoadingFx(TaskLoading.Initialization)
 
-        taskConfiguration.build(type, id)
+        taskConfiguration.build(type, id, data)
             .foldSuspend(
                 { setErrorFx(unknownError(), TaskError.Initialization) },
                 { task ->
@@ -57,10 +57,10 @@ class TaskViewModel(
 
     /* --- state --- */
 
-    suspend fun cancel(): Unit =
-        setStateFx(
-            state().copy(isCancelled = true)
-        ) { TaskStateUpdate.Cancelled(it.isCancelled) }
+    suspend fun cancel(): Unit {
+        setStateFx(state().copy(isCancelled = true))
+        { TaskStateUpdate.Cancelled(it.isCancelled) }
+    }
 
     suspend fun end(): Unit {
 

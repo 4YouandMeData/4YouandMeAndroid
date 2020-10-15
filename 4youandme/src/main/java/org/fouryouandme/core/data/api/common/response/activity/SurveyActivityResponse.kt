@@ -16,9 +16,10 @@ class SurveyActivityResponse(
     @field:Json(name = "image") val image: String? = null
 ) : ActivityDataResponse(title, description, null, cardColor) {
 
-    suspend fun toTaskActivity(surveyId: String): TaskActivity =
+    suspend fun toTaskActivity(taskId: String): TaskActivity =
         TaskActivity(
-            surveyId,
+            taskId,
+            id,
             title,
             description,
             null,

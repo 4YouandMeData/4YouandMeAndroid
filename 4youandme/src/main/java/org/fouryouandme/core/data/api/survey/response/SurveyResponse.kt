@@ -48,6 +48,7 @@ data class SurveyBlockResponse(
         Either.catch {
 
             SurveyBlock(
+                id,
                 introPage?.get(document)?.toPage(document)!!,
                 successPage?.get(document)?.toPage(document),
                 questions?.get(document)

@@ -27,14 +27,14 @@ data class TaskActivityItem(
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
-            is TaskActivityItem -> data.id == other.data.id
+            is TaskActivityItem -> data.taskId == other.data.taskId
             else -> false
         }
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
             is TaskActivityItem ->
-                (data.id == other.data.id)
+                (data.taskId == other.data.taskId)
                     .or(data.image == other.data.image)
                     .or(data.title == other.data.title)
                     .or(data.description == other.data.description)

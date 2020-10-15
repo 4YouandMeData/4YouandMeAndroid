@@ -7,7 +7,7 @@ import org.fouryouandme.researchkit.result.TaskResult
 
 abstract class TaskConfiguration {
 
-    abstract suspend fun build(type: String, id: String): Task?
+    abstract suspend fun build(type: String, id: String, data: Map<String, String>): Task?
 
     abstract suspend fun handleTaskResult(
         result: TaskResult,
