@@ -26,7 +26,6 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.feed.Feed
 import org.fouryouandme.core.entity.feed.FeedType
 import org.fouryouandme.core.entity.notifiable.FeedReward
-import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -183,17 +182,23 @@ class FeedsViewModel(
         feeds
             .sortedByDescending {
                 when (it) {
-                    is TaskActivityItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                    is FeedRewardItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                    else -> ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    is TaskActivityItem ->
+                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    is FeedRewardItem ->
+                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    else ->
+                        ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                 }
             }
             .groupBy(
                 {
                     when (it) {
-                        is TaskActivityItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                        is FeedRewardItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                        else -> ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        is TaskActivityItem ->
+                            it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        is FeedRewardItem ->
+                            it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        else ->
+                            ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                     }
                 },
                 { it }

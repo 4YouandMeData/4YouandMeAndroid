@@ -9,6 +9,7 @@ import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.data.api.common.response.activity.ActivityDataResponse
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
+import org.fouryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.toEither
@@ -33,6 +34,7 @@ data class TaskResponse(
                     when (it) {
                         is QuickActivityResponse -> it.toQuickActivity(id).toEither()
                         is TaskActivityResponse -> it.toTaskActivity(id).toEither()
+                        is SurveyActivityResponse -> it.toTaskActivity(id).toEither()
                         else -> Unit.left()
                     }
                 }

@@ -14,7 +14,6 @@ import org.fouryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
-import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -123,24 +122,6 @@ class TasksViewModel(
             items.addAll(value)
 
         }
-
-        // TODO : remove survey mock
-        items.add(
-            TaskActivityItem(
-                configuration,
-                TaskActivity(
-                    "100",
-                    "Survey",
-                    "Survey Test",
-                    "Start Now",
-                    null,
-                    null,
-                    TaskActivityType.Survey
-                ),
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
-            )
-        )
 
         return items
 
