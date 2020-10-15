@@ -42,6 +42,10 @@ import org.fouryouandme.core.data.api.screening.ScreeningApi
 import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 import org.fouryouandme.core.data.api.studyinfo.StudyInfoApi
 import org.fouryouandme.core.data.api.studyinfo.response.StudyInfoResponse
+import org.fouryouandme.core.data.api.survey.SurveyApi
+import org.fouryouandme.core.data.api.survey.response.SurveyBlockResponse
+import org.fouryouandme.core.data.api.survey.response.SurveyQuestionResponse
+import org.fouryouandme.core.data.api.survey.response.SurveyResponse
 import org.fouryouandme.core.data.api.task.TaskApi
 import org.fouryouandme.core.data.api.task.response.TaskResponse
 import org.fouryouandme.core.data.api.yourdata.YourDataApi
@@ -145,6 +149,20 @@ class ForYouAndMeInjector(
             .add(KotlinJsonAdapterFactory())
             .build()
 
+    private val surveyMoshi: Moshi =
+        Moshi.Builder()
+            .add(
+                ResourceAdapterFactory.builder()
+                    .add(UnknownResourceResponse::class.java)
+                    .add(PageResponse::class.java)
+                    .add(SurveyResponse::class.java)
+                    .add(SurveyBlockResponse::class.java)
+                    .add(SurveyQuestionResponse::class.java)
+                    .build()
+            )
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
     /* --- api --- */
 
     override val configurationApi: ConfigurationApi =
@@ -185,6 +203,9 @@ class ForYouAndMeInjector(
 
     override val studyInfoApi: StudyInfoApi =
         getApiService(environment.getApiBaseUrl(), moshi)
+
+    override val surveyApi: SurveyApi =
+        getApiService(environment.getApiBaseUrl(), surveyMoshi)
 
     /* --- task --- */
 
