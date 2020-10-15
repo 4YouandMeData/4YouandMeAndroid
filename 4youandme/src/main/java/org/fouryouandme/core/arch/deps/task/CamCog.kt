@@ -2,14 +2,17 @@ package org.fouryouandme.core.arch.deps.task
 
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.researchkit.step.Step
-import org.fouryouandme.researchkit.task.Task
+import org.fouryouandme.core.ext.web.CamCogInterface
+import org.fouryouandme.core.ext.web.IntegrationLoginInterface
 import org.fouryouandme.researchkit.task.camcog.CamCogTask
 
 suspend fun FYAMTaskConfiguration.buildCamCog(
     id: String,
     configuration: Configuration,
-    imageConfiguration: ImageConfiguration
+    imageConfiguration: ImageConfiguration,
+    url: String,
+    cookies: Map<String, String>,
+    camCogInterface: CamCogInterface
 ): CamCogTask {
 
     val secondary =
@@ -35,7 +38,14 @@ suspend fun FYAMTaskConfiguration.buildCamCog(
         welcomeStartButton = configuration.text.task.startButton,
         welcomeStartButtonColor = primaryEnd,
         welcomeStartButtonTextColor = secondary,
-        welcomeShadowColor = primaryText
+        welcomeShadowColor = primaryText,
+        webBackgroundColor = secondary,
+        webProgressBarColor = primaryEnd,
+        webCloseButton = imageConfiguration.close(),
+        webUrl = url,
+        webCookies = cookies,
+        webJavascriptInterface = camCogInterface,
+        webJavascriptInterfaceName = IntegrationLoginInterface.INTEGRATION_NAME
     )
 
 }

@@ -3,14 +3,13 @@ package org.fouryouandme.researchkit.step.beforestart
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.step_welcome.*
-import kotlinx.android.synthetic.main.step_welcome.root
-import kotlinx.android.synthetic.main.step_welcome.shadow
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.html.setHtmlText
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.step.StepFragment
 
 
@@ -23,7 +22,7 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
         val step =
             viewModel.getStepByIndexAs<WelcomeStep>(indexArg())
 
-        configuration {
+        startCoroutineAsync {
             setupView()
             step?.let { applyData(it) }
         }

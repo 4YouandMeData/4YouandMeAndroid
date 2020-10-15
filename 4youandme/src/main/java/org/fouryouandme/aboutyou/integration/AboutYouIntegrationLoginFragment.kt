@@ -1,29 +1,43 @@
-package org.fouryouandme.auth.integration.login
+package org.fouryouandme.aboutyou.integration
 
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import kotlinx.android.synthetic.main.integration.*
-import kotlinx.android.synthetic.main.integration_login.*
+import kotlinx.android.synthetic.main.about_you_integration_login.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.integration.IntegrationSectionFragment
+import org.fouryouandme.aboutyou.AboutYouSectionFragment
+import org.fouryouandme.core.arch.android.getFactory
+import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.web.getIntegrationCookies
 import org.fouryouandme.core.ext.web.setupWebViewWithCookies
 
-class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration_login) {
+class AboutYouIntegrationLoginFragment :
+    AboutYouSectionFragment<AboutYouIntegrationLoginViewModel>(
+        R.layout.about_you_integration_login
+    ) {
 
-    private val args: IntegrationLoginFragmentArgs by navArgs()
+    private val args: AboutYouIntegrationLoginFragmentArgs by navArgs()
+
+    override val viewModel: AboutYouIntegrationLoginViewModel by lazy {
+
+        viewModelFactory(
+            this,
+            getFactory { AboutYouIntegrationLoginViewModel(navigator, IORuntime) }
+        )
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        integrationAndConfiguration { config, state ->
+        userAndConfiguration { config, user ->
 
             setupToolbar()
             applyConfiguration(config)
-            setupWebView(state.cookies)
+            setupWebView(user.getIntegrationCookies())
 
         }
 
@@ -32,13 +46,11 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
     private suspend fun setupToolbar(): Unit =
         evalOnMain {
 
-            integrationFragment()
-                .toolbar
+            toolbar
                 .showCloseButton(imageConfiguration) {
                     startCoroutineAsync {
-                        viewModel.back(
-                            integrationNavController(),
-                            authNavController(),
+                        aboutYouViewModel.back(
+                            aboutYouNavController(),
                             rootNavController()
                         )
                     }
@@ -67,14 +79,16 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
                 cookies,
                 {
                     startCoroutineAsync {
-                        viewModel.handleLogin(integrationNavController(), args.nextPage)
+                        aboutYouViewModel.back(
+                            aboutYouNavController(),
+                            rootNavController()
+                        )
                     }
                 },
                 {
                     startCoroutineAsync {
-                        viewModel.back(
-                            integrationNavController(),
-                            authNavController(),
+                        aboutYouViewModel.back(
+                            aboutYouNavController(),
                             rootNavController()
                         )
                     }

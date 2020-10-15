@@ -1,6 +1,7 @@
 package org.fouryouandme.aboutyou.userInfo
 
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
@@ -11,6 +12,8 @@ import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
 import org.fouryouandme.core.cases.auth.AuthUseCase.updateUser
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.user.User
@@ -181,7 +184,7 @@ class AboutYouUserInfoViewModel(
     /* --- upload --- */
 
 
-    suspend fun upload(rootNavController: RootNavController): Either<FourYouAndMeError, Unit> {
+    private suspend fun upload(rootNavController: RootNavController): Either<FourYouAndMeError, Unit> {
 
         showLoadingFx(AboutYouUserInfoLoading.Upload)
 
@@ -220,6 +223,8 @@ class AboutYouUserInfoViewModel(
 
         val upload =
             authModule.updateUser(data)
+                .flatMap { authModule.getUser(CachePolicy.Network) }
+                .map { Unit }
                 .handleAuthError(rootNavController, navigator)
 
         hideLoadingFx(AboutYouUserInfoLoading.Upload)

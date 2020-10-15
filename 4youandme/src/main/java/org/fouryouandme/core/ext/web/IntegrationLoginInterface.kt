@@ -1,4 +1,4 @@
-package org.fouryouandme.auth.integration.login
+package org.fouryouandme.core.ext.web
 
 import android.webkit.JavascriptInterface
 
@@ -6,13 +6,19 @@ import android.webkit.JavascriptInterface
 class IntegrationLoginInterface(val success: () -> Unit, val failure: () -> Unit) {
 
     @JavascriptInterface
-    fun wearableLogin(value: String) {
+    fun integrationLogin(value: String) {
 
         when (value) {
             "success" -> success()
             "failure" -> failure()
             else -> failure()
         }
+
+    }
+
+    companion object {
+
+        const val INTEGRATION_NAME: String = "Android"
 
     }
 

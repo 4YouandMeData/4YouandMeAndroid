@@ -140,8 +140,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 aboutYouMenuPageToAboutYouReviewConsentPage()
             is AboutYouMenuPageToAppsAndDevicesPage ->
                 aboutYouMenuPageToAboutYouAppsAndDevicesPage()
-            is AboutYouDataAppsAndDevicesToIntegrationLogin ->
-                aboutYouDataAppsAndDevicesToIntegrationLogin(action.url)
+            is AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin ->
+                aboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(action.url)
             is AboutYouMenuPageToPermissionsPage ->
                 aboutYouMenuPageToPermissionsPage()
             is AboutYouMenuPageToUserInfoPage ->

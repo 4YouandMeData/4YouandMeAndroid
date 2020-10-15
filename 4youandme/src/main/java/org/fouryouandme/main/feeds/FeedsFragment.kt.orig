@@ -17,8 +17,15 @@ import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.user.User
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.main.MainSectionFragment
+<<<<<<< HEAD
 import org.fouryouandme.main.items.*
+=======
+import org.fouryouandme.main.items.DateViewHolder
+import org.fouryouandme.main.items.QuickActivitiesItem
+import org.fouryouandme.main.items.QuickActivitiesViewHolder
+import org.fouryouandme.main.items.TaskActivityViewHolder
 import java.text.MessageFormat
+>>>>>>> a55944f199d481af849f8bc696a1e9a2e9cc7a20
 
 
 class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
@@ -57,10 +64,15 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         viewModel.stateLiveData()
             .observeEvent(name()) { state ->
                 when (state) {
-                    is FeedsStateUpdate.Initialization -> {
+<<<<<<< HEAD
+                    is FeedsStateUpdate.Initialization ->
                         applyFeeds(state.feeds)
+=======
+                    is FeedsStateUpdate.Initialization -> {
+                        applyTasks(state.feeds)
                         configuration { applyUser(it, state.user) }
                     }
+>>>>>>> a55944f199d481af849f8bc696a1e9a2e9cc7a20
                 }
             }
 
@@ -142,6 +154,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         }
 
+<<<<<<< HEAD
+    private fun applyFeeds(feeds: List<DroidItem<Any>>): Unit {
+=======
     private suspend fun applyUser(configuration: Configuration, user: User?): Unit =
         evalOnMain {
 
@@ -164,7 +179,8 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         }
 
-    private fun applyFeeds(feeds: List<DroidItem<Any>>): Unit {
+    private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
+>>>>>>> a55944f199d481af849f8bc696a1e9a2e9cc7a20
 
         adapter.submitList(feeds)
 

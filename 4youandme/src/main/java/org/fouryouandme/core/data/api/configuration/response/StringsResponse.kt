@@ -69,15 +69,23 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_WEARABLES_NEXT_BUTTON_DEFAULT") val onboardingIntegrationNextButtonDefault: String? = null,
 
     @Json(name = "TAB_FEED") val tabFeed: String? = null,
+    @Json(name = "TAB_FEED_TITLE") val tabFeedTitle: String? = null,
+    @Json(name = "TAB_FEED_SUBTITLE") val tabFeedSubTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_TITLE") val tabFeedEmptyTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_SUBTITLE") val tabFeedEmptySubTitle: String? = null,
+    @Json(name = "TAB_FEED_HEADER_TITLE") val tabFeedHeaderTitle: String? = null,
+    @Json(name = "TAB_FEED_HEADER_SUBTITLE") val tabFeedHeaderSubTitle: String? = null,
+    @Json(name = "TAB_FEED_HEADER_POINTS") val tabFeedHeaderPoints: String? = null,
+
     @Json(name = "TAB_TASK") val tabTask: String? = null,
     @Json(name = "TAB_TASK_TITLE") val tabTaskTitle: String? = null,
     @Json(name = "TAB_TASK_EMPTY_TITLE") val tabTaskEmptyTitle: String? = null,
     @Json(name = "TAB_TASK_EMPTY_SUBTITLE") val tabTaskEmptySubtitle: String? = null,
     @Json(name = "TAB_TASK_EMPTY_BUTTON") val tabTaskEmptyButton: String? = null,
+
     @Json(name = "TAB_USER_DATA") val tabUserData: String? = null,
     @Json(name = "TAB_USER_DATA_TITLE") val tabUserDataTitle: String? = null,
+
     @Json(name = "TAB_STUDY_INFO") val tabStudyInfo: String? = null,
     @Json(name = "TAB_STUDY_INFO_TITLE") val tabStudyInfoTitle: String? = null,
 
@@ -359,8 +367,13 @@ data class StringsResponse(
         Option.fx {
             Tab(
                 tabFeed.toOption().bind(),
+                tabFeedTitle.toOption().bind(),
+                tabFeedSubTitle.toOption().bind(),
                 tabFeedEmptyTitle.toOption().bind(),
                 tabFeedEmptySubTitle.toOption().bind(),
+                tabFeedHeaderTitle.toOption().bind(),
+                tabFeedHeaderSubTitle.toOption().bind(),
+                tabFeedHeaderPoints.toOption().bind(),
                 tabTask.toOption().bind(),
                 tabTaskTitle.toOption().bind(),
                 tabTaskEmptyTitle.toOption().bind(),

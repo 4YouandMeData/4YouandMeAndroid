@@ -2,13 +2,17 @@ package org.fouryouandme.core.arch.deps.task
 
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
+import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.deps.modules.ErrorModule
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.cases.CachePolicy
+import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.entity.activity.TaskActivityType
+import org.fouryouandme.core.ext.web.CamCogInterface
+import org.fouryouandme.core.ext.web.asIntegrationCookies
 import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskConfiguration
@@ -20,6 +24,7 @@ class FYAMTaskConfiguration(
     private val imageConfiguration: ImageConfiguration,
     private val moshi: Moshi,
     private val taskModule: TaskModule,
+    private val authModule: AuthModule,
     private val errorModule: ErrorModule
 ) : TaskConfiguration() {
 
@@ -40,8 +45,22 @@ class FYAMTaskConfiguration(
                 TaskActivityType.Survey.typeId ->
                     // TODO: fetch survey and handle dynamic creation
                     buildSurvey(id, configuration, imageConfiguration)
-                TaskIdentifiers.CAMCOG ->
-                    buildCamCog(id, configuration, imageConfiguration)
+                TaskIdentifiers.CAMCOG -> {
+
+                    val cookies =
+                        authModule.getToken(CachePolicy.MemoryFirst)
+                            .orNull()
+                            ?.asIntegrationCookies() ?: emptyMap()
+
+                    buildCamCog(
+                        id,
+                        configuration,
+                        imageConfiguration,
+                        "https://api-4youandme-staging.balzo.eu//camcog/tasks/$id",
+                        cookies,
+                        CamCogInterface()
+                    )
+                }
                 else -> null
 
             }

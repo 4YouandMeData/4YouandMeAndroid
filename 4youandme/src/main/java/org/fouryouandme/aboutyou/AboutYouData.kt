@@ -31,7 +31,7 @@ object AboutYouMenuPageToAboutYouReviewConsentPage : NavigationAction
 
 object AboutYouMenuPageToAppsAndDevicesPage : NavigationAction
 
-data class AboutYouDataAppsAndDevicesToIntegrationLogin(
+data class AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(
     val url: String
 ) : NavigationAction
 

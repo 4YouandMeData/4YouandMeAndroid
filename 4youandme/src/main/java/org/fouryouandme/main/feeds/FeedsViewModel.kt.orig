@@ -23,12 +23,15 @@ import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
+<<<<<<< HEAD
 import org.fouryouandme.core.entity.feed.Feed
 import org.fouryouandme.core.entity.feed.FeedType
 import org.fouryouandme.core.entity.notifiable.FeedReward
+=======
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import org.fouryouandme.core.entity.user.User
+>>>>>>> a55944f199d481af849f8bc696a1e9a2e9cc7a20
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
@@ -189,6 +192,7 @@ class FeedsViewModel(
                 }
             }
             .groupBy(
+<<<<<<< HEAD
                 {
                     when (it) {
                         is TaskActivityItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -196,6 +200,9 @@ class FeedsViewModel(
                         else -> ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                     }
                 },
+=======
+                { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
+>>>>>>> a55944f199d481af849f8bc696a1e9a2e9cc7a20
                 { it }
             ).forEach { (key, value) ->
 
