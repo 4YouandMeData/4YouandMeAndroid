@@ -50,22 +50,23 @@ class FYAMTaskConfiguration(
                     TaskActivityType.Survey.typeId ->
                         surveyModule.getSurvey(activityId).orNull()
                             ?.let { buildSurvey(id, config, imageConfiguration, it) }
-                    TaskIdentifiers.CAMCOG -> {
+                    TaskIdentifiers.CAMCOG ->
+                        authModule.getToken(CachePolicy.MemoryFirst)
+                            .orNull()
+                            ?.asIntegrationCookies()
+                            ?.let {
 
-                        val cookies =
-                            authModule.getToken(CachePolicy.MemoryFirst)
-                                .orNull()
-                                ?.asIntegrationCookies() ?: emptyMap()
+                                buildCamCog(
+                                    id,
+                                    config,
+                                    imageConfiguration,
+                                    "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id",
+                                    it,
+                                    CamCogInterface()
+                                )
 
-                        buildCamCog(
-                            id,
-                            config,
-                            imageConfiguration,
-                            "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id",
-                            cookies,
-                            CamCogInterface()
-                        )
-                    }
+                            }
+
                     else -> null
 
                 }
