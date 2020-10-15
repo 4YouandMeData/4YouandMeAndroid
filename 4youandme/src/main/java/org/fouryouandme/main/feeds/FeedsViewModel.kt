@@ -16,7 +16,9 @@ import org.fouryouandme.core.entity.activity.QuickActivity
 import org.fouryouandme.core.entity.activity.QuickActivityAnswer
 import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.entity.feed.Feed
+import org.fouryouandme.core.entity.feed.FeedType
+import org.fouryouandme.core.entity.notifiable.FeedReward
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
@@ -66,29 +68,58 @@ class FeedsViewModel(
 
     }
 
-    private fun List<Task>.toItems(
+    private fun List<Feed>.toItems(
         rootNavController: RootNavController,
         configuration: Configuration
     ): List<DroidItem<Any>> {
 
-        val quickActivities = mutableListOf<QuickActivityItem>()
-
-        val taskActivities = mutableListOf<TaskActivityItem>()
-
-        forEach {
-
-            when (it.activity) {
-                is QuickActivity ->
-                    quickActivities.add(
-                        QuickActivityItem(configuration, it.activity, null)
-                    )
-                is TaskActivity ->
-                    taskActivities.add(
-                        TaskActivityItem(configuration, it.activity, it.from, it.to)
-                    )
+        val quickActivities =
+            mapNotNull {
+                when (it.type) {
+                    is FeedType.StudyActivityFeed -> {
+                        when (it.type.studyActivity) {
+                            is QuickActivity ->
+                                QuickActivityItem(
+                                    configuration,
+                                    it.type.studyActivity,
+                                    null
+                                )
+                            else -> null
+                        }
+                    }
+                    else -> null
+                }
             }
 
-        }
+        val feeds =
+            mapNotNull {
+
+                when (it.type) {
+                    is FeedType.StudyActivityFeed ->
+                        when (it.type.studyActivity) {
+                            is TaskActivity ->
+                                TaskActivityItem(
+                                    configuration,
+                                    it.type.studyActivity,
+                                    it.from,
+                                    it.to
+                                )
+                            else -> null
+                        }
+                    is FeedType.StudyNotifiableFeed ->
+                        when (it.type.studyNotifiable) {
+                            is FeedReward ->
+                                FeedRewardItem(
+                                    configuration,
+                                    it.type.studyNotifiable,
+                                    it.from,
+                                    it.to
+                                )
+                            else -> null
+                        }
+                    else -> null
+                }
+            }
 
         val items = mutableListOf<DroidItem<Any>>()
 
@@ -114,24 +145,36 @@ class FeedsViewModel(
                 )
             )
 
-        taskActivities
-            .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
+        feeds
+            .sortedByDescending {
+                when (it) {
+                    is TaskActivityItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    is FeedRewardItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    else -> ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                }
+            }
             .groupBy(
-            { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
-            { it }
-        ).forEach { (key, value) ->
+                {
+                    when (it) {
+                        is TaskActivityItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        is FeedRewardItem -> it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        else -> ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    }
+                },
+                { it }
+            ).forEach { (key, value) ->
 
-            items.add(
-                DateItem(
-                    configuration, ZonedDateTime.parse(
-                        key,
-                        DateTimeFormatter.ISO_ZONED_DATE_TIME
+                items.add(
+                    DateItem(
+                        configuration, ZonedDateTime.parse(
+                            key,
+                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+                        )
                     )
                 )
-            )
-            items.addAll(value)
+                items.addAll(value)
 
-        }
+            }
 
         return items
 

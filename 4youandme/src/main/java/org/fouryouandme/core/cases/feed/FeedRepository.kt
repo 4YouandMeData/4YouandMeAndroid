@@ -9,7 +9,7 @@ import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.data.api.feed.response.toFeedItems
-import org.fouryouandme.core.entity.task.Task
+import org.fouryouandme.core.entity.feed.Feed
 import java.io.File
 
 
@@ -17,7 +17,7 @@ object FeedRepository {
 
     internal suspend fun FeedModule.fetchFeeds(
         token: String
-    ): Either<FourYouAndMeError, List<Task>> =
+    ): Either<FourYouAndMeError, List<Feed>> =
 
         errorModule.unwrapToEither { api.getFeeds(token) }
             .map { it.toFeedItems() }

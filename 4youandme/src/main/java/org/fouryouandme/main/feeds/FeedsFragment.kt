@@ -20,10 +20,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.ext.*
 import org.fouryouandme.main.MainSectionFragment
-import org.fouryouandme.main.items.DateViewHolder
-import org.fouryouandme.main.items.QuickActivitiesItem
-import org.fouryouandme.main.items.QuickActivitiesViewHolder
-import org.fouryouandme.main.items.TaskActivityViewHolder
+import org.fouryouandme.main.items.*
 
 
 class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
@@ -47,13 +44,11 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             TaskActivityViewHolder.factory {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
+            FeedRewardViewHolder.factory {  },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),
             FeedEmptyViewHolder.factory()
-
-            //TODO: aggiungere feeds
-
         )
     }
 
@@ -64,7 +59,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             .observeEvent(name()) { state ->
                 when (state) {
                     is FeedsStateUpdate.Initialization ->
-                        applyTasks(state.feeds)
+                        applyFeeds(state.feeds)
                 }
             }
 
@@ -147,9 +142,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         }
 
-    private fun applyTasks(tasks: List<DroidItem<Any>>): Unit {
+    private fun applyFeeds(feeds: List<DroidItem<Any>>): Unit {
 
-        adapter.submitList(tasks)
+        adapter.submitList(feeds)
 
     }
 

@@ -22,6 +22,7 @@ import org.fouryouandme.core.data.api.common.response.activity.QuickActivityOpti
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.SurveyResponse
 import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
+import org.fouryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
 import org.fouryouandme.core.data.api.consent.informed.ConsentInfoApi
 import org.fouryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
@@ -30,6 +31,7 @@ import org.fouryouandme.core.data.api.consent.review.response.ConsentReviewRespo
 import org.fouryouandme.core.data.api.consent.user.ConsentUserApi
 import org.fouryouandme.core.data.api.consent.user.response.ConsentUserResponse
 import org.fouryouandme.core.data.api.feed.FeedApi
+import org.fouryouandme.core.data.api.feed.response.FeedResponse
 import org.fouryouandme.core.data.api.getApiService
 import org.fouryouandme.core.data.api.integration.IntegrationApi
 import org.fouryouandme.core.data.api.integration.response.IntegrationResponse
@@ -99,13 +101,45 @@ class ForYouAndMeInjector(
                     .add(OptInsPermissionResponse::class.java)
                     .add(OptInsResponse::class.java)
                     .add(IntegrationResponse::class.java)
-                    .add(TaskResponse::class.java)
+                    .add(FeedResponse::class.java)
                     .add(QuickActivityResponse::class.java)
                     .add(QuickActivityOptionResponse::class.java)
                     .add(SurveyResponse::class.java)
                     .add(TaskActivityResponse::class.java)
                     .add(UserResponse::class.java)
                     .add(StudyInfoResponse::class.java)
+                    .add(FeedRewardResponse::class.java)
+                    .build()
+            )
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+    private val taskMoshi: Moshi =
+        Moshi.Builder()
+            .add(
+                ResourceAdapterFactory.builder()
+                    .add(UnknownResourceResponse::class.java)
+                    .add(TaskResponse::class.java)
+                    .add(QuickActivityResponse::class.java)
+                    .add(QuickActivityOptionResponse::class.java)
+                    .add(SurveyResponse::class.java)
+                    .add(TaskActivityResponse::class.java)
+                    .build()
+            )
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+    private val feedMoshi: Moshi =
+        Moshi.Builder()
+            .add(
+                ResourceAdapterFactory.builder()
+                    .add(UnknownResourceResponse::class.java)
+                    .add(FeedResponse::class.java)
+                    .add(QuickActivityResponse::class.java)
+                    .add(QuickActivityOptionResponse::class.java)
+                    .add(TaskActivityResponse::class.java)
+                    .add(SurveyResponse::class.java)
+                    .add(FeedRewardResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -138,13 +172,13 @@ class ForYouAndMeInjector(
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val taskApi: TaskApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+        getApiService(environment.getApiBaseUrl(), taskMoshi)
 
     override val answerApi: AnswerApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val feedApi: FeedApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+        getApiService(environment.getApiBaseUrl(), feedMoshi)
 
     override val yourDataApi: YourDataApi =
         getApiService(environment.getApiBaseUrl(), moshi)
