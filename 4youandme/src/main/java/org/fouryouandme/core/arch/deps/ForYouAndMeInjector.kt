@@ -20,7 +20,7 @@ import org.fouryouandme.core.data.api.common.response.QuestionResponse
 import org.fouryouandme.core.data.api.common.response.UnknownResourceResponse
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityOptionResponse
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
-import org.fouryouandme.core.data.api.common.response.activity.SurveyResponse
+import org.fouryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
 import org.fouryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import org.fouryouandme.core.data.api.configuration.ConfigurationApi
@@ -104,7 +104,7 @@ class ForYouAndMeInjector(
                     .add(FeedResponse::class.java)
                     .add(QuickActivityResponse::class.java)
                     .add(QuickActivityOptionResponse::class.java)
-                    .add(SurveyResponse::class.java)
+                    .add(SurveyActivityResponse::class.java)
                     .add(TaskActivityResponse::class.java)
                     .add(UserResponse::class.java)
                     .add(StudyInfoResponse::class.java)
