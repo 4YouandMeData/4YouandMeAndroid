@@ -56,7 +56,7 @@ class FYAMTaskConfiguration(
                         id,
                         configuration,
                         imageConfiguration,
-                        "https://api-4youandme-staging.balzo.eu//camcog/tasks/$id",
+                        "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id",
                         cookies,
                         CamCogInterface()
                     )
