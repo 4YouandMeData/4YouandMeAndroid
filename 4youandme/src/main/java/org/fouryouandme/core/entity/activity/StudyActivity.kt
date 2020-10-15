@@ -45,7 +45,7 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
     object CamCogPvt : TaskActivityType("camcog_pvt", TaskIdentifiers.CAMCOG)
     object CamCogNbx : TaskActivityType("camcog_nbx", TaskIdentifiers.CAMCOG)
     object CamCogEbt : TaskActivityType("camcog_ebt", TaskIdentifiers.CAMCOG)
-    object Survey : TaskActivityType("survey", TaskIdentifiers.CAMCOG)
+    object Survey : TaskActivityType("survey", TaskIdentifiers.SURVEY)
 
     companion object {
 
