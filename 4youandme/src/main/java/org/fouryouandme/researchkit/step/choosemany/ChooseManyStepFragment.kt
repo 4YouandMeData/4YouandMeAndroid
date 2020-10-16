@@ -103,19 +103,27 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
             }
 
             button.setOnClickListener {
-                startCoroutineAsync {
-                    //TODO: add answer id to the response
-                    viewModel.addResult(
-                        MultipleAnswerResult(
-                            step.identifier,
-                            start,
-                            ZonedDateTime.now(),
-                            step.questionId,
-                            chooseManyStepViewModel.getSelectedAnswer().map { it.text }
-                        )
-                    )
 
-                    next()
+                val answers =
+                    chooseManyStepViewModel.getSelectedAnswers()
+
+                if (answers.isNotEmpty()) {
+
+                    startCoroutineAsync {
+
+                        viewModel.addResult(
+                            MultipleAnswerResult(
+                                step.identifier,
+                                start,
+                                ZonedDateTime.now(),
+                                step.questionId,
+                                answers.map { it.id }
+                            )
+                        )
+
+                        checkSkip(step, answers)
+                    }
+
                 }
             }
         }
@@ -148,9 +156,22 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
     private fun applyItems(items: List<DroidItem<Any>>): Unit {
 
-        button.isEnabled = chooseManyStepViewModel.getSelectedAnswer().isEmpty().not()
+        button.isEnabled = chooseManyStepViewModel.getSelectedAnswers().isEmpty().not()
 
         adapter.submitList(items)
     }
+
+    private suspend fun checkSkip(step: ChooseManyStep, answers: List<ChooseManyAnswerItem>): Unit =
+        evalOnMain {
+
+            val answersId = answers.map { it.id }
+
+            val skip =
+                step.skips.firstOrNull { answersId.contains(it.answerId) }
+
+            if (skip != null) skipTo(skip.stepId)
+            else next()
+
+        }
 
 }

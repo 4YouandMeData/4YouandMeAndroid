@@ -55,7 +55,9 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
             button.applyImageAsButton(step.buttonImage)
             button.setOnClickListener {
                 startCoroutineAsync {
+
                     viewModel.addResult(
+
                         SingleAnswerResult(
                             step.identifier,
                             start,
@@ -63,8 +65,11 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
                             step.questionId,
                             text_input.text.toString()
                         )
+
                     )
+
                     next()
+
                 }
             }
 

@@ -12,8 +12,8 @@ import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
-import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
-import org.fouryouandme.researchkit.step.picker.PickerStep
+import org.fouryouandme.researchkit.step.date.DatePickerStep
+import org.fouryouandme.researchkit.step.number.NumberRangePickerStep
 import org.fouryouandme.researchkit.step.range.RangeStep
 import org.fouryouandme.researchkit.step.scale.ScaleStep
 import org.fouryouandme.researchkit.step.textinput.TextInputStep
@@ -40,7 +40,7 @@ fun buildSurvey(
                 val intro =
                     surveyBlock.introPage.asList().mapIndexed { index, page ->
                         FYAMPageStep(
-                            getSurveyIntroStepId(surveyBlock.id, "intro_$index"),
+                            getSurveyIntroStepId(surveyBlock.id, page.id),
                             configuration,
                             page,
                             EPageType.INFO
@@ -75,19 +75,16 @@ fun buildSurvey(
                                 )
 
                             is SurveyQuestion.Numerical ->
-                                PickerStep(
+                                NumberRangePickerStep(
                                     identifier =
                                     getSurveyQuestionStepId(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    values =
-                                    populateNumericalList(
-                                        question.minDisplayValue,
-                                        question.maxDisplayValue,
-                                        question.minValue,
-                                        question.maxValue
-                                    ),
+                                    min = question.minValue,
+                                    max = question.maxValue,
+                                    minDisplayValue = question.minDisplayValue,
+                                    maxDisplayValue = question.maxDisplayValue,
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -269,7 +266,7 @@ fun buildSurvey(
                     surveyBlock.successPage?.let {
 
                         FYAMPageStep(
-                            getSurveySuccessStepId(surveyBlock.id, "success"),
+                            getSurveySuccessStepId(surveyBlock.id, it.id),
                             configuration,
                             it,
                             EPageType.SUCCESS
@@ -298,22 +295,3 @@ private fun getSurveySuccessStepId(blockId: String, successId: String): String =
 
 private fun getSurveyQuestionStepId(blockId: String, questionId: String): String =
     "survey_block_${blockId}_question_${questionId}"
-
-private fun populateNumericalList(
-    minValue: String?,
-    maxValue: String?,
-    min: Int,
-    max: Int
-): List<String> {
-
-    val list = mutableListOf<String>()
-
-    minValue?.let { list.add(it) }
-
-    for (i in min..max) list.add(i.toString())
-
-    maxValue?.let { list.add(it) }
-
-    return list
-
-}

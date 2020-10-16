@@ -2,12 +2,10 @@ package org.fouryouandme.researchkit.result
 
 import org.threeten.bp.ZonedDateTime
 
-class MultipleAnswerResult(
+class SingleIntAnswerResult(
     identifier: String,
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
     val questionId: String,
-    val answers: List<String>
-) :
-    StepResult(identifier, startDate, endDate) {
-}
+    val answer: Int
+) : StepResult(identifier, startDate, endDate)

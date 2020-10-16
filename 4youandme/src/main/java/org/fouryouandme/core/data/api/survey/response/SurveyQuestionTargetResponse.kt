@@ -5,10 +5,10 @@ import com.squareup.moshi.Json
 import org.fouryouandme.core.entity.survey.SurveyTarget
 
 data class SurveyQuestionTargetResponse(
-    @field:Json(name = "min") val min: Int? = null,
-    @field:Json(name = "max") val max: Int? = null,
-    @field:Json(name = "answer_id") val answerId: String? = null,
-    @field:Json(name = "question_id") val questionId: String? = null
+    @Json(name = "min") val min: Int? = null,
+    @Json(name = "max") val max: Int? = null,
+    @Json(name = "answer_id") val answerId: String? = null,
+    @Json(name = "question_id") val questionId: String? = null
 ) {
 
     suspend fun toRange(): SurveyTarget.Range? =

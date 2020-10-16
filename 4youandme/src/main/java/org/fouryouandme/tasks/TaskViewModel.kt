@@ -99,6 +99,8 @@ class TaskViewModel(
 
     fun getStepByIndex(index: Int): Step? = state().task.steps.getOrNull(index)
 
+    fun getStepById(id: String): Step? = state().task.steps.firstOrNull { it.identifier == id }
+
     inline fun <reified T : Step> getStepByIndexAs(index: Int): T? = getStepByIndex(index) as? T
 
     /* --- navigation --- */
@@ -112,6 +114,30 @@ class TaskViewModel(
                         stepNavController,
                         StepToStep(currentStepIndex + 1)
                     )
+                }
+            )
+
+    suspend fun skipToStep(
+        stepNavController: StepNavController,
+        stepId: String,
+        currentStepIndex: Int
+    ): Unit =
+        getStepById(stepId)
+            .foldSuspend(
+                {
+                    Timber.tag(TAG)
+                        .e("Unable to skip to step $stepId for task ${state().task.id}, there is no step with this id")
+                    nextStep(stepNavController, currentStepIndex)
+                },
+                {
+                    val skipIndex = state().task.steps.indexOf(it)
+
+                    if (skipIndex <= currentStepIndex) {
+                        Timber.tag(TAG)
+                            .e("Unable to skip to step $stepId for task ${state().task.id}, the step index is <= to the index of the current step")
+                        nextStep(stepNavController, currentStepIndex)
+                    } else
+                        navigator.navigateTo(stepNavController, StepToStep(skipIndex))
                 }
             )
 

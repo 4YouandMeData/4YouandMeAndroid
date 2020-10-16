@@ -1,11 +1,16 @@
-package org.fouryouandme.researchkit.step.datepicker
+package org.fouryouandme.researchkit.step.number
 
 import android.content.Context
+import org.fouryouandme.researchkit.skip.SurveySkip
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.utils.ImageResource
 
-class DatePickerStep(
+class NumberRangePickerStep(
     identifier: String,
+    val min: Int,
+    val max: Int,
+    val minDisplayValue: String?,
+    val maxDisplayValue: String?,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -13,6 +18,5 @@ class DatePickerStep(
     val questionColor: Int,
     val shadowColor: Int,
     val buttonImage: ImageResource,
-    val minDate: Long?,
-    val maxDate: Long?
-) : Step(identifier, { DatePickerStepFragment() })
+    val skips: List<SurveySkip.Range>
+) : Step(identifier, { NumberRangePickerStepFragment() })

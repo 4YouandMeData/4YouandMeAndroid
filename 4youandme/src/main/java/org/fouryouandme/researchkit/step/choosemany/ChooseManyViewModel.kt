@@ -42,7 +42,7 @@ class ChooseManyViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
 
     }
 
-    fun getSelectedAnswer(): List<ChooseManyAnswerItem> =
+    fun getSelectedAnswers(): List<ChooseManyAnswerItem> =
         state().items
             .mapNotNull { it as? ChooseManyAnswerItem }
             .filter { it.isSelected }

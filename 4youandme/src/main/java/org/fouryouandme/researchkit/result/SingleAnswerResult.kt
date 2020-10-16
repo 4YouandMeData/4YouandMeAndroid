@@ -9,5 +9,4 @@ class SingleAnswerResult(
     val questionId: String,
     val answer: String
 ) :
-    StepResult(identifier, startDate, endDate) {
-}
+    StepResult(identifier, startDate, endDate)

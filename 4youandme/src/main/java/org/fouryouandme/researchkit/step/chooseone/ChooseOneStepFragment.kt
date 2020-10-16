@@ -103,18 +103,29 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
             }
 
             button.setOnClickListener {
-                startCoroutineAsync {
-                    //TODO: add answer id to the response
-                    viewModel.addResult(
-                        SingleAnswerResult(
-                            step.identifier,
-                            start,
-                            ZonedDateTime.now(),
-                            step.questionId,
-                            chooseOneStepViewModel.getSelectedAnswer()?.text ?: ""
+
+                val answer =
+                    chooseOneStepViewModel.getSelectedAnswer()
+
+                answer?.let {
+
+                    startCoroutineAsync {
+
+                        viewModel.addResult(
+
+                            SingleAnswerResult(
+                                step.identifier,
+                                start,
+                                ZonedDateTime.now(),
+                                step.questionId,
+                                it.id,
+                            )
+
                         )
-                    )
-                    next()
+
+                        checkSkip(step, answer)
+                    }
+
                 }
             }
         }
@@ -151,5 +162,15 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
         adapter.submitList(items)
     }
+
+    private suspend fun checkSkip(step: ChooseOneStep, answerItem: ChooseOneAnswerItem): Unit =
+        evalOnMain {
+
+            val skip = step.skips.firstOrNull { it.answerId == answerItem.id }
+
+            if (skip != null) skipTo(skip.stepId)
+            else next()
+
+        }
 
 }

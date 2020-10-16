@@ -12,7 +12,8 @@ import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.background.shadow
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.startCoroutineAsync
-import org.fouryouandme.researchkit.result.SingleAnswerResult
+import org.fouryouandme.researchkit.result.SingleIntAnswerResult
+import org.fouryouandme.researchkit.skip.isInOptionalRange
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZonedDateTime
@@ -81,19 +82,33 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
 
                     viewModel.addResult(
 
-                        SingleAnswerResult(
+                        SingleIntAnswerResult(
                             step.identifier,
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            (slider.progress + step.minValue).toString()
+                            slider.progress + step.minValue
                         )
 
                     )
-                    next()
+
+                    checkSkip(step)
 
                 }
             }
+
+        }
+
+
+    private suspend fun checkSkip(step: RangeStep): Unit =
+        evalOnMain {
+
+            val skip = step.skips.firstOrNull()
+
+            val value = slider.progress + step.minValue
+
+            if (skip != null && isInOptionalRange(value, skip.min, skip.max)) skipTo(skip.stepId)
+            else next()
 
         }
 
