@@ -1,5 +1,6 @@
 package org.fouryouandme.core.arch.deps.task
 
+import arrow.core.extensions.list.foldable.toList
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.survey.Survey
@@ -8,6 +9,7 @@ import org.fouryouandme.core.researchkit.step.FYAMPageStep
 import org.fouryouandme.core.view.page.EPageType
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
+import org.fouryouandme.researchkit.step.picker.PickerStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
@@ -52,6 +54,24 @@ fun buildSurvey(
                                     configuration.theme.primaryTextColor.color(),
                                     imageConfiguration.signUpNextStep().toAndroidResource()
                                 )
+                            is SurveyQuestion.Picker ->
+                                PickerStep(
+                                    getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    populateNumericalList(
+                                        question.minDisplayValue,
+                                        question.maxDisplayValue,
+                                        question.minValue!!,
+                                        question.maxValue!!
+                                    ),
+                                    configuration.theme.secondaryColor.color(),
+                                    question.image?.let { ImageResource.Base64(it) },
+                                    question.id,
+                                    { question.text },
+                                    configuration.theme.primaryTextColor.color(),
+                                    configuration.theme.primaryTextColor.color(),
+                                    imageConfiguration.signUpNextStep().toAndroidResource()
+
+                                )
                         }
 
                     }
@@ -83,3 +103,18 @@ fun buildSurvey(
 
 private fun getSurveyStepId(blockId: String, stepId: String): String =
     "survey_block_${blockId}_${stepId}"
+
+private fun populateNumericalList(
+    minValue: String?,
+    maxValue: String?,
+    min: Int,
+    max: Int
+): List<String> {
+
+    var list = mutableListOf(minValue)
+    for (i in min..max) list.add(i.toString())
+    list.add(maxValue)
+
+    return list.filterNotNull().toList()
+
+}

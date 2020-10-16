@@ -12,4 +12,14 @@ sealed class SurveyQuestion {
         val maxDateTime: ZonedDateTime?
     ) : SurveyQuestion()
 
+    data class Picker(
+        val id: String,
+        val text: String,
+        val image: String?,
+        val minValue: Int?,
+        val maxValue: Int?,
+        val minDisplayValue: String?,
+        val maxDisplayValue: String?
+    ) : SurveyQuestion()
+
 }

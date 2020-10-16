@@ -15,6 +15,10 @@ data class SurveyQuestionResponse(
     @field:Json(name = "image") val image: String? = null,
     @field:Json(name = "min_date") val minDate: String? = null,
     @field:Json(name = "max_date") val maxDate: String? = null,
+    @field:Json(name = "min") val minValue: Int? = null,
+    @field:Json(name = "max") val maxValue: Int? = null,
+    @field:Json(name = "min_display") val minDisplay: String? = null,
+    @field:Json(name = "max_display") val maxDisplay: String? = null,
 ) : Resource() {
 
     suspend fun toSurveyQuestion(): SurveyQuestion? =
@@ -28,6 +32,17 @@ data class SurveyQuestionResponse(
                         image,
                         Instant.parse(minDate).atZone(ZoneOffset.UTC),
                         Instant.parse(maxDate).atZone(ZoneOffset.UTC),
+                    )
+
+                "SurveyQuestionNumerical" ->
+                    SurveyQuestion.Picker(
+                        id,
+                        text!!,
+                        image,
+                        minValue,
+                        maxValue,
+                        minDisplay,
+                        maxDisplay
                     )
                 else -> null
 
