@@ -2,16 +2,18 @@ package org.fouryouandme.core.data.api.survey.response
 
 import arrow.core.Either
 import com.squareup.moshi.Json
+import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.entity.survey.SurveyQuestion
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneOffset
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 @JsonApi(type = "question")
 data class SurveyQuestionResponse(
     @field:Json(name = "text") val text: String? = null,
-    @field:Json(name = "type") val questionType: String? = null,
+    @field:Json(name = "question_type") val questionType: String? = null,
     @field:Json(name = "image") val image: String? = null,
     @field:Json(name = "min_date") val minDate: String? = null,
     @field:Json(name = "max_date") val maxDate: String? = null,
@@ -19,7 +21,7 @@ data class SurveyQuestionResponse(
     @field:Json(name = "max") val maxValue: Int? = null,
     @field:Json(name = "min_display") val minDisplay: String? = null,
     @field:Json(name = "max_display") val maxDisplay: String? = null,
-    //@field:Json(name = "possible_answers") val possibleAnswers: List<> TODO: gestire la lista delle possibili risposte
+    @field:Json(name = "possible_answers") val answers: HasMany<SurveyAnswerResponse>? = null,
     @field:Json(name = "placeholder") val placeholder: String? = null,
     @field:Json(name = "max_characters") val maxCharacters: Int? = null,
     @field:Json(name = "interval") val interval: String? = null
@@ -29,71 +31,117 @@ data class SurveyQuestionResponse(
         Either.catch {
             when (questionType) {
 
-                "SurveyQuestionDate" ->
-                    SurveyQuestion.Date(
-                        id,
-                        text!!,
-                        image,
-                        Instant.parse(minDate).atZone(ZoneOffset.UTC),
-                        Instant.parse(maxDate).atZone(ZoneOffset.UTC),
-                    )
+                "SurveyQuestionDate" -> {
 
-                "SurveyQuestionNumerical" ->
-                    SurveyQuestion.Numerical(
-                        id,
-                        text!!,
-                        image,
-                        minValue,
-                        maxValue,
-                        minDisplay,
-                        maxDisplay
-                    )
+                    val minDate =
+                        minDate?.let { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE) }
+                    val maxDate =
+                        maxDate?.let { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE) }
 
-                "SurveyQuestionPickOne" ->
-                    SurveyQuestion.PickOne(
-                        id,
-                        text!!,
-                        image,
-                        // TODO: aggiungere lista possibili risposte
-                    )
+                    if ( // if max and min are valid check if min < max
+                        minDate != null &&
+                        maxDate != null &&
+                        (minDate.isAfter(maxDate) || minDate.isEqual(maxDate))
+                    ) null
+                    else
+                        SurveyQuestion.Date(
+                            id,
+                            text!!,
+                            image,
+                            minDate,
+                            maxDate,
+                        )
+                }
+                "SurveyQuestionNumerical" -> {
 
-                "SurveyQuestionPickMany" ->
-                    SurveyQuestion.PickMany(
-                        id,
-                        text!!,
-                        image,
-                        // TODO: aggiungere lista possibili risposte
-                    )
+                    if (minValue!! >= maxValue!!) null
+                    else
+                        SurveyQuestion.Numerical(
+                            id,
+                            text!!,
+                            image,
+                            minValue,
+                            maxValue,
+                            minDisplay,
+                            maxDisplay
+                        )
 
+                }
+                "SurveyQuestionPickOne" -> {
+
+                    val surveyAnswers =
+                        answers?.get(document)?.mapNotNull { it.toSurveyAnswer() }!!
+
+                    if (surveyAnswers.isEmpty()) null
+                    else
+                        SurveyQuestion.PickOne(
+                            id,
+                            text!!,
+                            image,
+                            surveyAnswers
+                        )
+                }
+                "SurveyQuestionPickMany" -> {
+
+                    val surveyAnswers =
+                        answers?.get(document)?.mapNotNull { it.toSurveyAnswer() }!!
+
+                    if (surveyAnswers.isEmpty()) null
+                    else
+                        SurveyQuestion.PickMany(
+                            id,
+                            text!!,
+                            image,
+                            surveyAnswers
+                        )
+
+                }
                 "SurveyQuestionText" ->
-                    SurveyQuestion.TextInput(
-                        id,
-                        text!!,
-                        image,
-                        placeholder,
-                        maxCharacters
-                    )
 
-                "SurveyQuestionScale" ->
-                    SurveyQuestion.Scale(
-                        id,
-                        text!!,
-                        image,
-                        minValue,
-                        maxValue,
-                        interval
-                    )
+                    if (maxCharacters?.let { it <= 0 } == true) null
+                    else
+                        SurveyQuestion.TextInput(
+                            id,
+                            text!!,
+                            image,
+                            placeholder,
+                            maxCharacters
+                        )
 
-                "SurveyQuestionRange" ->
-                    SurveyQuestion.Range(
-                        id,
-                        text!!,
-                        image,
-                        minValue,
-                        maxValue,
-                        minDisplay,
-                        maxDisplay
-                    )
+                "SurveyQuestionScale" -> {
+
+                    val scaleInterval = interval?.toFloatOrNull()?.roundToInt()
+
+                    val isValidInterval =
+                        scaleInterval?.let { it >= 0 && (minValue!! + it) <= maxValue!! } ?: true
+
+                    if (minValue!! >= maxValue!! || isValidInterval.not()) null
+                    else
+                        SurveyQuestion.Scale(
+                            id,
+                            text!!,
+                            image,
+                            minValue,
+                            maxValue,
+                            scaleInterval
+                        )
+
+                }
+                "SurveyQuestionRange" -> {
+
+                    if (minValue!! >= maxValue!!) null
+                    else
+                        SurveyQuestion.Range(
+                            id,
+                            text!!,
+                            image,
+                            minValue,
+                            maxValue,
+                            minDisplay,
+                            maxDisplay
+                        )
+
+                }
                 else -> null
 
             }

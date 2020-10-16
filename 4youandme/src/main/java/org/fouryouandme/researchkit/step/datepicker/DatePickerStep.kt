@@ -12,5 +12,7 @@ class DatePickerStep(
     val question: (Context) -> String,
     val questionColor: Int,
     val shadowColor: Int,
-    val buttonImage: ImageResource
+    val buttonImage: ImageResource,
+    val minDate: Long?,
+    val maxDate: Long?
 ) : Step(identifier, { DatePickerStepFragment() })

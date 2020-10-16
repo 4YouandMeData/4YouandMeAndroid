@@ -74,7 +74,7 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
                     }
                 }
 
-        next.background = button(resources, imageConfiguration.signUpNextStep())
+        next.background = button(resources, imageConfiguration.nextStep())
             next.setOnClickListener {
                 startCoroutineAsync {
                     viewModel.confirmEmail(

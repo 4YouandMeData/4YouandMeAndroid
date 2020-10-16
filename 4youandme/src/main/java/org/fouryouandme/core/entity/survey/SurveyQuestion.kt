@@ -1,6 +1,6 @@
 package org.fouryouandme.core.entity.survey
 
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.LocalDate
 
 sealed class SurveyQuestion {
 
@@ -8,16 +8,16 @@ sealed class SurveyQuestion {
         val id: String,
         val text: String,
         val image: String?,
-        val minDate: ZonedDateTime?,
-        val maxDateTime: ZonedDateTime?
+        val minDate: LocalDate?,
+        val maxDate: LocalDate?
     ) : SurveyQuestion()
 
     data class Numerical(
         val id: String,
         val text: String,
         val image: String?,
-        val minValue: Int?,
-        val maxValue: Int?,
+        val minValue: Int,
+        val maxValue: Int,
         val minDisplayValue: String?,
         val maxDisplayValue: String?
     ) : SurveyQuestion()
@@ -26,14 +26,14 @@ sealed class SurveyQuestion {
         val id: String,
         val text: String,
         val image: String?,
-// TODO: lista risposte
+        val answers: List<SurveyAnswer>
     ) : SurveyQuestion()
 
     data class PickMany(
         val id: String,
         val text: String,
         val image: String?,
-// TODO: lista risposte
+        val answers: List<SurveyAnswer>
     ) : SurveyQuestion()
 
     data class TextInput(
@@ -48,17 +48,17 @@ sealed class SurveyQuestion {
         val id: String,
         val text: String,
         val image: String?,
-        val min: Int?,
-        val max: Int?,
-        val interval: String?
+        val min: Int,
+        val max: Int,
+        val interval: Int?
     ) : SurveyQuestion()
 
     data class Range(
         val id: String,
         val text: String,
         val image: String?,
-        val min: Int?,
-        val max: Int?,
+        val min: Int,
+        val max: Int,
         val minDisplay: String?,
         val maxDisplay: String?
     ) : SurveyQuestion()

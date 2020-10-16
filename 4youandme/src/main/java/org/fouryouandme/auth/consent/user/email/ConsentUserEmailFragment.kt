@@ -82,7 +82,7 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
 
 
             next.background =
-                button(resources, imageConfiguration.signUpNextStepSecondary())
+                button(resources, imageConfiguration.nextStepSecondary())
 
             next.setOnClickListener {
                 startCoroutineAsync {

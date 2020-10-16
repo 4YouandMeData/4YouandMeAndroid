@@ -1,6 +1,5 @@
 package org.fouryouandme.core.arch.deps.task
 
-import arrow.core.extensions.list.foldable.toList
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.survey.Survey
@@ -8,6 +7,10 @@ import org.fouryouandme.core.entity.survey.SurveyQuestion
 import org.fouryouandme.core.researchkit.step.FYAMPageStep
 import org.fouryouandme.core.view.page.EPageType
 import org.fouryouandme.researchkit.step.Step
+import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
+import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
+import org.fouryouandme.researchkit.step.chooseone.ChooseOneAnswer
+import org.fouryouandme.researchkit.step.chooseone.ChooseOneStep
 import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
 import org.fouryouandme.researchkit.step.range.RangeStep
@@ -16,6 +19,7 @@ import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
+import org.threeten.bp.ZoneOffset
 
 // TODO: handle dynamic task creation
 fun buildSurvey(
@@ -48,102 +52,138 @@ fun buildSurvey(
                         when (question) {
                             is SurveyQuestion.Date ->
                                 DatePickerStep(
-                                    getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    configuration.theme.secondaryColor.color(),
-                                    question.image?.let { ImageResource.Base64(it) },
-                                    question.id,
-                                    { question.text },
-                                    configuration.theme.primaryTextColor.color(),
-                                    configuration.theme.primaryTextColor.color(),
-                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource(),
+                                    minDate = question.minDate?.atStartOfDay(ZoneOffset.UTC)
+                                        ?.toInstant()
+                                        ?.toEpochMilli(),
+                                    maxDate = question.maxDate?.atStartOfDay(ZoneOffset.UTC)
+                                        ?.toInstant()
+                                        ?.toEpochMilli()
                                 )
 
                             is SurveyQuestion.Numerical ->
                                 PickerStep(
-                                    getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    populateNumericalList(
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    values = populateNumericalList(
                                         question.minDisplayValue,
                                         question.maxDisplayValue,
-                                        question.minValue!!,
-                                        question.maxValue!!
+                                        question.minValue,
+                                        question.maxValue
                                     ),
-                                    configuration.theme.secondaryColor.color(),
-                                    question.image?.let { ImageResource.Base64(it) },
-                                    question.id,
-                                    { question.text },
-                                    configuration.theme.primaryTextColor.color(),
-                                    configuration.theme.primaryTextColor.color(),
-                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource()
 
                                 )
 
-                            is SurveyQuestion.PickOne -> TODO() // creare lista risposte
-//                            ChooseOneStep(
-//                                getSurveyStepId(surveyBlock.id, "question_$index"),
-//                                // TODO: list
-//                                configuration.theme.secondaryColor.color(),
-//                                question.image?.let { ImageResource.Base64(it) },
-//                                question.id,
-//                                { question.text },
-//                                configuration.theme.primaryTextColor.color(),
-//                                configuration.theme.primaryTextColor.color(),
-//                                imageConfiguration.signUpNextStep().toAndroidResource()
-//                            )
+                            is SurveyQuestion.PickOne ->
+                                ChooseOneStep(
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    values = question.answers.map {
+                                        ChooseOneAnswer(
+                                            it.id,
+                                            it.text,
+                                            configuration.theme.primaryTextColor.color(),
+                                            configuration.theme.primaryColorEnd.color()
+                                        )
+                                    },
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource()
+                                )
 
-                            is SurveyQuestion.PickMany -> TODO() // creare lista risposte
-//                            ChooseManyStep(
-//                                getSurveyStepId(surveyBlock.id, "question_$index"),
-//                                // TODO: list
-//                                configuration.theme.secondaryColor.color(),
-//                                question.image?.let { ImageResource.Base64(it) },
-//                                question.id,
-//                                { question.text },
-//                                configuration.theme.primaryTextColor.color(),
-//                                configuration.theme.primaryTextColor.color(),
-//                                imageConfiguration.signUpNextStep().toAndroidResource()
-//                            )
+                            is SurveyQuestion.PickMany ->
+                                ChooseManyStep(
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    values = question.answers.map {
+                                        ChooseManyAnswer(
+                                            it.id,
+                                            it.text,
+                                            configuration.theme.primaryTextColor.color(),
+                                            configuration.theme.primaryColorEnd.color()
+                                        )
+                                    },
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource()
+                                )
 
                             is SurveyQuestion.TextInput ->
                                 TextInputStep(
-                                    getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    configuration.theme.secondaryColor.color(),
-                                    question.image?.let { ImageResource.Base64(it) },
-                                    question.id,
-                                    { question.text },
-                                    configuration.theme.primaryTextColor.color(),
-                                    configuration.theme.primaryTextColor.color(),
-                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource(),
+                                    textColor = configuration.theme.primaryTextColor.color(),
+                                    placeholderColor = configuration.theme.fourthTextColor.color(),
+                                    placeholder = question.placeholder,
+                                    maxCharacters = question.maxCharacters
                                 )
 
                             is SurveyQuestion.Scale ->
                                 ScaleStep(
-                                    getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    question.min!!,
-                                    question.max!!,
-                                    question.interval!!.toInt(),
-                                    configuration.theme.secondaryColor.color(),
-                                    configuration.theme.secondaryColor.color(),
-                                    question.image?.let { ImageResource.Base64(it) },
-                                    question.id,
-                                    { question.text },
-                                    configuration.theme.primaryTextColor.color(),
-                                    configuration.theme.primaryTextColor.color(),
-                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    minValue = question.min,
+                                    maxValue = question.max,
+                                    interval = question.interval ?: 1,
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    progressColor = configuration.theme.primaryColorEnd.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource()
                                 )
 
                             is SurveyQuestion.Range ->
                                 RangeStep(
-                                    getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    question.min!!,
-                                    question.max!!,
-                                    configuration.theme.secondaryColor.color(),
-                                    configuration.theme.secondaryColor.color(),
-                                    question.image?.let { ImageResource.Base64(it) },
-                                    question.id,
-                                    { question.text },
-                                    configuration.theme.primaryTextColor.color(),
-                                    configuration.theme.primaryTextColor.color(),
-                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    minValue = question.min,
+                                    maxValue = question.max,
+                                    valueColor = configuration.theme.primaryTextColor.color(),
+                                    minDisplayValue = question.minDisplay,
+                                    maxDisplayValue = question.maxDisplay,
+                                    minDisplayColor = configuration.theme.primaryTextColor.color(),
+                                    maxDisplayColor = configuration.theme.primaryTextColor.color(),
+                                    progressColor = configuration.theme.primaryColorEnd.color(),
+                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    questionId = question.id,
+                                    question = { question.text },
+                                    questionColor = configuration.theme.primaryTextColor.color(),
+                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toAndroidResource()
                                 )
                         }
 
@@ -184,10 +224,14 @@ private fun populateNumericalList(
     max: Int
 ): List<String> {
 
-    var list = mutableListOf(minValue)
-    for (i in min..max) list.add(i.toString())
-    list.add(maxValue)
+    val list = mutableListOf<String>()
 
-    return list.filterNotNull().toList()
+    minValue?.let { list.add(it) }
+
+    for (i in min..max) list.add(i.toString())
+
+    maxValue?.let { list.add(it) }
+
+    return list
 
 }

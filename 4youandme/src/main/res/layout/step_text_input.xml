@@ -11,6 +11,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
+        android:paddingTop="30dp"
         android:paddingBottom="30dp"
         app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,20 +34,20 @@
             android:gravity="center"
             tools:text="Title " />
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_input"
             style="@style/text_paragraph"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="30dp"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Enter your answer"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
-            android:maxLength="200" />
+            tools:hint="Enter your answer" />
 
     </LinearLayout>
 

@@ -34,7 +34,7 @@ class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sig
 
             logo.setImageResource(imageConfiguration.logo())
 
-            sign_up.setImageResource(imageConfiguration.signUpNextStep())
+            sign_up.setImageResource(imageConfiguration.nextStep())
             sign_up.setOnClickListener {
                 startCoroutineAsync { viewModel.enterPhone(authNavController()) }
             }
@@ -43,7 +43,7 @@ class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sig
                 startCoroutineAsync { viewModel.enterPhone(authNavController()) }
             }
 
-            sign_up_later.setImageResource(imageConfiguration.signUpNextStep())
+            sign_up_later.setImageResource(imageConfiguration.nextStep())
             sign_up_later.setOnClickListener {
                 startCoroutineAsync { viewModel.signUpLater(authNavController()) }
             }

@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.step_scale.*
@@ -39,6 +38,7 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
     ): Unit =
 
         evalOnMain {
+
             val start = ZonedDateTime.now()
 
             root.setBackgroundColor(step.backgroundColor)
@@ -55,8 +55,11 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
             slider.min = 0
             slider.max = (step.maxValue.minus(step.minValue)).absoluteValue.div(step.interval)
             slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+
                     value.text = i.times(step.interval).plus(step.minValue).toString()
+
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -68,17 +71,21 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
 
             button.applyImage(step.buttonImage)
             button.setOnClickListener {
+
                 startCoroutineAsync {
+
                     viewModel.addResult(
                         SingleAnswerResult(
                             step.identifier,
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            slider.progress.toString()
+                            slider.progress.times(step.interval).plus(step.minValue).toString()
                         )
                     )
+
                     next()
+
                 }
             }
 

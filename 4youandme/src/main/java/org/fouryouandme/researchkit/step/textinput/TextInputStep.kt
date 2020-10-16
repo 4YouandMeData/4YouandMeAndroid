@@ -12,5 +12,9 @@ class TextInputStep(
     val question: (Context) -> String,
     val questionColor: Int,
     val shadowColor: Int,
-    val buttonImage: ImageResource
+    val buttonImage: ImageResource,
+    val textColor: Int,
+    val placeholderColor: Int,
+    val placeholder: String?,
+    val maxCharacters: Int?
 ) : Step(identifier, { TextInputStepFragment() })

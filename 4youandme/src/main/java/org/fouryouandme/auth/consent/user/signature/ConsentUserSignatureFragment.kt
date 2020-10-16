@@ -134,7 +134,7 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
             next.background =
                 button(
                     resources,
-                    imageConfiguration.signUpNextStepSecondary()
+                    imageConfiguration.nextStepSecondary()
 
                 )
 

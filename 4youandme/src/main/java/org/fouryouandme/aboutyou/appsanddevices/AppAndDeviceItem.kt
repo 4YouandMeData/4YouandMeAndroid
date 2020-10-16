@@ -57,7 +57,7 @@ class AppAndDeviceViewHolder(parent: ViewGroup, onItemClicked: (AppAndDeviceItem
             arrow.setImageResource(context.imageConfiguration.deactivatedButton())
             connect.setTextColor(t.configuration.theme.primaryColorEnd.color())
         } else {
-            arrow.setImageResource(context.imageConfiguration.signUpNextStep())
+            arrow.setImageResource(context.imageConfiguration.nextStep())
             connect.setTextColor(t.configuration.theme.secondaryTextColor.color())
         }
     }

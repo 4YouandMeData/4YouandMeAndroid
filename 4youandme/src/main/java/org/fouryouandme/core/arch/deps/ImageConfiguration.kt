@@ -33,6 +33,15 @@ interface ImageConfiguration {
     @DrawableRes
     fun logoStudySecondary(): Int
 
+    @DrawableRes
+    fun nextStep(): Int
+
+    @DrawableRes
+    fun nextStepSecondary(): Int
+
+    @DrawableRes
+    fun previousStepSecondary(): Int
+
     /* --- auth --- */
 
     @DrawableRes
@@ -40,15 +49,6 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun entryValid(): Int
-
-    @DrawableRes
-    fun signUpNextStep(): Int
-
-    @DrawableRes
-    fun signUpNextStepSecondary(): Int
-
-    @DrawableRes
-    fun signUpPreviousStepSecondary(): Int
 
     /* --- main --- */
 

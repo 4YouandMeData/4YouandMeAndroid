@@ -190,7 +190,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
 
             next.isEnabled = checkbox.isChecked && ccp.isValidFullNumber
             next.background =
-                button(resources, imageConfiguration.signUpNextStep())
+                button(resources, imageConfiguration.nextStep())
 
             missing_number_error.text =
                 configuration.text.phoneVerification.error.errorMissingNumber

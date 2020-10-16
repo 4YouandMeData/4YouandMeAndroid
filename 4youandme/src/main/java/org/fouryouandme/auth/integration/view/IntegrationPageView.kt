@@ -98,7 +98,7 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
             }
 
             next.background =
-                button(context.resources, context.imageConfiguration.signUpNextStepSecondary())
+                button(context.resources, context.imageConfiguration.nextStepSecondary())
 
             button_1_text.background = button(configuration.theme.primaryColorEnd.color())
             button_1_text.setTextColor(configuration.theme.secondaryColor.color())

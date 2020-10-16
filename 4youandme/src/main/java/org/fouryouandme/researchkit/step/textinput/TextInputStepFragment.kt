@@ -1,6 +1,7 @@
 package org.fouryouandme.researchkit.step.textinput
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.View
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.step_text_input.*
@@ -43,7 +44,13 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
             question.text = step.question(requireContext())
             question.setTextColor(step.questionColor)
 
+            text_input.setTextColor(step.textColor)
+            text_input.setHintTextColor(step.textColor)
+
             shadow.background = shadow(step.shadowColor)
+
+            step.placeholder?.let { text_input.hint = it }
+            step.maxCharacters?.let { text_input.filters += InputFilter.LengthFilter(it) }
 
             button.applyImageAsButton(step.buttonImage)
             button.setOnClickListener {
@@ -54,7 +61,7 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            text_input.text.toString() ?: ""
+                            text_input.text.toString()
                         )
                     )
                     next()

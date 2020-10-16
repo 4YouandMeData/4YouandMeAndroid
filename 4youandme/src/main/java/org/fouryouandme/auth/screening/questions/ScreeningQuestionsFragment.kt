@@ -91,7 +91,7 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
             next.background =
                 button(
                     requireContext().resources,
-                    requireContext().imageConfiguration.signUpNextStepSecondary()
+                    requireContext().imageConfiguration.nextStepSecondary()
                 )
 
             next.setOnClickListener {

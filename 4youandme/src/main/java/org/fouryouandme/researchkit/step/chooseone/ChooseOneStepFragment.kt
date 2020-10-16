@@ -119,7 +119,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
             }
         }
 
-    private suspend fun setupRecyclerView() =
+    private suspend fun setupRecyclerView(): Unit =
 
         evalOnMain {
 
@@ -128,20 +128,20 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
             recycler_view.adapter = adapter
 
-        recycler_view.addItemDecoration(
-            LinearMarginItemDecoration(
-                {
-                    if (it.index == 0) 30.dpToPx()
-                    else 0.dpToPx()
-                },
-                { 20.dpToPx() },
-                { 20.dpToPx() },
-                {
-                    if (it.index == it.itemCount) 30.dpToPx()
-                    else 0.dpToPx()
-                }
+            recycler_view.addItemDecoration(
+                LinearMarginItemDecoration(
+                    {
+                        if (it.index == 0) 30.dpToPx()
+                        else 0.dpToPx()
+                    },
+                    { 20.dpToPx() },
+                    { 20.dpToPx() },
+                    {
+                        if (it.index == it.itemCount) 30.dpToPx()
+                        else 0.dpToPx()
+                    }
+                )
             )
-        )
 
         }
 

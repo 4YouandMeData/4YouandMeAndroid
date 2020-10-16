@@ -18,8 +18,6 @@ import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
-import java.text.SimpleDateFormat
-import java.util.*
 
 class DatePickerStepFragment : StepFragment(R.layout.step_date) {
 
@@ -43,6 +41,9 @@ class DatePickerStepFragment : StepFragment(R.layout.step_date) {
             val start = ZonedDateTime.now()
 
             root.setBackgroundColor(step.backgroundColor)
+
+            step.minDate?.let { date_picker.minDate = it }
+            step.maxDate?.let { date_picker.maxDate = it }
 
             step.image?.let { icon.applyImage(it) }
             icon.isVisible = step.image != null

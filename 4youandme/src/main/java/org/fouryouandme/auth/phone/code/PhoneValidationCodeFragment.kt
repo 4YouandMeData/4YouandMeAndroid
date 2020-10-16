@@ -193,7 +193,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
                     .toSpannableString()
 
             next.background =
-                button(resources, imageConfiguration.signUpNextStep())
+                button(resources, imageConfiguration.nextStep())
             next.isEnabled = code.text?.toString()?.length == 6
 
             wrong_code_error.text =

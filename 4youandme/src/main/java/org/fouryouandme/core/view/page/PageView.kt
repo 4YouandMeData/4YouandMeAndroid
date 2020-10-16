@@ -97,9 +97,9 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                     button(
                         context.resources,
                         when (pageType) {
-                            INFO -> context.imageConfiguration.signUpNextStepSecondary()
-                            FAILURE -> context.imageConfiguration.signUpPreviousStepSecondary()
-                            SUCCESS -> context.imageConfiguration.signUpNextStepSecondary()
+                            INFO -> context.imageConfiguration.nextStepSecondary()
+                            FAILURE -> context.imageConfiguration.previousStepSecondary()
+                            SUCCESS -> context.imageConfiguration.nextStepSecondary()
                         }
                     )
 

@@ -24,17 +24,17 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun logoStudySecondary(): Int = R.drawable.logo_study_secondary
 
+    override fun nextStep(): Int = R.drawable.next_step
+
+    override fun nextStepSecondary(): Int = R.drawable.next_step_secondary
+
+    override fun previousStepSecondary(): Int = R.drawable.previous_step_secondary
+
     /* --- auth --- */
 
     override fun entryWrong(): Int = R.drawable.phone_wrong
 
     override fun entryValid(): Int = R.drawable.phone_valid
-
-    override fun signUpNextStep(): Int = R.drawable.sign_up_next
-
-    override fun signUpNextStepSecondary(): Int = R.drawable.sign_up_next_secondary
-
-    override fun signUpPreviousStepSecondary(): Int = R.drawable.sign_up_previous_secondary
 
     /* --- main --- */
 

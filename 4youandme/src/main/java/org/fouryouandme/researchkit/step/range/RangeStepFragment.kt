@@ -37,6 +37,7 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
     ): Unit =
 
         evalOnMain {
+
             val start = ZonedDateTime.now()
 
             root.setBackgroundColor(step.backgroundColor)
@@ -48,38 +49,49 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
             question.setTextColor(step.questionColor)
 
             value.text = step.minValue.toString()
+            value.setTextColor(step.valueColor)
 
             slider.progressTintList = ColorStateList.valueOf(step.progressColor)
-            slider.min = step.minValue
-            slider.max = step.maxValue
+            slider.min = 0
+            slider.max = step.maxValue - step.minValue
             slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    value.text = i.toString()
+                    value.text = (i + step.minValue).toString()
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
             })
 
-            min_label.text = "${step.minValue}% likely"
-            max_label.text = "${step.maxValue}% likely"
+            min_label.text = step.minDisplayValue ?: step.minValue.toString()
+            min_label.setTextColor(step.minDisplayColor)
+
+            max_label.text = step.maxDisplayValue ?: step.maxValue.toString()
+            max_label.setTextColor(step.maxDisplayColor)
 
             shadow.background = shadow(step.shadowColor)
 
             button.applyImage(step.buttonImage)
             button.setOnClickListener {
+
                 startCoroutineAsync {
+
                     viewModel.addResult(
+
                         SingleAnswerResult(
                             step.identifier,
                             start,
                             ZonedDateTime.now(),
                             step.questionId,
-                            slider.progress.toString()
+                            (slider.progress + step.minValue).toString()
                         )
+
                     )
                     next()
+
                 }
             }
 

@@ -75,7 +75,7 @@ class ConsentInfoQuestionFragment :
                 )
             recycler_view.adapter = adapter
 
-            next.background = button(resources, imageConfiguration.signUpNextStep())
+            next.background = button(resources, imageConfiguration.nextStep())
             next.setOnClickListener {
 
                 startCoroutineAsync {
