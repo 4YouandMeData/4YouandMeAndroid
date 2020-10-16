@@ -19,6 +19,10 @@ data class SurveyQuestionResponse(
     @field:Json(name = "max") val maxValue: Int? = null,
     @field:Json(name = "min_display") val minDisplay: String? = null,
     @field:Json(name = "max_display") val maxDisplay: String? = null,
+    //@field:Json(name = "possible_answers") val possibleAnswers: List<> TODO: gestire la lista delle possibili risposte
+    @field:Json(name = "placeholder") val placeholder: String? = null,
+    @field:Json(name = "max_characters") val maxCharacters: Int? = null,
+    @field:Json(name = "interval") val interval: String? = null
 ) : Resource() {
 
     suspend fun toSurveyQuestion(): SurveyQuestion? =
@@ -35,7 +39,53 @@ data class SurveyQuestionResponse(
                     )
 
                 "SurveyQuestionNumerical" ->
-                    SurveyQuestion.Picker(
+                    SurveyQuestion.Numerical(
+                        id,
+                        text!!,
+                        image,
+                        minValue,
+                        maxValue,
+                        minDisplay,
+                        maxDisplay
+                    )
+
+                "SurveyQuestionPickOne" ->
+                    SurveyQuestion.PickOne(
+                        id,
+                        text!!,
+                        image,
+                        // TODO: aggiungere lista possibili risposte
+                    )
+
+                "SurveyQuestionPickMany" ->
+                    SurveyQuestion.PickMany(
+                        id,
+                        text!!,
+                        image,
+                        // TODO: aggiungere lista possibili risposte
+                    )
+
+                "SurveyQuestionText" ->
+                    SurveyQuestion.TextInput(
+                        id,
+                        text!!,
+                        image,
+                        placeholder,
+                        maxCharacters
+                    )
+
+                "SurveyQuestionScale" ->
+                    SurveyQuestion.Scale(
+                        id,
+                        text!!,
+                        image,
+                        minValue,
+                        maxValue,
+                        interval
+                    )
+
+                "SurveyQuestionRange" ->
+                    SurveyQuestion.Range(
                         id,
                         text!!,
                         image,

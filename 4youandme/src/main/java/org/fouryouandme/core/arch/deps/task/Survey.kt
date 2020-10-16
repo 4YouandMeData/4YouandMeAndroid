@@ -10,6 +10,9 @@ import org.fouryouandme.core.view.page.EPageType
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.datepicker.DatePickerStep
 import org.fouryouandme.researchkit.step.picker.PickerStep
+import org.fouryouandme.researchkit.step.range.RangeStep
+import org.fouryouandme.researchkit.step.scale.ScaleStep
+import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.utils.ImageResource
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
@@ -54,7 +57,8 @@ fun buildSurvey(
                                     configuration.theme.primaryTextColor.color(),
                                     imageConfiguration.signUpNextStep().toAndroidResource()
                                 )
-                            is SurveyQuestion.Picker ->
+
+                            is SurveyQuestion.Numerical ->
                                 PickerStep(
                                     getSurveyStepId(surveyBlock.id, "question_$index"),
                                     populateNumericalList(
@@ -71,6 +75,75 @@ fun buildSurvey(
                                     configuration.theme.primaryTextColor.color(),
                                     imageConfiguration.signUpNextStep().toAndroidResource()
 
+                                )
+
+                            is SurveyQuestion.PickOne -> TODO() // creare lista risposte
+//                            ChooseOneStep(
+//                                getSurveyStepId(surveyBlock.id, "question_$index"),
+//                                // TODO: list
+//                                configuration.theme.secondaryColor.color(),
+//                                question.image?.let { ImageResource.Base64(it) },
+//                                question.id,
+//                                { question.text },
+//                                configuration.theme.primaryTextColor.color(),
+//                                configuration.theme.primaryTextColor.color(),
+//                                imageConfiguration.signUpNextStep().toAndroidResource()
+//                            )
+
+                            is SurveyQuestion.PickMany -> TODO() // creare lista risposte
+//                            ChooseManyStep(
+//                                getSurveyStepId(surveyBlock.id, "question_$index"),
+//                                // TODO: list
+//                                configuration.theme.secondaryColor.color(),
+//                                question.image?.let { ImageResource.Base64(it) },
+//                                question.id,
+//                                { question.text },
+//                                configuration.theme.primaryTextColor.color(),
+//                                configuration.theme.primaryTextColor.color(),
+//                                imageConfiguration.signUpNextStep().toAndroidResource()
+//                            )
+
+                            is SurveyQuestion.TextInput ->
+                                TextInputStep(
+                                    getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    configuration.theme.secondaryColor.color(),
+                                    question.image?.let { ImageResource.Base64(it) },
+                                    question.id,
+                                    { question.text },
+                                    configuration.theme.primaryTextColor.color(),
+                                    configuration.theme.primaryTextColor.color(),
+                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                )
+
+                            is SurveyQuestion.Scale ->
+                                ScaleStep(
+                                    getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    question.min!!,
+                                    question.max!!,
+                                    question.interval!!.toInt(),
+                                    configuration.theme.secondaryColor.color(),
+                                    configuration.theme.secondaryColor.color(),
+                                    question.image?.let { ImageResource.Base64(it) },
+                                    question.id,
+                                    { question.text },
+                                    configuration.theme.primaryTextColor.color(),
+                                    configuration.theme.primaryTextColor.color(),
+                                    imageConfiguration.signUpNextStep().toAndroidResource()
+                                )
+
+                            is SurveyQuestion.Range ->
+                                RangeStep(
+                                    getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    question.min!!,
+                                    question.max!!,
+                                    configuration.theme.secondaryColor.color(),
+                                    configuration.theme.secondaryColor.color(),
+                                    question.image?.let { ImageResource.Base64(it) },
+                                    question.id,
+                                    { question.text },
+                                    configuration.theme.primaryTextColor.color(),
+                                    configuration.theme.primaryTextColor.color(),
+                                    imageConfiguration.signUpNextStep().toAndroidResource()
                                 )
                         }
 
