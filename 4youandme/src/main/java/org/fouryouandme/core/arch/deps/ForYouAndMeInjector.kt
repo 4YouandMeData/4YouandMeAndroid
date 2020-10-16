@@ -43,6 +43,7 @@ import org.fouryouandme.core.data.api.screening.response.ScreeningResponse
 import org.fouryouandme.core.data.api.studyinfo.StudyInfoApi
 import org.fouryouandme.core.data.api.studyinfo.response.StudyInfoResponse
 import org.fouryouandme.core.data.api.survey.SurveyApi
+import org.fouryouandme.core.data.api.survey.response.SurveyAnswerResponse
 import org.fouryouandme.core.data.api.survey.response.SurveyBlockResponse
 import org.fouryouandme.core.data.api.survey.response.SurveyQuestionResponse
 import org.fouryouandme.core.data.api.survey.response.SurveyResponse
@@ -158,6 +159,7 @@ class ForYouAndMeInjector(
                     .add(SurveyResponse::class.java)
                     .add(SurveyBlockResponse::class.java)
                     .add(SurveyQuestionResponse::class.java)
+                    .add(SurveyAnswerResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())

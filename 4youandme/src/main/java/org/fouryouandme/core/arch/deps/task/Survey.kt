@@ -6,6 +6,7 @@ import org.fouryouandme.core.entity.survey.Survey
 import org.fouryouandme.core.entity.survey.SurveyQuestion
 import org.fouryouandme.core.researchkit.step.FYAMPageStep
 import org.fouryouandme.core.view.page.EPageType
+import org.fouryouandme.researchkit.skip.SurveySkip
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
@@ -39,7 +40,7 @@ fun buildSurvey(
                 val intro =
                     surveyBlock.introPage.asList().mapIndexed { index, page ->
                         FYAMPageStep(
-                            getSurveyStepId(surveyBlock.id, "intro_$index"),
+                            getSurveyIntroStepId(surveyBlock.id, "intro_$index"),
                             configuration,
                             page,
                             EPageType.INFO
@@ -52,7 +53,11 @@ fun buildSurvey(
                         when (question) {
                             is SurveyQuestion.Date ->
                                 DatePickerStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -71,8 +76,13 @@ fun buildSurvey(
 
                             is SurveyQuestion.Numerical ->
                                 PickerStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    values = populateNumericalList(
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
+                                    values =
+                                    populateNumericalList(
                                         question.minDisplayValue,
                                         question.maxDisplayValue,
                                         question.minValue,
@@ -85,14 +95,26 @@ fun buildSurvey(
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
                                     buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource()
-
+                                        .toAndroidResource(),
+                                    skips =
+                                    question.targets.map {
+                                        SurveySkip.Range(
+                                            it.min,
+                                            it.max,
+                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                        )
+                                    }
                                 )
 
                             is SurveyQuestion.PickOne ->
                                 ChooseOneStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
-                                    values = question.answers.map {
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
+                                    values =
+                                    question.answers.map {
                                         ChooseOneAnswer(
                                             it.id,
                                             it.text,
@@ -106,13 +128,26 @@ fun buildSurvey(
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource()
+                                    buttonImage =
+                                    imageConfiguration
+                                        .nextStepSecondary()
+                                        .toAndroidResource(),
+                                    skips =
+                                    question.targets.map {
+                                        SurveySkip.Answer(
+                                            it.answerId,
+                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                        )
+                                    }
                                 )
 
                             is SurveyQuestion.PickMany ->
                                 ChooseManyStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
                                     values = question.answers.map {
                                         ChooseManyAnswer(
                                             it.id,
@@ -127,13 +162,26 @@ fun buildSurvey(
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource()
+                                    buttonImage =
+                                    imageConfiguration
+                                        .nextStepSecondary()
+                                        .toAndroidResource(),
+                                    skips =
+                                    question.targets.map {
+                                        SurveySkip.Answer(
+                                            it.answerId,
+                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                        )
+                                    }
                                 )
 
                             is SurveyQuestion.TextInput ->
                                 TextInputStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -150,7 +198,11 @@ fun buildSurvey(
 
                             is SurveyQuestion.Scale ->
                                 ScaleStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
                                     minValue = question.min,
                                     maxValue = question.max,
                                     interval = question.interval ?: 1,
@@ -161,13 +213,27 @@ fun buildSurvey(
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource()
+                                    buttonImage =
+                                    imageConfiguration
+                                        .nextStepSecondary()
+                                        .toAndroidResource(),
+                                    skips =
+                                    question.targets.map {
+                                        SurveySkip.Range(
+                                            it.min,
+                                            it.max,
+                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                        )
+                                    }
                                 )
 
                             is SurveyQuestion.Range ->
                                 RangeStep(
-                                    identifier = getSurveyStepId(surveyBlock.id, "question_$index"),
+                                    identifier =
+                                    getSurveyQuestionStepId(
+                                        surveyBlock.id,
+                                        question.id
+                                    ),
                                     minValue = question.min,
                                     maxValue = question.max,
                                     valueColor = configuration.theme.primaryTextColor.color(),
@@ -182,8 +248,18 @@ fun buildSurvey(
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource()
+                                    buttonImage =
+                                    imageConfiguration
+                                        .nextStepSecondary()
+                                        .toAndroidResource(),
+                                    skips =
+                                    question.targets.map {
+                                        SurveySkip.Range(
+                                            it.min,
+                                            it.max,
+                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                        )
+                                    }
                                 )
                         }
 
@@ -193,7 +269,7 @@ fun buildSurvey(
                     surveyBlock.successPage?.let {
 
                         FYAMPageStep(
-                            getSurveyStepId(surveyBlock.id, "success"),
+                            getSurveySuccessStepId(surveyBlock.id, "success"),
                             configuration,
                             it,
                             EPageType.SUCCESS
@@ -214,8 +290,14 @@ fun buildSurvey(
 
     }
 
-private fun getSurveyStepId(blockId: String, stepId: String): String =
-    "survey_block_${blockId}_${stepId}"
+private fun getSurveyIntroStepId(blockId: String, introId: String): String =
+    "survey_block_${blockId}_intro_${introId}"
+
+private fun getSurveySuccessStepId(blockId: String, successId: String): String =
+    "survey_block_${blockId}_success_${successId}"
+
+private fun getSurveyQuestionStepId(blockId: String, questionId: String): String =
+    "survey_block_${blockId}_question_${questionId}"
 
 private fun populateNumericalList(
     minValue: String?,

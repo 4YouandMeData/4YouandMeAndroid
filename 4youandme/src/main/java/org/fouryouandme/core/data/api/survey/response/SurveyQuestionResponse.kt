@@ -24,7 +24,8 @@ data class SurveyQuestionResponse(
     @field:Json(name = "possible_answers") val answers: HasMany<SurveyAnswerResponse>? = null,
     @field:Json(name = "placeholder") val placeholder: String? = null,
     @field:Json(name = "max_characters") val maxCharacters: Int? = null,
-    @field:Json(name = "interval") val interval: String? = null
+    @field:Json(name = "interval") val interval: String? = null,
+    @field:Json(name = "targets") val targets: List<SurveyQuestionTargetResponse>? = null,
 ) : Resource() {
 
     suspend fun toSurveyQuestion(): SurveyQuestion? =
@@ -63,7 +64,8 @@ data class SurveyQuestionResponse(
                             minValue,
                             maxValue,
                             minDisplay,
-                            maxDisplay
+                            maxDisplay,
+                            targets?.mapNotNull { it.toRange() } ?: emptyList()
                         )
 
                 }
@@ -78,7 +80,8 @@ data class SurveyQuestionResponse(
                             id,
                             text!!,
                             image,
-                            surveyAnswers
+                            surveyAnswers,
+                            targets?.mapNotNull { it.toAnswer() } ?: emptyList()
                         )
                 }
                 "SurveyQuestionPickMany" -> {
@@ -92,7 +95,8 @@ data class SurveyQuestionResponse(
                             id,
                             text!!,
                             image,
-                            surveyAnswers
+                            surveyAnswers,
+                            targets?.mapNotNull { it.toAnswer() } ?: emptyList()
                         )
 
                 }
@@ -123,7 +127,8 @@ data class SurveyQuestionResponse(
                             image,
                             minValue,
                             maxValue,
-                            scaleInterval
+                            scaleInterval,
+                            targets?.mapNotNull { it.toRange() } ?: emptyList()
                         )
 
                 }
@@ -138,7 +143,8 @@ data class SurveyQuestionResponse(
                             minValue,
                             maxValue,
                             minDisplay,
-                            maxDisplay
+                            maxDisplay,
+                            targets?.mapNotNull { it.toRange() } ?: emptyList()
                         )
 
                 }

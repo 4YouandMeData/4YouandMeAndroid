@@ -19,21 +19,24 @@ sealed class SurveyQuestion {
         val minValue: Int,
         val maxValue: Int,
         val minDisplayValue: String?,
-        val maxDisplayValue: String?
+        val maxDisplayValue: String?,
+        val targets: List<SurveyTarget.Range>
     ) : SurveyQuestion()
 
     data class PickOne(
         val id: String,
         val text: String,
         val image: String?,
-        val answers: List<SurveyAnswer>
+        val answers: List<SurveyAnswer>,
+        val targets: List<SurveyTarget.Answer>
     ) : SurveyQuestion()
 
     data class PickMany(
         val id: String,
         val text: String,
         val image: String?,
-        val answers: List<SurveyAnswer>
+        val answers: List<SurveyAnswer>,
+        val targets: List<SurveyTarget.Answer>
     ) : SurveyQuestion()
 
     data class TextInput(
@@ -50,7 +53,8 @@ sealed class SurveyQuestion {
         val image: String?,
         val min: Int,
         val max: Int,
-        val interval: Int?
+        val interval: Int?,
+        val targets: List<SurveyTarget.Range>
     ) : SurveyQuestion()
 
     data class Range(
@@ -60,6 +64,7 @@ sealed class SurveyQuestion {
         val min: Int,
         val max: Int,
         val minDisplay: String?,
-        val maxDisplay: String?
+        val maxDisplay: String?,
+        val targets: List<SurveyTarget.Range>
     ) : SurveyQuestion()
 }
