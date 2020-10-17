@@ -122,10 +122,12 @@ class TaskViewModel(
 
     suspend fun skipToStep(
         stepNavController: StepNavController,
+        taskNavController: TaskNavController,
         stepId: String,
         currentStepIndex: Int
     ): Unit =
-        getStepById(stepId)
+        if (stepId.contains("exit")) close(taskNavController)
+        else getStepById(stepId)
             .foldSuspend(
                 {
                     Timber.tag(TAG)
