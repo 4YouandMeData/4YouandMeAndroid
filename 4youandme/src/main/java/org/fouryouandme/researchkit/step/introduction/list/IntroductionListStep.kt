@@ -5,6 +5,7 @@ import org.fouryouandme.researchkit.step.Step
 
 class IntroductionListStep(
     identifier: String,
+    backImage: Int,
     val backgroundColor: Int,
     val footerBackgroundColor: Int,
     val title: String,
@@ -19,4 +20,4 @@ class IntroductionListStep(
     val list: List<IntroductionItem>,
     val shadowColor: Int,
     val toolbarColor: Int
-) : Step(identifier, { IntroductionListStepFragment() })
+) : Step(identifier, backImage, { IntroductionListStepFragment() })

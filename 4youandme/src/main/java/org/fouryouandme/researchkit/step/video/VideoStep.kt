@@ -35,4 +35,4 @@ class VideoStep(
     val missingPermissionMicBody: String,
     val settings: String,
     val cancel: String,
-) : Step(identifier, { VideoStepFragment() })
+) : Step(identifier, null, { VideoStepFragment() })

@@ -7,6 +7,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 
 class ChooseManyStep(
     identifier: String,
+    backImage: Int,
     val values: List<ChooseManyAnswer>,
     val backgroundColor: Int,
     val image: ImageResource?,
@@ -16,4 +17,4 @@ class ChooseManyStep(
     val shadowColor: Int,
     val buttonImage: ImageResource,
     val skips: List<SurveySkip.Answer>
-) : Step(identifier, { ChooseManyStepFragment() })
+) : Step(identifier, backImage, { ChooseManyStepFragment() })

@@ -31,6 +31,7 @@ suspend fun FYAMTaskConfiguration.buildVideoDiary(
 
     return VideoDiaryTask(
         id = id,
+        introBackImage = imageConfiguration.back(),
         introBackgroundColor = secondary,
         introFooterBackgroundColor = secondary,
         introTitle = configuration.text.videoDiary.introTitle,

@@ -10,6 +10,7 @@ import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class VideoDiaryTask(
     id: String,
+    introBackImage: Int,
     introBackgroundColor: Int,
     introFooterBackgroundColor: Int,
     introTitle: String,
@@ -63,6 +64,7 @@ class VideoDiaryTask(
         listOf(
             IntroductionListStep(
                 VIDEO_DIARY_INTRO,
+                backImage = introBackImage,
                 backgroundColor = introBackgroundColor,
                 footerBackgroundColor = introFooterBackgroundColor,
                 title = introTitle,

@@ -7,6 +7,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 
 class RangeStep(
     identifier: String,
+    backImage: Int,
     val minValue: Int,
     val maxValue: Int,
     val valueColor: Int,
@@ -23,4 +24,4 @@ class RangeStep(
     val shadowColor: Int,
     val buttonImage: ImageResource,
     val skips: List<SurveySkip.Range>
-) : Step(identifier, { RangeStepFragment() })
+) : Step(identifier, backImage, { RangeStepFragment() })

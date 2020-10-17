@@ -6,6 +6,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 
 class TextInputStep(
     identifier: String,
+    backImage: Int,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -17,4 +18,4 @@ class TextInputStep(
     val placeholderColor: Int,
     val placeholder: String?,
     val maxCharacters: Int?
-) : Step(identifier, { TextInputStepFragment() })
+) : Step(identifier, backImage, { TextInputStepFragment() })

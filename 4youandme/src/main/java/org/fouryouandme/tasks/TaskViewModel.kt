@@ -103,6 +103,9 @@ class TaskViewModel(
 
     inline fun <reified T : Step> getStepByIndexAs(index: Int): T? = getStepByIndex(index) as? T
 
+    fun canGoBack(stepIndex: Int): Boolean =
+        getStepByIndex(stepIndex - 1)?.backImage != null
+
     /* --- navigation --- */
 
     suspend fun nextStep(stepNavController: StepNavController, currentStepIndex: Int): Unit =
@@ -145,13 +148,13 @@ class TaskViewModel(
         navigator.back(taskNavController)
     }
 
-    // TODO: check previous step
     suspend fun back(
+        stepIndex: Int,
         stepNavController: StepNavController,
         taskNavController: TaskNavController
     ): Unit {
 
-        if (navigator.back(stepNavController).not())
+        if (canGoBack(stepIndex) && navigator.back(stepNavController).not())
             navigator.back(taskNavController)
 
     }

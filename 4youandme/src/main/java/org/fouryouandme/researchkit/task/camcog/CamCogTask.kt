@@ -10,6 +10,7 @@ import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class CamCogTask(
     id: String,
+    welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
     welcomeImage: Int,
     welcomeTitle: String?,
@@ -25,7 +26,6 @@ class CamCogTask(
     welcomeShadowColor: Int,
     webBackgroundColor: Int,
     webProgressBarColor: Int,
-    webCloseButton: Int,
     webUrl: String,
     webCookies: Map<String, String> = emptyMap(),
     webJavascriptInterface: WebStepInterface? = null,
@@ -37,6 +37,7 @@ class CamCogTask(
         listOf(
             WelcomeStep(
                 identifier = CAMCOG_WELCOME,
+                backImage = welcomeBackImage,
                 backgroundColor = welcomeBackgroundColor,
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.CAMCOG_welcome_title) },
@@ -59,9 +60,9 @@ class CamCogTask(
             ),
             WebStep(
                 identifier = CAMCOG_WEB,
+                backImage = null,
                 backgroundColor = webBackgroundColor,
                 progressBarColor = webProgressBarColor,
-                closeButton = webCloseButton,
                 url = webUrl,
                 cookies = webCookies,
                 javascriptInterface = webJavascriptInterface,

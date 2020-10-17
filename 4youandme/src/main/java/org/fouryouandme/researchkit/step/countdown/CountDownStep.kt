@@ -5,6 +5,7 @@ import org.fouryouandme.researchkit.step.Step
 
 class CountDownStep(
     identifier: String,
+    backImage: Int,
     val backgroundColor: Int,
     val title: (Context) -> String,
     val titleColor: Int,
@@ -13,4 +14,4 @@ class CountDownStep(
     val seconds: Int,
     val counterColor: Int,
     val counterProgressColor: Int
-) : Step(identifier, { CountDownStepFragment() })
+) : Step(identifier, backImage, { CountDownStepFragment() })

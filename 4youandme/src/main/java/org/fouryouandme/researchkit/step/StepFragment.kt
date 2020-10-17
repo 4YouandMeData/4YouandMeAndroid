@@ -1,17 +1,16 @@
 package org.fouryouandme.researchkit.step
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.task.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.IORuntime
-import org.fouryouandme.core.ext.find
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.task.TaskInjector
 import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskNavController
@@ -45,6 +44,22 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
 
             }
         )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        startCoroutineAsync {
+
+            viewModel.getStepByIndex(indexArg())?.let {
+
+                if (viewModel.canGoBack(indexArg()) && indexArg() != 0 && it.backImage != null)
+                    showBack(it.backImage)
+                else
+                    hideToolbar()
+            }
+
+        }
     }
 
     protected fun indexArg(): Int =
@@ -83,6 +98,39 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             .show()
 
     }
+
+    private suspend fun showBack(image: Int): Unit =
+        evalOnMain {
+
+            taskFragment().toolbar.apply {
+
+                setNavigationIcon(image)
+                setNavigationOnClickListener {
+
+                    startCoroutineAsync {
+
+                        viewModel.back(
+                            indexArg(),
+                            stepNavController(),
+                            taskNavController()
+                        )
+
+                    }
+
+                }
+
+                visibility = View.VISIBLE
+
+            }
+
+        }
+
+    private suspend fun hideToolbar(): Unit =
+        evalOnMain {
+
+            taskFragment().toolbar.visibility = View.INVISIBLE
+
+        }
 
     companion object {
 

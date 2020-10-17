@@ -21,6 +21,7 @@ import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class GaitTask(
     id: String,
+    welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
     welcomeImage: Int,
     welcomeTitle: String?,
@@ -34,6 +35,7 @@ class GaitTask(
     welcomeStartButtonColor: Int,
     welcomeStartButtonTextColor: Int,
     welcomeShadowColor: Int,
+    startBackImage: Int,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -42,6 +44,7 @@ class GaitTask(
     startButton: String?,
     startButtonColor: Int,
     startButtonTextColor: Int,
+    introBackImage: Int,
     introBackgroundColor: Int,
     introTitle: String?,
     introTitleColor: Int,
@@ -51,6 +54,7 @@ class GaitTask(
     introButton: String?,
     introButtonColor: Int,
     introButtonTextColor: Int,
+    countDownBackImage: Int,
     countDownBackgroundColor: Int,
     countDownTitle: String?,
     countDownTitleColor: Int,
@@ -93,6 +97,7 @@ class GaitTask(
         listOf(
             WelcomeStep(
                 identifier = GAIT_WELCOME,
+                backImage = welcomeBackImage,
                 backgroundColor = welcomeBackgroundColor,
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.GAIT_welcome_title) },
@@ -115,6 +120,7 @@ class GaitTask(
             ),
             StartStep(
                 identifier = GAIT_START,
+                backImage = startBackImage,
                 backgroundColor = startBackgroundColor,
                 title = { startTitle ?: it.getString(R.string.GAIT_title) },
                 titleColor = startTitleColor,
@@ -126,6 +132,7 @@ class GaitTask(
             ),
             IntroductionStep(
                 identifier = GAIT_INTRO,
+                backImage = introBackImage,
                 backgroundColor = introBackgroundColor,
                 title = { introTitle ?: it.getString(R.string.GAIT_title) },
                 titleColor = introTitleColor,
@@ -138,6 +145,7 @@ class GaitTask(
             ),
             CountDownStep(
                 identifier = GAIT_COUNT_DOWN,
+                backImage = countDownBackImage,
                 backgroundColor = countDownBackgroundColor,
                 titleColor = countDownTitleColor,
                 title = { countDownTitle ?: it.getString(R.string.GAIT_title) },

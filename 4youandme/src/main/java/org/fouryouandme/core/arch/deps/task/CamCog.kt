@@ -26,6 +26,7 @@ suspend fun FYAMTaskConfiguration.buildCamCog(
 
     return CamCogTask(
         id = id,
+        welcomeBackImage = imageConfiguration.backSecondary(),
         welcomeBackgroundColor = secondary,
         welcomeImage = imageConfiguration.videoDiaryIntro(),
         welcomeTitle = configuration.text.camCogActivity.introTitle,
@@ -41,7 +42,6 @@ suspend fun FYAMTaskConfiguration.buildCamCog(
         welcomeShadowColor = primaryText,
         webBackgroundColor = secondary,
         webProgressBarColor = primaryEnd,
-        webCloseButton = imageConfiguration.close(),
         webUrl = url,
         webCookies = cookies,
         webJavascriptInterface = camCogInterface,

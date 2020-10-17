@@ -7,7 +7,8 @@ import org.fouryouandme.researchkit.step.Step
 
 class FYAMPageStep(
     identifier: String,
+    backImage: Int,
     val configuration: Configuration,
     val page: Page,
-    val pageType: EPageType
-) : Step(identifier, { FYAMPageStepFragment() })
+    val pageType: EPageType,
+) : Step(identifier, backImage, { FYAMPageStepFragment() })

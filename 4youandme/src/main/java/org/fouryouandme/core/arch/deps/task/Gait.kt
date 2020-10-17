@@ -37,6 +37,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
 
     return GaitTask(
         id = id,
+        welcomeBackImage = imageConfiguration.backSecondary(),
         welcomeBackgroundColor = secondary,
         welcomeImage = imageConfiguration.videoDiaryIntro(),
         welcomeTitle = configuration.text.gaitActivity.introTitle,
@@ -50,6 +51,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
         welcomeStartButtonColor = primaryEnd,
         welcomeStartButtonTextColor = secondary,
         welcomeShadowColor = primaryText,
+        startBackImage = imageConfiguration.backSecondary(),
         startBackgroundColor = secondary,
         startTitle = null,
         startTitleColor = primaryText,
@@ -58,6 +60,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
         startButton = null,
         startButtonColor = primaryEnd,
         startButtonTextColor = secondary,
+        introBackImage = imageConfiguration.backSecondary(),
         introBackgroundColor = secondary,
         introTitle = null,
         introTitleColor = primaryText,
@@ -67,6 +70,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
         introButton = null,
         introButtonColor = primaryEnd,
         introButtonTextColor = secondary,
+        countDownBackImage = imageConfiguration.backSecondary(),
         countDownBackgroundColor = secondary,
         countDownTitle = null,
         countDownTitleColor = primaryText,

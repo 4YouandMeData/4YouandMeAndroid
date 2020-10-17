@@ -1,6 +1,5 @@
 package org.fouryouandme.core.arch.deps.task
 
-import android.content.Context
 import arrow.core.computations.either
 import arrow.core.flatMap
 import com.squareup.moshi.Moshi
@@ -37,6 +36,7 @@ suspend fun FYAMTaskConfiguration.buildFitness(
 
     return FitnessTask(
         id = id,
+        welcomeBackImage = imageConfiguration.backSecondary(),
         welcomeBackgroundColor = secondary,
         welcomeImage = imageConfiguration.videoDiaryIntro(),
         welcomeTitle = configuration.text.gaitActivity.introTitle,
@@ -50,6 +50,7 @@ suspend fun FYAMTaskConfiguration.buildFitness(
         welcomeStartButtonColor = primaryEnd,
         welcomeStartButtonTextColor = secondary,
         welcomeShadowColor = primaryText,
+        startBackImage = imageConfiguration.backSecondary(),
         startBackgroundColor = secondary,
         startTitle = null,
         startTitleColor = primaryText,
@@ -59,6 +60,7 @@ suspend fun FYAMTaskConfiguration.buildFitness(
         startButton = null,
         startButtonColor = primaryEnd,
         startButtonTextColor = secondary,
+        introBackImage = imageConfiguration.backSecondary(),
         introBackgroundColor = secondary,
         introTitle = null,
         introTitleColor = primaryText,
@@ -68,6 +70,7 @@ suspend fun FYAMTaskConfiguration.buildFitness(
         introButton = null,
         introButtonColor = primaryEnd,
         introButtonTextColor = secondary,
+        countDownBackImage = imageConfiguration.backSecondary(),
         countDownBackgroundColor = secondary,
         countDownTitle = null,
         countDownTitleColor = primaryText,

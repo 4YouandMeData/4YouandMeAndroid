@@ -6,6 +6,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 
 class DatePickerStep(
     identifier: String,
+    backImage: Int,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -15,4 +16,4 @@ class DatePickerStep(
     val buttonImage: ImageResource,
     val minDate: Long?,
     val maxDate: Long?
-) : Step(identifier, { DatePickerStepFragment() })
+) : Step(identifier, backImage, { DatePickerStepFragment() })

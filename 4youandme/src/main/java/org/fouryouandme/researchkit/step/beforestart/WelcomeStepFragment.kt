@@ -34,7 +34,13 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
             remind_me_later.setOnClickListener {
                 startCoroutineAsync {
                     // TODO: call API to postpone task
-                    startCoroutineAsync { viewModel.back(stepNavController(), taskNavController()) }
+                    startCoroutineAsync {
+                        viewModel.back(
+                            indexArg(),
+                            stepNavController(),
+                            taskNavController()
+                        )
+                    }
                 }
             }
 

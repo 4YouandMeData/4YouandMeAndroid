@@ -7,12 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.step_introduction_list.*
-import kotlinx.android.synthetic.main.task.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.dpToPx
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.step.StepFragment
 
 class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_list) {
@@ -41,10 +42,11 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
 
     private suspend fun setupView(): Unit =
         evalOnMain {
+
             remind_me_later.setOnClickListener {
                 startCoroutineAsync {
                     // TODO: call API to postpone task
-                    startCoroutineAsync { viewModel.back(stepNavController(), taskNavController()) }
+                    startCoroutineAsync { viewModel.close(taskNavController()) }
                 }
             }
 
@@ -102,18 +104,6 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
             next.background = button(step.buttonColor)
             next.text = step.button
             next.setTextColor(step.buttonTextColor)
-
-            taskFragment().toolbar.apply {
-
-                showCloseButton(imageConfiguration) {
-                    startCoroutineAsync { viewModel.back(stepNavController(), taskNavController()) }
-                }
-
-                setBackgroundColor(step.toolbarColor)
-
-                show()
-
-            }
 
         }
 

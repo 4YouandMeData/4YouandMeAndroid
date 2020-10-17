@@ -20,6 +20,7 @@ import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 class FitnessTask(
     id: String,
+    welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
     welcomeImage: Int,
     welcomeTitle: String?,
@@ -33,6 +34,7 @@ class FitnessTask(
     welcomeStartButtonColor: Int,
     welcomeStartButtonTextColor: Int,
     welcomeShadowColor: Int,
+    startBackImage: Int,
     startBackgroundColor: Int,
     startTitle: String?,
     startTitleColor: Int,
@@ -42,6 +44,7 @@ class FitnessTask(
     startButton: String?,
     startButtonColor: Int,
     startButtonTextColor: Int,
+    introBackImage: Int,
     introBackgroundColor: Int,
     introTitle: String?,
     introTitleColor: Int,
@@ -51,6 +54,7 @@ class FitnessTask(
     introButton: String?,
     introButtonColor: Int,
     introButtonTextColor: Int,
+    countDownBackImage: Int,
     countDownBackgroundColor: Int,
     countDownTitle: String?,
     countDownTitleColor: Int,
@@ -90,6 +94,7 @@ class FitnessTask(
         listOf(
             WelcomeStep(
                 identifier = FITNESS_WELCOME,
+                backImage = welcomeBackImage,
                 backgroundColor = welcomeBackgroundColor,
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.FITNESS_welcome_title) },
@@ -112,6 +117,7 @@ class FitnessTask(
             ),
             IntroductionStep(
                 identifier = FITNESS_START,
+                backImage = startBackImage,
                 backgroundColor = startBackgroundColor,
                 title = { startTitle ?: it.getString(R.string.FITNESS_title) },
                 titleColor = startTitleColor,
@@ -129,6 +135,7 @@ class FitnessTask(
             ),
             IntroductionStep(
                 identifier = FITNESS_INTRO,
+                backImage = introBackImage,
                 backgroundColor = introBackgroundColor,
                 title = { introTitle ?: it.getString(R.string.FITNESS_title) },
                 titleColor = introTitleColor,
@@ -147,6 +154,7 @@ class FitnessTask(
             ),
             CountDownStep(
                 identifier = FITNESS_COUNT_DOWN,
+                backImage = countDownBackImage,
                 backgroundColor = countDownBackgroundColor,
                 titleColor = countDownTitleColor,
                 title = { countDownTitle ?: it.getString(R.string.FITNESS_title) },

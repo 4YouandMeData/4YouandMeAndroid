@@ -5,6 +5,7 @@ import org.fouryouandme.researchkit.step.Step
 
 class IntroductionStep(
     identifier: String,
+    backImage: Int,
     val backgroundColor: Int,
     val title: (Context) -> String,
     val titleColor: Int,
@@ -14,4 +15,4 @@ class IntroductionStep(
     val button: (Context) -> String,
     val buttonColor: Int,
     val buttonTextColor: Int,
-) : Step(identifier, { IntroductionStepFragment() })
+) : Step(identifier, backImage, { IntroductionStepFragment() })

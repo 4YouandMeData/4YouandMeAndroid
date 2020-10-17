@@ -54,7 +54,7 @@ class SensorStep(
     val shouldPlaySoundOnFinish: Boolean = false,
     val estimateTimeInMsToSpeakEndInstruction: Long = 1000
 
-) : Step(identifier, { SensorStepFragment() }) {
+) : Step(identifier, null, { SensorStepFragment() }) {
 
     /**
      * The recording UUID is a unique identifier used by the RecorderService

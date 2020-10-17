@@ -44,9 +44,6 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
 
             progress_bar.progressTintList = ColorStateList.valueOf(step.progressBarColor)
 
-            toolbar.setNavigationIcon(step.closeButton)
-            toolbar.setNavigationOnClickListener { showCancelDialog() }
-
             step.javascriptInterface?.setListener(
 
                 object : JavaScriptInterfaceListener {

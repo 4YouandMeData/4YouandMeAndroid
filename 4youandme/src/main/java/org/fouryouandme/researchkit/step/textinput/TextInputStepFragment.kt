@@ -45,7 +45,7 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
             question.setTextColor(step.questionColor)
 
             text_input.setTextColor(step.textColor)
-            text_input.setHintTextColor(step.textColor)
+            text_input.setHintTextColor(step.placeholderColor)
 
             shadow.background = shadow(step.shadowColor)
 

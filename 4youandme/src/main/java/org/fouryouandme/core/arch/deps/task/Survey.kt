@@ -41,6 +41,7 @@ fun buildSurvey(
                     surveyBlock.introPage.asList().mapIndexed { index, page ->
                         FYAMPageStep(
                             getSurveyIntroStepId(surveyBlock.id, page.id),
+                            imageConfiguration.backSecondary(),
                             configuration,
                             page,
                             EPageType.INFO
@@ -58,6 +59,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -81,6 +83,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     min = question.minValue,
                                     max = question.maxValue,
                                     minDisplayValue = question.minDisplayValue,
@@ -110,6 +113,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     values =
                                     question.answers.map {
                                         ChooseOneAnswer(
@@ -145,6 +149,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     values = question.answers.map {
                                         ChooseManyAnswer(
                                             it.id,
@@ -179,6 +184,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -200,6 +206,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     minValue = question.min,
                                     maxValue = question.max,
                                     interval = question.interval ?: 1,
@@ -231,6 +238,7 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    backImage = imageConfiguration.backSecondary(),
                                     minValue = question.min,
                                     maxValue = question.max,
                                     valueColor = configuration.theme.primaryTextColor.color(),
@@ -267,6 +275,7 @@ fun buildSurvey(
 
                         FYAMPageStep(
                             getSurveySuccessStepId(surveyBlock.id, it.id),
+                            imageConfiguration.backSecondary(),
                             configuration,
                             it,
                             EPageType.SUCCESS
