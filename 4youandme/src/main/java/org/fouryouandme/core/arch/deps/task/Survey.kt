@@ -1,11 +1,20 @@
 package org.fouryouandme.core.arch.deps.task
 
 import org.fouryouandme.core.arch.deps.ImageConfiguration
+import org.fouryouandme.core.arch.deps.modules.ErrorModule
+import org.fouryouandme.core.arch.deps.modules.TaskModule
+import org.fouryouandme.core.cases.task.TaskUseCase.updateSurvey
+import org.fouryouandme.core.data.api.task.request.AnswerUpdateRequest
+import org.fouryouandme.core.data.api.task.request.SurveyUpdateRequest
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.survey.Survey
 import org.fouryouandme.core.entity.survey.SurveyQuestion
 import org.fouryouandme.core.researchkit.step.FYAMPageStep
 import org.fouryouandme.core.view.page.EPageType
+import org.fouryouandme.researchkit.result.MultipleAnswerResult
+import org.fouryouandme.researchkit.result.SingleAnswerResult
+import org.fouryouandme.researchkit.result.SingleIntAnswerResult
+import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.skip.SurveySkip
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
@@ -18,11 +27,11 @@ import org.fouryouandme.researchkit.step.range.RangeStep
 import org.fouryouandme.researchkit.step.scale.ScaleStep
 import org.fouryouandme.researchkit.step.textinput.TextInputStep
 import org.fouryouandme.researchkit.task.Task
+import org.fouryouandme.researchkit.task.TaskHandleResult
 import org.fouryouandme.researchkit.utils.ImageResource
 import org.fouryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 import org.threeten.bp.ZoneOffset
 
-// TODO: handle dynamic task creation
 fun buildSurvey(
     id: String,
     configuration: Configuration,
@@ -304,3 +313,39 @@ private fun getSurveySuccessStepId(blockId: String, successId: String): String =
 
 private fun getSurveyQuestionStepId(blockId: String, questionId: String): String =
     "survey_block_${blockId}_question_${questionId}"
+
+suspend fun FYAMTaskConfiguration.sendSurveyData(
+    taskModule: TaskModule,
+    errorModule: ErrorModule,
+    taskId: String,
+    result: TaskResult
+): TaskHandleResult {
+
+
+    val answers =
+        result.results.toList().mapNotNull {
+            when (val value = it.second) {
+                is SingleAnswerResult ->
+                    AnswerUpdateRequest.SingleAnswerUpdateRequest(value.questionId, value.answer)
+                is SingleIntAnswerResult ->
+                    AnswerUpdateRequest.SingleIntAnswerUpdateRequest(value.questionId, value.answer)
+                is MultipleAnswerResult ->
+                    AnswerUpdateRequest.MultipleAnswerUpdateRequest(value.questionId, value.answers)
+                else -> null
+
+            }
+        }
+
+    // build the request object for the api
+
+    val request = SurveyUpdateRequest(answers)
+
+    // upload data to task api
+
+    val response = taskModule.updateSurvey(taskId, request)
+
+    // convert the result to TaskHandleResult
+
+    return response.fold({ TaskHandleResult.Error(it.message) }, { TaskHandleResult.Handled })
+
+}

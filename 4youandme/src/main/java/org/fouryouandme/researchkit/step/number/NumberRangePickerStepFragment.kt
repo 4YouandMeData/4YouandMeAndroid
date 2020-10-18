@@ -79,7 +79,9 @@ class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_pi
 
         step.minDisplayValue?.let { list.add(it) }
 
-        for (i in step.min..step.max) list.add(i.toString())
+        for (i in step.min..step.max) {
+            list.add(i.toString())
+        }
 
         step.maxDisplayValue?.let { list.add(it) }
 

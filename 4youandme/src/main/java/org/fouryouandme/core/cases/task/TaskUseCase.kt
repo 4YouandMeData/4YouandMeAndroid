@@ -11,9 +11,10 @@ import org.fouryouandme.core.cases.task.TaskRepository.getTasks
 import org.fouryouandme.core.cases.task.TaskRepository.uploadFitnessTask
 import org.fouryouandme.core.cases.task.TaskRepository.uploadGaitTask
 import org.fouryouandme.core.cases.task.TaskRepository.uploadQuickActivity
+import org.fouryouandme.core.cases.task.TaskRepository.uploadSurvey
 import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
 import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
-import org.fouryouandme.core.data.api.task.request.QuickActivityUpdateRequest
+import org.fouryouandme.core.data.api.task.request.SurveyUpdateRequest
 import org.fouryouandme.core.entity.task.Task
 import java.io.File
 
@@ -51,5 +52,12 @@ object TaskUseCase {
     ): Either<FourYouAndMeError, Unit> =
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap { uploadQuickActivity(it, taskId, answerId) }
+
+    suspend fun TaskModule.updateSurvey(
+        taskId: String,
+        result: SurveyUpdateRequest
+    ): Either<FourYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap { uploadSurvey(it, taskId, result) }
 
 }

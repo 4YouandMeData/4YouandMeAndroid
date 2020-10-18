@@ -6,6 +6,7 @@ import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.entity.survey.SurveyQuestion
+import org.fouryouandme.core.ext.emptyOrBlankToNull
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -63,8 +64,8 @@ data class SurveyQuestionResponse(
                             image,
                             minValue,
                             maxValue,
-                            minDisplay,
-                            maxDisplay,
+                            minDisplay.emptyOrBlankToNull(),
+                            maxDisplay.emptyOrBlankToNull(),
                             targets?.mapNotNull { it.toRange() } ?: emptyList()
                         )
 

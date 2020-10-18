@@ -7,10 +7,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.deps.modules.unwrapToEither
 import org.fouryouandme.core.arch.error.FourYouAndMeError
-import org.fouryouandme.core.data.api.task.request.FitnessUpdateRequest
-import org.fouryouandme.core.data.api.task.request.GaitUpdateRequest
-import org.fouryouandme.core.data.api.task.request.QuickActivityUpdateRequest
-import org.fouryouandme.core.data.api.task.request.TaskResultRequest
+import org.fouryouandme.core.data.api.task.request.*
 import org.fouryouandme.core.data.api.task.response.toTaskItems
 import org.fouryouandme.core.entity.task.Task
 import java.io.File
@@ -76,6 +73,19 @@ object TaskRepository {
                 token,
                 taskId,
                 TaskResultRequest(QuickActivityUpdateRequest(answerId))
+            )
+        }
+
+    internal suspend fun TaskModule.uploadSurvey(
+        token: String,
+        taskId: String,
+        result: SurveyUpdateRequest
+    ): Either<FourYouAndMeError, Unit> =
+        errorModule.unwrapToEither {
+            api.updateSurvey(
+                token,
+                taskId,
+                TaskResultRequest(result)
             )
         }
 }

@@ -71,7 +71,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
     }
 
     protected open suspend fun skipTo(stepId: String): Unit {
-        viewModel.skipToStep(stepNavController(), taskNavController(), stepId, indexArg())
+        viewModel.skipToStep(stepNavController(), stepId, indexArg())
     }
 
     protected fun taskFragment(): TaskFragment = find()
