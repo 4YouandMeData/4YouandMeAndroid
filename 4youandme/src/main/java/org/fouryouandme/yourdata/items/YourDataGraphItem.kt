@@ -93,7 +93,7 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
 
         configureYAxis(t.configuration, t.userData, media.toFloat())
 
-        val end = ZonedDateTime.now().minusDays(1)
+        val end = ZonedDateTime.now()
         val start =
             when (t.period) {
                 YourDataPeriod.Week -> end.minusDays(7)
