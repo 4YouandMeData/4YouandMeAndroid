@@ -9,6 +9,7 @@ import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.fouryouandme.core.data.api.common.response.activity.ActivityDataResponse
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
+import org.fouryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
 import org.fouryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import org.fouryouandme.core.data.api.common.response.notifiable.NotifiableDataResponse
@@ -48,6 +49,7 @@ data class FeedResponse(
                         when (it) {
                             is QuickActivityResponse -> it.toQuickActivity(id)
                             is TaskActivityResponse -> it.toTaskActivity(id)
+                            is SurveyActivityResponse -> it.toTaskActivity(id)
                             else -> null
                         }
                     }
@@ -75,6 +77,7 @@ data class FeedResponse(
                     when (it) {
                         is QuickActivityResponse -> it.toQuickActivity(id).toEither()
                         is TaskActivityResponse -> it.toTaskActivity(id).toEither()
+                        is SurveyActivityResponse -> it.toTaskActivity(id).toEither()
                         else -> Unit.left()
                     }
                 }
