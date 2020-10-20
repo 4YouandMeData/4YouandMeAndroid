@@ -292,10 +292,11 @@ fun buildSurvey(
 
                     }
 
-                steps.addAll(intro)
-                steps.addAll(questions)
-                success?.let { steps.add(it) }
-
+                if (questions.isNotEmpty()) {
+                    steps.addAll(intro)
+                    steps.addAll(questions)
+                    success?.let { steps.add(it) }
+                }
             }
 
 
