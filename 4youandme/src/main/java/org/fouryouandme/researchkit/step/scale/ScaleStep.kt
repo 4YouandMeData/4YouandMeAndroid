@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 class ScaleStep(
     identifier: String,
     backImage: Int,
+    canSkip: Boolean,
     val minValue: Int,
     val maxValue: Int,
     val interval: Int,
@@ -20,4 +21,4 @@ class ScaleStep(
     val shadowColor: Int,
     val buttonImage: ImageResource,
     val skips: List<SurveySkip.Range>
-) : Step(identifier, backImage, { ScaleStepFragment() })
+) : Step(identifier, backImage, canSkip, { ScaleStepFragment() })

@@ -24,6 +24,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/skip"
+        style="@style/text_h3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="25dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="25dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="@id/toolbar"
+        app:layout_constraintTop_toTopOf="@id/toolbar"
+        android:visibility="gone"/>
+
     <org.fouryouandme.core.arch.loading.LoadingView
         android:id="@+id/task_loading"
         android:layout_width="0dp"

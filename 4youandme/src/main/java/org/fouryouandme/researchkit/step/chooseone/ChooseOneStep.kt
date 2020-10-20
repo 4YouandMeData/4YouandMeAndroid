@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 class ChooseOneStep(
     identifier: String,
     backImage: Int,
+    canSkip: Boolean,
     val values: List<ChooseOneAnswer>,
     val backgroundColor: Int,
     val image: ImageResource?,
@@ -17,4 +18,4 @@ class ChooseOneStep(
     val shadowColor: Int,
     val buttonImage: ImageResource,
     val skips: List<SurveySkip.Answer>
-) : Step(identifier, backImage, { ChooseOneStepFragment() })
+) : Step(identifier, backImage, canSkip, { ChooseOneStepFragment() })

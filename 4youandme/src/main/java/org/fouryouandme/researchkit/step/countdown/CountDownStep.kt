@@ -14,4 +14,4 @@ class CountDownStep(
     val seconds: Int,
     val counterColor: Int,
     val counterProgressColor: Int
-) : Step(identifier, backImage, { CountDownStepFragment() })
+) : Step(identifier, backImage, false, { CountDownStepFragment() })

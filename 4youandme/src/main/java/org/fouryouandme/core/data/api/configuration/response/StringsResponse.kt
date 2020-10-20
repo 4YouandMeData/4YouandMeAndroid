@@ -134,6 +134,7 @@ data class StringsResponse(
 
     @Json(name = "TASK_REMIND_ME_LATER") val taskRemindMeLater: String? = null,
     @Json(name = "TASK_START_BUTTON") val taskStartButton: String? = null,
+    @Json(name = "SURVEY_BUTTON_SKIP") val surveyButtonSkip: String? = null,
 
     @Json(name = "STUDY_INFO_ABOUT_YOU") val studyInfoAboutYou: String? = null,
     @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
@@ -470,7 +471,8 @@ data class StringsResponse(
         Option.fx {
             Task(
                 taskRemindMeLater.toOption().bind(),
-                taskStartButton.toOption().bind()
+                taskStartButton.toOption().bind(),
+                surveyButtonSkip.toOption().bind()
             )
         }
 

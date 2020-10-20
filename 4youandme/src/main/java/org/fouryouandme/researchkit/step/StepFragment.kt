@@ -57,6 +57,9 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
                     showBack(it.backImage)
                 else
                     hideToolbar()
+
+                if (it.canSkip == true) showSkip()
+                else hideSkip()
             }
 
         }
@@ -122,6 +125,27 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
                 visibility = View.VISIBLE
 
             }
+
+        }
+
+    private suspend fun showSkip(): Unit =
+        evalOnMain {
+
+            taskFragment().skip.text = configuration().text.task.skipButton
+            taskFragment().skip.setTextColor(configuration().theme.primaryColorEnd.color())
+            taskFragment().skip.visibility = View.VISIBLE
+            taskFragment().skip.setOnClickListener {
+                startCoroutineAsync {
+                    next()
+                }
+            }
+
+        }
+
+    private suspend fun hideSkip(): Unit =
+        evalOnMain {
+
+            taskFragment().skip.visibility = View.GONE
 
         }
 

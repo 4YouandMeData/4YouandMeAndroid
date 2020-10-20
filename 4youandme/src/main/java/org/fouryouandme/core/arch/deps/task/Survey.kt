@@ -51,6 +51,7 @@ fun buildSurvey(
                         FYAMPageStep(
                             getSurveyIntroStepId(surveyBlock.id, page.id),
                             imageConfiguration.backSecondary(),
+                            false,
                             configuration,
                             page,
                             EPageType.INFO
@@ -69,6 +70,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -93,6 +95,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     min = question.minValue,
                                     max = question.maxValue,
                                     minDisplayValue = question.minDisplayValue,
@@ -123,6 +126,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     values =
                                     question.answers.map {
                                         ChooseOneAnswer(
@@ -159,6 +163,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     values = question.answers.map {
                                         ChooseManyAnswer(
                                             it.id,
@@ -194,6 +199,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -216,6 +222,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     minValue = question.min,
                                     maxValue = question.max,
                                     interval = question.interval ?: 1,
@@ -248,6 +255,7 @@ fun buildSurvey(
                                         question.id
                                     ),
                                     backImage = imageConfiguration.backSecondary(),
+                                    canSkip = true,
                                     minValue = question.min,
                                     maxValue = question.max,
                                     valueColor = configuration.theme.primaryTextColor.color(),
@@ -285,6 +293,7 @@ fun buildSurvey(
                         FYAMPageStep(
                             getSurveySuccessStepId(surveyBlock.id, it.id),
                             imageConfiguration.backSecondary(),
+                            false,
                             configuration,
                             it,
                             EPageType.SUCCESS

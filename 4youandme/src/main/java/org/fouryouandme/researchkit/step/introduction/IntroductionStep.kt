@@ -15,4 +15,4 @@ class IntroductionStep(
     val button: (Context) -> String,
     val buttonColor: Int,
     val buttonTextColor: Int,
-) : Step(identifier, backImage, { IntroductionStepFragment() })
+) : Step(identifier, backImage, false, { IntroductionStepFragment() })

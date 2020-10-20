@@ -206,7 +206,8 @@ data class YourData(
 
 data class Task(
     val remindButton: String,
-    val startButton: String
+    val startButton: String,
+    val skipButton: String,
 )
 
 data class GaitActivity(

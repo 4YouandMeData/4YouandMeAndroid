@@ -15,4 +15,4 @@ class StartStep(
     val buttonColor: Int,
     val buttonTextColor: Int,
     val close: Boolean = false
-) : Step(identifier, backImage, { StartStepFragment() })
+) : Step(identifier, backImage, false, { StartStepFragment() })

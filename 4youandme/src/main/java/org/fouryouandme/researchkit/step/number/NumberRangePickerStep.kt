@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.utils.ImageResource
 class NumberRangePickerStep(
     identifier: String,
     backImage: Int,
+    canSkip: Boolean,
     val min: Int,
     val max: Int,
     val minDisplayValue: String?,
@@ -20,4 +21,4 @@ class NumberRangePickerStep(
     val shadowColor: Int,
     val buttonImage: ImageResource,
     val skips: List<SurveySkip.Range>
-) : Step(identifier, backImage, { NumberRangePickerStepFragment() })
+) : Step(identifier, backImage, canSkip, { NumberRangePickerStepFragment() })
