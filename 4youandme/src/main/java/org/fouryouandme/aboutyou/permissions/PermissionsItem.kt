@@ -16,6 +16,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 data class PermissionsItem(
     val configuration: Configuration,
     val id: String,
+    val permission: String,
     val description: String,
     @DrawableRes val image: Int,
     val isAllowed: Boolean

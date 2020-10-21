@@ -9,7 +9,12 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.entity.configuration.Configuration
 
 class AboutYouPermissionsViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
-    BaseViewModel<ForIO, Empty, Empty, Empty, Empty>(Empty, navigator, runtime) {
+    BaseViewModel<ForIO, AboutYouPermissionsState, AboutYouPermissionsStateUpdate, Empty, AboutYouPermissionsLoading>(
+        Empty,
+        navigator,
+        runtime
+    ) {
+
 
     fun getPermissions(configuration: Configuration, imageConfiguration: ImageConfiguration) =
         listOf(
