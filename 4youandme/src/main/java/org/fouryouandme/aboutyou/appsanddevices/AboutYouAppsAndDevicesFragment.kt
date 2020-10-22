@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.about_you_menu.root
 import kotlinx.android.synthetic.main.apps_and_devices.*
-import kotlinx.android.synthetic.main.html_detail.title
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.AboutYouSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
@@ -106,14 +104,9 @@ class AboutYouAppsAndDevicesFragment :
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            detailsToolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-            backArrow.setImageResource(imageConfiguration.back())
-            backArrow.setOnClickListener {
-
-                startCoroutineAsync {
-                    aboutYouViewModel.back(aboutYouNavController(), rootNavController())
-                }
+            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+            toolbar.showBackButtonSuspend(imageConfiguration) {
+                aboutYouViewModel.back(aboutYouNavController(), rootNavController())
             }
 
             title.setTextColor(configuration.theme.secondaryColor.color())
