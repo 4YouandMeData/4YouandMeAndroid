@@ -93,7 +93,7 @@ class AboutYouAppsAndDevicesFragment :
                     }
                 }
 
-            adapter.submitList(integrations)
+            populateList(integrations)
         }
     }
 
@@ -137,5 +137,10 @@ class AboutYouAppsAndDevicesFragment :
                 )
             )
 
+        }
+
+    private suspend fun populateList(integrations: List<AppAndDeviceItem>): Unit =
+        evalOnMain {
+            adapter.submitList(integrations)
         }
 }
