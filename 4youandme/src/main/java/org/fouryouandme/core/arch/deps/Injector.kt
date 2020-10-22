@@ -67,6 +67,8 @@ interface Injector {
 
     fun errorModule(): ErrorModule = ErrorModule(moshi)
 
+    fun permissionModule(): PermissionModule
+
     fun configurationModule(): ConfigurationModule =
         ConfigurationModule(
             configurationApi,

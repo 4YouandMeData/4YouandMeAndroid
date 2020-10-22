@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import moe.banana.jsonapi2.ResourceAdapterFactory
 import org.fouryouandme.core.arch.app.FourYouAndMeApp
+import org.fouryouandme.core.arch.deps.modules.PermissionModule
 import org.fouryouandme.core.arch.deps.task.FYAMTaskConfiguration
 import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -215,5 +216,9 @@ class ForYouAndMeInjector(
             authModule(),
             errorModule()
         )
+
+    /* --- modules --- */
+
+    override fun permissionModule(): PermissionModule = PermissionModule(app)
 
 }

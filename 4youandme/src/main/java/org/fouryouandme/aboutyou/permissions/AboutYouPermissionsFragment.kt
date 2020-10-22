@@ -6,10 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.about_you_menu.root
-import kotlinx.android.synthetic.main.html_detail.backArrow
-import kotlinx.android.synthetic.main.html_detail.detailsToolbar
-import kotlinx.android.synthetic.main.html_detail.title
 import kotlinx.android.synthetic.main.permissions.*
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.AboutYouSectionFragment
@@ -24,7 +20,7 @@ class AboutYouPermissionsFragment :
 
         viewModelFactory(
             this,
-            getFactory { AboutYouPermissionsViewModel(navigator) }
+            getFactory { AboutYouPermissionsViewModel(navigator, injector.permissionModule()) }
         )
 
     }
@@ -34,10 +30,30 @@ class AboutYouPermissionsFragment :
 
             if (it.isAllowed) {
                 startCoroutineAsync {
-                    //                  viewModel.navigateToWeb(it.link, aboutYouNavController())
+
                 }
             }
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateLiveData()
+            .observeEvent(name()) {
+                when (it) {
+                    is AboutYouPermissionsStateUpdate.Initialization ->
+                        startCoroutineAsync { applyPermissions(it.permissions) }
+                }
+            }
+
+        viewModel.loadingLiveData()
+            .observeEvent(name()) {
+                when (it.task) {
+                    AboutYouPermissionsLoading.Initialization ->
+                        loading.setVisibility(it.active, true)
+                }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,33 +62,33 @@ class AboutYouPermissionsFragment :
         configuration {
             setupRecyclerView()
             applyConfiguration(it)
+
+            if (viewModel.isInitialized().not())
+                viewModel.initialize(it, imageConfiguration)
+            else
+                applyPermissions(viewModel.state().permissions)
+
         }
     }
 
-    private suspend fun applyConfiguration(configuration: Configuration) =
+    private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            detailsToolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-            backArrow.setImageResource(imageConfiguration.back())
-            backArrow.setOnClickListener {
-
-                startCoroutineAsync {
-                    aboutYouViewModel.back(aboutYouNavController(), rootNavController())
-                }
+            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+            toolbar.showBackButtonSuspend(imageConfiguration) {
+                aboutYouViewModel.back(aboutYouNavController(), rootNavController())
             }
 
             title.setTextColor(configuration.theme.secondaryColor.color())
             title.text = configuration.text.profile.fourthItem
 
-            adapter.submitList(viewModel.getPermissions(configuration, imageConfiguration))
         }
 
-    private suspend fun setupRecyclerView() =
+    private suspend fun setupRecyclerView(): Unit =
         evalOnMain {
 
             recycler_view.layoutManager =
@@ -94,6 +110,13 @@ class AboutYouPermissionsFragment :
                     }
                 )
             )
+
+        }
+
+    private suspend fun applyPermissions(permissions: List<PermissionsItem>): Unit =
+        evalOnMain {
+
+            adapter.submitList(permissions)
 
         }
 }
