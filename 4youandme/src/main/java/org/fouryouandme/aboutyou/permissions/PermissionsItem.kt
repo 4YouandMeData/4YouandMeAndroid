@@ -11,12 +11,13 @@ import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.permission_item.*
 import org.fouryouandme.R
+import org.fouryouandme.core.cases.permission.Permission
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class PermissionsItem(
     val configuration: Configuration,
     val id: String,
-    val permission: String,
+    val permission: Permission,
     val description: String,
     @DrawableRes val image: Int,
     val isAllowed: Boolean

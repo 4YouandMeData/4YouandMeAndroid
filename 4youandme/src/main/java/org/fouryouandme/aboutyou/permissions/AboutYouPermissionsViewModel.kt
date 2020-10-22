@@ -1,12 +1,13 @@
 package org.fouryouandme.aboutyou.permissions
 
-import android.Manifest
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.modules.PermissionModule
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.cases.permission.Permission
 import org.fouryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted
+import org.fouryouandme.core.cases.permission.PermissionUseCase.requestPermission
 import org.fouryouandme.core.entity.configuration.Configuration
 
 class AboutYouPermissionsViewModel(
@@ -28,10 +29,10 @@ class AboutYouPermissionsViewModel(
                 PermissionsItem(
                     configuration,
                     "1",
-                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Permission.Location,
                     "The BUMP app needs access to your phone's location",
                     imageConfiguration.location(),
-                    permissionModule.isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)
+                    permissionModule.isPermissionGranted(Permission.Location)
                 )
             )
 
@@ -39,6 +40,17 @@ class AboutYouPermissionsViewModel(
         { AboutYouPermissionsStateUpdate.Initialization(it.permissions) }
 
         hideLoading(AboutYouPermissionsLoading.Initialization)
+
+    }
+
+    suspend fun requestPermission(
+        permissionsItem: PermissionsItem,
+        configuration: Configuration,
+        imageConfiguration: ImageConfiguration
+    ): Unit {
+
+        permissionModule.requestPermission(permissionsItem.permission)
+        initialize(configuration, imageConfiguration)
 
     }
 
