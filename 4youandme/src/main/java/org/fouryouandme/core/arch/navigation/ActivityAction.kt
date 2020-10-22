@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import arrow.core.getOrElse
 import arrow.core.toOption
 import org.fouryouandme.core.arch.error.FourYouAndMeError
+import org.fouryouandme.core.ext.startCoroutineAsync
 
 typealias ActivityAction = (FragmentActivity) -> Unit
 
@@ -73,5 +74,31 @@ fun permissionSettingsAction(): ActivityAction = {
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     it.startActivity(intent)
 
+}
+
+fun permissionSettingsDialogAction(
+    navigator: Navigator,
+    title: String,
+    description: String,
+    settings: String,
+    cancel: String,
+    isCancelable: Boolean,
+    onSettings: suspend () -> Unit,
+    onCancel: suspend () -> Unit
+): ActivityAction = {
+    AlertDialog.Builder(it)
+        .setTitle(title)
+        .setMessage(description)
+        .setPositiveButton(settings) { _, _ ->
+            startCoroutineAsync {
+                navigator.performAction(permissionSettingsAction())
+                onSettings()
+            }
+        }
+        .setNegativeButton(cancel) { _, _ ->
+            startCoroutineAsync { onCancel() }
+        }
+        .setCancelable(isCancelable)
+        .show()
 }
 

@@ -22,7 +22,7 @@ object ConfigurationRepository {
 
         val configuration =
             errorModule.unwrapToEither { api.getConfiguration(environment.studyId()) }
-                .map { it.toConfiguration().orNull() }
+                .map { it.toConfiguration() }
                 .nullToError()
 
         configuration.map {

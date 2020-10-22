@@ -12,6 +12,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import org.fouryouandme.core.arch.deps.modules.PermissionModule
+import org.fouryouandme.core.ext.startCoroutineAsync
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -35,10 +36,12 @@ object PermissionUseCase {
     private fun Int.isGranted(): Boolean = this == PackageManager.PERMISSION_GRANTED
 
     suspend fun PermissionModule.requestPermission(
-        permission: Permission
+        permission: Permission,
+        onPermanentlyDenied: suspend () -> Unit
     ): Boolean =
 
         suspendCoroutine {
+
             Dexter.withContext(application)
                 .withPermission(permission.name)
                 .withListener(object : PermissionListener {
@@ -48,14 +51,18 @@ object PermissionUseCase {
                     }
 
                     override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+
+                        if (p0?.isPermanentlyDenied == true)
+                            startCoroutineAsync { onPermanentlyDenied() }
+
                         it.resume(false)
+
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
                         p0: PermissionRequest?,
                         p1: PermissionToken?
                     ) {
-
                         p1?.continuePermissionRequest()
 
                     }

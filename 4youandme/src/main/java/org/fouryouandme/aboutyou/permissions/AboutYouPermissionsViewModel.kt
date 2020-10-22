@@ -5,6 +5,7 @@ import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.modules.PermissionModule
 import org.fouryouandme.core.arch.navigation.Navigator
+import org.fouryouandme.core.arch.navigation.permissionSettingsDialogAction
 import org.fouryouandme.core.cases.permission.Permission
 import org.fouryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted
 import org.fouryouandme.core.cases.permission.PermissionUseCase.requestPermission
@@ -49,7 +50,22 @@ class AboutYouPermissionsViewModel(
         imageConfiguration: ImageConfiguration
     ): Unit {
 
-        permissionModule.requestPermission(permissionsItem.permission)
+        permissionModule.requestPermission(permissionsItem.permission) {
+
+            navigator.performAction(
+                permissionSettingsDialogAction(
+                    navigator,
+                    configuration.text.profile.permissionDenied,
+                    configuration.text.profile.permissionMessage,
+                    configuration.text.profile.permissionSettings,
+                    configuration.text.profile.permissionCancel,
+                    true,
+                    {},
+                    {}
+                )
+            )
+
+        }
         initialize(configuration, imageConfiguration)
 
     }

@@ -1,5 +1,6 @@
 package org.fouryouandme.core.data.api.configuration.response
 
+import arrow.core.Either
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.toOption
@@ -153,6 +154,10 @@ data class StringsResponse(
 
     @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
     @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
+    @Json(name = "PERMISSION_DENIED") val permissionDenied: String? = null,
+    @Json(name = "PERMISSION_CANCEL") val permissionCancel: String? = null,
+    @Json(name = "PERMISSION_MESSAGE") val permissionMessage: String? = null,
+    @Json(name = "PERMISSION_SETTINGS") val permissionSettings: String? = null,
 
     @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
     @Json(name = "PROFILE_USER_INFO_BUTTON_SUBMIT") val profileUserInfoButtonSubmit: String? = null,
@@ -175,7 +180,7 @@ data class StringsResponse(
 ) {
 
     // TODO: refactor without option
-    fun toText(): Option<Text> {
+    suspend fun toText(): Text? {
 
         val error = toError()
         val url = toUrl()
@@ -195,27 +200,28 @@ data class StringsResponse(
         val fitnessActivity = toFitnessActivity()
         val camCogActivity = toCamCogActivity()
 
-        return Option.fx {
+        return Either.catch {
             Text(
-                error.bind(),
-                url.bind(),
-                welcome.bind(),
-                intro.bind(),
-                signUpLater.bind(),
-                phoneVerification.bind(),
-                onboarding.bind(),
-                tab.bind(),
-                activity.bind(),
-                videoDiary.bind(),
-                studyInfo.bind(),
-                profile.bind(),
-                yourData.bind(),
-                task.bind(),
-                gaitActivity.bind(),
-                fitnessActivity.bind(),
-                camCogActivity.bind()
+                error.orNull()!!,
+                url.orNull()!!,
+                welcome.orNull()!!,
+                intro.orNull()!!,
+                signUpLater.orNull()!!,
+                phoneVerification.orNull()!!,
+                onboarding.orNull()!!,
+                tab.orNull()!!,
+                activity.orNull()!!,
+                videoDiary.orNull()!!,
+                studyInfo.orNull()!!,
+                profile!!,
+                yourData.orNull()!!,
+                task.orNull()!!,
+                gaitActivity.orNull()!!,
+                fitnessActivity.orNull()!!,
+                camCogActivity.orNull()!!
             )
-        }
+
+        }.orNull()
     }
 
     private fun toError(): Option<Error> =
@@ -438,23 +444,29 @@ data class StringsResponse(
             )
         }
 
-    private fun toProfile(): Option<Profile> =
-        Option.fx {
+    private suspend fun toProfile(): Profile? =
+        Either.catch {
+
             Profile(
-                profileTitle.toOption().bind(),
-                aboutYouYourPregnancy.toOption().bind(),
-                aboutYouAppsAndDevices.toOption().bind(),
-                aboutYouReviewConsent.toOption().bind(),
-                aboutYouPermissions.toOption().bind(),
-                aboutYouDisclaimer.toOption().bind(),
-                yourAppsAndDevicesConnect.toOption().bind(),
-                permissionsAllow.toOption().bind(),
-                permissionsAllowed.toOption().bind(),
-                profileUserInfoButtonEdit.toOption().bind(),
-                profileUserInfoButtonSubmit.toOption().bind(),
-                oauthAvailableInterations.toOption().bind()
+                profileTitle!!,
+                aboutYouYourPregnancy!!,
+                aboutYouAppsAndDevices!!,
+                aboutYouReviewConsent!!,
+                aboutYouPermissions!!,
+                aboutYouDisclaimer!!,
+                yourAppsAndDevicesConnect!!,
+                permissionsAllow!!,
+                permissionsAllowed!!,
+                permissionDenied!!,
+                permissionCancel!!,
+                permissionMessage!!,
+                permissionSettings!!,
+                profileUserInfoButtonEdit!!,
+                profileUserInfoButtonSubmit!!,
+                oauthAvailableInterations!!
             )
-        }
+
+        }.orNull()
 
     private fun toYourData(): Option<YourData> =
         Option.fx {

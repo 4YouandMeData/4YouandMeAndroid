@@ -56,10 +56,10 @@ class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) 
         allow.paintFlags = allow.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
         if (t.isAllowed.not()) {
-            allow.text = t.configuration.text.profile.allow
+            allow.text = t.configuration.text.profile.permissionAllow
             allow.setTextColor(t.configuration.theme.secondaryTextColor.color())
         } else {
-            allow.text = t.configuration.text.profile.allowed
+            allow.text = t.configuration.text.profile.permissionAllowed
             allow.setTextColor(t.configuration.theme.primaryColorEnd.color())
         }
     }
