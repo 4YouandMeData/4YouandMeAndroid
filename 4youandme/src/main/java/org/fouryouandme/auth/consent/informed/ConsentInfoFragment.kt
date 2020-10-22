@@ -11,7 +11,10 @@ import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.injector
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.startCoroutineAsync
 
 class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.consent_info) {
 
@@ -21,7 +24,6 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
             getFactory {
                 ConsentInfoViewModel(
                     navigator,
-                    IORuntime,
                     injector.consentInfoModule(),
                     injector.answerModule()
                 )

@@ -25,7 +25,7 @@ class AboutYouIntegrationLoginFragment :
 
         viewModelFactory(
             this,
-            getFactory { AboutYouIntegrationLoginViewModel(navigator, IORuntime) }
+            getFactory { AboutYouIntegrationLoginViewModel(navigator) }
         )
 
     }

@@ -25,7 +25,7 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
     override val viewModel: WebViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { WebViewModel(navigator, IORuntime) }
+            getFactory { WebViewModel(navigator) }
         )
     }
 

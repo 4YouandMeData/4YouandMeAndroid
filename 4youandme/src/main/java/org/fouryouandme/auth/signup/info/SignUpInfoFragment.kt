@@ -15,7 +15,7 @@ import org.fouryouandme.core.ext.html.setHtmlText
 class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sign_up_info) {
 
     override val viewModel: SignUpInfoViewModel by lazy {
-        viewModelFactory(this, getFactory { SignUpInfoViewModel(navigator, IORuntime) })
+        viewModelFactory(this, getFactory { SignUpInfoViewModel(navigator) })
     }
 
 

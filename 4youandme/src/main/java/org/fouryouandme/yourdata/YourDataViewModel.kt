@@ -2,13 +2,10 @@ package org.fouryouandme.yourdata
 
 import arrow.core.Either
 import arrow.core.toT
-import arrow.fx.ForIO
 import arrow.fx.coroutines.parMapN
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.YourDataModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -27,17 +24,14 @@ import org.fouryouandme.yourdata.items.toYourDataHeaderItem
 
 class YourDataViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val yourDataModule: YourDataModule
 ) : BaseViewModel<
-        ForIO,
         YourDataState,
         YourDataStateUpdate,
         YourDataError,
         YourDataLoading>
     (
     navigator = navigator,
-    runtime = runtime
 ) {
 
     /* --- data --- */
@@ -45,10 +39,9 @@ class YourDataViewModel(
     suspend fun initialize(
         rootNavController: RootNavController,
         configuration: Configuration,
-        imageConfiguration: ImageConfiguration
     ): Unit {
 
-        showLoadingFx(YourDataLoading.Initialization)
+        showLoading(YourDataLoading.Initialization)
 
         val defaultPeriod = YourDataPeriod.Week
 
@@ -80,9 +73,9 @@ class YourDataViewModel(
             )
 
         yourData.fold(
-            { setErrorFx(it, YourDataError.Initialization) },
+            { setError(it, YourDataError.Initialization) },
             { data ->
-                setStateFx(
+                setState(
                     YourDataState(
                         listOf(data.toYourDataHeaderItem(configuration))
                             .addButtons(configuration, defaultPeriod)
@@ -97,7 +90,7 @@ class YourDataViewModel(
             }
         )
 
-        hideLoadingFx(YourDataLoading.Initialization)
+        hideLoading(YourDataLoading.Initialization)
     }
 
     private fun List<DroidItem<Any>>.addButtons(
@@ -128,7 +121,7 @@ class YourDataViewModel(
 
         if (state().period != period) {
 
-            showLoadingFx(YourDataLoading.Period)
+            showLoading(YourDataLoading.Period)
 
             val items =
                 state().items.mapNotNull {
@@ -145,7 +138,7 @@ class YourDataViewModel(
                     .nullToError()
                     .handleAuthError(rootNavController, navigator)
 
-            setStateFx(
+            setState(
                 state().copy(
                     items = items.addGraph(userAggregationRequest, configuration, period),
                     period = period
@@ -153,7 +146,7 @@ class YourDataViewModel(
             )
             { YourDataStateUpdate.Period(it.items) }
 
-            hideLoadingFx(YourDataLoading.Period)
+            hideLoading(YourDataLoading.Period)
 
         }
 
@@ -164,7 +157,7 @@ class YourDataViewModel(
         configuration: Configuration
     ): Unit {
 
-        showLoadingFx(YourDataLoading.Period)
+        showLoading(YourDataLoading.Period)
 
         val items =
             state().items.mapNotNull {
@@ -180,14 +173,14 @@ class YourDataViewModel(
                 .nullToError()
                 .handleAuthError(rootNavController, navigator)
 
-        setStateFx(
+        setState(
             state().copy(
                 items = items.addGraph(userAggregationRequest, configuration, state().period),
             )
         )
         { YourDataStateUpdate.Period(it.items) }
 
-        hideLoadingFx(YourDataLoading.Period)
+        hideLoading(YourDataLoading.Period)
 
     }
 }

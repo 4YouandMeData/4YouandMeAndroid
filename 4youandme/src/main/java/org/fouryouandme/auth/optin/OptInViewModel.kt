@@ -4,7 +4,6 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
-import arrow.fx.ForIO
 import com.karumi.dexter.DexterBuilder
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -13,7 +12,6 @@ import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
 import com.karumi.dexter.listener.single.BasePermissionListener
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.OptInModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -28,15 +26,13 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 
 class OptInViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val optInModule: OptInModule
 ) : BaseViewModel<
-        ForIO,
         OptInState,
         OptInStateUpdate,
         OptInError,
         OptInLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- data --- */
 
@@ -44,7 +40,7 @@ class OptInViewModel(
         rootNavController: RootNavController
     ): Either<FourYouAndMeError, OptInState> {
 
-        showLoadingFx(OptInLoading.Initialization)
+        showLoading(OptInLoading.Initialization)
 
         val state =
             optInModule.getOptIns()
@@ -52,20 +48,20 @@ class OptInViewModel(
                 .handleAuthError(rootNavController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, OptInError.Initialization)
+                        setError(it, OptInError.Initialization)
                         it.left()
                     },
                     { optIns ->
 
                         val state = OptInState(optIns, emptyMap())
 
-                        setStateFx(state) { OptInStateUpdate.Initialization(it.optIns) }
+                        setState(state) { OptInStateUpdate.Initialization(it.optIns) }
 
                         state.right()
                     }
                 )
 
-        hideLoadingFx(OptInLoading.Initialization)
+        hideLoading(OptInLoading.Initialization)
 
         return state
 
@@ -81,15 +77,15 @@ class OptInViewModel(
         agree: Boolean
     ): Unit {
 
-        showLoadingFx(OptInLoading.PermissionSet)
+        showLoading(OptInLoading.PermissionSet)
 
         optInModule.setPermission(permissionId, agree)
             .handleAuthError(rootNavController, navigator).fold(
-                { setErrorFx(it, OptInError.PermissionSet) },
+                { setError(it, OptInError.PermissionSet) },
                 { nextPermission(optInNavController, index) }
             )
 
-        hideLoadingFx(OptInLoading.PermissionSet)
+        hideLoading(OptInLoading.PermissionSet)
 
     }
 
@@ -221,7 +217,7 @@ class OptInViewModel(
         val map =
             state().permissions.toMutableMap().also { it[id] = agree }
 
-        setStateFx(state().copy(permissions = map))
+        setState(state().copy(permissions = map))
         { OptInStateUpdate.Permissions(map) }
 
     }

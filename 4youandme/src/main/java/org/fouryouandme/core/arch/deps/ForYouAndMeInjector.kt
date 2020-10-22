@@ -5,7 +5,6 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Dispatchers
 import moe.banana.jsonapi2.ResourceAdapterFactory
 import org.fouryouandme.core.arch.app.FourYouAndMeApp
 import org.fouryouandme.core.arch.deps.task.FYAMTaskConfiguration
@@ -57,11 +56,6 @@ class ForYouAndMeInjector(
     env: Environment,
     imageConfig: ImageConfiguration
 ) : Injector {
-
-    /* --- runtime --- */
-
-    override val runtimeContext: RuntimeContext =
-        RuntimeContext(Dispatchers.IO, Dispatchers.Main)
 
     /* --- navigator --- */
 

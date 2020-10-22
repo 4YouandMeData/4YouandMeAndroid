@@ -1,8 +1,6 @@
 package org.fouryouandme.tasks
 
-import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.error.unknownError
 import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -19,28 +17,26 @@ import timber.log.Timber
 
 class TaskViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val taskConfiguration: TaskConfiguration,
 ) : BaseViewModel<
-        ForIO,
         TaskState,
         TaskStateUpdate,
         TaskError,
         TaskLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- initialization --- */
 
     suspend fun initialize(type: String, id: String, data: Map<String, String>): Unit {
 
-        showLoadingFx(TaskLoading.Initialization)
+        showLoading(TaskLoading.Initialization)
 
         taskConfiguration.build(type, id, data)
             .foldSuspend(
-                { setErrorFx(unknownError(), TaskError.Initialization) },
+                { setError(unknownError(), TaskError.Initialization) },
                 { task ->
 
-                    setStateFx(
+                    setState(
                         TaskState(
                             task = task,
                             isCancelled = false,
@@ -51,20 +47,20 @@ class TaskViewModel(
                 }
             )
 
-        hideLoadingFx(TaskLoading.Initialization)
+        hideLoading(TaskLoading.Initialization)
 
     }
 
     /* --- state --- */
 
     suspend fun cancel(): Unit {
-        setStateFx(state().copy(isCancelled = true))
+        setState(state().copy(isCancelled = true))
         { TaskStateUpdate.Cancelled(it.isCancelled) }
     }
 
     suspend fun end(): Unit {
 
-        showLoadingFx(TaskLoading.Result)
+        showLoading(TaskLoading.Result)
 
         val result =
             taskConfiguration.handleTaskResult(state().result, state().task.type, state().task.id)
@@ -73,19 +69,19 @@ class TaskViewModel(
 
         when (result) {
             TaskHandleResult.Handled ->
-                setStateFx(TaskState.isCompleted.modify(state()) { true })
+                setState(TaskState.isCompleted.modify(state()) { true })
                 { TaskStateUpdate.Completed }
             is TaskHandleResult.Error ->
-                setErrorFx(unknownError(), TaskError.Result)
+                setError(unknownError(), TaskError.Result)
         }
 
-        hideLoadingFx(TaskLoading.Result)
+        hideLoading(TaskLoading.Result)
 
     }
 
     suspend fun addResult(result: StepResult): Unit {
 
-        setStateSilentFx(
+        setStateSilent(
             TaskState.result.results.modify(state()) {
                 val map = it.toMutableMap()
                 map[result.identifier] = result

@@ -2,13 +2,11 @@ package org.fouryouandme.main.feeds
 
 import arrow.core.Either
 import arrow.core.toT
-import arrow.fx.ForIO
 import arrow.fx.coroutines.parMapN
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import kotlinx.coroutines.Dispatchers
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.FeedModule
 import org.fouryouandme.core.arch.deps.modules.TaskModule
@@ -41,17 +39,15 @@ import org.threeten.bp.temporal.ChronoUnit
 
 class FeedsViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val feedModule: FeedModule,
     private val taskModule: TaskModule,
     private val authModule: AuthModule
 ) : BaseViewModel<
-        ForIO,
         FeedsState,
         FeedsStateUpdate,
         FeedsError,
         FeedsLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- initialize --- */
 
@@ -60,7 +56,7 @@ class FeedsViewModel(
         configuration: Configuration
     ): Unit {
 
-        showLoadingFx(FeedsLoading.Initialization)
+        showLoading(FeedsLoading.Initialization)
 
         val userRequest =
             suspend {
@@ -84,9 +80,9 @@ class FeedsViewModel(
                 })
 
         feed.fold(
-            { setErrorFx(it, FeedsError.Initialization) },
+            { setError(it, FeedsError.Initialization) },
             { list ->
-                setStateFx(
+                setState(
                     FeedsState(
                         list.toItems(rootNavController, configuration)
                             .addHeader(configuration, user.orNull())
@@ -98,7 +94,7 @@ class FeedsViewModel(
             }
         )
 
-        hideLoadingFx(FeedsLoading.Initialization)
+        hideLoading(FeedsLoading.Initialization)
 
     }
 
@@ -273,18 +269,18 @@ class FeedsViewModel(
     ) {
         if (item.selectedAnswer.isNullOrEmpty().not()) {
 
-            showLoadingFx(FeedsLoading.QuickActivityUpload)
+            showLoading(FeedsLoading.QuickActivityUpload)
             taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
                 .fold(
                     {
-                        setErrorFx(it, FeedsError.QuickActivityUpload)
+                        setError(it, FeedsError.QuickActivityUpload)
                     },
                     {
                         initialize(rootNavController, configuration)
                     }
                 )
 
-            hideLoadingFx(FeedsLoading.QuickActivityUpload)
+            hideLoading(FeedsLoading.QuickActivityUpload)
         }
     }
 

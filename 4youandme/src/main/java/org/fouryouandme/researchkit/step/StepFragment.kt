@@ -10,7 +10,10 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.find
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.task.TaskInjector
 import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskNavController
@@ -24,7 +27,6 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
             getFactory {
                 TaskViewModel(
                     navigator,
-                    IORuntime,
                     (requireContext().applicationContext as TaskInjector).provideBuilder()
                 )
             }

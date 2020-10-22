@@ -1,10 +1,8 @@
 package org.fouryouandme.auth.splash
 
-import arrow.fx.ForIO
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -15,17 +13,16 @@ import org.fouryouandme.core.cases.auth.AuthUseCase.isLogged
 
 class SplashViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val authModule: AuthModule
-) : BaseViewModel<ForIO, Empty, Empty, Empty, SplashLoading>
-    (Empty, navigator, runtime) {
+) : BaseViewModel<Empty, Empty, Empty, SplashLoading>
+    (navigator, Empty) {
 
     suspend fun auth(
         rootNavController: RootNavController,
         authNavController: AuthNavController
     ): Unit {
 
-        showLoadingFx(SplashLoading.Auth)
+        showLoading(SplashLoading.Auth)
 
         if (authModule.isLogged()) {
 
@@ -43,7 +40,7 @@ class SplashViewModel(
 
         } else welcome(authNavController)
 
-        hideLoadingFx(SplashLoading.Auth)
+        hideLoading(SplashLoading.Auth)
 
     }
 

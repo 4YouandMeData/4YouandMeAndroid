@@ -25,10 +25,7 @@ class AboutYouAppsAndDevicesFragment :
         viewModelFactory(
             this,
             getFactory {
-                AboutYouAppsAndDevicesViewModel(
-                    navigator,
-                    IORuntime
-                )
+                AboutYouAppsAndDevicesViewModel(navigator)
             }
         )
 

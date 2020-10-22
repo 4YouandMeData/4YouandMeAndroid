@@ -4,13 +4,11 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import arrow.core.toT
-import arrow.fx.ForIO
 import arrow.fx.coroutines.parSequence
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.auth.screening.questions.ScreeningQuestionItem
 import org.fouryouandme.auth.screening.questions.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AnswerModule
 import org.fouryouandme.core.arch.deps.modules.ScreeningModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
@@ -28,16 +26,14 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 
 class ScreeningViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val screeningModule: ScreeningModule,
     private val answerModule: AnswerModule
 ) : BaseViewModel<
-        ForIO,
         ScreeningState,
         ScreeningStateUpdate,
         ScreeningError,
         ScreeningLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- initialize --- */
 
@@ -46,7 +42,7 @@ class ScreeningViewModel(
         configuration: Configuration
     ): Either<FourYouAndMeError, ScreeningState> {
 
-        showLoadingFx(ScreeningLoading.Initialization)
+        showLoading(ScreeningLoading.Initialization)
 
         val state =
             screeningModule.getScreening()
@@ -54,7 +50,7 @@ class ScreeningViewModel(
                 .handleAuthError(navController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, ScreeningError.Initialization)
+                        setError(it, ScreeningError.Initialization)
                         it.left()
                     },
                     { screening ->
@@ -65,7 +61,7 @@ class ScreeningViewModel(
                                 screening.questions.map { it.toItem(configuration) }
                             )
 
-                        setStateFx(state)
+                        setState(state)
                         { ScreeningStateUpdate.Initialization(it.screening) }
 
                         state.right()
@@ -73,7 +69,7 @@ class ScreeningViewModel(
                     }
                 )
 
-        hideLoadingFx(ScreeningLoading.Initialization)
+        hideLoading(ScreeningLoading.Initialization)
 
         return state
 
@@ -133,7 +129,7 @@ class ScreeningViewModel(
         val questions =
             state().questions.map { if (it.question.id == item.question.id) item else it }
 
-        setStateFx(state().copy(questions = questions))
+        setState(state().copy(questions = questions))
         { ScreeningStateUpdate.Questions(questions) }
 
     }
@@ -190,7 +186,7 @@ class ScreeningViewModel(
         val questions =
             state().questions.map { it.copy(answer = null) }
 
-        setStateFx(state().copy(questions = questions))
+        setState(state().copy(questions = questions))
         { ScreeningStateUpdate.Questions(questions) }
 
         navigator.navigateTo(

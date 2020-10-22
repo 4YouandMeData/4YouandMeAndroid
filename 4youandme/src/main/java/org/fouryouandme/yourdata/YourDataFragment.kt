@@ -26,7 +26,6 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
             getFactory {
                 YourDataViewModel(
                     navigator,
-                    IORuntime,
                     injector.yourDataModule()
                 )
             }
@@ -81,7 +80,6 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
                                 viewModel.initialize(
                                     rootNavController(),
                                     configuration(),
-                                    imageConfiguration
                                 )
                             }
                         }
@@ -104,7 +102,7 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
 
             applyConfiguration(it)
 
-            viewModel.initialize(rootNavController(), it, imageConfiguration)
+            viewModel.initialize(rootNavController(), it)
 
         }
 

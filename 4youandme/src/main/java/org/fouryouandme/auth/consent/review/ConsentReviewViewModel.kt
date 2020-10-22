@@ -3,13 +3,11 @@ package org.fouryouandme.auth.consent.review
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.auth.consent.review.info.toConsentReviewHeaderItem
 import org.fouryouandme.auth.consent.review.info.toConsentReviewPageItem
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.ConsentReviewModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -21,15 +19,13 @@ import org.fouryouandme.core.entity.configuration.Configuration
 
 class ConsentReviewViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val consentReviewModule: ConsentReviewModule
 ) : BaseViewModel<
-        ForIO,
         ConsentReviewState,
         ConsentReviewStateUpdate,
         ConsentReviewError,
         ConsentReviewLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- initialize --- */
 
@@ -38,7 +34,7 @@ class ConsentReviewViewModel(
         configuration: Configuration
     ): Either<FourYouAndMeError, ConsentReviewState> {
 
-        showLoadingFx(ConsentReviewLoading.Initialization)
+        showLoading(ConsentReviewLoading.Initialization)
 
         val state =
             consentReviewModule.getConsent()
@@ -46,7 +42,7 @@ class ConsentReviewViewModel(
                 .handleAuthError(rootNavController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, ConsentReviewError.Initialization)
+                        setError(it, ConsentReviewError.Initialization)
                         it.left()
                     },
                     { consentReview ->
@@ -64,7 +60,7 @@ class ConsentReviewViewModel(
                         val state =
                             ConsentReviewState(consentReview, items)
 
-                        setStateFx(state)
+                        setState(state)
                         { ConsentReviewStateUpdate.Initialization(it.consentReview, it.items) }
 
                         state.right()
@@ -72,7 +68,7 @@ class ConsentReviewViewModel(
                     }
                 )
 
-        hideLoadingFx(ConsentReviewLoading.Initialization)
+        hideLoading(ConsentReviewLoading.Initialization)
 
         return state
 

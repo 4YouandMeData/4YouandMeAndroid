@@ -11,4 +11,4 @@ class WebStep(
     val cookies: Map<String, String> = emptyMap(),
     val javascriptInterface: WebStepInterface? = null,
     val javascriptInterfaceName: String? = null
-) : Step(identifier, null, false, { WebStepFragment() })
+) : Step(identifier, backImage, false, { WebStepFragment() })

@@ -19,7 +19,6 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
             getFactory {
                 StudyInfoViewModel(
                     navigator,
-                    IORuntime,
                     injector.configurationModule()
                 )
             }

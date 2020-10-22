@@ -1,15 +1,12 @@
 package org.fouryouandme.researchkit.step.chooseone
 
-import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.Navigator
 
-class ChooseOneViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
-    BaseViewModel<ForIO, ChooseOneStepState, ChooseOneStepStateUpdate, Empty, Empty>(
-        navigator = navigator,
-        runtime = runtime
+class ChooseOneViewModel(navigator: Navigator) :
+    BaseViewModel<ChooseOneStepState, ChooseOneStepStateUpdate, Empty, Empty>(
+        navigator = navigator
     ) {
 
     suspend fun initialize(answers: List<ChooseOneAnswer>): Unit {
@@ -25,7 +22,7 @@ class ChooseOneViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
             )
         }
 
-        setStateFx(ChooseOneStepState(items)) { ChooseOneStepStateUpdate.Initialization(it.items) }
+        setState(ChooseOneStepState(items)) { ChooseOneStepStateUpdate.Initialization(it.items) }
 
     }
 
@@ -36,7 +33,7 @@ class ChooseOneViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
             else it
         }
 
-        setStateFx(state().copy(items = items)) { ChooseOneStepStateUpdate.Answer(it.items) }
+        setState(state().copy(items = items)) { ChooseOneStepStateUpdate.Answer(it.items) }
 
     }
 

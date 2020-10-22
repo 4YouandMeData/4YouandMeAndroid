@@ -11,7 +11,6 @@ import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.arch.error.FourYouAndMeError
-import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -23,7 +22,6 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         viewModelFactory(this, getFactory {
             TaskViewModel(
                 navigator,
-                IORuntime,
                 taskConfiguration()
             )
         })

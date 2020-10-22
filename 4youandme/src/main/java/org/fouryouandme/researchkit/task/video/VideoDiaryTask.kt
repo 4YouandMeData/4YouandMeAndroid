@@ -19,7 +19,7 @@ class VideoDiaryTask(
     introButton: String,
     introButtonColor: Int,
     introButtonTextColor: Int,
-    introRemindButton: String,
+    introRemindButton: String?,
     introRemindButtonColor: Int,
     introRemindButtonTextColor: Int,
     introList: List<IntroductionItem>,

@@ -1,24 +1,22 @@
 package org.fouryouandme.aboutyou.permissions
 
-import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.entity.configuration.Configuration
 
-class AboutYouPermissionsViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
-    BaseViewModel<ForIO, AboutYouPermissionsState, AboutYouPermissionsStateUpdate, Empty, AboutYouPermissionsLoading>(
-        Empty,
-        navigator,
-        runtime
-    ) {
+class AboutYouPermissionsViewModel(navigator: Navigator) :
+    BaseViewModel<
+            AboutYouPermissionsState,
+            AboutYouPermissionsStateUpdate,
+            Empty,
+            AboutYouPermissionsLoading>(navigator) {
 
 
     fun getPermissions(configuration: Configuration, imageConfiguration: ImageConfiguration) =
-        listOf(
-            PermissionsItem(
+        listOf<PermissionsItem>(
+            /*PermissionsItem(
                 configuration,
                 "1",
                 "The BUMP app needs access to your phone's location",
@@ -31,6 +29,6 @@ class AboutYouPermissionsViewModel(navigator: Navigator, runtime: Runtime<ForIO>
                 "Push Notifications",
                 imageConfiguration.pushNotification(),
                 false
-            )
+            )*/
         )
 }

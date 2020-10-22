@@ -1,10 +1,8 @@
 package org.fouryouandme.auth.phone.code
 
-import arrow.fx.ForIO
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -15,15 +13,13 @@ import org.fouryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
 
 class PhoneValidationCodeViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val authModule: AuthModule
 ) : BaseViewModel<
-        ForIO,
         Empty,
         Empty,
         PhoneValidationCodeError,
         PhoneValidationCodeLoading>
-    (Empty, navigator = navigator, runtime = runtime) {
+    (navigator = navigator, Empty) {
 
 
     /* --- auth --- */
@@ -35,19 +31,19 @@ class PhoneValidationCodeViewModel(
         code: String
     ): Unit {
 
-        showLoadingFx(PhoneValidationCodeLoading.Auth)
+        showLoading(PhoneValidationCodeLoading.Auth)
 
         val auth = authModule.login(phone, code)
 
         auth.fold(
-            { setErrorFx(it, PhoneValidationCodeError.Auth) },
+            { setError(it, PhoneValidationCodeError.Auth) },
             {
                 if (it.onBoardingCompleted) main(rootNavController)
                 else screeningQuestions(authNavController)
             }
         )
 
-        hideLoadingFx(PhoneValidationCodeLoading.Auth)
+        hideLoading(PhoneValidationCodeLoading.Auth)
 
     }
 
@@ -55,16 +51,16 @@ class PhoneValidationCodeViewModel(
         phoneAndCode: String
     ): Unit {
 
-        showLoadingFx(PhoneValidationCodeLoading.ResendCode)
+        showLoading(PhoneValidationCodeLoading.ResendCode)
 
         authModule.verifyPhoneNumber(phoneAndCode)
             .fold(
-                { setErrorFx(it, PhoneValidationCodeError.ResendCode) },
+                { setError(it, PhoneValidationCodeError.ResendCode) },
                 // TODO: fix hardcoded text
                 { navigator.performAction(toastAction("Code sent successfully")) }
             )
 
-        hideLoadingFx(PhoneValidationCodeLoading.ResendCode)
+        hideLoading(PhoneValidationCodeLoading.ResendCode)
 
     }
 

@@ -16,7 +16,7 @@ import org.fouryouandme.core.ext.*
 class WelcomeFragment : AuthSectionFragment<WelcomeViewModel>(R.layout.welcome) {
 
     override val viewModel: WelcomeViewModel by lazy {
-        viewModelFactory(this, getFactory { WelcomeViewModel(navigator, IORuntime) })
+        viewModelFactory(this, getFactory { WelcomeViewModel(navigator) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

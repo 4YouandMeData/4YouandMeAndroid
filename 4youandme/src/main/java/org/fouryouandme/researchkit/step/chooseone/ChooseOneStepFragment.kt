@@ -13,7 +13,10 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
 import org.fouryouandme.core.entity.configuration.background.shadow
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.dpToPx
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.step.StepFragment
 import org.fouryouandme.researchkit.utils.applyImage
@@ -26,12 +29,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
         viewModelFactory(
             this,
-            getFactory {
-                ChooseOneViewModel(
-                    navigator,
-                    IORuntime
-                )
-            }
+            getFactory { ChooseOneViewModel(navigator) }
         )
 
     }

@@ -1,6 +1,5 @@
 package org.fouryouandme.core.data.api.consent.review
 
-import arrow.integrations.retrofit.adapter.CallK
 import moe.banana.jsonapi2.ObjectDocument
 import org.fouryouandme.core.data.api.Headers
 import org.fouryouandme.core.data.api.consent.review.response.ConsentReviewResponse
@@ -10,16 +9,10 @@ import retrofit2.http.Path
 
 interface ConsentReviewApi {
 
-    @Deprecated(message = "use suspend version")
     @GET("api/v1/studies/{study_id}/consent")
-    fun getConsent(
-        @Header(Headers.AUTH) token: String,
-        @Path("study_id") studyId: String
-    ): CallK<ObjectDocument<ConsentReviewResponse>>
-
-    @GET("api/v1/studies/{study_id}/consent")
-    suspend fun getConsentFx(
+    suspend fun getConsent(
         @Header(Headers.AUTH) token: String,
         @Path("study_id") studyId: String
     ): ObjectDocument<ConsentReviewResponse>
+
 }

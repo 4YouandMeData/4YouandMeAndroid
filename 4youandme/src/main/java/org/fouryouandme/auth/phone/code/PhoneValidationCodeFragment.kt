@@ -29,7 +29,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
     override val viewModel: PhoneValidationCodeViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { PhoneValidationCodeViewModel(navigator, IORuntime, injector.authModule()) }
+            getFactory { PhoneValidationCodeViewModel(navigator, injector.authModule()) }
         )
     }
 

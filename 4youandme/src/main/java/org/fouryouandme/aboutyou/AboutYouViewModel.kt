@@ -3,9 +3,7 @@ package org.fouryouandme.aboutyou
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import arrow.fx.ForIO
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -17,18 +15,12 @@ import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
 
 class AboutYouViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val authModule: AuthModule
 ) : BaseViewModel<
-        ForIO,
         AboutYouState,
         AboutYouStateUpdate,
         AboutYouError,
-        AboutYouLoading>
-    (
-    navigator = navigator,
-    runtime = runtime
-) {
+        AboutYouLoading>(navigator) {
 
     /* --- initialization --- */
 
@@ -37,7 +29,7 @@ class AboutYouViewModel(
         refreshFromNetwork: Boolean
     ): Either<FourYouAndMeError, AboutYouState> {
 
-        showLoadingFx(AboutYouLoading.Initialization)
+        showLoading(AboutYouLoading.Initialization)
 
         val state =
             authModule.getUser(
@@ -48,20 +40,20 @@ class AboutYouViewModel(
                 .handleAuthError(rootNavController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, AboutYouError.Initialization)
+                        setError(it, AboutYouError.Initialization)
                         it.left()
                     },
                     { user ->
 
                         val state = AboutYouState(user)
 
-                        setStateFx(state) { AboutYouStateUpdate.Initialization(it.user) }
+                        setState(state) { AboutYouStateUpdate.Initialization(it.user) }
 
                         state.right()
                     }
                 )
 
-        hideLoadingFx(AboutYouLoading.Initialization)
+        hideLoading(AboutYouLoading.Initialization)
 
         return state
 
@@ -72,7 +64,7 @@ class AboutYouViewModel(
         refreshFromNetwork: Boolean
     ): Either<FourYouAndMeError, AboutYouState> {
 
-        showLoadingFx(AboutYouLoading.Refresh)
+        showLoading(AboutYouLoading.Refresh)
 
         val state =
             authModule.getUser(
@@ -83,20 +75,20 @@ class AboutYouViewModel(
                 .handleAuthError(rootNavController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, AboutYouError.Refresh)
+                        setError(it, AboutYouError.Refresh)
                         it.left()
                     },
                     { user ->
 
                         val state = AboutYouState(user)
 
-                        setStateFx(state) { AboutYouStateUpdate.Refresh(it.user) }
+                        setState(state) { AboutYouStateUpdate.Refresh(it.user) }
 
                         state.right()
                     }
                 )
 
-        hideLoadingFx(AboutYouLoading.Refresh)
+        hideLoading(AboutYouLoading.Refresh)
 
         return state
     }

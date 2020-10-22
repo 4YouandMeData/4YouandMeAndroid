@@ -128,7 +128,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
     override fun onDestroy() {
 
-        unbindServiceIO(serviceConnection)
+        unbindService(serviceConnection)
 
         super.onDestroy()
 

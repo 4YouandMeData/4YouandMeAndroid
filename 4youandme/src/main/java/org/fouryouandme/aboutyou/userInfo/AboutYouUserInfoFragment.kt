@@ -25,7 +25,6 @@ class AboutYouUserInfoFragment :
             getFactory {
                 AboutYouUserInfoViewModel(
                     navigator,
-                    IORuntime,
                     injector.authModule()
                 )
             }

@@ -20,7 +20,6 @@ class AboutYouMenuFragment :
             getFactory {
                 AboutYouMenuViewModel(
                     navigator,
-                    IORuntime,
                 )
             }
         )

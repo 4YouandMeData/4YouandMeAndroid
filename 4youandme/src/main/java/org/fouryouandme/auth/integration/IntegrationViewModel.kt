@@ -4,10 +4,8 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
-import arrow.fx.ForIO
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.deps.modules.IntegrationModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
@@ -26,16 +24,14 @@ import org.fouryouandme.core.ext.web.asIntegrationCookies
 
 class IntegrationViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val authModule: AuthModule,
     private val integrationModule: IntegrationModule
 ) : BaseViewModel<
-        ForIO,
         IntegrationState,
         IntegrationStateUpdate,
         IntegrationError,
         IntegrationLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- data --- */
 
@@ -43,7 +39,7 @@ class IntegrationViewModel(
         rootNavController: RootNavController
     ): Either<FourYouAndMeError, IntegrationState> {
 
-        showLoadingFx(IntegrationLoading.Initialization)
+        showLoading(IntegrationLoading.Initialization)
 
         val state =
             integrationModule.getIntegration()
@@ -51,7 +47,7 @@ class IntegrationViewModel(
                 .handleAuthError(rootNavController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, IntegrationError.Initialization)
+                        setError(it, IntegrationError.Initialization)
                         it.left()
                     },
                     { integration ->
@@ -64,7 +60,7 @@ class IntegrationViewModel(
                         val state =
                             IntegrationState(integration, cookies)
 
-                        setStateFx(state)
+                        setState(state)
                         { IntegrationStateUpdate.Initialization(it.integration) }
 
                         state.right()
@@ -72,7 +68,7 @@ class IntegrationViewModel(
                     }
                 )
 
-        hideLoadingFx(IntegrationLoading.Initialization)
+        hideLoading(IntegrationLoading.Initialization)
 
         return state
 
@@ -84,7 +80,7 @@ class IntegrationViewModel(
             authModule.getToken(CachePolicy.MemoryOrDisk).map { mapOf("token" to it) }
                 .getOrElse { emptyMap() }
 
-        setStateFx(state().copy(cookies = cookies)) { IntegrationStateUpdate.Cookies(cookies) }
+        setState(state().copy(cookies = cookies)) { IntegrationStateUpdate.Cookies(cookies) }
 
     }
 

@@ -8,7 +8,6 @@ import org.fouryouandme.R
 import org.fouryouandme.auth.AuthSectionFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.injector
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -21,7 +20,6 @@ class IntegrationFragment : AuthSectionFragment<IntegrationViewModel>(R.layout.i
             getFactory {
                 IntegrationViewModel(
                     navigator,
-                    IORuntime,
                     injector.authModule(),
                     injector.integrationModule()
                 )

@@ -28,7 +28,6 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
         viewModelFactory(this, getFactory {
             EnterPhoneViewModel(
                 navigator,
-                IORuntime,
                 injector.authModule()
             )
         })
@@ -52,7 +51,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                         when (payload.error) {
 
                             is FourYouAndMeError.MissingPhoneNumber ->
-                               configuration { setMissingPhoneErrorVisibility(it, true) }
+                                configuration { setMissingPhoneErrorVisibility(it, true) }
                             else ->
                                 startCoroutineAsync { viewModel.toastError(payload.error) }
                         }
@@ -159,7 +158,8 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                 ColorStateList.valueOf(configuration.theme.secondaryColor.color())
             phone.autoCloseKeyboard()
             phone.addTextChangedListener {
-                configuration { setMissingPhoneErrorVisibility(it, false) } }
+                configuration { setMissingPhoneErrorVisibility(it, false) }
+            }
             phone.setOnFocusChangeListener { _, hasFocus ->
                 phone_validation.setImageResource(
                     when {

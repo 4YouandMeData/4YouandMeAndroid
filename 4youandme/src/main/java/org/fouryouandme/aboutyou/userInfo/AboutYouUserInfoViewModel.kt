@@ -2,11 +2,9 @@ package org.fouryouandme.aboutyou.userInfo
 
 import arrow.core.Either
 import arrow.core.flatMap
-import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AuthModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
@@ -28,15 +26,13 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class AboutYouUserInfoViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val authModule: AuthModule
 ) : BaseViewModel<
-        ForIO,
         AboutYouUserInfoState,
         AboutYouUserInfoStateUpdate,
         AboutYouUserInfoError,
         AboutYouUserInfoLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     suspend fun initialize(
         configuration: Configuration,
@@ -83,7 +79,7 @@ class AboutYouUserInfoViewModel(
 
             }
 
-        setStateFx(AboutYouUserInfoState(items, false))
+        setState(AboutYouUserInfoState(items, false))
         { AboutYouUserInfoStateUpdate.Initialization(it.items) }
 
     }
@@ -96,16 +92,16 @@ class AboutYouUserInfoViewModel(
 
             upload(rootNavController)
                 .fold(
-                    { setErrorFx(it, AboutYouUserInfoError.Upload) },
+                    { setError(it, AboutYouUserInfoError.Upload) },
                     {
-                        setStateFx(
+                        setState(
                             state().copy(isEditing = false, items = setItemsEditMode(false))
                         ) { AboutYouUserInfoStateUpdate.EditMode(it.isEditing, it.items) }
                     }
                 )
         } else {
 
-            setStateFx(
+            setState(
                 state().copy(isEditing = true, items = setItemsEditMode(true))
             ) { AboutYouUserInfoStateUpdate.EditMode(it.isEditing, it.items) }
 
@@ -140,7 +136,7 @@ class AboutYouUserInfoViewModel(
 
             }
 
-        setStateFx(state().copy(items = items))
+        setState(state().copy(items = items))
         { AboutYouUserInfoStateUpdate.Items(items) }
 
     }
@@ -157,7 +153,7 @@ class AboutYouUserInfoViewModel(
 
             }
 
-        setStateFx(state().copy(items = items))
+        setState(state().copy(items = items))
         { AboutYouUserInfoStateUpdate.Items(items) }
 
     }
@@ -176,7 +172,7 @@ class AboutYouUserInfoViewModel(
 
             }
 
-        setStateFx(state().copy(items = items))
+        setState(state().copy(items = items))
         { AboutYouUserInfoStateUpdate.Items(items) }
 
     }
@@ -186,7 +182,7 @@ class AboutYouUserInfoViewModel(
 
     private suspend fun upload(rootNavController: RootNavController): Either<FourYouAndMeError, Unit> {
 
-        showLoadingFx(AboutYouUserInfoLoading.Upload)
+        showLoading(AboutYouUserInfoLoading.Upload)
 
         val data =
             state().items.mapNotNull { item ->
@@ -227,7 +223,7 @@ class AboutYouUserInfoViewModel(
                 .map { Unit }
                 .handleAuthError(rootNavController, navigator)
 
-        hideLoadingFx(AboutYouUserInfoLoading.Upload)
+        hideLoading(AboutYouUserInfoLoading.Upload)
 
         return upload
 

@@ -16,7 +16,7 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
     override val viewModel: MainViewModel by lazy {
 
-        viewModelFactory(this, getFactory { MainViewModel(navigator, IORuntime) })
+        viewModelFactory(this, getFactory { MainViewModel(navigator) })
 
     }
 

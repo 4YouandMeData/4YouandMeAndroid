@@ -6,10 +6,8 @@ import android.util.Patterns
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import arrow.fx.ForIO
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.ConsentUserModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
@@ -28,21 +26,19 @@ import java.io.ByteArrayOutputStream
 
 class ConsentUserViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val consentUserModule: ConsentUserModule
 ) : BaseViewModel<
-        ForIO,
         ConsentUserState,
         ConsentUserStateUpdate,
         ConsentUserError,
         ConsentUserLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- initialization --- */
 
     suspend fun initialize(rootNavController: RootNavController): Either<FourYouAndMeError, ConsentUserState> {
 
-        showLoadingFx(ConsentUserLoading.Initialization)
+        showLoading(ConsentUserLoading.Initialization)
 
 
         val state =
@@ -51,7 +47,7 @@ class ConsentUserViewModel(
                 .handleAuthError(rootNavController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, ConsentUserError.Initialization)
+                        setError(it, ConsentUserError.Initialization)
                         it.left()
                     },
                     {
@@ -59,7 +55,7 @@ class ConsentUserViewModel(
                         val state =
                             ConsentUserState(consent = it)
 
-                        setStateFx(state)
+                        setState(state)
                         { ConsentUserStateUpdate.Initialization(state.consent) }
 
                         state.right()
@@ -67,7 +63,7 @@ class ConsentUserViewModel(
                     }
                 )
 
-        hideLoadingFx(ConsentUserLoading.Initialization)
+        hideLoading(ConsentUserLoading.Initialization)
 
         return state
 
@@ -80,31 +76,31 @@ class ConsentUserViewModel(
         consentUserNavController: ConsentUserNavController
     ): Unit {
 
-        showLoadingFx(ConsentUserLoading.CreateUser)
+        showLoading(ConsentUserLoading.CreateUser)
 
         consentUserModule.createUserConsent(state().email)
             .handleAuthError(rootNavController, navigator).fold(
-                { setErrorFx(it, ConsentUserError.CreateUser) },
+                { setError(it, ConsentUserError.CreateUser) },
                 { emailVerification(consentUserNavController) }
             )
 
-        hideLoadingFx(ConsentUserLoading.CreateUser)
+        hideLoading(ConsentUserLoading.CreateUser)
 
     }
 
     suspend fun resendEmail(rootNavController: RootNavController): Unit {
 
-        showLoadingFx(ConsentUserLoading.ResendConfirmationEmail)
+        showLoading(ConsentUserLoading.ResendConfirmationEmail)
 
         consentUserModule.resendConfirmationEmail()
             .handleAuthError(rootNavController, navigator)
             .fold(
-                { setErrorFx(it, ConsentUserError.ResendConfirmationEmail) },
+                { setError(it, ConsentUserError.ResendConfirmationEmail) },
                 // TODO: remove hardcoded string
                 { navigator.performAction(toastAction("Email sent successfully")) }
             )
 
-        hideLoadingFx(ConsentUserLoading.ResendConfirmationEmail)
+        hideLoading(ConsentUserLoading.ResendConfirmationEmail)
 
     }
 
@@ -114,17 +110,17 @@ class ConsentUserViewModel(
         code: String
     ): Unit {
 
-        showLoadingFx(ConsentUserLoading.ConfirmEmail)
+        showLoading(ConsentUserLoading.ConfirmEmail)
 
 
         consentUserModule.confirmEmail(code)
             .handleAuthError(rootNavController, navigator)
             .fold(
-                { setErrorFx(it, ConsentUserError.ConfirmEmail) },
+                { setError(it, ConsentUserError.ConfirmEmail) },
                 { signature(consentUserNavController) }
             )
 
-        hideLoadingFx(ConsentUserLoading.ConfirmEmail)
+        hideLoading(ConsentUserLoading.ConfirmEmail)
 
     }
 
@@ -134,7 +130,7 @@ class ConsentUserViewModel(
         signature: Bitmap
     ): Unit {
 
-        showLoadingFx(ConsentUserLoading.UpdateUser)
+        showLoading(ConsentUserLoading.UpdateUser)
 
         val signatureBase64 = signature.toBase64()
 
@@ -145,11 +141,11 @@ class ConsentUserViewModel(
         )
             .handleAuthError(rootNavController, navigator)
             .fold(
-                { setErrorFx(it, ConsentUserError.UpdateUser) },
+                { setError(it, ConsentUserError.UpdateUser) },
                 { success(consentUserNavController) }
             )
 
-        hideLoadingFx(ConsentUserLoading.UpdateUser)
+        hideLoading(ConsentUserLoading.UpdateUser)
 
     }
 
@@ -170,15 +166,15 @@ class ConsentUserViewModel(
     /* --- state --- */
 
     suspend fun setFirstName(firstName: String): Unit =
-        setStateFx(state().copy(firstName = firstName))
+        setState(state().copy(firstName = firstName))
         { ConsentUserStateUpdate.FirstName(firstName) }
 
     suspend fun setLastName(lastName: String): Unit =
-        setStateFx(state().copy(lastName = lastName))
+        setState(state().copy(lastName = lastName))
         { ConsentUserStateUpdate.FirstName(lastName) }
 
     suspend fun setEmail(email: String): Unit =
-        setStateFx(state().copy(email = email))
+        setState(state().copy(email = email))
         { ConsentUserStateUpdate.Email(email) }
 
     /* --- navigation --- */

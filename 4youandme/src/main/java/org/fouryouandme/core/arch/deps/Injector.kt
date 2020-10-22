@@ -22,10 +22,6 @@ import org.fouryouandme.researchkit.task.TaskConfiguration
 
 interface Injector {
 
-    /* --- runtime --- */
-
-    val runtimeContext: RuntimeContext
-
     /* --- navigation --- */
 
     val navigator: Navigator

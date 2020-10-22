@@ -32,13 +32,15 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
     private val mediaController: MediaController by lazy { MediaController(requireContext()) }
 
     private val videoViewModel: VideoViewModel by lazy {
-        viewModelFactory(this, getFactory {
-            VideoViewModel(
-                navigator,
-                IORuntime,
-                injector.taskModule()
-            )
-        })
+        viewModelFactory(
+            this,
+            getFactory {
+                VideoViewModel(
+                    navigator,
+                    injector.taskModule()
+                )
+            }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

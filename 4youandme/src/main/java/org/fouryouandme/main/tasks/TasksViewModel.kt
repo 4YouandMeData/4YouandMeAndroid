@@ -1,10 +1,8 @@
 package org.fouryouandme.main.tasks
 
-import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -23,15 +21,13 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class TasksViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val taskModule: TaskModule
 ) : BaseViewModel<
-        ForIO,
         TasksState,
         TasksStateUpdate,
         TasksError,
         TasksLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- initialize --- */
 
@@ -40,19 +36,19 @@ class TasksViewModel(
         configuration: Configuration
     ): Unit {
 
-        showLoadingFx(TasksLoading.Initialization)
+        showLoading(TasksLoading.Initialization)
 
         taskModule.getTasks()
             .handleAuthError(rootNavController, navigator)
             .fold(
-                { setErrorFx(it, TasksError.Initialization) },
+                { setError(it, TasksError.Initialization) },
                 { list ->
-                    setStateFx(TasksState(list.toItems(rootNavController, configuration)))
+                    setState(TasksState(list.toItems(rootNavController, configuration)))
                     { TasksStateUpdate.Initialization(it.tasks) }
                 }
             )
 
-        hideLoadingFx(TasksLoading.Initialization)
+        hideLoading(TasksLoading.Initialization)
 
     }
 
@@ -173,18 +169,18 @@ class TasksViewModel(
     ) {
         if (item.selectedAnswer.isNullOrEmpty().not()) {
 
-            showLoadingFx(TasksLoading.QuickActivityUpload)
+            showLoading(TasksLoading.QuickActivityUpload)
             taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
                 .fold(
                     {
-                        setErrorFx(it, TasksError.QuickActivityUpload)
+                        setError(it, TasksError.QuickActivityUpload)
                     },
                     {
                         initialize(rootNavController, configuration)
                     }
                 )
 
-            hideLoadingFx(TasksLoading.QuickActivityUpload)
+            hideLoading(TasksLoading.QuickActivityUpload)
         }
     }
 

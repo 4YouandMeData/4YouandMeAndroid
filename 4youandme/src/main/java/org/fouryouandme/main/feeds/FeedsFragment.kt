@@ -29,7 +29,6 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             getFactory {
                 FeedsViewModel(
                     navigator,
-                    IORuntime,
                     injector.feedModule(),
                     injector.taskModule(),
                     injector.authModule()
@@ -43,7 +42,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             TaskActivityViewHolder.factory {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
-            FeedRewardViewHolder.factory {  },
+            FeedRewardViewHolder.factory { },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),

@@ -24,12 +24,7 @@ class AboutYouPermissionsFragment :
 
         viewModelFactory(
             this,
-            getFactory {
-                AboutYouPermissionsViewModel(
-                    navigator,
-                    IORuntime
-                )
-            }
+            getFactory { AboutYouPermissionsViewModel(navigator) }
         )
 
     }

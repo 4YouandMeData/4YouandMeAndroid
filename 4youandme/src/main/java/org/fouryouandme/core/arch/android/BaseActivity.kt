@@ -7,7 +7,7 @@ import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
 import org.fouryouandme.core.arch.navigation.RootNavController
 
-abstract class BaseActivity<T : BaseViewModel<*, *, *, *, *>> : FragmentActivity {
+abstract class BaseActivity<T : BaseViewModel<*, *, *, *>> : FragmentActivity {
 
     protected abstract val viewModel: T
 

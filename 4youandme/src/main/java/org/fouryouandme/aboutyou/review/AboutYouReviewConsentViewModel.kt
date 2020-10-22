@@ -1,13 +1,11 @@
 package org.fouryouandme.aboutyou.review
 
 import arrow.core.toOption
-import arrow.fx.ForIO
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.fouryouandme.auth.consent.review.info.toConsentReviewPageItem
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
-import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.deps.modules.ConsentReviewModule
+import org.fouryouandme.core.arch.error.handleAuthError
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
@@ -16,29 +14,27 @@ import org.fouryouandme.core.entity.page.Page
 
 class AboutYouReviewConsentViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
-    private val configurationModule: ConfigurationModule,
-    private val consentReviewModule: ConsentReviewModule
+    private val consentReviewModule: ConsentReviewModule,
 ) : BaseViewModel<
-        ForIO,
         AboutYouReviewConsentState,
         AboutYouReviewConsentStateUpdate,
         AboutYouReviewConsentError,
         AboutYouReviewConsentLoading>
-    (
-    navigator = navigator,
-    runtime = runtime
-) {
+    (navigator) {
 
     /* --- data --- */
 
-    suspend fun initialize(navController: RootNavController, configuration: Configuration): Unit {
+    suspend fun initialize(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Unit {
 
-        showLoadingFx(AboutYouReviewConsentLoading.Initialization)
+        showLoading(AboutYouReviewConsentLoading.Initialization)
 
         consentReviewModule.getConsent()
+            .handleAuthError(rootNavController, navigator)
             .fold(
-                { setErrorFx(it, AboutYouReviewConsentError.Initialization) },
+                { setError(it, AboutYouReviewConsentError.Initialization) },
                 { consent ->
 
                     val items = mutableListOf<DroidItem<Any>>()
@@ -49,7 +45,7 @@ class AboutYouReviewConsentViewModel(
                             .map { it.toConsentReviewPageItem(configuration) }
                     )
 
-                    setStateFx(
+                    setState(
                         AboutYouReviewConsentState(consentReview = consent, items = items)
                     ) {
                         AboutYouReviewConsentStateUpdate.Initialization(
@@ -60,7 +56,7 @@ class AboutYouReviewConsentViewModel(
                 }
             )
 
-        hideLoadingFx(AboutYouReviewConsentLoading.Initialization)
+        hideLoading(AboutYouReviewConsentLoading.Initialization)
 
     }
 

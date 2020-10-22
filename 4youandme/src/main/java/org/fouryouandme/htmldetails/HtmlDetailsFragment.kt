@@ -22,7 +22,6 @@ class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_det
             getFactory {
                 HtmlDetailsViewModel(
                     navigator,
-                    IORuntime,
                     injector.studyInfoModule()
                 )
             }
@@ -68,7 +67,7 @@ class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_det
 
             backArrow.setImageResource(imageConfiguration.back())
             backArrow.setOnClickListener {
-                viewModel.back(findNavController())
+                startCoroutineAsync { viewModel.back(findNavController()) }
             }
 
             title.setTextColor(configuration.theme.secondaryColor.color())
@@ -103,6 +102,6 @@ class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_det
                 it.javaScriptEnabled = true
             }
 
-                web_view.loadDataWithBaseURL(null, source, "text/html; charset=utf-8", "utf-8", null)
+            web_view.loadDataWithBaseURL(null, source, "text/html; charset=utf-8", "utf-8", null)
         }
 }

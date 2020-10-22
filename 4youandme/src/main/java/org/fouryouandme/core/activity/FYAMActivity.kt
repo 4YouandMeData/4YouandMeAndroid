@@ -5,9 +5,8 @@ import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.fyam.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseActivity
-import org.fouryouandme.core.arch.android.getSavedFactory
+import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.injector
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
@@ -18,11 +17,9 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
         viewModelFactory(
             this,
-            getSavedFactory(this) {
+            getFactory {
                 FYAMViewModel(
                     navigator,
-                    IORuntime,
-                    it,
                     injector.configurationModule()
                 )
             }

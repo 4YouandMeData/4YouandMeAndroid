@@ -25,8 +25,6 @@ class AboutYouReviewConsentFragment :
             getFactory {
                 AboutYouReviewConsentViewModel(
                     navigator,
-                    IORuntime,
-                    injector.configurationModule(),
                     injector.consentReviewModule()
                 )
             }

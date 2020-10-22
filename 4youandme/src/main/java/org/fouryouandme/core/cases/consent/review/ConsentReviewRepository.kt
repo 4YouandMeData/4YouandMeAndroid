@@ -13,7 +13,7 @@ object ConsentReviewRepository {
         token: String,
         studyId: String
     ): Either<FourYouAndMeError, ConsentReview> =
-        errorModule.unwrapToEither { api.getConsentFx(token, studyId) }
+        errorModule.unwrapToEither { api.getConsent(token, studyId) }
             .map { it.get().toConsentReview(it) }
             .nullToError()
 }

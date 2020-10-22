@@ -1,17 +1,15 @@
 package org.fouryouandme.aboutyou.appsanddevices
 
-import arrow.fx.ForIO
 import org.fouryouandme.aboutyou.AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin
 import org.fouryouandme.aboutyou.AboutYouNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.entity.configuration.Configuration
 
-class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<ForIO>) :
-    BaseViewModel<ForIO, Empty, Empty, Empty, Empty>(Empty, navigator, runtime) {
+class AboutYouAppsAndDevicesViewModel(navigator: Navigator) :
+    BaseViewModel<Empty, Empty, Empty, Empty>(navigator, Empty) {
 
     /*--- data ---*/
 
@@ -72,13 +70,13 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
     ): AppAndDeviceItem =
-    AppAndDeviceItem(
-        configuration,
-        "RescueTime",
-        imageConfiguration.rescuetime(),
-        isConnected,
-        "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/rescuetime"
-    )
+        AppAndDeviceItem(
+            configuration,
+            "RescueTime",
+            imageConfiguration.rescuetime(),
+            isConnected,
+            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/rescuetime"
+        )
 
     fun createTwitterItem(
         configuration: Configuration,
@@ -96,6 +94,9 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator, runtime: Runtime<For
 /*--- navigation ---*/
 
     suspend fun navigateToWeb(url: String, navController: AboutYouNavController) {
-        navigator.navigateTo(navController, AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(url))
+        navigator.navigateTo(
+            navController,
+            AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(url)
+        )
     }
 }

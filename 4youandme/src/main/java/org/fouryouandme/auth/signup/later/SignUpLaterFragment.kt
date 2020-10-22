@@ -16,7 +16,7 @@ import org.fouryouandme.core.ext.html.setHtmlText
 class SignUpLaterFragment : AuthSectionFragment<SignUpLaterViewModel>(R.layout.sign_up_later) {
 
     override val viewModel: SignUpLaterViewModel by lazy {
-        viewModelFactory(this, getFactory { SignUpLaterViewModel(navigator, IORuntime) })
+        viewModelFactory(this, getFactory { SignUpLaterViewModel(navigator) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

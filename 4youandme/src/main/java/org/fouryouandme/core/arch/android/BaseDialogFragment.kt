@@ -9,13 +9,12 @@ import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.IORuntime
 import org.fouryouandme.core.ext.injector
 import org.fouryouandme.core.ext.navigator
 import org.fouryouandme.core.ext.startCoroutineAsync
 
 
-abstract class BaseDialogFragment<T : BaseViewModel<*, *, *, *, *>> : DialogFragment() {
+abstract class BaseDialogFragment<T : BaseViewModel<*, *, *, *>> : DialogFragment() {
 
     protected abstract val viewModel: T
 
@@ -23,11 +22,9 @@ abstract class BaseDialogFragment<T : BaseViewModel<*, *, *, *, *>> : DialogFrag
 
         viewModelFactory(
             requireActivity(),
-            getSavedFactory(requireActivity()) {
+            getFactory {
                 FYAMViewModel(
                     navigator,
-                    IORuntime,
-                    it,
                     injector.configurationModule()
                 )
             }

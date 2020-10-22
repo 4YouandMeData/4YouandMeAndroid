@@ -4,14 +4,12 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import arrow.core.toT
-import arrow.fx.ForIO
 import arrow.fx.coroutines.parSequence
 import arrow.syntax.function.pipe
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.auth.consent.informed.question.ConsentAnswerItem
 import org.fouryouandme.auth.consent.informed.question.toItem
 import org.fouryouandme.core.arch.android.BaseViewModel
-import org.fouryouandme.core.arch.deps.Runtime
 import org.fouryouandme.core.arch.deps.modules.AnswerModule
 import org.fouryouandme.core.arch.deps.modules.ConsentInfoModule
 import org.fouryouandme.core.arch.deps.modules.nullToError
@@ -29,16 +27,14 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 
 class ConsentInfoViewModel(
     navigator: Navigator,
-    runtime: Runtime<ForIO>,
     private val consentInfoModule: ConsentInfoModule,
     private val answerModule: AnswerModule
 ) : BaseViewModel<
-        ForIO,
         ConsentInfoState,
         ConsentInfoStateUpdate,
         ConsentInfoError,
         ConsentInfoLoading>
-    (navigator = navigator, runtime = runtime) {
+    (navigator = navigator) {
 
     /* --- data --- */
 
@@ -47,7 +43,7 @@ class ConsentInfoViewModel(
         configuration: Configuration
     ): Either<FourYouAndMeError, ConsentInfoState> {
 
-        showLoadingFx(ConsentInfoLoading.Initialization)
+        showLoading(ConsentInfoLoading.Initialization)
 
         val state =
             consentInfoModule.getConsent()
@@ -55,7 +51,7 @@ class ConsentInfoViewModel(
                 .handleAuthError(navController, navigator)
                 .fold(
                     {
-                        setErrorFx(it, ConsentInfoError.Initialization)
+                        setError(it, ConsentInfoError.Initialization)
                         it.left()
                     },
                     { consentInfo ->
@@ -68,7 +64,7 @@ class ConsentInfoViewModel(
                         val state =
                             ConsentInfoState(consentInfo, questions)
 
-                        setStateFx(state)
+                        setState(state)
                         { ConsentInfoStateUpdate.Initialization(it.questions, it.consentInfo) }
 
                         state.right()
@@ -76,7 +72,7 @@ class ConsentInfoViewModel(
                     }
                 )
 
-        hideLoadingFx(ConsentInfoLoading.Initialization)
+        hideLoading(ConsentInfoLoading.Initialization)
 
         return state
 
@@ -103,7 +99,7 @@ class ConsentInfoViewModel(
                 else it.value
             }
 
-        setStateFx(state().copy(questions = questions))
+        setState(state().copy(questions = questions))
         { ConsentInfoStateUpdate.Questions(questions) }
 
     }
@@ -228,7 +224,7 @@ class ConsentInfoViewModel(
                 entry.value.map { it.copy(isSelected = false) }
             }
 
-        setStateFx(state().copy(questions = questions))
+        setState(state().copy(questions = questions))
         { ConsentInfoStateUpdate.Questions(questions) }
 
 
@@ -250,7 +246,7 @@ class ConsentInfoViewModel(
                 entry.value.map { it.copy(isSelected = false) }
             }
 
-        setStateFx(state().copy(questions = questions))
+        setState(state().copy(questions = questions))
         { ConsentInfoStateUpdate.Questions(questions) }
 
 

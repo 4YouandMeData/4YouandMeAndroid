@@ -5,19 +5,21 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
-import arrow.fx.IO
-import arrow.fx.extensions.fx
+import arrow.core.Either
 import org.fouryouandme.core.activity.FYAMViewModel
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.fouryouandme.core.ext.*
+import org.fouryouandme.core.ext.evalOnMain
+import org.fouryouandme.core.ext.injector
+import org.fouryouandme.core.ext.navigator
+import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.researchkit.task.TaskConfiguration
 import org.fouryouandme.researchkit.task.TaskInjector
 
 
-abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
+abstract class BaseFragment<T : BaseViewModel<*, *, *, *>> : Fragment {
 
     protected abstract val viewModel: T
 
@@ -25,11 +27,9 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
 
         viewModelFactory(
             requireActivity(),
-            getSavedFactory(requireActivity()) {
+            getFactory {
                 FYAMViewModel(
                     navigator,
-                    IORuntime,
-                    it,
                     injector.configurationModule()
                 )
             }
@@ -57,11 +57,12 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *, *>> : Fragment {
     fun <A> LiveData<Event<A>>.observeEventPeek(handle: (A) -> Unit): Unit =
         observe(this@BaseFragment, { handle(it.peekContent()) })
 
-    fun unbindServiceIO(serviceConnection: ServiceConnection): Unit =
-
-        IO.fx { requireActivity().applicationContext.unbindService(serviceConnection) }
-            .attempt()
-            .unsafeRunAsync()
+    fun unbindService(serviceConnection: ServiceConnection): Unit =
+        startCoroutineAsync {
+            Either.catch {
+                evalOnMain { requireActivity().applicationContext.unbindService(serviceConnection) }
+            }
+        }
 
     fun name(): String = this.javaClass.simpleName
 
