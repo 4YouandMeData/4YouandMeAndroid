@@ -7,26 +7,26 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.feed_reward_item.*
+import kotlinx.android.synthetic.main.feed_educationl_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
-import org.fouryouandme.core.entity.notifiable.FeedReward
+import org.fouryouandme.core.entity.notifiable.FeedEducational
 import org.fouryouandme.core.ext.getOr
 import org.fouryouandme.core.ext.html.setHtmlText
 import org.fouryouandme.core.ext.startCoroutine
 import org.threeten.bp.ZonedDateTime
 
-data class FeedRewardItem(
+data class FeedEducationalItem(
     val configuration: Configuration,
-    val data: FeedReward,
+    val data: FeedEducational,
     val from: ZonedDateTime,
     val to: ZonedDateTime
 ) : DroidItem<Unit> {
     override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
-            is FeedRewardItem -> data.id == other.data.id
+            is FeedEducationalItem -> data.id == other.data.id
             else -> false
         }
 
@@ -34,7 +34,7 @@ data class FeedRewardItem(
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
-            is FeedRewardItem ->
+            is FeedEducationalItem ->
                 (data.id == other.data.id)
                     .or(data.image == other.data.image)
                     .or(data.title == other.data.title)
@@ -44,13 +44,13 @@ data class FeedRewardItem(
 }
 
 
-class FeedRewardViewHolder(viewGroup: ViewGroup, val start: (FeedRewardItem) -> Unit) :
-    DroidViewHolder<FeedRewardItem, Unit>(viewGroup, R.layout.feed_reward_item),
+class FeedEducationalViewHolder(viewGroup: ViewGroup, val start: (FeedEducationalItem) -> Unit) :
+    DroidViewHolder<FeedEducationalItem, Unit>(viewGroup, R.layout.feed_educationl_item),
     LayoutContainer {
 
     override val containerView: View? = itemView
 
-    override fun bind(t: FeedRewardItem, position: Int) {
+    override fun bind(t: FeedEducationalItem, position: Int) {
 
         startCoroutine {
 
@@ -73,7 +73,7 @@ class FeedRewardViewHolder(viewGroup: ViewGroup, val start: (FeedRewardItem) -> 
 
             link.isVisible = t.data.linkUrl.isNullOrEmpty().not()
             link.text =
-                t.data.taskActionButtonLabel.getOr { t.configuration.text.feed.rewardButtonDefault }
+                t.data.taskActionButtonLabel.getOr { t.configuration.text.feed.educationalButtonDefault }
             link.setTextColor(t.configuration.theme.primaryTextColor.color())
             link.background = button(t.configuration.theme.secondaryColor.color())
             link.setOnClickListener { start(t) }
@@ -84,10 +84,10 @@ class FeedRewardViewHolder(viewGroup: ViewGroup, val start: (FeedRewardItem) -> 
 
     companion object {
 
-        fun factory(start: (FeedRewardItem) -> Unit): ViewHolderFactory =
+        fun factory(start: (FeedEducationalItem) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
-                { FeedRewardViewHolder(it, start) },
-                { _, item -> item is FeedRewardItem }
+                { FeedEducationalViewHolder(it, start) },
+                { _, item -> item is FeedEducationalItem }
             )
 
     }

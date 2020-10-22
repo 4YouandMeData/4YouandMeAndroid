@@ -182,6 +182,8 @@ class FeedsViewModel(
                         it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                     is FeedRewardItem ->
                         it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    is FeedEducationalItem ->
+                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                     else ->
                         ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                 }
@@ -192,6 +194,8 @@ class FeedsViewModel(
                         is TaskActivityItem ->
                             it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                         is FeedRewardItem ->
+                            it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        is FeedEducationalItem ->
                             it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                         else ->
                             ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)

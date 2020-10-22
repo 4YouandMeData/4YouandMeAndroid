@@ -10,6 +10,7 @@ data class Text(
     val onboarding: Onboarding,
     val tab: Tab,
     val activity: Activity,
+    val feed: Feed,
     val videoDiary: VideoDiary,
     val studyInfo: StudyInfo,
     val profile: Profile,
@@ -142,6 +143,12 @@ data class Tab(
 data class Activity(
     val activityButtonDefault: String,
     val quickActivityButtonDefault: String
+)
+
+data class Feed(
+    val educationalButtonDefault: String,
+    val rewardButtonDefault: String,
+    val alertButtonDefault: String
 )
 
 data class VideoDiary(

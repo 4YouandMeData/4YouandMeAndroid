@@ -92,6 +92,10 @@ data class StringsResponse(
     @Json(name = "ACTIVITY_BUTTON_DEFAULT") val activityButtonDefault: String? = null,
     @Json(name = "QUICK_ACTIVITY_BUTTON_DEFAULT") val quickActivityButtonDefault: String? = null,
 
+    @Json(name = "EDUCATIONAL_BUTTON_DEFAULT") val educationalButtonDefault: String? = null,
+    @Json(name = "REWARD_BUTTON_DEFAULT") val rewardButtonDefault: String? = null,
+    @Json(name = "ALERT_BUTTON_DEFAULT") val alertButtonDefault: String? = null,
+
     @Json(name = "URL_PRIVACY_POLICY") val urlPrivacyPolicy: String? = null,
     @Json(name = "URL_TERMS_OF_SERVICE") val urlTermsOfService: String? = null,
 
@@ -186,6 +190,7 @@ data class StringsResponse(
         val onboarding = toOnboardig()
         val tab = toTab()
         val activity = toActivity()
+        val feed = toFeed()
         val videoDiary = toVideoDiary()
         val studyInfo = toStudyInfo()
         val profile = toProfile()
@@ -206,6 +211,7 @@ data class StringsResponse(
                 onboarding.bind(),
                 tab.bind(),
                 activity.bind(),
+                feed.bind(),
                 videoDiary.bind(),
                 studyInfo.bind(),
                 profile.bind(),
@@ -392,6 +398,15 @@ data class StringsResponse(
             Activity(
                 activityButtonDefault.toOption().bind(),
                 quickActivityButtonDefault.toOption().bind()
+            )
+        }
+
+    private fun toFeed(): Option<Feed> =
+        Option.fx {
+            Feed(
+                educationalButtonDefault.toOption().bind(),
+                rewardButtonDefault.toOption().bind(),
+                alertButtonDefault.toOption().bind()
             )
         }
 

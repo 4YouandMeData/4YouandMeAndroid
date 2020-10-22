@@ -11,6 +11,8 @@ import org.fouryouandme.core.data.api.common.response.activity.ActivityDataRespo
 import org.fouryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import org.fouryouandme.core.data.api.common.response.activity.TaskActivityResponse
+import org.fouryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
+import org.fouryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
 import org.fouryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import org.fouryouandme.core.data.api.common.response.notifiable.NotifiableDataResponse
 import org.fouryouandme.core.entity.feed.Feed
@@ -59,33 +61,14 @@ data class FeedResponse(
                     ?.let {
                         when (it) {
                             is FeedRewardResponse -> it.toFeedReward(id)
+                            is FeedAlertResponse -> it.toFeedAlert(id)
+                            is FeedEducationalResponse -> it.toFeedEducational(id)
                             else -> null
                         }
                     }
                     ?.let { FeedType.StudyNotifiableFeed(it) }
             else -> null
         }
-
-    suspend fun toTask(): Task? =
-        either.invoke<Unit, Task> {
-
-            Task(
-                id,
-                !from.toEither().map { ZonedDateTime.parse(it) },
-                !to.toEither().map { ZonedDateTime.parse(it) },
-                !activity?.get(document).toEither().flatMap {
-                    when (it) {
-                        is QuickActivityResponse -> it.toQuickActivity(id).toEither()
-                        is TaskActivityResponse -> it.toTaskActivity(id).toEither()
-                        is SurveyActivityResponse -> it.toTaskActivity(id).toEither()
-                        else -> Unit.left()
-                    }
-                }
-            )
-
-        }.orNull()
 }
 
 suspend fun Array<FeedResponse>.toFeedItems(): List<Feed> = mapNotNull { it.toFeed() }
-
-suspend fun Array<FeedResponse>.toTaskItems(): List<Task> = mapNotNull { it.toTask() }

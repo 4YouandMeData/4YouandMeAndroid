@@ -43,6 +43,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
             FeedRewardViewHolder.factory { },
+            FeedEducationalViewHolder.factory { },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),
