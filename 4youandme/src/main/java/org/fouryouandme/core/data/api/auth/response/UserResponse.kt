@@ -10,6 +10,7 @@ import org.fouryouandme.core.entity.user.UserCustomDataItem
 import org.fouryouandme.core.entity.user.UserCustomDataType
 import org.fouryouandme.core.ext.StudyIntegration
 import org.fouryouandme.core.ext.mapNotNull
+import org.threeten.bp.ZoneId
 
 @JsonApi(type = "user")
 data class UserResponse(
@@ -19,6 +20,7 @@ data class UserResponse(
     @field:Json(name = "identities") val identities: List<String>? = null,
     @field:Json(name = "on_boarding_completed") val onBoardingCompleted: Boolean? = null,
     @field:Json(name = "custom_data") val customData: List<UserCustomDataResponse>? = null,
+    @field:Json(name = "time_zone") val timeZone: String? = null,
     @field:Json(name = "points") val points: Int? = null
 ) : Resource() {
 
@@ -35,6 +37,7 @@ data class UserResponse(
                 onBoardingCompleted = onBoardingCompleted!!,
                 token = token,
                 customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList(),
+                timeZone = Either.catch { ZoneId.of(timeZone) }.orNull(),
                 points = points!!
             )
 

@@ -5,13 +5,14 @@ import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import org.fouryouandme.core.arch.deps.modules.AuthModule
+import org.fouryouandme.core.arch.deps.modules.nullToError
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.Memory
 import org.fouryouandme.core.cases.auth.AuthRepository.fetchUser
 import org.fouryouandme.core.cases.auth.AuthRepository.loadToken
 import org.fouryouandme.core.cases.auth.AuthRepository.login
-import org.fouryouandme.core.cases.auth.AuthRepository.updateUser
+import org.fouryouandme.core.cases.auth.AuthRepository.updateUserCustomData
 import org.fouryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.entity.user.User
@@ -29,6 +30,8 @@ object AuthUseCase {
     ): Either<FourYouAndMeError, User> =
         configurationModule.getConfiguration(CachePolicy.MemoryFirst)
             .flatMap { login(it, phone, code) }
+            .flatMap { fetchUser(it.token) }
+            .nullToError()
 
     internal suspend fun AuthModule.getToken(
         cachePolicy: CachePolicy
@@ -77,11 +80,11 @@ object AuthUseCase {
         data: List<UserCustomData>
     ): Either<FourYouAndMeError, Unit> =
         getToken(CachePolicy.MemoryFirst)
-            .flatMap { updateUser(it, data) }
+            .flatMap { updateUserCustomData(it, data) }
 
     // use only for test
     internal suspend fun AuthModule.resetUserCustomData(): Either<FourYouAndMeError, Unit> =
         getToken(CachePolicy.MemoryFirst)
-            .flatMap { updateUser(it, emptyList()) }
+            .flatMap { updateUserCustomData(it, emptyList()) }
 
 }

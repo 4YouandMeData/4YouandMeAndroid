@@ -3,7 +3,8 @@ package org.fouryouandme.core.data.api.auth
 import org.fouryouandme.core.data.api.Headers
 import org.fouryouandme.core.data.api.auth.request.LoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
-import org.fouryouandme.core.data.api.auth.request.UserUpdateRequest
+import org.fouryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest
+import org.fouryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest
 import org.fouryouandme.core.data.api.auth.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.*
@@ -26,9 +27,15 @@ interface AuthApi {
     suspend fun getUser(@Header(Headers.AUTH) token: String): UserResponse
 
     @PATCH("api/v1/users/me")
-    suspend fun updateUser(
+    suspend fun updateUserCustomData(
         @Header(Headers.AUTH) token: String,
-        @Body request: UserUpdateRequest
+        @Body request: UserCustomDataUpdateRequest
+    ): Unit
+
+    @PATCH("api/v1/users/me")
+    suspend fun updateUserTimeZone(
+        @Header(Headers.AUTH) token: String,
+        @Body request: UserTimeZoneUpdateRequest
     ): Unit
 
 }
