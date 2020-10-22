@@ -63,11 +63,9 @@ class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_det
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            detailsToolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-            backArrow.setImageResource(imageConfiguration.back())
-            backArrow.setOnClickListener {
-                startCoroutineAsync { viewModel.back(findNavController()) }
+            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+            toolbar.showBackButtonSuspend(imageConfiguration) {
+                viewModel.back(findNavController())
             }
 
             title.setTextColor(configuration.theme.secondaryColor.color())

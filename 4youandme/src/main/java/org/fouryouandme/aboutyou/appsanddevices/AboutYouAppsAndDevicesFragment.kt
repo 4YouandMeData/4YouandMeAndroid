@@ -8,8 +8,6 @@ import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.about_you_menu.root
 import kotlinx.android.synthetic.main.apps_and_devices.*
-import kotlinx.android.synthetic.main.html_detail.backArrow
-import kotlinx.android.synthetic.main.html_detail.detailsToolbar
 import kotlinx.android.synthetic.main.html_detail.title
 import org.fouryouandme.R
 import org.fouryouandme.aboutyou.AboutYouSectionFragment
