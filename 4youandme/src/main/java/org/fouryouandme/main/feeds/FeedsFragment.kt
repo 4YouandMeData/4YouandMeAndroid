@@ -44,6 +44,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             },
             FeedRewardViewHolder.factory { },
             FeedEducationalViewHolder.factory { },
+            FeedAlertViewHolder.factory { },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),

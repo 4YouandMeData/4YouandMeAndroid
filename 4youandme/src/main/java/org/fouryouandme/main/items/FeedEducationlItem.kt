@@ -55,10 +55,13 @@ class FeedEducationalViewHolder(viewGroup: ViewGroup, val start: (FeedEducationa
         startCoroutine {
 
             card_content.background =
-                HEXGradient.from(
-                    t.configuration.theme.primaryColorStart,
-                    t.configuration.theme.primaryColorEnd
-                ).drawable()
+                t.data.gradient
+                    .getOr {
+                        HEXGradient.from(
+                            t.configuration.theme.primaryColorStart,
+                            t.configuration.theme.primaryColorEnd
+                        )
+                    }.drawable()
 
             t.data.image?.let { image.setImageBitmap(it) }
             image.isVisible = t.data.image != null
