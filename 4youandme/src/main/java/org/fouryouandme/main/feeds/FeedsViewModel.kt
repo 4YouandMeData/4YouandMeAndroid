@@ -30,10 +30,7 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
 import org.fouryouandme.main.tasks.TasksToTask
-import org.threeten.bp.Instant
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
@@ -184,6 +181,8 @@ class FeedsViewModel(
                         it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                     is FeedEducationalItem ->
                         it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    is FeedAlertItem ->
+                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                     else ->
                         ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                 }
@@ -192,13 +191,15 @@ class FeedsViewModel(
                 {
                     when (it) {
                         is TaskActivityItem ->
-                            it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
                         is FeedRewardItem ->
-                            it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
                         is FeedEducationalItem ->
-                            it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                        is FeedAlertItem ->
+                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
                         else ->
-                            ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                            ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
                     }
                 },
                 { it }
@@ -206,9 +207,9 @@ class FeedsViewModel(
 
                 items.add(
                     DateItem(
-                        configuration, ZonedDateTime.parse(
+                        configuration, LocalDate.parse(
                             key,
-                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+                            DateTimeFormatter.ISO_LOCAL_DATE
                         )
                     )
                 )

@@ -16,6 +16,7 @@ import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.items.*
+import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -103,15 +104,15 @@ class TasksViewModel(
         taskActivities
             .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
             .groupBy(
-                { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) },
+                { it.from.format(DateTimeFormatter.ISO_LOCAL_DATE) },
                 { it }
             ).forEach { (key, value) ->
 
                 items.add(
                     DateItem(
-                        configuration, ZonedDateTime.parse(
+                        configuration, LocalDate.parse(
                             key,
-                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+                            DateTimeFormatter.ISO_LOCAL_DATE
                         )
                     )
                 )

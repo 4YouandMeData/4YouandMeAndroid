@@ -9,11 +9,12 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.date_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
-data class DateItem(val configuration: Configuration, val date: ZonedDateTime) : DroidItem<Unit> {
+data class DateItem(val configuration: Configuration, val date: LocalDate) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
