@@ -1,5 +1,7 @@
 package org.fouryouandme.core.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.fyam.*
@@ -51,6 +53,14 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
             if (viewModel.isInitialized().not())
                 viewModel.initialize(rootNavController())
 
+            intent.extras?.let {
+                viewModel.handleExtraParameters(
+                    taskIdArg(),
+                    urlArg(),
+                    openAppIntegrationArg()
+                )
+            }
+
         }
 
     }
@@ -64,6 +74,46 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
         val inflater = navHostFragment.navController.navInflater
         val graph = inflater.inflate(R.navigation.navigation)
         navHostFragment.navController.graph = graph
+
+    }
+
+    private fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)
+    private fun urlArg(): String? = intent.extras?.getString(URL)
+    private fun openAppIntegrationArg(): String? = intent.extras?.getString(OPEN_APP_INTEGRATION)
+
+    companion object {
+
+        private const val TASK_ID = "task_id"
+
+        private const val URL = "url"
+
+        private const val OPEN_APP_INTEGRATION = "open_app_integration"
+
+        fun getIntent(
+            context: Context,
+            args: Map<String, String>
+        ): Intent =
+            getIntent(
+                context,
+                args[TASK_ID],
+                args[URL],
+                args[OPEN_APP_INTEGRATION]
+            )
+
+        fun getIntent(
+            context: Context,
+            taskId: String?,
+            url: String?,
+            openAppIntegration: String?
+        ): Intent =
+            Intent(context, FYAMActivity::class.java)
+                .apply {
+
+                    putExtra(TASK_ID, taskId)
+                    putExtra(URL, url)
+                    putExtra(OPEN_APP_INTEGRATION, openAppIntegration)
+
+                }
 
     }
 
