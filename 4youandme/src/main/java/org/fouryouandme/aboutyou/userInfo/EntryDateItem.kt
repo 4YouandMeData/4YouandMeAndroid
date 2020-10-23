@@ -13,8 +13,7 @@ import kotlinx.android.synthetic.main.entry_date_item.*
 import org.fouryouandme.R
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.entity.configuration.Configuration
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
@@ -23,7 +22,7 @@ data class EntryDateItem(
     val configuration: Configuration,
     val imageConfiguration: ImageConfiguration,
     val name: String,
-    val value: ZonedDateTime?,
+    val value: LocalDate?,
     val isEditable: Boolean
 ) : DroidItem<Unit> {
 
@@ -39,7 +38,7 @@ data class EntryDateItem(
 
 class EntryDateViewHolder(
     parent: ViewGroup,
-    private val onDateSelected: (EntryDateItem, ZonedDateTime) -> Unit
+    private val onDateSelected: (EntryDateItem, LocalDate) -> Unit
 ) : DroidViewHolder<EntryDateItem, Unit>(parent, R.layout.entry_date_item), LayoutContainer {
 
     override val containerView: View? = itemView
@@ -60,7 +59,7 @@ class EntryDateViewHolder(
         entry.setTextColor(t.configuration.theme.primaryTextColor.color())
         entry.isEnabled = false
 
-        val placeholderDate = t.value ?: ZonedDateTime.now()
+        val placeholderDate = t.value ?: LocalDate.now()
 
         date_button.setOnClickListener {
 
@@ -68,16 +67,10 @@ class EntryDateViewHolder(
                 context,
                 { _, year, month, dayOfMonth ->
 
-                    val date =
-                        ZonedDateTime.of(
+                    val date = LocalDate.of(
                             year,
                             month + 1,  // +1 because Android starts to count months from 0
-                            dayOfMonth,
-                            0,
-                            0,
-                            0,
-                            0,
-                            ZoneOffset.UTC
+                            dayOfMonth
                         )
 
                     onDateSelected(t, date)
@@ -103,7 +96,7 @@ class EntryDateViewHolder(
 
     companion object {
 
-        fun factory(onDateSelected: (EntryDateItem, ZonedDateTime) -> Unit): ViewHolderFactory =
+        fun factory(onDateSelected: (EntryDateItem, LocalDate) -> Unit): ViewHolderFactory =
             ViewHolderFactory(
                 { EntryDateViewHolder(it, onDateSelected) },
                 { _, item -> item is EntryDateItem }

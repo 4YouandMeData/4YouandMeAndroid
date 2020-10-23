@@ -19,9 +19,7 @@ import org.fouryouandme.core.entity.user.UserCustomData
 import org.fouryouandme.core.entity.user.UserCustomDataItem
 import org.fouryouandme.core.entity.user.UserCustomDataType
 import org.fouryouandme.core.ext.emptyOrBlankToNull
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
 class AboutYouUserInfoViewModel(
@@ -59,7 +57,7 @@ class AboutYouUserInfoViewModel(
                             configuration,
                             imageConfiguration,
                             data.name,
-                            Either.catch { Instant.parse(data.value).atZone(ZoneOffset.UTC) }
+                            Either.catch { LocalDate.parse(data.value) }
                                 .orNull(),
                             false
                         )
@@ -141,7 +139,7 @@ class AboutYouUserInfoViewModel(
 
     }
 
-    suspend fun updateDateItem(id: String, date: ZonedDateTime): Unit {
+    suspend fun updateDateItem(id: String, date: LocalDate): Unit {
 
         val items =
             state().items.map {
@@ -198,7 +196,7 @@ class AboutYouUserInfoViewModel(
                     is EntryDateItem ->
                         UserCustomData(
                             item.id,
-                            item.value?.format(DateTimeFormatter.ISO_INSTANT),
+                            item.value?.format(DateTimeFormatter.ISO_LOCAL_DATE),
                             item.name,
                             UserCustomDataType.Date
                         )

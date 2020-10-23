@@ -305,23 +305,22 @@ class FeedsViewModel(
     suspend fun getPregnancyMonths(user: User?): Long? =
         user?.getPregnancyEndDate()
             ?.getPregnancyStartDate()
-            ?.differenceInMothsFromNow()
+            ?.differenceInMonthsFromNow()
 
-    private suspend fun User.getPregnancyEndDate(): ZonedDateTime? =
+    private suspend fun User.getPregnancyEndDate(): LocalDate? =
         Either.catch {
             getCustomDataByIdentifier(PREGNANCY_END_DATE_IDENTIFIER)
                 ?.value
-                ?.let { Instant.parse(it) }
-                ?.atZone(ZoneOffset.UTC)
+                ?.let { LocalDate.parse(it) }
         }.orNull()
 
-    private suspend fun ZonedDateTime.getPregnancyStartDate(): ZonedDateTime? =
+    private suspend fun LocalDate.getPregnancyStartDate(): LocalDate? =
         minusDays(280)
 
-    private suspend fun ZonedDateTime.differenceInMothsFromNow(): Long =
+    private suspend fun LocalDate.differenceInMonthsFromNow(): Long =
         ChronoUnit.MONTHS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
 
-    private suspend fun ZonedDateTime.differenceInWeeksFromNow(): Long =
+    private suspend fun LocalDate.differenceInWeeksFromNow(): Long =
         ChronoUnit.WEEKS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
 
     /* --- navigation --- */
