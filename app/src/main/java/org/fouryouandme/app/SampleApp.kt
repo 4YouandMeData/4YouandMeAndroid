@@ -1,8 +1,9 @@
 package org.fouryouandme.app
 
+import com.google.firebase.analytics.FirebaseAnalytics
+import org.fouryouandme.core.arch.app.FourYouAndMeApp
 import org.fouryouandme.core.arch.deps.Environment
 import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.app.FourYouAndMeApp
 
 class SampleApp : FourYouAndMeApp() {
 
@@ -11,5 +12,8 @@ class SampleApp : FourYouAndMeApp() {
 
     override val imageConfiguration: ImageConfiguration
         get() = SampleImageConfiguration()
+
+    override val firebaseAnalytics: FirebaseAnalytics
+        get() = FirebaseAnalytics.getInstance(this)
 
 }

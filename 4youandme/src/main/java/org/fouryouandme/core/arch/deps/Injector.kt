@@ -1,6 +1,7 @@
 package org.fouryouandme.core.arch.deps
 
 import android.content.SharedPreferences
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.modules.*
 import org.fouryouandme.core.arch.navigation.Navigator
@@ -42,6 +43,10 @@ interface Injector {
 
     val moshi: Moshi
 
+    /* --- analytics --- */
+
+    val firebaseAnalytics: FirebaseAnalytics
+
     /* --- api --- */
 
     val configurationApi: ConfigurationApi
@@ -68,6 +73,8 @@ interface Injector {
     fun errorModule(): ErrorModule = ErrorModule(moshi)
 
     fun permissionModule(): PermissionModule
+
+    fun analyticsModule(): AnalyticsModule = AnalyticsModule(firebaseAnalytics)
 
     fun configurationModule(): ConfigurationModule =
         ConfigurationModule(
