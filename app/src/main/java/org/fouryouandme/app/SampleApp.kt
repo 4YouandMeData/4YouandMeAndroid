@@ -16,4 +16,5 @@ class SampleApp : FourYouAndMeApp() {
     override val firebaseAnalytics: FirebaseAnalytics
         get() = FirebaseAnalytics.getInstance(this)
 
+
 }

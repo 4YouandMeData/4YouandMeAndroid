@@ -5,6 +5,7 @@ import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.deps.modules.ConfigurationModule
 import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.arch.error.handleAuthError
+import org.fouryouandme.core.arch.livedata.toEvent
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
@@ -41,6 +42,25 @@ class FYAMViewModel(
         hideLoading(FYAMLoading.Config)
 
         return configuration
+
+    }
+
+    suspend fun handleExtraParameters(
+        taskId: String?,
+        url: String?,
+        openAppIntegration: String?
+    ): Unit {
+
+        when {
+
+            taskId != null ->
+                setStateSilent(state().copy(taskId = taskId.toEvent()))
+            url != null ->
+                setStateSilent(state().copy(url = url.toEvent()))
+            openAppIntegration != null ->
+                setStateSilent(state().copy(openAppIntegration = openAppIntegration.toEvent()))
+
+        }
 
     }
 
