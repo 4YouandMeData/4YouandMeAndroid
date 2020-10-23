@@ -110,6 +110,32 @@ object Libs {
     const val moshi_kotlin: String = "com.squareup.moshi:moshi-kotlin:" +
             Versions.com_squareup_moshi
 
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_fx: String = "io.arrow-kt:arrow-fx:" + Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_fx_coroutines: String = "io.arrow-kt:arrow-fx-coroutines:" +
+            Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_optics: String = "io.arrow-kt:arrow-optics:" + Versions.io_arrow_kt
+
+    /**
+     * https://github.com/arrow-kt/arrow/
+     */
+    const val arrow_syntax: String = "io.arrow-kt:arrow-syntax:" + Versions.io_arrow_kt
+
     const val moshi_jsonapi: String = "moe.banana:moshi-jsonapi:" + Versions.moe_banana
 
     const val moshi_jsonapi_retrofit_converter: String =
@@ -139,21 +165,18 @@ object Libs {
     const val junit_junit: String = "junit:junit:" + Versions.junit_junit
 
     const val de_fayard_buildsrcversions_gradle_plugin: String =
-            "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
-            Versions.de_fayard_buildsrcversions_gradle_plugin
+        "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
+                Versions.de_fayard_buildsrcversions_gradle_plugin
 
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_integration_retrofit_adapter: String =
-            "io.arrow-kt:arrow-integration-retrofit-adapter:" +
-            Versions.arrow_integration_retrofit_adapter
+    const val firebase_crashlytics_gradle: String =
+        "com.google.firebase:firebase-crashlytics-gradle:" +
+                Versions.firebase_crashlytics_gradle
 
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_fx_coroutines: String = "io.arrow-kt:arrow-fx-coroutines:" +
-            Versions.arrow_fx_coroutines
+    const val firebase_crashlytics_ktx: String = "com.google.firebase:firebase-crashlytics-ktx:" +
+            Versions.firebase_crashlytics_ktx
+
+    const val firebase_analytics_ktx: String = "com.google.firebase:firebase-analytics-ktx:" +
+            Versions.firebase_analytics_ktx
 
     /**
      * https://square.github.io/okhttp/
@@ -163,9 +186,6 @@ object Libs {
 
     const val recycler_droid_core: String = "com.giacomoparisi.recyclerdroid:recycler-droid-core:" +
             Versions.recycler_droid_core
-
-    const val firebase_analytics: String = "com.google.firebase:firebase-analytics:" +
-            Versions.firebase_analytics
 
     /**
      * http://tools.android.com
@@ -195,16 +215,6 @@ object Libs {
     const val signature_pad: String = "com.github.gcacace:signature-pad:" + Versions.signature_pad
 
     /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_optics: String = "io.arrow-kt:arrow-optics:" + Versions.arrow_optics
-
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_syntax: String = "io.arrow-kt:arrow-syntax:" + Versions.arrow_syntax
-
-    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx
@@ -225,11 +235,6 @@ object Libs {
             Versions.threetenabp
 
     /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_meta: String = "io.arrow-kt:arrow-meta:" + Versions.arrow_meta
-
-    /**
      * https://github.com/giacomoParisi/span-droid
      */
     const val span_droid: String = "com.giacomoparisi.spandroid:span-droid:" + Versions.span_droid
@@ -248,11 +253,6 @@ object Libs {
      * http://code.google.com/p/mp4parser/
      */
     const val isoparser: String = "com.googlecode.mp4parser:isoparser:" + Versions.isoparser
-
-    /**
-     * https://github.com/arrow-kt/arrow/
-     */
-    const val arrow_fx: String = "io.arrow-kt:arrow-fx:" + Versions.arrow_fx
 
     /**
      * https://developer.android.com/jetpack/androidx
