@@ -43,6 +43,8 @@ object Versions {
 
     const val firebase_analytics_ktx: String = "17.6.0"
 
+    const val firebase_messaging_ktx: String = "20.3.0"
+
     const val logging_interceptor: String = "4.9.0"
 
     const val recycler_droid_core: String = "1.8.0-beta06"
@@ -94,7 +96,7 @@ object Versions {
     const val ccp: String = "2.4.1"
 
     /**
-     * Current version: "6.6.1"
+     * Current version: "6.7"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */

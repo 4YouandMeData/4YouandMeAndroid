@@ -139,7 +139,7 @@ object Libs {
     const val moshi_jsonapi: String = "moe.banana:moshi-jsonapi:" + Versions.moe_banana
 
     const val moshi_jsonapi_retrofit_converter: String =
-        "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
+            "moe.banana:moshi-jsonapi-retrofit-converter:" + Versions.moe_banana
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html
@@ -177,6 +177,9 @@ object Libs {
 
     const val firebase_analytics_ktx: String = "com.google.firebase:firebase-analytics-ktx:" +
             Versions.firebase_analytics_ktx
+
+    const val firebase_messaging_ktx: String = "com.google.firebase:firebase-messaging-ktx:" +
+            Versions.firebase_messaging_ktx
 
     /**
      * https://square.github.io/okhttp/

@@ -159,6 +159,7 @@ dependencies {
 
     implementation(Libs.firebase_analytics_ktx)
     implementation(Libs.firebase_crashlytics_ktx)
+    implementation(Libs.firebase_messaging_ktx)
 
     /* --- lottie ---*/
 
