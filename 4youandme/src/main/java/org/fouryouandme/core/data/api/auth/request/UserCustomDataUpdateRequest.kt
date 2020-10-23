@@ -9,15 +9,15 @@ import org.fouryouandme.core.entity.user.UserCustomData
 import org.fouryouandme.core.entity.user.UserCustomDataItem
 import org.fouryouandme.core.entity.user.UserCustomDataType
 
-data class UserUpdateRequest(
-    @Json(name = "user") val user: UserUpdateDataRequest
+data class UserCustomDataUpdateRequest(
+    @Json(name = "user") val user: UserCustomDataUpdateDataRequest
 ) {
 
     companion object {
 
-        fun List<UserCustomData>.asRequest(): UserUpdateRequest =
-            UserUpdateRequest(
-                user = UserUpdateDataRequest(
+        fun List<UserCustomData>.asRequest(): UserCustomDataUpdateRequest =
+            UserCustomDataUpdateRequest(
+                user = UserCustomDataUpdateDataRequest(
                     customData = map { data ->
 
                         val type =
@@ -51,7 +51,7 @@ data class UserUpdateRequest(
 
 }
 
-data class UserUpdateDataRequest(
+data class UserCustomDataUpdateDataRequest(
     @Json(name = "custom_data") val customData: List<UserCustomDataRequest>
 )
 

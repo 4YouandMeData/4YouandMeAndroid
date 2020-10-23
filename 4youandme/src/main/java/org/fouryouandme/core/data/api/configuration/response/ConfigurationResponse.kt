@@ -1,8 +1,6 @@
 package org.fouryouandme.core.data.api.configuration.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
+import arrow.core.Either
 import com.squareup.moshi.Json
 import org.fouryouandme.core.entity.configuration.Configuration
 
@@ -16,14 +14,14 @@ data class ConfigurationResponse(
 
 ) {
 
-    fun toConfiguration(): Option<Configuration> =
-        Option.fx {
+    suspend fun toConfiguration(): Configuration? =
+        Either.catch {
 
             Configuration(
-                colorPalette.toOption().bind().toTheme().bind(),
-                strings.toOption().bind().toText().bind(),
+                colorPalette?.toTheme()!!,
+                strings?.toText()!!,
                 countryCodes ?: emptyList()
             )
 
-        }
+        }.orNull()
 }

@@ -12,6 +12,7 @@ buildscript {
         classpath(Libs.kotlin_gradle_plugin)
         classpath(Libs.google_services)
         classpath(Libs.navigation_safe_args_gradle_plugin)
+        classpath(Libs.firebase_crashlytics_gradle)
     }
 }
 

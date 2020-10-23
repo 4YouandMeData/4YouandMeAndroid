@@ -1,6 +1,7 @@
 package org.fouryouandme.core.entity.user
 
 import org.fouryouandme.core.ext.StudyIntegration
+import org.threeten.bp.ZoneId
 
 data class User(
     val id: String,
@@ -11,6 +12,7 @@ data class User(
     val onBoardingCompleted: Boolean,
     val token: String,
     val customData: List<UserCustomData>,
+    val timeZone: ZoneId?,
     val points: Int
 ) {
 

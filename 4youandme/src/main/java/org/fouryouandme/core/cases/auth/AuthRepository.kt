@@ -15,12 +15,14 @@ import org.fouryouandme.core.data.api.auth.request.LoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneLoginRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberRequest
 import org.fouryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
-import org.fouryouandme.core.data.api.auth.request.UserUpdateRequest.Companion.asRequest
+import org.fouryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest.Companion.asRequest
+import org.fouryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest.Companion.asRequest
 import org.fouryouandme.core.data.api.auth.response.UserResponse
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.user.*
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.mapNotNull
+import org.threeten.bp.ZoneId
 import retrofit2.Response
 
 object AuthRepository {
@@ -104,7 +106,10 @@ object AuthRepository {
 
                 // if user has empty custom data update it with default configuration
                 if (it.customData == null || it.customData.isEmpty())
-                    updateUser(token, defaultUserCustomData())
+                    updateUserCustomData(token, defaultUserCustomData())
+                        .flatMap { fetchUser(token) }
+                else if (it.timeZone != ZoneId.systemDefault().id)
+                    updateUserTimeZone(token, ZoneId.systemDefault())
                         .flatMap { fetchUser(token) }
                 else
                     it.toUser(token).right()
@@ -141,11 +146,18 @@ object AuthRepository {
             ),
         )
 
-    internal suspend fun AuthModule.updateUser(
+    internal suspend fun AuthModule.updateUserCustomData(
         token: String,
         data: List<UserCustomData>
     ): Either<FourYouAndMeError, Unit> =
-        suspend { api.updateUser(token, data.asRequest()) }
+        suspend { api.updateUserCustomData(token, data.asRequest()) }
+            .pipe { errorModule.unwrapToEither(it) }
+
+    private suspend fun AuthModule.updateUserTimeZone(
+        token: String,
+        timeZone: ZoneId
+    ): Either<FourYouAndMeError, Unit> =
+        suspend { api.updateUserTimeZone(token, timeZone.asRequest()) }
             .pipe { errorModule.unwrapToEither(it) }
 
 }

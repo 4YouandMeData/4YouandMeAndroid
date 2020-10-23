@@ -26,13 +26,11 @@ class AboutYouPermissionsFragment :
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(PermissionsViewHolder.factory {
+        DroidAdapter(PermissionsViewHolder.factory { item ->
 
-            if (it.isAllowed) {
-                startCoroutineAsync {
+            if (item.isAllowed.not())
+                configuration { viewModel.requestPermission(item, it, imageConfiguration) }
 
-                }
-            }
         })
     }
 

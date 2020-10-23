@@ -13,6 +13,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+// TODO: use use case
 sealed class Permission(val name: String) {
 
     object Camera : Permission(Manifest.permission.CAMERA)

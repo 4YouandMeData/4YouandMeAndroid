@@ -1,5 +1,7 @@
 package org.fouryouandme.auth.splash
 
+import arrow.core.getOrElse
+import arrow.syntax.function.pipe
 import org.fouryouandme.auth.AuthNavController
 import org.fouryouandme.core.arch.android.BaseViewModel
 import org.fouryouandme.core.arch.android.Empty
@@ -10,6 +12,8 @@ import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase.getUser
 import org.fouryouandme.core.cases.auth.AuthUseCase.isLogged
+import org.fouryouandme.core.cases.push.PushUseCase
+import timber.log.Timber
 
 class SplashViewModel(
     navigator: Navigator,
@@ -23,6 +27,11 @@ class SplashViewModel(
     ): Unit {
 
         showLoading(SplashLoading.Auth)
+
+        // Token logging for debug
+        PushUseCase.getPushToken()
+            .getOrElse { "Error: can't load the token" }
+            .pipe { Timber.tag("FCM_TOKEN").d(it) }
 
         if (authModule.isLogged()) {
 
@@ -52,4 +61,5 @@ class SplashViewModel(
 
     private suspend fun screening(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, SplashToScreening)
+
 }

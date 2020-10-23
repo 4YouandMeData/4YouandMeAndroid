@@ -17,11 +17,13 @@ object Versions {
 
     const val org_jetbrains_kotlin: String = "1.4.10"
 
-    const val androidx_navigation: String = "2.2.2" // available: "2.3.0"
+    const val androidx_navigation: String = "2.2.2" // available: "2.3.1"
 
     const val androidx_lifecycle: String = "2.2.0"
 
     const val com_squareup_moshi: String = "1.11.0"
+
+    const val io_arrow_kt: String = "0.11.0"
 
     const val moe_banana: String = "3.5.0"
 
@@ -35,15 +37,17 @@ object Versions {
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
-    const val arrow_integration_retrofit_adapter: String = "0.10.4"
+    const val firebase_crashlytics_gradle: String = "2.3.0"
 
-    const val arrow_fx_coroutines: String = "0.11.0"
+    const val firebase_crashlytics_ktx: String = "17.2.2"
+
+    const val firebase_analytics_ktx: String = "17.6.0"
+
+    const val firebase_messaging_ktx: String = "20.3.0"
 
     const val logging_interceptor: String = "4.9.0"
 
     const val recycler_droid_core: String = "1.8.0-beta06"
-
-    const val firebase_analytics: String = "17.6.0"
 
     const val constraintlayout: String = "2.0.2"
 
@@ -59,10 +63,6 @@ object Versions {
 
     const val signature_pad: String = "1.3.1"
 
-    const val arrow_optics: String = "0.11.0"
-
-    const val arrow_syntax: String = "0.11.0"
-
     const val fragment_ktx: String = "1.3.0-alpha06"
 
     const val camera_core: String = "1.0.0-beta08"
@@ -73,8 +73,6 @@ object Versions {
 
     const val threetenabp: String = "1.2.4"
 
-    const val arrow_meta: String = "0.11.0"
-
     const val span_droid: String = "0.1"
 
     const val viewpager2: String = "1.0.0"
@@ -82,8 +80,6 @@ object Versions {
     const val appcompat: String = "1.2.0"
 
     const val isoparser: String = "1.1.22"
-
-    const val arrow_fx: String = "0.11.0"
 
     const val core_ktx: String = "1.3.2"
 
@@ -100,11 +96,11 @@ object Versions {
     const val ccp: String = "2.4.1"
 
     /**
-     * Current version: "6.6.1"
+     * Current version: "6.7"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.6.1"
+    const val gradleLatestVersion: String = "6.7"
 }
 
 /**

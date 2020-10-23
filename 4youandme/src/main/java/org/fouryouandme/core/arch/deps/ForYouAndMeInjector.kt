@@ -3,6 +3,7 @@ package org.fouryouandme.core.arch.deps
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import moe.banana.jsonapi2.ResourceAdapterFactory
@@ -55,7 +56,8 @@ import org.fouryouandme.researchkit.task.TaskConfiguration
 class ForYouAndMeInjector(
     val app: FourYouAndMeApp,
     env: Environment,
-    imageConfig: ImageConfiguration
+    imageConfig: ImageConfiguration,
+    firebaseAnalytics: FirebaseAnalytics
 ) : Injector {
 
     /* --- navigator --- */
@@ -83,6 +85,9 @@ class ForYouAndMeInjector(
     /* --- image configuration --- */
 
     override val imageConfiguration: ImageConfiguration = imageConfig
+
+    /* --- analytics --- */
+    override val firebaseAnalytics: FirebaseAnalytics = firebaseAnalytics
 
     /* --- moshi --- */
 

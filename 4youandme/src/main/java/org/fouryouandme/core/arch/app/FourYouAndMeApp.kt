@@ -3,6 +3,7 @@ package org.fouryouandme.core.arch.app
 import android.app.Application
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.fouryouandme.BuildConfig
 import org.fouryouandme.core.arch.android.AppInjector
@@ -22,11 +23,14 @@ abstract class FourYouAndMeApp : Application(), AppInjector, TaskInjector, Camer
 
     abstract val imageConfiguration: ImageConfiguration
 
+    abstract val firebaseAnalytics: FirebaseAnalytics
+
     override val injector: Injector by lazy {
         ForYouAndMeInjector(
             this,
             environment,
-            imageConfiguration
+            imageConfiguration,
+            firebaseAnalytics
         )
     }
 

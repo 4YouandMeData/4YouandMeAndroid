@@ -56,7 +56,13 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
                                 configuration { setWrongCodeErrorVisibility(it, true) }
                             else ->
                                 errorToast(payload.error)
+
                         }
+
+                        startCoroutineAsync {
+                            viewModel.back(authNavController(), rootNavController())
+                        }
+
                     }
                     PhoneValidationCodeError.ResendCode ->
                         errorToast(payload.error)

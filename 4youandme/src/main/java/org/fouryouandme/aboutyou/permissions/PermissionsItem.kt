@@ -11,12 +11,13 @@ import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.permission_item.*
 import org.fouryouandme.R
+import org.fouryouandme.core.cases.permission.Permission
 import org.fouryouandme.core.entity.configuration.Configuration
 
 data class PermissionsItem(
     val configuration: Configuration,
     val id: String,
-    val permission: String,
+    val permission: Permission,
     val description: String,
     @DrawableRes val image: Int,
     val isAllowed: Boolean
@@ -55,10 +56,10 @@ class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) 
         allow.paintFlags = allow.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
         if (t.isAllowed.not()) {
-            allow.text = t.configuration.text.profile.allow
+            allow.text = t.configuration.text.profile.permissionAllow
             allow.setTextColor(t.configuration.theme.secondaryTextColor.color())
         } else {
-            allow.text = t.configuration.text.profile.allowed
+            allow.text = t.configuration.text.profile.permissionAllowed
             allow.setTextColor(t.configuration.theme.primaryColorEnd.color())
         }
     }
