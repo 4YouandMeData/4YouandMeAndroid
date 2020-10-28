@@ -76,16 +76,16 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             }
 
         viewModel.errorLiveData()
-            .observeEvent(name()) {
-                when (it.cause) {
+            .observeEvent(name()) { errorPayload ->
+                when (errorPayload.cause) {
                     FeedsError.Initialization ->
-                        error.setError(it.error) {
-                            startCoroutineAsync {
-                                viewModel.initialize(rootNavController(), configuration())
+                        error.setError(errorPayload.error) {
+                            configuration {
+                                viewModel.initialize(rootNavController(), it)
                             }
                         }
                     FeedsError.QuickActivityUpload ->
-                        errorToast(it.error)
+                        errorToast(errorPayload.error)
                 }
             }
 

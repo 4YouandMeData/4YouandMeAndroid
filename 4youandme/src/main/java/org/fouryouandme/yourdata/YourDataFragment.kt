@@ -72,14 +72,14 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
 
 
         viewModel.errorLiveData()
-            .observeEvent(name()) {
-                when (it.cause) {
+            .observeEvent(name()) { errorPayload ->
+                when (errorPayload.cause) {
                     YourDataError.Initialization ->
-                        error.setError(it.error) {
-                            startCoroutineAsync {
+                        error.setError(errorPayload.error) {
+                            configuration {
                                 viewModel.initialize(
                                     rootNavController(),
-                                    configuration(),
+                                    it,
                                 )
                             }
                         }

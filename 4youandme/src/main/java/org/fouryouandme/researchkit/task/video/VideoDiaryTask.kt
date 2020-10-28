@@ -1,6 +1,7 @@
 package org.fouryouandme.researchkit.task.video
 
 import org.fouryouandme.R
+import org.fouryouandme.researchkit.step.Back
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.introduction.list.IntroductionItem
 import org.fouryouandme.researchkit.step.introduction.list.IntroductionListStep
@@ -24,7 +25,6 @@ class VideoDiaryTask(
     introRemindButtonTextColor: Int,
     introList: List<IntroductionItem>,
     introShadowColor: Int,
-    introToolbarColor: Int,
     videoTitle: String,
     videoTitleColor: Int,
     videoRecordImage: Int,
@@ -64,7 +64,7 @@ class VideoDiaryTask(
         listOf(
             IntroductionListStep(
                 VIDEO_DIARY_INTRO,
-                backImage = introBackImage,
+                back = Back(introBackImage),
                 backgroundColor = introBackgroundColor,
                 footerBackgroundColor = introFooterBackgroundColor,
                 title = introTitle,
@@ -80,7 +80,6 @@ class VideoDiaryTask(
                 remindButtonTextColor = introRemindButtonTextColor,
                 list = introList,
                 shadowColor = introShadowColor,
-                toolbarColor = introToolbarColor,
             ),
             VideoStep(
                 VIDEO_DIARY_VIDEO,

@@ -37,7 +37,14 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
         viewModel.errorLiveData()
             .observeEvent {
                 error.setError(it.error) {
-                    startCoroutineAsync { viewModel.initialize(rootNavController()) }
+                    startCoroutineAsync {
+                        viewModel.initialize(
+                            rootNavController(),
+                            taskIdArg(),
+                            urlArg(),
+                            openAppIntegrationArg()
+                        )
+                    }
                 }
             }
 
@@ -51,15 +58,12 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
         startCoroutineAsync {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController())
-
-            intent.extras?.let {
-                viewModel.handleExtraParameters(
+                viewModel.initialize(
+                    rootNavController(),
                     taskIdArg(),
                     urlArg(),
                     openAppIntegrationArg()
                 )
-            }
 
         }
 
@@ -77,9 +81,9 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
     }
 
-    private fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)
-    private fun urlArg(): String? = intent.extras?.getString(URL)
-    private fun openAppIntegrationArg(): String? = intent.extras?.getString(OPEN_APP_INTEGRATION)
+    fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)
+    fun urlArg(): String? = intent.extras?.getString(URL)
+    fun openAppIntegrationArg(): String? = intent.extras?.getString(OPEN_APP_INTEGRATION)
 
     companion object {
 

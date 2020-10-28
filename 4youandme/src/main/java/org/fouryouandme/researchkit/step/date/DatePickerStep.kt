@@ -1,13 +1,15 @@
 package org.fouryouandme.researchkit.step.date
 
 import android.content.Context
+import org.fouryouandme.researchkit.step.Back
+import org.fouryouandme.researchkit.step.Skip
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.utils.ImageResource
 
 class DatePickerStep(
     identifier: String,
-    backImage: Int,
-    canSkip: Boolean,
+    back: Back,
+    skip: Skip,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -17,4 +19,4 @@ class DatePickerStep(
     val buttonImage: ImageResource,
     val minDate: Long?,
     val maxDate: Long?
-) : Step(identifier, backImage, canSkip, { DatePickerStepFragment() })
+) : Step(identifier, back, skip, { DatePickerStepFragment() })

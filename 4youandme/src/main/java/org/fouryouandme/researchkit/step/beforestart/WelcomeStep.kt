@@ -1,11 +1,12 @@
 package org.fouryouandme.researchkit.step.beforestart
 
 import android.content.Context
+import org.fouryouandme.researchkit.step.Back
 import org.fouryouandme.researchkit.step.Step
 
 class WelcomeStep(
     identifier: String,
-    backImage: Int,
+    back: Back,
     val backgroundColor: Int,
     val image: Int?,
     val title: (Context) -> String,
@@ -20,4 +21,4 @@ class WelcomeStep(
     val startButtonTextColor: Int,
     val shadowColor: Int,
     val close: Boolean = false
-) : Step(identifier, backImage, false, { WelcomeStepFragment() })
+) : Step(identifier, back, null, { WelcomeStepFragment() })

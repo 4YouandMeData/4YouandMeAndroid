@@ -1,13 +1,15 @@
 package org.fouryouandme.researchkit.step.textinput
 
 import android.content.Context
+import org.fouryouandme.researchkit.step.Back
+import org.fouryouandme.researchkit.step.Skip
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.utils.ImageResource
 
 class TextInputStep(
     identifier: String,
-    backImage: Int,
-    canSkip: Boolean,
+    back: Back,
+    skip: Skip,
     val backgroundColor: Int,
     val image: ImageResource?,
     val questionId: String,
@@ -19,4 +21,4 @@ class TextInputStep(
     val placeholderColor: Int,
     val placeholder: String?,
     val maxCharacters: Int?
-) : Step(identifier, backImage, canSkip, { TextInputStepFragment() })
+) : Step(identifier, back, skip, { TextInputStepFragment() })

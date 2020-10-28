@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
 import org.fouryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerRecorder
 import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
+import org.fouryouandme.researchkit.step.Back
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.beforestart.WelcomeStep
 import org.fouryouandme.researchkit.step.countdown.CountDownStep
@@ -97,7 +98,7 @@ class GaitTask(
         listOf(
             WelcomeStep(
                 identifier = GAIT_WELCOME,
-                backImage = welcomeBackImage,
+                back = Back(welcomeBackImage),
                 backgroundColor = welcomeBackgroundColor,
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.GAIT_welcome_title) },
@@ -120,7 +121,7 @@ class GaitTask(
             ),
             StartStep(
                 identifier = GAIT_START,
-                backImage = startBackImage,
+                back = Back(startBackImage),
                 backgroundColor = startBackgroundColor,
                 title = { startTitle ?: it.getString(R.string.GAIT_title) },
                 titleColor = startTitleColor,
@@ -132,7 +133,7 @@ class GaitTask(
             ),
             IntroductionStep(
                 identifier = GAIT_INTRO,
-                backImage = introBackImage,
+                back = Back(introBackImage),
                 backgroundColor = introBackgroundColor,
                 title = { introTitle ?: it.getString(R.string.GAIT_title) },
                 titleColor = introTitleColor,
@@ -145,7 +146,7 @@ class GaitTask(
             ),
             CountDownStep(
                 identifier = GAIT_COUNT_DOWN,
-                backImage = countDownBackImage,
+                back = Back(countDownBackImage),
                 backgroundColor = countDownBackgroundColor,
                 titleColor = countDownTitleColor,
                 title = { countDownTitle ?: it.getString(R.string.GAIT_title) },

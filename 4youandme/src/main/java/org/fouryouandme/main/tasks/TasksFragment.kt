@@ -69,16 +69,16 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             }
 
         viewModel.errorLiveData()
-            .observeEvent(name()) {
-                when (it.cause) {
+            .observeEvent(name()) { errorPayload ->
+                when (errorPayload.cause) {
                     TasksError.Initialization ->
-                        error.setError(it.error) {
-                            startCoroutineAsync {
-                                viewModel.initialize(rootNavController(), configuration())
+                        error.setError(errorPayload.error) {
+                            configuration {
+                                viewModel.initialize(rootNavController(), it)
                             }
                         }
                     TasksError.QuickActivityUpload ->
-                        errorToast(it.error)
+                        errorToast(errorPayload.error)
                 }
             }
 

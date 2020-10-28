@@ -16,6 +16,8 @@ import org.fouryouandme.researchkit.result.SingleAnswerResult
 import org.fouryouandme.researchkit.result.SingleIntAnswerResult
 import org.fouryouandme.researchkit.result.TaskResult
 import org.fouryouandme.researchkit.skip.SurveySkip
+import org.fouryouandme.researchkit.step.Back
+import org.fouryouandme.researchkit.step.Skip
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyAnswer
 import org.fouryouandme.researchkit.step.choosemany.ChooseManyStep
@@ -50,8 +52,7 @@ fun buildSurvey(
                     surveyBlock.introPage.asList().mapIndexed { index, page ->
                         FYAMPageStep(
                             getSurveyIntroStepId(surveyBlock.id, page.id),
-                            imageConfiguration.backSecondary(),
-                            false,
+                            Back(imageConfiguration.backSecondary()),
                             configuration,
                             page,
                             EPageType.INFO
@@ -69,8 +70,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -94,8 +99,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     min = question.minValue,
                                     max = question.maxValue,
                                     minDisplayValue = question.minDisplayValue,
@@ -125,8 +134,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     values =
                                     question.answers.map {
                                         ChooseOneAnswer(
@@ -162,8 +175,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     values = question.answers.map {
                                         ChooseManyAnswer(
                                             it.id,
@@ -198,8 +215,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageResource.Base64(it) },
                                     questionId = question.id,
@@ -221,8 +242,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     minValue = question.min,
                                     maxValue = question.max,
                                     interval = question.interval ?: 1,
@@ -254,8 +279,12 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
-                                    backImage = imageConfiguration.backSecondary(),
-                                    canSkip = true,
+                                    back = Back(imageConfiguration.backSecondary()),
+                                    skip =
+                                    Skip(
+                                        configuration.text.task.skipButton,
+                                        configuration.theme.primaryColorEnd.color()
+                                    ),
                                     minValue = question.min,
                                     maxValue = question.max,
                                     valueColor = configuration.theme.primaryTextColor.color(),
@@ -292,8 +321,7 @@ fun buildSurvey(
 
                         FYAMPageStep(
                             getSurveySuccessStepId(surveyBlock.id, it.id),
-                            imageConfiguration.backSecondary(),
-                            false,
+                            Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
                             EPageType.SUCCESS

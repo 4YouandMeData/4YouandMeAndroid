@@ -8,6 +8,7 @@ import org.fouryouandme.researchkit.recorder.config.PedometerRecorderConfig
 import org.fouryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerRecorder
 import org.fouryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import org.fouryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
+import org.fouryouandme.researchkit.step.Back
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.beforestart.WelcomeStep
 import org.fouryouandme.researchkit.step.countdown.CountDownStep
@@ -94,7 +95,7 @@ class FitnessTask(
         listOf(
             WelcomeStep(
                 identifier = FITNESS_WELCOME,
-                backImage = welcomeBackImage,
+                back = Back(welcomeBackImage),
                 backgroundColor = welcomeBackgroundColor,
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.FITNESS_welcome_title) },
@@ -117,7 +118,7 @@ class FitnessTask(
             ),
             IntroductionStep(
                 identifier = FITNESS_START,
-                backImage = startBackImage,
+                back = Back(startBackImage),
                 backgroundColor = startBackgroundColor,
                 title = { startTitle ?: it.getString(R.string.FITNESS_title) },
                 titleColor = startTitleColor,
@@ -135,7 +136,7 @@ class FitnessTask(
             ),
             IntroductionStep(
                 identifier = FITNESS_INTRO,
-                backImage = introBackImage,
+                back = Back(introBackImage),
                 backgroundColor = introBackgroundColor,
                 title = { introTitle ?: it.getString(R.string.FITNESS_title) },
                 titleColor = introTitleColor,
@@ -154,7 +155,7 @@ class FitnessTask(
             ),
             CountDownStep(
                 identifier = FITNESS_COUNT_DOWN,
-                backImage = countDownBackImage,
+                back = Back(countDownBackImage),
                 backgroundColor = countDownBackgroundColor,
                 titleColor = countDownTitleColor,
                 title = { countDownTitle ?: it.getString(R.string.FITNESS_title) },

@@ -67,7 +67,6 @@ suspend fun FYAMTaskConfiguration.buildVideoDiary(
             )
         ),
         introShadowColor = primaryText,
-        introToolbarColor = secondary,
         videoTitle = configuration.text.videoDiary.recorderTitle,
         videoTitleColor = secondary,
         videoRecordImage = imageConfiguration.videoDiaryRecord(),

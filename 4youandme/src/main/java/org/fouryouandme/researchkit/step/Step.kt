@@ -2,7 +2,16 @@ package org.fouryouandme.researchkit.step
 
 abstract class Step(
     val identifier: String,
-    val backImage: Int?,
-    val canSkip: Boolean?,
+    val back: Back?,
+    val skip: Skip?,
     val view: () -> StepFragment
+)
+
+data class Skip(
+    val text: String,
+    val color: Int
+)
+
+data class Back(
+    val image: Int
 )

@@ -30,7 +30,10 @@ import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.MainPageToAboutYouPage
 import org.fouryouandme.main.items.*
 import org.fouryouandme.main.tasks.TasksToTask
-import org.threeten.bp.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
@@ -144,7 +147,6 @@ class FeedsViewModel(
                                 )
                             else -> null
                         }
-                    else -> null
                 }
             }
 

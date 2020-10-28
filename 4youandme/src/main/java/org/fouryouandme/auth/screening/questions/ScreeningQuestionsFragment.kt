@@ -43,7 +43,7 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
 
         screeningAndConfiguration { config, state ->
             setupView()
-            applyConfiguration(configuration())
+            applyConfiguration(config)
             showQuestions(config, state.screening)
         }
     }

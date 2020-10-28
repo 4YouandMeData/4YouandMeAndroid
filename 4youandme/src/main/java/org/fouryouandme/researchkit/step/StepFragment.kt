@@ -10,10 +10,7 @@ import org.fouryouandme.R
 import org.fouryouandme.core.arch.android.BaseFragment
 import org.fouryouandme.core.arch.android.getFactory
 import org.fouryouandme.core.arch.android.viewModelFactory
-import org.fouryouandme.core.ext.evalOnMain
-import org.fouryouandme.core.ext.find
-import org.fouryouandme.core.ext.navigator
-import org.fouryouandme.core.ext.startCoroutineAsync
+import org.fouryouandme.core.ext.*
 import org.fouryouandme.researchkit.task.TaskInjector
 import org.fouryouandme.tasks.TaskFragment
 import org.fouryouandme.tasks.TaskNavController
@@ -55,12 +52,12 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
 
             viewModel.getStepByIndex(indexArg())?.let {
 
-                if (viewModel.canGoBack(indexArg()) && indexArg() != 0 && it.backImage != null)
-                    showBack(it.backImage)
+                if (viewModel.canGoBack(indexArg()) && indexArg() != 0 && it.back != null)
+                    showBack(it.back.image)
                 else
                     hideToolbar()
 
-                if (it.canSkip == true) showSkip()
+                if (it.skip != null) showSkip(it.skip.text, it.skip.color)
                 else hideSkip()
             }
 
@@ -130,17 +127,13 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
 
         }
 
-    private suspend fun showSkip(): Unit =
+    private suspend fun showSkip(text: String, color: Int): Unit =
         evalOnMain {
 
-            taskFragment().skip.text = configuration().text.task.skipButton
-            taskFragment().skip.setTextColor(configuration().theme.primaryColorEnd.color())
+            taskFragment().skip.text = text
+            taskFragment().skip.setTextColor(color)
             taskFragment().skip.visibility = View.VISIBLE
-            taskFragment().skip.setOnClickListener {
-                startCoroutineAsync {
-                    next()
-                }
-            }
+            taskFragment().skip.setOnClickListenerAsync { next() }
 
         }
 

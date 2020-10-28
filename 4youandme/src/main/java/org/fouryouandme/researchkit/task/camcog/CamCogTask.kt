@@ -1,6 +1,7 @@
 package org.fouryouandme.researchkit.task.camcog
 
 import org.fouryouandme.R
+import org.fouryouandme.researchkit.step.Back
 import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.step.beforestart.WelcomeStep
 import org.fouryouandme.researchkit.step.web.WebStep
@@ -37,7 +38,7 @@ class CamCogTask(
         listOf(
             WelcomeStep(
                 identifier = CAMCOG_WELCOME,
-                backImage = welcomeBackImage,
+                back = Back(welcomeBackImage),
                 backgroundColor = welcomeBackgroundColor,
                 image = welcomeImage,
                 title = { welcomeTitle ?: it.getString(R.string.CAMCOG_welcome_title) },
@@ -60,7 +61,7 @@ class CamCogTask(
             ),
             WebStep(
                 identifier = CAMCOG_WEB,
-                backImage = null,
+                back = null,
                 backgroundColor = webBackgroundColor,
                 progressBarColor = webProgressBarColor,
                 url = webUrl,

@@ -100,7 +100,7 @@ class TaskViewModel(
     inline fun <reified T : Step> getStepByIndexAs(index: Int): T? = getStepByIndex(index) as? T
 
     fun canGoBack(stepIndex: Int): Boolean =
-        getStepByIndex(stepIndex - 1)?.backImage != null
+        getStepByIndex(stepIndex - 1)?.back != null
 
     /* --- navigation --- */
 

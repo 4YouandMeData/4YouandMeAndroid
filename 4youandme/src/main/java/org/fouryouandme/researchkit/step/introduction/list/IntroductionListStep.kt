@@ -1,11 +1,12 @@
 package org.fouryouandme.researchkit.step.introduction.list
 
 import android.content.Context
+import org.fouryouandme.researchkit.step.Back
 import org.fouryouandme.researchkit.step.Step
 
 class IntroductionListStep(
     identifier: String,
-    backImage: Int,
+    back: Back,
     val backgroundColor: Int,
     val footerBackgroundColor: Int,
     val title: String,
@@ -19,5 +20,4 @@ class IntroductionListStep(
     val buttonTextColor: Int,
     val list: List<IntroductionItem>,
     val shadowColor: Int,
-    val toolbarColor: Int
-) : Step(identifier, backImage, false, { IntroductionListStepFragment() })
+) : Step(identifier, back, null, { IntroductionListStepFragment() })

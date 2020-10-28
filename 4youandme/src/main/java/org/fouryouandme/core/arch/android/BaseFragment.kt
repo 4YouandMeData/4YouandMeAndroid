@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import arrow.core.Either
+import org.fouryouandme.core.activity.FYAMActivity
+import org.fouryouandme.core.activity.FYAMState
 import org.fouryouandme.core.activity.FYAMViewModel
 import org.fouryouandme.core.arch.livedata.Event
 import org.fouryouandme.core.arch.livedata.EventObserver
@@ -66,20 +68,30 @@ abstract class BaseFragment<T : BaseViewModel<*, *, *, *>> : Fragment {
 
     fun name(): String = this.javaClass.simpleName
 
-    suspend fun configuration(): Configuration =
+    fun fyamActivity(): FYAMActivity = requireActivity() as FYAMActivity
+
+    suspend fun fyamState(): FYAMState =
         if (fyamViewModel.isInitialized())
-            fyamViewModel.state().configuration
+            fyamViewModel.state()
         else
-            fyamViewModel.initialize(rootNavController()).orNull()!!
+            fyamViewModel.initialize(
+                rootNavController(),
+                fyamActivity().taskIdArg(),
+                fyamActivity().urlArg(),
+                fyamActivity().openAppIntegrationArg()
+            ).orNull()!!
 
     fun configuration(block: suspend (Configuration) -> Unit): Unit =
         startCoroutineAsync {
 
-            val configuration = configuration()
+            val configuration = fyamState().configuration
 
             block(configuration)
 
         }
+
+    fun fyamState(block: suspend (FYAMState) -> Unit): Unit =
+        startCoroutineAsync { block(fyamState()) }
 
     fun taskConfiguration(): TaskConfiguration =
         (requireContext().applicationContext as TaskInjector).provideBuilder()
