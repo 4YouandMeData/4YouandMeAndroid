@@ -3,6 +3,7 @@ package org.fouryouandme.auth.integration
 
 import org.fouryouandme.core.arch.navigation.NavigationAction
 import org.fouryouandme.core.entity.integration.Integration
+import org.fouryouandme.core.entity.integration.IntegrationApp
 
 data class IntegrationState(
     val integration: Integration,
@@ -29,19 +30,11 @@ sealed class IntegrationError {
 
 }
 
-
 /* --- special action --- */
 
-sealed class App(val packageName: String) {
-
-    object Oura : App("com.ouraring.oura")
-    object Fitbit : App("com.fitbit.FitbitMobile")
-
-}
-
 sealed class SpecialLinkAction {
-    data class OpenApp(val app: App) : SpecialLinkAction()
-    data class Download(val app: App) : SpecialLinkAction()
+    data class OpenApp(val app: IntegrationApp) : SpecialLinkAction()
+    data class Download(val app: IntegrationApp) : SpecialLinkAction()
 }
 
 /* --- navigation --- */

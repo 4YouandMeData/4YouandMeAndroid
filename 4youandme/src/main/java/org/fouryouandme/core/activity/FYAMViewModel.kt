@@ -12,6 +12,7 @@ import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
+import org.fouryouandme.core.entity.integration.IntegrationApp
 
 class FYAMViewModel(
     navigator: Navigator,
@@ -44,7 +45,7 @@ class FYAMViewModel(
                             config,
                             taskId?.toEvent(),
                             url?.toEvent(),
-                            openAppIntegration?.toEvent()
+                            openAppIntegration?.let { IntegrationApp.fromIdentifier(it) }?.toEvent()
                         )
 
                     setState(state)

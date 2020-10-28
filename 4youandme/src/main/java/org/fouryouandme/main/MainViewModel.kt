@@ -7,6 +7,7 @@ import org.fouryouandme.core.arch.android.Empty
 import org.fouryouandme.core.arch.navigation.AnywhereToWeb
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.arch.navigation.RootNavController
+import org.fouryouandme.core.arch.navigation.openApp
 
 class MainViewModel(
     navigator: Navigator,
@@ -54,9 +55,10 @@ class MainViewModel(
 
             taskId != null -> {
             }
-            url != null -> navigator.navigateTo(rootNavController, AnywhereToWeb(url))
-            openApplicationIntegration != null -> {
-            }
+            url != null ->
+                navigator.navigateTo(rootNavController, AnywhereToWeb(url))
+            openApplicationIntegration != null ->
+                navigator.performAction(openApp(openApplicationIntegration.packageName))
 
         }
 

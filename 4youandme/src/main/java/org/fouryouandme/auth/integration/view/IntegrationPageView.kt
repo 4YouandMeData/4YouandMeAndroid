@@ -7,12 +7,12 @@ import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.integration_page_view.view.*
 import org.fouryouandme.R
-import org.fouryouandme.auth.integration.App
 import org.fouryouandme.auth.integration.SpecialLinkAction
 import org.fouryouandme.core.entity.configuration.Configuration
 import org.fouryouandme.core.entity.configuration.HEXColor
 import org.fouryouandme.core.entity.configuration.HEXGradient
 import org.fouryouandme.core.entity.configuration.button.button
+import org.fouryouandme.core.entity.integration.IntegrationApp
 import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.ext.evalOnMain
 import org.fouryouandme.core.ext.html.setHtmlText
@@ -118,16 +118,9 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
         when {
             this == null -> null
             contains("open", true) ->
-                parseApp()?.let { SpecialLinkAction.OpenApp(it) }
+                IntegrationApp.fromIdentifier(this)?.let { SpecialLinkAction.OpenApp(it) }
             contains("download", true) ->
-                parseApp()?.let { SpecialLinkAction.Download(it) }
-            else -> null
-        }
-
-    private fun String.parseApp(): App? =
-        when {
-            contains("oura", true) -> App.Oura
-            contains("fitbit", true) -> App.Fitbit
+                IntegrationApp.fromIdentifier(this)?.let { SpecialLinkAction.Download(it) }
             else -> null
         }
 }
