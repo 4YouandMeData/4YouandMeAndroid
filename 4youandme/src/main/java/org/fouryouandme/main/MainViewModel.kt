@@ -54,6 +54,7 @@ class MainViewModel(
         when {
 
             taskId != null -> {
+                // TODO: open task by id
             }
             url != null ->
                 navigator.navigateTo(rootNavController, AnywhereToWeb(url))
