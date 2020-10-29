@@ -12,7 +12,6 @@ import org.fouryouandme.researchkit.step.Step
 import org.fouryouandme.researchkit.task.Task
 import org.fouryouandme.researchkit.task.TaskIdentifiers
 import org.fouryouandme.researchkit.task.fitness.FitnessTask
-import org.fouryouandme.researchkit.task.gait.GaitTask
 
 class FYAMFitnessTask(
     id: String,
@@ -21,7 +20,7 @@ class FYAMFitnessTask(
     private val welcomePage: Page,
     private val successPage: Page?,
     private val moshi: Moshi
-) : Task(TaskIdentifiers.GAIT, id) {
+) : Task(TaskIdentifiers.FITNESS, id) {
 
     override val steps: List<Step> by lazy {
 
@@ -36,7 +35,7 @@ class FYAMFitnessTask(
 
         welcomePage.asList().mapIndexed { index, page ->
             FYAMPageStep(
-                getSurveyWelcomeStepId(page.id),
+                getFitnessWelcomeStepId(page.id),
                 Back(imageConfiguration.backSecondary()),
                 configuration,
                 page,
@@ -92,7 +91,7 @@ class FYAMFitnessTask(
 
                     list.plus(
                         FYAMPageStep(
-                            getSurveySuccessStepId(it.id),
+                            getFitnessSuccessStepId(it.id),
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
@@ -107,10 +106,10 @@ class FYAMFitnessTask(
 
     }
 
-    private fun getSurveyWelcomeStepId(introId: String): String =
-        "${GaitTask.GAIT_WELCOME}_${introId}"
+    private fun getFitnessWelcomeStepId(introId: String): String =
+        "${FitnessTask.FITNESS_WELCOME}_${introId}"
 
-    private fun getSurveySuccessStepId(successId: String): String =
-        "${GaitTask.GAIT_END}_${successId}"
+    private fun getFitnessSuccessStepId(successId: String): String =
+        "${FitnessTask.FITNESS_END}_${successId}"
 
 }

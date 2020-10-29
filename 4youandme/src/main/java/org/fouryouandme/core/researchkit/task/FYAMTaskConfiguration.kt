@@ -39,7 +39,21 @@ class FYAMTaskConfiguration(
 
             when (type) {
                 TaskIdentifiers.VIDEO_DIARY ->
-                    buildVideoDiary(id, config, imageConfiguration)
+                    taskModule.getTask(id)
+                        .nullToError()
+                        .map { it.activity as? TaskActivity }
+                        .orNull()
+                        ?.let {
+
+                            FYAMVideoDiaryTask(
+                                id,
+                                config,
+                                imageConfiguration,
+                                it.welcomePage,
+                                it.successPage,
+                            )
+
+                        }
                 TaskIdentifiers.GAIT ->
                     taskModule.getTask(id)
                         .nullToError()

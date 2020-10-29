@@ -35,7 +35,7 @@ class FYAMGaitTask(
 
         welcomePage.asList().mapIndexed { index, page ->
             FYAMPageStep(
-                getSurveyWelcomeStepId(page.id),
+                getGaitWelcomeStepId(page.id),
                 Back(imageConfiguration.backSecondary()),
                 configuration,
                 page,
@@ -93,7 +93,7 @@ class FYAMGaitTask(
 
                     list.plus(
                         FYAMPageStep(
-                            getSurveySuccessStepId(it.id),
+                            getGaitSuccessStepId(it.id),
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
@@ -108,10 +108,10 @@ class FYAMGaitTask(
 
     }
 
-    private fun getSurveyWelcomeStepId(introId: String): String =
+    private fun getGaitWelcomeStepId(introId: String): String =
         "${GaitTask.GAIT_WELCOME}_${introId}"
 
-    private fun getSurveySuccessStepId(successId: String): String =
+    private fun getGaitSuccessStepId(successId: String): String =
         "${GaitTask.GAIT_END}_${successId}"
 
 }
