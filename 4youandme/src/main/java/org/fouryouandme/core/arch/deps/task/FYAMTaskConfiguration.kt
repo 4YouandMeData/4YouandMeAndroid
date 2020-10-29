@@ -84,7 +84,7 @@ class FYAMTaskConfiguration(
             TaskIdentifiers.VIDEO_DIARY -> TaskHandleResult.Handled
             TaskIdentifiers.GAIT -> sendGaitData(taskModule, errorModule, id, result)
             TaskIdentifiers.FITNESS -> sendFitnessData(taskModule, errorModule, id, result)
-            TaskActivityType.Survey.typeId -> sendSurveyData(taskModule, errorModule, id, result)
+            TaskActivityType.Survey.typeId -> sendSurveyData(taskModule, id, result)
             else -> TaskHandleResult.Error(unknownError().message)
 
         }

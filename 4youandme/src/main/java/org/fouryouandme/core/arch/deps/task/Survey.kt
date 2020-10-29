@@ -1,7 +1,6 @@
 package org.fouryouandme.core.arch.deps.task
 
 import org.fouryouandme.core.arch.deps.ImageConfiguration
-import org.fouryouandme.core.arch.deps.modules.ErrorModule
 import org.fouryouandme.core.arch.deps.modules.TaskModule
 import org.fouryouandme.core.cases.task.TaskUseCase.updateSurvey
 import org.fouryouandme.core.data.api.task.request.AnswerUpdateRequest
@@ -354,7 +353,6 @@ private fun getSurveyQuestionStepId(blockId: String, questionId: String): String
 
 suspend fun FYAMTaskConfiguration.sendSurveyData(
     taskModule: TaskModule,
-    errorModule: ErrorModule,
     taskId: String,
     result: TaskResult
 ): TaskHandleResult {
@@ -364,11 +362,11 @@ suspend fun FYAMTaskConfiguration.sendSurveyData(
         result.results.toList().mapNotNull {
             when (val value = it.second) {
                 is SingleAnswerResult ->
-                    AnswerUpdateRequest.SingleAnswerUpdateRequest(value.questionId, value.answer)
+                    AnswerUpdateRequest(value.questionId, value.answer)
                 is SingleIntAnswerResult ->
-                    AnswerUpdateRequest.SingleIntAnswerUpdateRequest(value.questionId, value.answer)
+                    AnswerUpdateRequest(value.questionId, value.answer)
                 is MultipleAnswerResult ->
-                    AnswerUpdateRequest.MultipleAnswerUpdateRequest(value.questionId, value.answers)
+                    AnswerUpdateRequest(value.questionId, value.answers)
                 else -> null
 
             }
