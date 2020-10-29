@@ -11,7 +11,7 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.9"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.9" // available: "1.4.0"
 
     const val com_squareup_retrofit2: String = "2.9.0"
 
@@ -37,19 +37,27 @@ object Versions {
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
+    const val android_maven_gradle_plugin: String = "2.1"
+
+    const val dokka_android_gradle_plugin: String = "0.9.18"
+
     const val firebase_crashlytics_gradle: String = "2.3.0"
 
     const val firebase_crashlytics_ktx: String = "17.2.2"
 
-    const val firebase_analytics_ktx: String = "17.6.0"
+    const val firebase_analytics_ktx: String = "17.6.0" // available: "18.0.0"
 
-    const val firebase_messaging_ktx: String = "20.3.0"
+    const val firebase_messaging_ktx: String = "20.3.0" // available: "21.0.0"
+
+    const val gradle_bintray_plugin: String = "1.8.5"
+
+    const val dokka_gradle_plugin: String = "1.4.10" // available: "1.4.10.2"
 
     const val logging_interceptor: String = "4.9.0"
 
     const val recycler_droid_core: String = "1.8.0-beta06"
 
-    const val constraintlayout: String = "2.0.2"
+    const val constraintlayout: String = "2.0.2" // available: "2.0.3"
 
     const val google_services: String = "4.3.4"
 
@@ -71,7 +79,7 @@ object Versions {
 
     const val lint_gradle: String = "27.1.0"
 
-    const val threetenabp: String = "1.2.4"
+    const val threetenabp: String = "1.2.4" // available: "1.3.0"
 
     const val span_droid: String = "0.1"
 

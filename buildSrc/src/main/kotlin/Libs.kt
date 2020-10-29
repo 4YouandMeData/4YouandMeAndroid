@@ -168,6 +168,17 @@ object Libs {
         "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
                 Versions.de_fayard_buildsrcversions_gradle_plugin
 
+    /**
+     * https://github.com/dcendents/android-maven-gradle-plugin
+     */
+    const val android_maven_gradle_plugin: String =
+        "com.github.dcendents:android-maven-gradle-plugin:" +
+                Versions.android_maven_gradle_plugin
+
+    const val dokka_android_gradle_plugin: String =
+        "org.jetbrains.dokka:dokka-android-gradle-plugin:" +
+                Versions.dokka_android_gradle_plugin
+
     const val firebase_crashlytics_gradle: String =
         "com.google.firebase:firebase-crashlytics-gradle:" +
                 Versions.firebase_crashlytics_gradle
@@ -180,6 +191,12 @@ object Libs {
 
     const val firebase_messaging_ktx: String = "com.google.firebase:firebase-messaging-ktx:" +
             Versions.firebase_messaging_ktx
+
+    const val gradle_bintray_plugin: String = "com.jfrog.bintray.gradle:gradle-bintray-plugin:" +
+            Versions.gradle_bintray_plugin
+
+    const val dokka_gradle_plugin: String = "org.jetbrains.dokka:dokka-gradle-plugin:" +
+            Versions.dokka_gradle_plugin
 
     /**
      * https://square.github.io/okhttp/

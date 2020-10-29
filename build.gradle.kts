@@ -13,6 +13,8 @@ buildscript {
         classpath(Libs.google_services)
         classpath(Libs.navigation_safe_args_gradle_plugin)
         classpath(Libs.firebase_crashlytics_gradle)
+        classpath(Libs.gradle_bintray_plugin)
+        classpath(Libs.android_maven_gradle_plugin)
     }
 }
 
