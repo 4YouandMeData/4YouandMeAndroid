@@ -124,6 +124,7 @@ class ForYouAndMeInjector(
             .add(
                 ResourceAdapterFactory.builder()
                     .add(UnknownResourceResponse::class.java)
+                    .add(PageResponse::class.java)
                     .add(TaskResponse::class.java)
                     .add(QuickActivityResponse::class.java)
                     .add(QuickActivityOptionResponse::class.java)
@@ -139,6 +140,7 @@ class ForYouAndMeInjector(
             .add(
                 ResourceAdapterFactory.builder()
                     .add(UnknownResourceResponse::class.java)
+                    .add(PageResponse::class.java)
                     .add(FeedResponse::class.java)
                     .add(QuickActivityResponse::class.java)
                     .add(QuickActivityOptionResponse::class.java)

@@ -121,7 +121,7 @@ class TaskViewModel(
         stepId: String,
         currentStepIndex: Int
     ): Unit =
-        if (stepId.contains("exit")) end()
+        if (stepId.contains("exit")) end() // TODO: go to next block
         else getStepById(stepId)
             .foldSuspend(
                 {

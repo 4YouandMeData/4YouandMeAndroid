@@ -8,11 +8,16 @@ import retrofit2.http.*
 
 interface TaskApi {
 
+    @GET("api/v1/tasks/{id}")
+    suspend fun getTask(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") id: String
+    ): Array<TaskResponse>
+
     @GET("api/v1/tasks")
     suspend fun getTasks(
         @Header(Headers.AUTH) token: String
     ): Array<TaskResponse>
-
 
     @Multipart
     @PATCH("/api/v1/tasks/{id}/attach")

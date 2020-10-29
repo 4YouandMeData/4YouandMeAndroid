@@ -2,6 +2,7 @@ package org.fouryouandme.core.entity.activity
 
 import android.graphics.Bitmap
 import org.fouryouandme.core.entity.configuration.HEXGradient
+import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.researchkit.task.TaskIdentifiers
 
 sealed class StudyActivity
@@ -35,7 +36,10 @@ data class TaskActivity(
     val button: String?,
     val gradient: HEXGradient?,
     val image: Bitmap?,
-    val activityType: TaskActivityType?
+    val activityType: TaskActivityType?,
+    val welcomePage: Page,
+    val pages: List<Page>,
+    val successPage: Page?
 ) : StudyActivity()
 
 sealed class TaskActivityType(val typeId: String, val type: String) {

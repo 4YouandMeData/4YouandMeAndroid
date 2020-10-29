@@ -33,8 +33,8 @@ data class TaskResponse(
                 !activity?.get(document).toEither().flatMap {
                     when (it) {
                         is QuickActivityResponse -> it.toQuickActivity(id).toEither()
-                        is TaskActivityResponse -> it.toTaskActivity(id).toEither()
-                        is SurveyActivityResponse -> it.toTaskActivity(id).toEither()
+                        is TaskActivityResponse -> it.toTaskActivity(document, id).toEither()
+                        is SurveyActivityResponse -> it.toTaskActivity(document, id).toEither()
                         else -> Unit.left()
                     }
                 }

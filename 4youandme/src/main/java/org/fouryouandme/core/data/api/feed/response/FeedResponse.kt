@@ -1,8 +1,6 @@
 package org.fouryouandme.core.data.api.feed.response
 
 import arrow.core.computations.either
-import arrow.core.flatMap
-import arrow.core.left
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi
@@ -17,7 +15,6 @@ import org.fouryouandme.core.data.api.common.response.notifiable.FeedRewardRespo
 import org.fouryouandme.core.data.api.common.response.notifiable.NotifiableDataResponse
 import org.fouryouandme.core.entity.feed.Feed
 import org.fouryouandme.core.entity.feed.FeedType
-import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.toEither
 import org.threeten.bp.ZonedDateTime
 
@@ -50,8 +47,8 @@ data class FeedResponse(
                     ?.let {
                         when (it) {
                             is QuickActivityResponse -> it.toQuickActivity(id)
-                            is TaskActivityResponse -> it.toTaskActivity(id)
-                            is SurveyActivityResponse -> it.toTaskActivity(id)
+                            is TaskActivityResponse -> it.toTaskActivity(document, id)
+                            is SurveyActivityResponse -> it.toTaskActivity(document, id)
                             else -> null
                         }
                     }
