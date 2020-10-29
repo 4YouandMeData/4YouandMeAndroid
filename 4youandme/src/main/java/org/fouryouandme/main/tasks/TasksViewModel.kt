@@ -17,7 +17,6 @@ import org.fouryouandme.core.entity.task.Task
 import org.fouryouandme.core.ext.startCoroutineAsync
 import org.fouryouandme.main.items.*
 import org.threeten.bp.LocalDate
-import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 class TasksViewModel(
@@ -191,7 +190,7 @@ class TasksViewModel(
         task.data.activityType?.let {
             navigator.navigateTo(
                 rootNavController,
-                TasksToTask(it.type, task.data.taskId, task.data.activityId)
+                TasksToTask(it.type, task.data.taskId)
             )
         }
     }

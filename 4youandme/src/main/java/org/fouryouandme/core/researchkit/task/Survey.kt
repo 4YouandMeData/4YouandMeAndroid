@@ -6,6 +6,7 @@ import org.fouryouandme.core.cases.task.TaskUseCase.updateSurvey
 import org.fouryouandme.core.data.api.task.request.AnswerUpdateRequest
 import org.fouryouandme.core.data.api.task.request.SurveyUpdateRequest
 import org.fouryouandme.core.entity.configuration.Configuration
+import org.fouryouandme.core.entity.page.Page
 import org.fouryouandme.core.entity.survey.Survey
 import org.fouryouandme.core.entity.survey.SurveyQuestion
 import org.fouryouandme.core.researchkit.step.FYAMPageStep
@@ -37,7 +38,9 @@ fun buildSurvey(
     id: String,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
-    survey: Survey
+    survey: Survey,
+    welcomePage: Page,
+    successPage: Page?
 ): Task =
     object : Task("survey", id) {
 
@@ -50,7 +53,7 @@ fun buildSurvey(
                 val intro =
                     surveyBlock.introPage.asList().mapIndexed { index, page ->
                         FYAMPageStep(
-                            getSurveyIntroStepId(surveyBlock.id, page.id),
+                            getSurveyBlockIntroStepId(surveyBlock.id, page.id),
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             page,
@@ -319,7 +322,7 @@ fun buildSurvey(
                     surveyBlock.successPage?.let {
 
                         FYAMPageStep(
-                            getSurveySuccessStepId(surveyBlock.id, it.id),
+                            getSurveyBlockSuccessStepId(surveyBlock.id, it.id),
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
@@ -335,6 +338,33 @@ fun buildSurvey(
                 }
             }
 
+            val intro =
+                welcomePage.asList().mapIndexed { index, page ->
+                    FYAMPageStep(
+                        getSurveyIntroStepId(page.id),
+                        Back(imageConfiguration.backSecondary()),
+                        configuration,
+                        page,
+                        EPageType.INFO
+                    )
+                }
+
+            val success =
+                successPage?.let {
+
+                    FYAMPageStep(
+                        getSurveySuccessStepId(it.id),
+                        Back(imageConfiguration.backSecondary()),
+                        configuration,
+                        it,
+                        EPageType.SUCCESS
+                    )
+
+                }
+
+
+            steps.addAll(0, intro)
+            success?.let { steps.add(it) }
 
             steps
 
@@ -342,10 +372,16 @@ fun buildSurvey(
 
     }
 
-private fun getSurveyIntroStepId(blockId: String, introId: String): String =
+private fun getSurveyIntroStepId(introId: String): String =
+    "survey_intro_${introId}"
+
+private fun getSurveySuccessStepId(successId: String): String =
+    "survey_success_${successId}"
+
+private fun getSurveyBlockIntroStepId(blockId: String, introId: String): String =
     "survey_block_${blockId}_intro_${introId}"
 
-private fun getSurveySuccessStepId(blockId: String, successId: String): String =
+private fun getSurveyBlockSuccessStepId(blockId: String, successId: String): String =
     "survey_block_${blockId}_success_${successId}"
 
 private fun getSurveyQuestionStepId(blockId: String, questionId: String): String =

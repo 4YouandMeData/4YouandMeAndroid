@@ -331,7 +331,7 @@ class FeedsViewModel(
         task.data.activityType?.let {
             navigator.navigateTo(
                 rootNavController,
-                TasksToTask(it.type, task.data.taskId, task.data.activityId)
+                TasksToTask(it.type, task.data.taskId)
             )
         }
     }

@@ -93,6 +93,7 @@ class FitnessTask(
     override val steps: List<Step> by lazy {
 
         listOf(
+
             WelcomeStep(
                 identifier = FITNESS_WELCOME,
                 back = Back(welcomeBackImage),
@@ -115,109 +116,58 @@ class FitnessTask(
                 startButtonColor = welcomeStartButtonColor,
                 startButtonTextColor = welcomeStartButtonTextColor,
                 shadowColor = welcomeShadowColor
-            ),
-            IntroductionStep(
-                identifier = FITNESS_START,
-                back = Back(startBackImage),
-                backgroundColor = startBackgroundColor,
-                title = { startTitle ?: it.getString(R.string.FITNESS_title) },
-                titleColor = startTitleColor,
-                description = {
-                    startDescription ?: it.getString(
-                        R.string.FITNESS_start,
-                        "one minute"
-                    )
-                },
-                descriptionColor = startDescriptionColor,
-                image = startImage,
-                button = { startButton ?: it.getString(R.string.TASK_next) },
-                buttonColor = startButtonColor,
-                buttonTextColor = startButtonTextColor,
-            ),
-            IntroductionStep(
-                identifier = FITNESS_INTRO,
-                back = Back(introBackImage),
-                backgroundColor = introBackgroundColor,
-                title = { introTitle ?: it.getString(R.string.FITNESS_title) },
-                titleColor = introTitleColor,
-                description = {
-                    introDescription ?: it.getString(
-                        R.string.FITNESS_intro,
-                        "one minute",
-                        "ten seconds"
-                    )
-                },
-                descriptionColor = introDescriptionColor,
-                image = introImage,
-                button = { introButton ?: it.getString(R.string.TASK_get_started) },
-                buttonColor = introButtonColor,
-                buttonTextColor = introButtonTextColor,
-            ),
-            CountDownStep(
-                identifier = FITNESS_COUNT_DOWN,
-                back = Back(countDownBackImage),
-                backgroundColor = countDownBackgroundColor,
-                titleColor = countDownTitleColor,
-                title = { countDownTitle ?: it.getString(R.string.FITNESS_title) },
-                description = { countDownDescription ?: it.getString(R.string.TASK_countdown) },
-                descriptionColor = countDownDescriptionColor,
-                seconds = countDownSeconds,
-                counterColor = countDownCounterColor,
-                counterProgressColor = countDownCounterProgressColor
-            ),
-            SensorStep(
-                identifier = FITNESS_WALK,
-                backgroundColor = walkBackgroundColor,
-                title = { walkTitle ?: it.getString(R.string.FITNESS_title) },
-                titleColor = walkTitleColor,
-                description = {
-                    walkDescription ?: it.getString(
-                        R.string.FITNESS_walk,
-                        "one minute"
-                    )
-                },
-                descriptionColor = walkDescriptionColor,
-                image = walkImage,
-                target = SensorRecorderTarget.Time(60),
-                recorderConfigurations =
-                listOf(
-                    DeviceMotionRecorderConfig(moshi, 10.toDouble()),
-                    AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                    PedometerRecorderConfig(moshi)
-                ),
-                spokenInstruction = {
-                    walkDescription ?: it.getString(
-                        R.string.FITNESS_walk,
-                        "one minute"
-                    )
-                }
-            ),
-            SensorStep(
-                identifier = FITNESS_SIT,
-                backgroundColor = sitBackgroundColor,
-                title = { sitTitle ?: it.getString(R.string.FITNESS_title) },
-                titleColor = sitTitleColor,
-                description = {
-                    sitDescription ?: it.getString(
-                        R.string.FITNESS_sit,
-                        "ten seconds"
-                    )
-                },
-                descriptionColor = sitDescriptionColor,
-                image = sitImage,
-                target = SensorRecorderTarget.Time(10),
-                recorderConfigurations =
-                listOf(
-                    DeviceMotionRecorderConfig(moshi, 10.toDouble()),
-                    AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                ),
-                spokenInstruction = {
-                    sitDescription ?: it.getString(
-                        R.string.FITNESS_sit,
-                        "ten seconds"
-                    )
-                }
-            ),
+            )
+
+        ).plus(
+
+            getFitnessCoreSteps(
+                startBackImage = startBackImage,
+                startBackgroundColor = startBackgroundColor,
+                startTitle = startTitle,
+                startTitleColor = startTitleColor,
+                startDescription = startDescription,
+                startDescriptionColor = startDescriptionColor,
+                startImage = startImage,
+                startButton = startButton,
+                startButtonColor = startButtonColor,
+                startButtonTextColor = startButtonTextColor,
+                introBackImage = introBackImage,
+                introBackgroundColor = introBackgroundColor,
+                introTitle = introTitle,
+                introTitleColor = introTitleColor,
+                introDescription = introDescription,
+                introDescriptionColor = introDescriptionColor,
+                introImage = introImage,
+                introButton = introButton,
+                introButtonColor = introButtonColor,
+                introButtonTextColor = introButtonTextColor,
+                countDownBackImage = countDownBackImage,
+                countDownBackgroundColor = countDownBackgroundColor,
+                countDownTitle = countDownTitle,
+                countDownTitleColor = countDownTitleColor,
+                countDownDescription = countDownDescription,
+                countDownDescriptionColor = countDownDescriptionColor,
+                countDownSeconds = countDownSeconds,
+                countDownCounterColor = countDownCounterColor,
+                countDownCounterProgressColor = countDownCounterProgressColor,
+                walkBackgroundColor = walkBackgroundColor,
+                walkTitle = walkTitle,
+                walkTitleColor = walkTitleColor,
+                walkDescription = walkDescription,
+                walkDescriptionColor = walkDescriptionColor,
+                walkImage = walkImage,
+                sitBackgroundColor = sitBackgroundColor,
+                sitTitle = sitTitle,
+                sitTitleColor = sitTitleColor,
+                sitDescription = sitDescription,
+                sitDescriptionColor = sitDescriptionColor,
+                sitImage = sitImage,
+                moshi
+            )
+
+
+        ).plus(
+
             EndStep(
                 identifier = FITNESS_END,
                 backgroundColor = endBackgroundColor,
@@ -232,7 +182,9 @@ class FitnessTask(
                 checkMarkBackgroundColor = endCheckMarkBackgroundColor,
                 checkMarkColor = endCheckMarkColor
             )
+
         )
+
     }
 
     companion object {
@@ -250,6 +202,156 @@ class FitnessTask(
         const val FITNESS_SIT: String = "fitness_sit"
 
         const val FITNESS_END: String = "fitness_end"
+
+
+        fun getFitnessCoreSteps(
+            startBackImage: Int,
+            startBackgroundColor: Int,
+            startTitle: String?,
+            startTitleColor: Int,
+            startDescription: String?,
+            startDescriptionColor: Int,
+            startImage: Int,
+            startButton: String?,
+            startButtonColor: Int,
+            startButtonTextColor: Int,
+            introBackImage: Int,
+            introBackgroundColor: Int,
+            introTitle: String?,
+            introTitleColor: Int,
+            introDescription: String?,
+            introDescriptionColor: Int,
+            introImage: Int,
+            introButton: String?,
+            introButtonColor: Int,
+            introButtonTextColor: Int,
+            countDownBackImage: Int,
+            countDownBackgroundColor: Int,
+            countDownTitle: String?,
+            countDownTitleColor: Int,
+            countDownDescription: String?,
+            countDownDescriptionColor: Int,
+            countDownSeconds: Int,
+            countDownCounterColor: Int,
+            countDownCounterProgressColor: Int,
+            walkBackgroundColor: Int,
+            walkTitle: String?,
+            walkTitleColor: Int,
+            walkDescription: String?,
+            walkDescriptionColor: Int,
+            walkImage: Int?,
+            sitBackgroundColor: Int,
+            sitTitle: String?,
+            sitTitleColor: Int,
+            sitDescription: String?,
+            sitDescriptionColor: Int,
+            sitImage: Int?,
+            moshi: Moshi
+        ): List<Step> =
+            listOf(
+                IntroductionStep(
+                    identifier = FITNESS_START,
+                    back = Back(startBackImage),
+                    backgroundColor = startBackgroundColor,
+                    title = { startTitle ?: it.getString(R.string.FITNESS_title) },
+                    titleColor = startTitleColor,
+                    description = {
+                        startDescription ?: it.getString(
+                            R.string.FITNESS_start,
+                            "one minute"
+                        )
+                    },
+                    descriptionColor = startDescriptionColor,
+                    image = startImage,
+                    button = { startButton ?: it.getString(R.string.TASK_next) },
+                    buttonColor = startButtonColor,
+                    buttonTextColor = startButtonTextColor,
+                ),
+                IntroductionStep(
+                    identifier = FITNESS_INTRO,
+                    back = Back(introBackImage),
+                    backgroundColor = introBackgroundColor,
+                    title = { introTitle ?: it.getString(R.string.FITNESS_title) },
+                    titleColor = introTitleColor,
+                    description = {
+                        introDescription ?: it.getString(
+                            R.string.FITNESS_intro,
+                            "one minute",
+                            "ten seconds"
+                        )
+                    },
+                    descriptionColor = introDescriptionColor,
+                    image = introImage,
+                    button = { introButton ?: it.getString(R.string.TASK_get_started) },
+                    buttonColor = introButtonColor,
+                    buttonTextColor = introButtonTextColor,
+                ),
+                CountDownStep(
+                    identifier = FITNESS_COUNT_DOWN,
+                    back = Back(countDownBackImage),
+                    backgroundColor = countDownBackgroundColor,
+                    titleColor = countDownTitleColor,
+                    title = { countDownTitle ?: it.getString(R.string.FITNESS_title) },
+                    description = { countDownDescription ?: it.getString(R.string.TASK_countdown) },
+                    descriptionColor = countDownDescriptionColor,
+                    seconds = countDownSeconds,
+                    counterColor = countDownCounterColor,
+                    counterProgressColor = countDownCounterProgressColor
+                ),
+                SensorStep(
+                    identifier = FITNESS_WALK,
+                    backgroundColor = walkBackgroundColor,
+                    title = { walkTitle ?: it.getString(R.string.FITNESS_title) },
+                    titleColor = walkTitleColor,
+                    description = {
+                        walkDescription ?: it.getString(
+                            R.string.FITNESS_walk,
+                            "one minute"
+                        )
+                    },
+                    descriptionColor = walkDescriptionColor,
+                    image = walkImage,
+                    target = SensorRecorderTarget.Time(60),
+                    recorderConfigurations =
+                    listOf(
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
+                        AccelerometerRecorderConfig(moshi, 10.toDouble()),
+                        PedometerRecorderConfig(moshi)
+                    ),
+                    spokenInstruction = {
+                        walkDescription ?: it.getString(
+                            R.string.FITNESS_walk,
+                            "one minute"
+                        )
+                    }
+                ),
+                SensorStep(
+                    identifier = FITNESS_SIT,
+                    backgroundColor = sitBackgroundColor,
+                    title = { sitTitle ?: it.getString(R.string.FITNESS_title) },
+                    titleColor = sitTitleColor,
+                    description = {
+                        sitDescription ?: it.getString(
+                            R.string.FITNESS_sit,
+                            "ten seconds"
+                        )
+                    },
+                    descriptionColor = sitDescriptionColor,
+                    image = sitImage,
+                    target = SensorRecorderTarget.Time(10),
+                    recorderConfigurations =
+                    listOf(
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
+                        AccelerometerRecorderConfig(moshi, 10.toDouble()),
+                    ),
+                    spokenInstruction = {
+                        sitDescription ?: it.getString(
+                            R.string.FITNESS_sit,
+                            "ten seconds"
+                        )
+                    }
+                )
+            )
 
 
         /* --- result keys --- */

@@ -127,7 +127,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 integrationSuccessToMain()
 
             is TasksToTask ->
-                tasksToTask(action.type, action.id, action.activityId)
+                tasksToTask(action.type, action.id)
 
             is StepToStep -> stepToStep(action.index)
 
