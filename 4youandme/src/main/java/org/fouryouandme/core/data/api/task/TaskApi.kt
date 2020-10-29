@@ -12,7 +12,7 @@ interface TaskApi {
     suspend fun getTask(
         @Header(Headers.AUTH) token: String,
         @Path("id") id: String
-    ): Array<TaskResponse>
+    ): TaskResponse
 
     @GET("api/v1/tasks")
     suspend fun getTasks(

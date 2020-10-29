@@ -1,4 +1,4 @@
-package org.fouryouandme.core.arch.deps.task
+package org.fouryouandme.core.researchkit.task
 
 import org.fouryouandme.core.arch.deps.ImageConfiguration
 import org.fouryouandme.core.arch.deps.modules.TaskModule

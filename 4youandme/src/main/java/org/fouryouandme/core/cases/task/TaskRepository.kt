@@ -15,7 +15,15 @@ import java.io.File
 
 object TaskRepository {
 
-    internal suspend fun TaskModule.getTasks(
+    internal suspend fun TaskModule.fetchTask(
+        token: String,
+        taskId: String
+    ): Either<FourYouAndMeError, Task?> =
+
+        errorModule.unwrapToEither { api.getTask(token, taskId) }
+            .map { it.toTask() }
+
+    internal suspend fun TaskModule.fetchTasks(
         token: String
     ): Either<FourYouAndMeError, List<Task>> =
 

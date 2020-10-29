@@ -7,7 +7,8 @@ import org.fouryouandme.core.arch.error.FourYouAndMeError
 import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
 import org.fouryouandme.core.cases.task.TaskRepository.attachVideo
-import org.fouryouandme.core.cases.task.TaskRepository.getTasks
+import org.fouryouandme.core.cases.task.TaskRepository.fetchTask
+import org.fouryouandme.core.cases.task.TaskRepository.fetchTasks
 import org.fouryouandme.core.cases.task.TaskRepository.uploadFitnessTask
 import org.fouryouandme.core.cases.task.TaskRepository.uploadGaitTask
 import org.fouryouandme.core.cases.task.TaskRepository.uploadQuickActivity
@@ -20,9 +21,13 @@ import java.io.File
 
 object TaskUseCase {
 
+    suspend fun TaskModule.getTask(taskId: String): Either<FourYouAndMeError, Task?> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap { fetchTask(it, taskId) }
+
     suspend fun TaskModule.getTasks(): Either<FourYouAndMeError, List<Task>> =
         authModule.getToken(CachePolicy.MemoryFirst)
-            .flatMap { getTasks(it) }
+            .flatMap { fetchTasks(it) }
 
     suspend fun TaskModule.attachVideo(
         taskId: String,

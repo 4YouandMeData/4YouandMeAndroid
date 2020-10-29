@@ -9,7 +9,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import moe.banana.jsonapi2.ResourceAdapterFactory
 import org.fouryouandme.core.arch.app.FourYouAndMeApp
 import org.fouryouandme.core.arch.deps.modules.PermissionModule
-import org.fouryouandme.core.arch.deps.task.FYAMTaskConfiguration
 import org.fouryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import org.fouryouandme.core.arch.navigation.Navigator
 import org.fouryouandme.core.data.api.auth.AuthApi
@@ -51,6 +50,7 @@ import org.fouryouandme.core.data.api.survey.response.SurveyResponse
 import org.fouryouandme.core.data.api.task.TaskApi
 import org.fouryouandme.core.data.api.task.response.TaskResponse
 import org.fouryouandme.core.data.api.yourdata.YourDataApi
+import org.fouryouandme.core.researchkit.task.FYAMTaskConfiguration
 import org.fouryouandme.researchkit.task.TaskConfiguration
 
 class ForYouAndMeInjector(

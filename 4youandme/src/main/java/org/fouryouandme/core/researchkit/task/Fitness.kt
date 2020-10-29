@@ -1,4 +1,4 @@
-package org.fouryouandme.core.arch.deps.task
+package org.fouryouandme.core.researchkit.task
 
 import arrow.core.computations.either
 import arrow.core.flatMap

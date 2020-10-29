@@ -118,107 +118,55 @@ class GaitTask(
                 startButtonColor = welcomeStartButtonColor,
                 startButtonTextColor = welcomeStartButtonTextColor,
                 shadowColor = welcomeShadowColor
-            ),
-            StartStep(
-                identifier = GAIT_START,
-                back = Back(startBackImage),
-                backgroundColor = startBackgroundColor,
-                title = { startTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = startTitleColor,
-                description = { startDescription ?: it.getString(R.string.GAIT_start) },
-                descriptionColor = startDescriptionColor,
-                button = { startButton ?: it.getString(R.string.TASK_next) },
-                buttonColor = startButtonColor,
-                buttonTextColor = startButtonTextColor,
-            ),
-            IntroductionStep(
-                identifier = GAIT_INTRO,
-                back = Back(introBackImage),
-                backgroundColor = introBackgroundColor,
-                title = { introTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = introTitleColor,
-                description = { introDescription ?: it.getString(R.string.GAIT_intro) },
-                descriptionColor = introDescriptionColor,
-                image = introImage,
-                button = { introButton ?: it.getString(R.string.TASK_next) },
-                buttonColor = introButtonColor,
-                buttonTextColor = introButtonTextColor
-            ),
-            CountDownStep(
-                identifier = GAIT_COUNT_DOWN,
-                back = Back(countDownBackImage),
-                backgroundColor = countDownBackgroundColor,
-                titleColor = countDownTitleColor,
-                title = { countDownTitle ?: it.getString(R.string.GAIT_title) },
-                description = { countDownDescription ?: it.getString(R.string.TASK_countdown) },
-                descriptionColor = countDownDescriptionColor,
-                seconds = countDownSeconds,
-                counterColor = countDownCounterColor,
-                counterProgressColor = countDownCounterProgressColor
-            ),
-            SensorStep(
-                identifier = GAIT_OUTBOUND,
-                backgroundColor = outboundBackgroundColor,
-                title = { outboundTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = outboundTitleColor,
-                description = { outboundDescription ?: it.getString(R.string.GAIT_outbound, 20) },
-                descriptionColor = outboundDescriptionColor,
-                image = null,
-                target = SensorRecorderTarget.Steps(20),
-                recorderConfigurations =
-                listOf(
-                    DeviceMotionRecorderConfig(moshi, 10.toDouble()),
-                    AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                    PedometerRecorderConfig(moshi)
-                ),
-                spokenInstruction = {
-                    outboundDescription ?: it.getString(
-                        R.string.GAIT_outbound,
-                        20
-                    )
-                }
-            ),
-            SensorStep(
-                identifier = GAIT_RETURN,
-                backgroundColor = returnBackgroundColor,
-                title = { returnTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = returnTitleColor,
-                description = { returnDescription ?: it.getString(R.string.GAIT_return) },
-                descriptionColor = returnDescriptionColor,
-                image = null,
-                target = SensorRecorderTarget.Steps(20),
-                recorderConfigurations =
-                listOf(
-                    DeviceMotionRecorderConfig(moshi, 10.toDouble()),
-                    AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                    PedometerRecorderConfig(moshi)
-                ),
-                spokenInstruction = {
-                    returnDescription ?: it.getString(
-                        R.string.GAIT_return
-                    )
-                }
-            ),
-            SensorStep(
-                identifier = GAIT_REST,
-                backgroundColor = restBackgroundColor,
-                title = { restTitle ?: it.getString(R.string.GAIT_title) },
-                titleColor = restTitleColor,
-                description = { restDescription ?: it.getString(R.string.GAIT_stand) },
-                descriptionColor = restDescriptionColor,
-                image = null,
-                target = SensorRecorderTarget.Time(20),
-                recorderConfigurations =
-                listOf(
-                    DeviceMotionRecorderConfig(moshi, 10.toDouble()),
-                    AccelerometerRecorderConfig(moshi, 10.toDouble()),
-                ),
-                spokenInstruction = {
-                    returnDescription ?: it.getString(
-                        R.string.GAIT_stand
-                    )
-                }
-            ),
+            )
+        ).plus(
+            getGaitCoreSteps(
+                startBackImage = startBackImage,
+                startBackgroundColor = startBackgroundColor,
+                startTitle = startTitle,
+                startTitleColor = startTitleColor,
+                startDescription = startDescription,
+                startDescriptionColor = startDescriptionColor,
+                startButton = startButton,
+                startButtonColor = startButtonColor,
+                startButtonTextColor = startButtonTextColor,
+                introBackImage = introBackImage,
+                introBackgroundColor = introBackgroundColor,
+                introTitle = introTitle,
+                introTitleColor = introTitleColor,
+                introDescription = introDescription,
+                introDescriptionColor = introDescriptionColor,
+                introImage = introImage,
+                introButton = introButton,
+                introButtonColor = introButtonColor,
+                introButtonTextColor = introButtonTextColor,
+                countDownBackImage = countDownBackImage,
+                countDownBackgroundColor = countDownBackgroundColor,
+                countDownTitle = countDownTitle,
+                countDownTitleColor = countDownTitleColor,
+                countDownDescription = countDownDescription,
+                countDownDescriptionColor = countDownDescriptionColor,
+                countDownSeconds = countDownSeconds,
+                countDownCounterColor = countDownCounterColor,
+                countDownCounterProgressColor = countDownCounterProgressColor,
+                outboundBackgroundColor = outboundBackgroundColor,
+                outboundTitle = outboundTitle,
+                outboundTitleColor = outboundTitleColor,
+                outboundDescription = outboundDescription,
+                outboundDescriptionColor = outboundDescriptionColor,
+                returnBackgroundColor = returnBackgroundColor,
+                returnTitle = returnTitle,
+                returnTitleColor = returnTitleColor,
+                returnDescription = returnDescription,
+                returnDescriptionColor = returnDescriptionColor,
+                restBackgroundColor = restBackgroundColor,
+                restTitle = restTitle,
+                restTitleColor = restTitleColor,
+                restDescription = restDescription,
+                restDescriptionColor = restDescriptionColor,
+                moshi = moshi
+            )
+        ).plus(
             EndStep(
                 identifier = GAIT_END,
                 backgroundColor = endBackgroundColor,
@@ -236,6 +184,7 @@ class GaitTask(
         )
 
     }
+
 
     companion object {
 
@@ -283,6 +232,162 @@ class GaitTask(
 
         const val GAIT_REST_ACCELEROMETER: String =
             "${AccelerometerRecorder.ACCELEROMETER_IDENTIFIER}_${GAIT_REST}"
+
+
+        fun getGaitCoreSteps(
+            startBackImage: Int,
+            startBackgroundColor: Int,
+            startTitle: String?,
+            startTitleColor: Int,
+            startDescription: String?,
+            startDescriptionColor: Int,
+            startButton: String?,
+            startButtonColor: Int,
+            startButtonTextColor: Int,
+            introBackImage: Int,
+            introBackgroundColor: Int,
+            introTitle: String?,
+            introTitleColor: Int,
+            introDescription: String?,
+            introDescriptionColor: Int,
+            introImage: Int,
+            introButton: String?,
+            introButtonColor: Int,
+            introButtonTextColor: Int,
+            countDownBackImage: Int,
+            countDownBackgroundColor: Int,
+            countDownTitle: String?,
+            countDownTitleColor: Int,
+            countDownDescription: String?,
+            countDownDescriptionColor: Int,
+            countDownSeconds: Int,
+            countDownCounterColor: Int,
+            countDownCounterProgressColor: Int,
+            outboundBackgroundColor: Int,
+            outboundTitle: String?,
+            outboundTitleColor: Int,
+            outboundDescription: String?,
+            outboundDescriptionColor: Int,
+            returnBackgroundColor: Int,
+            returnTitle: String?,
+            returnTitleColor: Int,
+            returnDescription: String?,
+            returnDescriptionColor: Int,
+            restBackgroundColor: Int,
+            restTitle: String?,
+            restTitleColor: Int,
+            restDescription: String?,
+            restDescriptionColor: Int,
+            moshi: Moshi
+        ): List<Step> =
+
+            listOf(
+                StartStep(
+                    identifier = GAIT_START,
+                    back = Back(startBackImage),
+                    backgroundColor = startBackgroundColor,
+                    title = { startTitle ?: it.getString(R.string.GAIT_title) },
+                    titleColor = startTitleColor,
+                    description = { startDescription ?: it.getString(R.string.GAIT_start) },
+                    descriptionColor = startDescriptionColor,
+                    button = { startButton ?: it.getString(R.string.TASK_next) },
+                    buttonColor = startButtonColor,
+                    buttonTextColor = startButtonTextColor,
+                ),
+                IntroductionStep(
+                    identifier = GAIT_INTRO,
+                    back = Back(introBackImage),
+                    backgroundColor = introBackgroundColor,
+                    title = { introTitle ?: it.getString(R.string.GAIT_title) },
+                    titleColor = introTitleColor,
+                    description = { introDescription ?: it.getString(R.string.GAIT_intro) },
+                    descriptionColor = introDescriptionColor,
+                    image = introImage,
+                    button = { introButton ?: it.getString(R.string.TASK_next) },
+                    buttonColor = introButtonColor,
+                    buttonTextColor = introButtonTextColor
+                ),
+                CountDownStep(
+                    identifier = GAIT_COUNT_DOWN,
+                    back = Back(countDownBackImage),
+                    backgroundColor = countDownBackgroundColor,
+                    titleColor = countDownTitleColor,
+                    title = { countDownTitle ?: it.getString(R.string.GAIT_title) },
+                    description = { countDownDescription ?: it.getString(R.string.TASK_countdown) },
+                    descriptionColor = countDownDescriptionColor,
+                    seconds = countDownSeconds,
+                    counterColor = countDownCounterColor,
+                    counterProgressColor = countDownCounterProgressColor
+                ),
+                SensorStep(
+                    identifier = GAIT_OUTBOUND,
+                    backgroundColor = outboundBackgroundColor,
+                    title = { outboundTitle ?: it.getString(R.string.GAIT_title) },
+                    titleColor = outboundTitleColor,
+                    description = {
+                        outboundDescription ?: it.getString(
+                            R.string.GAIT_outbound,
+                            20
+                        )
+                    },
+                    descriptionColor = outboundDescriptionColor,
+                    image = null,
+                    target = SensorRecorderTarget.Steps(20),
+                    recorderConfigurations =
+                    listOf(
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
+                        AccelerometerRecorderConfig(moshi, 10.toDouble()),
+                        PedometerRecorderConfig(moshi)
+                    ),
+                    spokenInstruction = {
+                        outboundDescription ?: it.getString(
+                            R.string.GAIT_outbound,
+                            20
+                        )
+                    }
+                ),
+                SensorStep(
+                    identifier = GAIT_RETURN,
+                    backgroundColor = returnBackgroundColor,
+                    title = { returnTitle ?: it.getString(R.string.GAIT_title) },
+                    titleColor = returnTitleColor,
+                    description = { returnDescription ?: it.getString(R.string.GAIT_return) },
+                    descriptionColor = returnDescriptionColor,
+                    image = null,
+                    target = SensorRecorderTarget.Steps(20),
+                    recorderConfigurations =
+                    listOf(
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
+                        AccelerometerRecorderConfig(moshi, 10.toDouble()),
+                        PedometerRecorderConfig(moshi)
+                    ),
+                    spokenInstruction = {
+                        returnDescription ?: it.getString(
+                            R.string.GAIT_return
+                        )
+                    }
+                ),
+                SensorStep(
+                    identifier = GAIT_REST,
+                    backgroundColor = restBackgroundColor,
+                    title = { restTitle ?: it.getString(R.string.GAIT_title) },
+                    titleColor = restTitleColor,
+                    description = { restDescription ?: it.getString(R.string.GAIT_stand) },
+                    descriptionColor = restDescriptionColor,
+                    image = null,
+                    target = SensorRecorderTarget.Time(20),
+                    recorderConfigurations =
+                    listOf(
+                        DeviceMotionRecorderConfig(moshi, 10.toDouble()),
+                        AccelerometerRecorderConfig(moshi, 10.toDouble()),
+                    ),
+                    spokenInstruction = {
+                        returnDescription ?: it.getString(
+                            R.string.GAIT_stand
+                        )
+                    }
+                )
+            )
 
     }
 

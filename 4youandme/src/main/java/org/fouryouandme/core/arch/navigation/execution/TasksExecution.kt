@@ -1,8 +1,8 @@
 package org.fouryouandme.core.arch.navigation.execution
 
 import org.fouryouandme.R
-import org.fouryouandme.core.arch.deps.task.FYAMTaskConfiguration
 import org.fouryouandme.core.arch.navigation.NavigationExecution
+import org.fouryouandme.core.researchkit.task.FYAMTaskConfiguration
 import org.fouryouandme.tasks.TaskFragment
 
 fun tasksToTask(type: String, id: String, activityId: String): NavigationExecution = {

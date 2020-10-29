@@ -1,4 +1,4 @@
-package org.fouryouandme.core.arch.deps.task
+package org.fouryouandme.core.researchkit.task
 
 import com.squareup.moshi.Moshi
 import org.fouryouandme.core.arch.deps.ImageConfiguration
@@ -8,6 +8,8 @@ import org.fouryouandme.core.cases.CachePolicy
 import org.fouryouandme.core.cases.auth.AuthUseCase.getToken
 import org.fouryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import org.fouryouandme.core.cases.survey.SurveyUseCase.getSurvey
+import org.fouryouandme.core.cases.task.TaskUseCase.getTask
+import org.fouryouandme.core.entity.activity.TaskActivity
 import org.fouryouandme.core.entity.activity.TaskActivityType
 import org.fouryouandme.core.ext.mapNotNull
 import org.fouryouandme.core.ext.web.CamCogInterface
@@ -44,7 +46,22 @@ class FYAMTaskConfiguration(
                     TaskIdentifiers.VIDEO_DIARY ->
                         buildVideoDiary(id, config, imageConfiguration)
                     TaskIdentifiers.GAIT ->
-                        buildGait(id, config, imageConfiguration, moshi)
+                        taskModule.getTask(id)
+                            .nullToError()
+                            .map { it.activity as? TaskActivity }
+                            .orNull()
+                            ?.let {
+
+                                FYAMGaitTask(
+                                    id,
+                                    config,
+                                    imageConfiguration,
+                                    it.welcomePage,
+                                    it.successPage,
+                                    moshi
+                                )
+
+                            }
                     TaskIdentifiers.FITNESS ->
                         buildFitness(id, config, imageConfiguration, moshi)
                     TaskActivityType.Survey.typeId ->
