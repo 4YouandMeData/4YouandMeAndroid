@@ -1,6 +1,6 @@
 object Library {
 
-    const val name = "foryouandme"
+    const val name = "4youandme"
 
     const val pomUrl = "https://github.com/4youandme/4YouandmeAndroid"
     const val pomScmUrl = "https://github.com/4youandme/4YouandmeAndroid"
