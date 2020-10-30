@@ -1,6 +1,6 @@
 object Library {
 
-    const val name = "4youandme"
+    const val name = "foryouandme"
 
     const val pomUrl = "https://github.com/4youandme/4YouandmeAndroid"
     const val pomScmUrl = "https://github.com/4youandme/4YouandmeAndroid"
@@ -12,7 +12,6 @@ object Library {
 
     const val pomLicenseName = "MIT"
     const val pomLicenseUrl = "http://opensource.org/licenses/MIT"
-    const val pomLicenseDist = "repo"
 
     const val pomDeveloperId = "giacomo-parisi"
     const val pomDeveloperName = "Giacomo Parisi"
@@ -20,6 +19,7 @@ object Library {
 
     const val repo = "4youandme"
     const val organization = "4youandme"
+
     const val group = "com.foryouandme"
 
 }
