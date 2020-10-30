@@ -12,7 +12,7 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.9" // available: "1.4.0"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.4.0"
 
     const val com_squareup_retrofit2: String = "2.9.0"
 
@@ -44,9 +44,9 @@ object Versions {
 
     const val firebase_crashlytics_ktx: String = "17.2.2"
 
-    const val firebase_analytics_ktx: String = "17.6.0" // available: "18.0.0"
+    const val firebase_analytics_ktx: String = "18.0.0"
 
-    const val firebase_messaging_ktx: String = "20.3.0" // available: "21.0.0"
+    const val firebase_messaging_ktx: String = "21.0.0"
 
     const val gradle_bintray_plugin: String = "1.8.5"
 
@@ -56,7 +56,7 @@ object Versions {
 
     const val swiperefreshlayout: String = "1.1.0"
 
-    const val constraintlayout: String = "2.0.2" // available: "2.0.3"
+    const val constraintlayout: String = "2.0.3"
 
     const val google_services: String = "4.3.4"
 
@@ -78,7 +78,7 @@ object Versions {
 
     const val lint_gradle: String = "27.1.0"
 
-    const val threetenabp: String = "1.2.4" // available: "1.3.0"
+    const val threetenabp: String = "1.3.0"
 
     const val span_droid: String = "0.1"
 

@@ -85,7 +85,7 @@ dependencies {
     implementation(Libs.arrow_syntax)
     kapt(Libs.arrow_meta)
 
-    /* coroutines */
+    /* --- coroutines --- */
 
     implementation(Libs.kotlinx_coroutines_core)
     implementation(Libs.kotlinx_coroutines_android)
