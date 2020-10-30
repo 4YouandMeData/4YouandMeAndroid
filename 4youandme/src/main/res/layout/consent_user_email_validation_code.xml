@@ -174,7 +174,7 @@
 
     </ScrollView>
 
-    <com.fouryouandme.core.arch.loading.LoadingView
+    <com.foryouandme.core.arch.loading.LoadingView
         android:id="@+id/consent_user_email_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

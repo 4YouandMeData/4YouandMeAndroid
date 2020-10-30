@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/web"
-        android:name="com.fouryouandme.web.WebFragment"
+        android:name="com.foryouandme.web.WebFragment"
         android:label="web"
         tools:layout="@layout/web">
 
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/auth"
-        android:name="com.fouryouandme.auth.AuthFragment"
+        android:name="com.foryouandme.auth.AuthFragment"
         android:label="auth"
         tools:layout="@layout/auth">
 
@@ -60,7 +60,7 @@
 
     <fragment
         android:id="@+id/main"
-        android:name="com.fouryouandme.main.MainFragment"
+        android:name="com.foryouandme.main.MainFragment"
         android:label="main"
         tools:layout="@layout/main">
 
@@ -93,19 +93,19 @@
 
     <fragment
         android:id="@+id/task"
-        android:name="com.fouryouandme.tasks.TaskFragment"
+        android:name="com.foryouandme.tasks.TaskFragment"
         android:label="task"
         tools:layout="@layout/task" />
 
     <fragment
         android:id="@+id/about_you"
-        android:name="com.fouryouandme.aboutyou.AboutYouFragment"
+        android:name="com.foryouandme.aboutyou.AboutYouFragment"
         android:label="AboutYouFragment"
         tools:layout="@layout/about_you_menu" />
 
     <fragment
         android:id="@+id/html_details"
-        android:name="com.fouryouandme.htmldetails.HtmlDetailsFragment"
+        android:name="com.foryouandme.htmldetails.HtmlDetailsFragment"
         android:label="HtmlDetailsFragment"
         tools:layout="@layout/html_detail">
 

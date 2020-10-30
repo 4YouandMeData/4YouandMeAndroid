@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/consent_user_name"
-        android:name="com.fouryouandme.auth.consent.user.name.ConsentUserNameFragment"
+        android:name="com.foryouandme.auth.consent.user.name.ConsentUserNameFragment"
         android:label="consent_user_name"
         tools:layout="@layout/consent_user_name">
 
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/consent_user_email"
-        android:name="com.fouryouandme.auth.consent.user.email.ConsentUserEmailFragment"
+        android:name="com.foryouandme.auth.consent.user.email.ConsentUserEmailFragment"
         android:label="consent_user_email"
         tools:layout="@layout/consent_user_email">
 
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/consent_user_email_validation_code"
-        android:name="com.fouryouandme.auth.consent.user.email.code.ConsentUserEmailValidationCodeFragment"
+        android:name="com.foryouandme.auth.consent.user.email.code.ConsentUserEmailValidationCodeFragment"
         android:label="consent_user_email_validation_code"
         tools:layout="@layout/consent_user_email_validation_code">
 
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/consent_user_signature"
-        android:name="com.fouryouandme.auth.consent.user.signature.ConsentUserSignatureFragment"
+        android:name="com.foryouandme.auth.consent.user.signature.ConsentUserSignatureFragment"
         android:label="consent_user_signature"
         tools:layout="@layout/consent_user_signature">
 
@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/consent_user_success"
-        android:name="com.fouryouandme.auth.consent.user.success.ConsentUserSuccessFragment"
+        android:name="com.foryouandme.auth.consent.user.success.ConsentUserSuccessFragment"
         android:label="consent_user_success"
         tools:layout="@layout/consent_user_page" />
 

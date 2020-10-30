@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/consent_review_info"
-        android:name="com.fouryouandme.auth.consent.review.info.ConsentReviewInfoFragment"
+        android:name="com.foryouandme.auth.consent.review.info.ConsentReviewInfoFragment"
         android:label="consent_review_info"
         tools:layout="@layout/consent_review_info">
 
@@ -19,7 +19,7 @@
 
     <dialog
         android:id="@+id/consent_review_disagree"
-        android:name="com.fouryouandme.auth.consent.review.disagree.ConsentReviewDisagreeFragment"
+        android:name="com.foryouandme.auth.consent.review.disagree.ConsentReviewDisagreeFragment"
         android:label="consent_review_disagree"
         tools:layout="@layout/consent_review_disagree" />
 

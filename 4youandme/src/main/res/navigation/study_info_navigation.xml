@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/study_info"
-        android:name="com.fouryouandme.studyinfo.StudyInfoFragment"
+        android:name="com.foryouandme.studyinfo.StudyInfoFragment"
         android:label="study_info"
         tools:layout="@layout/study_info" />
 

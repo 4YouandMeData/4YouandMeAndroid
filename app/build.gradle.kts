@@ -14,7 +14,7 @@ android {
     compileSdkVersion(AndroidConfig.compile_sdk)
 
     defaultConfig {
-        applicationId = "com.fouryouandme.app"
+        applicationId = "com.foryouandme.app"
         minSdkVersion(AndroidConfig.min_sdk)
         targetSdkVersion(AndroidConfig.target_sdk)
         versionCode = AndroidConfig.version_code

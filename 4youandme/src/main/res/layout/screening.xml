@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="@id/toolbar"
         app:layout_constraintTop_toTopOf="@id/toolbar" />
 
-    <com.fouryouandme.core.arch.loading.LoadingView
+    <com.foryouandme.core.arch.loading.LoadingView
         android:id="@+id/loading"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.fouryouandme.core.arch.error.ErrorView
+    <com.foryouandme.core.arch.error.ErrorView
         android:id="@+id/error"
         android:layout_width="0dp"
         android:layout_height="0dp"

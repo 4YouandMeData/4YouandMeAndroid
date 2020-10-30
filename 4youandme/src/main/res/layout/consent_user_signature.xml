@@ -125,7 +125,7 @@
         app:layout_constraintStart_toStartOf="@id/footer"
         app:layout_constraintTop_toTopOf="@id/footer" />
 
-    <com.fouryouandme.core.arch.loading.LoadingView
+    <com.foryouandme.core.arch.loading.LoadingView
         android:id="@+id/consent_user_signature_loading"
         android:layout_width="0dp"
         android:layout_height="0dp"

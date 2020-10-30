@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/integration_welcome"
-        android:name="com.fouryouandme.auth.integration.welcome.IntegrationWelcomeFragment"
+        android:name="com.foryouandme.auth.integration.welcome.IntegrationWelcomeFragment"
         android:label="integration_welcome"
         tools:layout="@layout/integration_welcome">
 
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/integration_page"
-        android:name="com.fouryouandme.auth.integration.page.IntegrationPageFragment"
+        android:name="com.foryouandme.auth.integration.page.IntegrationPageFragment"
         android:label="integration_page"
         tools:layout="@layout/integration_page">
 
@@ -110,7 +110,7 @@
 
     <fragment
         android:id="@+id/integration_login"
-        android:name="com.fouryouandme.auth.integration.login.IntegrationLoginFragment"
+        android:name="com.foryouandme.auth.integration.login.IntegrationLoginFragment"
         android:label="integration_login"
         tools:layout="@layout/integration_login">
 
@@ -152,7 +152,7 @@
 
     <fragment
         android:id="@+id/integration_success"
-        android:name="com.fouryouandme.auth.integration.success.IntegrationSuccessFragment"
+        android:name="com.foryouandme.auth.integration.success.IntegrationSuccessFragment"
         android:label="integration_success"
         tools:layout="@layout/integration_page" />
 

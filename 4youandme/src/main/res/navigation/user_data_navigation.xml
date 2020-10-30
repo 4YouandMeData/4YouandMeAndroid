@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/yourDataFragment"
-        android:name="com.fouryouandme.yourdata.YourDataFragment"
+        android:name="com.foryouandme.yourdata.YourDataFragment"
         android:label="YourDataFragment"
         tools:layout="@layout/your_data" />
 

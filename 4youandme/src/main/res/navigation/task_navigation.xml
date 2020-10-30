@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/step"
-        android:name="com.fouryouandme.researchkit.step.StepContainerFragment"
+        android:name="com.foryouandme.researchkit.step.StepContainerFragment"
         android:label="step">
 
         <argument

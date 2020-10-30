@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/opt_in_welcome"
-        android:name="com.fouryouandme.auth.optin.welcome.OptInWelcomeFragment"
+        android:name="com.foryouandme.auth.optin.welcome.OptInWelcomeFragment"
         android:label="opt_in_welcome"
         tools:layout="@layout/opt_in_welcome">
 
@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/opt_in_permission"
-        android:name="com.fouryouandme.auth.optin.permission.OptInPermissionFragment"
+        android:name="com.foryouandme.auth.optin.permission.OptInPermissionFragment"
         android:label="opt_in_permission"
         tools:layout="@layout/opt_in_permission">
 
@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/opt_in_success"
-        android:name="com.fouryouandme.auth.optin.success.OptInSuccessFragment"
+        android:name="com.foryouandme.auth.optin.success.OptInSuccessFragment"
         android:label="opt_in_success"
         tools:layout="@layout/opt_in_success" />
 

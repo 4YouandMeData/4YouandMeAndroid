@@ -1,0 +1,12 @@
+package com.foryouandme.core.arch.navigation.execution
+
+import com.foryouandme.R
+import com.foryouandme.core.arch.navigation.NavigationExecution
+import com.foryouandme.tasks.TaskFragment
+
+fun tasksToTask(type: String, id: String): NavigationExecution = {
+    it.navigate(
+        R.id.action_main_to_task,
+        TaskFragment.getBundle(type, id, hashMapOf())
+    )
+}

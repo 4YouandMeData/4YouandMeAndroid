@@ -12,12 +12,12 @@
         android:layout_height="match_parent"
         app:defaultNavHost="true" />
 
-    <com.fouryouandme.core.arch.loading.LoadingView
+    <com.foryouandme.core.arch.loading.LoadingView
         android:id="@+id/loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.fouryouandme.core.arch.error.ErrorView
+    <com.foryouandme.core.arch.error.ErrorView
         android:id="@+id/error"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
