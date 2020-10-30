@@ -4,7 +4,7 @@ object AndroidConfig {
     const val target_sdk = 29
     const val compile_sdk = 29
     const val version_code = 8
-    const val version_name = "0.1.6"
+    const val version_name = "0.1.7"
 
     const val test_instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"
 }
