@@ -68,6 +68,7 @@ dependencies {
 
     implementation(Libs.constraintlayout)
     implementation(Libs.viewpager2)
+    implementation(Libs.swiperefreshlayout)
 
     /* --- android arch --- */
 

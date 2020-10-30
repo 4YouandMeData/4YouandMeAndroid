@@ -1,3 +1,4 @@
+import kotlin.String
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -39,8 +40,6 @@ object Versions {
 
     const val android_maven_gradle_plugin: String = "2.1"
 
-    const val dokka_android_gradle_plugin: String = "0.9.18"
-
     const val firebase_crashlytics_gradle: String = "2.3.0"
 
     const val firebase_crashlytics_ktx: String = "17.2.2"
@@ -51,11 +50,11 @@ object Versions {
 
     const val gradle_bintray_plugin: String = "1.8.5"
 
-    const val dokka_gradle_plugin: String = "1.4.10" // available: "1.4.10.2"
-
     const val logging_interceptor: String = "4.9.0"
 
     const val recycler_droid_core: String = "1.8.0-beta06"
+
+    const val swiperefreshlayout: String = "1.1.0"
 
     const val constraintlayout: String = "2.0.2" // available: "2.0.3"
 
