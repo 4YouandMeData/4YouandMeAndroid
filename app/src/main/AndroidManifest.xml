@@ -1,6 +1,6 @@
 ***REMOVED***
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.fouryouandme.app">
+    package="com.fouryouandme.app">
 
     <application
         android:name=".SampleApp"

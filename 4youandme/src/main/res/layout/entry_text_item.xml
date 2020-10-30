@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/PLACEHOLDER_title" />
 
-    <org.fouryouandme.core.view.EditTextWithRemovableTextWatchers
+    <com.fouryouandme.core.view.EditTextWithRemovableTextWatchers
         android:id="@+id/entry"
         style="@style/text_paragraph"
         android:layout_width="0dp"

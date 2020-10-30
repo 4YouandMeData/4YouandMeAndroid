@@ -66,7 +66,7 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <org.fouryouandme.core.arch.loading.LoadingView
+    <com.fouryouandme.core.arch.loading.LoadingView
         android:id="@+id/loading"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header" />
 
-    <org.fouryouandme.core.arch.error.ErrorView
+    <com.fouryouandme.core.arch.error.ErrorView
         android:id="@+id/error"
         android:layout_width="0dp"
         android:layout_height="0dp"

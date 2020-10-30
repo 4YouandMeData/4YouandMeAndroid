@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/splash"
-        android:name="org.fouryouandme.auth.splash.SplashFragment"
+        android:name="com.fouryouandme.auth.splash.SplashFragment"
         android:label="splash"
         tools:layout="@layout/splash">
 
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/welcome"
-        android:name="org.fouryouandme.auth.welcome.WelcomeFragment"
+        android:name="com.fouryouandme.auth.welcome.WelcomeFragment"
         android:label="welcome"
         tools:layout="@layout/welcome">
 
@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/sign_up_info"
-        android:name="org.fouryouandme.auth.signup.info.SignUpInfoFragment"
+        android:name="com.fouryouandme.auth.signup.info.SignUpInfoFragment"
         android:label="sign_up_info"
         tools:layout="@layout/sign_up_info">
 
@@ -75,13 +75,13 @@
 
     <fragment
         android:id="@+id/sign_up_later"
-        android:name="org.fouryouandme.auth.signup.later.SignUpLaterFragment"
+        android:name="com.fouryouandme.auth.signup.later.SignUpLaterFragment"
         android:label="sign_up_later"
         tools:layout="@layout/sign_up_later" />
 
     <fragment
         android:id="@+id/enter_phone"
-        android:name="org.fouryouandme.auth.phone.EnterPhoneFragment"
+        android:name="com.fouryouandme.auth.phone.EnterPhoneFragment"
         android:label="enter_phone"
         tools:layout="@layout/enter_phone">
 
@@ -109,7 +109,7 @@
 
     <fragment
         android:id="@+id/phone_validation_code"
-        android:name="org.fouryouandme.auth.phone.code.PhoneValidationCodeFragment"
+        android:name="com.fouryouandme.auth.phone.code.PhoneValidationCodeFragment"
         android:label="phone_validation_code"
         tools:layout="@layout/phone_validation_code">
 
@@ -137,7 +137,7 @@
 
     <fragment
         android:id="@+id/screening"
-        android:name="org.fouryouandme.auth.screening.ScreeningFragment"
+        android:name="com.fouryouandme.auth.screening.ScreeningFragment"
         android:label="screening"
         tools:layout="@layout/screening">
 
@@ -155,7 +155,7 @@
 
     <fragment
         android:id="@+id/consent_info"
-        android:name="org.fouryouandme.auth.consent.informed.ConsentInfoFragment"
+        android:name="com.fouryouandme.auth.consent.informed.ConsentInfoFragment"
         android:label="consent_info"
         tools:layout="@layout/consent_info">
 
@@ -173,7 +173,7 @@
 
     <fragment
         android:id="@+id/consent_review"
-        android:name="org.fouryouandme.auth.consent.review.ConsentReviewFragment"
+        android:name="com.fouryouandme.auth.consent.review.ConsentReviewFragment"
         android:label="consent_review"
         tools:layout="@layout/consent_review">
 
@@ -191,7 +191,7 @@
 
     <fragment
         android:id="@+id/opt_in"
-        android:name="org.fouryouandme.auth.optin.OptInFragment"
+        android:name="com.fouryouandme.auth.optin.OptInFragment"
         android:label="opt_in"
         tools:layout="@layout/opt_in">
 
@@ -209,7 +209,7 @@
 
     <fragment
         android:id="@+id/consent_user"
-        android:name="org.fouryouandme.auth.consent.user.ConsentUserFragment"
+        android:name="com.fouryouandme.auth.consent.user.ConsentUserFragment"
         android:label="consent_user"
         tools:layout="@layout/consent_user">
 
@@ -227,7 +227,7 @@
 
     <fragment
         android:id="@+id/integration"
-        android:name="org.fouryouandme.auth.integration.IntegrationFragment"
+        android:name="com.fouryouandme.auth.integration.IntegrationFragment"
         android:label="integration"
         tools:layout="@layout/integration" />
 

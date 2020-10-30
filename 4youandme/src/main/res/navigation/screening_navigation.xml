@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/screening_welcome"
-        android:name="org.fouryouandme.auth.screening.welcome.ScreeningWelcomeFragment"
+        android:name="com.fouryouandme.auth.screening.welcome.ScreeningWelcomeFragment"
         android:label="screening_welcome"
         tools:layout="@layout/screening_welcome">
 
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/screening_page"
-        android:name="org.fouryouandme.auth.screening.page.ScreeningPageFragment"
+        android:name="com.fouryouandme.auth.screening.page.ScreeningPageFragment"
         android:label="screening_page"
         tools:layout="@layout/screening_page">
 
@@ -71,7 +71,7 @@
 
     <fragment
         android:id="@+id/screening_questions"
-        android:name="org.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
+        android:name="com.fouryouandme.auth.screening.questions.ScreeningQuestionsFragment"
         android:label="screening_questions"
         tools:layout="@layout/screening_questions">
 
@@ -95,13 +95,13 @@
 
     <fragment
         android:id="@+id/screening_success"
-        android:name="org.fouryouandme.auth.screening.success.ScreeningSuccessFragment"
+        android:name="com.fouryouandme.auth.screening.success.ScreeningSuccessFragment"
         android:label="screening_success"
         tools:layout="@layout/screening_page" />
 
     <fragment
         android:id="@+id/screening_failure"
-        android:name="org.fouryouandme.auth.screening.failure.ScreeningFailureFragment"
+        android:name="com.fouryouandme.auth.screening.failure.ScreeningFailureFragment"
         android:label="screening_failure"
         tools:layout="@layout/screening_page" />
 

@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="@id/toolbar"
         android:visibility="gone"/>
 
-    <org.fouryouandme.core.arch.loading.LoadingView
+    <com.fouryouandme.core.arch.loading.LoadingView
         android:id="@+id/task_loading"
         android:layout_width="0dp"
         android:layout_height="0dp"

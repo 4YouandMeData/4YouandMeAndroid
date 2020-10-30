@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/about_you_menu"
-        android:name="org.fouryouandme.aboutyou.menu.AboutYouMenuFragment"
+        android:name="com.fouryouandme.aboutyou.menu.AboutYouMenuFragment"
         android:label="about_you_menu"
         tools:layout="@layout/about_you_menu">
 
@@ -47,13 +47,13 @@
 
     <fragment
         android:id="@+id/about_you_review_consent"
-        android:name="org.fouryouandme.aboutyou.review.AboutYouReviewConsentFragment"
+        android:name="com.fouryouandme.aboutyou.review.AboutYouReviewConsentFragment"
         android:label="AboutYouReviewConsentFragment"
         tools:layout="@layout/about_you_review_consent" />
 
     <fragment
         android:id="@+id/about_you_apps_and_devices"
-        android:name="org.fouryouandme.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragment"
+        android:name="com.fouryouandme.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragment"
         android:label="AboutYouAppsAndDevicesFragment"
         tools:layout="@layout/apps_and_devices">
 
@@ -76,7 +76,7 @@
 
     <fragment
         android:id="@+id/about_you_integration_login"
-        android:name="org.fouryouandme.aboutyou.integration.AboutYouIntegrationLoginFragment"
+        android:name="com.fouryouandme.aboutyou.integration.AboutYouIntegrationLoginFragment"
         android:label="about_you_integration_login"
         tools:layout="@layout/about_you_integration_login">
 
@@ -88,13 +88,13 @@
 
     <fragment
         android:id="@+id/about_you_permissions"
-        android:name="org.fouryouandme.aboutyou.permissions.AboutYouPermissionsFragment"
+        android:name="com.fouryouandme.aboutyou.permissions.AboutYouPermissionsFragment"
         android:label="about_you_permissions"
         tools:layout="@layout/permissions" />
 
     <fragment
         android:id="@+id/about_you_user_info"
-        android:name="org.fouryouandme.aboutyou.userInfo.AboutYouUserInfoFragment"
+        android:name="com.fouryouandme.aboutyou.userInfo.AboutYouUserInfoFragment"
         android:label="about_you_user_info"
         tools:layout="@layout/user_info" />
 

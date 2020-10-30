@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:listitem="@layout/permission_item" />
 
-    <org.fouryouandme.core.arch.loading.LoadingView
+    <com.fouryouandme.core.arch.loading.LoadingView
         android:id="@+id/loading"
         android:layout_width="0dp"
         android:layout_height="0dp"

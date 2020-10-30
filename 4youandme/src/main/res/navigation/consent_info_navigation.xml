@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/consent_info_welcome"
-        android:name="org.fouryouandme.auth.consent.informed.welcome.ConsentInfoWelcomeFragment"
+        android:name="com.fouryouandme.auth.consent.informed.welcome.ConsentInfoWelcomeFragment"
         android:label="consent_info_welcome"
         tools:layout="@layout/consent_info_welcome">
 
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/consent_info_page"
-        android:name="org.fouryouandme.auth.consent.informed.page.ConsentInfoPageFragment"
+        android:name="com.fouryouandme.auth.consent.informed.page.ConsentInfoPageFragment"
         android:label="consent_info_page"
         tools:layout="@layout/consent_info_page">
 
@@ -96,7 +96,7 @@
 
     <fragment
         android:id="@+id/consent_info_question"
-        android:name="org.fouryouandme.auth.consent.informed.question.ConsentInfoQuestionFragment"
+        android:name="com.fouryouandme.auth.consent.informed.question.ConsentInfoQuestionFragment"
         android:label="consent_info_question"
         tools:layout="@layout/consent_info_question">
 
@@ -138,7 +138,7 @@
 
     <fragment
         android:id="@+id/consent_info_modal_page"
-        android:name="org.fouryouandme.auth.consent.informed.page.ConsentInfoModalPageFragment"
+        android:name="com.fouryouandme.auth.consent.informed.page.ConsentInfoModalPageFragment"
         android:label="consent_info_modal_page"
         tools:layout="@layout/consent_info_modal_page">
 
@@ -150,7 +150,7 @@
 
     <fragment
         android:id="@+id/consent_info_failure"
-        android:name="org.fouryouandme.auth.consent.informed.failure.ConsentInfoFailureFragment"
+        android:name="com.fouryouandme.auth.consent.informed.failure.ConsentInfoFailureFragment"
         android:label="consent_info_failure"
         tools:layout="@layout/consent_info_page">
 
@@ -173,7 +173,7 @@
 
     <fragment
         android:id="@+id/consent_info_success"
-        android:name="org.fouryouandme.auth.consent.informed.success.ConsentInfoSuccessFragment"
+        android:name="com.fouryouandme.auth.consent.informed.success.ConsentInfoSuccessFragment"
         android:label="consent_info_success"
         tools:layout="@layout/consent_info_page" />
 
