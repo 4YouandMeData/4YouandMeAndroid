@@ -234,6 +234,25 @@ publishing {
                     url.set(Library.pomScmUrl)
                 }
                 withXml {
+
+                    // Add repositories to pom file
+                    val repositoriesNode = asNode().appendNode("repositories")
+
+                    project.repositories
+                        .map { it as MavenArtifactRepository }
+                        .forEach {
+
+                            val repositoryNode =
+                                repositoriesNode.appendNode("repository")
+
+                            repositoryNode.appendNode("id", it.name)
+                            repositoryNode.appendNode("name", it.name)
+                            repositoryNode.appendNode("url", it.url)
+
+                        }
+
+
+                    // Add dependencies to pom file
                     val dependenciesNode = asNode().appendNode("dependencies")
                     (configurations.releaseImplementation.get().allDependencies +
                             configurations.releaseCompile.get().allDependencies)
