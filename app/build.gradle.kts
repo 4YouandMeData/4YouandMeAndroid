@@ -42,7 +42,7 @@ dependencies {
 
     /* --- modules --- */
 
-    implementation(project(":4youandme"))
+    implementation(project(":foryouandme"))
 
     /* --- kotlin --- */
 
