@@ -56,7 +56,7 @@ object Versions {
 
     const val swiperefreshlayout: String = "1.1.0"
 
-    const val constraintlayout: String = "2.0.3"
+    const val constraintlayout: String = "2.0.4"
 
     const val google_services: String = "4.3.4"
 
