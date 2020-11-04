@@ -56,7 +56,6 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
                     TaskError.Initialization ->
                         errorAlert(it.error) {
                             viewModel.initialize(
-                                typeArg(),
                                 idArg(),
                                 dataArg()
                             )
@@ -75,7 +74,7 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
         startCoroutineAsync {
 
             if (viewModel.isInitialized().not())
-                viewModel.initialize(typeArg(), idArg(), dataArg())
+                viewModel.initialize(idArg(), dataArg())
             else
                 applyData()
 
@@ -135,8 +134,6 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
     fun getSensorOutputDirectory(): File =
         File("${requireContext().applicationContext.filesDir.absolutePath}/sensors")
 
-    private fun typeArg(): String = arguments?.getString(TASK_TYPE, null)!!
-
     private fun idArg(): String = arguments?.getString(TASK_ID, null)!!
 
     @Suppress("UNCHECKED_CAST")
@@ -147,16 +144,13 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
 
     companion object {
 
-        const val TASK_TYPE = "type"
-
         private const val TASK_ID = "id"
 
         private const val TASK_DATA = "data"
 
-        fun getBundle(type: String, id: String, data: HashMap<String, String>): Bundle {
+        fun getBundle(id: String, data: HashMap<String, String>): Bundle {
 
             val bundle = Bundle()
-            bundle.putString(TASK_TYPE, type)
             bundle.putString(TASK_ID, id)
             bundle.putSerializable(TASK_DATA, data)
             return bundle

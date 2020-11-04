@@ -23,6 +23,8 @@ import com.foryouandme.auth.welcome.WelcomeToSignUpInfo
 import com.foryouandme.core.arch.navigation.execution.*
 import com.foryouandme.main.MainPageToAboutYouPage
 import com.foryouandme.main.MainPageToHtmlDetailsPage
+import com.foryouandme.main.MainToTask
+import com.foryouandme.main.feeds.FeedsToTask
 import com.foryouandme.main.tasks.TasksToTask
 import com.foryouandme.tasks.StepToStep
 
@@ -127,7 +129,10 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 integrationSuccessToMain()
 
             is TasksToTask ->
-                tasksToTask(action.type, action.id)
+                tasksToTask(action.id)
+
+            is FeedsToTask ->
+                feedsToTask(action.id)
 
             is StepToStep -> stepToStep(action.index)
 
@@ -135,6 +140,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 mainPageToAboutYouPage()
             is MainPageToHtmlDetailsPage ->
                 mainPageToHtmlDetailsPage(action.pageId)
+            is MainToTask ->
+                mainToTask(action.id)
 
             is AboutYouMenuPageToAboutYouReviewConsentPage ->
                 aboutYouMenuPageToAboutYouReviewConsentPage()

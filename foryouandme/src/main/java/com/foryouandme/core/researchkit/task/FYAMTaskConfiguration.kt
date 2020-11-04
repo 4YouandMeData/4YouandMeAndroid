@@ -10,6 +10,7 @@ import com.foryouandme.core.cases.survey.SurveyUseCase.getSurvey
 import com.foryouandme.core.cases.task.TaskUseCase.getTask
 import com.foryouandme.core.entity.activity.TaskActivity
 import com.foryouandme.core.entity.activity.TaskActivityType
+import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.researchkit.result.TaskResult
@@ -30,104 +31,84 @@ class FYAMTaskConfiguration(
 ) : TaskConfiguration() {
 
     // TODO: handle auth error and other error
-    override suspend fun build(type: String, id: String, data: Map<String, String>): Task? {
+    override suspend fun build(id: String, data: Map<String, String>): Task? {
 
-        val configuration =
+        val config =
             configurationModule.getConfiguration(CachePolicy.MemoryFirst).orNull()
 
-        return configuration?.let { config ->
+        val task =
+            taskModule.getTask(id)
+                .nullToError()
+                .map { it.activity as? TaskActivity }
+                .orNull()
 
-            when (type) {
-                TaskIdentifiers.VIDEO_DIARY ->
-                    taskModule.getTask(id)
-                        .nullToError()
-                        .map { it.activity as? TaskActivity }
-                        .orNull()
-                        ?.let {
+        return mapNotNull(config, task)
+            ?.let {
 
-                            FYAMVideoDiaryTask(
-                                id,
-                                config,
-                                imageConfiguration,
-                                it.welcomePage,
-                                it.successPage,
-                            )
+                when (it.b.activityType) {
+                    TaskActivityType.VideoDiary ->
+                        FYAMVideoDiaryTask(
+                            id,
+                            it.a,
+                            imageConfiguration,
+                            it.b.welcomePage,
+                            it.b.successPage,
+                        )
+                    TaskActivityType.GaitTask ->
+                        FYAMGaitTask(
+                            id,
+                            it.a,
+                            imageConfiguration,
+                            it.b.welcomePage,
+                            it.b.successPage,
+                            moshi
+                        )
+                    TaskActivityType.WalkTask ->
+                        FYAMFitnessTask(
+                            id,
+                            it.a,
+                            imageConfiguration,
+                            it.b.welcomePage,
+                            it.b.successPage,
+                            moshi
+                        )
+                    TaskActivityType.CamCogPvt,
+                    TaskActivityType.CamCogNbx,
+                    TaskActivityType.CamCogEbt ->
+                        authModule.getToken(CachePolicy.MemoryFirst)
+                            .orNull()
+                            ?.asIntegrationCookies()
+                            ?.let { token ->
 
-                        }
-                TaskIdentifiers.GAIT ->
-                    taskModule.getTask(id)
-                        .nullToError()
-                        .map { it.activity as? TaskActivity }
-                        .orNull()
-                        ?.let {
+                                val camCogUrl =
+                                    "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id"
 
-                            FYAMGaitTask(
-                                id,
-                                config,
-                                imageConfiguration,
-                                it.welcomePage,
-                                it.successPage,
-                                moshi
-                            )
+                                buildCamCog(
+                                    id,
+                                    it.a,
+                                    imageConfiguration,
+                                    camCogUrl,
+                                    token,
+                                    CamCogInterface()
+                                )
 
-                        }
-                TaskIdentifiers.FITNESS ->
-                    taskModule.getTask(id)
-                        .nullToError()
-                        .map { it.activity as? TaskActivity }
-                        .orNull()
-                        ?.let {
-
-                            FYAMFitnessTask(
-                                id,
-                                config,
-                                imageConfiguration,
-                                it.welcomePage,
-                                it.successPage,
-                                moshi
-                            )
-
-                        }
-                TaskActivityType.Survey.typeId ->
-                    taskModule.getTask(id)
-                        .nullToError()
-                        .map { it.activity as? TaskActivity }
-                        .orNull()
-                        ?.let { taskActivity ->
-                            surveyModule.getSurvey(taskActivity.activityId).orNull()
-                                ?.let {
-                                    buildSurvey(
-                                        id,
-                                        config,
-                                        imageConfiguration,
-                                        it,
-                                        taskActivity.welcomePage,
-                                        taskActivity.successPage
-                                    )
-                                }
-                        }
-                TaskIdentifiers.CAMCOG ->
-                    authModule.getToken(CachePolicy.MemoryFirst)
-                        .orNull()
-                        ?.asIntegrationCookies()
-                        ?.let {
-
-                            buildCamCog(
-                                id,
-                                config,
-                                imageConfiguration,
-                                "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id",
-                                it,
-                                CamCogInterface()
-                            )
-
-                        }
-
-                else -> null
+                            }
+                    TaskActivityType.Survey ->
+                        surveyModule.getSurvey(it.b.activityId).orNull()
+                            ?.let { survey ->
+                                buildSurvey(
+                                    id,
+                                    it.a,
+                                    imageConfiguration,
+                                    survey,
+                                    it.b.welcomePage,
+                                    it.b.successPage
+                                )
+                            }
+                    null -> null
+                }
 
             }
-
-        }
     }
 
     override suspend fun handleTaskResult(

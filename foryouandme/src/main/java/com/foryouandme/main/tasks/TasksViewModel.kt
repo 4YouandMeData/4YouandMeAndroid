@@ -190,7 +190,7 @@ class TasksViewModel(
         task.data.activityType?.let {
             navigator.navigateTo(
                 rootNavController,
-                TasksToTask(it.type, task.data.taskId)
+                TasksToTask(task.data.taskId)
             )
         }
     }

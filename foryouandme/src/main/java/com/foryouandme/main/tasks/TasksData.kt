@@ -26,6 +26,5 @@ sealed class TasksError {
 /* --- navigation --- */
 
 data class TasksToTask(
-    val type: String,
     val id: String,
 ) : NavigationAction

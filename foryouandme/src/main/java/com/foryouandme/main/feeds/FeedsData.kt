@@ -28,4 +28,4 @@ sealed class FeedsError {
 
 /* --- navigation --- */
 
-data class FeedsToTask(val type: String, val id: String) : NavigationAction
+data class FeedsToTask(val id: String) : NavigationAction

@@ -27,11 +27,11 @@ class TaskViewModel(
 
     /* --- initialization --- */
 
-    suspend fun initialize(type: String, id: String, data: Map<String, String>): Unit {
+    suspend fun initialize(id: String, data: Map<String, String>): Unit {
 
         showLoading(TaskLoading.Initialization)
 
-        taskConfiguration.build(type, id, data)
+        taskConfiguration.build(id, data)
             .foldSuspend(
                 { setError(unknownError(), TaskError.Initialization) },
                 { task ->

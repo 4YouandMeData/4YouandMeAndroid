@@ -4,7 +4,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.navigation.NavigationExecution
 import com.foryouandme.tasks.TaskFragment
 
-fun tasksToTask(id: String): NavigationExecution = {
+fun feedsToTask(id: String): NavigationExecution = {
     it.navigate(
         R.id.action_main_to_task,
         TaskFragment.getBundle(id, hashMapOf())
