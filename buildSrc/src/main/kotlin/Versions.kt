@@ -12,7 +12,7 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.4.0"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.4.0" // available: "1.4.1"
 
     const val com_squareup_retrofit2: String = "2.9.0"
 
@@ -70,6 +70,8 @@ object Versions {
 
     const val signature_pad: String = "1.3.1"
 
+    const val core_testing: String = "2.1.0"
+
     const val fragment_ktx: String = "1.3.0-alpha06"
 
     const val camera_core: String = "1.0.0-beta08"
@@ -99,6 +101,10 @@ object Versions {
     const val toasty: String = "1.5.0"
 
     const val aapt2: String = "4.1.0-6503028"
+
+    const val mockk: String = "none"// No version. See buildSrcVersions#23
+
+    const val truth: String = "1.1"
 
     const val ccp: String = "2.4.1"
 

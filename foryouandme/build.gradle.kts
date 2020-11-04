@@ -178,6 +178,10 @@ dependencies {
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)
+    testImplementation(Libs.mockk)
+    testImplementation(Libs.truth)
+    testImplementation(Libs.core_testing)
+    testImplementation(Libs.kotlinx_coroutines_core)
     androidTestImplementation(Libs.androidx_test_ext_junit)
     androidTestImplementation(Libs.espresso_core)
 

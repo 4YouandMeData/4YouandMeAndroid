@@ -236,6 +236,11 @@ object Libs {
     const val signature_pad: String = "com.github.gcacace:signature-pad:" + Versions.signature_pad
 
     /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val core_testing: String = "androidx.arch.core:core-testing:" + Versions.core_testing
+
+    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx
@@ -301,6 +306,13 @@ object Libs {
      * https://developer.android.com/studio
      */
     const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
+
+    const val mockk: String = "io.mockk:mockk"
+
+    /**
+     * http://github.com/google/truth
+     */
+    const val truth: String = "com.google.truth:truth:" + Versions.truth
 
     /**
      * https://github.com/hbb20/CountryCodePickerProject
