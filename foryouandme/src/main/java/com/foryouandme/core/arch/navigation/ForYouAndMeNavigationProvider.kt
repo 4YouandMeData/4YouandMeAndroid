@@ -42,10 +42,11 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
-            is EnterPhoneToPhoneValidationCode -> enterPhoneToPhoneValidationCode(
-                action.phone,
-                action.countryCode
-            )
+            is EnterPhoneToPhoneValidationCode ->
+                enterPhoneToPhoneValidationCode(
+                    action.phone,
+                    action.countryCode
+                )
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
 

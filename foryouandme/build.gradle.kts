@@ -178,7 +178,7 @@ dependencies {
     /* --- test --- */
 
     testImplementation(Libs.junit_junit)
-    testImplementation(Libs.mockk)
+    testImplementation("io.mockk:mockk:1.10.2")
     testImplementation(Libs.truth)
     testImplementation(Libs.core_testing)
     testImplementation(Libs.kotlinx_coroutines_core)

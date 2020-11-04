@@ -89,7 +89,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
             next.setOnClickListenerAsync {
 
                 viewModel.verifyNumber(
-                    findNavController(),
+                    authNavController(),
                     ccp.fullNumberWithPlus,
                     phone.text.toString(),
                     ccp.selectedCountryNameCode

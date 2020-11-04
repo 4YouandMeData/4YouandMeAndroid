@@ -19,22 +19,14 @@ class Navigator(
         controller: FYAMNavController,
         navigationAction: NavigationAction
     ): Unit =
-        navigateTo(controller.navController, navigationAction)
-
-    suspend fun navigateTo(
-        controller: NavController,
-        navigationAction: NavigationAction
-    ): Unit {
-
         evalOnMain {
 
             val navigation =
                 navigationProvider.getNavigation(navigationAction)
 
-            navigation(controller)
+            navigation(controller.navController)
 
         }
-    }
 
     suspend fun back(navController: FYAMNavController): Boolean =
         back(navController.navController)

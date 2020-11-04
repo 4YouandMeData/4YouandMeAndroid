@@ -36,7 +36,7 @@ class EnterPhoneViewModel(
     /* --- auth --- */
 
     suspend fun verifyNumber(
-        navController: NavController,
+        authNavController: AuthNavController,
         phoneAndCode: String,
         phone: String,
         countryCode: String
@@ -47,7 +47,7 @@ class EnterPhoneViewModel(
         authModule.verifyPhoneNumber(phoneAndCode)
             .fold(
                 { setError(it, EnterPhoneError.PhoneNumberVerification) },
-                { phoneValidationCode(navController, phone, countryCode) }
+                { phoneValidationCode(authNavController, phone, countryCode) }
             )
 
         hideLoading(EnterPhoneLoading.PhoneNumberVerification)
@@ -65,12 +65,12 @@ class EnterPhoneViewModel(
     }
 
     private suspend fun phoneValidationCode(
-        navController: NavController,
+        authNavController: AuthNavController,
         phone: String,
         countryCode: String
     ): Unit =
         navigator.navigateTo(
-            navController,
+            authNavController,
             EnterPhoneToPhoneValidationCode(phone, countryCode)
         )
 
