@@ -2,19 +2,43 @@ package com.foryouandme.core.cases.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import kotlin.reflect.KClass
 
 sealed class AnalyticsEvent(val eventName: String) {
 
     open fun firebaseBundle(): Bundle = bundleOf()
 
 
-    /*data class ExampleEventWithParams(val id: String): AnalyticsEvent("example_name") {
+    /* --- screen events --- */
 
-        override fun firebaseBundle(): Bundle =
-            Bundle().also { it.putString("id", id) }
+    sealed class ScreenViewed(eventName: String): AnalyticsEvent(eventName) {
+
+        object Intro : ScreenViewed("Intro")
+        object GetStarted : ScreenViewed("GetStarted")
+        object SetupLater : ScreenViewed("SetupLater")
+        object RequestSetUp : ScreenViewed("RequestAccountSetup")
+        object UserRegistration : ScreenViewed("UserRegistration")
+        object OtpValidation : ScreenViewed("ValidateOTP")
+        object StudyVideo : ScreenViewed("StudyVideo")
+        object VideoDiary : ScreenViewed("VideoDiary")
+        object AboutYou : ScreenViewed("About You")
+        object VideoDiaryComplete : ScreenViewed("VideoDiaryComplete")
+        object ConsentName : ScreenViewed("ConsentName")
+        object ConsentSignature : ScreenViewed("ConsentSignature")
+        object OpenPermissions : ScreenViewed("Permissions")
+        object OpenAppsAndDevices : ScreenViewed("AppsAndDevices")
+        object EmailInsert : ScreenViewed("Email")
+        object EmailVerification : ScreenViewed("EmailVerification")
+        object OAuth : ScreenViewed("OAuth")
+        object Browser : ScreenViewed("Browser")
+        object LearnMore : ScreenViewed("LearnMore")
+        object Feed : ScreenViewed("Feed")
+        object Task : ScreenViewed("Task")
+        object YourData : ScreenViewed("YourData")
+        object StudyInfo : ScreenViewed("StudyInfo")
+        object PrivacyPolicy : ScreenViewed("PrivacyPolicy")
+        object TermsOfService : ScreenViewed("TermsOfService")
 
     }
-
-    object ExampleEvent: AnalyticsEvent("example_name_2")*/
 
 }
