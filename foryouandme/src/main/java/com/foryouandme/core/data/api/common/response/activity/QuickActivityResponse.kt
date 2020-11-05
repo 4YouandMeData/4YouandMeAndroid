@@ -17,7 +17,15 @@ class QuickActivityResponse(
     button: String? = null,
     @field:Json(name = "quick_activity_options")
     val options: HasMany<QuickActivityOptionResponse>? = null
-) : ActivityDataResponse(title, description, repeatEvery, cardColor, button) {
+) : ActivityDataResponse(
+    title,
+    description,
+    repeatEvery,
+    cardColor,
+    null,
+    null,
+    button
+) {
 
     suspend fun toQuickActivity(id: String): QuickActivity =
         QuickActivity(

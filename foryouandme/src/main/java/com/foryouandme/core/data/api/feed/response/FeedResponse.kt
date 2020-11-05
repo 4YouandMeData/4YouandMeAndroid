@@ -22,6 +22,7 @@ import org.threeten.bp.ZonedDateTime
 data class FeedResponse(
     @field:Json(name = "from") val from: String? = null,
     @field:Json(name = "to") val to: String? = null,
+    @field:Json(name = "rescheduled_times") val rescheduledTimes: Int? = null,
     @field:Json(name = "schedulable") val activity: HasOne<ActivityDataResponse>? = null,
     @field:Json(name = "notifiable") val feedNotification: HasOne<NotifiableDataResponse>? = null
 ) : Resource() {
@@ -47,8 +48,10 @@ data class FeedResponse(
                     ?.let {
                         when (it) {
                             is QuickActivityResponse -> it.toQuickActivity(id)
-                            is TaskActivityResponse -> it.toTaskActivity(document, id)
-                            is SurveyActivityResponse -> it.toTaskActivity(document, id)
+                            is TaskActivityResponse ->
+                                it.toTaskActivity(document, id, rescheduledTimes)
+                            is SurveyActivityResponse ->
+                                it.toTaskActivity(document, id, rescheduledTimes)
                             else -> null
                         }
                     }

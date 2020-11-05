@@ -19,6 +19,7 @@ import org.threeten.bp.ZonedDateTime
 data class TaskResponse(
     @field:Json(name = "from") val from: String? = null,
     @field:Json(name = "to") val to: String? = null,
+    @field:Json(name = "rescheduled_times") val rescheduledTimes: Int? = null,
     @field:Json(name = "schedulable") val activity: HasOne<ActivityDataResponse>? = null
 ) : Resource() {
 
@@ -33,8 +34,10 @@ data class TaskResponse(
                 !activity?.get(document).toEither().flatMap {
                     when (it) {
                         is QuickActivityResponse -> it.toQuickActivity(id).toEither()
-                        is TaskActivityResponse -> it.toTaskActivity(document, id).toEither()
-                        is SurveyActivityResponse -> it.toTaskActivity(document, id).toEither()
+                        is TaskActivityResponse ->
+                            it.toTaskActivity(document, id, rescheduledTimes).toEither()
+                        is SurveyActivityResponse ->
+                            it.toTaskActivity(document, id, rescheduledTimes).toEither()
                         else -> Unit.left()
                     }
                 }

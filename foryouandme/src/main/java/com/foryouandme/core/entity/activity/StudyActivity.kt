@@ -39,7 +39,8 @@ data class TaskActivity(
     val activityType: TaskActivityType?,
     val welcomePage: Page,
     val pages: List<Page>,
-    val successPage: Page?
+    val successPage: Page?,
+    val reschedule: Reschedule?
 ) : StudyActivity()
 
 sealed class TaskActivityType(val typeId: String, val type: String) {
@@ -69,4 +70,10 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
     }
 
 }
+
+data class Reschedule(
+    val rescheduleIn: Int,
+    val rescheduleTimes: Int,
+    val rescheduledTimes: Int?
+)
 

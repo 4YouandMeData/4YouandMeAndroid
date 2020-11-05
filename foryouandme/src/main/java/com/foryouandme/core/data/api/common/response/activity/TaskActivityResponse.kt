@@ -1,6 +1,7 @@
 package com.foryouandme.core.data.api.common.response.activity
 
 import com.foryouandme.core.data.api.common.response.PageResponse
+import com.foryouandme.core.entity.activity.Reschedule
 import com.foryouandme.core.entity.activity.TaskActivity
 import com.foryouandme.core.entity.activity.TaskActivityType
 import com.foryouandme.core.entity.configuration.HEXGradient
@@ -18,16 +19,29 @@ class TaskActivityResponse(
     description: String? = null,
     repeatEvery: Int? = null,
     cardColor: String? = null,
+    rescheduleIn: Int? = null,
+    rescheduleTimes: Int? = null,
     button: String? = null,
     @field:Json(name = "activity_type") val activityType: String? = null,
     @field:Json(name = "image") val image: String? = null,
     @field:Json(name = "pages") val pages: HasMany<PageResponse>? = null,
     @field:Json(name = "welcome_page") val welcomePage: HasOne<PageResponse>? = null,
     @field:Json(name = "success_page") val successPage: HasOne<PageResponse>? = null,
+) : ActivityDataResponse(
+    title,
+    description,
+    repeatEvery,
+    cardColor,
+    rescheduleIn,
+    rescheduleTimes,
+    button
+) {
 
-    ) : ActivityDataResponse(title, description, repeatEvery, cardColor, button) {
-
-    suspend fun toTaskActivity(document: Document, taskId: String): TaskActivity =
+    suspend fun toTaskActivity(
+        document: Document,
+        taskId: String,
+        rescheduledTimes: Int?
+    ): TaskActivity =
         TaskActivity(
             taskId,
             id,
@@ -39,6 +53,9 @@ class TaskActivityResponse(
             activityType?.let { TaskActivityType.fromType(it) },
             welcomePage?.get(document)?.toPage(document)!!,
             pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
-            successPage?.get(document)?.toPage(document)
+            successPage?.get(document)?.toPage(document),
+            mapNotNull(rescheduleIn, rescheduleTimes)
+                ?.let { Reschedule(it.a, it.b, rescheduledTimes) }
         )
+
 }
