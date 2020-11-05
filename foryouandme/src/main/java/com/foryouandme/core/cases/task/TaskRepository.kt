@@ -96,4 +96,11 @@ object TaskRepository {
                 TaskResultRequest(result)
             )
         }
+
+    internal suspend fun TaskModule.reschedule(
+        token: String,
+        taskId: String
+    ): Either<ForYouAndMeError, Unit> =
+        suspend { api.reschedule(token, taskId) }
+            .let { errorModule.unwrapToEither(it) }
 }

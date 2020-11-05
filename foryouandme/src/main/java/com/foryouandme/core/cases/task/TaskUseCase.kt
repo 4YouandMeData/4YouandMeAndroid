@@ -9,6 +9,7 @@ import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.task.TaskRepository.attachVideo
 import com.foryouandme.core.cases.task.TaskRepository.fetchTask
 import com.foryouandme.core.cases.task.TaskRepository.fetchTasks
+import com.foryouandme.core.cases.task.TaskRepository.reschedule
 import com.foryouandme.core.cases.task.TaskRepository.uploadFitnessTask
 import com.foryouandme.core.cases.task.TaskRepository.uploadGaitTask
 import com.foryouandme.core.cases.task.TaskRepository.uploadQuickActivity
@@ -64,5 +65,9 @@ object TaskUseCase {
     ): Either<ForYouAndMeError, Unit> =
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap { uploadSurvey(it, taskId, result) }
+
+    suspend fun TaskModule.reschedule(taskId: String): Either<ForYouAndMeError, Unit> =
+        authModule.getToken(CachePolicy.MemoryFirst)
+            .flatMap { reschedule(it, taskId) }
 
 }

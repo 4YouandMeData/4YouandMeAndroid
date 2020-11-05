@@ -58,5 +58,12 @@ interface TaskApi {
 
     ): Unit
 
+    @PATCH("api/v1/tasks/{id}")
+    suspend fun reschedule(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String
+
+    ): Unit
+
 }
 
