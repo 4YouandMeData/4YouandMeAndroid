@@ -59,6 +59,6 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
                             }
                         })
                 },
-                externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } })
+                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } })
         }
 }

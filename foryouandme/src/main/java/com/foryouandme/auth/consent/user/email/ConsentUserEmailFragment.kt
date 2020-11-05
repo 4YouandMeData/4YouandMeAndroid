@@ -81,10 +81,10 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
                 }
 
 
-            next.background =
+            action_1.background =
                 button(resources, imageConfiguration.nextStepSecondary())
 
-            next.setOnClickListener {
+            action_1.setOnClickListener {
                 startCoroutineAsync {
                     viewModel.createUser(
                         rootNavController(),
@@ -145,7 +145,7 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
     private suspend fun bindNext(): Unit =
         evalOnMain {
 
-            next.isEnabled =
+            action_1.isEnabled =
                 viewModel.isValidEmail(viewModel.state().email)
 
             email_info.isVisible =

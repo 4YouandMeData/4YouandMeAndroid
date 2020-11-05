@@ -71,7 +71,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_1_text"
+        android:id="@+id/special_action"
         style="@style/text_h2"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -85,7 +85,7 @@
         app:layout_constraintTop_toTopOf="@id/footer" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_2_text"
+        android:id="@+id/action_1_text_secondary"
         style="@style/text_h2"
         android:layout_width="0dp"
         android:layout_height="50dp"
@@ -99,7 +99,7 @@
         app:layout_constraintTop_toTopOf="@id/footer" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/next"
+        android:id="@+id/action_1"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center"

@@ -50,10 +50,10 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         description.text = step.description(requireContext())
         description.setTextColor(step.descriptionColor)
 
-        next.background = button(step.buttonColor)
-        next.text = step.button(requireContext())
-        next.setTextColor(step.buttonTextColor)
-        next.setOnClickListener { startCoroutineAsync { next() } }
+        action_1.background = button(step.buttonColor)
+        action_1.text = step.button(requireContext())
+        action_1.setTextColor(step.buttonTextColor)
+        action_1.setOnClickListener { startCoroutineAsync { next() } }
 
     }
 

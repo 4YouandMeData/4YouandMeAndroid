@@ -12,7 +12,7 @@ import com.foryouandme.researchkit.result.results
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.StepNavController
 import com.foryouandme.researchkit.task.TaskConfiguration
-import com.foryouandme.researchkit.task.TaskHandleResult
+import com.foryouandme.researchkit.task.TaskResponse
 import timber.log.Timber
 
 class TaskViewModel(
@@ -68,10 +68,10 @@ class TaskViewModel(
         evalOnMain { taskConfiguration.taskResultLiveData.value = result.toEvent() }
 
         when (result) {
-            TaskHandleResult.Handled ->
+            TaskResponse.Success ->
                 setState(TaskState.isCompleted.modify(state()) { true })
                 { TaskStateUpdate.Completed }
-            is TaskHandleResult.Error ->
+            is TaskResponse.Error ->
                 setError(unknownError(), TaskError.Result)
         }
 
@@ -140,6 +140,20 @@ class TaskViewModel(
                         navigator.navigateTo(stepNavController, StepToStep(skipIndex))
                 }
             )
+
+    suspend fun reschedule(taskNavController: TaskNavController): Unit {
+
+        showLoading(TaskLoading.Reschedule)
+
+        taskConfiguration.reschedule(state().task.id)
+            .foldSuspend(
+                { setError(unknownError(), TaskError.Reschedule) },
+                { close(taskNavController) }
+            )
+
+        hideLoading(TaskLoading.Reschedule)
+
+    }
 
     suspend fun close(taskNavController: TaskNavController): Unit {
         navigator.back(taskNavController)

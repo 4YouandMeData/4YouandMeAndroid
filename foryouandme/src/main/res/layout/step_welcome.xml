@@ -9,11 +9,11 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:overScrollMode="never">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -105,6 +105,21 @@
         app:layout_constraintBottom_toBottomOf="@id/footer"
         app:layout_constraintEnd_toEndOf="@id/footer"
         app:layout_constraintStart_toEndOf="@id/center_vertical"
+        app:layout_constraintTop_toTopOf="@id/footer"
+        tools:text="Start Now" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/start_now_full"
+        style="@style/text_h2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:elevation="3dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@id/footer"
+        app:layout_constraintEnd_toEndOf="@id/footer"
+        app:layout_constraintStart_toStartOf="@id/footer"
         app:layout_constraintTop_toTopOf="@id/footer"
         tools:text="Start Now" />
 

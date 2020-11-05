@@ -28,14 +28,29 @@ class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
 
         startCoroutineAsync {
 
+            val pageData =
+                if (step.remind)
+                    step.page.copy(
+                        specialLinkLabel = step.configuration.text.task.remindButton,
+                        specialLinkValue = "remind"
+                    )
+                else
+                    step.page
+
+            val specialAction: ((String) -> Unit)? =
+                if (step.remind) {
+                    { startCoroutineAsync { viewModel.reschedule(taskNavController()) } }
+                } else null
+
             page.applyData(
                 configuration = step.configuration,
-                page = step.page,
+                page = pageData,
                 pageType = step.pageType,
                 action1 = { startCoroutineAsync { next() } },
                 action2 = null,
-                externalAction = null,
-                modalAction = null
+                extraStringAction = null,
+                extraPageAction = null,
+                specialStringAction = specialAction
 
             )
 

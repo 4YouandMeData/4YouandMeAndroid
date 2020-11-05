@@ -67,7 +67,7 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
                     }
                 }
 
-            next.setOnClickListener {
+            action_1.setOnClickListener {
 
                 startCoroutineAsync {
                     viewModel.updateUser(
@@ -102,12 +102,12 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
 
                 override fun onStartSigning() {
                     signature_placeholder.isVisible = false
-                    next.isEnabled = true
+                    action_1.isEnabled = true
                 }
 
                 override fun onClear() {
                     signature_placeholder.isVisible = true
-                    next.isEnabled = false
+                    action_1.isEnabled = false
                 }
 
                 override fun onSigned() {
@@ -130,8 +130,8 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
                     configuration.theme.primaryTextColor
                 ).drawable(0.3f)
 
-            next.isEnabled = !signature_pad.isEnabled
-            next.background =
+            action_1.isEnabled = !signature_pad.isEnabled
+            action_1.background =
                 button(
                     resources,
                     imageConfiguration.nextStepSecondary()

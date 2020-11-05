@@ -12,7 +12,7 @@ import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
 import kotlinx.android.synthetic.main.step_end.*
 import kotlinx.android.synthetic.main.step_introduction.description
-import kotlinx.android.synthetic.main.step_introduction.next
+import kotlinx.android.synthetic.main.step_introduction.action_1
 import kotlinx.android.synthetic.main.step_introduction.root
 import kotlinx.android.synthetic.main.step_introduction.title
 
@@ -41,10 +41,10 @@ class EndStepFragment : StepFragment(R.layout.step_end) {
         description.text = step.description(requireContext())
         description.setTextColor(step.descriptionColor)
 
-        next.background = button(step.buttonColor)
-        next.text = step.button(requireContext())
-        next.setTextColor(step.buttonTextColor)
-        next.setOnClickListener { startCoroutineAsync { viewModel.end() } }
+        action_1.background = button(step.buttonColor)
+        action_1.text = step.button(requireContext())
+        action_1.setTextColor(step.buttonTextColor)
+        action_1.setOnClickListener { startCoroutineAsync { viewModel.end() } }
 
         animationView.addValueCallback(
             KeyPath("Shape Outlines", "**"),

@@ -113,7 +113,7 @@ class OptInPermissionFragment : OptInSectionFragment(R.layout.opt_in_permission)
                             startCoroutineAsync {
                                 viewModel.setPermissionState(args.index, true)
                             }
-                            next.isEnabled = agree.isChecked || disagree.isChecked
+                            action_1.isEnabled = agree.isChecked || disagree.isChecked
                         }
                     }
 
@@ -132,7 +132,7 @@ class OptInPermissionFragment : OptInSectionFragment(R.layout.opt_in_permission)
                             startCoroutineAsync {
                                 viewModel.setPermissionState(args.index, false)
                             }
-                            next.isEnabled = agree.isChecked || disagree.isChecked
+                            action_1.isEnabled = agree.isChecked || disagree.isChecked
                         }
                     }
 
@@ -145,10 +145,10 @@ class OptInPermissionFragment : OptInSectionFragment(R.layout.opt_in_permission)
                             configuration.theme.primaryTextColor
                         ).drawable(0.3f)
 
-                    next.text = configuration.text.onboarding.optIn.submitButton
-                    next.setTextColor(configuration.theme.secondaryColor.color())
-                    next.background = button(configuration.theme.primaryColorEnd.color())
-                    next.setOnClickListener {
+                    action_1.text = configuration.text.onboarding.optIn.submitButton
+                    action_1.setTextColor(configuration.theme.secondaryColor.color())
+                    action_1.background = button(configuration.theme.primaryColorEnd.color())
+                    action_1.setOnClickListener {
                         configuration {
                             viewModel.requestPermissions(
                                 it,
@@ -159,7 +159,7 @@ class OptInPermissionFragment : OptInSectionFragment(R.layout.opt_in_permission)
                             )
                         }
                     }
-                    next.isEnabled = agree.isChecked || disagree.isChecked
+                    action_1.isEnabled = agree.isChecked || disagree.isChecked
                 }
         }
 

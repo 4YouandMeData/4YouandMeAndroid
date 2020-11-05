@@ -12,4 +12,5 @@ class FYAMPageStep(
     val configuration: Configuration,
     val page: Page,
     val pageType: EPageType,
+    val remind: Boolean
 ) : Step(identifier, back, null, { FYAMPageStepFragment() })

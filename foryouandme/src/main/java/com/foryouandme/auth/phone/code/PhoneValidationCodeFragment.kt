@@ -91,7 +91,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
 
             phone.setText(args.phone)
 
-            next.setOnClickListenerAsync {
+            action_1.setOnClickListenerAsync {
                 viewModel.auth(
                     rootNavController(),
                     authNavController(),
@@ -168,7 +168,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
             code.autoCloseKeyboard()
             code.addTextChangedListener { editable ->
 
-                next.isEnabled = editable?.toString()?.length == 6
+                action_1.isEnabled = editable?.toString()?.length == 6
 
                 configuration { setWrongCodeErrorVisibility(it, false) }
 
@@ -198,9 +198,9 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
                     )
                     .toSpannableString()
 
-            next.background =
+            action_1.background =
                 button(resources, imageConfiguration.nextStep())
-            next.isEnabled = code.text?.toString()?.length == 6
+            action_1.isEnabled = code.text?.toString()?.length == 6
 
             wrong_code_error.text =
                 configuration.text.phoneVerification.error.errorWrongCode

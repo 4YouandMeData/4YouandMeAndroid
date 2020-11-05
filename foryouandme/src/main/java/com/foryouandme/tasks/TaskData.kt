@@ -30,12 +30,14 @@ sealed class TaskStateUpdate {
 sealed class TaskLoading {
 
     object Initialization : TaskLoading()
+    object Reschedule : TaskLoading()
     object Result : TaskLoading()
 }
 
 sealed class TaskError {
 
     object Initialization : TaskError()
+    object Reschedule : TaskError()
     object Result : TaskError()
 
 }

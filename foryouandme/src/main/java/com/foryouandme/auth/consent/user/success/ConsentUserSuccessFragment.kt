@@ -45,7 +45,7 @@ class ConsentUserSuccessFragment : ConsentUserSectionFragment(R.layout.consent_u
                 action1 = {
                     startCoroutineAsync { viewModel.integration(authNavController()) }
                 },
-                externalAction = {
+                extraStringAction = {
                     startCoroutineAsync { viewModel.web(rootNavController(), it) }
                 }
             )

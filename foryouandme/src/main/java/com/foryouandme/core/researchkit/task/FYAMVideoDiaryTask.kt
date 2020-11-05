@@ -2,6 +2,8 @@ package com.foryouandme.core.researchkit.task
 
 import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.entity.activity.Reschedule
+import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.page.Page
 import com.foryouandme.core.researchkit.step.FYAMPageStep
@@ -17,7 +19,8 @@ class FYAMVideoDiaryTask(
     private val configuration: Configuration,
     private val imageConfiguration: ImageConfiguration,
     private val welcomePage: Page,
-    private val successPage: Page?
+    private val successPage: Page?,
+    private val reschedule: Reschedule?
 ) : Task(TaskIdentifiers.VIDEO_DIARY, id) {
 
     override val steps: List<Step> by lazy {
@@ -40,14 +43,17 @@ class FYAMVideoDiaryTask(
         val deactive =
             configuration.theme.deactiveColor.color()
 
-        welcomePage.asList().mapIndexed { _, page ->
+        welcomePage.asList().mapIndexed { index, page ->
+
             FYAMPageStep(
                 getVideoDiaryWelcomeStepId(page.id),
                 Back(imageConfiguration.backSecondary()),
                 configuration,
                 page,
-                EPageType.INFO
+                EPageType.INFO,
+                index == 0 && reschedule.isEnabled()
             )
+
         }.plus(
             VideoDiaryTask.getVideoDiaryCoreSteps(
                 videoTitle = configuration.text.videoDiary.recorderTitle,
@@ -91,7 +97,8 @@ class FYAMVideoDiaryTask(
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
-                            EPageType.SUCCESS
+                            EPageType.SUCCESS,
+                            false
                         )
                     )
 

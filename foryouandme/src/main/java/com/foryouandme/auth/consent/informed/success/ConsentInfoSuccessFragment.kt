@@ -36,7 +36,7 @@ class ConsentInfoSuccessFragment : ConsentInfoSectionFragment(R.layout.consent_i
                 page = consentInfo.successPage,
                 pageType = EPageType.SUCCESS,
                 action1 = { startCoroutineAsync { viewModel.consentReview(authNavController()) } },
-                externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
+                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
             )
 
         }

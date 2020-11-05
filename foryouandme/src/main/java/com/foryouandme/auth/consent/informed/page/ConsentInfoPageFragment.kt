@@ -88,10 +88,10 @@ class ConsentInfoPageFragment : ConsentInfoSectionFragment(R.layout.consent_info
                                     }
                                 })
                         },
-                        externalAction = {
+                        extraStringAction = {
                             startCoroutineAsync { viewModel.web(rootNavController(), it) }
                         },
-                        modalAction = {
+                        extraPageAction = {
                             startCoroutineAsync {
                                 viewModel.modalPage(
                                     consentInfoNavController(),

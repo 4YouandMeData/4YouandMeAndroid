@@ -22,6 +22,7 @@ import com.squareup.moshi.Moshi
 
 class GaitTask(
     id: String,
+    welcomeRemindMeLater: Boolean,
     welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
     welcomeImage: Int,
@@ -117,7 +118,8 @@ class GaitTask(
                 },
                 startButtonColor = welcomeStartButtonColor,
                 startButtonTextColor = welcomeStartButtonTextColor,
-                shadowColor = welcomeShadowColor
+                shadowColor = welcomeShadowColor,
+                remindMeLater = welcomeRemindMeLater
             )
         ).plus(
             getGaitCoreSteps(

@@ -8,6 +8,7 @@ import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import com.foryouandme.core.cases.survey.SurveyUseCase.getSurvey
 import com.foryouandme.core.cases.task.TaskUseCase.getTask
+import com.foryouandme.core.cases.task.TaskUseCase.reschedule
 import com.foryouandme.core.entity.activity.TaskActivity
 import com.foryouandme.core.entity.activity.TaskActivityType
 import com.foryouandme.core.ext.mapNotNull
@@ -16,8 +17,8 @@ import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
-import com.foryouandme.researchkit.task.TaskHandleResult
 import com.foryouandme.researchkit.task.TaskIdentifiers
+import com.foryouandme.researchkit.task.TaskResponse
 import com.squareup.moshi.Moshi
 
 class FYAMTaskConfiguration(
@@ -53,6 +54,7 @@ class FYAMTaskConfiguration(
                             imageConfiguration,
                             it.b.welcomePage,
                             it.b.successPage,
+                            it.b.reschedule
                         )
                     TaskActivityType.GaitTask ->
                         FYAMGaitTask(
@@ -61,6 +63,7 @@ class FYAMTaskConfiguration(
                             imageConfiguration,
                             it.b.welcomePage,
                             it.b.successPage,
+                            it.b.reschedule,
                             moshi
                         )
                     TaskActivityType.WalkTask ->
@@ -70,6 +73,7 @@ class FYAMTaskConfiguration(
                             imageConfiguration,
                             it.b.welcomePage,
                             it.b.successPage,
+                            it.b.reschedule,
                             moshi
                         )
                     TaskActivityType.CamCogPvt,
@@ -89,7 +93,8 @@ class FYAMTaskConfiguration(
                                     imageConfiguration,
                                     camCogUrl,
                                     token,
-                                    CamCogInterface()
+                                    CamCogInterface(),
+                                    it.b.reschedule
                                 )
 
                             }
@@ -102,7 +107,8 @@ class FYAMTaskConfiguration(
                                     imageConfiguration,
                                     survey,
                                     it.b.welcomePage,
-                                    it.b.successPage
+                                    it.b.successPage,
+                                    it.b.reschedule
                                 )
                             }
                     null -> null
@@ -115,15 +121,22 @@ class FYAMTaskConfiguration(
         result: TaskResult,
         type: String,
         id: String
-    ): TaskHandleResult =
+    ): TaskResponse =
 
         when (type) {
-            TaskIdentifiers.VIDEO_DIARY -> TaskHandleResult.Handled
+            TaskIdentifiers.VIDEO_DIARY -> TaskResponse.Success
             TaskIdentifiers.GAIT -> sendGaitData(taskModule, errorModule, id, result)
             TaskIdentifiers.FITNESS -> sendFitnessData(taskModule, errorModule, id, result)
             TaskActivityType.Survey.typeId -> sendSurveyData(taskModule, id, result)
-            else -> TaskHandleResult.Error(unknownError().message)
+            else -> TaskResponse.Error(unknownError().message)
 
         }
+
+    override suspend fun reschedule(id: String): TaskResponse =
+        taskModule.reschedule(id)
+            .fold(
+                { TaskResponse.Error(it.message) },
+                { TaskResponse.Success }
+            )
 
 }

@@ -20,5 +20,6 @@ class WelcomeStep(
     val startButtonColor: Int,
     val startButtonTextColor: Int,
     val shadowColor: Int,
+    val remindMeLater: Boolean,
     val close: Boolean = false
 ) : Step(identifier, back, null, { WelcomeStepFragment() })

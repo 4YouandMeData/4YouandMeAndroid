@@ -1,6 +1,8 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.entity.activity.Reschedule
+import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.IntegrationLoginInterface
@@ -12,7 +14,8 @@ suspend fun FYAMTaskConfiguration.buildCamCog(
     imageConfiguration: ImageConfiguration,
     url: String,
     cookies: Map<String, String>,
-    camCogInterface: CamCogInterface
+    camCogInterface: CamCogInterface,
+    reschedule: Reschedule?
 ): CamCogTask {
 
     val secondary =
@@ -45,7 +48,8 @@ suspend fun FYAMTaskConfiguration.buildCamCog(
         webUrl = url,
         webCookies = cookies,
         webJavascriptInterface = camCogInterface,
-        webJavascriptInterfaceName = IntegrationLoginInterface.INTEGRATION_NAME
+        webJavascriptInterfaceName = IntegrationLoginInterface.INTEGRATION_NAME,
+        welcomeRemindMeLater = reschedule.isEnabled()
     )
 
 }

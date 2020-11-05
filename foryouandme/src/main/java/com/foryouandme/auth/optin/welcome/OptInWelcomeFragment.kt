@@ -46,7 +46,7 @@ class OptInWelcomeFragment : OptInSectionFragment(R.layout.opt_in_welcome) {
                 page = optIns.welcomePage,
                 pageType = EPageType.SUCCESS,
                 action1 = { startCoroutineAsync { viewModel.permission(optInNavController()) } },
-                externalAction = {}
+                extraStringAction = {}
             )
 
         }

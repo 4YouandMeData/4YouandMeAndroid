@@ -75,5 +75,14 @@ data class Reschedule(
     val rescheduleIn: Int,
     val rescheduleTimes: Int,
     val rescheduledTimes: Int?
-)
+) {
+
+   companion object {
+
+       fun Reschedule?.isEnabled(): Boolean =
+           this != null && rescheduleTimes > 0 && rescheduledTimes ?: 0 < rescheduleTimes
+
+   }
+
+}
 

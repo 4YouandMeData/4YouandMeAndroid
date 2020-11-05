@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
-import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
 import com.foryouandme.auth.AuthSectionFragment
 import com.foryouandme.core.arch.android.getFactory
@@ -86,7 +85,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                 startCoroutineAsync { viewModel.back(authNavController(), rootNavController()) }
             }
 
-            next.setOnClickListenerAsync {
+            action_1.setOnClickListenerAsync {
 
                 viewModel.verifyNumber(
                     authNavController(),
@@ -141,7 +140,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
             ccp.setNumberAutoFormattingEnabled(true)
             ccp.setPhoneNumberValidityChangeListener {
 
-                next.isEnabled = checkbox.isChecked && it
+                action_1.isEnabled = checkbox.isChecked && it
 
             }
 
@@ -178,7 +177,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
             checkbox.isChecked = viewModel.state().legalCheckbox
             checkbox.jumpDrawablesToCurrentState()
             checkbox.setOnCheckedChangeListener { _, isChecked ->
-                next.isEnabled = isChecked && ccp.isValidFullNumber
+                action_1.isEnabled = isChecked && ccp.isValidFullNumber
                 startCoroutineAsync { viewModel.setLegalCheckbox(isChecked) }
             }
 
@@ -188,8 +187,8 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                 configuration.text.url
             )
 
-            next.isEnabled = checkbox.isChecked && ccp.isValidFullNumber
-            next.background =
+            action_1.isEnabled = checkbox.isChecked && ccp.isValidFullNumber
+            action_1.background =
                 button(resources, imageConfiguration.nextStep())
 
             missing_number_error.text =

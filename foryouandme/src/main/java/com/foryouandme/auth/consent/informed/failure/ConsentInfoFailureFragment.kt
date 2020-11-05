@@ -75,7 +75,7 @@ class ConsentInfoFailureFragment : ConsentInfoSectionFragment(R.layout.consent_i
                             }
                     }
                 },
-                externalAction = {
+                extraStringAction = {
                     startCoroutineAsync { viewModel.web(rootNavController(), it) }
                 }
             )

@@ -74,8 +74,8 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
                     }
                 }
 
-            next.background = button(resources, imageConfiguration.nextStep())
-            next.setOnClickListener {
+            action_1.background = button(resources, imageConfiguration.nextStep())
+            action_1.setOnClickListener {
                 startCoroutineAsync {
                     viewModel.confirmEmail(
                         rootNavController(),
@@ -134,7 +134,7 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
             code_entry.setBackgroundColor(color(android.R.color.transparent))
             code_entry.setTextColor(configuration.theme.secondaryColor.color())
             code_entry.addTextChangedListener {
-                next.isEnabled = it.toString().trim().length == 6
+                action_1.isEnabled = it.toString().trim().length == 6
             }
             code_entry.setOnFocusChangeListener { _, hasFocus ->
 
@@ -170,7 +170,7 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
                 }
             ).toSpannableString()
 
-            next.isEnabled = code_entry.text.toString().trim().length == 6
+            action_1.isEnabled = code_entry.text.toString().trim().length == 6
 
         }
 }

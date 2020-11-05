@@ -13,16 +13,37 @@ abstract class TaskConfiguration {
         result: TaskResult,
         type: String,
         id: String
-    ): TaskHandleResult
+    ): TaskResponse
 
-    val taskResultLiveData: MutableLiveData<Event<TaskHandleResult>> = MutableLiveData()
+    abstract suspend fun reschedule(id: String): TaskResponse
+
+    val taskResultLiveData: MutableLiveData<Event<TaskResponse>> = MutableLiveData()
+
+}
+
+sealed class TaskResponse {
+
+    object Success : TaskResponse()
+
+    data class Error(val message: (Context) -> String) : TaskResponse()
+
+    fun <T> fold(
+        error: (Error) -> T,
+        success: () -> T
+    ): T =
+        when(this) {
+            Success -> success()
+            is Error -> error(this)
+        }
+
+    suspend fun <T> foldSuspend(
+        error: suspend (Error) -> T,
+        success: suspend () -> T
+    ): T =
+        when(this) {
+            Success -> success()
+            is Error -> error(this)
+        }
 
 }
 
-sealed class TaskHandleResult {
-
-    object Handled : TaskHandleResult()
-
-    data class Error(val message: (Context) -> String) : TaskHandleResult()
-
-}

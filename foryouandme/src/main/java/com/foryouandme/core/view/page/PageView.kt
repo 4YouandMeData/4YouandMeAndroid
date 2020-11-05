@@ -10,6 +10,8 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.core.cases.Memory
+import com.foryouandme.core.cases.Memory.configuration
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.HEXColor
 import com.foryouandme.core.entity.configuration.HEXGradient
@@ -22,8 +24,16 @@ import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.view.page.EPageType.*
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
+import kotlinx.android.synthetic.main.integration_page_view.view.*
 import kotlinx.android.synthetic.main.page.view.*
-
+import kotlinx.android.synthetic.main.page.view.action_1
+import kotlinx.android.synthetic.main.page.view.action_1_text_secondary
+import kotlinx.android.synthetic.main.page.view.description
+import kotlinx.android.synthetic.main.page.view.footer
+import kotlinx.android.synthetic.main.page.view.page_root
+import kotlinx.android.synthetic.main.page.view.shadow
+import kotlinx.android.synthetic.main.page.view.special_action
+import kotlinx.android.synthetic.main.page.view.title
 
 class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -39,16 +49,36 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         pageType: EPageType,
         action1: (Page?) -> Unit,
         action2: ((Page?) -> Unit)? = null,
-        externalAction: ((String) -> Unit)? = null,
-        modalAction: ((Page) -> Unit)? = null
+        extraStringAction: ((String) -> Unit)? = null,
+        extraPageAction: ((Page) -> Unit)? = null,
+        specialStringAction: ((String) -> Unit)? = null,
+        specialStringPageAction: ((String, Page?) -> Unit)? = null
     ): Unit =
 
         evalOnMain {
 
+            setUpImage(page, pageType)
+
+            setUpTitleDescription(page, pageType, configuration)
+
+            setUpExtraAction(page, extraPageAction, extraStringAction, configuration)
+
+            setUpShadow(configuration)
+
+            setUpButtons(page, pageType, configuration, action1, action2)
+
+            setUpButtonsClick(page, action2, specialStringAction, specialStringPageAction)
+
+            setUpBackgrounds(configuration)
+        }
+
+    private suspend fun setUpImage(page: Page, EPageType: EPageType): Unit =
+        evalOnMain {
+
             val params = icon.layoutParams
 
-            params.height = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
-            params.width = if (pageType == INFO) 60.dpToPx() else 100.dpToPx()
+            params.height = if (EPageType == INFO) 60.dpToPx() else 100.dpToPx()
+            params.width = if (EPageType == INFO) 60.dpToPx() else 100.dpToPx()
 
             icon.layoutParams = params
 
@@ -57,6 +87,15 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 decodedString?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 
             decodedByte?.let { icon.setImageBitmap(it) }
+
+        }
+
+    private suspend fun setUpTitleDescription(
+        page: Page,
+        pageType: EPageType,
+        configuration: Configuration
+    ): Unit =
+        evalOnMain {
 
             title.setHtmlText(page.title, true)
             title.setTextColor(configuration.theme.primaryTextColor.color())
@@ -71,71 +110,164 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                     SUCCESS -> Gravity.CENTER
                 }
 
-            if (modalAction != null) {
-                external.text = page.linkModalLabel.orEmpty()
-                external.setTextColor(configuration.theme.primaryColorEnd.color())
-                external.isVisible = page.linkModalValue != null
-                external.setOnClickListener { page.linkModalValue?.let { modalAction(it) } }
-            } else if (externalAction != null) {
-                external.text = page.externalLinkLabel.orEmpty()
-                external.setTextColor(configuration.theme.primaryColorEnd.color())
-                external.isVisible = page.externalLinkUrl != null
-                external.setOnClickListener { page.externalLinkUrl?.let { externalAction(it) } }
-            } else external.isVisible = false
+        }
+
+    private suspend fun setUpExtraAction(
+        page: Page,
+        extraPageAction: ((Page) -> Unit)?,
+        extraStringAction: ((String) -> Unit)?,
+        configuration: Configuration
+    ): Unit =
+        evalOnMain {
+
+            when {
+
+                extraPageAction != null && page.linkModalValue != null -> {
+                    external.text = page.linkModalLabel.orEmpty()
+                    external.setTextColor(configuration.theme.primaryColorEnd.color())
+                    external.isVisible = true
+                    external.setOnClickListener { extraPageAction(page.linkModalValue) }
+                }
+
+                extraStringAction != null && page.externalLinkUrl != null -> {
+                    external.text = page.externalLinkLabel.orEmpty()
+                    external.setTextColor(configuration.theme.primaryColorEnd.color())
+                    external.isVisible = true
+                    external.setOnClickListener { extraStringAction(page.externalLinkUrl) }
+                }
+
+                else -> external.isVisible = false
+
+            }
+
+        }
+
+    private suspend fun setUpShadow(configuration: Configuration): Unit =
+        evalOnMain {
 
             shadow.background =
-                HEXGradient.from(
-                    HEXColor.transparent(),
-                    configuration.theme.primaryTextColor
-                ).drawable(0.3f)
+                HEXGradient.from(HEXColor.transparent(), configuration.theme.primaryTextColor)
+                    .drawable(0.3f)
 
-            if (page.link1Label == null) {
-                next.isVisible = true
-                next_text.isVisible = false
+        }
 
-                next.background =
-                    button(
-                        context.resources,
-                        when (pageType) {
-                            INFO -> context.imageConfiguration.nextStepSecondary()
-                            FAILURE -> context.imageConfiguration.previousStepSecondary()
-                            SUCCESS -> context.imageConfiguration.nextStepSecondary()
-                        }
+    private suspend fun setUpButtons(
+        page: Page,
+        pageType: EPageType,
+        configuration: Configuration,
+        action1: (Page?) -> Unit,
+        action2: ((Page?) -> Unit)?,
+    ): Unit =
+        evalOnMain {
+
+            action_1_text_secondary.background = button(configuration.theme.secondaryColor.color())
+            action_1_text.background = button(configuration.theme.primaryColorEnd.color())
+            special_action.background = button(configuration.theme.primaryColorEnd.color())
+            action_1.background =
+                button(
+                    context.resources,
+                    when (pageType) {
+                        INFO -> context.imageConfiguration.nextStepSecondary()
+                        FAILURE -> context.imageConfiguration.previousStepSecondary()
+                        SUCCESS -> context.imageConfiguration.nextStepSecondary()
+                    }
+                )
+
+            action_1_text.setTextColor(configuration.theme.secondaryColor.color())
+            action_1_text_secondary.setTextColor(configuration.theme.primaryColorEnd.color())
+            action_2_text.setTextColor(configuration.theme.fourthTextColor.color())
+            special_action.setTextColor(configuration.theme.secondaryColor.color())
+
+            action_1_text.text = page.link1Label
+            action_1_text_secondary.text =
+                page.link1Label ?: configuration.text.onboarding.integration.nextDefault
+            action_2_text.text =
+                SpanDroid()
+                    .append(
+                        page.link2Label.orEmpty(),
+                        spanList(context) { custom(UnderlineSpan()) }
                     )
+                    .toSpannableString()
 
-                next.setOnClickListener { action1(page.link1) }
-            } else {
-                next.isVisible = false
-                next_text.isVisible = true
 
-                next_text.setTextColor(configuration.theme.secondaryColor.color())
-                next_text.background =
-                    button(configuration.theme.primaryColorEnd.color())
-                next_text.text = page.link1Label
-                next_text.setOnClickListener { action1(page.link1) }
+            action_1.setOnClickListener { action1(page.link1) }
+            action_1_text.setOnClickListener { action1(page.link1) }
+            action_1_text_secondary.setOnClickListener { action1(page.link1) }
+            action_2_text.setOnClickListener { action2?.invoke(page.link2) }
+
+
+        }
+
+    private suspend fun setUpButtonsClick(
+        page: Page,
+        action2: ((Page?) -> Unit)?,
+        specialStringAction: ((String) -> Unit)?,
+        specialStringPageAction: ((String, Page?) -> Unit)?
+    ): Unit =
+        evalOnMain {
+
+            when {
+
+                page.specialLinkValue != null && specialStringAction != null -> {
+
+                    action_1.isVisible = false
+                    action_1_text.isVisible = false
+                    action_1_text_secondary.isVisible = true
+                    special_action.isVisible = true
+
+                    special_action.setOnClickListener { specialStringAction(page.specialLinkValue) }
+                    special_action.text = page.specialLinkLabel.orEmpty()
+
+                }
+
+                page.externalLinkUrl != null && specialStringPageAction != null -> {
+
+                    action_1.isVisible = false
+                    action_1_text.isVisible = false
+                    action_1_text_secondary.isVisible = true
+                    special_action.isVisible = true
+
+                    special_action.setOnClickListener {
+                        specialStringPageAction(page.externalLinkUrl, page.link1)
+                    }
+                    special_action.text = page.specialLinkLabel.orEmpty()
+
+                }
+
+                page.link1Label == null -> {
+
+                    action_1.isVisible = true
+                    action_1_text.isVisible = false
+                    action_1_text_secondary.isVisible =false
+                    special_action.isVisible = false
+
+                }
+
+                else -> {
+
+                    action_1.isVisible = false
+                    action_1_text.isVisible = true
+                    action_1_text_secondary.isVisible =false
+                    special_action.isVisible = false
+
+                }
+
             }
 
             if (page.link2Label == null)
-                next_2_text.isVisible = false
-            else {
-                if (action2 != null) {
-                    next_2_text.isVisible = true
+                action_2_text.isVisible = false
+            else
+                action_2_text.isVisible = action2 != null
 
-                    next_2_text.setTextColor(configuration.theme.fourthTextColor.color())
-                    next_2_text.text =
-                        SpanDroid()
-                            .append(
-                                page.link2Label,
-                                spanList(context) { custom(UnderlineSpan()) }
-                            )
-                            .toSpannableString()
-                    next_2_text.setOnClickListener { action2(page.link2) }
+        }
 
-                } else next_2_text.isVisible = false
-            }
+
+    private suspend fun setUpBackgrounds(configuration: Configuration): Unit =
+        evalOnMain {
 
             page_root.setBackgroundColor(configuration.theme.secondaryColor.color())
             footer.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         }
+
 }

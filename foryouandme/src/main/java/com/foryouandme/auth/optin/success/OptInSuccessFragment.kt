@@ -51,7 +51,7 @@ class OptInSuccessFragment : OptInSectionFragment(R.layout.opt_in_success) {
                 page = optIns.successPage,
                 pageType = EPageType.SUCCESS,
                 action1 = { startCoroutineAsync { viewModel.consentUser(authNavController()) } },
-                externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
+                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
             )
 
         }

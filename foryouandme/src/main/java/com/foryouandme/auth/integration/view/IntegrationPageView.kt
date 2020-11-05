@@ -18,7 +18,7 @@ import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.imageConfiguration
 import kotlinx.android.synthetic.main.integration_page_view.view.*
 
-
+// TODO: Remove use standard page
 class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     init {
@@ -54,10 +54,10 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
             when {
                 specialAction != null -> {
 
-                    next.isVisible = false
+                    action_1.isVisible = false
 
-                    button_1_text.isVisible = true
-                    button_1_text.text =
+                    special_action.isVisible = true
+                    special_action.text =
                         page.specialLinkLabel
                             ?: when (specialAction) {
                                 is SpecialLinkAction.OpenApp ->
@@ -65,49 +65,49 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
                                 is SpecialLinkAction.Download ->
                                     configuration.text.onboarding.integration.downloadButtonDefault
                             }
-                    button_1_text.setOnClickListener { specialLinkAction(specialAction) }
+                    special_action.setOnClickListener { specialLinkAction(specialAction) }
 
-                    button_2_text.isVisible = true
-                    button_2_text.text =
+                    action_1_text_secondary.isVisible = true
+                    action_1_text_secondary.text =
                         page.link1Label ?: configuration.text.onboarding.integration.nextDefault
 
                 }
                 page.externalLinkUrl != null -> {
-                    next.isVisible = false
+                    action_1.isVisible = false
 
-                    button_1_text.isVisible = true
-                    button_1_text.text =
+                    special_action.isVisible = true
+                    special_action.text =
                         page.externalLinkLabel
                             ?: configuration.text.onboarding.integration.loginButtonDefault
-                    button_1_text.setOnClickListener {
+                    special_action.setOnClickListener {
                         externalLinkAction.invoke(page.externalLinkUrl, page.link1)
                     }
 
-                    button_2_text.isVisible = true
-                    button_2_text.text =
+                    action_1_text_secondary.isVisible = true
+                    action_1_text_secondary.text =
                         page.link1Label ?: configuration.text.onboarding.integration.nextDefault
 
                 }
                 else -> {
 
-                    next.isVisible = true
-                    button_1_text.isVisible = false
-                    button_2_text.isVisible = false
+                    action_1.isVisible = true
+                    special_action.isVisible = false
+                    action_1_text_secondary.isVisible = false
 
                 }
             }
 
-            next.background =
+            action_1.background =
                 button(context.resources, context.imageConfiguration.nextStepSecondary())
 
-            button_1_text.background = button(configuration.theme.primaryColorEnd.color())
-            button_1_text.setTextColor(configuration.theme.secondaryColor.color())
+            special_action.background = button(configuration.theme.primaryColorEnd.color())
+            special_action.setTextColor(configuration.theme.secondaryColor.color())
 
-            button_2_text.background = button(configuration.theme.secondaryColor.color())
-            button_2_text.setTextColor(configuration.theme.primaryColorEnd.color())
+            action_1_text_secondary.background = button(configuration.theme.secondaryColor.color())
+            action_1_text_secondary.setTextColor(configuration.theme.primaryColorEnd.color())
 
-            button_2_text.setOnClickListener { nextAction(page.link1) }
-            next.setOnClickListener { nextAction(page.link1) }
+            action_1_text_secondary.setOnClickListener { nextAction(page.link1) }
+            action_1.setOnClickListener { nextAction(page.link1) }
 
             page_root.setBackgroundColor(configuration.theme.secondaryColor.color())
             footer.setBackgroundColor(configuration.theme.secondaryColor.color())

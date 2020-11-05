@@ -11,6 +11,7 @@ import com.foryouandme.researchkit.task.TaskIdentifiers
 
 class CamCogTask(
     id: String,
+    welcomeRemindMeLater: Boolean,
     welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
     welcomeImage: Int,
@@ -57,7 +58,8 @@ class CamCogTask(
                 },
                 startButtonColor = welcomeStartButtonColor,
                 startButtonTextColor = welcomeStartButtonTextColor,
-                shadowColor = welcomeShadowColor
+                shadowColor = welcomeShadowColor,
+                remindMeLater = welcomeRemindMeLater
             ),
             WebStep(
                 identifier = CAMCOG_WEB,

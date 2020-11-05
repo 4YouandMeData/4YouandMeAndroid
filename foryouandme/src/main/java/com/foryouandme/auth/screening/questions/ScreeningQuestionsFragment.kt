@@ -88,13 +88,13 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
                 LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             recycler_view.adapter = adapter
 
-            next.background =
+            action_1.background =
                 button(
                     requireContext().resources,
                     requireContext().imageConfiguration.nextStepSecondary()
                 )
 
-            next.setOnClickListener {
+            action_1.setOnClickListener {
                 startCoroutineAsync {
                     viewModel.validate(
                         rootNavController(),
@@ -109,7 +109,7 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
 
             adapter.submitList(questions)
 
-            next.isEnabled =
+            action_1.isEnabled =
                 questions.fold(
                     true,
                     { acc, item -> acc && item.answer != null }

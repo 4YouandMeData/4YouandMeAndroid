@@ -10,12 +10,14 @@ import com.foryouandme.core.data.api.task.request.GaitOutboundRequest
 import com.foryouandme.core.data.api.task.request.GaitRestRequest
 import com.foryouandme.core.data.api.task.request.GaitReturnRequest
 import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
+import com.foryouandme.core.entity.activity.Reschedule
+import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.ext.invokeAsForYouAndMeError
 import com.foryouandme.core.ext.readJson
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.result.TaskResult
-import com.foryouandme.researchkit.task.TaskHandleResult
+import com.foryouandme.researchkit.task.TaskResponse
 import com.foryouandme.researchkit.task.gait.GaitTask
 import com.squareup.moshi.Moshi
 
@@ -23,6 +25,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
     id: String,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
+    reschedule: Reschedule?,
     moshi: Moshi
 ): GaitTask {
 
@@ -51,6 +54,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
         welcomeStartButtonColor = primaryEnd,
         welcomeStartButtonTextColor = secondary,
         welcomeShadowColor = primaryText,
+        welcomeRemindMeLater = reschedule.isEnabled(),
         startBackImage = imageConfiguration.backSecondary(),
         startBackgroundColor = secondary,
         startTitle = null,
@@ -105,7 +109,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
         endClose = false,
         endCheckMarkBackgroundColor = primaryEnd,
         endCheckMarkColor = secondary,
-        moshi
+        moshi = moshi
     )
 }
 
@@ -114,7 +118,7 @@ suspend fun FYAMTaskConfiguration.sendGaitData(
     errorModule: ErrorModule,
     taskId: String,
     result: TaskResult
-): TaskHandleResult {
+): TaskResponse {
 
 
     // parse all file result content
@@ -192,6 +196,6 @@ suspend fun FYAMTaskConfiguration.sendGaitData(
 
     // convert the result to TaskHandleResult
 
-    return response.fold({ TaskHandleResult.Error(it.message) }, { TaskHandleResult.Handled })
+    return response.fold({ TaskResponse.Error(it.message) }, { TaskResponse.Success })
 
 }

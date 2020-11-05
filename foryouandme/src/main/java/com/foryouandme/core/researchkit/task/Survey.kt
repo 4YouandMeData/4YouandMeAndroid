@@ -5,6 +5,8 @@ import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.cases.task.TaskUseCase.updateSurvey
 import com.foryouandme.core.data.api.task.request.AnswerUpdateRequest
 import com.foryouandme.core.data.api.task.request.SurveyUpdateRequest
+import com.foryouandme.core.entity.activity.Reschedule
+import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.page.Page
 import com.foryouandme.core.entity.survey.Survey
@@ -29,7 +31,7 @@ import com.foryouandme.researchkit.step.range.RangeStep
 import com.foryouandme.researchkit.step.scale.ScaleStep
 import com.foryouandme.researchkit.step.textinput.TextInputStep
 import com.foryouandme.researchkit.task.Task
-import com.foryouandme.researchkit.task.TaskHandleResult
+import com.foryouandme.researchkit.task.TaskResponse
 import com.foryouandme.researchkit.utils.ImageResource
 import com.foryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 import org.threeten.bp.ZoneOffset
@@ -40,7 +42,8 @@ fun buildSurvey(
     imageConfiguration: ImageConfiguration,
     survey: Survey,
     welcomePage: Page,
-    successPage: Page?
+    successPage: Page?,
+    reschedule: Reschedule?
 ): Task =
     object : Task("survey", id) {
 
@@ -51,14 +54,17 @@ fun buildSurvey(
             survey.surveyBlocks.forEach { surveyBlock ->
 
                 val intro =
-                    surveyBlock.introPage.asList().mapIndexed { index, page ->
+                    surveyBlock.introPage.asList().mapIndexed { _, page ->
+
                         FYAMPageStep(
                             getSurveyBlockIntroStepId(surveyBlock.id, page.id),
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             page,
-                            EPageType.INFO
+                            EPageType.INFO,
+                            false
                         )
+
                     }
 
                 val questions =
@@ -326,7 +332,8 @@ fun buildSurvey(
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
-                            EPageType.SUCCESS
+                            EPageType.SUCCESS,
+                            false
                         )
 
                     }
@@ -340,13 +347,16 @@ fun buildSurvey(
 
             val intro =
                 welcomePage.asList().mapIndexed { index, page ->
+
                     FYAMPageStep(
                         getSurveyIntroStepId(page.id),
                         Back(imageConfiguration.backSecondary()),
                         configuration,
                         page,
-                        EPageType.INFO
+                        EPageType.INFO,
+                        index == 0 && reschedule.isEnabled()
                     )
+
                 }
 
             val success =
@@ -357,7 +367,8 @@ fun buildSurvey(
                         Back(imageConfiguration.backSecondary()),
                         configuration,
                         it,
-                        EPageType.SUCCESS
+                        EPageType.SUCCESS,
+                        false
                     )
 
                 }
@@ -391,7 +402,7 @@ suspend fun FYAMTaskConfiguration.sendSurveyData(
     taskModule: TaskModule,
     taskId: String,
     result: TaskResult
-): TaskHandleResult {
+): TaskResponse {
 
 
     val answers =
@@ -418,6 +429,6 @@ suspend fun FYAMTaskConfiguration.sendSurveyData(
 
     // convert the result to TaskHandleResult
 
-    return response.fold({ TaskHandleResult.Error(it.message) }, { TaskHandleResult.Handled })
+    return response.fold({ TaskResponse.Error(it.message) }, { TaskResponse.Success })
 
 }

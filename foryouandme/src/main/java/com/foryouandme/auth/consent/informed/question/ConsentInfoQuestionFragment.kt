@@ -75,8 +75,8 @@ class ConsentInfoQuestionFragment :
                 )
             recycler_view.adapter = adapter
 
-            next.background = button(resources, imageConfiguration.nextStep())
-            next.setOnClickListener {
+            action_1.background = button(resources, imageConfiguration.nextStep())
+            action_1.setOnClickListener {
 
                 startCoroutineAsync {
                     viewModel.nextQuestion(
@@ -128,7 +128,7 @@ class ConsentInfoQuestionFragment :
 
             adapter.submitList(answers)
 
-            next.isEnabled =
+            action_1.isEnabled =
                 answers.fold(
                     false,
                     { acc, answer -> acc || answer.isSelected }

@@ -2,12 +2,14 @@ package com.foryouandme.researchkit.step.beforestart
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.core.entity.configuration.HEXColor
 import com.foryouandme.core.entity.configuration.HEXGradient
 import com.foryouandme.core.entity.configuration.button.button
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.html.setHtmlText
+import com.foryouandme.core.ext.setOnClickListenerAsync
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
 import kotlinx.android.synthetic.main.step_welcome.*
@@ -31,20 +33,11 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
     private suspend fun setupView(): Unit =
         evalOnMain {
 
-            remind_me_later.setOnClickListener {
-                startCoroutineAsync {
-                    // TODO: call API to postpone task
-                    startCoroutineAsync {
-                        viewModel.back(
-                            indexArg(),
-                            stepNavController(),
-                            taskNavController()
-                        )
-                    }
-                }
-            }
+            remind_me_later.setOnClickListenerAsync { viewModel.reschedule(taskNavController()) }
 
-            start_now.setOnClickListener { startCoroutineAsync { next() } }
+            start_now.setOnClickListenerAsync { next() }
+            start_now_full.setOnClickListenerAsync { next() }
+
         }
 
     private suspend fun applyData(
@@ -66,10 +59,17 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
             remind_me_later.background = button(step.remindButtonColor)
             remind_me_later.text = step.remindButton(requireContext())
             remind_me_later.setTextColor(step.remindButtonTextColor)
+            remind_me_later.isVisible = step.remindMeLater
 
             start_now.background = button(step.startButtonColor)
             start_now.text = step.startButton(requireContext())
             start_now.setTextColor(step.startButtonTextColor)
+            start_now.isVisible = step.remindMeLater
+
+            start_now_full.background = button(step.startButtonColor)
+            start_now_full.text = step.startButton(requireContext())
+            start_now_full.setTextColor(step.startButtonTextColor)
+            start_now_full.isVisible = step.remindMeLater.not()
 
             shadow.background =
                 HEXGradient.from(

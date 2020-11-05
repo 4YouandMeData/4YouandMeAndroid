@@ -46,8 +46,8 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
         evalOnMain {
 
             bindNext()
-            next.background = button(resources, imageConfiguration.nextStep())
-            next.setOnClickListener {
+            action_1.background = button(resources, imageConfiguration.nextStep())
+            action_1.setOnClickListener {
                 startCoroutineAsync { viewModel.email(consentUserNavController()) }
             }
 
@@ -134,7 +134,7 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
     private suspend fun bindNext(): Unit =
         evalOnMain {
 
-            next.isEnabled =
+            action_1.isEnabled =
                 viewModel.state().firstName.isNotEmpty() && viewModel.state().lastName.isNotEmpty()
 
         }

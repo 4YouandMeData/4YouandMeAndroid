@@ -66,7 +66,7 @@ class ConsentInfoWelcomeFragment :
                         }
                     }
                 },
-                externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
+                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
             )
         }
 }

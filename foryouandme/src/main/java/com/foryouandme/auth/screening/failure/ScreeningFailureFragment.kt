@@ -51,7 +51,7 @@ class ScreeningFailureFragment : ScreeningSectionFragment(R.layout.screening_pag
                 action1 = {
                     startCoroutineAsync { viewModel.retryFromWelcome(screeningNavController()) }
                 },
-                externalAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
+                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
             )
         }
 }

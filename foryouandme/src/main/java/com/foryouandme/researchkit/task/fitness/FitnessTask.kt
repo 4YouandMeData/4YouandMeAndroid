@@ -21,6 +21,7 @@ import com.squareup.moshi.Moshi
 
 class FitnessTask(
     id: String,
+    welcomeRemindMeLater: Boolean,
     welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
     welcomeImage: Int,
@@ -115,7 +116,8 @@ class FitnessTask(
                 },
                 startButtonColor = welcomeStartButtonColor,
                 startButtonTextColor = welcomeStartButtonTextColor,
-                shadowColor = welcomeShadowColor
+                shadowColor = welcomeShadowColor,
+                remindMeLater = welcomeRemindMeLater
             )
 
         ).plus(

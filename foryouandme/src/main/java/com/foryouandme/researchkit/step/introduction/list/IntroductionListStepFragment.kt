@@ -45,12 +45,12 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
 
             remind_me_later.setOnClickListener {
                 startCoroutineAsync {
-                    // TODO: call API to postpone task
+                    // TODO: handle remind me
                     startCoroutineAsync { viewModel.close(taskNavController()) }
                 }
             }
 
-            next.setOnClickListener { startCoroutineAsync { next() } }
+            action_1.setOnClickListener { startCoroutineAsync { next() } }
         }
 
     private suspend fun applyData(
@@ -101,9 +101,9 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
             remind_me_later.text = step.remindButton(requireContext())
             remind_me_later.setTextColor(step.remindButtonTextColor)
 
-            next.background = button(step.buttonColor)
-            next.text = step.button
-            next.setTextColor(step.buttonTextColor)
+            action_1.background = button(step.buttonColor)
+            action_1.text = step.button
+            action_1.setTextColor(step.buttonTextColor)
 
         }
 

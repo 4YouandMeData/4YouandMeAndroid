@@ -76,6 +76,10 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(cont
         viewModel.skipToStep(stepNavController(), stepId, indexArg())
     }
 
+    protected open fun reschedule(): Unit {
+
+    }
+
     protected fun taskFragment(): TaskFragment = find()
 
     protected fun taskNavController(): TaskNavController =

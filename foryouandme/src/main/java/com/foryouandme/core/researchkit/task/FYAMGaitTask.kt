@@ -2,6 +2,8 @@ package com.foryouandme.core.researchkit.task
 
 import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.entity.activity.Reschedule
+import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.page.Page
 import com.foryouandme.core.researchkit.step.FYAMPageStep
@@ -19,6 +21,7 @@ class FYAMGaitTask(
     private val imageConfiguration: ImageConfiguration,
     private val welcomePage: Page,
     private val successPage: Page?,
+    private val reschedule: Reschedule?,
     private val moshi: Moshi
 ) : Task(TaskIdentifiers.GAIT, id) {
 
@@ -34,12 +37,14 @@ class FYAMGaitTask(
             configuration.theme.primaryColorEnd.color()
 
         welcomePage.asList().mapIndexed { index, page ->
+
             FYAMPageStep(
                 getGaitWelcomeStepId(page.id),
                 Back(imageConfiguration.backSecondary()),
                 configuration,
                 page,
-                EPageType.INFO
+                EPageType.INFO,
+                index == 0 && reschedule.isEnabled()
             )
         }.plus(
             GaitTask.getGaitCoreSteps(
@@ -97,7 +102,8 @@ class FYAMGaitTask(
                             Back(imageConfiguration.backSecondary()),
                             configuration,
                             it,
-                            EPageType.SUCCESS
+                            EPageType.SUCCESS,
+                            false
                         )
                     )
 

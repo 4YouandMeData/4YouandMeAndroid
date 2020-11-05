@@ -45,6 +45,8 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
                 when (it.task) {
                     TaskLoading.Initialization ->
                         task_loading.setVisibility(it.active, false)
+                    TaskLoading.Reschedule ->
+                        task_loading.setVisibility(it.active)
                     TaskLoading.Result ->
                         task_loading.setVisibility(it.active)
                 }
@@ -60,7 +62,10 @@ class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
                                 dataArg()
                             )
                         }
-                    TaskError.Result -> errorAlert(it.error) { viewModel.end() }
+                    TaskError.Reschedule ->
+                        errorAlert(it.error) { viewModel.reschedule(taskNavController()) }
+                    TaskError.Result ->
+                        errorAlert(it.error) { viewModel.end() }
                 }
             }
 
