@@ -15,7 +15,10 @@ import kotlinx.android.synthetic.main.sign_up_info.*
 class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sign_up_info) {
 
     override val viewModel: SignUpInfoViewModel by lazy {
-        viewModelFactory(this, getFactory { SignUpInfoViewModel(navigator) })
+        viewModelFactory(
+            this,
+            getFactory { SignUpInfoViewModel(navigator, injector.analyticsModule()) }
+        )
     }
 
 
@@ -26,6 +29,13 @@ class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sig
             applyConfiguration(it)
             setupView()
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
 
     }
 
@@ -55,6 +65,7 @@ class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sig
             toolbar.showBackButton(imageConfiguration) {
                 startCoroutineAsync { authViewModel.back(authNavController(), rootNavController()) }
             }
+
         }
 
     private suspend fun applyConfiguration(configuration: Configuration): Unit =

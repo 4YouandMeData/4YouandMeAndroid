@@ -16,7 +16,10 @@ import kotlinx.android.synthetic.main.sign_up_later.*
 class SignUpLaterFragment : AuthSectionFragment<SignUpLaterViewModel>(R.layout.sign_up_later) {
 
     override val viewModel: SignUpLaterViewModel by lazy {
-        viewModelFactory(this, getFactory { SignUpLaterViewModel(navigator) })
+        viewModelFactory(
+            this,
+            getFactory { SignUpLaterViewModel(navigator, injector.analyticsModule()) }
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,6 +29,13 @@ class SignUpLaterFragment : AuthSectionFragment<SignUpLaterViewModel>(R.layout.s
             applyConfiguration(it)
             setupView()
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
 
     }
 
