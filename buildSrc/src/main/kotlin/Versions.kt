@@ -12,7 +12,7 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.4.0" // available: "1.4.1"
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.4.1"
 
     const val com_squareup_retrofit2: String = "2.9.0"
 
