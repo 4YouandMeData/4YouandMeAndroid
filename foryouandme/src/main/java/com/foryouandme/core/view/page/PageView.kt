@@ -10,30 +10,20 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.cases.Memory
-import com.foryouandme.core.cases.Memory.configuration
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.HEXColor
 import com.foryouandme.core.entity.configuration.HEXGradient
 import com.foryouandme.core.entity.configuration.button.button
 import com.foryouandme.core.entity.page.Page
-import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.view.page.EPageType.*
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
-import kotlinx.android.synthetic.main.integration_page_view.view.*
 import kotlinx.android.synthetic.main.page.view.*
-import kotlinx.android.synthetic.main.page.view.action_1
-import kotlinx.android.synthetic.main.page.view.action_1_text_secondary
-import kotlinx.android.synthetic.main.page.view.description
-import kotlinx.android.synthetic.main.page.view.footer
-import kotlinx.android.synthetic.main.page.view.page_root
-import kotlinx.android.synthetic.main.page.view.shadow
-import kotlinx.android.synthetic.main.page.view.special_action
-import kotlinx.android.synthetic.main.page.view.title
 
 class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -70,6 +60,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             setUpButtonsClick(page, action2, specialStringAction, specialStringPageAction)
 
             setUpBackgrounds(configuration)
+
         }
 
     private suspend fun setUpImage(page: Page, EPageType: EPageType): Unit =
@@ -126,14 +117,39 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                     external.text = page.linkModalLabel.orEmpty()
                     external.setTextColor(configuration.theme.primaryColorEnd.color())
                     external.isVisible = true
-                    external.setOnClickListener { extraPageAction(page.linkModalValue) }
+                    external.setOnClickListener {
+
+                        startCoroutineAsync {
+                            context.injector
+                                .analyticsModule()
+                                .logEvent(
+                                    AnalyticsEvent.ScreenViewed.LearnMore,
+                                    EAnalyticsProvider.ALL
+                                )
+                        }
+
+                        extraPageAction(page.linkModalValue)
+
+                    }
                 }
 
                 extraStringAction != null && page.externalLinkUrl != null -> {
                     external.text = page.externalLinkLabel.orEmpty()
                     external.setTextColor(configuration.theme.primaryColorEnd.color())
                     external.isVisible = true
-                    external.setOnClickListener { extraStringAction(page.externalLinkUrl) }
+                    external.setOnClickListener {
+
+                        startCoroutineAsync {
+                            context.injector
+                                .analyticsModule()
+                                .logEvent(
+                                    AnalyticsEvent.ScreenViewed.LearnMore,
+                                    EAnalyticsProvider.ALL
+                                )
+                        }
+
+                        extraStringAction(page.externalLinkUrl)
+                    }
                 }
 
                 else -> external.isVisible = false
@@ -238,7 +254,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
                     action_1.isVisible = true
                     action_1_text.isVisible = false
-                    action_1_text_secondary.isVisible =false
+                    action_1_text_secondary.isVisible = false
                     special_action.isVisible = false
 
                 }
@@ -247,7 +263,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
                     action_1.isVisible = false
                     action_1_text.isVisible = true
-                    action_1_text_secondary.isVisible =false
+                    action_1_text_secondary.isVisible = false
                     special_action.isVisible = false
 
                 }
