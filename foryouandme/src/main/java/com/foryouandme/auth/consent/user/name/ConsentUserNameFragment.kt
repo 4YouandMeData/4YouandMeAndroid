@@ -42,6 +42,13 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logConsentUserNameScreenViewed() }
+
+    }
+
     private suspend fun setupView(): Unit =
         evalOnMain {
 

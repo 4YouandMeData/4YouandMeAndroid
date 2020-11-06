@@ -8,6 +8,7 @@ import arrow.core.left
 import arrow.core.right
 import com.foryouandme.auth.AuthNavController
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.ConsentUserModule
 import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
@@ -16,6 +17,9 @@ import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.toastAction
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.confirmEmail
 import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.createUserConsent
 import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.getConsent
@@ -26,7 +30,8 @@ import java.io.ByteArrayOutputStream
 
 class ConsentUserViewModel(
     navigator: Navigator,
-    private val consentUserModule: ConsentUserModule
+    private val consentUserModule: ConsentUserModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         ConsentUserState,
         ConsentUserStateUpdate,
@@ -221,5 +226,16 @@ class ConsentUserViewModel(
 
     suspend fun integration(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, ConsentUserToIntegration)
+
+    /* --- analytics --- */
+
+    suspend fun logConsentUserNameScreenViewed(): Unit =
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.ConsentName, EAnalyticsProvider.ALL)
+
+    suspend fun logConsentSignatureScreenViewed(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.ScreenViewed.ConsentSignature,
+            EAnalyticsProvider.ALL
+        )
 
 }

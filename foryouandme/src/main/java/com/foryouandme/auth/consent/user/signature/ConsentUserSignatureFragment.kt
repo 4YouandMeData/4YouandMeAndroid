@@ -52,6 +52,13 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logConsentSignatureScreenViewed() }
+
+    }
+
     private suspend fun setupView(): Unit =
         evalOnMain {
 
