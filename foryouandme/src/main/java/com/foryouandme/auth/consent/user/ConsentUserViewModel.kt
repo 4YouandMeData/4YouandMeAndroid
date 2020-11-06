@@ -238,4 +238,16 @@ class ConsentUserViewModel(
             EAnalyticsProvider.ALL
         )
 
+    suspend fun logConsentEmailScreenViewed(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.ScreenViewed.EmailInsert,
+            EAnalyticsProvider.ALL
+        )
+
+    suspend fun logConsentEmailValidationScreenViewed(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.ScreenViewed.EmailVerification,
+            EAnalyticsProvider.ALL
+        )
+
 }

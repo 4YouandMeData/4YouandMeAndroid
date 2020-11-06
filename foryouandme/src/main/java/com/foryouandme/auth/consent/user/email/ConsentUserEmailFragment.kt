@@ -63,6 +63,13 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logConsentEmailScreenViewed() }
+
+    }
+
     private suspend fun setupView(): Unit =
         evalOnMain {
 

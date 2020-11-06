@@ -59,6 +59,13 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logConsentEmailValidationScreenViewed() }
+
+    }
+
     private suspend fun setupView(): Unit =
         evalOnMain {
 

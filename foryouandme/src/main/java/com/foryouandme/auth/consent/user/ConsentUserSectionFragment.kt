@@ -20,7 +20,8 @@ abstract class ConsentUserSectionFragment(
             getFactory {
                 ConsentUserViewModel(
                     navigator,
-                    injector.consentUserModule()
+                    injector.consentUserModule(),
+                    injector.analyticsModule()
                 )
             }
         )

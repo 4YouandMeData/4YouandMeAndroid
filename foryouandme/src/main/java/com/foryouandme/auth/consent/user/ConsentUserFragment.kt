@@ -20,7 +20,8 @@ class ConsentUserFragment : AuthSectionFragment<ConsentUserViewModel>(R.layout.c
             getFactory {
                 ConsentUserViewModel(
                     navigator,
-                    injector.consentUserModule()
+                    injector.consentUserModule(),
+                    injector.analyticsModule()
                 )
             }
         )
