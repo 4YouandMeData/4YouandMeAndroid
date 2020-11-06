@@ -29,7 +29,13 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
     override val viewModel: PhoneValidationCodeViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { PhoneValidationCodeViewModel(navigator, injector.authModule()) }
+            getFactory {
+                PhoneValidationCodeViewModel(
+                    navigator,
+                    injector.authModule(),
+                    injector.analyticsModule()
+                )
+            }
         )
     }
 
@@ -80,6 +86,13 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
 
             setupView()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
+
     }
 
     private suspend fun setupView(): Unit =
