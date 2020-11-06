@@ -307,7 +307,10 @@ object Libs {
      */
     const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
 
-    const val mockk: String = "io.mockk:mockk"
+    /**
+     * http://mockk.io
+     */
+    const val mockk: String = "io.mockk:mockk:" + Versions.mockk
 
     /**
      * http://github.com/google/truth

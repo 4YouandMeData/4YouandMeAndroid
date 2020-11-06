@@ -102,7 +102,7 @@ object Versions {
 
     const val aapt2: String = "4.1.0-6503028"
 
-    const val mockk: String = "none"// No version. See buildSrcVersions#23
+    const val mockk: String = "1.10.2"
 
     const val truth: String = "1.1"
 
