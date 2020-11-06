@@ -16,7 +16,10 @@ import kotlinx.android.synthetic.main.welcome.*
 class WelcomeFragment : AuthSectionFragment<WelcomeViewModel>(R.layout.welcome) {
 
     override val viewModel: WelcomeViewModel by lazy {
-        viewModelFactory(this, getFactory { WelcomeViewModel(navigator) })
+        viewModelFactory(
+            this,
+            getFactory { WelcomeViewModel(navigator, injector.analyticsModule()) }
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,6 +31,13 @@ class WelcomeFragment : AuthSectionFragment<WelcomeViewModel>(R.layout.welcome) 
             applyConfiguration(it)
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
+
     }
 
     private suspend fun setupView(): Unit =
