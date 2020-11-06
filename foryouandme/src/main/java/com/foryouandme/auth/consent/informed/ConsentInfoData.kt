@@ -34,6 +34,14 @@ sealed class ConsentInfoError {
 
 }
 
+sealed class ConsentInfoAbort {
+
+    data class FromPage(val pageId: String): ConsentInfoAbort()
+
+    data class FromQuestion(val questionId: String): ConsentInfoAbort()
+
+}
+
 /* --- navigation --- */
 
 data class ConsentInfoWelcomeToConsentInfoPage(val id: String) : NavigationAction

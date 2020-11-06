@@ -5,6 +5,7 @@ import android.view.View
 import androidx.navigation.fragment.navArgs
 import arrow.core.extensions.list.foldable.firstOrNone
 import com.foryouandme.R
+import com.foryouandme.auth.consent.informed.ConsentInfoAbort
 import com.foryouandme.auth.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.consent.informed.ConsentInfo
@@ -62,7 +63,7 @@ class ConsentInfoModalPageFragment : ConsentInfoSectionFragment(R.layout.consent
                 .showAbort(
                     configuration,
                     configuration.theme.primaryColorEnd.color(),
-                    args.id
+                    ConsentInfoAbort.FromPage(args.id)
                 )
 
             consentInfo.pages.firstOrNone { it.id == args.id }

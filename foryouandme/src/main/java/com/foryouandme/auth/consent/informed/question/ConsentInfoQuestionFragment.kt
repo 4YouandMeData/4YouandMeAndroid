@@ -6,6 +6,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
+import com.foryouandme.auth.consent.informed.ConsentInfoAbort
 import com.foryouandme.auth.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.auth.consent.informed.ConsentInfoStateUpdate
 import com.foryouandme.core.entity.configuration.Configuration
@@ -101,10 +102,12 @@ class ConsentInfoQuestionFragment :
                 .showAbort(
                     configuration,
                     configuration.theme.secondaryColor.color(),
-                    consentInfo.questions
-                        .getOrNull(args.index)
-                        ?.id
-                        .orEmpty()
+                    ConsentInfoAbort.FromQuestion(
+                        consentInfo.questions
+                            .getOrNull(args.index)
+                            ?.id
+                            .orEmpty()
+                    )
                 )
 
             question.setTextColor(configuration.theme.secondaryColor.color())

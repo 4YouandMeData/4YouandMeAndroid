@@ -65,9 +65,17 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
+    data class CancelDuringComprehension(
+        val pageId: String
+    ) : AnalyticsEvent("comprehension_quiz_cancelled") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply { putString("question_id", pageId) }
+
+    }
+
     object StartStudyAction : AnalyticsEvent("study_video_action")
 
-    object CancelDuringComprehension : AnalyticsEvent("comprehension_quiz_cancelled")
     object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
     object ConsentAgreed : AnalyticsEvent("consent_agreed")
     object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")

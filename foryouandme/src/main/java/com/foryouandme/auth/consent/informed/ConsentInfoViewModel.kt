@@ -262,8 +262,13 @@ class ConsentInfoViewModel(
 
     }
 
-    suspend fun abort(authNavController: AuthNavController, pageId: String): Unit {
-        logAbortEvent(pageId)
+    suspend fun abort(authNavController: AuthNavController, abort: ConsentInfoAbort): Unit {
+
+        when (abort) {
+            is ConsentInfoAbort.FromPage -> logAbortFromPageEvent(abort.pageId)
+            is ConsentInfoAbort.FromQuestion -> logAbortFromQuestionEvent(abort.questionId)
+        }
+
         navigator.navigateTo(authNavController, AnywhereToWelcome)
     }
 
@@ -272,10 +277,17 @@ class ConsentInfoViewModel(
 
     /* --- analytics --- */
 
-    private suspend fun logAbortEvent(pageId: String): Unit =
+    private suspend fun logAbortFromPageEvent(pageId: String): Unit =
         analyticsModule.logEvent(
             AnalyticsEvent.CancelDuringInformedConsent(pageId),
             EAnalyticsProvider.ALL
         )
 
+    private suspend fun logAbortFromQuestionEvent(questionId: String): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.CancelDuringComprehension(questionId),
+            EAnalyticsProvider.ALL
+        )
+
 }
+

@@ -83,12 +83,12 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
 
     }
 
-    suspend fun showAbort(configuration: Configuration, color: Int, pageId: String): Unit =
+    suspend fun showAbort(configuration: Configuration, color: Int, type: ConsentInfoAbort): Unit =
         evalOnMain {
 
             abort.text = configuration.text.onboarding.abortButton
             abort.setTextColor(color)
-            abort.setOnClickListenerAsync { showAbortAlert(configuration, pageId) }
+            abort.setOnClickListenerAsync { showAbortAlert(configuration, type) }
             abort.isVisible = true
 
         }
@@ -100,7 +100,10 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
 
         }
 
-    private suspend fun showAbortAlert(configuration: Configuration, pageId: String): AlertDialog =
+    private suspend fun showAbortAlert(
+        configuration: Configuration,
+        abort: ConsentInfoAbort
+    ): AlertDialog =
         evalOnMain {
 
             AlertDialog.Builder(requireContext())
@@ -108,7 +111,7 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
                 .setMessage(configuration.text.onboarding.abortMessage)
                 .setPositiveButton(configuration.text.onboarding.abortConfirm)
                 { _, _ ->
-                    startCoroutineAsync { viewModel.abort(authNavController(), pageId) }
+                    startCoroutineAsync { viewModel.abort(authNavController(), abort) }
                 }
                 .setNegativeButton(configuration.text.onboarding.abortCancel, null)
                 .show()
