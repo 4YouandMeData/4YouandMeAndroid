@@ -25,7 +25,7 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
     override val viewModel: WebViewModel by lazy {
         viewModelFactory(
             this,
-            getFactory { WebViewModel(navigator) }
+            getFactory { WebViewModel(navigator, injector.analyticsModule()) }
         )
     }
 
@@ -37,6 +37,13 @@ class WebFragment : BaseFragment<WebViewModel>(R.layout.web) {
             setupToolbar()
             setupWebView()
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
 
     }
 
