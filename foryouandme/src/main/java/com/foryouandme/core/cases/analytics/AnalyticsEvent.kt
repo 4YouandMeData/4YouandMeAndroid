@@ -12,7 +12,6 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     sealed class ScreenViewed(eventName: String) : AnalyticsEvent(eventName) {
 
-        object Intro : ScreenViewed("Intro")
         object GetStarted : ScreenViewed("GetStarted")
         object SetupLater : ScreenViewed("SetupLater")
         object RequestSetUp : ScreenViewed("RequestAccountSetup")
@@ -24,8 +23,8 @@ sealed class AnalyticsEvent(val eventName: String) {
         object VideoDiaryComplete : ScreenViewed("VideoDiaryComplete")
         object ConsentName : ScreenViewed("ConsentName")
         object ConsentSignature : ScreenViewed("ConsentSignature")
-        object OpenPermissions : ScreenViewed("Permissions")
-        object OpenAppsAndDevices : ScreenViewed("AppsAndDevices")
+        object Permissions : ScreenViewed("Permissions")
+        object AppsAndDevices : ScreenViewed("AppsAndDevices")
         object EmailInsert : ScreenViewed("Email")
         object EmailVerification : ScreenViewed("EmailVerification")
         object OAuth : ScreenViewed("OAuth")

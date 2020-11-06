@@ -26,6 +26,6 @@ class WelcomeViewModel(
     /* --- analytics --- */
 
     suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Intro, EAnalyticsProvider.ALL)
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.GetStarted, EAnalyticsProvider.ALL)
 
 }

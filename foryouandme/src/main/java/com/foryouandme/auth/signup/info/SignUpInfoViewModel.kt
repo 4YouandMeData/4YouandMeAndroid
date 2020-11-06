@@ -30,6 +30,6 @@ class SignUpInfoViewModel(
     /* --- analytics --- */
 
     suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.GetStarted, EAnalyticsProvider.ALL)
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.RequestSetUp, EAnalyticsProvider.ALL)
 
 }
