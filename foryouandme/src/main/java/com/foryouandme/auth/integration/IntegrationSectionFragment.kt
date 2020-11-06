@@ -21,7 +21,8 @@ abstract class IntegrationSectionFragment(
                 IntegrationViewModel(
                     navigator,
                     injector.authModule(),
-                    injector.integrationModule()
+                    injector.integrationModule(),
+                    injector.analyticsModule()
                 )
             }
         )

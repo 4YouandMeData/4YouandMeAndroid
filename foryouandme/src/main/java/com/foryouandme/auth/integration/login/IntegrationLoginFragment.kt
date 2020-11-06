@@ -29,6 +29,13 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
+
+    }
+
     private suspend fun setupToolbar(): Unit =
         evalOnMain {
 

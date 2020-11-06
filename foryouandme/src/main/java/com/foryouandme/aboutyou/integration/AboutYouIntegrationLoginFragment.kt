@@ -25,7 +25,7 @@ class AboutYouIntegrationLoginFragment :
 
         viewModelFactory(
             this,
-            getFactory { AboutYouIntegrationLoginViewModel(navigator) }
+            getFactory { AboutYouIntegrationLoginViewModel(navigator, injector.analyticsModule()) }
         )
 
     }
@@ -40,6 +40,13 @@ class AboutYouIntegrationLoginFragment :
             setupWebView(user.getIntegrationCookies())
 
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
 
     }
 
