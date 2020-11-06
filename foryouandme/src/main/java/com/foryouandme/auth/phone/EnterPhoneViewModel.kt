@@ -1,19 +1,23 @@
 package com.foryouandme.auth.phone
 
-import androidx.navigation.NavController
 import com.foryouandme.auth.AuthNavController
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AuthModule
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.toastAction
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
 
 class EnterPhoneViewModel(
     navigator: Navigator,
-    private val authModule: AuthModule
+    private val authModule: AuthModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         EnterPhoneState,
         EnterPhoneStateUpdate,
@@ -79,4 +83,12 @@ class EnterPhoneViewModel(
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
         navigator.performAction(toastAction(error))
+
+    /* --- analytics --- */
+
+    suspend fun logScreenViewed(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.ScreenViewed.UserRegistration,
+            EAnalyticsProvider.ALL
+        )
 }

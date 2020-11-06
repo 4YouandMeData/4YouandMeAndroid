@@ -27,7 +27,8 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
         viewModelFactory(this, getFactory {
             EnterPhoneViewModel(
                 navigator,
-                injector.authModule()
+                injector.authModule(),
+                injector.analyticsModule()
             )
         })
     }
@@ -76,6 +77,13 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
 
             setupView()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
+
     }
 
     private suspend fun setupView(): Unit =
