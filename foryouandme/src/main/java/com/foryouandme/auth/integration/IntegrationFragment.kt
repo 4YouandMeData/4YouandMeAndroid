@@ -21,7 +21,8 @@ class IntegrationFragment : AuthSectionFragment<IntegrationViewModel>(R.layout.i
                 IntegrationViewModel(
                     navigator,
                     injector.authModule(),
-                    injector.integrationModule()
+                    injector.integrationModule(),
+                    injector.analyticsModule()
                 )
             }
         )

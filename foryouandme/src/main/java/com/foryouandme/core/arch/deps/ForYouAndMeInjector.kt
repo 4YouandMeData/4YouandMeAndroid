@@ -221,7 +221,8 @@ class ForYouAndMeInjector(
             taskModule(),
             surveyModule(),
             authModule(),
-            errorModule()
+            errorModule(),
+            analyticsModule()
         )
 
     /* --- modules --- */
