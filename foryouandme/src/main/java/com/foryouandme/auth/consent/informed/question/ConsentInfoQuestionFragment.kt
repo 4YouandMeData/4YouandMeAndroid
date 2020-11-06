@@ -5,8 +5,6 @@ import android.view.View
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.foryouandme.R
 import com.foryouandme.auth.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.auth.consent.informed.ConsentInfoStateUpdate
@@ -102,16 +100,19 @@ class ConsentInfoQuestionFragment :
             consentInfoFragment()
                 .showAbort(
                     configuration,
-                    configuration.theme.secondaryColor.color()
+                    configuration.theme.secondaryColor.color(),
+                    consentInfo.questions
+                        .getOrNull(args.index)
+                        ?.id
+                        .orEmpty()
                 )
 
             question.setTextColor(configuration.theme.secondaryColor.color())
             question.setHtmlText(
                 consentInfo.questions
                     .getOrNull(args.index)
-                    .toOption()
-                    .map { it.text }
-                    .getOrElse { "" },
+                    ?.text
+                    .orEmpty(),
                 true
             )
 

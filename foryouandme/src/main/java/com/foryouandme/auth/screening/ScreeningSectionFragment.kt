@@ -21,7 +21,8 @@ abstract class ScreeningSectionFragment(
                 ScreeningViewModel(
                     navigator,
                     injector.screeningModule(),
-                    injector.answerModule()
+                    injector.answerModule(),
+                    injector.analyticsModule()
                 )
             }
         )

@@ -59,7 +59,8 @@ class ConsentInfoPageFragment : ConsentInfoSectionFragment(R.layout.consent_info
             consentInfoFragment()
                 .showAbort(
                     configuration,
-                    configuration.theme.primaryColorEnd.color()
+                    configuration.theme.primaryColorEnd.color(),
+                    args.id
                 )
 
             consentInfo.pages.firstOrNull { it.id == args.id }

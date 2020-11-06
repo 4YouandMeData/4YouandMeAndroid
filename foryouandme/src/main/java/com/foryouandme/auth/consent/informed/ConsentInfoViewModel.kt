@@ -10,6 +10,7 @@ import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.consent.informed.question.ConsentAnswerItem
 import com.foryouandme.auth.consent.informed.question.toItem
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AnswerModule
 import com.foryouandme.core.arch.deps.modules.ConsentInfoModule
 import com.foryouandme.core.arch.deps.modules.nullToError
@@ -19,6 +20,9 @@ import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.AnywhereToWelcome
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.common.AnswerUseCase.sendAnswer
 import com.foryouandme.core.cases.consent.informed.ConsentInfoUseCase.getConsent
 import com.foryouandme.core.entity.configuration.Configuration
@@ -28,7 +32,8 @@ import com.foryouandme.core.ext.startCoroutineAsync
 class ConsentInfoViewModel(
     navigator: Navigator,
     private val consentInfoModule: ConsentInfoModule,
-    private val answerModule: AnswerModule
+    private val answerModule: AnswerModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         ConsentInfoState,
         ConsentInfoStateUpdate,
@@ -257,9 +262,20 @@ class ConsentInfoViewModel(
 
     }
 
-    suspend fun abort(authNavController: AuthNavController): Unit =
+    suspend fun abort(authNavController: AuthNavController, pageId: String): Unit {
+        logAbortEvent(pageId)
         navigator.navigateTo(authNavController, AnywhereToWelcome)
+    }
 
     suspend fun web(rootNavController: RootNavController, url: String): Unit =
         navigator.navigateTo(rootNavController, AnywhereToWeb(url))
+
+    /* --- analytics --- */
+
+    private suspend fun logAbortEvent(pageId: String): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.CancelDuringInformedConsent(pageId),
+            EAnalyticsProvider.ALL
+        )
+
 }

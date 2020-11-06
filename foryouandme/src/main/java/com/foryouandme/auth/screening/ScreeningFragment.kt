@@ -25,7 +25,8 @@ class ScreeningFragment : AuthSectionFragment<ScreeningViewModel>(R.layout.scree
                 ScreeningViewModel(
                     navigator,
                     injector.screeningModule(),
-                    injector.answerModule()
+                    injector.answerModule(),
+                    injector.analyticsModule()
                 )
             }
         )

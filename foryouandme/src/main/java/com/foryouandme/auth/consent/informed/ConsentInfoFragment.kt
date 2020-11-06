@@ -10,10 +10,7 @@ import com.foryouandme.auth.AuthSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.*
 import kotlinx.android.synthetic.main.consent_info.*
 
 class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.consent_info) {
@@ -25,7 +22,8 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
                 ConsentInfoViewModel(
                     navigator,
                     injector.consentInfoModule(),
-                    injector.answerModule()
+                    injector.answerModule(),
+                    injector.analyticsModule()
                 )
             }
         )
@@ -85,12 +83,12 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
 
     }
 
-    suspend fun showAbort(configuration: Configuration, color: Int): Unit =
+    suspend fun showAbort(configuration: Configuration, color: Int, pageId: String): Unit =
         evalOnMain {
 
             abort.text = configuration.text.onboarding.abortButton
             abort.setTextColor(color)
-            abort.setOnClickListener { startCoroutineAsync { showAbortAlert(configuration) } }
+            abort.setOnClickListenerAsync { showAbortAlert(configuration, pageId) }
             abort.isVisible = true
 
         }
@@ -102,7 +100,7 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
 
         }
 
-    private suspend fun showAbortAlert(configuration: Configuration): AlertDialog =
+    private suspend fun showAbortAlert(configuration: Configuration, pageId: String): AlertDialog =
         evalOnMain {
 
             AlertDialog.Builder(requireContext())
@@ -110,7 +108,7 @@ class ConsentInfoFragment : AuthSectionFragment<ConsentInfoViewModel>(R.layout.c
                 .setMessage(configuration.text.onboarding.abortMessage)
                 .setPositiveButton(configuration.text.onboarding.abortConfirm)
                 { _, _ ->
-                    startCoroutineAsync { viewModel.abort(authNavController()) }
+                    startCoroutineAsync { viewModel.abort(authNavController(), pageId) }
                 }
                 .setNegativeButton(configuration.text.onboarding.abortCancel, null)
                 .show()

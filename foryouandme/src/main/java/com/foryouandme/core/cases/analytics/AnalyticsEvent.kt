@@ -46,18 +46,27 @@ sealed class AnalyticsEvent(val eventName: String) {
     ) : AnalyticsEvent("user_registration") {
 
         override fun firebaseBundle(): Bundle =
-            Bundle().apply {
-                putString("account_type", countryCode)
-            }
+            Bundle().apply { putString("account_type", countryCode) }
 
     }
 
     /* --- screening --- */
 
-    object CancelDuringScreeningQuestions: AnalyticsEvent("screening_questions_cancelled")
+    object CancelDuringScreeningQuestions : AnalyticsEvent("screening_questions_cancelled")
+
+    /* --- informed consent --- */
+
+    data class CancelDuringInformedConsent(
+        val pageId: String
+    ) : AnalyticsEvent("informed_consent_cancelled") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply { putString("page_id", pageId) }
+
+    }
 
     object StartStudyAction : AnalyticsEvent("study_video_action")
-    object CancelDuringInformedConsent : AnalyticsEvent("informed_consent_cancelled")
+
     object CancelDuringComprehension : AnalyticsEvent("comprehension_quiz_cancelled")
     object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
     object ConsentAgreed : AnalyticsEvent("consent_agreed")

@@ -205,7 +205,7 @@ class ScreeningViewModel(
 
     /* --- analytics --- */
 
-    suspend fun logAbortEvent(): Unit =
+    private suspend fun logAbortEvent(): Unit =
         analyticsModule.logEvent(
             AnalyticsEvent.CancelDuringScreeningQuestions,
             EAnalyticsProvider.ALL

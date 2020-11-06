@@ -21,7 +21,8 @@ abstract class ConsentInfoSectionFragment(
                 ConsentInfoViewModel(
                     navigator,
                     injector.consentInfoModule(),
-                    injector.answerModule()
+                    injector.answerModule(),
+                    injector.analyticsModule()
                 )
             }
         )
