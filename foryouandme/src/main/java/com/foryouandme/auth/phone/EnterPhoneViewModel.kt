@@ -91,4 +91,17 @@ class EnterPhoneViewModel(
             AnalyticsEvent.ScreenViewed.UserRegistration,
             EAnalyticsProvider.ALL
         )
+
+    suspend fun logPrivacyPolicy(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.ScreenViewed.PrivacyPolicy,
+            EAnalyticsProvider.ALL
+        )
+
+    suspend fun logTermsOfService(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.ScreenViewed.TermsOfService,
+            EAnalyticsProvider.ALL
+        )
+
 }

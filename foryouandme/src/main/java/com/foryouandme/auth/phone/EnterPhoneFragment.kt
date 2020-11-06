@@ -229,11 +229,15 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                             click {
 
                                 startCoroutineAsync {
+
+                                    viewModel.logPrivacyPolicy()
+
                                     viewModel.web(
                                         rootNavController(),
                                         if (privacyIndex > termsIndex) url.privacy
                                         else url.terms
                                     )
+
                                 }
 
                             }
@@ -252,11 +256,15 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
                         spanList(requireContext()) {
                             click {
                                 startCoroutineAsync {
+
+                                    viewModel.logTermsOfService()
+
                                     viewModel.web(
                                         rootNavController(),
                                         if (privacyIndex > termsIndex) url.terms
                                         else url.privacy
                                     )
+
                                 }
                             }
                             typeface(R.font.helvetica_bold)
