@@ -109,6 +109,7 @@ class TaskViewModel(
             .foldSuspend(
                 { end() },
                 {
+                    taskConfiguration.onStepLoaded(state().task, it)
                     navigator.navigateTo(
                         stepNavController,
                         StepToStep(currentStepIndex + 1)
@@ -136,8 +137,10 @@ class TaskViewModel(
                         Timber.tag(TAG)
                             .e("Unable to skip to step $stepId for task ${state().task.id}, the step index is <= to the index of the current step")
                         nextStep(stepNavController, currentStepIndex)
-                    } else
+                    } else {
+                        taskConfiguration.onStepLoaded(state().task, it)
                         navigator.navigateTo(stepNavController, StepToStep(skipIndex))
+                    }
                 }
             )
 

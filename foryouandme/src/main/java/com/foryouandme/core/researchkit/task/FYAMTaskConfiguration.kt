@@ -4,6 +4,9 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.*
 import com.foryouandme.core.arch.error.unknownError
 import com.foryouandme.core.cases.CachePolicy
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import com.foryouandme.core.cases.survey.SurveyUseCase.getSurvey
@@ -15,6 +18,8 @@ import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.researchkit.result.TaskResult
+import com.foryouandme.researchkit.step.Step
+import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskIdentifiers
@@ -28,7 +33,8 @@ class FYAMTaskConfiguration(
     private val taskModule: TaskModule,
     private val surveyModule: SurveyModule,
     private val authModule: AuthModule,
-    private val errorModule: ErrorModule
+    private val errorModule: ErrorModule,
+    private val analyticsModule: AnalyticsModule
 ) : TaskConfiguration() {
 
     // TODO: handle auth error and other error
@@ -124,7 +130,13 @@ class FYAMTaskConfiguration(
     ): TaskResponse =
 
         when (type) {
-            TaskIdentifiers.VIDEO_DIARY -> TaskResponse.Success
+            TaskIdentifiers.VIDEO_DIARY -> {
+                analyticsModule.logEvent(
+                    AnalyticsEvent.ScreenViewed.VideoDiaryComplete,
+                    EAnalyticsProvider.ALL
+                )
+                TaskResponse.Success
+            }
             TaskIdentifiers.GAIT -> sendGaitData(taskModule, errorModule, id, result)
             TaskIdentifiers.FITNESS -> sendFitnessData(taskModule, errorModule, id, result)
             TaskActivityType.Survey.typeId -> sendSurveyData(taskModule, id, result)
@@ -138,5 +150,15 @@ class FYAMTaskConfiguration(
                 { TaskResponse.Error(it.message) },
                 { TaskResponse.Success }
             )
+
+    override suspend fun onStepLoaded(task: Task, step: Step) {
+        when (step) {
+            is VideoStep ->
+                analyticsModule.logEvent(
+                    AnalyticsEvent.ScreenViewed.VideoDiary,
+                    EAnalyticsProvider.ALL
+                )
+        }
+    }
 
 }

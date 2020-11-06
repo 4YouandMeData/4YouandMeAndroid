@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.researchkit.result.TaskResult
+import com.foryouandme.researchkit.step.Step
 
 abstract class TaskConfiguration {
 
@@ -19,6 +20,10 @@ abstract class TaskConfiguration {
 
     val taskResultLiveData: MutableLiveData<Event<TaskResponse>> = MutableLiveData()
 
+    open suspend fun onStepLoaded(task: Task, step: Step): Unit {
+
+    }
+
 }
 
 sealed class TaskResponse {
@@ -31,7 +36,7 @@ sealed class TaskResponse {
         error: (Error) -> T,
         success: () -> T
     ): T =
-        when(this) {
+        when (this) {
             Success -> success()
             is Error -> error(this)
         }
@@ -40,7 +45,7 @@ sealed class TaskResponse {
         error: suspend (Error) -> T,
         success: suspend () -> T
     ): T =
-        when(this) {
+        when (this) {
             Success -> success()
             is Error -> error(this)
         }
