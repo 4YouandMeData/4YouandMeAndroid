@@ -92,7 +92,8 @@ interface Injector {
             moshi,
             environment,
             errorModule(),
-            configurationModule()
+            configurationModule(),
+            analyticsModule()
         )
 
     fun screeningModule(): ScreeningModule =

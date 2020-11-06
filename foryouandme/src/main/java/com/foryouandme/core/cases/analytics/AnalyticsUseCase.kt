@@ -26,4 +26,10 @@ object AnalyticsUseCase {
             else -> firebase.logEvent(event.eventName, event.firebaseBundle())
         }
 
+    suspend fun AnalyticsModule.setUserId(userId: String): Unit =
+        firebase.setUserId(userId)
+
+    suspend fun AnalyticsModule.setUserProperty(property: UserProperty, value: String): Unit =
+        firebase.setUserProperty(property.name, value)
+
 }

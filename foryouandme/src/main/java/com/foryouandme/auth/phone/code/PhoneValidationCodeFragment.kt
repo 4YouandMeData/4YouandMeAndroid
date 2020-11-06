@@ -2,6 +2,7 @@ package com.foryouandme.auth.phone.code
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.provider.Settings
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
@@ -109,7 +110,8 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
                     rootNavController(),
                     authNavController(),
                     ccp.fullNumberWithPlus,
-                    code.text.toString()
+                    code.text.toString(),
+                    args.countryCode
                 )
             }
 

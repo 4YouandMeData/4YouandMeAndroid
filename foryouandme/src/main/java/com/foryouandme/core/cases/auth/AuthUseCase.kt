@@ -9,6 +9,12 @@ import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.Memory
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.setUserId
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.setUserProperty
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.core.cases.analytics.UserProperty
 import com.foryouandme.core.cases.auth.AuthRepository.fetchUser
 import com.foryouandme.core.cases.auth.AuthRepository.loadToken
 import com.foryouandme.core.cases.auth.AuthRepository.login
@@ -26,12 +32,25 @@ object AuthUseCase {
 
     suspend fun AuthModule.login(
         phone: String,
-        code: String
+        code: String,
+        countryCode: String
     ): Either<ForYouAndMeError, User> =
         configurationModule.getConfiguration(CachePolicy.MemoryFirst)
             .flatMap { login(it, phone, code) }
             .flatMap { fetchUser(it.token) }
             .nullToError()
+            .map {
+
+                analyticsModule.setUserId(it.id)
+                //analyticsModule.setUserProperty(UserProperty.DeviceId, deviceId)
+                analyticsModule.logEvent(
+                    AnalyticsEvent.UserRegistration(countryCode),
+                    EAnalyticsProvider.ALL
+                )
+
+                it
+
+            }
 
     internal suspend fun AuthModule.getToken(
         cachePolicy: CachePolicy

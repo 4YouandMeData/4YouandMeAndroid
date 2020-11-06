@@ -11,5 +11,6 @@ data class AuthModule(
     val moshi: Moshi,
     val environment: Environment,
     val errorModule: ErrorModule,
-    val configurationModule: ConfigurationModule
+    val configurationModule: ConfigurationModule,
+    val analyticsModule: AnalyticsModule
 )

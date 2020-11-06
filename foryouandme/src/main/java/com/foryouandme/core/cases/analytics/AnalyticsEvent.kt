@@ -39,4 +39,30 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
+    /* --- user --- */
+
+    data class UserRegistration(
+        val countryCode: String
+    ) : AnalyticsEvent("user_registration") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply {
+                putString("account_type", countryCode)
+            }
+
+    }
+
+    object StartStudyAction : AnalyticsEvent("study_video_action")
+    object CancelDuringScreeningQuestions : AnalyticsEvent("screening_questions_cancelled")
+    object CancelDuringInformedConsent : AnalyticsEvent("informed_consent_cancelled")
+    object CancelDuringComprehension : AnalyticsEvent("comprehension_quiz_cancelled")
+    object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
+    object ConsentAgreed : AnalyticsEvent("consent_agreed")
+    object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")
+    object QuickActivity : AnalyticsEvent("quick_activity_option_clicked")
+    object SwitchTab : AnalyticsEvent("tab_switch")
+    object VideoDiaryAction : AnalyticsEvent("video_diary_action")
+    object YourDataSelectDataPeriod : AnalyticsEvent("your_data_period_selection")
+    object LocationPermissionChanged : AnalyticsEvent("location_permission_changed")
+
 }

@@ -33,12 +33,14 @@ class PhoneValidationCodeViewModel(
         rootNavController: RootNavController,
         authNavController: AuthNavController,
         phone: String,
-        code: String
+        code: String,
+        countryCode: String
     ): Unit {
 
         showLoading(PhoneValidationCodeLoading.Auth)
 
-        val auth = authModule.login(phone, code)
+        val auth =
+            authModule.login(phone, code, countryCode)
 
         auth.fold(
             { setError(it, PhoneValidationCodeError.Auth) },
