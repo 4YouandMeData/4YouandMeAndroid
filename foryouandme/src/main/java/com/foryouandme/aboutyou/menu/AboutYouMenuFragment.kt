@@ -20,6 +20,7 @@ class AboutYouMenuFragment :
             getFactory {
                 AboutYouMenuViewModel(
                     navigator,
+                    injector.analyticsModule()
                 )
             }
         )
@@ -32,6 +33,13 @@ class AboutYouMenuFragment :
             setupView()
             applyConfiguration(config, user)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
+
     }
 
     private suspend fun setupView(): Unit =

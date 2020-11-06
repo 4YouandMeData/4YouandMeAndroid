@@ -2,7 +2,6 @@ package com.foryouandme.core.cases.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
-import kotlin.reflect.KClass
 
 sealed class AnalyticsEvent(val eventName: String) {
 
@@ -11,7 +10,7 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     /* --- screen events --- */
 
-    sealed class ScreenViewed(eventName: String): AnalyticsEvent(eventName) {
+    sealed class ScreenViewed(eventName: String) : AnalyticsEvent(eventName) {
 
         object Intro : ScreenViewed("Intro")
         object GetStarted : ScreenViewed("GetStarted")
