@@ -9,6 +9,7 @@ import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.screening.questions.ScreeningQuestionItem
 import com.foryouandme.auth.screening.questions.toItem
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AnswerModule
 import com.foryouandme.core.arch.deps.modules.ScreeningModule
 import com.foryouandme.core.arch.deps.modules.nullToError
@@ -18,6 +19,9 @@ import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.AnywhereToWelcome
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.common.AnswerUseCase.sendAnswer
 import com.foryouandme.core.cases.screening.ScreeningUseCase.getScreening
 import com.foryouandme.core.entity.configuration.Configuration
@@ -27,7 +31,8 @@ import com.foryouandme.core.ext.startCoroutineAsync
 class ScreeningViewModel(
     navigator: Navigator,
     private val screeningModule: ScreeningModule,
-    private val answerModule: AnswerModule
+    private val answerModule: AnswerModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         ScreeningState,
         ScreeningStateUpdate,
@@ -174,8 +179,10 @@ class ScreeningViewModel(
     suspend fun consentInfo(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, ScreeningToConsentInfo)
 
-    suspend fun abort(authNavController: AuthNavController): Unit =
+    suspend fun abort(authNavController: AuthNavController): Unit {
+        logAbortEvent()
         navigator.navigateTo(authNavController, AnywhereToWelcome)
+    }
 
     suspend fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateTo(navController, AnywhereToWeb(url))
@@ -195,4 +202,13 @@ class ScreeningViewModel(
         )
 
     }
+
+    /* --- analytics --- */
+
+    suspend fun logAbortEvent(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.CancelDuringScreeningQuestions,
+            EAnalyticsProvider.ALL
+        )
+
 }

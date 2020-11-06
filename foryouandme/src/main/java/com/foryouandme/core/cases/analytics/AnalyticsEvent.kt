@@ -52,8 +52,11 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
+    /* --- screening --- */
+
+    object CancelDuringScreeningQuestions: AnalyticsEvent("screening_questions_cancelled")
+
     object StartStudyAction : AnalyticsEvent("study_video_action")
-    object CancelDuringScreeningQuestions : AnalyticsEvent("screening_questions_cancelled")
     object CancelDuringInformedConsent : AnalyticsEvent("informed_consent_cancelled")
     object CancelDuringComprehension : AnalyticsEvent("comprehension_quiz_cancelled")
     object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
