@@ -20,7 +20,13 @@ class AboutYouPermissionsFragment :
 
         viewModelFactory(
             this,
-            getFactory { AboutYouPermissionsViewModel(navigator, injector.permissionModule()) }
+            getFactory {
+                AboutYouPermissionsViewModel(
+                    navigator,
+                    injector.permissionModule(),
+                    injector.analyticsModule()
+                )
+            }
         )
 
     }
@@ -67,6 +73,13 @@ class AboutYouPermissionsFragment :
                 applyPermissions(viewModel.state().permissions)
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
+
     }
 
     private suspend fun applyConfiguration(configuration: Configuration): Unit =

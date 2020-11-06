@@ -3,9 +3,13 @@ package com.foryouandme.aboutyou.permissions
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.permissionSettingsDialogAction
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted
 import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
@@ -13,7 +17,8 @@ import com.foryouandme.core.entity.configuration.Configuration
 
 class AboutYouPermissionsViewModel(
     navigator: Navigator,
-    private val permissionModule: PermissionModule
+    private val permissionModule: PermissionModule,
+    private val analyticsModule: AnalyticsModule
 ) :
     BaseViewModel<
             AboutYouPermissionsState,
@@ -69,5 +74,10 @@ class AboutYouPermissionsViewModel(
         initialize(configuration, imageConfiguration)
 
     }
+
+    /* --- navigation --- */
+
+    suspend fun logScreenViewed(): Unit =
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Permissions, EAnalyticsProvider.ALL)
 
 }
