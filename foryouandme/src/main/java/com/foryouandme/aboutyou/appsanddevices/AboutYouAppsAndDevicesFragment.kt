@@ -21,7 +21,7 @@ class AboutYouAppsAndDevicesFragment :
         viewModelFactory(
             this,
             getFactory {
-                AboutYouAppsAndDevicesViewModel(navigator)
+                AboutYouAppsAndDevicesViewModel(navigator, injector.analyticsModule())
             }
         )
 
@@ -49,6 +49,8 @@ class AboutYouAppsAndDevicesFragment :
 
     override fun onResume() {
         super.onResume()
+
+        startCoroutineAsync { viewModel.logScreenViewed() }
 
         refreshUserAndConfiguration { config, user ->
 

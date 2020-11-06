@@ -5,10 +5,17 @@ import com.foryouandme.aboutyou.AboutYouNavController
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.navigation.Navigator
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.entity.configuration.Configuration
 
-class AboutYouAppsAndDevicesViewModel(navigator: Navigator) :
+class AboutYouAppsAndDevicesViewModel(
+    navigator: Navigator,
+    private val analyticsModule: AnalyticsModule
+) :
     BaseViewModel<Empty, Empty, Empty, Empty>(navigator, Empty) {
 
     /*--- data ---*/
@@ -91,7 +98,7 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator) :
             "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/twitter"
         )
 
-/*--- navigation ---*/
+    /*--- navigation ---*/
 
     suspend fun navigateToWeb(url: String, navController: AboutYouNavController) {
         navigator.navigateTo(
@@ -101,4 +108,11 @@ class AboutYouAppsAndDevicesViewModel(navigator: Navigator) :
             )
         )
     }
+
+    /* --- analytics --- */
+
+    suspend fun logScreenViewed(): Unit =
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.AppsAndDevices, EAnalyticsProvider.ALL)
+
+
 }
