@@ -4,13 +4,18 @@ import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMState
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.openApp
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 
 class MainViewModel(
     navigator: Navigator,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         MainState,
         MainStateUpdate,
@@ -61,6 +66,43 @@ class MainViewModel(
                 navigator.performAction(openApp(openApplicationIntegration.packageName))
 
         }
+
+    }
+
+    /* --- analytics --- */
+
+    suspend fun logBottomBarPageEvent(itemId: Int): Unit {
+
+        when (itemId) {
+            R.id.feed_navigation -> logFeedsViewed()
+            R.id.tasks_navigation -> logTasksViewed()
+            R.id.user_data_navigation -> logYourDataViewed()
+            R.id.study_info_navigation -> logStudyInfoViewed()
+        }
+
+    }
+
+    private suspend fun logFeedsViewed(): Unit {
+
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Feed, EAnalyticsProvider.ALL)
+
+    }
+
+    private suspend fun logTasksViewed(): Unit {
+
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Task, EAnalyticsProvider.ALL)
+
+    }
+
+    private suspend fun logYourDataViewed(): Unit {
+
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.YourData, EAnalyticsProvider.ALL)
+
+    }
+
+    private suspend fun logStudyInfoViewed(): Unit {
+
+        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.StudyInfo, EAnalyticsProvider.ALL)
 
     }
 

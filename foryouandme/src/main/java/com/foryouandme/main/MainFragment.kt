@@ -16,7 +16,10 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
     override val viewModel: MainViewModel by lazy {
 
-        viewModelFactory(this, getFactory { MainViewModel(navigator) })
+        viewModelFactory(
+            this,
+            getFactory { MainViewModel(navigator, injector.analyticsModule()) }
+        )
 
     }
 
@@ -79,13 +82,22 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
             bottom_navigation.selectedItemId = viewModel.state().restorePage
 
+            evalOnIO { viewModel.logBottomBarPageEvent(viewModel.state().restorePage) }
+
             // Setup the bottom navigation view with a list of navigation graphs
             bottom_navigation.setupWithNavController(
                 navGraphIds = navGraphIds,
                 fragmentManager = childFragmentManager,
                 containerId = R.id.main_nav_host_container,
                 intent = requireActivity().intent
-            ) { startCoroutineAsync { viewModel.setRestorePage(it.itemId) } }
+            ) {
+                startCoroutineAsync {
+
+                    viewModel.setRestorePage(it.itemId)
+                    viewModel.logBottomBarPageEvent(it.itemId)
+
+                }
+            }
         }
 
 }
