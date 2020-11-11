@@ -31,7 +31,8 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
             getFactory {
                 TasksViewModel(
                     navigator,
-                    injector.taskModule()
+                    injector.taskModule(),
+                    injector.analyticsModule()
                 )
             }
         )

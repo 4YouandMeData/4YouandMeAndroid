@@ -1,10 +1,14 @@
 package com.foryouandme.main.tasks
 
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.task.TaskUseCase.getTasks
 import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import com.foryouandme.core.entity.activity.QuickActivity
@@ -12,6 +16,7 @@ import com.foryouandme.core.entity.activity.QuickActivityAnswer
 import com.foryouandme.core.entity.activity.TaskActivity
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.task.Task
+import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
@@ -21,7 +26,8 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class TasksViewModel(
     navigator: Navigator,
-    private val taskModule: TaskModule
+    private val taskModule: TaskModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         TasksState,
         TasksStateUpdate,
@@ -85,7 +91,9 @@ class TasksViewModel(
                     configuration,
                     DroidAdapter(
                         QuickActivityViewHolder.factory(
-                            { item, answer -> selectAnswer(item, answer) },
+                            { item, answer ->
+                                startCoroutineAsync { selectAnswer(item, answer) }
+                            },
                             { item ->
                                 startCoroutineAsync {
                                     submitAnswer(
@@ -123,7 +131,9 @@ class TasksViewModel(
 
     }
 
-    private fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
+    private suspend fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
+
+        logQuickActivityOptionSelected(item.data.id, answer.id)
 
         state().tasks.map { droidItem ->
             when (droidItem) {
@@ -147,7 +157,7 @@ class TasksViewModel(
                             }
                         }
 
-                    droidItem.quickActivities.submitList(updatedActivities)
+                    evalOnMain { droidItem.quickActivities.submitList(updatedActivities) }
 
                     QuickActivitiesItem(
                         droidItem.id,
@@ -194,4 +204,16 @@ class TasksViewModel(
             )
         }
     }
+
+    /* --- analytics --- */
+
+    private suspend fun logQuickActivityOptionSelected(
+        activityId: String,
+        optionId: String
+    ): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.QuickActivityOptionClicked(activityId, optionId),
+            EAnalyticsProvider.ALL
+        )
+
 }

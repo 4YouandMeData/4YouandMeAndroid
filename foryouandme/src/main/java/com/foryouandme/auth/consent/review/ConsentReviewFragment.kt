@@ -20,7 +20,8 @@ class ConsentReviewFragment : AuthSectionFragment<ConsentReviewViewModel>(R.layo
             getFactory {
                 ConsentReviewViewModel(
                     navigator,
-                    injector.consentReviewModule()
+                    injector.consentReviewModule(),
+                    injector.analyticsModule()
                 )
             }
         )

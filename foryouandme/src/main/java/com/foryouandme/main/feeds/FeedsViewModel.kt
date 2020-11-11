@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.toT
 import arrow.fx.coroutines.parMapN
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AuthModule
 import com.foryouandme.core.arch.deps.modules.FeedModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
@@ -11,6 +12,9 @@ import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.CachePolicy
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthUseCase.getUser
 import com.foryouandme.core.cases.feed.FeedUseCase.getFeeds
 import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
@@ -23,6 +27,7 @@ import com.foryouandme.core.entity.feed.FeedType
 import com.foryouandme.core.entity.notifiable.FeedReward
 import com.foryouandme.core.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.core.entity.user.User
+import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.main.MainPageToAboutYouPage
 import com.foryouandme.main.items.*
@@ -41,7 +46,8 @@ class FeedsViewModel(
     navigator: Navigator,
     private val feedModule: FeedModule,
     private val taskModule: TaskModule,
-    private val authModule: AuthModule
+    private val authModule: AuthModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         FeedsState,
         FeedsStateUpdate,
@@ -159,7 +165,9 @@ class FeedsViewModel(
                     configuration,
                     DroidAdapter(
                         QuickActivityViewHolder.factory(
-                            { item, answer -> selectAnswer(item, answer) },
+                            { item, answer ->
+                                startCoroutineAsync { selectAnswer(item, answer) }
+                            },
                             { item ->
                                 startCoroutineAsync {
                                     submitAnswer(
@@ -230,7 +238,9 @@ class FeedsViewModel(
         listOf(FeedHeaderItem(configuration, "1", user?.points?.toString()))
             .plus(this)
 
-    private fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
+    private suspend fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
+
+        logQuickActivityOptionSelected(item.data.id, answer.id)
 
         state().feeds.map { droidItem ->
             when (droidItem) {
@@ -254,7 +264,7 @@ class FeedsViewModel(
                             }
                         }
 
-                    droidItem.quickActivities.submitList(updatedActivities)
+                    evalOnMain { droidItem.quickActivities.submitList(updatedActivities) }
 
                     QuickActivitiesItem(
                         droidItem.id,
@@ -341,4 +351,16 @@ class FeedsViewModel(
             navController,
             MainPageToAboutYouPage
         )
+
+    /* --- analytics --- */
+
+    private suspend fun logQuickActivityOptionSelected(
+        activityId: String,
+        optionId: String
+    ): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.QuickActivityOptionClicked(activityId, optionId),
+            EAnalyticsProvider.ALL
+        )
+
 }

@@ -97,7 +97,10 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     /* --- quick activity --- */
 
-    object QuickActivityOptionClicked : AnalyticsEvent("quick_activity_option_clicked")
+    data class QuickActivityOptionClicked(
+        val quickActivityId: String,
+        val optionId: String
+    ) : AnalyticsEvent("quick_activity_option_clicked")
 
     object StartStudyAction : AnalyticsEvent("study_video_action")
 
