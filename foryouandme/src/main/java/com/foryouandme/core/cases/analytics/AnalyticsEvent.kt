@@ -2,6 +2,7 @@ package com.foryouandme.core.cases.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import com.foryouandme.core.cases.yourdata.YourDataPeriod
 
 sealed class AnalyticsEvent(val eventName: String) {
 
@@ -102,12 +103,33 @@ sealed class AnalyticsEvent(val eventName: String) {
         val optionId: String
     ) : AnalyticsEvent("quick_activity_option_clicked")
 
+    /* --- your data --- */
+
+    data class YourDataSelectDataPeriod(
+        val period: YourDataPeriod
+    ) : AnalyticsEvent("your_data_period_selection") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply {
+
+                putString(
+                    "period",
+                    when(period) {
+                        YourDataPeriod.Week -> "WEEK"
+                        YourDataPeriod.Month -> "MONTH"
+                        YourDataPeriod.Year -> "YEAR"
+                    }
+                )
+            }
+
+    }
+
+
     object StartStudyAction : AnalyticsEvent("study_video_action")
 
     object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")
 
     object VideoDiaryAction : AnalyticsEvent("video_diary_action")
-    object YourDataSelectDataPeriod : AnalyticsEvent("your_data_period_selection")
     object LocationPermissionChanged : AnalyticsEvent("location_permission_changed")
 
 }

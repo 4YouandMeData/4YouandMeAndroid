@@ -4,12 +4,16 @@ import arrow.core.Either
 import arrow.core.toT
 import arrow.fx.coroutines.parMapN
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.YourDataModule
 import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.yourdata.YourDataPeriod
 import com.foryouandme.core.cases.yourdata.YourDataUseCase.getUserDataAggregation
 import com.foryouandme.core.cases.yourdata.YourDataUseCase.getYourData
@@ -24,7 +28,8 @@ import kotlinx.coroutines.Dispatchers
 
 class YourDataViewModel(
     navigator: Navigator,
-    private val yourDataModule: YourDataModule
+    private val yourDataModule: YourDataModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         YourDataState,
         YourDataStateUpdate,
@@ -123,6 +128,8 @@ class YourDataViewModel(
 
             showLoading(YourDataLoading.Period)
 
+            logPeriodSelected(period)
+
             val items =
                 state().items.mapNotNull {
                     when (it) {
@@ -183,4 +190,13 @@ class YourDataViewModel(
         hideLoading(YourDataLoading.Period)
 
     }
+
+    /* --- analytics --- */
+
+    private suspend fun logPeriodSelected(period: YourDataPeriod): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.YourDataSelectDataPeriod(period),
+            EAnalyticsProvider.ALL
+        )
+
 }

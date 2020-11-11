@@ -26,7 +26,8 @@ class YourDataFragment : BaseFragment<YourDataViewModel>(R.layout.your_data) {
             getFactory {
                 YourDataViewModel(
                     navigator,
-                    injector.yourDataModule()
+                    injector.yourDataModule(),
+                    injector.analyticsModule()
                 )
             }
         )
