@@ -85,24 +85,40 @@ class MainViewModel(
     private suspend fun logFeedsViewed(): Unit {
 
         analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Feed, EAnalyticsProvider.ALL)
+        analyticsModule.logEvent(
+            AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.Feed),
+            EAnalyticsProvider.ALL
+        )
 
     }
 
     private suspend fun logTasksViewed(): Unit {
 
         analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Task, EAnalyticsProvider.ALL)
+        analyticsModule.logEvent(
+            AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.Task),
+            EAnalyticsProvider.ALL
+        )
 
     }
 
     private suspend fun logYourDataViewed(): Unit {
 
         analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.YourData, EAnalyticsProvider.ALL)
+        analyticsModule.logEvent(
+            AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.UserData),
+            EAnalyticsProvider.ALL
+        )
 
     }
 
     private suspend fun logStudyInfoViewed(): Unit {
 
         analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.StudyInfo, EAnalyticsProvider.ALL)
+        analyticsModule.logEvent(
+            AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.StudyInfo),
+            EAnalyticsProvider.ALL
+        )
 
     }
 

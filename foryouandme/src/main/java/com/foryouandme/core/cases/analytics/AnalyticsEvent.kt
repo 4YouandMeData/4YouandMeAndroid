@@ -78,11 +78,31 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     object ConsentAgreed : AnalyticsEvent("consent_agreed")
 
+    /* --- main --- */
+
+    sealed class Tab(val name: String) {
+
+        object Feed : Tab("TAB_FEED")
+        object Task : Tab("TAB_TASK")
+        object UserData : Tab("TAB_USER_DATA")
+        object StudyInfo : Tab("TAB_STUDY_INFO")
+
+    }
+
+    data class SwitchTab(val tab: Tab) : AnalyticsEvent("tab_switch") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply { putString("tab", tab.name) }
+    }
+
+    /* --- quick activity --- */
+
+    object QuickActivityOptionClicked : AnalyticsEvent("quick_activity_option_clicked")
+
     object StartStudyAction : AnalyticsEvent("study_video_action")
 
     object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")
-    object QuickActivity : AnalyticsEvent("quick_activity_option_clicked")
-    object SwitchTab : AnalyticsEvent("tab_switch")
+
     object VideoDiaryAction : AnalyticsEvent("video_diary_action")
     object YourDataSelectDataPeriod : AnalyticsEvent("your_data_period_selection")
     object LocationPermissionChanged : AnalyticsEvent("location_permission_changed")
