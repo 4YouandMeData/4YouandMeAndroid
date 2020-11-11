@@ -18,6 +18,7 @@ import com.foryouandme.auth.screening.*
 import com.foryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import com.foryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.auth.splash.SplashToMain
+import com.foryouandme.auth.splash.SplashToScreening
 import com.foryouandme.auth.splash.SplashToWelcome
 import com.foryouandme.auth.welcome.WelcomeToSignUpInfo
 import com.foryouandme.core.arch.navigation.execution.*
@@ -38,15 +39,20 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is AnywhereToWeb -> anywhereToWeb(action.url)
 
             is SplashToWelcome -> splashToWelcome()
+            is SplashToScreening -> splashToScreening()
             is SplashToMain -> splashToMain()
+
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
+
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
+
             is EnterPhoneToPhoneValidationCode ->
                 enterPhoneToPhoneValidationCode(
                     action.phone,
                     action.countryCode
                 )
+
             is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
 

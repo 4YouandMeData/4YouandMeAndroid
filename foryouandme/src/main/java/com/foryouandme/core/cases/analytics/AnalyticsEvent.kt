@@ -74,10 +74,12 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
+    object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
+
+    object ConsentAgreed : AnalyticsEvent("consent_agreed")
+
     object StartStudyAction : AnalyticsEvent("study_video_action")
 
-    object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
-    object ConsentAgreed : AnalyticsEvent("consent_agreed")
     object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")
     object QuickActivity : AnalyticsEvent("quick_activity_option_clicked")
     object SwitchTab : AnalyticsEvent("tab_switch")

@@ -7,19 +7,24 @@ import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.consent.review.info.toConsentReviewHeaderItem
 import com.foryouandme.auth.consent.review.info.toConsentReviewPageItem
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
 import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
 import com.foryouandme.core.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 
 class ConsentReviewViewModel(
     navigator: Navigator,
-    private val consentReviewModule: ConsentReviewModule
+    private val consentReviewModule: ConsentReviewModule,
+    private val analyticsModule: AnalyticsModule
 ) : BaseViewModel<
         ConsentReviewState,
         ConsentReviewStateUpdate,
@@ -76,11 +81,16 @@ class ConsentReviewViewModel(
 
     /* --- navigation --- */
 
-    suspend fun disagree(consentReviewNavController: ConsentReviewNavController): Unit =
+    suspend fun disagree(consentReviewNavController: ConsentReviewNavController): Unit {
+
+        logDisagree()
+
         navigator.navigateTo(
             consentReviewNavController,
             ConsentReviewInfoToConsentReviewDisagree
         )
+
+    }
 
     suspend fun exit(rootNavController: RootNavController): Unit =
         navigator.navigateTo(
@@ -88,11 +98,15 @@ class ConsentReviewViewModel(
             ConsentReviewDisagreeToAuth
         )
 
-    suspend fun optIns(authNavController: AuthNavController): Unit =
+    suspend fun optIns(authNavController: AuthNavController): Unit {
+
+        logAgree()
+
         navigator.navigateTo(
             authNavController,
             ConsentReviewToOptIns
         )
+    }
 
     suspend fun back(
         consentReviewNavController: ConsentReviewNavController,
@@ -103,4 +117,14 @@ class ConsentReviewViewModel(
             if (navigator.back(authNavController).not())
                 navigator.back(rootNavController)
     }
+
+    /* --- analytics --- */
+
+    private suspend fun logAgree(): Unit =
+        analyticsModule.logEvent(AnalyticsEvent.ConsentAgreed, EAnalyticsProvider.ALL)
+
+
+    private suspend fun logDisagree(): Unit =
+        analyticsModule.logEvent(AnalyticsEvent.ConsentDisagreed, EAnalyticsProvider.ALL)
+
 }

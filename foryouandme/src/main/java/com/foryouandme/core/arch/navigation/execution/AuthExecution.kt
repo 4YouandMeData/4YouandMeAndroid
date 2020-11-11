@@ -2,10 +2,15 @@ package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
 import com.foryouandme.auth.phone.EnterPhoneFragmentDirections
+import com.foryouandme.auth.splash.SplashFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun splashToWelcome(): NavigationExecution = {
     it.navigate(R.id.action_splash_to_welcome)
+}
+
+fun splashToScreening(): NavigationExecution = {
+    it.navigate(SplashFragmentDirections.actionSplashToScreening())
 }
 
 fun splashToMain(): NavigationExecution = {
