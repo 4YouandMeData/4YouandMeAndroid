@@ -114,7 +114,7 @@ sealed class AnalyticsEvent(val eventName: String) {
 
                 putString(
                     "period",
-                    when(period) {
+                    when (period) {
                         YourDataPeriod.Week -> "WEEK"
                         YourDataPeriod.Month -> "MONTH"
                         YourDataPeriod.Year -> "YEAR"
@@ -124,12 +124,31 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
+    /* --- task --- */
 
-    object StartStudyAction : AnalyticsEvent("study_video_action")
+    sealed class RecordingAction(val name: String) {
+
+        object Start : RecordingAction("contact")
+        object Resume : RecordingAction("start_recording")
+        object Pause : RecordingAction("pause_recording")
+
+    }
+
+    data class VideoDiaryAction(
+        val action: RecordingAction
+    ) : AnalyticsEvent("video_diary_action") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply { putString("action", action.name) }
+
+    }
+
+    /* --- feed --- */
 
     object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")
 
-    object VideoDiaryAction : AnalyticsEvent("video_diary_action")
+    /* --- permission --- */
+
     object LocationPermissionChanged : AnalyticsEvent("location_permission_changed")
 
 }

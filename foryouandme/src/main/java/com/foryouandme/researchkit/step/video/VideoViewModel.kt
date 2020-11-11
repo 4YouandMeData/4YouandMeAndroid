@@ -6,10 +6,14 @@ import arrow.core.toOption
 import arrow.fx.coroutines.Disposable
 import arrow.fx.coroutines.evalOn
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.arch.error.unknownError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.permissionSettingsAction
+import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.task.TaskUseCase.attachVideo
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
 import com.googlecode.mp4parser.BasicContainer
@@ -28,7 +32,8 @@ import java.util.*
 
 class VideoViewModel(
     navigator: Navigator,
-    private val taskModule: TaskModule
+    private val taskModule: TaskModule,
+    private val analyticsModule: AnalyticsModule
 ) :
     BaseViewModel<
             VideoDiaryState,
@@ -61,6 +66,8 @@ class VideoViewModel(
 
     suspend fun record(filePath: String) {
 
+        if(state().lastRecordedFilePath == null) logStartRecording() else logResumeRecording()
+
         timer = startCoroutineCancellableAsync { resumeTimer() }
         setState(
             state().copy(
@@ -73,6 +80,8 @@ class VideoViewModel(
     }
 
     suspend fun pause() {
+
+        logPauseRecording()
 
         timer?.invoke()
         setState(
@@ -271,5 +280,25 @@ class VideoViewModel(
         navigator.performAction(permissionSettingsAction())
 
     }
+
+    /* --- analytics --- */
+
+    private suspend fun logPauseRecording(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.VideoDiaryAction(AnalyticsEvent.RecordingAction.Pause),
+            EAnalyticsProvider.ALL
+        )
+
+    private suspend fun logStartRecording(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.VideoDiaryAction(AnalyticsEvent.RecordingAction.Start),
+            EAnalyticsProvider.ALL
+        )
+
+    private suspend fun logResumeRecording(): Unit =
+        analyticsModule.logEvent(
+            AnalyticsEvent.VideoDiaryAction(AnalyticsEvent.RecordingAction.Resume),
+            EAnalyticsProvider.ALL
+        )
 
 }

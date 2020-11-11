@@ -37,7 +37,8 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
             getFactory {
                 VideoViewModel(
                     navigator,
-                    injector.taskModule()
+                    injector.taskModule(),
+                    injector.analyticsModule()
                 )
             }
         )
