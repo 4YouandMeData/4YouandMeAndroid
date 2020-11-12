@@ -23,6 +23,22 @@ class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+
+        viewModel.stateLiveData()
+            .observeEvent(name()) {
+
+                when(it) {
+                    is MainStateUpdate.PageNavigation ->
+                        bottom_navigation.selectedItemId = it.selectedPage
+                }
+
+            }
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
