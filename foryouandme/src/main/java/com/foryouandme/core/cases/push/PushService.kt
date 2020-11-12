@@ -10,7 +10,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.foryouandme.core.activity.FYAMActivity
 import com.foryouandme.core.arch.app.ForYouAndMeApp
+import com.foryouandme.core.cases.auth.AuthUseCase.isLogged
+import com.foryouandme.core.cases.auth.AuthUseCase.updateFirebaseToken
+import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.mapNotNull
+import com.foryouandme.core.ext.startCoroutineAsync
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -19,6 +23,16 @@ class PushService : FirebaseMessagingService() {
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
+
+        val authModule = injector.authModule()
+
+        startCoroutineAsync {
+
+            if (authModule.isLogged())
+                authModule.updateFirebaseToken(p0)
+
+        }
+
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {

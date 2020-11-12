@@ -3,18 +3,15 @@ package com.foryouandme.core.cases.auth
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.right
-import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.modules.AuthModule
 import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.deps.modules.unwrapResponse
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.Memory
+import com.foryouandme.core.cases.push.PushUseCase
 import com.foryouandme.core.data.api.Headers
-import com.foryouandme.core.data.api.auth.request.LoginRequest
-import com.foryouandme.core.data.api.auth.request.PhoneLoginRequest
-import com.foryouandme.core.data.api.auth.request.PhoneNumberRequest
-import com.foryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
+import com.foryouandme.core.data.api.auth.request.*
 import com.foryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.response.UserResponse
@@ -32,9 +29,9 @@ object AuthRepository {
         phone: String
     ): Either<ForYouAndMeError, Unit> =
         PhoneNumberVerificationRequest(PhoneNumberRequest(phone))
-            .pipe { suspend { api.verifyPhoneNumber(environment.studyId(), it) } }
-            .pipe { errorModule.unwrapToEither(it) }
-            .pipe { errorModule.unwrapResponse(it) }
+            .let { suspend { api.verifyPhoneNumber(environment.studyId(), it) } }
+            .let { errorModule.unwrapToEither(it) }
+            .let { errorModule.unwrapResponse(it) }
             .mapLeft {
 
                 if (it is ForYouAndMeError.NetworkErrorHTTP && it.code == 404)
@@ -52,7 +49,7 @@ object AuthRepository {
         code: String,
     ): Either<ForYouAndMeError, User> =
         suspend { api.login(environment.studyId(), LoginRequest(PhoneLoginRequest(phone, code))) }
-            .pipe { errorModule.unwrapToEither(block = it) }
+            .let { errorModule.unwrapToEither(block = it) }
             .map { it.unwrapUser() }
             .nullToError()
             .mapLeft { error ->
@@ -68,6 +65,13 @@ object AuthRepository {
                 // update timezone
                 updateUserTimeZone(user.token, ZoneId.systemDefault())
                     .map { user }
+            }
+            .flatMap {user ->
+
+                PushUseCase.getPushToken()
+                    .map { updateFirebaseToken(user.token, it) }
+                    .map { user }
+
             }
             .map { it.also { save(it) } }
             .map { it.also { Memory.user = it } }
@@ -106,7 +110,7 @@ object AuthRepository {
 
     internal suspend fun AuthModule.fetchUser(token: String): Either<ForYouAndMeError, User?> =
         suspend { api.getUser(token) }
-            .pipe { errorModule.unwrapToEither(it) }
+            .let { errorModule.unwrapToEither(it) }
             .flatMap {
 
                 // if user has empty custom data update it with default configuration
@@ -154,13 +158,21 @@ object AuthRepository {
         data: List<UserCustomData>
     ): Either<ForYouAndMeError, Unit> =
         suspend { api.updateUserCustomData(token, data.asRequest()) }
-            .pipe { errorModule.unwrapToEither(it) }
+            .let { errorModule.unwrapToEither(it) }
 
     internal suspend fun AuthModule.updateUserTimeZone(
         token: String,
         timeZone: ZoneId
     ): Either<ForYouAndMeError, Unit> =
         suspend { api.updateUserTimeZone(token, timeZone.asRequest()) }
-            .pipe { errorModule.unwrapToEither(it) }
+            .let { errorModule.unwrapToEither(it) }
+
+    internal suspend fun AuthModule.updateFirebaseToken(
+        token: String,
+        firebaseToken: String
+    ): Either<ForYouAndMeError, Unit> =
+        UserFirebaseTokenUpdateRequest(UserFirebaseTokenDataUpdateRequest(firebaseToken))
+            .let { suspend { api.updateFirebaseToken(token, it) } }
+            .let { errorModule.unwrapToEither(it) }
 
 }

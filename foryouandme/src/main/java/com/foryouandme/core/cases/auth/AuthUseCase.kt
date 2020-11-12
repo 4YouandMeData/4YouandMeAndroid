@@ -16,6 +16,7 @@ import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthRepository.fetchUser
 import com.foryouandme.core.cases.auth.AuthRepository.loadToken
 import com.foryouandme.core.cases.auth.AuthRepository.login
+import com.foryouandme.core.cases.auth.AuthRepository.updateFirebaseToken
 import com.foryouandme.core.cases.auth.AuthRepository.updateUserCustomData
 import com.foryouandme.core.cases.auth.AuthRepository.updateUserTimeZone
 import com.foryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
@@ -111,5 +112,11 @@ object AuthUseCase {
     internal suspend fun AuthModule.resetUserCustomData(): Either<ForYouAndMeError, Unit> =
         getToken(CachePolicy.MemoryFirst)
             .flatMap { updateUserCustomData(it, emptyList()) }
+
+    internal suspend fun AuthModule.updateFirebaseToken(
+        firebaseToken: String
+    ): Either<ForYouAndMeError, Unit> =
+        getToken(CachePolicy.MemoryFirst)
+            .flatMap { updateFirebaseToken(it, firebaseToken) }
 
 }

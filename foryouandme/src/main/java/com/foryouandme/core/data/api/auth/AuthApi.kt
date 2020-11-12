@@ -36,9 +36,9 @@ interface AuthApi {
     ): Unit
 
     @PATCH("api/v1/users/me/add_firebase_token")
-    suspend fun addFirebaseToken(
+    suspend fun updateFirebaseToken(
         @Header(Headers.AUTH) token: String,
         @Body request: UserFirebaseTokenUpdateRequest
-    )
+    ): Unit
 
 }

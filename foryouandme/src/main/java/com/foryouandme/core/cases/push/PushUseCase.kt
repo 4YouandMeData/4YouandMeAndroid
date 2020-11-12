@@ -12,7 +12,7 @@ import kotlin.coroutines.suspendCoroutine
 object PushUseCase {
 
     suspend fun getPushToken(): Either<ForYouAndMeError, String> =
-        suspendCoroutine<Either<ForYouAndMeError, String>> { continuation ->
+        suspendCoroutine { continuation ->
 
             FirebaseMessaging.getInstance().token
                 .addOnCompleteListener {
