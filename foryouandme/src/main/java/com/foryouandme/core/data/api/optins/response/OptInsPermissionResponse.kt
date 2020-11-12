@@ -5,6 +5,7 @@ import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOrElse
 import arrow.core.toOption
+import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.core.entity.optins.OptInsPermission
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
@@ -47,8 +48,8 @@ data class OptInsPermissionResponse(
 fun List<OptInsPermissionResponse>.toOptInsPermissions(): List<OptInsPermission> =
     mapNotNull { it.toOptInsPermission().orNull() }
 
-private fun mapPermission(permission: String): String? =
+private fun mapPermission(permission: String): Permission? =
     when (permission) {
-        "location" -> Manifest.permission.ACCESS_FINE_LOCATION
+        "location" -> Permission.Location
         else -> null
     }

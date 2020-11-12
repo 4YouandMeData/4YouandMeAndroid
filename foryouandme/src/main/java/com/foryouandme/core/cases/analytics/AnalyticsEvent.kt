@@ -143,10 +143,6 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
-    /* --- feed --- */
-
-    object ClickFeedTile : AnalyticsEvent("feed_tile_clicked")
-
     /* --- permission --- */
 
     object LocationPermissionChanged : AnalyticsEvent("location_permission_changed")

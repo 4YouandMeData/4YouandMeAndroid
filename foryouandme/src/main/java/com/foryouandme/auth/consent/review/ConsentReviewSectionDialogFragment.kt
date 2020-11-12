@@ -18,7 +18,8 @@ abstract class ConsentReviewSectionDialogFragment : BaseDialogFragment<ConsentRe
             getFactory {
                 ConsentReviewViewModel(
                     navigator,
-                    injector.consentReviewModule()
+                    injector.consentReviewModule(),
+                    injector.analyticsModule()
                 )
             }
         )

@@ -20,7 +20,8 @@ abstract class OptInSectionFragment(
             getFactory {
                 OptInViewModel(
                     navigator,
-                    injector.optInModule()
+                    injector.optInModule(),
+                    injector.permissionModule()
                 )
             }
         )

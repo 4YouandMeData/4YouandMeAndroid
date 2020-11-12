@@ -20,7 +20,6 @@ import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.ext.startCoroutineAsync
-import com.karumi.dexter.Dexter
 import kotlinx.android.synthetic.main.opt_in.*
 import kotlinx.android.synthetic.main.opt_in_permission.*
 
@@ -154,7 +153,6 @@ class OptInPermissionFragment : OptInSectionFragment(R.layout.opt_in_permission)
                                 it,
                                 rootNavController(),
                                 optInNavController(),
-                                Dexter.withContext(requireContext()),
                                 args.index
                             )
                         }

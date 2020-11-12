@@ -7,16 +7,18 @@ import arrow.core.right
 import com.foryouandme.auth.AuthNavController
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.OptInModule
+import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.*
 import com.foryouandme.core.cases.optins.OptInsUseCase.getOptIns
 import com.foryouandme.core.cases.optins.OptInsUseCase.setPermission
+import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
+import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermissions
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.startCoroutineAsync
-import com.karumi.dexter.DexterBuilder
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
@@ -26,7 +28,8 @@ import com.karumi.dexter.listener.single.BasePermissionListener
 
 class OptInViewModel(
     navigator: Navigator,
-    private val optInModule: OptInModule
+    private val optInModule: OptInModule,
+    private val permissionModule: PermissionModule
 ) : BaseViewModel<
         OptInState,
         OptInStateUpdate,
@@ -93,7 +96,6 @@ class OptInViewModel(
         configuration: Configuration,
         rootNavController: RootNavController,
         optInNavController: OptInNavController,
-        dexter: DexterBuilder.Permission,
         index: Int
     ): Unit {
 
@@ -114,30 +116,26 @@ class OptInViewModel(
                                 optIn.id,
                                 agree
                             )
-                        1 ->
-                            dexter.withPermission(optIn.systemPermissions[0])
-                                .withListener(
-                                    permissionListener(
-                                        rootNavController,
-                                        optInNavController,
-                                        index,
-                                        optIn.id,
-                                        agree
-                                    )
-                                )
-                                .check()
-                        else ->
-                            dexter.withPermissions(optIn.systemPermissions)
-                                .withListener(
-                                    multiplePermissionListener(
-                                        rootNavController,
-                                        optInNavController,
-                                        index,
-                                        optIn.id,
-                                        agree
-                                    )
-                                )
-                                .check()
+                        1 -> {
+                            permissionModule.requestPermission(optIn.systemPermissions[0])
+                            setPermission(
+                                rootNavController,
+                                optInNavController,
+                                index,
+                                optIn.id,
+                                agree
+                            )
+                        }
+                        else -> {
+                            permissionModule.requestPermissions(optIn.systemPermissions)
+                            setPermission(
+                                rootNavController,
+                                optInNavController,
+                                index,
+                                optIn.id,
+                                agree
+                            )
+                        }
                     }
 
                 } else {
@@ -154,63 +152,6 @@ class OptInViewModel(
             }
 
     }
-
-    private fun permissionListener(
-        rootNavController: RootNavController,
-        optInNavController: OptInNavController,
-        index: Int,
-        permissionId: String,
-        agree: Boolean
-    ): BasePermissionListener =
-        object : BasePermissionListener() {
-
-            override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                startCoroutineAsync {
-                    setPermission(
-                        rootNavController,
-                        optInNavController,
-                        index,
-                        permissionId,
-                        agree
-                    )
-                }
-            }
-
-            override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                startCoroutineAsync {
-                    setPermission(
-                        rootNavController,
-                        optInNavController,
-                        index,
-                        permissionId,
-                        agree
-                    )
-                }
-            }
-        }
-
-    private fun multiplePermissionListener(
-        rootNavController: RootNavController,
-        optInNavController: OptInNavController,
-        index: Int,
-        permissionId: String,
-        agree: Boolean
-    ): BaseMultiplePermissionsListener =
-        object : BaseMultiplePermissionsListener() {
-
-            override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                startCoroutineAsync {
-                    setPermission(
-                        rootNavController,
-                        optInNavController,
-                        index,
-                        permissionId,
-                        agree
-                    )
-                }
-            }
-
-        }
 
     suspend fun setPermissionState(id: Int, agree: Boolean): Unit {
 

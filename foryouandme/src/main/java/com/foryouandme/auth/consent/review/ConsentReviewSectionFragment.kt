@@ -20,7 +20,8 @@ abstract class ConsentReviewSectionFragment(
             getFactory {
                 ConsentReviewViewModel(
                     navigator,
-                    injector.consentReviewModule()
+                    injector.consentReviewModule(),
+                    injector.analyticsModule()
                 )
             }
         )

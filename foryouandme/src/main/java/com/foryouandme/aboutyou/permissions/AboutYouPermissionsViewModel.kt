@@ -11,6 +11,7 @@ import com.foryouandme.core.cases.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.permission.Permission
+import com.foryouandme.core.cases.permission.PermissionResult
 import com.foryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted
 import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
 import com.foryouandme.core.entity.configuration.Configuration
@@ -55,8 +56,9 @@ class AboutYouPermissionsViewModel(
         imageConfiguration: ImageConfiguration
     ): Unit {
 
-        permissionModule.requestPermission(permissionsItem.permission) {
+        val permissionRequest = permissionModule.requestPermission(permissionsItem.permission)
 
+        if(permissionRequest is PermissionResult.Denied && permissionRequest.isPermanentlyDenied)
             navigator.performAction(
                 permissionSettingsDialogAction(
                     navigator,
@@ -70,7 +72,6 @@ class AboutYouPermissionsViewModel(
                 )
             )
 
-        }
         initialize(configuration, imageConfiguration)
 
     }

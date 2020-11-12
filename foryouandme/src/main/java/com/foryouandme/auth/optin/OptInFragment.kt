@@ -20,7 +20,8 @@ class OptInFragment : AuthSectionFragment<OptInViewModel>(R.layout.opt_in) {
             getFactory {
                 OptInViewModel(
                     navigator,
-                    injector.optInModule()
+                    injector.optInModule(),
+                    injector.permissionModule()
                 )
             }
         )
