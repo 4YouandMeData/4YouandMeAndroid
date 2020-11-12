@@ -1,10 +1,7 @@
 package com.foryouandme.core.data.api.auth
 
 import com.foryouandme.core.data.api.Headers
-import com.foryouandme.core.data.api.auth.request.LoginRequest
-import com.foryouandme.core.data.api.auth.request.PhoneNumberVerificationRequest
-import com.foryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest
-import com.foryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest
+import com.foryouandme.core.data.api.auth.request.*
 import com.foryouandme.core.data.api.auth.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.*
@@ -37,5 +34,11 @@ interface AuthApi {
         @Header(Headers.AUTH) token: String,
         @Body request: UserTimeZoneUpdateRequest
     ): Unit
+
+    @PATCH("api/v1/users/me/add_firebase_token")
+    suspend fun addFirebaseToken(
+        @Header(Headers.AUTH) token: String,
+        @Body request: UserFirebaseTokenUpdateRequest
+    )
 
 }
