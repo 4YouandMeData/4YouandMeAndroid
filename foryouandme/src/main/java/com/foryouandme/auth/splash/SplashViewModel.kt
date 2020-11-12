@@ -12,7 +12,10 @@ import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getUser
 import com.foryouandme.core.cases.auth.AuthUseCase.isLogged
+import com.foryouandme.core.cases.auth.AuthUseCase.updateUserTimeZone
 import com.foryouandme.core.cases.push.PushUseCase
+import com.foryouandme.core.ext.startCoroutineAsync
+import org.threeten.bp.ZoneId
 import timber.log.Timber
 
 class SplashViewModel(
@@ -34,6 +37,8 @@ class SplashViewModel(
             .pipe { Timber.tag("FCM_TOKEN").d(it) }
 
         if (authModule.isLogged()) {
+
+            startCoroutineAsync { authModule.updateUserTimeZone(ZoneId.systemDefault()) }
 
             val user =
                 authModule.getUser(CachePolicy.Network)

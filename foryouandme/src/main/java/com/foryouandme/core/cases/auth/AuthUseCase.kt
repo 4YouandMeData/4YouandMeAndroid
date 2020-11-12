@@ -12,17 +12,17 @@ import com.foryouandme.core.cases.Memory
 import com.foryouandme.core.cases.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.setUserId
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.setUserProperty
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.analytics.UserProperty
 import com.foryouandme.core.cases.auth.AuthRepository.fetchUser
 import com.foryouandme.core.cases.auth.AuthRepository.loadToken
 import com.foryouandme.core.cases.auth.AuthRepository.login
 import com.foryouandme.core.cases.auth.AuthRepository.updateUserCustomData
+import com.foryouandme.core.cases.auth.AuthRepository.updateUserTimeZone
 import com.foryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
 import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
 import com.foryouandme.core.entity.user.User
 import com.foryouandme.core.entity.user.UserCustomData
+import org.threeten.bp.ZoneId
 
 object AuthUseCase {
 
@@ -100,6 +100,12 @@ object AuthUseCase {
     ): Either<ForYouAndMeError, Unit> =
         getToken(CachePolicy.MemoryFirst)
             .flatMap { updateUserCustomData(it, data) }
+
+    internal suspend fun AuthModule.updateUserTimeZone(
+        zoneId: ZoneId
+    ): Either<ForYouAndMeError, Unit> =
+        getToken(CachePolicy.MemoryFirst)
+            .flatMap { updateUserTimeZone(it, zoneId) }
 
     // use only for test
     internal suspend fun AuthModule.resetUserCustomData(): Either<ForYouAndMeError, Unit> =

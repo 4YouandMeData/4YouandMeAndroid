@@ -64,6 +64,11 @@ object AuthRepository {
                 else
                     error
             }
+            .flatMap { user ->
+                // update timezone
+                updateUserTimeZone(user.token, ZoneId.systemDefault())
+                    .map { user }
+            }
             .map { it.also { save(it) } }
             .map { it.also { Memory.user = it } }
 
@@ -106,10 +111,8 @@ object AuthRepository {
 
                 // if user has empty custom data update it with default configuration
                 if (it.customData == null || it.customData.isEmpty())
+
                     updateUserCustomData(token, defaultUserCustomData())
-                        .flatMap { fetchUser(token) }
-                else if (it.timeZone != ZoneId.systemDefault().id)
-                    updateUserTimeZone(token, ZoneId.systemDefault())
                         .flatMap { fetchUser(token) }
                 else
                     it.toUser(token).right()
@@ -153,7 +156,7 @@ object AuthRepository {
         suspend { api.updateUserCustomData(token, data.asRequest()) }
             .pipe { errorModule.unwrapToEither(it) }
 
-    private suspend fun AuthModule.updateUserTimeZone(
+    internal suspend fun AuthModule.updateUserTimeZone(
         token: String,
         timeZone: ZoneId
     ): Either<ForYouAndMeError, Unit> =
