@@ -227,6 +227,6 @@ class ForYouAndMeInjector(
 
     /* --- modules --- */
 
-    override fun permissionModule(): PermissionModule = PermissionModule(app)
+    override fun permissionModule(): PermissionModule = PermissionModule(app, analyticsModule())
 
 }

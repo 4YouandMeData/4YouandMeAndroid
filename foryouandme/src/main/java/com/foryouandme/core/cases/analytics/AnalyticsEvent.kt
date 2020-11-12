@@ -145,6 +145,13 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     /* --- permission --- */
 
-    object LocationPermissionChanged : AnalyticsEvent("location_permission_changed")
+    data class LocationPermissionChanged(
+        val granted: Boolean
+    ) : AnalyticsEvent("location_permission_changed") {
+
+        override fun firebaseBundle(): Bundle =
+            Bundle().apply { putString("status", if(granted) "true" else "false") }
+
+    }
 
 }
