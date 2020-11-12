@@ -100,7 +100,7 @@ object AuthRepository {
 
     internal suspend fun AuthModule.loadToken(): String? {
 
-        val token = prefs.getString(USER_TOKEN, "")
+        val token = prefs.getString(USER_TOKEN, null)
 
         evalOnMain { Memory.token = token }
 
