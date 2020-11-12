@@ -2,7 +2,6 @@ package com.foryouandme.researchkit.step.choosemany
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
@@ -15,7 +14,7 @@ import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.result.MultipleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.researchkit.utils.applyImage
+import com.foryouandme.researchkit.step.common.QuestionViewHolder
 import com.foryouandme.researchkit.utils.applyImageAsButton
 import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
@@ -35,15 +34,17 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
     }
 
     private val adapter: DroidAdapter by lazy {
-        DroidAdapter(ChooseManyAnswerViewHolder.factory {
+        DroidAdapter(
+            QuestionViewHolder.factory(),
+            ChooseManyAnswerViewHolder.factory {
 
-            startCoroutineAsync {
+                startCoroutineAsync {
 
-                chooseManyStepViewModel.answer(it.id)
+                    chooseManyStepViewModel.answer(it.id)
 
-            }
+                }
 
-        })
+            })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +72,7 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
             step?.let {
 
                 if (chooseManyStepViewModel.isInitialized().not())
-                    chooseManyStepViewModel.initialize(it.values)
+                    chooseManyStepViewModel.initialize(it, it.values)
 
                 applyData(it)
             }
@@ -86,12 +87,6 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
             val start = ZonedDateTime.now()
 
             root.setBackgroundColor(step.backgroundColor)
-
-            step.image?.let { icon.applyImage(it) }
-            icon.isVisible = step.image != null
-
-            question.text = step.question(requireContext())
-            question.setTextColor(step.questionColor)
 
             shadow.background = shadow(step.shadowColor)
 
@@ -126,7 +121,7 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
             }
         }
 
-    private suspend fun setupRecyclerView() =
+    private suspend fun setupRecyclerView(): Unit =
 
         evalOnMain {
 

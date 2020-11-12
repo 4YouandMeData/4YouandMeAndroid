@@ -6,82 +6,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="30dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="30dp" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/question"
-            style="@style/text_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
             android:gravity="center"
-            tools:text="Title " />
+            android:orientation="vertical"
+            android:paddingBottom="30dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/value"
-            style="@style/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            tools:text="50" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/icon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="30dp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
-
-            <androidx.appcompat.widget.AppCompatSeekBar
-                android:id="@+id/slider"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/question"
+                style="@style/text_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:gravity="center"
+                tools:text="Title " />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/value"
+                style="@style/text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="10dp"
-                android:progress="0"
-                android:max="1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="parent" />
+                tools:text="50" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/min_label"
-                style="@style/text_h3"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/slider"
-                app:layout_constraintTop_toBottomOf="@id/slider"
-                tools:text="0% likely" />
+                android:layout_marginTop="20dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/max_label"
-                style="@style/text_h3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@id/slider"
-                app:layout_constraintTop_toBottomOf="@id/slider"
-                tools:text="100% likely"/>
+                <androidx.appcompat.widget.AppCompatSeekBar
+                    android:id="@+id/slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:max="1"
+                    android:progress="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/min_label"
+                    style="@style/text_h3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/slider"
+                    app:layout_constraintTop_toBottomOf="@id/slider"
+                    tools:text="0% likely" />
 
-    </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/max_label"
+                    style="@style/text_h3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@id/slider"
+                    app:layout_constraintTop_toBottomOf="@id/slider"
+                    tools:text="100% likely" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 
     <View
         android:id="@+id/shadow"
