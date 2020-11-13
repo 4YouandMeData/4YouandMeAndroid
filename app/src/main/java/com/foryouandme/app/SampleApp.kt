@@ -8,7 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 class SampleApp : ForYouAndMeApp() {
 
     override val environment: Environment
-        get() = SampleEnvironment()
+        get() = SampleEnvironment(this)
 
     override val imageConfiguration: ImageConfiguration
         get() = SampleImageConfiguration()
