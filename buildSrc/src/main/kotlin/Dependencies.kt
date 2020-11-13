@@ -106,6 +106,14 @@ object Test {
 
 }
 
+object ExoPlayer {
+
+    const val core: String = "com.google.android.exoplayer:exoplayer-core:_"
+
+    const val ui: String = "com.google.android.exoplayer:exoplayer-ui:_"
+
+}
+
 object GradlePlugin {
 
     const val android: String = "com.android.tools.build:gradle:_"

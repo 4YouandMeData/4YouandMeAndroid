@@ -171,6 +171,11 @@ dependencies {
 
     implementation(MpAndroidChart.mpandroidchart)
 
+    /* --- exo player --- */
+
+    implementation(ExoPlayer.core)
+    implementation(ExoPlayer.ui)
+
     /* --- test --- */
 
     testImplementation(Kotlin.Test.junit)
