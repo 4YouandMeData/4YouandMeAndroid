@@ -57,6 +57,7 @@ class ForYouAndMeInjector(
     val app: ForYouAndMeApp,
     env: Environment,
     imageConfig: ImageConfiguration,
+    videoConfig: VideoConfiguration,
     firebaseAnalytics: FirebaseAnalytics
 ) : Injector {
 
@@ -85,6 +86,10 @@ class ForYouAndMeInjector(
     /* --- image configuration --- */
 
     override val imageConfiguration: ImageConfiguration = imageConfig
+
+    /* --- video configuration --- */
+
+    override val videoConfiguration: VideoConfiguration = videoConfig
 
     /* --- analytics --- */
     override val firebaseAnalytics: FirebaseAnalytics = firebaseAnalytics

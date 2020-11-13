@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.foryouandme.core.arch.android.AppInjector
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.Injector
+import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.Navigator
 import es.dmoral.toasty.Toasty
@@ -27,6 +28,9 @@ val Context.navigator: Navigator
 
 val Context.imageConfiguration: ImageConfiguration
     get() = injector.imageConfiguration
+
+val Context.videoConfiguration: VideoConfiguration
+    get() = injector.videoConfiguration
 
 /* --- toast --- */
 

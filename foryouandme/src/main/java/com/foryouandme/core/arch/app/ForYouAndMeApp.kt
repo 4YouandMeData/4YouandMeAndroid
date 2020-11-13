@@ -5,10 +5,8 @@ import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
 import com.foryouandme.BuildConfig
 import com.foryouandme.core.arch.android.AppInjector
-import com.foryouandme.core.arch.deps.Environment
-import com.foryouandme.core.arch.deps.ForYouAndMeInjector
-import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.Injector
+import com.foryouandme.core.arch.deps.*
+import com.foryouandme.core.ext.videoConfiguration
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskInjector
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -23,6 +21,8 @@ abstract class ForYouAndMeApp : Application(), AppInjector, TaskInjector, Camera
 
     abstract val imageConfiguration: ImageConfiguration
 
+    abstract val videoConfiguration: VideoConfiguration
+
     abstract val firebaseAnalytics: FirebaseAnalytics
 
     override val injector: Injector by lazy {
@@ -30,6 +30,7 @@ abstract class ForYouAndMeApp : Application(), AppInjector, TaskInjector, Camera
             this,
             environment,
             imageConfiguration,
+            videoConfiguration,
             firebaseAnalytics
         )
     }

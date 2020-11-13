@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.foryouandme.core.arch.android.AppInjector
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.Injector
+import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.Navigator
 
@@ -28,6 +29,9 @@ val Fragment.navigator: Navigator
 
 val Fragment.imageConfiguration: ImageConfiguration
     get() = injector.imageConfiguration
+
+val Fragment.videoConfiguration: VideoConfiguration
+    get() = injector.videoConfiguration
 
 /* --- status bar --- */
 

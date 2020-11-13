@@ -39,6 +39,10 @@ interface Injector {
 
     val imageConfiguration: ImageConfiguration
 
+    /* --- video configuration --- */
+
+    val videoConfiguration: VideoConfiguration
+
     /* --- json --- */
 
     val moshi: Moshi
