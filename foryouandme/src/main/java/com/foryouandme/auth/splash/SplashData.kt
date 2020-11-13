@@ -11,5 +11,5 @@ sealed class SplashLoading {
 /* --- navigation --- */
 
 object SplashToWelcome : NavigationAction
-object SplashToScreening : NavigationAction
+object SplashToVideo : NavigationAction
 object SplashToMain : NavigationAction

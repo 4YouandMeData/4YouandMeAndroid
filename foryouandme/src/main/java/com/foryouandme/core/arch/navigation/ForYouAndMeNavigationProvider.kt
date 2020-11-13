@@ -13,12 +13,12 @@ import com.foryouandme.auth.optin.OptInToConsentUser
 import com.foryouandme.auth.optin.OptInWelcomeToOptInPermission
 import com.foryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import com.foryouandme.auth.phone.code.PhoneValidationCodeToMain
-import com.foryouandme.auth.phone.code.PhoneValidationCodeToScreening
+import com.foryouandme.auth.phone.code.PhoneValidationCodeToVideo
 import com.foryouandme.auth.screening.*
 import com.foryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import com.foryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.auth.splash.SplashToMain
-import com.foryouandme.auth.splash.SplashToScreening
+import com.foryouandme.auth.splash.SplashToVideo
 import com.foryouandme.auth.splash.SplashToWelcome
 import com.foryouandme.auth.welcome.WelcomeToSignUpInfo
 import com.foryouandme.core.arch.navigation.execution.*
@@ -39,7 +39,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is AnywhereToWeb -> anywhereToWeb(action.url)
 
             is SplashToWelcome -> splashToWelcome()
-            is SplashToScreening -> splashToScreening()
+            is SplashToVideo -> splashToVideo()
             is SplashToMain -> splashToMain()
 
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
@@ -53,7 +53,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                     action.countryCode
                 )
 
-            is PhoneValidationCodeToScreening -> phoneValidationCodeToScreening()
+            is PhoneValidationCodeToVideo -> phoneValidationCodeToScreening()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
