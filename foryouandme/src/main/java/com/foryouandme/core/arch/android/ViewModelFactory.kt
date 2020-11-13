@@ -9,19 +9,19 @@ inline fun <reified VM : BaseViewModel<*, *, *, *>> viewModelFactory(
     fragment: Fragment,
     factory: ViewModelFactory<VM>
 ): VM =
-    ViewModelProviders.of(fragment, factory).get(VM::class.java)
+    ViewModelProvider(fragment, factory).get(VM::class.java)
 
 inline fun <reified VM : BaseViewModel<*, *, *, *>> viewModelFactory(
     activity: FragmentActivity,
     factory: ViewModelFactory<VM>
 ): VM =
-    ViewModelProviders.of(activity, factory).get(VM::class.java)
+    ViewModelProvider(activity, factory).get(VM::class.java)
 
 inline fun <reified VM : BaseViewModel<*, *, *, *>> viewModelFactory(
     activity: FragmentActivity,
     factory: AbstractSavedStateViewModelFactory
 ): VM =
-    ViewModelProviders.of(activity, factory).get(VM::class.java)
+    ViewModelProvider(activity, factory).get(VM::class.java)
 
 
 class ViewModelFactory<V : BaseViewModel<*, *, *, *>?>(

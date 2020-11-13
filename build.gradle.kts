@@ -12,18 +12,14 @@ buildscript {
     }
 
     dependencies {
-        classpath(Libs.com_android_tools_build_gradle)
-        classpath(Libs.kotlin_gradle_plugin)
-        classpath(Libs.google_services)
-        classpath(Libs.navigation_safe_args_gradle_plugin)
-        classpath(Libs.firebase_crashlytics_gradle)
-        classpath(Libs.gradle_bintray_plugin)
-        classpath(Libs.android_maven_gradle_plugin)
+        classpath(GradlePlugin.android)
+        classpath(GradlePlugin.kotlin)
+        classpath(GradlePlugin.google)
+        classpath(GradlePlugin.navigationSafeArgs)
+        classpath(GradlePlugin.firebaseCrashlytics)
+        classpath(GradlePlugin.bintray)
+        classpath(GradlePlugin.maven)
     }
-}
-
-plugins {
-    id("de.fayard.buildSrcVersions") version "0.7.0"
 }
 
 allprojects {

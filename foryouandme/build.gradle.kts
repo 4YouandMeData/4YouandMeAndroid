@@ -50,140 +50,136 @@ dependencies {
 
     /* --- kotlin --- */
 
-    implementation(Libs.kotlin_stdlib_jdk7)
+    implementation(Kotlin.stdlib.jdk7)
 
     /* --- appcompact --- */
 
-    implementation(Libs.appcompat)
+    implementation(AndroidX.appCompat)
 
     /* --- fragment --- */
 
-    implementation(Libs.fragment_ktx)
+    implementation(AndroidX.fragmentKtx)
 
     /* --- core ktx --- */
 
-    implementation(Libs.core_ktx)
+    implementation(AndroidX.core.ktx)
 
     /* --- layout --- */
 
-    implementation(Libs.constraintlayout)
-    implementation(Libs.viewpager2)
-    implementation(Libs.swiperefreshlayout)
+    implementation(AndroidX.constraintLayout)
+    implementation(AndroidX.viewPager2)
+    implementation(AndroidX.swipeRefreshLayout)
 
     /* --- android arch --- */
 
-    implementation(Libs.lifecycle_viewmodel_ktx)
-    implementation(Libs.lifecycle_livedata_ktx)
-    implementation(Libs.android_arch_lifecycle_extensions)
-    implementation(Libs.lifecycle_viewmodel_savedstate)
+    implementation(AndroidX.lifecycle.service)
+    implementation(AndroidX.lifecycle.viewModelKtx)
+    implementation(AndroidX.lifecycle.liveDataKtx)
+    implementation(AndroidX.lifecycle.viewModelSavedState)
 
     /* --- arrow --- */
 
-    implementation(Libs.arrow_fx)
-    implementation(Libs.arrow_fx_coroutines)
-    implementation(Libs.arrow_optics)
-    implementation(Libs.arrow_syntax)
-    kapt(Libs.arrow_meta)
+    implementation(Arrow.fx)
+    implementation(Arrow.fxCoroutines)
+    implementation(Arrow.optics)
+    implementation(Arrow.syntax)
+    kapt(Arrow.meta)
 
     /* --- coroutines --- */
 
-    implementation(Libs.kotlinx_coroutines_core)
-    implementation(Libs.kotlinx_coroutines_android)
+    implementation(KotlinX.coroutines.core)
+    implementation(KotlinX.coroutines.android)
 
     /* --- navigation --- */
 
-    implementation(Libs.navigation_fragment_ktx)
-    implementation(Libs.navigation_ui_ktx)
+    implementation(AndroidX.navigation.fragmentKtx)
+    implementation(AndroidX.navigation.uiKtx)
 
     /* --- encrypted prefs --- */
 
-    implementation(Libs.security_crypto)
+    implementation(AndroidX.security.cryptoKtx)
 
     /* --- moshi --- */
 
-    implementation(Libs.moshi_kotlin)
-    implementation(Libs.moshi_adapters)
+    implementation(Moshi.kotlin)
+    implementation(Moshi.adapters)
 
     /* --- json api --- */
 
-    implementation(Libs.moshi_jsonapi)
-    implementation(Libs.moshi_jsonapi_retrofit_converter)
+    implementation(Moshi.JsonApi.jsonApi)
+    implementation(Moshi.JsonApi.retrofitConverter)
 
     /* --- timber --- */
 
-    implementation(Libs.timber)
+    implementation(Timber.timber)
 
     /* --- retrofit --- */
 
-    implementation(Libs.retrofit)
-    implementation(Libs.converter_moshi)
-    implementation(Libs.logging_interceptor)
+    implementation(Square.retrofit2.retrofit)
+    implementation(Square.retrofit2.converter.moshi)
+    implementation(Square.okHttp3.loggingInterceptor)
 
     /* --- country code picker --- */
 
-    implementation(Libs.ccp)
+    implementation(CPP.cpp)
 
     /* --- span droid --- */
 
-    implementation(Libs.span_droid)
+    implementation(Droid.span)
 
     /* --- recycler view --- */
 
-    implementation(Libs.recycler_droid_core)
+    implementation(Droid.recycler)
 
     /* --- signature --- */
 
-    implementation(Libs.signature_pad)
-
-    /* --- permissions --- */
-
-    implementation(Libs.dexter)
+    implementation(SignaturePad.signaturePad)
 
     /* --- threeten --- */
 
-    implementation(Libs.threetenabp)
+    implementation(ThreeTenAbp.threetenabp)
 
     /* --- camera x --- */
 
-    api(Libs.camera_core)
-    api(Libs.camera_camera2)
-    api(Libs.camera_view)
+    api(AndroidX.camera.core)
+    api(AndroidX.camera.camera2)
+    api(AndroidX.camera.view)
 
     /* --- mp4 parser --- */
 
-    implementation(Libs.isoparser)
+    implementation(IsoParser.isoParser)
 
     /* --- toasty --- */
 
-    implementation(Libs.toasty)
+    implementation(Toasty.toasty)
 
     /* --- dexter --- */
 
-    implementation(Libs.dexter)
+    implementation(Dexter.dexter)
 
     /* --- firebase --- */
 
-    implementation(Libs.firebase_analytics_ktx)
-    implementation(Libs.firebase_crashlytics_ktx)
-    implementation(Libs.firebase_messaging_ktx)
+    implementation(Firebase.crashlyticsKtx)
+    implementation(Firebase.analyticsKtx)
+    implementation(Firebase.messagingKtx)
 
     /* --- lottie ---*/
 
-    implementation(Libs.lottie)
+    implementation(Lottie.lottie)
 
     /* --- chart ---*/
 
-    implementation(Libs.mpandroidchart)
+    implementation(MpAndroidChart.mpandroidchart)
 
     /* --- test --- */
 
-    testImplementation(Libs.junit_junit)
-    testImplementation(Libs.mockk)
-    testImplementation(Libs.truth)
-    testImplementation(Libs.core_testing)
-    testImplementation(Libs.kotlinx_coroutines_core)
-    androidTestImplementation(Libs.androidx_test_ext_junit)
-    androidTestImplementation(Libs.espresso_core)
+    testImplementation(Kotlin.Test.junit)
+    testImplementation(Testing.mockK)
+    testImplementation(Test.truth)
+    testImplementation(AndroidX.archCore.testing)
+    testImplementation(KotlinX.coroutines.core)
+    androidTestImplementation(AndroidX.Test.Ext.junitKtx)
+    androidTestImplementation(AndroidX.Test.espresso.core)
 
 }
 

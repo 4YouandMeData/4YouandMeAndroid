@@ -4,10 +4,14 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.widget.MediaController
+import androidx.annotation.experimental.UseExperimental
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.VideoCapture
 import androidx.camera.view.CameraView
+import androidx.camera.view.video.ExperimentalVideo
+import androidx.camera.view.video.OnVideoSavedCallback
+import androidx.camera.view.video.OutputFileResults
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import arrow.core.Either
@@ -104,6 +108,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
+    @UseExperimental(markerClass = ExperimentalVideo::class)
     @SuppressLint("MissingPermission")
     private suspend fun setupCamera(step: VideoStep): Unit {
 
@@ -480,17 +485,16 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
+    @UseExperimental(markerClass = ExperimentalVideo::class)
     private fun record(file: File): Unit {
 
         camera.startRecording(
             file,
             ContextCompat.getMainExecutor(requireContext()),
-            object : VideoCapture.OnVideoSavedCallback {
+            object : OnVideoSavedCallback {
 
-                override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
-
+                override fun onVideoSaved(outputFileResults: OutputFileResults) {
                     startCoroutineAsync { videoViewModel.pause() }
-
                 }
 
                 override fun onError(
@@ -508,6 +512,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
+    @UseExperimental(markerClass = ExperimentalVideo::class)
     private fun pause(): Unit {
 
         camera.stopRecording()

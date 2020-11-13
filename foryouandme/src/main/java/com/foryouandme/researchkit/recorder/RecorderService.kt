@@ -42,7 +42,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
     private var sensorLiveDate: MutableLiveData<Event<SensorData>> = MutableLiveData()
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         return START_NOT_STICKY
     }
