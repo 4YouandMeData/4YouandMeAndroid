@@ -3,6 +3,7 @@ package com.foryouandme.core.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseActivity
@@ -32,7 +33,26 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
         super.onCreate(savedInstanceState)
 
         viewModel.loadingLiveData()
-            .observeEvent { loading.setVisibility(it.active, false) }
+            .observeEvent {
+                when(it.task) {
+                    FYAMLoading.Config -> loading.setVisibility(it.active, false)
+                    FYAMLoading.Splash -> {
+
+                        if(it.active) {
+                            splash_logo.alpha = 1f
+                            splash_logo.isVisible = true
+                        }
+                        else {
+                            splash_logo.animate()
+                                .alpha(0f)
+                                .withEndAction { splash_logo.isVisible = false }
+                                .start()
+
+                        }
+
+                    }
+                }
+            }
 
         viewModel.errorLiveData()
             .observeEvent {

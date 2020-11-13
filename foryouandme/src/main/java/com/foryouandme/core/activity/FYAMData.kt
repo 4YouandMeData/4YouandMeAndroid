@@ -20,6 +20,7 @@ sealed class FYAMStateUpdate {
 sealed class FYAMLoading {
 
     object Config : FYAMLoading()
+    object Splash : FYAMLoading()
 
 }
 
