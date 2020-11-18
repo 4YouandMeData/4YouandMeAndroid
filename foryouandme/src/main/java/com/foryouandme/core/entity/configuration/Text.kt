@@ -72,6 +72,7 @@ data class PhoneVerificationError(
 )
 
 data class Onboarding(
+    val introVideoContinueButton: String,
     val abortTitle: String,
     val abortButton: String,
     val abortCancel: String,

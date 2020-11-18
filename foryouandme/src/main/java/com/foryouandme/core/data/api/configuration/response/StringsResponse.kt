@@ -1,9 +1,6 @@
 package com.foryouandme.core.data.api.configuration.response
 
 import arrow.core.Either
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.toOption
 import com.foryouandme.core.entity.configuration.*
 import com.squareup.moshi.Json
 
@@ -34,6 +31,8 @@ data class StringsResponse(
     @Json(name = "PHONE_VERIFICATION_WRONG_NUMBER") val phoneVerificationWrongNumber: String? = null,
     @Json(name = "PHONE_VERIFICATION_ERROR_WRONG_CODE") val phoneVerificationErrorWrongCode: String? = null,
     @Json(name = "PHONE_VERIFICATION_ERROR_MISSING_NUMBER") val phoneVerificationErrorMissingNumber: String? = null,
+
+    @Json(name = "INTRO_VIDEO_CONTINUE_BUTTON") val introVideoContinueButton: String? = null,
 
     @Json(name = "ONBOARDING_ABORT_TITLE") val onboardingAbortTitle: String? = null,
     @Json(name = "ONBOARDING_ABORT_BUTTON") val onboardingAbortButton: String? = null,
@@ -207,257 +206,286 @@ data class StringsResponse(
 
         return Either.catch {
             Text(
-                error.orNull()!!,
-                url.orNull()!!,
-                welcome.orNull()!!,
-                intro.orNull()!!,
-                signUpLater.orNull()!!,
-                phoneVerification.orNull()!!,
-                onboarding.orNull()!!,
-                tab.orNull()!!,
-                activity.orNull()!!,
-                feed.orNull()!!,
-                videoDiary.orNull()!!,
-                studyInfo.orNull()!!,
+                error!!,
+                url!!,
+                welcome!!,
+                intro!!,
+                signUpLater!!,
+                phoneVerification!!,
+                onboarding!!,
+                tab!!,
+                activity!!,
+                feed!!,
+                videoDiary!!,
+                studyInfo!!,
                 profile!!,
-                yourData.orNull()!!,
-                task.orNull()!!,
-                gaitActivity.orNull()!!,
-                fitnessActivity.orNull()!!,
-                camCogActivity.orNull()!!
+                yourData!!,
+                task!!,
+                gaitActivity!!,
+                fitnessActivity!!,
+                camCogActivity!!
             )
 
         }.orNull()
     }
 
-    private fun toError(): Option<Error> =
-        Option.fx {
+    private suspend fun toError(): Error? =
+        Either.catch {
+
             Error(
-                errorTitleDefault.toOption().bind(),
-                errorMessageDefault.toOption().bind(),
-                errorButtonRetry.toOption().bind(),
-                errorButtonCancel.toOption().bind(),
-                errorMessageRemoteServer.toOption().bind(),
-                errorMessageConnectivity.toOption().bind()
+                errorTitleDefault!!,
+                errorMessageDefault!!,
+                errorButtonRetry!!,
+                errorButtonCancel!!,
+                errorMessageRemoteServer!!,
+                errorMessageConnectivity!!
             )
-        }
 
-    private fun toUrl(): Option<Url> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toUrl(): Url? =
+        Either.catch {
+
             Url(
-                urlPrivacyPolicy.toOption().bind(),
-                urlTermsOfService.toOption().bind()
+                urlPrivacyPolicy!!,
+                urlTermsOfService!!
             )
-        }
 
-    private fun toWelcome(): Option<Welcome> =
-        Option.fx {
-            Welcome(welcomeStartButton.toOption().bind())
-        }
+        }.orNull()
 
-    private fun toIntro(): Option<Intro> =
-        Option.fx {
+    private suspend fun toWelcome(): Welcome? =
+        Either.catch { Welcome(welcomeStartButton!!) }.orNull()
+
+    private suspend fun toIntro(): Intro? =
+        Either.catch {
+
             Intro(
-                introTitle.toOption().bind(),
-                introBody.toOption().bind(),
-                introBack.toOption().bind(),
-                introLogin.toOption().bind()
+                introTitle!!,
+                introBody!!,
+                introBack!!,
+                introLogin!!
             )
-        }
 
-    private fun toSignUpLater(): Option<SignUpLater> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toSignUpLater(): SignUpLater? =
+        Either.catch {
+
             SignUpLater(
-                setupLaterBody.toOption().bind(),
-                setupLaterConfirmButton.toOption().bind()
+                setupLaterBody!!,
+                setupLaterConfirmButton!!
             )
-        }
 
-    private fun toPhoneVerification(): Option<PhoneVerification> {
+        }.orNull()
+
+    private suspend fun toPhoneVerification(): PhoneVerification? {
 
         val phoneVerificationError = toPhoneVerificationError()
 
-        return Option.fx {
+        return Either.catch {
+
             PhoneVerification(
-                phoneVerificationTitle.toOption().bind(),
-                phoneVerificationBody.toOption().bind(),
-                phoneVerificationLegal.toOption().bind(),
-                phoneVerificationNumberDescription.toOption().bind(),
-                phoneVerificationLegalPrivacyPolicy.toOption().bind(),
-                phoneVerificationLegalTermsOfService.toOption().bind(),
-                phoneVerificationResendCode.toOption().bind(),
-                phoneVerificationWrongNumber.toOption().bind(),
-                phoneVerificationCodeTitle.toOption().bind(),
-                phoneVerificationCodeBody.toOption().bind(),
-                phoneVerificationCodeDescription.toOption().bind(),
-                phoneVerificationError.bind()
+                phoneVerificationTitle!!,
+                phoneVerificationBody!!,
+                phoneVerificationLegal!!,
+                phoneVerificationNumberDescription!!,
+                phoneVerificationLegalPrivacyPolicy!!,
+                phoneVerificationLegalTermsOfService!!,
+                phoneVerificationResendCode!!,
+                phoneVerificationWrongNumber!!,
+                phoneVerificationCodeTitle!!,
+                phoneVerificationCodeBody!!,
+                phoneVerificationCodeDescription!!,
+                phoneVerificationError!!
             )
-        }
+
+        }.orNull()
     }
 
-    private fun toPhoneVerificationError(): Option<PhoneVerificationError> =
-        Option.fx {
-            PhoneVerificationError(
-                phoneVerificationErrorMissingNumber.toOption().bind(),
-                phoneVerificationErrorWrongCode.toOption().bind()
-            )
-        }
+    private suspend fun toPhoneVerificationError(): PhoneVerificationError? =
+        Either.catch {
 
-    private fun toOnboardig(): Option<Onboarding> {
+            PhoneVerificationError(
+
+                phoneVerificationErrorMissingNumber!!,
+                phoneVerificationErrorWrongCode!!
+            )
+
+        }.orNull()
+
+    private suspend fun toOnboardig(): Onboarding? {
 
         val onboardingUser = toOnboardingUser()
         val onboardingOptIn = toOnboardingOptIn()
         val onboardingIntegration = toOnboardingIntegration()
 
-        return Option.fx {
+        return Either.catch {
 
             Onboarding(
-                onboardingAbortTitle.toOption().bind(),
-                onboardingAbortButton.toOption().bind(),
-                onboardingAbortCancel.toOption().bind(),
-                onboardingAbortConfirm.toOption().bind(),
-                onboradingAbortMessage.toOption().bind(),
-                onboradingAgreeButton.toOption().bind(),
-                onboradingDisagreeButton.toOption().bind(),
-                onboardingUser.bind(),
-                onboardingOptIn.bind(),
-                onboardingIntegration.bind()
+                introVideoContinueButton!!,
+                onboardingAbortTitle!!,
+                onboardingAbortButton!!,
+                onboardingAbortCancel!!,
+                onboardingAbortConfirm!!,
+                onboradingAbortMessage!!,
+                onboradingAgreeButton!!,
+                onboradingDisagreeButton!!,
+                onboardingUser!!,
+                onboardingOptIn!!,
+                onboardingIntegration!!
             )
-        }
+
+        }.orNull()
     }
 
-    private fun toOnboardingUser(): Option<OnboardingUser> {
+    private suspend fun toOnboardingUser(): OnboardingUser? {
 
         val onboardingUserError = toOnboardingUserError()
 
-        return Option.fx {
+        return Either.catch {
+
             OnboardingUser(
-                onboardingUserNameTitle.toOption().bind(),
-                onboardingNameLastNameDescription.toOption().bind(),
-                onboardingNameFirstNameDescription.toOption().bind(),
-                onboardingSignatureTitle.toOption().bind(),
-                onboardingSignatureBody.toOption().bind(),
-                onboardingSignatureClear.toOption().bind(),
-                onboardingSignaturePlaceholder.toOption().bind(),
-                onboardingEmailInfo.toOption().bind(),
-                onboardingEmailDescription.toOption().bind(),
-                onboardingEmailVerificationTitle.toOption().bind(),
-                onboardingEmailVerificationBody.toOption().bind(),
-                onboardingEmailVerificationCodeDescription.toOption().bind(),
-                onboardingEmailVerificationResend.toOption().bind(),
-                onboardingEmailVerificationWrongMail.toOption().bind(),
-                onboardingUserError.bind()
+                onboardingUserNameTitle!!,
+                onboardingNameLastNameDescription!!,
+                onboardingNameFirstNameDescription!!,
+                onboardingSignatureTitle!!,
+                onboardingSignatureBody!!,
+                onboardingSignatureClear!!,
+                onboardingSignaturePlaceholder!!,
+                onboardingEmailInfo!!,
+                onboardingEmailDescription!!,
+                onboardingEmailVerificationTitle!!,
+                onboardingEmailVerificationBody!!,
+                onboardingEmailVerificationCodeDescription!!,
+                onboardingEmailVerificationResend!!,
+                onboardingEmailVerificationWrongMail!!,
+                onboardingUserError!!
             )
-        }
+
+        }.orNull()
     }
 
-    private fun toOnboardingUserError(): Option<OnboardingUserError> =
-        Option.fx {
-            OnboardingUserError(onboardingEmailVerificationWrongCode.toOption().bind())
-        }
+    private suspend fun toOnboardingUserError(): OnboardingUserError? =
+        Either.catch {
+            OnboardingUserError(onboardingEmailVerificationWrongCode!!)
+        }.orNull()
 
-    private fun toOnboardingOptIn(): Option<OnboardingOptIn> =
-        Option.fx {
+    private suspend fun toOnboardingOptIn(): OnboardingOptIn? =
+        Either.catch {
+
             OnboardingOptIn(
-                onboardingOptInSubmitButton.toOption().bind(),
-                onboardingOptInMandatoryClose.toOption().bind(),
-                onboardingOptInMandatoryTitle.toOption().bind(),
-                onboardingOptInMandatoryDefault.toOption().bind()
+                onboardingOptInSubmitButton!!,
+                onboardingOptInMandatoryClose!!,
+                onboardingOptInMandatoryTitle!!,
+                onboardingOptInMandatoryDefault!!
             )
-        }
 
-    private fun toOnboardingIntegration(): Option<OnboardingIntegration> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toOnboardingIntegration(): OnboardingIntegration? =
+        Either.catch {
+
             OnboardingIntegration(
-                onboardingIntegrationDownloadButtonDefault.toOption().bind(),
-                onboardingIntegrationOpenAppButtonDefault.toOption().bind(),
-                onboardingIntegrationLoginButtonDefault.toOption().bind(),
-                onboardingIntegrationNextButtonDefault.toOption().bind()
+                onboardingIntegrationDownloadButtonDefault!!,
+                onboardingIntegrationOpenAppButtonDefault!!,
+                onboardingIntegrationLoginButtonDefault!!,
+                onboardingIntegrationNextButtonDefault!!
             )
-        }
 
-    private fun toTab(): Option<Tab> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toTab(): Tab? =
+        Either.catch {
+
             Tab(
-                tabFeed.toOption().bind(),
-                tabFeedTitle.toOption().bind(),
-                tabFeedSubTitle.toOption().bind(),
-                tabFeedEmptyTitle.toOption().bind(),
-                tabFeedEmptySubTitle.toOption().bind(),
-                tabFeedHeaderTitle.toOption().bind(),
-                tabFeedHeaderSubTitle.toOption().bind(),
-                tabFeedHeaderPoints.toOption().bind(),
-                tabTask.toOption().bind(),
-                tabTaskTitle.toOption().bind(),
-                tabTaskEmptyTitle.toOption().bind(),
-                tabTaskEmptySubtitle.toOption().bind(),
-                tabTaskEmptyButton.toOption().bind(),
-                tabUserData.toOption().bind(),
-                tabUserDataTitle.toOption().bind(),
-                tabStudyInfo.toOption().bind(),
-                tabStudyInfoTitle.toOption().bind()
+                tabFeed!!,
+                tabFeedTitle!!,
+                tabFeedSubTitle!!,
+                tabFeedEmptyTitle!!,
+                tabFeedEmptySubTitle!!,
+                tabFeedHeaderTitle!!,
+                tabFeedHeaderSubTitle!!,
+                tabFeedHeaderPoints!!,
+                tabTask!!,
+                tabTaskTitle!!,
+                tabTaskEmptyTitle!!,
+                tabTaskEmptySubtitle!!,
+                tabTaskEmptyButton!!,
+                tabUserData!!,
+                tabUserDataTitle!!,
+                tabStudyInfo!!,
+                tabStudyInfoTitle!!
             )
-        }
 
-    private fun toActivity(): Option<Activity> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toActivity(): Activity? =
+        Either.catch {
+
             Activity(
-                activityButtonDefault.toOption().bind(),
-                quickActivityButtonDefault.toOption().bind()
+                activityButtonDefault!!,
+                quickActivityButtonDefault!!
             )
-        }
 
-    private fun toFeed(): Option<Feed> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toFeed(): Feed? =
+        Either.catch {
+
             Feed(
-                educationalButtonDefault.toOption().bind(),
-                rewardButtonDefault.toOption().bind(),
-                alertButtonDefault.toOption().bind()
+                educationalButtonDefault!!,
+                rewardButtonDefault!!,
+                alertButtonDefault!!
             )
-        }
 
-    private fun toVideoDiary(): Option<VideoDiary> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toVideoDiary(): VideoDiary? =
+        Either.catch {
+
             VideoDiary(
-                videoDiaryIntroTitle.toOption().bind(),
-                videoDiaryIntroButton.toOption().bind(),
-                videoDiaryIntroParagraphTitleA.toOption().bind(),
-                videoDiaryIntroParagraphBodyA.toOption().bind(),
-                videoDiaryIntroParagraphTitleB.toOption().bind(),
-                videoDiaryIntroParagraphBodyB.toOption().bind(),
-                videoDiaryIntroParagraphTitleC.toOption().bind(),
-                videoDiaryIntroParagraphBodyC.toOption().bind(),
-                videoDiaryRecorderInfoTitle.toOption().bind(),
-                videoDiaryRecorderInfoBody.toOption().bind(),
-                videoDiaryRecorderTitle.toOption().bind(),
-                videoDiaryRecorderCloseButton.toOption().bind(),
-                videoDiaryRecorderReviewButton.toOption().bind(),
-                videoDiaryRecorderSubmitButton.toOption().bind(),
-                videoDiarySuccessTitle.toOption().bind(),
-                videoDiaryDiscardTitle.toOption().bind(),
-                videoDiaryDiscardBody.toOption().bind(),
-                videoDiaryDiscardCancel.toOption().bind(),
-                videoDiaryDiscardConfirm.toOption().bind(),
-                videoDiaryMissingPermissionDiscard.toOption().bind(),
-                videoDiaryMissingPermissionTitleMic.toOption().bind(),
-                videoDiaryMissingPermissionBodyMic.toOption().bind(),
-                videoDiaryMissingPermissionTitleCamera.toOption().bind(),
-                videoDiaryMissingPermissionBodyCamera.toOption().bind(),
-                videoDiaryMissingPermissionBodySettings.toOption().bind(),
-                videoDiaryRecorderStartRecordingDescription.toOption().bind(),
-                videoDiaryRecorderResumeRecordingDescription.toOption().bind(),
+                videoDiaryIntroTitle!!,
+                videoDiaryIntroButton!!,
+                videoDiaryIntroParagraphTitleA!!,
+                videoDiaryIntroParagraphBodyA!!,
+                videoDiaryIntroParagraphTitleB!!,
+                videoDiaryIntroParagraphBodyB!!,
+                videoDiaryIntroParagraphTitleC!!,
+                videoDiaryIntroParagraphBodyC!!,
+                videoDiaryRecorderInfoTitle!!,
+                videoDiaryRecorderInfoBody!!,
+                videoDiaryRecorderTitle!!,
+                videoDiaryRecorderCloseButton!!,
+                videoDiaryRecorderReviewButton!!,
+                videoDiaryRecorderSubmitButton!!,
+                videoDiarySuccessTitle!!,
+                videoDiaryDiscardTitle!!,
+                videoDiaryDiscardBody!!,
+                videoDiaryDiscardCancel!!,
+                videoDiaryDiscardConfirm!!,
+                videoDiaryMissingPermissionDiscard!!,
+                videoDiaryMissingPermissionTitleMic!!,
+                videoDiaryMissingPermissionBodyMic!!,
+                videoDiaryMissingPermissionTitleCamera!!,
+                videoDiaryMissingPermissionBodyCamera!!,
+                videoDiaryMissingPermissionBodySettings!!,
+                videoDiaryRecorderStartRecordingDescription!!,
+                videoDiaryRecorderResumeRecordingDescription!!,
             )
-        }
 
-    private fun toStudyInfo(): Option<StudyInfo> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toStudyInfo(): StudyInfo? =
+        Either.catch {
+
             StudyInfo(
-                studyInfoAboutYou.toOption().bind(),
-                studyInfoContactInfo.toOption().bind(),
-                studyInfoRewards.toOption().bind(),
-                studyInfoFaq.toOption().bind()
+                studyInfoAboutYou!!,
+                studyInfoContactInfo!!,
+                studyInfoRewards!!,
+                studyInfoFaq!!
             )
-        }
+
+        }.orNull()
 
     private suspend fun toProfile(): Profile? =
         Either.catch {
@@ -483,47 +511,57 @@ data class StringsResponse(
 
         }.orNull()
 
-    private fun toYourData(): Option<YourData> =
-        Option.fx {
+    private suspend fun toYourData(): YourData? =
+        Either.catch {
+
             YourData(
-                tabUserDataPeriodTitle.toOption().bind(),
-                tabUserDataPeriodDay.toOption().bind(),
-                tabUserDataPeriodWeek.toOption().bind(),
-                tabUserDataPeriodMonth.toOption().bind(),
-                tabUserDataPeriodYear.toOption().bind()
+                tabUserDataPeriodTitle!!,
+                tabUserDataPeriodDay!!,
+                tabUserDataPeriodWeek!!,
+                tabUserDataPeriodMonth!!,
+                tabUserDataPeriodYear!!
             )
-        }
 
-    private fun toTask(): Option<Task> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toTask(): Task? =
+        Either.catch {
+
             Task(
-                taskRemindMeLater.toOption().bind(),
-                taskStartButton.toOption().bind(),
-                surveyButtonSkip.toOption().bind()
+                taskRemindMeLater!!,
+                taskStartButton!!,
+                surveyButtonSkip!!
             )
-        }
 
-    private fun toGaitActivity(): Option<GaitActivity> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toGaitActivity(): GaitActivity? =
+        Either.catch {
+
             GaitActivity(
-                taskGaitIntroTitle.toOption().bind(),
-                taskGaitIntroBody.toOption().bind()
+                taskGaitIntroTitle!!,
+                taskGaitIntroBody!!
             )
-        }
 
-    private fun toFitnessActivity(): Option<FitnessActivity> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toFitnessActivity(): FitnessActivity? =
+        Either.catch {
+
             FitnessActivity(
-                taskWalkIntroTitle.toOption().bind(),
-                taskWalkIntroBody.toOption().bind()
+                taskWalkIntroTitle!!,
+                taskWalkIntroBody!!
             )
-        }
 
-    private fun toCamCogActivity(): Option<CamCogActivity> =
-        Option.fx {
+        }.orNull()
+
+    private suspend fun toCamCogActivity(): CamCogActivity? =
+        Either.catch {
+
             CamCogActivity(
-                camCogTaskTitle.toOption().bind(),
-                camCogTaskBody.toOption().bind()
+                camCogTaskTitle!!,
+                camCogTaskBody!!
             )
-        }
+
+        }.orNull()
 }
