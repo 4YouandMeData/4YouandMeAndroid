@@ -18,7 +18,17 @@ import com.foryouandme.core.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
+import kotlinx.android.synthetic.main.enter_phone.*
 import kotlinx.android.synthetic.main.phone_validation_code.*
+import kotlinx.android.synthetic.main.phone_validation_code.action_1
+import kotlinx.android.synthetic.main.phone_validation_code.ccp
+import kotlinx.android.synthetic.main.phone_validation_code.description
+import kotlinx.android.synthetic.main.phone_validation_code.loading
+import kotlinx.android.synthetic.main.phone_validation_code.phone
+import kotlinx.android.synthetic.main.phone_validation_code.phone_validation
+import kotlinx.android.synthetic.main.phone_validation_code.root
+import kotlinx.android.synthetic.main.phone_validation_code.title
+import kotlinx.android.synthetic.main.phone_validation_code.toolbar
 
 
 class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewModel>(
@@ -163,6 +173,8 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
 
             phone.isEnabled = false
 
+            phone_line.setBackgroundColor(configuration.theme.secondaryColor.color())
+
             change_phone.setOnClickListenerAsync {
                 viewModel.back(authNavController(), rootNavController())
             }
@@ -198,6 +210,8 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
                     }
                 )
             }
+
+            code_line.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             resend.setTextColor(configuration.theme.secondaryColor.color())
             resend.text =

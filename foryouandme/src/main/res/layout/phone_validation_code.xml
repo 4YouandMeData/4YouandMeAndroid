@@ -80,6 +80,7 @@
                 style="@style/text_paragraph"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:background="@null"
                 android:inputType="phone"
                 android:singleLine="true"
                 app:layout_constraintBottom_toBottomOf="@id/ccp"
@@ -104,6 +105,15 @@
                 app:layout_constraintBottom_toBottomOf="@id/phone"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <View
+                android:id="@+id/phone_line"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:alpha="0.5"
+                app:layout_constraintBottom_toBottomOf="@id/phone"
+                app:layout_constraintEnd_toEndOf="@id/phone_validation"
+                app:layout_constraintStart_toStartOf="@id/ccp" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/code_description"
                 style="@style/text_paragraph"
@@ -122,6 +132,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="25dp"
+                android:background="@null"
                 android:inputType="number"
                 android:singleLine="true"
                 app:layout_constraintEnd_toStartOf="@id/code_validation"
@@ -135,6 +146,15 @@
                 android:layout_marginEnd="25dp"
                 app:layout_constraintBottom_toBottomOf="@id/code"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <View
+                android:id="@+id/code_line"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:alpha="0.5"
+                app:layout_constraintBottom_toBottomOf="@id/code"
+                app:layout_constraintEnd_toEndOf="@id/code_validation"
+                app:layout_constraintStart_toStartOf="@id/code" />
 
             <androidx.appcompat.widget.AppCompatCheckedTextView
                 android:id="@+id/wrong_code_error"
@@ -160,10 +180,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/resend"
+                style="@style/text_h3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
-                style="@style/text_h3"
                 app:layout_constraintBottom_toBottomOf="@id/action_1"
                 app:layout_constraintStart_toStartOf="parent" />
 
