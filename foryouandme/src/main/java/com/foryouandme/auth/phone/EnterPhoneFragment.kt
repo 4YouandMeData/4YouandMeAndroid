@@ -170,12 +170,17 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
             phone.setOnFocusChangeListener { _, hasFocus ->
                 phone_validation.setImageResource(
                     when {
-                        hasFocus -> 0
-                        hasFocus.not() && ccp.isValidFullNumber.not() -> imageConfiguration.entryWrong()
-                        else -> imageConfiguration.entryValid()
+                        hasFocus ->
+                            0
+                        hasFocus.not() && ccp.isValidFullNumber.not() ->
+                            imageConfiguration.entryWrong()
+                        else ->
+                            imageConfiguration.entryValid()
                     }
                 )
             }
+
+            line.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             checkbox.buttonTintList =
                 checkbox(
