@@ -34,6 +34,7 @@ data class StringsResponse(
 
     @Json(name = "INTRO_VIDEO_CONTINUE_BUTTON") val introVideoContinueButton: String? = null,
 
+    @Json(name = "ONBOARDING_SECTION_LIST") val onboardingSectionList: String? = null,
     @Json(name = "ONBOARDING_ABORT_TITLE") val onboardingAbortTitle: String? = null,
     @Json(name = "ONBOARDING_ABORT_BUTTON") val onboardingAbortButton: String? = null,
     @Json(name = "ONBOARDING_ABORT_CANCEL") val onboardingAbortCancel: String? = null,
@@ -322,6 +323,20 @@ data class StringsResponse(
         return Either.catch {
 
             Onboarding(
+                onboardingSectionList!!
+                    .split(";")
+                    .mapNotNull {
+                        when (it) {
+                            "intro_video" -> OnboardingSection.IntroVideo
+                            "screening" -> OnboardingSection.Screening
+                            "informed_consent" -> OnboardingSection.InformedConsent
+                            "consent" -> OnboardingSection.Consent
+                            "opt_in" -> OnboardingSection.OptIn
+                            "consent_user_data" -> OnboardingSection.ConsentUserData
+                            "integration" -> OnboardingSection.Integration
+                            else -> null
+                        }
+                    },
                 introVideoContinueButton!!,
                 onboardingAbortTitle!!,
                 onboardingAbortButton!!,
