@@ -80,3 +80,11 @@ fun Fragment.errorToast(message: String): Unit = requireContext().errorToast(mes
 fun Fragment.errorToast(error: ForYouAndMeError): Unit = requireContext().errorToast(error)
 
 fun Fragment.infoToast(message: String): Unit = requireContext().infoToast(message)
+
+/* --- keyboard --- */
+
+suspend fun Fragment.hideKeyboard(): Unit =
+    requireActivity().hideKeyboard()
+
+suspend fun Fragment.showKeyboard(): Unit =
+    requireActivity().showKeyboard()

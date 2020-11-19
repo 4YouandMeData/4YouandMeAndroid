@@ -116,6 +116,8 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
             phone.setText(args.phone)
 
             action_1.setOnClickListenerAsync {
+
+                hideKeyboard()
                 viewModel.auth(
                     rootNavController(),
                     authNavController(),
@@ -123,6 +125,7 @@ class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewM
                     code.text.toString(),
                     args.countryCode
                 )
+
             }
 
             resend.setOnClickListenerAsync { viewModel.resendCode(ccp.fullNumberWithPlus) }

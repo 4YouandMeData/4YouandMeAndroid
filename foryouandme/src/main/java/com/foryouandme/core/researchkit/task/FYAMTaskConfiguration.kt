@@ -93,14 +93,16 @@ class FYAMTaskConfiguration(
                                 val camCogUrl =
                                     "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id"
 
-                                buildCamCog(
+                                FYAMCamCogTask(
                                     id,
                                     it.a,
                                     imageConfiguration,
+                                    it.b.welcomePage,
+                                    it.b.successPage,
+                                    it.b.reschedule,
                                     camCogUrl,
                                     token,
-                                    CamCogInterface(),
-                                    it.b.reschedule
+                                    CamCogInterface()
                                 )
 
                             }

@@ -95,6 +95,7 @@ class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.ent
 
             action_1.setOnClickListenerAsync {
 
+                hideKeyboard()
                 viewModel.verifyNumber(
                     authNavController(),
                     ccp.fullNumberWithPlus,

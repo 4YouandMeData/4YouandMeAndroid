@@ -4,6 +4,9 @@ import android.app.Activity
 import android.graphics.Color
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+
+/* --- status bar --- */
 
 fun Activity.transparentStatusBar() {
 
@@ -16,3 +19,31 @@ fun Activity.transparentStatusBar() {
     }
 
 }
+
+/* --- keyboard --- */
+
+suspend fun Activity.hideKeyboard(): Unit =
+    evalOnMain {
+
+        val imm: InputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        //Find the currently focused view, so we can grab the correct window token from it.
+        var view = currentFocus
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null)
+            view = View(this)
+
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+
+    }
+
+suspend fun Activity.showKeyboard(): Unit =
+    evalOnMain {
+
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+    }

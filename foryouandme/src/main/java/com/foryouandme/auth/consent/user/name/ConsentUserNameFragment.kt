@@ -54,8 +54,11 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
 
             bindNext()
             action_1.background = button(resources, imageConfiguration.nextStep())
-            action_1.setOnClickListener {
-                startCoroutineAsync { viewModel.email(consentUserNavController()) }
+            action_1.setOnClickListenerAsync {
+
+                hideKeyboard()
+                viewModel.email(consentUserNavController())
+
             }
 
             consentUserFragment().toolbar.removeBackButton()

@@ -60,16 +60,15 @@ class CamCogTask(
                 startButtonTextColor = welcomeStartButtonTextColor,
                 shadowColor = welcomeShadowColor,
                 remindMeLater = welcomeRemindMeLater
-            ),
-            WebStep(
-                identifier = CAMCOG_WEB,
-                back = null,
-                backgroundColor = webBackgroundColor,
-                progressBarColor = webProgressBarColor,
-                url = webUrl,
-                cookies = webCookies,
-                javascriptInterface = webJavascriptInterface,
-                javascriptInterfaceName = webJavascriptInterfaceName
+            )
+        ).plus(
+            buildCoreSteps(
+                webBackgroundColor = webBackgroundColor,
+                webProgressBarColor = webProgressBarColor,
+                webUrl = webUrl,
+                webCookies = webCookies,
+                webJavascriptInterface = webJavascriptInterface,
+                webJavascriptInterfaceName = webJavascriptInterfaceName
             )
         )
     }
@@ -79,6 +78,27 @@ class CamCogTask(
         const val CAMCOG_WELCOME: String = "camcog_welcome"
 
         const val CAMCOG_WEB: String = "camcog_web"
+
+        fun buildCoreSteps(
+            webBackgroundColor: Int,
+            webProgressBarColor: Int,
+            webUrl: String,
+            webCookies: Map<String, String> = emptyMap(),
+            webJavascriptInterface: WebStepInterface? = null,
+            webJavascriptInterfaceName: String? = null
+        ): List<Step> =
+            listOf(
+                WebStep(
+                    identifier = CAMCOG_WEB,
+                    back = null,
+                    backgroundColor = webBackgroundColor,
+                    progressBarColor = webProgressBarColor,
+                    url = webUrl,
+                    cookies = webCookies,
+                    javascriptInterface = webJavascriptInterface,
+                    javascriptInterfaceName = webJavascriptInterfaceName
+                )
+            )
 
     }
 }

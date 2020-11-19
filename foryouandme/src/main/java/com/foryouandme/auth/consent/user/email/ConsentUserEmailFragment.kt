@@ -91,13 +91,14 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
             action_1.background =
                 button(resources, imageConfiguration.nextStepSecondary())
 
-            action_1.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.createUser(
-                        rootNavController(),
-                        consentUserNavController()
-                    )
-                }
+            action_1.setOnClickListenerAsync {
+
+                hideKeyboard()
+                viewModel.createUser(
+                    rootNavController(),
+                    consentUserNavController()
+                )
+
             }
 
             bindNext()
