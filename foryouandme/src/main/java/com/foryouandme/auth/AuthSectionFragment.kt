@@ -8,9 +8,7 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.navigator
 
-abstract class AuthSectionFragment<T : BaseViewModel<*, *, *, *>>(
-    contentLayoutId: Int
-) : BaseFragment<T>(contentLayoutId) {
+abstract class AuthSectionFragment<T : BaseViewModel<*, *, *, *>> : BaseFragment<T> {
 
     val authViewModel: AuthViewModel by lazy {
         viewModelFactory(
@@ -18,6 +16,9 @@ abstract class AuthSectionFragment<T : BaseViewModel<*, *, *, *>>(
             getFactory { AuthViewModel(navigator) }
         )
     }
+
+    constructor() : super()
+    constructor(contentLayoutId: Int) : super(contentLayoutId)
 
     fun authNavController(): AuthNavController = AuthNavController(findNavController())
 

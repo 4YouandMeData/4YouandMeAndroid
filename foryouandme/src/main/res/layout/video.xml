@@ -6,16 +6,24 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?android:attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/video"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:surface_type="surface_view"
         app:controller_layout_id="@layout/video_controls"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:surface_type="surface_view"
         app:use_controller="false" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -29,7 +37,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/next"
-        style="@style/text_h3"
+        style="@style/text_h2"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="25dp"

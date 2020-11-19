@@ -1,14 +1,14 @@
 package com.foryouandme.auth.video
 
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.SurfaceControl
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.auth.AuthSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.entity.configuration.Configuration
@@ -23,11 +23,9 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import kotlinx.android.synthetic.main.video.*
 import kotlinx.android.synthetic.main.video_controls.*
 
-class VideoFragment : BaseFragment<VideoViewModel>() {
+class VideoFragment : AuthSectionFragment<VideoViewModel>() {
 
     private var player: SimpleExoPlayer? = null
-
-    private var restore: VideoRestore? = null
 
     private var currentView: View? = null
 
@@ -65,7 +63,17 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         startCoroutineAsync {
-            setupVideo()
+
+            val restore =
+                savedInstanceState?.let {
+                    mapNotNull(
+                        it.getString(IS_PLAYING, null).toBoolean(),
+                        it.getString(POSITION, null).toLongOrNull()
+                    )
+                }?.let { (a, b) -> VideoRestore(a, b) }
+
+            setupVideo(restore)
+
         }
 
         if (requireActivity().requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -75,21 +83,12 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
 
     }
 
-    private suspend fun setupVideo(): Unit =
+    private suspend fun setupVideo(restore: VideoRestore?): Unit =
         evalOnMain {
 
             if (player == null) {
                 player = SimpleExoPlayer.Builder(requireContext()).build()
-                player
-            }
-
-            video.player = player
-
-            player?.let { simpleExoPlayer ->
-
-                val restoreSettings = restore
-
-                if (restoreSettings == null) {
+                player?.let { simpleExoPlayer ->
 
                     val media = buildRawMediaSource()
 
@@ -98,6 +97,15 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
                         simpleExoPlayer.prepare()
                         simpleExoPlayer.playWhenReady = false
                     }
+
+                }
+            }
+
+            video.player = player
+
+            player?.let { simpleExoPlayer ->
+
+                if (restore == null) {
 
                     fake_play.setOnClickListener {
 
@@ -117,8 +125,8 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
                     next.isVisible = false
                     video.useController = true
                     video.showController()
-                    simpleExoPlayer.seekTo(restoreSettings.position)
-                    if (restoreSettings.isPlaying)
+                    simpleExoPlayer.seekTo(restore.position)
+                    if (restore.isPlaying)
                         simpleExoPlayer.play()
 
                 }
@@ -130,6 +138,12 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
     private suspend fun applyConfiguration(config: Configuration): Unit =
         evalOnMain {
 
+            setStatusBar(Color.BLACK)
+
+            toolbar.showCloseButton(imageConfiguration) {
+                startCoroutineAsync { viewModel.screening(authNavController()) }
+            }
+
             fake_play.setImageResource(imageConfiguration.videoDiaryPlay())
 
             exo_play.setImageResource(imageConfiguration.videoDiaryPlay())
@@ -139,22 +153,14 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
             next.setTextColor(config.theme.secondaryColor.color())
             next.background = button(config.theme.primaryColorEnd.color())
 
+            next.setOnClickListenerAsync { viewModel.screening(authNavController()) }
+
         }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(IS_PLAYING, player?.isPlaying?.toString())
         outState.putString(POSITION, player?.currentPosition?.toString())
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.let {
-            mapNotNull(
-                it.getString(IS_PLAYING, null).toBoolean(),
-                it.getString(POSITION, null).toLongOrNull()
-            )
-        }?.let { (a, b) -> restore = VideoRestore(a, b) }
     }
 
     private fun buildRawMediaSource(): MediaSource? {
@@ -174,6 +180,14 @@ class VideoFragment : BaseFragment<VideoViewModel>() {
         // create a media source with the raw DataSource
 
         return ProgressiveMediaSource.Factory { rawDataSource }.createMediaSource(mediaItem)
+    }
+
+    override fun onPause() {
+
+        //player?.pause()
+
+        super.onPause()
+
     }
 
     override fun onDestroyView() {
