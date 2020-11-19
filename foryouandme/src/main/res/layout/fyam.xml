@@ -1,6 +1,7 @@
 ***REMOVED***
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fyam_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -19,10 +20,12 @@
 
     <FrameLayout
         android:id="@+id/splash_logo"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:elevation="30dp">
+        android:elevation="30dp"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
