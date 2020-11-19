@@ -20,6 +20,7 @@ import com.foryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.auth.splash.SplashToMain
 import com.foryouandme.auth.splash.SplashToVideo
 import com.foryouandme.auth.splash.SplashToWelcome
+import com.foryouandme.auth.video.VideoToScreening
 import com.foryouandme.auth.welcome.WelcomeToSignUpInfo
 import com.foryouandme.core.arch.navigation.execution.*
 import com.foryouandme.main.MainPageToAboutYouPage
@@ -55,6 +56,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
             is PhoneValidationCodeToVideo -> phoneValidationCodeToScreening()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
+
+            is VideoToScreening -> videoToScreening()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)

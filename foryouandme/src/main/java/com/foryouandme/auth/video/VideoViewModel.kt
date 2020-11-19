@@ -10,6 +10,7 @@ class VideoViewModel(navigator: Navigator) :
     BaseViewModel<Empty, Empty, Empty, Empty>(navigator, Empty) {
 
     /* --- navigation --- */
+
     suspend fun screening(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, VideoToScreening)
 

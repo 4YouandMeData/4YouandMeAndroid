@@ -11,6 +11,7 @@
 
         <activity
             android:name="com.foryouandme.core.activity.FYAMActivity"
+            android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
 

@@ -3,9 +3,7 @@ package com.foryouandme.auth.video
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.auth.AuthSectionFragment
@@ -15,6 +13,7 @@ import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -23,11 +22,9 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import kotlinx.android.synthetic.main.video.*
 import kotlinx.android.synthetic.main.video_controls.*
 
-class VideoFragment : AuthSectionFragment<VideoViewModel>() {
+class VideoFragment : AuthSectionFragment<VideoViewModel>(R.layout.video) {
 
-    private var player: SimpleExoPlayer? = null
-
-    private var currentView: View? = null
+    lateinit var player: SimpleExoPlayer
 
     override val viewModel: VideoViewModel by lazy {
 
@@ -38,43 +35,10 @@ class VideoFragment : AuthSectionFragment<VideoViewModel>() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        retainInstance = true
-
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        if (currentView == null) {
-            currentView = inflater.inflate(R.layout.video, container, false)
-        }
-
-        return currentView
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
-
-            val restore =
-                savedInstanceState?.let {
-                    mapNotNull(
-                        it.getString(IS_PLAYING, null).toBoolean(),
-                        it.getString(POSITION, null).toLongOrNull()
-                    )
-                }?.let { (a, b) -> VideoRestore(a, b) }
-
-            setupVideo(restore)
-
-        }
+        startCoroutineAsync { setupVideo() }
 
         if (requireActivity().requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -83,55 +47,48 @@ class VideoFragment : AuthSectionFragment<VideoViewModel>() {
 
     }
 
-    private suspend fun setupVideo(restore: VideoRestore?): Unit =
+    private suspend fun setupVideo(): Unit =
         evalOnMain {
 
-            if (player == null) {
-                player = SimpleExoPlayer.Builder(requireContext()).build()
-                player?.let { simpleExoPlayer ->
+            player = SimpleExoPlayer.Builder(requireContext()).build()
 
-                    val media = buildRawMediaSource()
+            val media = buildRawMediaSource()
 
-                    media?.let {
-                        simpleExoPlayer.setMediaSource(it)
-                        simpleExoPlayer.prepare()
-                        simpleExoPlayer.playWhenReady = false
-                    }
-
-                }
+            media?.let {
+                player.setMediaSource(it)
+                player.prepare()
+                player.playWhenReady = false
             }
 
             video.player = player
 
-            player?.let { simpleExoPlayer ->
+            fake_play.setOnClickListener {
 
-                if (restore == null) {
-
-                    fake_play.setOnClickListener {
-
-                        fake_play.isVisible = false
-                        next.isVisible = false
-                        video.useController = true
-                        video.showController()
-                        simpleExoPlayer.play()
-
-                    }
-
-                    next.isVisible = simpleExoPlayer.isPlaying.not()
-
-                } else {
-
-                    fake_play.isVisible = false
-                    next.isVisible = false
-                    video.useController = true
-                    video.showController()
-                    simpleExoPlayer.seekTo(restore.position)
-                    if (restore.isPlaying)
-                        simpleExoPlayer.play()
-
-                }
+                fake_play.isVisible = false
+                next.isVisible = false
+                video.useController = true
+                video.showController()
+                player.play()
 
             }
+
+            player.addListener(object : Player.EventListener {
+
+                override fun onPlaybackStateChanged(state: Int) {
+                    super.onPlaybackStateChanged(state)
+
+                    when (state) {
+
+                        Player.STATE_ENDED ->
+                            startCoroutineAsync { viewModel.screening(authNavController()) }
+
+                        else -> {
+                        }
+
+                    }
+                }
+
+            })
 
         }
 
@@ -140,7 +97,7 @@ class VideoFragment : AuthSectionFragment<VideoViewModel>() {
 
             setStatusBar(Color.BLACK)
 
-            toolbar.showCloseButton(imageConfiguration) {
+            toolbar.showCloseSecondaryButton(imageConfiguration) {
                 startCoroutineAsync { viewModel.screening(authNavController()) }
             }
 
@@ -156,12 +113,6 @@ class VideoFragment : AuthSectionFragment<VideoViewModel>() {
             next.setOnClickListenerAsync { viewModel.screening(authNavController()) }
 
         }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(IS_PLAYING, player?.isPlaying?.toString())
-        outState.putString(POSITION, player?.currentPosition?.toString())
-    }
 
     private fun buildRawMediaSource(): MediaSource? {
         val rawDataSource = RawResourceDataSource(requireContext())
@@ -184,7 +135,7 @@ class VideoFragment : AuthSectionFragment<VideoViewModel>() {
 
     override fun onPause() {
 
-        //player?.pause()
+        player.pause()
 
         super.onPause()
 
@@ -200,20 +151,9 @@ class VideoFragment : AuthSectionFragment<VideoViewModel>() {
 
     override fun onDestroy() {
 
-        player?.release()
-        player = null
+        player.release()
 
         super.onDestroy()
-
-    }
-
-    data class VideoRestore(val isPlaying: Boolean, val position: Long)
-
-    companion object {
-
-        private const val IS_PLAYING = "is_playing"
-
-        private const val POSITION = "position"
 
     }
 
