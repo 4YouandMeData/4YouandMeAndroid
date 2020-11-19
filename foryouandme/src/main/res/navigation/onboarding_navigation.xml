@@ -1,0 +1,35 @@
+***REMOVED***
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/onboarding_navigation"
+    tools:ignore="InvalidNavigation">
+
+    <fragment
+        android:id="@+id/onboarding_step"
+        android:name="com.foryouandme.auth.onboarding.step.OnboardingStepContainerFragment"
+        android:label="onboarding"
+        tools:layout="@layout/onboarding_step">
+
+        <argument
+            android:name="index"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+        <action
+            android:id="@+id/action_onboarding_step_to_onboarding_step"
+            app:destination="@id/onboarding_step"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="index"
+                app:argType="integer" />
+
+        </action>
+
+    </fragment>
+
+</navigation>
