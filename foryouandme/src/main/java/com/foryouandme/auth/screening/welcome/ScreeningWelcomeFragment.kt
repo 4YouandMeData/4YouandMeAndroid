@@ -39,8 +39,6 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            screeningFragment().let { startCoroutineAsync { it.hideAbort() } }
-
             page.isVisible = true
             page.applyData(
                 configuration = configuration,
@@ -60,5 +58,7 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
                         })
                 },
                 extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } })
+
+            screeningFragment().let { startCoroutineAsync { it.hideAbort() } }
         }
 }

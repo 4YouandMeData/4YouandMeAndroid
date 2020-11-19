@@ -47,6 +47,8 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
         evalOnMain {
 
+            setUpButtons(page, pageType, configuration, action1, action2)
+
             setUpImage(page, pageType)
 
             setUpTitleDescription(page, pageType, configuration)
@@ -54,8 +56,6 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             setUpExtraAction(page, extraPageAction, extraStringAction, configuration)
 
             setUpShadow(configuration)
-
-            setUpButtons(page, pageType, configuration, action1, action2)
 
             setUpButtonsClick(page, action2, specialStringAction, specialStringPageAction)
 
