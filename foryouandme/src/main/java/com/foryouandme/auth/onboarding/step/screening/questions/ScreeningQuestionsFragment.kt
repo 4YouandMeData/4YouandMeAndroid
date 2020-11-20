@@ -78,7 +78,7 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
                 startCoroutineAsync {
                     viewModel.back(
                         screeningNavController(),
-                        onboardingNavController(),
+                        onboardingStepNavController(),
                         authNavController(),
                         rootNavController()
                     )

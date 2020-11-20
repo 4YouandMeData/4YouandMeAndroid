@@ -192,13 +192,16 @@ class ConsentUserViewModel(
         onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
-    ): Unit {
+    ): Boolean =
         if (navigator.back(consentUserNavController).not())
             if (navigator.back(consentNavController).not())
                 if (navigator.back(onboardingStepNavController).not())
                     if (navigator.back(authNavController).not())
                         navigator.back(rootNavController)
-    }
+                    else true
+                else true
+            else true
+        else true
 
     suspend fun email(consentUserNavController: ConsentUserNavController): Unit =
         navigator.navigateTo(

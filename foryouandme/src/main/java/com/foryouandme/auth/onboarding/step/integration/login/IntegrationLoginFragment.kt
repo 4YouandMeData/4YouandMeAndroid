@@ -45,6 +45,7 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
                     startCoroutineAsync {
                         viewModel.back(
                             integrationNavController(),
+                            onboardingStepNavController(),
                             authNavController(),
                             rootNavController()
                         )
@@ -81,6 +82,7 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
                     startCoroutineAsync {
                         viewModel.back(
                             integrationNavController(),
+                            onboardingStepNavController(),
                             authNavController(),
                             rootNavController()
                         )

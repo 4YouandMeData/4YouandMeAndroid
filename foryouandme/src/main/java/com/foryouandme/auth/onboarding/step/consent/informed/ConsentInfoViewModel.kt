@@ -11,7 +11,6 @@ import com.foryouandme.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.auth.onboarding.step.consent.ConsentNavController
 import com.foryouandme.auth.onboarding.step.consent.informed.question.ConsentAnswerItem
 import com.foryouandme.auth.onboarding.step.consent.informed.question.toItem
-import com.foryouandme.auth.onboarding.step.consent.user.ConsentUserNavController
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AnswerModule
@@ -172,13 +171,16 @@ class ConsentInfoViewModel(
         onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
-    ): Unit {
+    ): Boolean =
         if (navigator.back(consentInfoNavController).not())
             if (navigator.back(consentNavController).not())
                 if (navigator.back(onboardingStepNavController).not())
                     if (navigator.back(authNavController).not())
                         navigator.back(rootNavController)
-    }
+                    else true
+                else true
+            else true
+        else true
 
     suspend fun page(
         consentInfoNavController: ConsentInfoNavController,

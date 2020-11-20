@@ -3,6 +3,7 @@ package com.foryouandme.core.arch.navigation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
+import com.foryouandme.R
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.toEvent
 import com.foryouandme.core.ext.evalOnMain
@@ -30,6 +31,9 @@ class Navigator(
 
     suspend fun back(navController: FYAMNavController): Boolean =
         back(navController.navController)
+
+    suspend fun close(rootNavController: RootNavController): Boolean =
+        rootNavController.navController.popBackStack(R.id.navigation, true)
 
     suspend fun back(navController: NavController): Boolean =
         navController.popBackStack()

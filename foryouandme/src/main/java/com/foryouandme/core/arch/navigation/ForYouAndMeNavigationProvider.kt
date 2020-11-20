@@ -2,21 +2,24 @@ package com.foryouandme.core.arch.navigation
 
 import com.foryouandme.aboutyou.*
 import com.foryouandme.auth.onboarding.OnboardingStepToOnboardingStep
-import com.foryouandme.auth.onboarding.step.OnboardingStep
+import com.foryouandme.auth.onboarding.OnboardingToMain
 import com.foryouandme.auth.onboarding.step.consent.informed.*
-import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
-import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewInfoToConsentReviewDisagree
-import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewToOptIns
-import com.foryouandme.auth.onboarding.step.consent.user.*
-import com.foryouandme.auth.onboarding.step.integration.*
 import com.foryouandme.auth.onboarding.step.consent.optin.OptInPermissionToOptInPermission
 import com.foryouandme.auth.onboarding.step.consent.optin.OptInPermissionToOptInSuccess
 import com.foryouandme.auth.onboarding.step.consent.optin.OptInToConsentUser
 import com.foryouandme.auth.onboarding.step.consent.optin.OptInWelcomeToOptInPermission
+import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
+import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewInfoToConsentReviewDisagree
+import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewToOptIns
+import com.foryouandme.auth.onboarding.step.consent.user.ConsentUserEmailToConsentUserEmailValidationCode
+import com.foryouandme.auth.onboarding.step.consent.user.ConsentUserEmailValidationCodeToConsentUserSignature
+import com.foryouandme.auth.onboarding.step.consent.user.ConsentUserNameToConsentUserEmail
+import com.foryouandme.auth.onboarding.step.consent.user.ConsentUserSignatureToConsentUserSuccess
+import com.foryouandme.auth.onboarding.step.integration.*
+import com.foryouandme.auth.onboarding.step.screening.*
 import com.foryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import com.foryouandme.auth.phone.code.PhoneValidationCodeToMain
 import com.foryouandme.auth.phone.code.PhoneValidationCodeToOnboarding
-import com.foryouandme.auth.onboarding.step.screening.*
 import com.foryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import com.foryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.auth.splash.SplashToMain
@@ -59,6 +62,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
 
             is OnboardingStepToOnboardingStep -> onboardingStepToOnboardingStep(action.index)
+            is OnboardingToMain -> onboardingToMain()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)

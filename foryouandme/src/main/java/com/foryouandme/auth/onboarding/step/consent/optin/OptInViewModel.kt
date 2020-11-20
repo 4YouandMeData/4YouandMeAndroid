@@ -7,7 +7,6 @@ import arrow.core.right
 import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.auth.onboarding.step.consent.ConsentNavController
-import com.foryouandme.auth.onboarding.step.consent.user.ConsentUserNavController
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.OptInModule
 import com.foryouandme.core.arch.deps.modules.PermissionModule
@@ -168,13 +167,16 @@ class OptInViewModel(
         onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
-    ): Unit {
+    ): Boolean =
         if (navigator.back(optInNavController).not())
             if (navigator.back(consentNavController).not())
                 if (navigator.back(onboardingStepNavController).not())
                     if (navigator.back(authNavController).not())
                         navigator.back(rootNavController)
-    }
+                    else true
+                else true
+            else true
+        else true
 
     suspend fun permission(optInNavController: OptInNavController): Unit {
 

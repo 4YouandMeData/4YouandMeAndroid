@@ -48,7 +48,7 @@ class SplashViewModel(
                 { welcome(authNavController) },
                 {
                     if (it.onBoardingCompleted) main(rootNavController)
-                    else screening(authNavController)
+                    else onboarding(authNavController)
                 }
             )
 
@@ -64,7 +64,7 @@ class SplashViewModel(
     private suspend fun welcome(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, SplashToWelcome)
 
-    private suspend fun screening(authNavController: AuthNavController): Unit =
+    private suspend fun onboarding(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, SplashToOnboarding)
 
 }

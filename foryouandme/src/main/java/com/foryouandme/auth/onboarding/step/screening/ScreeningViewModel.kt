@@ -148,14 +148,15 @@ class ScreeningViewModel(
         onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
-    ): Unit {
+    ): Boolean =
 
         if (navigator.back(screeningNavController).not())
-            if (navigator.back(onboardingStepNavController))
+            if (navigator.back(onboardingStepNavController).not())
                 if (navigator.back(authNavController).not())
                     navigator.back(rootNavController)
-
-    }
+                else true
+            else true
+        else true
 
 
     suspend fun questions(

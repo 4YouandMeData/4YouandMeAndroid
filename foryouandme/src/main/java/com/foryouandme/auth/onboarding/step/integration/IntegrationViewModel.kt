@@ -5,6 +5,7 @@ import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import com.foryouandme.auth.AuthNavController
+import com.foryouandme.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AuthModule
@@ -93,13 +94,17 @@ class IntegrationViewModel(
 
     suspend fun back(
         integrationNavController: IntegrationNavController,
+        onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
-    ): Unit {
+    ): Boolean =
         if (navigator.back(integrationNavController).not())
-            if (navigator.back(authNavController).not())
-                navigator.back(rootNavController)
-    }
+            if (navigator.back(onboardingStepNavController).not())
+                if (navigator.back(authNavController).not())
+                    navigator.back(rootNavController)
+                else true
+            else true
+        else true
 
     suspend fun nextPage(
         integrationNavController: IntegrationNavController,
@@ -172,7 +177,6 @@ class IntegrationViewModel(
             )
 
     }
-
 
 
     /* --- analytics --- */

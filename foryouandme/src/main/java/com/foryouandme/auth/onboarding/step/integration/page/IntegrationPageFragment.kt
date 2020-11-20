@@ -35,6 +35,7 @@ class IntegrationPageFragment : IntegrationSectionFragment(R.layout.integration_
                 startCoroutineAsync {
                     viewModel.back(
                         integrationNavController(),
+                        onboardingStepNavController(),
                         authNavController(),
                         rootNavController()
                     )

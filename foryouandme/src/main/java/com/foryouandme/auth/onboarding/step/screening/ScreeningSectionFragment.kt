@@ -40,7 +40,19 @@ abstract class ScreeningSectionFragment(
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
-                    configuration { screeningFragment().showAbortAlert(it) }
+                    startCoroutineAsync {
+
+                        val back =
+                            viewModel.back(
+                                screeningNavController(),
+                                onboardingStepNavController(),
+                                authNavController(),
+                                rootNavController()
+                            )
+
+                        if (back.not()) requireActivity().finish()
+
+                    }
                 }
 
             }
@@ -51,7 +63,7 @@ abstract class ScreeningSectionFragment(
 
     fun authNavController(): AuthNavController = screeningFragment().authNavController()
 
-    fun onboardingNavController(): OnboardingStepNavController =
+    fun onboardingStepNavController(): OnboardingStepNavController =
         screeningFragment().onboardingStepNavController()
 
     fun screeningNavController(): ScreeningNavController =

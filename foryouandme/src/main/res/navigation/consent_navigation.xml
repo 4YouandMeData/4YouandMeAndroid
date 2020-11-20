@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/consent"
+    android:id="@+id/consent_navigation"
     app:startDestination="@id/consent_info">
 
     <fragment
@@ -18,7 +18,7 @@
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/auth_navigation"
+            app:popUpTo="@id/consent_navigation"
             app:popUpToInclusive="true" />
 
     </fragment>
@@ -36,7 +36,7 @@
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/auth_navigation"
+            app:popUpTo="@id/consent_navigation"
             app:popUpToInclusive="true" />
 
     </fragment>
@@ -54,7 +54,7 @@
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right"
-            app:popUpTo="@id/auth_navigation"
+            app:popUpTo="@id/consent_navigation"
             app:popUpToInclusive="true" />
 
     </fragment>

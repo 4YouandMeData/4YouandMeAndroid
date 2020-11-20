@@ -116,13 +116,16 @@ class ConsentReviewViewModel(
         onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
-    ): Unit {
+    ): Boolean =
         if (navigator.back(consentReviewNavController).not())
             if (navigator.back(consentNavController).not())
                 if (navigator.back(onboardingStepNavController).not())
                     if (navigator.back(authNavController).not())
                         navigator.back(rootNavController)
-    }
+                    else true
+                else true
+            else true
+        else true
 
     /* --- analytics --- */
 

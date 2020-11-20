@@ -34,7 +34,7 @@ class ScreeningPageFragment : ScreeningSectionFragment(R.layout.screening_page) 
                 startCoroutineAsync {
                     viewModel.back(
                         screeningNavController(),
-                        onboardingNavController(),
+                        onboardingStepNavController(),
                         authNavController(),
                         rootNavController()
                     )

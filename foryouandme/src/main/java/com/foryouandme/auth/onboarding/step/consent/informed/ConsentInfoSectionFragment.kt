@@ -1,5 +1,7 @@
 package com.foryouandme.auth.onboarding.step.consent.informed
 
+import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.onboarding.step.OnboardingStepNavController
@@ -11,6 +13,7 @@ import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
+import com.foryouandme.core.ext.startCoroutineAsync
 
 abstract class ConsentInfoSectionFragment(
     contentLayoutId: Int
@@ -26,6 +29,34 @@ abstract class ConsentInfoSectionFragment(
                     injector.answerModule(),
                     injector.analyticsModule()
                 )
+            }
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+
+                override fun handleOnBackPressed() {
+                    startCoroutineAsync {
+
+                        val back =
+                            viewModel.back(
+                                consentInfoNavController(),
+                                consentNavController(),
+                                onboardingStepNavController(),
+                                authNavController(),
+                                rootNavController()
+                            )
+
+                        if (back.not()) requireActivity().finish()
+
+                    }
+                }
+
             }
         )
     }
