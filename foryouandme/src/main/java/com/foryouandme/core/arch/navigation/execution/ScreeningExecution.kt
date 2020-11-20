@@ -1,10 +1,9 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
-import com.foryouandme.auth.screening.ScreeningFragmentDirections
-import com.foryouandme.auth.screening.page.ScreeningPageFragmentDirections
-import com.foryouandme.auth.screening.questions.ScreeningQuestionsFragmentDirections
-import com.foryouandme.auth.screening.welcome.ScreeningWelcomeFragmentDirections
+import com.foryouandme.auth.onboarding.step.screening.page.ScreeningPageFragmentDirections
+import com.foryouandme.auth.onboarding.step.screening.questions.ScreeningQuestionsFragmentDirections
+import com.foryouandme.auth.onboarding.step.screening.welcome.ScreeningWelcomeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun screeningWelcomeToScreeningQuestions(): NavigationExecution = {
@@ -35,6 +34,3 @@ fun screeningFailureToScreeningWelcome(): NavigationExecution = {
     it.popBackStack(R.id.screening_welcome, false)
 }
 
-fun screeningToConsentInfo(): NavigationExecution = {
-    it.navigate(ScreeningFragmentDirections.actionScreeningToConsentInfo())
-}

@@ -1,7 +1,7 @@
 package com.foryouandme.aboutyou.review
 
 import arrow.core.toOption
-import com.foryouandme.auth.consent.review.info.toConsentReviewPageItem
+import com.foryouandme.auth.onboarding.step.consent.review.info.toConsentReviewPageItem
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
 import com.foryouandme.core.arch.error.handleAuthError

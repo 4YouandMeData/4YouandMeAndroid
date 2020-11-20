@@ -1,20 +1,21 @@
 package com.foryouandme.auth.onboarding.step
 
 import android.os.Bundle
-import com.foryouandme.R
+import androidx.navigation.fragment.findNavController
+import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.onboarding.OnboardingFragment
 import com.foryouandme.auth.onboarding.OnboardingViewModel
 import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.navigator
 
-abstract class OnboardingStepFragment : BaseFragment<OnboardingViewModel>(
-    R.layout.onboarding_step
-) {
+abstract class OnboardingStepFragment<T : BaseViewModel<*, *, *, *>>(contentLayoutId: Int) :
+    BaseFragment<T>(contentLayoutId) {
 
-    override val viewModel: OnboardingViewModel by lazy {
+    val onboardingViewModel: OnboardingViewModel by lazy {
 
         viewModelFactory(
             onboardingFragment(),
@@ -25,6 +26,16 @@ abstract class OnboardingStepFragment : BaseFragment<OnboardingViewModel>(
 
     fun onboardingFragment(): OnboardingFragment = find()
 
+    fun onboardingStepNavController(): OnboardingStepNavController =
+        OnboardingStepNavController(findNavController())
+
+    fun authNavController(): AuthNavController =
+        onboardingFragment().authNavController()
+
+    open suspend fun next(): Unit {
+        onboardingViewModel.nextStep(rootNavController(), onboardingStepNavController(), indexArg())
+    }
+
     protected fun indexArg(): Int =
         arguments?.getInt(INDEX, -1)
             ?.let { if (it == -1) null else it }!!
@@ -33,7 +44,7 @@ abstract class OnboardingStepFragment : BaseFragment<OnboardingViewModel>(
 
         private const val INDEX = "index"
 
-        fun <T : OnboardingStepFragment> buildWithParams(index: Int, fragment: T): T {
+        fun <T : OnboardingStepFragment<*>> buildWithParams(index: Int, fragment: T): T {
 
             val bundle = Bundle()
             bundle.putInt(INDEX, index)

@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.aboutyou.AboutYouSectionFragment
-import com.foryouandme.auth.consent.review.info.ConsentReviewHeaderViewHolder
-import com.foryouandme.auth.consent.review.info.ConsentReviewPageViewHolder
+import com.foryouandme.auth.onboarding.step.consent.review.info.ConsentReviewHeaderViewHolder
+import com.foryouandme.auth.onboarding.step.consent.review.info.ConsentReviewPageViewHolder
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.entity.configuration.Configuration

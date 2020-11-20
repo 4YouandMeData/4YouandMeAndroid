@@ -10,8 +10,8 @@ fun splashToWelcome(): NavigationExecution = {
     it.navigate(R.id.action_splash_to_welcome)
 }
 
-fun splashToVideo(): NavigationExecution = {
-    it.navigate(SplashFragmentDirections.actionSplashToVideo())
+fun splashToOnboarding(): NavigationExecution = {
+    it.navigate(SplashFragmentDirections.actionSplashToOnboarding())
 }
 
 fun splashToMain(): NavigationExecution = {
@@ -36,8 +36,8 @@ fun enterPhoneToPhoneValidationCode(phone: String, countryCode: String): Navigat
     )
 }
 
-fun phoneValidationCodeToScreening(): NavigationExecution = {
-    it.navigate(PhoneValidationCodeFragmentDirections.actionPhoneValidationCodeToVideo())
+fun phoneValidationCodeToOnboarding(): NavigationExecution = {
+    it.navigate(PhoneValidationCodeFragmentDirections.actionPhoneValidationCodeToOnboarding())
 }
 
 fun phoneValidationCodeToMain(): NavigationExecution = {

@@ -65,6 +65,6 @@ class SplashViewModel(
         navigator.navigateTo(authNavController, SplashToWelcome)
 
     private suspend fun screening(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, SplashToVideo)
+        navigator.navigateTo(authNavController, SplashToOnboarding)
 
 }

@@ -15,5 +15,5 @@ sealed class PhoneValidationCodeError {
 
 /* --- navigation --- */
 
-object PhoneValidationCodeToVideo : NavigationAction
+object PhoneValidationCodeToOnboarding : NavigationAction
 object PhoneValidationCodeToMain : NavigationAction

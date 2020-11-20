@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
+import com.foryouandme.auth.AuthNavController
 import com.foryouandme.auth.onboarding.OnboardingFragment
 import com.foryouandme.auth.onboarding.OnboardingViewModel
 import com.foryouandme.core.arch.android.BaseFragment
@@ -48,5 +49,7 @@ class OnboardingStepContainerFragment : BaseFragment<OnboardingViewModel>(
     }
 
     fun onboardingFragment(): OnboardingFragment = find()
+
+    fun authNavController(): AuthNavController = onboardingFragment().authNavController()
 
 }

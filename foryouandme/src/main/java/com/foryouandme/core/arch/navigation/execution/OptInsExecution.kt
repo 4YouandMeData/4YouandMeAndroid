@@ -1,8 +1,8 @@
 package com.foryouandme.core.arch.navigation.execution
 
-import com.foryouandme.auth.optin.OptInFragmentDirections
-import com.foryouandme.auth.optin.permission.OptInPermissionFragmentDirections
-import com.foryouandme.auth.optin.welcome.OptInWelcomeFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.optin.OptInFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.optin.permission.OptInPermissionFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.optin.welcome.OptInWelcomeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun optInWelcomeToOptInPermission(index: Int): NavigationExecution = {

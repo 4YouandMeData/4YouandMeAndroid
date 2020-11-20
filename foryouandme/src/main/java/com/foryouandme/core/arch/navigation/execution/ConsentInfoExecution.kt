@@ -1,11 +1,11 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
-import com.foryouandme.auth.consent.informed.ConsentInfoFragmentDirections
-import com.foryouandme.auth.consent.informed.failure.ConsentInfoFailureFragmentDirections
-import com.foryouandme.auth.consent.informed.page.ConsentInfoPageFragmentDirections
-import com.foryouandme.auth.consent.informed.question.ConsentInfoQuestionFragmentDirections
-import com.foryouandme.auth.consent.informed.welcome.ConsentInfoWelcomeFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.informed.ConsentInfoFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.informed.failure.ConsentInfoFailureFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.informed.page.ConsentInfoPageFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.informed.question.ConsentInfoQuestionFragmentDirections
+import com.foryouandme.auth.onboarding.step.consent.informed.welcome.ConsentInfoWelcomeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun consentInfoWelcomeToConsentInfoPage(id: String): NavigationExecution =

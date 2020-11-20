@@ -1,26 +1,25 @@
 package com.foryouandme.core.arch.navigation
 
 import com.foryouandme.aboutyou.*
-import com.foryouandme.auth.consent.informed.*
-import com.foryouandme.auth.consent.review.ConsentReviewDisagreeToAuth
-import com.foryouandme.auth.consent.review.ConsentReviewInfoToConsentReviewDisagree
-import com.foryouandme.auth.consent.review.ConsentReviewToOptIns
-import com.foryouandme.auth.consent.user.*
-import com.foryouandme.auth.integration.*
-import com.foryouandme.auth.optin.OptInPermissionToOptInPermission
-import com.foryouandme.auth.optin.OptInPermissionToOptInSuccess
-import com.foryouandme.auth.optin.OptInToConsentUser
-import com.foryouandme.auth.optin.OptInWelcomeToOptInPermission
+import com.foryouandme.auth.onboarding.step.consent.informed.*
+import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
+import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewInfoToConsentReviewDisagree
+import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewToOptIns
+import com.foryouandme.auth.onboarding.step.consent.user.*
+import com.foryouandme.auth.onboarding.step.integration.*
+import com.foryouandme.auth.onboarding.step.consent.optin.OptInPermissionToOptInPermission
+import com.foryouandme.auth.onboarding.step.consent.optin.OptInPermissionToOptInSuccess
+import com.foryouandme.auth.onboarding.step.consent.optin.OptInToConsentUser
+import com.foryouandme.auth.onboarding.step.consent.optin.OptInWelcomeToOptInPermission
 import com.foryouandme.auth.phone.EnterPhoneToPhoneValidationCode
 import com.foryouandme.auth.phone.code.PhoneValidationCodeToMain
-import com.foryouandme.auth.phone.code.PhoneValidationCodeToVideo
-import com.foryouandme.auth.screening.*
+import com.foryouandme.auth.phone.code.PhoneValidationCodeToOnboarding
+import com.foryouandme.auth.onboarding.step.screening.*
 import com.foryouandme.auth.signup.info.SignUpInfoToEnterPhone
 import com.foryouandme.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.auth.splash.SplashToMain
-import com.foryouandme.auth.splash.SplashToVideo
+import com.foryouandme.auth.splash.SplashToOnboarding
 import com.foryouandme.auth.splash.SplashToWelcome
-import com.foryouandme.auth.video.VideoToScreening
 import com.foryouandme.auth.welcome.WelcomeToSignUpInfo
 import com.foryouandme.core.arch.navigation.execution.*
 import com.foryouandme.main.MainPageToAboutYouPage
@@ -40,7 +39,7 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is AnywhereToWeb -> anywhereToWeb(action.url)
 
             is SplashToWelcome -> splashToWelcome()
-            is SplashToVideo -> splashToVideo()
+            is SplashToOnboarding -> splashToOnboarding()
             is SplashToMain -> splashToMain()
 
             is WelcomeToSignUpInfo -> welcomeToSignUpInfo()
@@ -54,10 +53,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                     action.countryCode
                 )
 
-            is PhoneValidationCodeToVideo -> phoneValidationCodeToScreening()
+            is PhoneValidationCodeToOnboarding -> phoneValidationCodeToOnboarding()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
-
-            is VideoToScreening -> videoToScreening()
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)
@@ -66,7 +63,6 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
             is ScreeningQuestionsToScreeningSuccess -> screeningQuestionsToScreeningSuccess()
             is ScreeningQuestionsToScreeningFailure -> screeningQuestionsToScreeningFailure()
             is ScreeningFailureToScreeningWelcome -> screeningFailureToScreeningWelcome()
-            is ScreeningToConsentInfo -> screeningToConsentInfo()
 
             is ConsentInfoWelcomeToConsentInfoPage ->
                 consentInfoWelcomeToConsentInfoPage(action.id)
@@ -116,8 +112,6 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 consentUserEmailValidationCodeToConsentUserSignature()
             is ConsentUserSignatureToConsentUserSuccess ->
                 consentUserSignatureToConsentUserSuccess()
-            is ConsentUserToIntegration ->
-                consentUserToIntegration()
 
             is IntegrationWelcomeToIntegrationPage ->
                 integrationWelcomeToIntegrationPage(action.pageId)
@@ -135,8 +129,6 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
                 integrationLoginToIntegrationPage(action.id)
             is IntegrationLoginToIntegrationSuccess ->
                 integrationLoginToIntegrationSuccess()
-            is IntegrationSuccessToMain ->
-                integrationSuccessToMain()
 
             is TasksToTask ->
                 tasksToTask(action.id)

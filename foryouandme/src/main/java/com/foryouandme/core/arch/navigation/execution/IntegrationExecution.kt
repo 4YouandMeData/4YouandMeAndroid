@@ -1,9 +1,9 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.auth.AuthFragmentDirections
-import com.foryouandme.auth.integration.login.IntegrationLoginFragmentDirections
-import com.foryouandme.auth.integration.page.IntegrationPageFragmentDirections
-import com.foryouandme.auth.integration.welcome.IntegrationWelcomeFragmentDirections
+import com.foryouandme.auth.onboarding.step.integration.login.IntegrationLoginFragmentDirections
+import com.foryouandme.auth.onboarding.step.integration.page.IntegrationPageFragmentDirections
+import com.foryouandme.auth.onboarding.step.integration.welcome.IntegrationWelcomeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun integrationWelcomeToIntegrationPage(id: String): NavigationExecution = {
@@ -54,6 +54,3 @@ fun integrationLoginToIntegrationSuccess(): NavigationExecution = {
     it.navigate(IntegrationLoginFragmentDirections.actionIntegrationLoginToIntegrationSuccess())
 }
 
-fun integrationSuccessToMain(): NavigationExecution = {
-    it.navigate(AuthFragmentDirections.actionAuthToMain())
-}

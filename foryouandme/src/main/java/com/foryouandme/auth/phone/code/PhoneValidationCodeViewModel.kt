@@ -82,7 +82,7 @@ class PhoneValidationCodeViewModel(
     }
 
     private suspend fun screeningQuestions(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, PhoneValidationCodeToVideo)
+        navigator.navigateTo(authNavController, PhoneValidationCodeToOnboarding)
 
     private suspend fun main(rootNavController: RootNavController): Unit =
         navigator.navigateTo(rootNavController, PhoneValidationCodeToMain)
