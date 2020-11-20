@@ -42,7 +42,7 @@ class OnboardingStepContainerFragment : BaseFragment<OnboardingViewModel>(
             ?.let {
 
                 val transaction = childFragmentManager.beginTransaction()
-                transaction.add(R.id.step_root, it.b, it.a.identifier)
+                transaction.add(R.id.onboarding_step, it.b, it.a.identifier)
                 transaction.commit()
 
             }

@@ -46,7 +46,7 @@ class PhoneValidationCodeViewModel(
             { setError(it, PhoneValidationCodeError.Auth) },
             {
                 if (it.onBoardingCompleted) main(rootNavController)
-                else screeningQuestions(authNavController)
+                else onboarding(authNavController)
             }
         )
 
@@ -81,7 +81,7 @@ class PhoneValidationCodeViewModel(
             navigator.back(rootNavController)
     }
 
-    private suspend fun screeningQuestions(authNavController: AuthNavController): Unit =
+    private suspend fun onboarding(authNavController: AuthNavController): Unit =
         navigator.navigateTo(authNavController, PhoneValidationCodeToOnboarding)
 
     private suspend fun main(rootNavController: RootNavController): Unit =

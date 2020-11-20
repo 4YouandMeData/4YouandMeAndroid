@@ -103,7 +103,7 @@ class ScreeningFragment : OnboardingStepFragment<ScreeningViewModel>(R.layout.sc
 
         }
 
-    private suspend fun showAbortAlert(configuration: Configuration): Unit =
+    suspend fun showAbortAlert(configuration: Configuration): Unit =
         evalOnMain {
 
             AlertDialog.Builder(requireContext())

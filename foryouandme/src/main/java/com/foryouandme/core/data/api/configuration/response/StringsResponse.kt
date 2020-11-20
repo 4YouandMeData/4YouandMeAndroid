@@ -323,20 +323,7 @@ data class StringsResponse(
         return Either.catch {
 
             Onboarding(
-                onboardingSectionList!!
-                    .split(";")
-                    .mapNotNull {
-                        when (it) {
-                            "intro_video" -> OnboardingSection.IntroVideo
-                            "screening" -> OnboardingSection.Screening
-                            "informed_consent" -> OnboardingSection.InformedConsent
-                            "consent" -> OnboardingSection.Consent
-                            "opt_in" -> OnboardingSection.OptIn
-                            "consent_user_data" -> OnboardingSection.ConsentUserData
-                            "integration" -> OnboardingSection.Integration
-                            else -> null
-                        }
-                    },
+                onboardingSectionList!!.split(";"),
                 introVideoContinueButton!!,
                 onboardingAbortTitle!!,
                 onboardingAbortButton!!,

@@ -1,6 +1,6 @@
 package com.foryouandme.auth.onboarding.step
 
-class OnboardingStep(
+open class OnboardingStep(
 
     val identifier: String,
     val view: () -> OnboardingStepFragment<*>

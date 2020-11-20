@@ -1,6 +1,8 @@
 package com.foryouandme.core.arch.navigation
 
 import com.foryouandme.aboutyou.*
+import com.foryouandme.auth.onboarding.OnboardingStepToOnboardingStep
+import com.foryouandme.auth.onboarding.step.OnboardingStep
 import com.foryouandme.auth.onboarding.step.consent.informed.*
 import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
 import com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewInfoToConsentReviewDisagree
@@ -55,6 +57,8 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
             is PhoneValidationCodeToOnboarding -> phoneValidationCodeToOnboarding()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
+
+            is OnboardingStepToOnboardingStep -> onboardingStepToOnboardingStep(action.index)
 
             is ScreeningWelcomeToScreeningQuestions -> screeningWelcomeToScreeningQuestions()
             is ScreeningWelcomeToScreeningPage -> screeningWelcomeToScreeningPage(action.id)

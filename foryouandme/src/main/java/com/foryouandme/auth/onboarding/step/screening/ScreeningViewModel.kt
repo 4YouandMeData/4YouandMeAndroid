@@ -6,6 +6,7 @@ import arrow.core.right
 import arrow.core.toT
 import arrow.fx.coroutines.parSequence
 import com.foryouandme.auth.AuthNavController
+import com.foryouandme.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.auth.onboarding.step.screening.questions.ScreeningQuestionItem
 import com.foryouandme.auth.onboarding.step.screening.questions.toItem
 import com.foryouandme.core.arch.android.BaseViewModel
@@ -144,13 +145,15 @@ class ScreeningViewModel(
 
     suspend fun back(
         screeningNavController: ScreeningNavController,
+        onboardingStepNavController: OnboardingStepNavController,
         authNavController: AuthNavController,
         rootNavController: RootNavController
     ): Unit {
 
         if (navigator.back(screeningNavController).not())
-            if (navigator.back(authNavController).not())
-                navigator.back(rootNavController)
+            if (navigator.back(onboardingStepNavController))
+                if (navigator.back(authNavController).not())
+                    navigator.back(rootNavController)
 
     }
 

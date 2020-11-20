@@ -72,7 +72,7 @@ data class PhoneVerificationError(
 )
 
 data class Onboarding(
-    val sections: List<OnboardingSection>,
+    val sections: List<String>,
     val introVideoContinueButton: String,
     val abortTitle: String,
     val abortButton: String,
@@ -85,18 +85,6 @@ data class Onboarding(
     val optIn: OnboardingOptIn,
     val integration: OnboardingIntegration
 )
-
-sealed class OnboardingSection {
-
-    object IntroVideo : OnboardingSection()
-    object Screening : OnboardingSection()
-    object InformedConsent : OnboardingSection()
-    object Consent : OnboardingSection()
-    object OptIn : OnboardingSection()
-    object ConsentUserData : OnboardingSection()
-    object Integration : OnboardingSection()
-
-}
 
 data class OnboardingUser(
     val nameTitle: String,

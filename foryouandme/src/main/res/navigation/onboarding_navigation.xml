@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/onboarding_navigation"
-    tools:ignore="InvalidNavigation">
+    app:startDestination="@id/onboarding_step">
 
     <fragment
         android:id="@+id/onboarding_step"
@@ -22,7 +22,9 @@
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
-            app:popExitAnim="@anim/slide_to_right">
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@id/onboarding_navigation"
+            app:popUpToInclusive="true">
 
             <argument
                 android:name="index"
