@@ -82,7 +82,8 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
                     rootNavController(),
                     taskIdArg(),
                     urlArg(),
-                    openAppIntegrationArg()
+                    openAppIntegrationArg(),
+                    true
                 )
 
         }
