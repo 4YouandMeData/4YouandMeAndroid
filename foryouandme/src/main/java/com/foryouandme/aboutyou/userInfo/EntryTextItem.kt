@@ -12,9 +12,9 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.entry_text_item.*
 import kotlinx.coroutines.delay
@@ -47,18 +47,18 @@ class EntryStringViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: EntryTextItem, position: Int) {
+    override fun bind(item: EntryTextItem, position: Int) {
 
-        name.text = t.name
-        name.setTextColor(t.configuration.theme.fourthTextColor.color())
+        name.text = item.name
+        name.setTextColor(item.configuration.theme.fourthTextColor.color())
 
-        if (entry.text.toString() != t.value) {
-            entry.setText(t.value)
+        if (entry.text.toString() != item.value) {
+            entry.setText(item.value)
             entry.setSelection(entry.text?.length ?: 0)
         }
 
-        entry.setTextColor(t.configuration.theme.primaryTextColor.color())
-        entry.isEnabled = t.isEditable
+        entry.setTextColor(item.configuration.theme.primaryTextColor.color())
+        entry.isEnabled = item.isEditable
         entry.clearTextChangedListeners()
         entry.addTextChangedListener(object : TextWatcher {
 
@@ -76,7 +76,7 @@ class EntryStringViewHolder(
 
                         delay(500)
                         cancelBoundary()
-                        onTextChange(t, entry.text?.toString().orEmpty())
+                        onTextChange(item, entry.text?.toString().orEmpty())
 
                     }
             }
@@ -84,19 +84,19 @@ class EntryStringViewHolder(
         })
 
         validation.imageTintList =
-            ColorStateList.valueOf(t.configuration.theme.primaryTextColor.color())
+            ColorStateList.valueOf(item.configuration.theme.primaryTextColor.color())
 
         validation.setImageResource(
-            if (t.isEditable) t.imageConfiguration.entryWrong()
-            else t.imageConfiguration.entryValid()
+            if (item.isEditable) item.imageConfiguration.entryWrong()
+            else item.imageConfiguration.entryValid()
         )
 
     }
 
     companion object {
 
-        fun factory(onTextChange: (EntryTextItem, String) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onTextChange: (EntryTextItem, String) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { EntryStringViewHolder(it, onTextChange) },
                 { _, item -> item is EntryTextItem }
             )

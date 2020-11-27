@@ -19,7 +19,7 @@ import com.foryouandme.core.entity.task.Task
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.main.items.*
-import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter

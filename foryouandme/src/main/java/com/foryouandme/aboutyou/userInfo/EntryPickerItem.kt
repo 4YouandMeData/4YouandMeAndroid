@@ -8,9 +8,9 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.entry_picker_item.*
 
@@ -43,37 +43,37 @@ class EntryPickerViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: EntryPickerItem, position: Int) {
+    override fun bind(item: EntryPickerItem, position: Int) {
 
-        name.text = t.name
-        name.setTextColor(t.configuration.theme.fourthTextColor.color())
+        name.text = item.name
+        name.setTextColor(item.configuration.theme.fourthTextColor.color())
 
-        entry.setText(t.value?.name.orEmpty())
-        entry.setTextColor(t.configuration.theme.primaryTextColor.color())
+        entry.setText(item.value?.name.orEmpty())
+        entry.setTextColor(item.configuration.theme.primaryTextColor.color())
         entry.isEnabled = false
 
         picker_button.setOnClickListener {
 
             AlertDialog.Builder(context)
                 .setItems(
-                    t.items.map { it.name }.toTypedArray()
+                    item.items.map { it.name }.toTypedArray()
                 ) { dialog, which ->
 
-                    t.items.getOrNull(which)?.let { onItemSelected(t, it) }
+                    item.items.getOrNull(which)?.let { onItemSelected(item, it) }
                     dialog.dismiss()
 
                 }
                 .show()
 
         }
-        picker_button.isEnabled = t.isEditable
+        picker_button.isEnabled = item.isEditable
 
         validation.imageTintList =
-            ColorStateList.valueOf(t.configuration.theme.primaryTextColor.color())
+            ColorStateList.valueOf(item.configuration.theme.primaryTextColor.color())
 
         validation.setImageResource(
-            if (t.isEditable) t.imageConfiguration.entryWrong()
-            else t.imageConfiguration.entryValid()
+            if (item.isEditable) item.imageConfiguration.entryWrong()
+            else item.imageConfiguration.entryValid()
         )
 
     }
@@ -82,8 +82,8 @@ class EntryPickerViewHolder(
 
         fun factory(
             onItemSelected: (EntryPickerItem, EntryPickerValue) -> Unit
-        ): ViewHolderFactory =
-            ViewHolderFactory(
+        ): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { EntryPickerViewHolder(it, onItemSelected) },
                 { _, item -> item is EntryPickerItem }
             )

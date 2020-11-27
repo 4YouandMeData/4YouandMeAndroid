@@ -12,8 +12,8 @@ import com.foryouandme.core.ext.getOr
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.startCoroutine
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.task_activity_item.*
 import org.threeten.bp.ZonedDateTime
@@ -54,36 +54,36 @@ class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem)
 
     override val containerView: View? = itemView
 
-    override fun bind(t: TaskActivityItem, position: Int) {
+    override fun bind(item: TaskActivityItem, position: Int) {
 
         startCoroutine {
 
             card_content.background =
-                t.data.gradient
+                item.data.gradient
                     .getOr {
                         HEXGradient.from(
-                            t.configuration.theme.primaryColorStart,
-                            t.configuration.theme.primaryColorEnd
+                            item.configuration.theme.primaryColorStart,
+                            item.configuration.theme.primaryColorEnd
                         )
                     }.drawable()
 
-            t.data.image?.let { image.setImageBitmap(it) }
-            image.isVisible = t.data.image != null
+            item.data.image?.let { image.setImageBitmap(it) }
+            image.isVisible = item.data.image != null
 
-            title.setHtmlText(t.data.title.orEmpty(), true)
-            title.isVisible = t.data.title != null
-            title.setTextColor(t.configuration.theme.secondaryColor.color())
+            title.setHtmlText(item.data.title.orEmpty(), true)
+            title.isVisible = item.data.title != null
+            title.setTextColor(item.configuration.theme.secondaryColor.color())
 
-            body.setHtmlText(t.data.description.orEmpty(), true)
-            body.isVisible = t.data.description != null
-            body.setTextColor(t.configuration.theme.secondaryColor.color())
+            body.setHtmlText(item.data.description.orEmpty(), true)
+            body.isVisible = item.data.description != null
+            body.setTextColor(item.configuration.theme.secondaryColor.color())
 
-            review.isVisible = t.data.activityType != null
+            review.isVisible = item.data.activityType != null
             review.text =
-                t.data.button.getOr { t.configuration.text.activity.activityButtonDefault }
-            review.setTextColor(t.configuration.theme.primaryTextColor.color())
-            review.background = button(t.configuration.theme.secondaryColor.color())
-            review.setOnClickListener { start(t) }
+                item.data.button.getOr { item.configuration.text.activity.activityButtonDefault }
+            review.setTextColor(item.configuration.theme.primaryTextColor.color())
+            review.background = button(item.configuration.theme.secondaryColor.color())
+            review.setOnClickListener { start(item) }
 
         }
 
@@ -91,8 +91,8 @@ class TaskActivityViewHolder(viewGroup: ViewGroup, val start: (TaskActivityItem)
 
     companion object {
 
-        fun factory(start: (TaskActivityItem) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(start: (TaskActivityItem) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { TaskActivityViewHolder(it, start) },
                 { _, item -> item is TaskActivityItem }
             )

@@ -32,7 +32,7 @@ import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.main.MainPageToAboutYouPage
 import com.foryouandme.main.items.*
 import com.foryouandme.main.tasks.TasksToTask
-import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import kotlinx.coroutines.Dispatchers
 import org.threeten.bp.LocalDate

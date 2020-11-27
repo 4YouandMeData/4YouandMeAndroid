@@ -50,11 +50,11 @@ class MainViewModel(
     suspend fun handleDeepLink(rootNavController: RootNavController, fyamState: FYAMState): Unit {
 
         val taskId =
-            fyamState.taskId?.getContentOnce()?.orNull()?.t
+            fyamState.taskId?.getContentOnce()?.orNull()?.item
         val url =
-            fyamState.url?.getContentOnce()?.orNull()?.t
+            fyamState.url?.getContentOnce()?.orNull()?.item
         val openApplicationIntegration =
-            fyamState.openAppIntegration?.getContentOnce()?.orNull()?.t
+            fyamState.openAppIntegration?.getContentOnce()?.orNull()?.item
 
         when {
 

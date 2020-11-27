@@ -6,9 +6,9 @@ import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.core.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.feed_header_item.*
 
@@ -33,25 +33,25 @@ data class FeedHeaderItem(
 
 class FeedHeaderViewHolder(parent: ViewGroup) :
     DroidViewHolder<FeedHeaderItem, Unit>(parent, R.layout.feed_header_item), LayoutContainer {
-    override fun bind(t: FeedHeaderItem, position: Int) {
+    override fun bind(item: FeedHeaderItem, position: Int) {
 
-        root.setBackgroundColor(t.configuration.theme.primaryColorEnd.color())
+        root.setBackgroundColor(item.configuration.theme.primaryColorEnd.color())
 
-        header.setTextColor(t.configuration.theme.secondaryColor.color())
-        header.text = t.configuration.text.tab.feedHeaderTitle
+        header.setTextColor(item.configuration.theme.secondaryColor.color())
+        header.text = item.configuration.text.tab.feedHeaderTitle
         header.alpha = 0.5f
 
-        title.setTextColor(t.configuration.theme.secondaryTextColor.color())
-        title.text = t.configuration.text.tab.feedHeaderSubTitle
+        title.setTextColor(item.configuration.theme.secondaryTextColor.color())
+        title.text = item.configuration.text.tab.feedHeaderSubTitle
 
-        points_counter.setTextColor(t.configuration.theme.secondaryTextColor.color())
-        points_counter.text = t.points
-        points_counter.isVisible = t.points != null
+        points_counter.setTextColor(item.configuration.theme.secondaryTextColor.color())
+        points_counter.text = item.points
+        points_counter.isVisible = item.points != null
 
-        points_label.setTextColor(t.configuration.theme.secondaryColor.color())
-        points_label.text = t.configuration.text.tab.feedHeaderPoints
+        points_label.setTextColor(item.configuration.theme.secondaryColor.color())
+        points_label.text = item.configuration.text.tab.feedHeaderPoints
         points_label.alpha = 0.5f
-        points_label.isVisible = t.points != null
+        points_label.isVisible = item.points != null
 
     }
 
@@ -59,8 +59,8 @@ class FeedHeaderViewHolder(parent: ViewGroup) :
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { FeedHeaderViewHolder(it) },
                 { _, item -> item is FeedHeaderItem }
             )

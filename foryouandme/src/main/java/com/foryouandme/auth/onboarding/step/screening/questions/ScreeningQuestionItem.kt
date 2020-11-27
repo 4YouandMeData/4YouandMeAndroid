@@ -9,8 +9,8 @@ import com.foryouandme.auth.onboarding.step.screening.questions.EScreeningQuesti
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.screening.ScreeningQuestion
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.screening_question.*
 
@@ -85,39 +85,39 @@ class ScreeningQuestionViewHolder(
             }
     }
 
-    override fun bind(t: ScreeningQuestionItem, position: Int) {
+    override fun bind(item: ScreeningQuestionItem, position: Int) {
 
-        question.text = t.question.text
-        question.setTextColor(t.configuration.theme.primaryTextColor.color())
+        question.text = item.question.text
+        question.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        answer_1_text.text = t.question.answers1.text
-        answer_1_text.setTextColor(t.configuration.theme.primaryTextColor.color())
+        answer_1_text.text = item.question.answers1.text
+        answer_1_text.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        answer_2_text.text = t.question.answers2.text
-        answer_2_text.setTextColor(t.configuration.theme.primaryTextColor.color())
+        answer_2_text.text = item.question.answers2.text
+        answer_2_text.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        answer_1_button.isChecked = t.question.answers1.id == t.answer.orEmpty()
-        answer_2_button.isChecked = t.question.answers2.id == t.answer.orEmpty()
+        answer_1_button.isChecked = item.question.answers1.id == item.answer.orEmpty()
+        answer_2_button.isChecked = item.question.answers2.id == item.answer.orEmpty()
 
-        divider.setBackgroundColor(t.configuration.theme.deactiveColor.color())
+        divider.setBackgroundColor(item.configuration.theme.deactiveColor.color())
 
     }
 
     override fun bind(
-        t: ScreeningQuestionItem, position: Int,
+        item: ScreeningQuestionItem, position: Int,
         payloads: List<EScreeningQuestionPayload>
     ) {
-        super.bind(t, position, payloads)
+        super.bind(item, position, payloads)
 
         payloads.forEach {
             when (it) {
                 ANSWER -> {
                     answer_1_button.isChecked =
-                        t.question.answers1.id == t.answer.orEmpty()
+                        item.question.answers1.id == item.answer.orEmpty()
                     answer_2_button.isChecked =
-                        t.question.answers2.id == t.answer.orEmpty()
+                        item.question.answers2.id == item.answer.orEmpty()
                 }
-                NONE -> bind(t, position)
+                NONE -> bind(item, position)
             }
         }
     }
@@ -126,8 +126,8 @@ class ScreeningQuestionViewHolder(
 
     companion object {
 
-        fun factory(onAnswer: (ScreeningQuestionItem) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onAnswer: (ScreeningQuestionItem) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { ScreeningQuestionViewHolder(it, onAnswer) },
                 { _, droidItem -> droidItem is ScreeningQuestionItem }
             )

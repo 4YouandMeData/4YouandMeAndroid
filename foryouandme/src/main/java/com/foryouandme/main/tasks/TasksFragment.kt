@@ -18,7 +18,7 @@ import com.foryouandme.main.items.DateViewHolder
 import com.foryouandme.main.items.QuickActivitiesItem
 import com.foryouandme.main.items.QuickActivitiesViewHolder
 import com.foryouandme.main.items.TaskActivityViewHolder
-import com.giacomoparisi.recyclerdroid.core.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.tasks.*

@@ -7,8 +7,8 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.button.button
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.your_data_error.*
@@ -39,25 +39,25 @@ class YourDataGraphErrorViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: YourDataGraphErrorItem, position: Int) {
+    override fun bind(item: YourDataGraphErrorItem, position: Int) {
 
-        title.setTextColor(t.configuration.theme.primaryTextColor.color())
-        title.text = t.error.title(context)
+        title.setTextColor(item.configuration.theme.primaryTextColor.color())
+        title.text = item.error.title(context)
 
-        description.setTextColor(t.configuration.theme.primaryTextColor.color())
-        description.text = t.error.message(context)
+        description.setTextColor(item.configuration.theme.primaryTextColor.color())
+        description.text = item.error.message(context)
 
-        button.background = button(t.configuration.theme.primaryColorEnd.color())
-        button.setTextColor(t.configuration.theme.secondaryColor.color())
-        button.text = t.configuration.text.error.buttonRetry
+        button.background = button(item.configuration.theme.primaryColorEnd.color())
+        button.setTextColor(item.configuration.theme.secondaryColor.color())
+        button.text = item.configuration.text.error.buttonRetry
         button.setOnClickListener { onButtonClicked() }
 
     }
 
     companion object {
 
-        fun factory(onButtonClicked: () -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onButtonClicked: () -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { YourDataGraphErrorViewHolder(it, onButtonClicked) },
                 { _, item -> item is YourDataGraphErrorItem }
             )

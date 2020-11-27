@@ -11,7 +11,11 @@ import com.foryouandme.core.entity.configuration.HEXGradient
 import com.foryouandme.core.entity.configuration.button.button
 import com.foryouandme.core.ext.getOr
 import com.foryouandme.main.items.EQuickActivityPayload.SELECTED_ANSWER
-import com.giacomoparisi.recyclerdroid.core.*
+import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.providePayload
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.quick_activity_item.*
 
@@ -67,91 +71,91 @@ class QuickActivityViewHolder(
 
     }
 
-    override fun bind(t: QuickActivityItem, position: Int) {
+    override fun bind(item: QuickActivityItem, position: Int) {
 
         card_content.background =
             HEXGradient.from(
-                t.configuration.theme.primaryColorStart,
-                t.configuration.theme.primaryColorEnd
+                item.configuration.theme.primaryColorStart,
+                item.configuration.theme.primaryColorEnd
             ).drawable()
 
-        title.text = t.data.title.orEmpty()
-        title.setTextColor(t.configuration.theme.secondaryColor.color())
+        title.text = item.data.title.orEmpty()
+        title.setTextColor(item.configuration.theme.secondaryColor.color())
         title.alpha = 0.5f
 
-        body.text = t.data.description.orEmpty()
-        body.setTextColor(t.configuration.theme.secondaryColor.color())
+        body.text = item.data.description.orEmpty()
+        body.setTextColor(item.configuration.theme.secondaryColor.color())
 
-        getAnswerImage(t.selectedAnswer, t.data.answer1)?.let { answer_1.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer2)?.let { answer_2.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer3)?.let { answer_3.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer4)?.let { answer_4.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer5)?.let { answer_5.setImageBitmap(it) }
-        getAnswerImage(t.selectedAnswer, t.data.answer6)?.let { answer_6.setImageBitmap(it) }
+        getAnswerImage(item.selectedAnswer, item.data.answer1)?.let { answer_1.setImageBitmap(it) }
+        getAnswerImage(item.selectedAnswer, item.data.answer2)?.let { answer_2.setImageBitmap(it) }
+        getAnswerImage(item.selectedAnswer, item.data.answer3)?.let { answer_3.setImageBitmap(it) }
+        getAnswerImage(item.selectedAnswer, item.data.answer4)?.let { answer_4.setImageBitmap(it) }
+        getAnswerImage(item.selectedAnswer, item.data.answer5)?.let { answer_5.setImageBitmap(it) }
+        getAnswerImage(item.selectedAnswer, item.data.answer6)?.let { answer_6.setImageBitmap(it) }
 
-        answer_1.isEnabled = t.data.answer1 != null
-        answer_2.isEnabled = t.data.answer2 != null
-        answer_2.isEnabled = t.data.answer3 != null
-        answer_4.isEnabled = t.data.answer4 != null
-        answer_5.isEnabled = t.data.answer5 != null
-        answer_6.isEnabled = t.data.answer6 != null
+        answer_1.isEnabled = item.data.answer1 != null
+        answer_2.isEnabled = item.data.answer2 != null
+        answer_2.isEnabled = item.data.answer3 != null
+        answer_4.isEnabled = item.data.answer4 != null
+        answer_5.isEnabled = item.data.answer5 != null
+        answer_6.isEnabled = item.data.answer6 != null
 
-        answer_1_text.text = t.data.answer1?.text.orEmpty()
-        answer_2_text.text = t.data.answer2?.text.orEmpty()
-        answer_3_text.text = t.data.answer3?.text.orEmpty()
-        answer_4_text.text = t.data.answer4?.text.orEmpty()
-        answer_5_text.text = t.data.answer5?.text.orEmpty()
-        answer_6_text.text = t.data.answer6?.text.orEmpty()
+        answer_1_text.text = item.data.answer1?.text.orEmpty()
+        answer_2_text.text = item.data.answer2?.text.orEmpty()
+        answer_3_text.text = item.data.answer3?.text.orEmpty()
+        answer_4_text.text = item.data.answer4?.text.orEmpty()
+        answer_5_text.text = item.data.answer5?.text.orEmpty()
+        answer_6_text.text = item.data.answer6?.text.orEmpty()
 
-        answer_1_text.setTextColor(t.configuration.theme.secondaryColor.color())
-        answer_2_text.setTextColor(t.configuration.theme.secondaryColor.color())
-        answer_3_text.setTextColor(t.configuration.theme.secondaryColor.color())
-        answer_4_text.setTextColor(t.configuration.theme.secondaryColor.color())
-        answer_5_text.setTextColor(t.configuration.theme.secondaryColor.color())
-        answer_6_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_1_text.setTextColor(item.configuration.theme.secondaryColor.color())
+        answer_2_text.setTextColor(item.configuration.theme.secondaryColor.color())
+        answer_3_text.setTextColor(item.configuration.theme.secondaryColor.color())
+        answer_4_text.setTextColor(item.configuration.theme.secondaryColor.color())
+        answer_5_text.setTextColor(item.configuration.theme.secondaryColor.color())
+        answer_6_text.setTextColor(item.configuration.theme.secondaryColor.color())
 
-        answer_1.setOnClickListener { t.data.answer1?.let { onAnswerSelected(t, it) } }
-        answer_2.setOnClickListener { t.data.answer2?.let { onAnswerSelected(t, it) } }
-        answer_3.setOnClickListener { t.data.answer3?.let { onAnswerSelected(t, it) } }
-        answer_4.setOnClickListener { t.data.answer4?.let { onAnswerSelected(t, it) } }
-        answer_5.setOnClickListener { t.data.answer5?.let { onAnswerSelected(t, it) } }
-        answer_6.setOnClickListener { t.data.answer6?.let { onAnswerSelected(t, it) } }
+        answer_1.setOnClickListener { item.data.answer1?.let { onAnswerSelected(item, it) } }
+        answer_2.setOnClickListener { item.data.answer2?.let { onAnswerSelected(item, it) } }
+        answer_3.setOnClickListener { item.data.answer3?.let { onAnswerSelected(item, it) } }
+        answer_4.setOnClickListener { item.data.answer4?.let { onAnswerSelected(item, it) } }
+        answer_5.setOnClickListener { item.data.answer5?.let { onAnswerSelected(item, it) } }
+        answer_6.setOnClickListener { item.data.answer6?.let { onAnswerSelected(item, it) } }
 
-        review.isEnabled = t.selectedAnswer != null
-        review.background = button(t.configuration.theme.secondaryColor.color())
-        review.setTextColor(t.configuration.theme.primaryTextColor.color())
+        review.isEnabled = item.selectedAnswer != null
+        review.background = button(item.configuration.theme.secondaryColor.color())
+        review.setTextColor(item.configuration.theme.primaryTextColor.color())
         review.text =
-            t.data.button.getOr { t.configuration.text.activity.quickActivityButtonDefault }
+            item.data.button.getOr { item.configuration.text.activity.quickActivityButtonDefault }
 
     }
 
-    override fun bind(t: QuickActivityItem, position: Int, payloads: List<EQuickActivityPayload>) {
-        super.bind(t, position, payloads)
+    override fun bind(item: QuickActivityItem, position: Int, payloads: List<EQuickActivityPayload>) {
+        super.bind(item, position, payloads)
 
         payloads.forEach { payload ->
             when (payload) {
                 SELECTED_ANSWER -> {
 
                     answer_1.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer1)
+                        getAnswerImage(item.selectedAnswer, item.data.answer1)
                     )
                     answer_2.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer2)
+                        getAnswerImage(item.selectedAnswer, item.data.answer2)
                     )
                     answer_3.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer3)
+                        getAnswerImage(item.selectedAnswer, item.data.answer3)
                     )
                     answer_4.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer4)
+                        getAnswerImage(item.selectedAnswer, item.data.answer4)
                     )
                     answer_5.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer5)
+                        getAnswerImage(item.selectedAnswer, item.data.answer5)
                     )
                     answer_6.setImageBitmap(
-                        getAnswerImage(t.selectedAnswer, t.data.answer6)
+                        getAnswerImage(item.selectedAnswer, item.data.answer6)
                     )
 
-                    review.isEnabled = t.selectedAnswer != null
+                    review.isEnabled = item.selectedAnswer != null
                 }
             }
         }
@@ -177,8 +181,8 @@ class QuickActivityViewHolder(
         fun factory(
             onAnswerSelected: (QuickActivityItem, QuickActivityAnswer) -> Unit,
             onSubmitClicked: (QuickActivityItem) -> Unit
-        ): ViewHolderFactory =
-            ViewHolderFactory(
+        ): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { QuickActivityViewHolder(it, onAnswerSelected, onSubmitClicked) },
                 { _, item -> item is QuickActivityItem }
             )

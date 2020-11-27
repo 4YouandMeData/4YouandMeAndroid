@@ -46,23 +46,23 @@ dependencies {
 
     /* --- kotlin --- */
 
-    implementation(Kotlin.stdlib.jdk7)
+    implementation(Kotlin.StdLib.get())
 
     /* --- android --- */
 
-    implementation(AndroidX.appCompat)
-    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.AppCompat.get())
+    implementation(AndroidX.Core.CoreKtx.get())
 
     /* --- firebase --- */
 
-    implementation(Firebase.crashlyticsKtx)
-    implementation(Firebase.analyticsKtx)
-    implementation(Firebase.messagingKtx)
+    implementation(Google.Firebase.CrashlyticsKtx.get())
+    implementation(Google.Firebase.AnalyticsKtx.get())
+    implementation(Google.Firebase.MessagingKtx.get())
 
     /* --- test --- */
 
-    testImplementation(Kotlin.Test.junit)
-    androidTestImplementation(AndroidX.Test.ext.junitKtx)
-    androidTestImplementation(AndroidX.Test.espresso.core)
+    testImplementation(Kotlin.Test.JUnit.get())
+    androidTestImplementation(AndroidX.Test.Ext.JunitKtx.get())
+    androidTestImplementation(AndroidX.Test.Espresso.Core.get())
 
 }

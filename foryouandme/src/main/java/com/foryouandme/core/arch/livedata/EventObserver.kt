@@ -17,10 +17,10 @@ class EventObserver<T>(
 
         if (handlerId == null)
             event.getContentOnce()
-                .map { onEventUnhandledContent(it.t) }
+                .map { onEventUnhandledContent(it.item) }
         else
             event.getContentByHandler(handlerId)
-                .map { onEventUnhandledContent(it.t) }
+                .map { onEventUnhandledContent(it.item) }
     }
 }
 

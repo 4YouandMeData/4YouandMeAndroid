@@ -7,8 +7,8 @@ import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.consent.review.ConsentReview
 import com.foryouandme.core.ext.html.setHtmlText
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.consent_review_header.*
 
@@ -58,16 +58,16 @@ class ConsentReviewHeaderViewHolder(
     }
 ), LayoutContainer {
 
-    override fun bind(t: ConsentReviewHeaderItem, position: Int) {
+    override fun bind(item: ConsentReviewHeaderItem, position: Int) {
 
-        title.setHtmlText(t.title, true)
-        title.setTextColor(t.configuration.theme.primaryTextColor.color())
+        title.setHtmlText(item.title, true)
+        title.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        body.setHtmlText(t.body, true)
-        body.setTextColor(t.configuration.theme.fourthTextColor.color())
+        body.setHtmlText(item.body, true)
+        body.setTextColor(item.configuration.theme.fourthTextColor.color())
 
-        subtitle.text = t.subtitle
-        subtitle.setTextColor(t.configuration.theme.primaryTextColor.color())
+        subtitle.text = item.subtitle
+        subtitle.setTextColor(item.configuration.theme.primaryTextColor.color())
 
     }
 
@@ -75,8 +75,8 @@ class ConsentReviewHeaderViewHolder(
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { ConsentReviewHeaderViewHolder(it) },
                 { _, item -> item is ConsentReviewHeaderItem }
             )

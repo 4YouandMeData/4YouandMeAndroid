@@ -7,7 +7,6 @@ plugins {
     kotlin("android.extensions")
     id("androidx.navigation.safeargs")
     id("maven-publish")
-    id("com.github.dcendents.android-maven")
     id("com.jfrog.bintray")
 }
 
@@ -50,141 +49,141 @@ dependencies {
 
     /* --- kotlin --- */
 
-    implementation(Kotlin.stdlib.jdk7)
+    implementation(Kotlin.StdLib.get())
 
     /* --- appcompact --- */
 
-    implementation(AndroidX.appCompat)
+    implementation(AndroidX.AppCompat.get())
 
     /* --- fragment --- */
 
-    implementation(AndroidX.fragmentKtx)
+    implementation(AndroidX.FragmentKtx.get())
 
     /* --- core ktx --- */
 
-    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.Core.CoreKtx.get())
 
     /* --- layout --- */
 
-    implementation(AndroidX.constraintLayout)
-    implementation(AndroidX.viewPager2)
-    implementation(AndroidX.swipeRefreshLayout)
+    implementation(AndroidX.ConstraintLayout.get())
+    implementation(AndroidX.ViewPager2.get())
+    implementation(AndroidX.SwipeRefreshLayout.get())
 
     /* --- android arch --- */
 
-    implementation(AndroidX.lifecycle.service)
-    implementation(AndroidX.lifecycle.viewModelKtx)
-    implementation(AndroidX.lifecycle.liveDataKtx)
-    implementation(AndroidX.lifecycle.viewModelSavedState)
+    implementation(AndroidX.Lifecycle.Service.get())
+    implementation(AndroidX.Lifecycle.ViewModelKtx.get())
+    implementation(AndroidX.Lifecycle.LiveDataKtx.get())
+    implementation(AndroidX.Lifecycle.ViewModelSavedState.get())
 
     /* --- arrow --- */
 
-    implementation(Arrow.fx)
-    implementation(Arrow.fxCoroutines)
-    implementation(Arrow.optics)
-    implementation(Arrow.syntax)
-    kapt(Arrow.meta)
+    implementation(Arrow.Fx.get())
+    implementation(Arrow.FxCoroutines.get())
+    implementation(Arrow.Optics.get())
+    implementation(Arrow.Syntax.get())
+    kapt(Arrow.Meta.get())
 
     /* --- coroutines --- */
 
-    implementation(KotlinX.coroutines.core)
-    implementation(KotlinX.coroutines.android)
+    implementation(KotlinX.Coroutines.Core.get())
+    implementation(KotlinX.Coroutines.Android.get())
 
     /* --- navigation --- */
 
-    implementation(AndroidX.navigation.fragmentKtx)
-    implementation(AndroidX.navigation.uiKtx)
+    implementation(AndroidX.Navigation.FragmentKtx.get())
+    implementation(AndroidX.Navigation.UIKtx.get())
 
     /* --- encrypted prefs --- */
 
-    implementation(AndroidX.security.cryptoKtx)
+    implementation(AndroidX.Security.CryptoKtx.get())
 
     /* --- moshi --- */
 
-    implementation(Moshi.kotlin)
-    implementation(Moshi.adapters)
+    implementation(Squareup.Moshi.Kotlin.get())
+    implementation(Squareup.Moshi.Adapters.get())
 
     /* --- json api --- */
 
-    implementation(Moshi.JsonApi.jsonApi)
-    implementation(Moshi.JsonApi.retrofitConverter)
+    implementation(Banana.MoshiJsonApi.get())
+    implementation(Banana.MoshiRetrofitConverter.get())
 
     /* --- timber --- */
 
-    implementation(Timber.timber)
+    implementation(Jakewharton.Timber.get())
 
     /* --- retrofit --- */
 
-    implementation(Square.retrofit2.retrofit)
-    implementation(Square.retrofit2.converter.moshi)
-    implementation(Square.okHttp3.loggingInterceptor)
+    implementation(Squareup.Retrofit2.Retrofit.get())
+    implementation(Squareup.Retrofit2.Converter.Moshi.get())
+    implementation(Squareup.OkHttp3.LoggingInterceptor.get())
 
     /* --- country code picker --- */
 
-    implementation(CPP.cpp)
+    implementation(Hbb20.Ccp.get())
 
     /* --- span droid --- */
 
-    implementation(Droid.span)
+    implementation(GiacomoParisi.SpanDroid.Span.get())
 
     /* --- recycler view --- */
 
-    implementation(Droid.recycler)
+    implementation(GiacomoParisi.RecyclerDroid.Core.get())
 
     /* --- signature --- */
 
-    implementation(SignaturePad.signaturePad)
+    implementation(GCacace.SignaturePad.get())
 
     /* --- threeten --- */
 
-    implementation(ThreeTenAbp.threetenabp)
+    implementation(Jakewharton.ThreeTenAbp.get())
 
     /* --- camera x --- */
 
-    api(AndroidX.camera.core)
-    api(AndroidX.camera.camera2)
-    api(AndroidX.camera.view)
+    api(AndroidX.Camera.Core.get())
+    api(AndroidX.Camera.Camera2.get())
+    api(AndroidX.Camera.View.get())
 
     /* --- mp4 parser --- */
 
-    implementation(IsoParser.isoParser)
+    implementation(Mp4Parser.IsoParser.get())
 
     /* --- toasty --- */
 
-    implementation(Toasty.toasty)
+    implementation(GrenderG.Toasty.get())
 
     /* --- dexter --- */
 
-    implementation(Dexter.dexter)
+    implementation(Karumi.Dexter.get())
 
     /* --- firebase --- */
 
-    implementation(Firebase.crashlyticsKtx)
-    implementation(Firebase.analyticsKtx)
-    implementation(Firebase.messagingKtx)
+    implementation(Google.Firebase.CrashlyticsKtx.get())
+    implementation(Google.Firebase.AnalyticsKtx.get())
+    implementation(Google.Firebase.MessagingKtx.get())
 
     /* --- lottie ---*/
 
-    implementation(Lottie.lottie)
+    implementation(AirBnb.Lottie.get())
 
     /* --- chart ---*/
 
-    implementation(MpAndroidChart.mpandroidchart)
+    implementation(PhilJay.MpAndroidChart.get())
 
     /* --- exo player --- */
 
-    implementation(ExoPlayer.core)
-    implementation(ExoPlayer.ui)
+    implementation(Google.ExoPlayer.Core.get())
+    implementation(Google.ExoPlayer.UI.get())
 
     /* --- test --- */
 
-    testImplementation(Kotlin.Test.junit)
-    testImplementation(Testing.mockK)
-    testImplementation(Test.truth)
-    testImplementation(AndroidX.archCore.testing)
-    testImplementation(KotlinX.coroutines.core)
-    androidTestImplementation(AndroidX.Test.Ext.junitKtx)
-    androidTestImplementation(AndroidX.Test.espresso.core)
+    testImplementation(Kotlin.Test.JUnit.get())
+    testImplementation(IOMockK.MockK.get())
+    testImplementation(Google.Test.Truth.get())
+    testImplementation(AndroidX.ArchCore.Testing.get())
+    testImplementation(KotlinX.Coroutines.Core.get())
+    androidTestImplementation(AndroidX.Test.Ext.JunitKtx.get())
+    androidTestImplementation(AndroidX.Test.Espresso.Core.get())
 
 }
 

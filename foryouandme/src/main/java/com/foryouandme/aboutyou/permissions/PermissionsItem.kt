@@ -8,9 +8,9 @@ import com.foryouandme.R
 import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.core.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.permission_item.*
 
@@ -45,30 +45,30 @@ class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) 
         }
     }
 
-    override fun bind(t: PermissionsItem, position: Int) {
-        root.setCardBackgroundColor(t.configuration.theme.primaryColorStart.color())
+    override fun bind(item: PermissionsItem, position: Int) {
+        root.setCardBackgroundColor(item.configuration.theme.primaryColorStart.color())
 
-        icon.setImageResource(t.image)
+        icon.setImageResource(item.image)
 
-        description.text = t.description
-        description.setTextColor(t.configuration.theme.secondaryTextColor.color())
+        description.text = item.description
+        description.setTextColor(item.configuration.theme.secondaryTextColor.color())
 
         allow.paintFlags = allow.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
-        if (t.isAllowed.not()) {
-            allow.text = t.configuration.text.profile.permissionAllow
-            allow.setTextColor(t.configuration.theme.secondaryTextColor.color())
+        if (item.isAllowed.not()) {
+            allow.text = item.configuration.text.profile.permissionAllow
+            allow.setTextColor(item.configuration.theme.secondaryTextColor.color())
         } else {
-            allow.text = t.configuration.text.profile.permissionAllowed
-            allow.setTextColor(t.configuration.theme.primaryColorEnd.color())
+            allow.text = item.configuration.text.profile.permissionAllowed
+            allow.setTextColor(item.configuration.theme.primaryColorEnd.color())
         }
     }
 
     override val containerView: View? = itemView
 
     companion object {
-        fun factory(onItemClicked: (PermissionsItem) -> Unit): ViewHolderFactory =
-            ViewHolderFactory({
+        fun factory(onItemClicked: (PermissionsItem) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory({
                 PermissionsViewHolder(it, onItemClicked)
             },
                 { _, item ->

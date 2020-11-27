@@ -5,7 +5,11 @@ import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.foryouandme.R
 import com.foryouandme.core.entity.configuration.Configuration
-import com.giacomoparisi.recyclerdroid.core.*
+import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.quick_activities_item.*
 
@@ -48,22 +52,22 @@ class QuickActivitiesViewHolder(
     R.layout.quick_activities_item
 ), LayoutContainer {
 
-    override fun bind(t: QuickActivitiesItem, position: Int) {
+    override fun bind(item: QuickActivitiesItem, position: Int) {
 
-        view_pager.adapter = t.quickActivities
+        view_pager.adapter = item.quickActivities
         view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val counterText = "${position + 1}/${t.quickActivities.itemCount}"
+                val counterText = "${position + 1}/${item.quickActivities.itemCount}"
                 count.text = counterText
 
             }
         })
 
-        val counterText = "${position + 1}/${t.quickActivities.itemCount}"
+        val counterText = "${position + 1}/${item.quickActivities.itemCount}"
         count.text = counterText
-        count.setTextColor(t.configuration.theme.primaryTextColor.color())
+        count.setTextColor(item.configuration.theme.primaryTextColor.color())
 
     }
 
@@ -71,8 +75,8 @@ class QuickActivitiesViewHolder(
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { QuickActivitiesViewHolder(it) },
                 { _, item -> item is QuickActivitiesItem }
             )

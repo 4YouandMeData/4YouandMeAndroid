@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.choose_many_answer.*
@@ -46,21 +46,21 @@ class ChooseManyAnswerViewHolder(
     DroidViewHolder<ChooseManyAnswerItem, Unit>(parent, R.layout.choose_many_answer),
     LayoutContainer {
 
-    override fun bind(t: ChooseManyAnswerItem, position: Int) {
+    override fun bind(item: ChooseManyAnswerItem, position: Int) {
 
-        answer_text.text = t.text
-        answer_text.setTextColor(t.textColor)
+        answer_text.text = item.text
+        answer_text.setTextColor(item.textColor)
 
-        answer_button.isChecked = t.isSelected
+        answer_button.isChecked = item.isSelected
         answer_button.buttonTintList =
-            ColorStateList.valueOf(t.buttonColor)
+            ColorStateList.valueOf(item.buttonColor)
 
         answer_button.setOnClickListener {
-            onAnswerClicked(t)
+            onAnswerClicked(item)
         }
 
         answer_text.setOnClickListener {
-            onAnswerClicked(t)
+            onAnswerClicked(item)
         }
     }
 
@@ -69,8 +69,8 @@ class ChooseManyAnswerViewHolder(
 
     companion object {
 
-        fun factory(onAnswerClicked: (ChooseManyAnswerItem) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onAnswerClicked: (ChooseManyAnswerItem) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { ChooseManyAnswerViewHolder(it, onAnswerClicked) },
                 { _, droidItem -> droidItem is ChooseManyAnswerItem }
             )

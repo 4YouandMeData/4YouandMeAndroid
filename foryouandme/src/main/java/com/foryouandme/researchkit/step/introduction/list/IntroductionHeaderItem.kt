@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import com.foryouandme.R
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.step_introduction_header_item.*
@@ -48,19 +48,19 @@ class IntroductionHeaderViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: IntroductionHeaderItem, position: Int) {
+    override fun bind(item: IntroductionHeaderItem, position: Int) {
 
-        title.text = t.title
-        title.setTextColor(t.titleColor)
+        title.text = item.title
+        title.setTextColor(item.titleColor)
 
-        image.setImageResource(t.image)
+        image.setImageResource(item.image)
 
     }
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { IntroductionHeaderViewHolder(it) },
                 { _, item -> item is IntroductionHeaderItem }
             )

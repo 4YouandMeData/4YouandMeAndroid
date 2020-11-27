@@ -10,8 +10,8 @@ import com.foryouandme.auth.onboarding.step.consent.informed.question.EConsentAn
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.consent.informed.ConsentInfoAnswer
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.consent_info_answer.*
 
@@ -79,22 +79,22 @@ class ConsentAnswerViewHolder(
 
     }
 
-    override fun bind(t: ConsentAnswerItem, position: Int) {
+    override fun bind(item: ConsentAnswerItem, position: Int) {
 
-        answer_text.text = t.answer.text
-        answer_text.setTextColor(t.configuration.theme.secondaryColor.color())
+        answer_text.text = item.answer.text
+        answer_text.setTextColor(item.configuration.theme.secondaryColor.color())
 
-        answer_button.isChecked = t.isSelected
+        answer_button.isChecked = item.isSelected
         answer_button.buttonTintList =
-            ColorStateList.valueOf(t.configuration.theme.secondaryColor.color())
+            ColorStateList.valueOf(item.configuration.theme.secondaryColor.color())
 
     }
 
-    override fun bind(t: ConsentAnswerItem, position: Int, payloads: List<EConsentAnswerPayload>) {
+    override fun bind(item: ConsentAnswerItem, position: Int, payloads: List<EConsentAnswerPayload>) {
 
         payloads.forEach {
             when (it) {
-                ANSWER -> answer_button.isChecked = t.isSelected
+                ANSWER -> answer_button.isChecked = item.isSelected
             }
         }
     }
@@ -103,8 +103,8 @@ class ConsentAnswerViewHolder(
 
     companion object {
 
-        fun factory(onAnswer: (ConsentAnswerItem) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onAnswer: (ConsentAnswerItem) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { ConsentAnswerViewHolder(it, onAnswer) },
                 { _, droidItem -> droidItem is ConsentAnswerItem }
             )

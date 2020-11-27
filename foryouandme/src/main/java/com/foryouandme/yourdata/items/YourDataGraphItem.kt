@@ -8,8 +8,8 @@ import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.HEXColor
 import com.foryouandme.core.entity.yourdata.UserDataAggregation
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LimitLine
@@ -52,12 +52,12 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
     DroidViewHolder<YourDataGraphItem, Unit>(parent, R.layout.your_data_graph_item),
     LayoutContainer {
 
-    override fun bind(t: YourDataGraphItem, position: Int) {
+    override fun bind(item: YourDataGraphItem, position: Int) {
 
-        root.setBackgroundColor(t.configuration.theme.fourthColor.color())
+        root.setBackgroundColor(item.configuration.theme.fourthColor.color())
 
-        title.text = t.userData.title
-        title.setTextColor(t.configuration.theme.primaryTextColor.color())
+        title.text = item.userData.title
+        title.setTextColor(item.configuration.theme.primaryTextColor.color())
 
         chart.apply {
 
@@ -73,29 +73,29 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
             legend.form = Legend.LegendForm.LINE
             legend.textSize = 14f
             legend.textColor =
-                t.userData.color?.let { HEXColor(it).color() }
-                    ?: t.configuration.theme.primaryColorEnd.color()
+                item.userData.color?.let { HEXColor(it).color() }
+                    ?: item.configuration.theme.primaryColorEnd.color()
             legend.xOffset = -10.0f
             legend.isEnabled = true
 
         }
 
-        configureXAxis(t.configuration, t.userData, t.period)
+        configureXAxis(item.configuration, item.userData, item.period)
 
         val input =
-            t.userData.data.mapNotNull { it }
+            item.userData.data.mapNotNull { it }
 
         val media = input.average()
         val entry =
-            t.userData.data.mapIndexed { index, item ->
+            item.userData.data.mapIndexed { index, item ->
                 Entry(index.toFloat(), item?.toFloat() ?: 0f)
             }
 
-        configureYAxis(t.configuration, t.userData, media.toFloat())
+        configureYAxis(item.configuration, item.userData, media.toFloat())
 
         val end = ZonedDateTime.now()
         val start =
-            when (t.period) {
+            when (item.period) {
                 YourDataPeriod.Week -> end.minusDays(7)
                 YourDataPeriod.Month -> end.minusMonths(1)
                 YourDataPeriod.Year -> end.minusYears(1)
@@ -107,19 +107,19 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
 
         val set1 = LineDataSet(entry, "$formattedPeriodStart - $formattedPeriodEnd")
         set1.color =
-            t.userData.color?.let { HEXColor(it).color() }
-                ?: t.configuration.theme.primaryColorEnd.color()
+            item.userData.color?.let { HEXColor(it).color() }
+                ?: item.configuration.theme.primaryColorEnd.color()
         set1.setDrawIcons(false)
         set1.setDrawValues(false)
-        set1.color = t.userData.color?.let { HEXColor(it).color() }
-            ?: t.configuration.theme.primaryColorEnd.color()
+        set1.color = item.userData.color?.let { HEXColor(it).color() }
+            ?: item.configuration.theme.primaryColorEnd.color()
         set1.lineWidth = 2f
         set1.axisDependency = YAxis.AxisDependency.RIGHT
 
-        if (t.period == YourDataPeriod.Week) {
+        if (item.period == YourDataPeriod.Week) {
             set1.setDrawCircles(true)
             set1.setDrawCircleHole(true)
-            drawCircles(set1, t.userData.color, t.configuration)
+            drawCircles(set1, item.userData.color, item.configuration)
         } else {
             set1.setDrawCircles(false)
             set1.setDrawCircleHole(false)
@@ -263,8 +263,8 @@ class YourDataGraphViewHolder(parent: ViewGroup) :
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { YourDataGraphViewHolder(it) },
                 { _, item -> item is YourDataGraphItem }
             )

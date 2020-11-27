@@ -59,6 +59,6 @@ fun <T> T.toEvent() = Event(this)
 
 sealed class Handle<T>
 
-data class ToHandle<T>(val t: T) : Handle<T>()
+data class ToHandle<T>(val item: T) : Handle<T>()
 
 class Handled<T> : Handle<T>()

@@ -8,9 +8,9 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.entry_date_item.*
 import org.threeten.bp.LocalDate
@@ -43,23 +43,23 @@ class EntryDateViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: EntryDateItem, position: Int) {
+    override fun bind(item: EntryDateItem, position: Int) {
 
-        name.text = t.name
-        name.setTextColor(t.configuration.theme.fourthTextColor.color())
+        name.text = item.name
+        name.setTextColor(item.configuration.theme.fourthTextColor.color())
 
         entry.setText(
-            t.value?.format(
+            item.value?.format(
                 DateTimeFormatter.ofPattern(
                     "dd MMMM yyyy",
                     Locale.getDefault()
                 )
             ).orEmpty()
         )
-        entry.setTextColor(t.configuration.theme.primaryTextColor.color())
+        entry.setTextColor(item.configuration.theme.primaryTextColor.color())
         entry.isEnabled = false
 
-        val placeholderDate = t.value ?: LocalDate.now()
+        val placeholderDate = item.value ?: LocalDate.now()
 
         date_button.setOnClickListener {
 
@@ -73,7 +73,7 @@ class EntryDateViewHolder(
                         dayOfMonth
                     )
 
-                    onDateSelected(t, date)
+                    onDateSelected(item, date)
 
                 },
                 placeholderDate.year,
@@ -82,22 +82,22 @@ class EntryDateViewHolder(
             ).show()
         }
 
-        date_button.isEnabled = t.isEditable
+        date_button.isEnabled = item.isEditable
 
         validation.imageTintList =
-            ColorStateList.valueOf(t.configuration.theme.primaryTextColor.color())
+            ColorStateList.valueOf(item.configuration.theme.primaryTextColor.color())
 
         validation.setImageResource(
-            if (t.isEditable) t.imageConfiguration.entryWrong()
-            else t.imageConfiguration.entryValid()
+            if (item.isEditable) item.imageConfiguration.entryWrong()
+            else item.imageConfiguration.entryValid()
         )
 
     }
 
     companion object {
 
-        fun factory(onDateSelected: (EntryDateItem, LocalDate) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onDateSelected: (EntryDateItem, LocalDate) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { EntryDateViewHolder(it, onDateSelected) },
                 { _, item -> item is EntryDateItem }
             )

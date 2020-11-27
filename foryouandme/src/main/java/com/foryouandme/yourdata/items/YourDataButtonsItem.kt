@@ -7,8 +7,8 @@ import com.foryouandme.core.cases.yourdata.YourDataPeriod
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.background.roundBackground
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.your_data_buttons_item.*
@@ -40,26 +40,26 @@ class YourDataButtonsViewHolder(
     R.layout.your_data_buttons_item
 ), LayoutContainer {
 
-    override fun bind(t: YourDataButtonsItem, position: Int) {
+    override fun bind(item: YourDataButtonsItem, position: Int) {
 
-        val selectedBgColor = t.configuration.theme.activeColor.color()
-        val bgColor = t.configuration.theme.secondaryColor.color()
+        val selectedBgColor = item.configuration.theme.activeColor.color()
+        val bgColor = item.configuration.theme.secondaryColor.color()
 
-        val selectedTextColor = t.configuration.theme.secondaryColor.color()
-        val textColor = t.configuration.theme.fourthTextColor.color()
+        val selectedTextColor = item.configuration.theme.secondaryColor.color()
+        val textColor = item.configuration.theme.fourthTextColor.color()
 
-        root.setBackgroundColor(t.configuration.theme.fourthColor.color())
+        root.setBackgroundColor(item.configuration.theme.fourthColor.color())
 
-        title.text = t.configuration.text.yourData.dataPeriodTitle
-        title.setTextColor(t.configuration.theme.primaryTextColor.color())
+        title.text = item.configuration.text.yourData.dataPeriodTitle
+        title.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        filter_week.text = t.configuration.text.yourData.periodWeek
+        filter_week.text = item.configuration.text.yourData.periodWeek
         filter_week.setTextColor(
-            if (t.selectedPeriod == YourDataPeriod.Week) selectedTextColor else textColor
+            if (item.selectedPeriod == YourDataPeriod.Week) selectedTextColor else textColor
         )
         filter_week.background =
             roundBackground(
-                if (t.selectedPeriod == YourDataPeriod.Week) selectedBgColor else bgColor,
+                if (item.selectedPeriod == YourDataPeriod.Week) selectedBgColor else bgColor,
                 20,
                 0,
                 0,
@@ -68,22 +68,22 @@ class YourDataButtonsViewHolder(
 
         filter_week.setOnClickListener { onPeriodClicked(YourDataPeriod.Week) }
 
-        filter_month.text = t.configuration.text.yourData.periodMonth
+        filter_month.text = item.configuration.text.yourData.periodMonth
         filter_month.setTextColor(
-            if (t.selectedPeriod == YourDataPeriod.Month) selectedTextColor else textColor
+            if (item.selectedPeriod == YourDataPeriod.Month) selectedTextColor else textColor
         )
         filter_month.setBackgroundColor(
-            if (t.selectedPeriod == YourDataPeriod.Month) selectedBgColor else bgColor
+            if (item.selectedPeriod == YourDataPeriod.Month) selectedBgColor else bgColor
         )
         filter_month.setOnClickListener { onPeriodClicked(YourDataPeriod.Month) }
 
-        filter_year.text = t.configuration.text.yourData.periodYear
+        filter_year.text = item.configuration.text.yourData.periodYear
         filter_year.setTextColor(
-            if (t.selectedPeriod == YourDataPeriod.Year) selectedTextColor else textColor
+            if (item.selectedPeriod == YourDataPeriod.Year) selectedTextColor else textColor
         )
         filter_year.background =
             roundBackground(
-                if (t.selectedPeriod == YourDataPeriod.Year) selectedBgColor else bgColor,
+                if (item.selectedPeriod == YourDataPeriod.Year) selectedBgColor else bgColor,
                 0,
                 20,
                 20,
@@ -97,8 +97,8 @@ class YourDataButtonsViewHolder(
 
     companion object {
 
-        fun factory(onPeriodClicked: (YourDataPeriod) -> Unit): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(onPeriodClicked: (YourDataPeriod) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { YourDataButtonsViewHolder(it, onPeriodClicked) },
                 { _, item -> item is YourDataButtonsItem }
             )

@@ -6,8 +6,8 @@ import com.foryouandme.R
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.yourdata.YourData
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.your_data_header_item.*
@@ -46,16 +46,16 @@ class YourDataHeaderViewHolder(parent: ViewGroup) :
     DroidViewHolder<YourDataHeaderItem, Unit>(parent, R.layout.your_data_header_item),
     LayoutContainer {
 
-    override fun bind(t: YourDataHeaderItem, position: Int) {
-        root.setBackgroundColor(t.configuration.theme.secondaryColor.color())
+    override fun bind(item: YourDataHeaderItem, position: Int) {
+        root.setBackgroundColor(item.configuration.theme.secondaryColor.color())
 
-        title.text = t.title.orEmpty()
-        title.setTextColor(t.configuration.theme.primaryTextColor.color())
+        title.text = item.title.orEmpty()
+        title.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        description.text = t.description.orEmpty()
-        description.setTextColor(t.configuration.theme.primaryTextColor.color())
+        description.text = item.description.orEmpty()
+        description.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        rating.rating = t.rating ?: 0f
+        rating.rating = item.rating ?: 0f
 
     }
 
@@ -63,8 +63,8 @@ class YourDataHeaderViewHolder(parent: ViewGroup) :
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { YourDataHeaderViewHolder(it) },
                 { _, item -> item is YourDataHeaderItem }
             )

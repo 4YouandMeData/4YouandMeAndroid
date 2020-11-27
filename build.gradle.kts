@@ -12,13 +12,12 @@ buildscript {
     }
 
     dependencies {
-        classpath(GradlePlugin.android)
-        classpath(GradlePlugin.kotlin)
-        classpath(GradlePlugin.google)
-        classpath(GradlePlugin.navigationSafeArgs)
-        classpath(GradlePlugin.firebaseCrashlytics)
-        classpath(GradlePlugin.bintray)
-        classpath(GradlePlugin.maven)
+        classpath(GradlePlugin.Android.get())
+        classpath(GradlePlugin.KotlinPlugin.get())
+        classpath(GradlePlugin.GoogleServices.get())
+        classpath(GradlePlugin.NavigationSafeArgs.get())
+        classpath(GradlePlugin.FirebaseCrashlytics.get())
+        classpath(GradlePlugin.Bintray.get())
     }
 }
 

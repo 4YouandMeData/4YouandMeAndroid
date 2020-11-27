@@ -7,9 +7,9 @@ import com.foryouandme.R
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.ext.imageConfiguration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.device_item.*
 
@@ -43,30 +43,30 @@ class AppAndDeviceViewHolder(parent: ViewGroup, onItemClicked: (AppAndDeviceItem
         }
     }
 
-    override fun bind(t: AppAndDeviceItem, position: Int) {
-        root.setCardBackgroundColor(t.configuration.theme.primaryColorStart.color())
+    override fun bind(item: AppAndDeviceItem, position: Int) {
+        root.setCardBackgroundColor(item.configuration.theme.primaryColorStart.color())
 
-        icon.setImageResource(t.image)
+        icon.setImageResource(item.image)
 
-        name.text = t.name
-        name.setTextColor(t.configuration.theme.secondaryTextColor.color())
+        name.text = item.name
+        name.setTextColor(item.configuration.theme.secondaryTextColor.color())
 
-        connect.text = t.configuration.text.profile.connect
+        connect.text = item.configuration.text.profile.connect
 
-        if (t.isConnected.not()) {
+        if (item.isConnected.not()) {
             arrow.setImageResource(context.imageConfiguration.deactivatedButton())
-            connect.setTextColor(t.configuration.theme.primaryColorEnd.color())
+            connect.setTextColor(item.configuration.theme.primaryColorEnd.color())
         } else {
             arrow.setImageResource(context.imageConfiguration.nextStep())
-            connect.setTextColor(t.configuration.theme.secondaryTextColor.color())
+            connect.setTextColor(item.configuration.theme.secondaryTextColor.color())
         }
     }
 
     override val containerView: View? = itemView
 
     companion object {
-        fun factory(onItemClicked: (AppAndDeviceItem) -> Unit): ViewHolderFactory =
-            ViewHolderFactory({
+        fun factory(onItemClicked: (AppAndDeviceItem) -> Unit): DroidViewHolderFactory =
+            DroidViewHolderFactory({
                 AppAndDeviceViewHolder(it, onItemClicked)
             },
                 { _, item ->

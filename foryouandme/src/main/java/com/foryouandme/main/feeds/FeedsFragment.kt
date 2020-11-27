@@ -14,8 +14,8 @@ import com.foryouandme.core.entity.user.User
 import com.foryouandme.core.ext.*
 import com.foryouandme.main.MainSectionFragment
 import com.foryouandme.main.items.*
-import com.giacomoparisi.recyclerdroid.core.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.feeds.*
 import java.text.MessageFormat

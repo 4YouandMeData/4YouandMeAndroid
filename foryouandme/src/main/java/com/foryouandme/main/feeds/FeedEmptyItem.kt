@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import com.foryouandme.R
 import com.foryouandme.core.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.feed_empty_item.*
 
@@ -29,20 +29,20 @@ class FeedEmptyViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: FeedEmptyItem, position: Int) {
+    override fun bind(item: FeedEmptyItem, position: Int) {
 
-        empty_title.setTextColor(t.configuration.theme.primaryTextColor.color())
-        empty_title.text = t.configuration.text.tab.feedEmptyTitle
+        empty_title.setTextColor(item.configuration.theme.primaryTextColor.color())
+        empty_title.text = item.configuration.text.tab.feedEmptyTitle
 
-        empty_description.setTextColor(t.configuration.theme.primaryTextColor.color())
-        empty_description.text = t.configuration.text.tab.feedEmptySubTitle
+        empty_description.setTextColor(item.configuration.theme.primaryTextColor.color())
+        empty_description.text = item.configuration.text.tab.feedEmptySubTitle
 
     }
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { FeedEmptyViewHolder(it) },
                 { _, item -> item is FeedEmptyItem }
             )

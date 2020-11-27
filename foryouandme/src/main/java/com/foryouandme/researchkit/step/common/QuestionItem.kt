@@ -8,8 +8,8 @@ import com.foryouandme.R
 import com.foryouandme.researchkit.utils.ImageResource
 import com.foryouandme.researchkit.utils.applyImage
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.step_question_item.*
@@ -37,20 +37,20 @@ class QuestionViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: QuestionItem, position: Int) {
+    override fun bind(item: QuestionItem, position: Int) {
 
-        t.image?.let { icon.applyImage(it) }
-        icon.isVisible = t.image != null
+        item.image?.let { icon.applyImage(it) }
+        icon.isVisible = item.image != null
 
-        question.text = t.question(context)
-        question.setTextColor(t.questionColor)
+        question.text = item.question(context)
+        question.setTextColor(item.questionColor)
 
     }
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { QuestionViewHolder(it) },
                 { _, item -> item is QuestionItem }
             )

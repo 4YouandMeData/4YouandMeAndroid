@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
 import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.DroidViewHolder
-import com.giacomoparisi.recyclerdroid.core.ViewHolderFactory
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
+import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.step_introduction_item.*
@@ -48,20 +48,20 @@ class IntroductionViewHolder(
 
     override val containerView: View? = itemView
 
-    override fun bind(t: IntroductionItem, position: Int) {
+    override fun bind(item: IntroductionItem, position: Int) {
 
-        title.text = t.title
-        title.setTextColor(t.titleColor)
+        title.text = item.title
+        title.setTextColor(item.titleColor)
 
-        description.text = t.description
-        description.setTextColor(t.descriptionColor)
+        description.text = item.description
+        description.setTextColor(item.descriptionColor)
 
     }
 
     companion object {
 
-        fun factory(): ViewHolderFactory =
-            ViewHolderFactory(
+        fun factory(): DroidViewHolderFactory =
+            DroidViewHolderFactory(
                 { IntroductionViewHolder(it) },
                 { _, item -> item is IntroductionItem }
             )
