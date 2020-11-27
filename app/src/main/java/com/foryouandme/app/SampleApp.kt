@@ -5,7 +5,9 @@ import com.foryouandme.core.arch.deps.Environment
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class SampleApp : ForYouAndMeApp() {
 
     override val environment: Environment

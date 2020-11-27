@@ -160,6 +160,18 @@ object Google {
 
     }
 
+    object Dagger : DependencyIndependentGroup("com.google.dagger") {
+
+        object Hilt : DependencyGroup(Dagger.group, "2.30.1-alpha") {
+
+            object Android : Dependency(Dagger.group, "hilt-android", Hilt.version)
+
+            object Compiler : Dependency(Dagger.group, "hilt-android-compiler", Hilt.version)
+
+        }
+
+    }
+
     object Test {
 
         object Truth : Dependency("com.google.truth", "truth", "1.1")
@@ -221,7 +233,8 @@ object AndroidX {
 
     object Navigation : DependencyGroup("androidx.navigation", "2.2.2") {
 
-        object FragmentKtx : Dependency(Navigation.group, "navigation-fragment-ktx", Navigation.version)
+        object FragmentKtx :
+            Dependency(Navigation.group, "navigation-fragment-ktx", Navigation.version)
 
         object UIKtx : Dependency(Navigation.group, "navigation-ui-ktx", Navigation.version)
 
@@ -229,11 +242,14 @@ object AndroidX {
 
     object Lifecycle : DependencyGroup("androidx.lifecycle", "2.2.0") {
 
-        object ViewModelKtx : Dependency(Lifecycle.group, "lifecycle-viewmodel-ktx", Lifecycle.version)
+        object ViewModelKtx :
+            Dependency(Lifecycle.group, "lifecycle-viewmodel-ktx", Lifecycle.version)
 
-        object ViewModelSavedState : Dependency(Lifecycle.group, "lifecycle-viewmodel-savedstate", Lifecycle.version)
+        object ViewModelSavedState :
+            Dependency(Lifecycle.group, "lifecycle-viewmodel-savedstate", Lifecycle.version)
 
-        object LiveDataKtx : Dependency(Lifecycle.group, "lifecycle-livedata-ktx", Lifecycle.version)
+        object LiveDataKtx :
+            Dependency(Lifecycle.group, "lifecycle-livedata-ktx", Lifecycle.version)
 
         object Service : Dependency(Lifecycle.group, "lifecycle-service", Lifecycle.version)
 
@@ -258,6 +274,14 @@ object AndroidX {
     object ArchCore : DependencyGroup("androidx.arch.core", "2.1.0") {
 
         object Testing : Dependency(ArchCore.group, "core-testing", ArchCore.version)
+
+    }
+
+    object Hilt : DependencyGroup("androidx.hilt", "1.0.0-alpha02") {
+
+        object LifecycleViewModel : Dependency(Hilt.group, "hilt-lifecycle-viewmodel", Hilt.version)
+
+        object Compiler : Dependency(Hilt.group, "hilt-compile", Hilt.version)
 
     }
 

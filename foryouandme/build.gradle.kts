@@ -175,6 +175,13 @@ dependencies {
     implementation(Google.ExoPlayer.Core.get())
     implementation(Google.ExoPlayer.UI.get())
 
+    /* --- hilt --- */
+
+    implementation(Google.Dagger.Hilt.Android.get())
+    implementation(AndroidX.Hilt.LifecycleViewModel.get())
+    kapt(AndroidX.Hilt.Compiler.get())
+    kapt(Google.Dagger.Hilt.Compiler.get())
+
     /* --- test --- */
 
     testImplementation(Kotlin.Test.JUnit.get())

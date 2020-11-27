@@ -12,8 +12,10 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fyam.*
 
+@AndroidEntryPoint
 class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
     override val viewModel: FYAMViewModel by lazy {
@@ -34,15 +36,14 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
         viewModel.loadingLiveData()
             .observeEvent {
-                when(it.task) {
+                when (it.task) {
                     FYAMLoading.Config -> loading.setVisibility(it.active, false)
                     FYAMLoading.Splash -> {
 
-                        if(it.active) {
+                        if (it.active) {
                             splash_logo.alpha = 1f
                             splash_logo.isVisible = true
-                        }
-                        else {
+                        } else {
                             splash_logo.animate()
                                 .alpha(0f)
                                 .withEndAction { splash_logo.isVisible = false }

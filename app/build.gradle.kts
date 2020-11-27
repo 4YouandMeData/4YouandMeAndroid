@@ -59,6 +59,11 @@ dependencies {
     implementation(Google.Firebase.AnalyticsKtx.get())
     implementation(Google.Firebase.MessagingKtx.get())
 
+    /* --- hilt --- */
+
+    implementation(Google.Dagger.Hilt.Android.get())
+    kapt(Google.Dagger.Hilt.Compiler.get())
+
     /* --- test --- */
 
     testImplementation(Kotlin.Test.JUnit.get())
