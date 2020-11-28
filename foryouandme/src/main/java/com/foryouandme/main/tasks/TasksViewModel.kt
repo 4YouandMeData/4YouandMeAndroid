@@ -1,5 +1,7 @@
 package com.foryouandme.main.tasks
 
+import arrow.fx.coroutines.Disposable
+import arrow.fx.coroutines.cancelBoundary
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
@@ -18,9 +20,13 @@ import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.task.Task
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.startCoroutineCancellableAsync
+import com.foryouandme.data.network.Order
 import com.foryouandme.main.items.*
-import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.paging.PagedList
+import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -33,82 +39,144 @@ class TasksViewModel(
         TasksStateUpdate,
         TasksError,
         TasksLoading>
-    (navigator = navigator) {
+    (navigator = navigator, TasksState()) {
 
-    /* --- initialize --- */
+    private val pageSize: Int = 5
 
-    suspend fun initialize(
+    private var fetchDisposable: Disposable? = null
+
+    /* --- tasks --- */
+
+    suspend fun reloadTasks(
         rootNavController: RootNavController,
+        configuration: Configuration
+    ): Unit =
+        loadTasks(rootNavController, 1, configuration)
+
+    suspend fun nextPage(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Unit =
+        loadTasks(rootNavController, state().tasks.page + 1, configuration)
+
+    suspend fun loadTasks(
+        rootNavController: RootNavController,
+        page: Int,
         configuration: Configuration
     ): Unit {
 
-        showLoading(TasksLoading.Initialization)
+        // the first page has the high priority
+        if (page == 1) {
 
-        taskModule.getTasks()
-            .handleAuthError(rootNavController, navigator)
-            .fold(
-                { setError(it, TasksError.Initialization) },
-                { list ->
-                    setState(TasksState(list.toItems(rootNavController, configuration)))
-                    { TasksStateUpdate.Initialization(it.tasks) }
-                }
-            )
-
-        hideLoading(TasksLoading.Initialization)
-
-    }
-
-    private fun List<Task>.toItems(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): List<DroidItem<Any>> {
-
-        val quickActivities = mutableListOf<QuickActivityItem>()
-
-        val taskActivities = mutableListOf<TaskActivityItem>()
-
-        forEach {
-
-            when (it.activity) {
-                is QuickActivity ->
-                    quickActivities.add(
-                        QuickActivityItem(configuration, it.activity, null)
-                    )
-                is TaskActivity ->
-                    taskActivities.add(
-                        TaskActivityItem(configuration, it.activity, it.from, it.to)
-                    )
-            }
+            fetchDisposable?.let { it() }
+            fetchDisposable = null
 
         }
 
-        val items = mutableListOf<DroidItem<Any>>()
+        if (page == 1 || fetchDisposable == null)
+            fetchDisposable =
+                startCoroutineCancellableAsync {
 
-        if (quickActivities.isNotEmpty())
-            items.add(
-                QuickActivitiesItem(
-                    "quick_activities",
-                    configuration,
-                    DroidAdapter(
-                        QuickActivityViewHolder.factory(
-                            { item, answer ->
-                                startCoroutineAsync { selectAnswer(item, answer) }
-                            },
-                            { item ->
-                                startCoroutineAsync {
-                                    submitAnswer(
-                                        item,
-                                        rootNavController,
+                    showLoading(TasksLoading.Tasks(page))
+
+                    val response =
+                        taskModule.getTasks(
+                            Order.Descending,
+                            page,
+                            pageSize
+                        ).map { list ->
+
+                            val tasks =
+                                if (page == 1) list.map { task -> task.toItem(configuration) }
+                                else state().tasks.addPage(list.map { task ->
+                                    task.toItem(
                                         configuration
                                     )
-                                }
-                            }
-                        )
-                    ).also { it.submitList(quickActivities.toList()) }
-                )
-            )
+                                })
 
-        taskActivities
+
+                            tasks.sort(rootNavController, configuration)
+
+
+                        }.handleAuthError(rootNavController, navigator)
+
+
+                    cancelBoundary()
+
+                    response.fold(
+                        { setError(it, TasksError.Tasks(page)) },
+                        { setTasks(it) }
+                    )
+
+                    fetchDisposable = null
+
+                    hideLoading(TasksLoading.Tasks(page))
+
+                }
+
+    }
+
+    private suspend fun setTasks(tasks: PagedList<DroidItem<Any>>): Unit =
+        setState(state().copy(tasks = tasks)) { TasksStateUpdate.Tasks(tasks) }
+
+    private fun Task.toItem(
+        configuration: Configuration
+    ): DroidItem<Any> =
+
+        when (activity) {
+            is QuickActivity ->
+                QuickActivityItem(configuration, activity, null)
+            is TaskActivity ->
+                TaskActivityItem(configuration, activity, from, to)
+        }
+
+    private fun PagedList<DroidItem<Any>>.sort(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): PagedList<DroidItem<Any>> {
+
+        val quickActivitiesItem = data.filterIsInstance<QuickActivitiesItem>().firstOrNull()
+
+        val quickActivitiesItems = data.filterIsInstance<QuickActivityItem>()
+
+        val tasks = data.filterIsInstance<TaskActivityItem>()
+
+        val items = mutableListOf<DroidItem<Any>>()
+
+        val quickActivities =
+            if (quickActivitiesItems.isNotEmpty())
+                if (quickActivitiesItem == null)
+                    QuickActivitiesItem(
+                        "quick_activities",
+                        configuration,
+                        DroidAdapter(
+                            QuickActivityViewHolder.factory(
+                                { item, answer ->
+                                    startCoroutineAsync { selectAnswer(item, answer) }
+                                },
+                                { item ->
+                                    startCoroutineAsync {
+                                        submitAnswer(
+                                            item,
+                                            rootNavController,
+                                            configuration
+                                        )
+                                    }
+                                }
+                            )
+                        ).also { it.submitList(quickActivitiesItems.toList()) }
+                    )
+                else {
+                    quickActivitiesItem.quickActivities.submitList(
+                        quickActivitiesItem.quickActivities.getItems().plus(quickActivitiesItems)
+                    )
+                    quickActivitiesItem
+                }
+            else quickActivitiesItem
+
+        quickActivities?.let { items.add(it) }
+
+        tasks
             .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
             .groupBy(
                 { it.from.format(DateTimeFormatter.ISO_LOCAL_DATE) },
@@ -127,7 +195,7 @@ class TasksViewModel(
 
             }
 
-        return items
+        return PagedList(items, page, isCompleted)
 
     }
 
@@ -135,7 +203,7 @@ class TasksViewModel(
 
         logQuickActivityOptionSelected(item.data.id, answer.id)
 
-        state().tasks.map { droidItem ->
+        state().tasks.data.map { droidItem ->
             when (droidItem) {
                 is QuickActivitiesItem -> {
 
@@ -186,7 +254,7 @@ class TasksViewModel(
                         setError(it, TasksError.QuickActivityUpload)
                     },
                     {
-                        initialize(rootNavController, configuration)
+                        reloadTasks(rootNavController, configuration)
                     }
                 )
 
@@ -194,7 +262,7 @@ class TasksViewModel(
         }
     }
 
-    /* --- navigation --- */
+/* --- navigation --- */
 
     suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
         task.data.activityType?.let {
@@ -205,7 +273,7 @@ class TasksViewModel(
         }
     }
 
-    /* --- analytics --- */
+/* --- analytics --- */
 
     private suspend fun logQuickActivityOptionSelected(
         activityId: String,

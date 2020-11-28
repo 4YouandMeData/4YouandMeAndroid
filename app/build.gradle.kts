@@ -5,6 +5,7 @@ plugins {
     kotlin("android.extensions")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("dagger.hilt.android.plugin")
 }
 
 androidExtensions { isExperimental = true }

@@ -281,7 +281,7 @@ object AndroidX {
 
         object LifecycleViewModel : Dependency(Hilt.group, "hilt-lifecycle-viewmodel", Hilt.version)
 
-        object Compiler : Dependency(Hilt.group, "hilt-compile", Hilt.version)
+        object Compiler : Dependency(Hilt.group, "hilt-compiler", Hilt.version)
 
     }
 
@@ -318,5 +318,8 @@ object GradlePlugin {
         Dependency("com.google.firebase", "firebase-crashlytics-gradle", "2.4.1")
 
     object Bintray : Dependency("com.jfrog.bintray.gradle", "gradle-bintray-plugin", "1.8.5")
+
+    object Hilt :
+        Dependency("com.google.dagger", "hilt-android-gradle-plugin", Google.Dagger.Hilt.version)
 
 }

@@ -7,6 +7,7 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.data.api.task.request.*
 import com.foryouandme.core.data.api.task.response.toTaskItems
 import com.foryouandme.core.entity.task.Task
+import com.foryouandme.data.network.Order
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -17,18 +18,30 @@ object TaskRepository {
 
     internal suspend fun TaskModule.fetchTask(
         token: String,
-        taskId: String
+        taskId: String,
     ): Either<ForYouAndMeError, Task?> =
 
-        errorModule.unwrapToEither { api.getTask(token, taskId) }
-            .map { it.toTask() }
+        errorModule.unwrapToEither { api.getTask(token, taskId) }.map { it.toTask() }
 
     internal suspend fun TaskModule.fetchTasks(
-        token: String
+        token: String,
+        order: Order,
+        page: Int,
+        pageSize: Int
     ): Either<ForYouAndMeError, List<Task>> =
 
-        errorModule.unwrapToEither { api.getTasks(token) }
-            .map { it.toTaskItems() }
+        errorModule.unwrapToEither {
+
+            api.getTasks(
+                token,
+                true,
+                true,
+                order.value,
+                page,
+                pageSize
+            )
+
+        }.map { it.toTaskItems() }
 
     internal suspend fun TaskModule.attachVideo(
         token: String,

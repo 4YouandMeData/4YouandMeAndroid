@@ -2,24 +2,25 @@ package com.foryouandme.main.tasks
 
 import com.foryouandme.core.arch.navigation.NavigationAction
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 
 data class TasksState(
-    val tasks: List<DroidItem<Any>> = emptyList()
+    val tasks: PagedList<DroidItem<Any>> = PagedList.empty(),
 )
 
 sealed class TasksStateUpdate {
-    data class Initialization(
-        val tasks: List<DroidItem<Any>>
+    data class Tasks(
+        val tasks: PagedList<DroidItem<Any>>
     ) : TasksStateUpdate()
 }
 
 sealed class TasksLoading {
-    object Initialization : TasksLoading()
+    data class Tasks(val page: Int) : TasksLoading()
     object QuickActivityUpload : TasksLoading()
 }
 
 sealed class TasksError {
-    object Initialization : TasksError()
+    data class Tasks(val page: Int) : TasksError()
     object QuickActivityUpload : TasksError()
 }
 

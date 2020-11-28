@@ -18,6 +18,8 @@ buildscript {
         classpath(GradlePlugin.NavigationSafeArgs.get())
         classpath(GradlePlugin.FirebaseCrashlytics.get())
         classpath(GradlePlugin.Bintray.get())
+        classpath(GradlePlugin.Hilt.get())
+
     }
 }
 

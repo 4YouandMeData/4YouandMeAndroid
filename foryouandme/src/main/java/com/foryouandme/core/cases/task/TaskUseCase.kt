@@ -18,6 +18,9 @@ import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
 import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
 import com.foryouandme.core.data.api.task.request.SurveyUpdateRequest
 import com.foryouandme.core.entity.task.Task
+import com.foryouandme.data.network.Order
+import com.giacomoparisi.recyclerdroid.core.paging.PagedList
+import com.giacomoparisi.recyclerdroid.core.paging.toPagedList
 import java.io.File
 
 object TaskUseCase {
@@ -26,9 +29,14 @@ object TaskUseCase {
         authModule.getToken(CachePolicy.MemoryFirst)
             .flatMap { fetchTask(it, taskId) }
 
-    suspend fun TaskModule.getTasks(): Either<ForYouAndMeError, List<Task>> =
+    suspend fun TaskModule.getTasks(
+        order: Order,
+        page: Int,
+        pageSize: Int
+    ): Either<ForYouAndMeError, PagedList<Task>> =
         authModule.getToken(CachePolicy.MemoryFirst)
-            .flatMap { fetchTasks(it) }
+            .flatMap { fetchTasks(it, order, page, pageSize) }
+            .map { it.toPagedList(page, it.size < pageSize) }
 
     suspend fun TaskModule.attachVideo(
         taskId: String,

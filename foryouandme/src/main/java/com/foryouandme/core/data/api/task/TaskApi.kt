@@ -16,7 +16,12 @@ interface TaskApi {
 
     @GET("api/v1/tasks")
     suspend fun getTasks(
-        @Header(Headers.AUTH) token: String
+        @Header(Headers.AUTH) token: String,
+        @Query("q[active]") active: Boolean,
+        @Query("q[not_completed]") notCompleted: Boolean,
+        @Query("q[s]") order: String,
+        @Query("page") page: Int,
+        @Query("per_page") pageSize: Int,
     ): Array<TaskResponse>
 
     @Multipart

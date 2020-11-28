@@ -8,6 +8,7 @@ plugins {
     id("androidx.navigation.safeargs")
     id("maven-publish")
     id("com.jfrog.bintray")
+    id("dagger.hilt.android.plugin")
 }
 
 androidExtensions { isExperimental = true }
