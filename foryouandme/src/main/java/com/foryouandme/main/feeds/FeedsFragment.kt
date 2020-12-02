@@ -24,11 +24,6 @@ import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import kotlinx.android.synthetic.main.feeds.*
-import kotlinx.android.synthetic.main.feeds.error
-import kotlinx.android.synthetic.main.feeds.loading
-import kotlinx.android.synthetic.main.feeds.recycler_view
-import kotlinx.android.synthetic.main.feeds.swipe_refresh
-import kotlinx.android.synthetic.main.feeds.title
 import java.text.MessageFormat
 
 

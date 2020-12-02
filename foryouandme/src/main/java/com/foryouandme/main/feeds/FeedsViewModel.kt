@@ -123,8 +123,10 @@ class FeedsViewModel(
     suspend fun nextPage(
         rootNavController: RootNavController,
         configuration: Configuration
-    ): Unit =
-        loadFeed(rootNavController, state().feeds.page + 1, configuration)
+    ): Unit {
+        if (state().feeds.isCompleted.not())
+            loadFeed(rootNavController, state().feeds.page + 1, configuration)
+    }
 
     private suspend fun initializeFeeds(
         rootNavController: RootNavController,
@@ -148,7 +150,7 @@ class FeedsViewModel(
 
     }
 
-    suspend fun loadFeed(
+    private suspend fun loadFeed(
         rootNavController: RootNavController,
         page: Int,
         configuration: Configuration
@@ -429,7 +431,7 @@ class FeedsViewModel(
     private fun PagedList<DroidItem<Any>>.addEmptyItem(
         configuration: Configuration
     ): PagedList<DroidItem<Any>> =
-        if (size <= 1) PagedList(listOf(FeedEmptyItem(configuration)), 1, false)
+        if (size <= 1) PagedList(data.plus(FeedEmptyItem(configuration)), 1, true)
         else this
 
     /* --- date --- */
