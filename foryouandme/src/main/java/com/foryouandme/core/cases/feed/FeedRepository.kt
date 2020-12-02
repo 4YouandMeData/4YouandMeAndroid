@@ -7,6 +7,7 @@ import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.data.api.feed.response.toFeedItems
 import com.foryouandme.core.entity.feed.Feed
+import com.foryouandme.data.network.Order
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -16,11 +17,24 @@ import java.io.File
 object FeedRepository {
 
     internal suspend fun FeedModule.fetchFeeds(
-        token: String
+        token: String,
+        order: Order,
+        page: Int,
+        pageSize: Int
     ): Either<ForYouAndMeError, List<Feed>> =
 
-        errorModule.unwrapToEither { api.getFeeds(token) }
-            .map { it.toFeedItems() }
+        errorModule.unwrapToEither {
+
+            api.getFeeds(
+                token,
+                true,
+                true,
+                order.value,
+                page,
+                pageSize
+            )
+
+        }.map { it.toFeedItems() }
 
 
     //TODO: portare fuori dal task il video

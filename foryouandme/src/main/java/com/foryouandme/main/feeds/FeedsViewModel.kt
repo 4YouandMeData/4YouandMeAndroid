@@ -2,12 +2,15 @@ package com.foryouandme.main.feeds
 
 import arrow.core.Either
 import arrow.core.toT
+import arrow.fx.coroutines.Disposable
+import arrow.fx.coroutines.cancelBoundary
 import arrow.fx.coroutines.parMapN
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.AuthModule
 import com.foryouandme.core.arch.deps.modules.FeedModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
+import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
@@ -24,16 +27,20 @@ import com.foryouandme.core.entity.activity.TaskActivity
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.feed.Feed
 import com.foryouandme.core.entity.feed.FeedType
+import com.foryouandme.core.entity.notifiable.FeedAlert
+import com.foryouandme.core.entity.notifiable.FeedEducational
 import com.foryouandme.core.entity.notifiable.FeedReward
 import com.foryouandme.core.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.core.entity.user.User
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.startCoroutineCancellableAsync
+import com.foryouandme.data.network.Order
 import com.foryouandme.main.MainPageToAboutYouPage
 import com.foryouandme.main.items.*
-import com.foryouandme.main.tasks.TasksToTask
-import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
+import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import kotlinx.coroutines.Dispatchers
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -55,6 +62,10 @@ class FeedsViewModel(
         FeedsLoading>
     (navigator = navigator) {
 
+    private val pageSize: Int = 20
+
+    private var fetchDisposable: Disposable? = null
+
     /* --- initialize --- */
 
     suspend fun initialize(
@@ -72,7 +83,7 @@ class FeedsViewModel(
 
         val feedRequest =
             suspend {
-                feedModule.getFeeds()
+                initializeFeeds(rootNavController, configuration)
                     .handleAuthError(rootNavController, navigator)
             }
 
@@ -90,8 +101,7 @@ class FeedsViewModel(
             { list ->
                 setState(
                     FeedsState(
-                        list.toItems(rootNavController, configuration)
-                            .addHeader(configuration, user.orNull())
+                        list.addHeader(configuration, user.orNull())
                             .addEmptyItem(configuration),
                         user = user.orNull()
                     )
@@ -104,113 +114,227 @@ class FeedsViewModel(
 
     }
 
-    private fun List<Feed>.toItems(
+    suspend fun reloadFeeds(
         rootNavController: RootNavController,
         configuration: Configuration
-    ): List<DroidItem<Any>> {
+    ): Unit =
+        loadFeed(rootNavController, 1, configuration)
 
-        val quickActivities =
-            mapNotNull {
-                when (it.type) {
-                    is FeedType.StudyActivityFeed -> {
-                        when (it.type.studyActivity) {
-                            is QuickActivity ->
-                                QuickActivityItem(
-                                    configuration,
-                                    it.type.studyActivity,
-                                    null
-                                )
-                            else -> null
+    suspend fun nextPage(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Unit =
+        loadFeed(rootNavController, state().feeds.page + 1, configuration)
+
+    private suspend fun initializeFeeds(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): Either<ForYouAndMeError, PagedList<DroidItem<Any>>> {
+
+        fetchDisposable?.let { it() }
+        fetchDisposable = null
+
+        return feedModule.getFeeds(
+            Order.Descending,
+            1,
+            pageSize
+        ).map { list ->
+
+            val feeds = list.map { feeds -> feeds.toItem(configuration) }
+
+            feeds.sort(rootNavController, configuration)
+
+        }
+
+    }
+
+    suspend fun loadFeed(
+        rootNavController: RootNavController,
+        page: Int,
+        configuration: Configuration
+    ): Unit {
+
+        // the first page has the high priority
+        if (page == 1) {
+
+            fetchDisposable?.let { it() }
+            fetchDisposable = null
+
+        }
+
+        if (page == 1 || fetchDisposable == null)
+            fetchDisposable =
+                startCoroutineCancellableAsync {
+
+                    showLoading(FeedsLoading.Feeds(page))
+
+                    val response =
+                        feedModule.getFeeds(
+                            Order.Descending,
+                            page,
+                            pageSize
+                        ).map { list ->
+
+                            val feeds =
+                                if (page == 1) list.map { feeds -> feeds.toItem(configuration) }
+                                else
+                                    state().feeds.addPage(
+                                        list.map { feed ->
+                                            feed.toItem(configuration)
+                                        }
+                                    )
+
+                            feeds.sort(rootNavController, configuration)
+
+
+                        }.handleAuthError(rootNavController, navigator)
+
+
+                    cancelBoundary()
+
+                    response.fold(
+                        { setError(it, FeedsError.Feeds(page)) },
+                        {
+
+                            val feeds =
+                                if (page == 1)
+                                    it.addHeader(configuration, state().user)
+                                        .addEmptyItem(configuration)
+                                else it
+
+                            setFeeds(feeds)
+
                         }
-                    }
-                    else -> null
+                    )
+
+                    fetchDisposable = null
+
+                    hideLoading(FeedsLoading.Feeds(page))
+
                 }
-            }
+
+    }
+
+    private suspend fun setFeeds(feeds: PagedList<DroidItem<Any>>): Unit =
+        setState(state().copy(feeds = feeds)) { FeedsStateUpdate.Feeds(feeds) }
+
+    private fun Feed.toItem(
+        configuration: Configuration
+    ): DroidItem<Any> =
+
+        when (type) {
+            is FeedType.StudyActivityFeed ->
+                when (type.studyActivity) {
+                    is QuickActivity ->
+                        QuickActivityItem(configuration, type.studyActivity, null)
+                    is TaskActivity ->
+                        TaskActivityItem(configuration, type.studyActivity, from, to)
+                }
+            is FeedType.StudyNotifiableFeed ->
+                when (type.studyNotifiable) {
+                    is FeedReward ->
+                        FeedRewardItem(
+                            configuration,
+                            type.studyNotifiable,
+                            from,
+                            to
+                        )
+                    is FeedAlert ->
+                        FeedAlertItem(
+                            configuration,
+                            type.studyNotifiable,
+                            from,
+                            to
+                        )
+                    is FeedEducational ->
+                        FeedEducationalItem(
+                            configuration,
+                            type.studyNotifiable,
+                            from,
+                            to
+                        )
+                }
+        }
+
+    private fun PagedList<DroidItem<Any>>.sort(
+        rootNavController: RootNavController,
+        configuration: Configuration
+    ): PagedList<DroidItem<Any>> {
+
+        val feedHeaderItem = data.filterIsInstance<FeedHeaderItem>()
+
+        val quickActivitiesItem = data.filterIsInstance<QuickActivitiesItem>().firstOrNull()
+
+        val quickActivitiesItems = data.filterIsInstance<QuickActivityItem>()
 
         val feeds =
-            mapNotNull {
-
-                when (it.type) {
-                    is FeedType.StudyActivityFeed ->
-                        when (it.type.studyActivity) {
-                            is TaskActivity ->
-                                TaskActivityItem(
-                                    configuration,
-                                    it.type.studyActivity,
-                                    it.from,
-                                    it.to
-                                )
-                            else -> null
-                        }
-                    is FeedType.StudyNotifiableFeed ->
-                        when (it.type.studyNotifiable) {
-                            is FeedReward ->
-                                FeedRewardItem(
-                                    configuration,
-                                    it.type.studyNotifiable,
-                                    it.from,
-                                    it.to
-                                )
-                            else -> null
-                        }
-                }
-            }
+            data.filter { it is TaskActivityItem || it is FeedRewardItem || it is FeedAlertItem }
 
         val items = mutableListOf<DroidItem<Any>>()
 
-        if (quickActivities.isNotEmpty())
-            items.add(
-                QuickActivitiesItem(
-                    "quick_activities",
-                    configuration,
-                    DroidAdapter(
-                        QuickActivityViewHolder.factory(
-                            { item, answer ->
-                                startCoroutineAsync { selectAnswer(item, answer) }
-                            },
-                            { item ->
-                                startCoroutineAsync {
-                                    submitAnswer(
-                                        item,
-                                        rootNavController,
-                                        configuration
-                                    )
+        items.addAll(feedHeaderItem)
+
+        val quickActivities =
+            if (quickActivitiesItems.isNotEmpty())
+                if (quickActivitiesItem == null)
+                    QuickActivitiesItem(
+                        "quick_activities",
+                        configuration,
+                        DroidAdapter(
+                            QuickActivityViewHolder.factory(
+                                { item, answer ->
+                                    startCoroutineAsync { selectAnswer(item, answer) }
+                                },
+                                { item ->
+                                    startCoroutineAsync {
+                                        submitAnswer(
+                                            item,
+                                            rootNavController,
+                                            configuration
+                                        )
+                                    }
                                 }
-                            }
-                        )
-                    ).also { it.submitList(quickActivities.toList()) }
-                )
-            )
+                            )
+                        ).also { it.submitList(quickActivitiesItems.toList()) }
+                    )
+                else {
+                    quickActivitiesItem.quickActivities.submitList(
+                        quickActivitiesItem.quickActivities.getItems().plus(quickActivitiesItems)
+                    )
+                    quickActivitiesItem
+                }
+            else quickActivitiesItem
+
+        quickActivities?.let { items.add(it) }
 
         feeds
             .sortedByDescending {
-                when (it) {
-                    is TaskActivityItem ->
-                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                    is FeedRewardItem ->
-                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                    is FeedEducationalItem ->
-                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                    is FeedAlertItem ->
-                        it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                    else ->
-                        ZonedDateTime.now().format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                }
+
+                val date =
+                    when (it) {
+                        is TaskActivityItem -> it.from
+                        is FeedRewardItem -> it.from
+                        is FeedAlertItem -> it.from
+                        is FeedEducationalItem -> it.from
+                        else -> ZonedDateTime.now()
+                    }
+
+                date.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+
             }
             .groupBy(
                 {
-                    when (it) {
-                        is TaskActivityItem ->
-                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                        is FeedRewardItem ->
-                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                        is FeedEducationalItem ->
-                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                        is FeedAlertItem ->
-                            it.from.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                        else ->
-                            ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-                    }
+                    val date =
+                        when (it) {
+                            is TaskActivityItem -> it.from
+                            is FeedRewardItem -> it.from
+                            is FeedAlertItem -> it.from
+                            is FeedEducationalItem -> it.from
+                            else -> ZonedDateTime.now()
+                        }
+
+                    date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+
                 },
                 { it }
             ).forEach { (key, value) ->
@@ -227,22 +351,23 @@ class FeedsViewModel(
 
             }
 
-        return items
+        return PagedList(items, page, isCompleted)
 
     }
 
-    private fun List<DroidItem<Any>>.addHeader(
+    private fun PagedList<DroidItem<Any>>.addHeader(
         configuration: Configuration,
         user: User?
-    ): List<DroidItem<Any>> =
+    ): PagedList<DroidItem<Any>> =
         listOf(FeedHeaderItem(configuration, "1", user?.points?.toString()))
-            .plus(this)
+            .plus(data)
+            .let { PagedList(it, page, isCompleted) }
 
     private suspend fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
 
         logQuickActivityOptionSelected(item.data.id, answer.id)
 
-        state().feeds.map { droidItem ->
+        state().feeds.data.map { droidItem ->
             when (droidItem) {
                 is QuickActivitiesItem -> {
 
@@ -301,10 +426,10 @@ class FeedsViewModel(
         }
     }
 
-    private fun List<DroidItem<Any>>.addEmptyItem(
+    private fun PagedList<DroidItem<Any>>.addEmptyItem(
         configuration: Configuration
-    ): List<DroidItem<Any>> =
-        if (size <= 1) plus(listOf(FeedEmptyItem(configuration)))
+    ): PagedList<DroidItem<Any>> =
+        if (size <= 1) PagedList(listOf(FeedEmptyItem(configuration)), 1, false)
         else this
 
     /* --- date --- */

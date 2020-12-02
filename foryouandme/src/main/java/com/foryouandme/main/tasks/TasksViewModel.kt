@@ -41,7 +41,7 @@ class TasksViewModel(
         TasksLoading>
     (navigator = navigator, TasksState()) {
 
-    private val pageSize: Int = 5
+    private val pageSize: Int = 20
 
     private var fetchDisposable: Disposable? = null
 

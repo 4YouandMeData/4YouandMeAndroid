@@ -8,16 +8,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.HEXGradient
 import com.foryouandme.core.entity.user.User
 import com.foryouandme.core.ext.*
+import com.foryouandme.core.items.PagedRequestErrorItem
+import com.foryouandme.core.items.PagedRequestErrorViewHolder
+import com.foryouandme.core.items.PagedRequestLoadingItem
+import com.foryouandme.core.items.PagedRequestLoadingViewHolder
 import com.foryouandme.main.MainSectionFragment
 import com.foryouandme.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
+import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import kotlinx.android.synthetic.main.feeds.*
+import kotlinx.android.synthetic.main.feeds.error
+import kotlinx.android.synthetic.main.feeds.loading
+import kotlinx.android.synthetic.main.feeds.recycler_view
+import kotlinx.android.synthetic.main.feeds.swipe_refresh
+import kotlinx.android.synthetic.main.feeds.title
 import java.text.MessageFormat
 
 
@@ -49,7 +60,16 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),
-            FeedEmptyViewHolder.factory()
+            FeedEmptyViewHolder.factory(),
+            PagedRequestLoadingViewHolder.factory(),
+            PagedRequestErrorViewHolder.factory {
+
+                configuration {
+                    applyFeeds(viewModel.state().feeds)
+                    viewModel.nextPage(rootNavController(), it)
+                }
+
+            }
         )
     }
 
@@ -63,6 +83,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                         applyFeeds(state.feeds)
                         configuration { applyUser(it, state.user) }
                     }
+                    is FeedsStateUpdate.Feeds -> applyFeeds(state.feeds)
                 }
             }
 
@@ -73,6 +94,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                         loading.setVisibility(it.active, viewModel.isInitialized())
                     FeedsLoading.QuickActivityUpload ->
                         loading.setVisibility(it.active, true)
+                    is FeedsLoading.Feeds ->
+                        if (it.task.page == 1)
+                            loading.setVisibility(it.active, true)
                 }
             }
 
@@ -87,6 +111,14 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                         }
                     FeedsError.QuickActivityUpload ->
                         errorToast(errorPayload.error)
+                    is FeedsError.Feeds ->
+                        if (errorPayload.cause.page == 1 || errorPayload.cause.page == -1)
+                            error.setError(errorPayload.error) {
+                                configuration { viewModel.reloadFeeds(rootNavController(), it) }
+                            }
+                        else configuration {
+                            applyPageError(errorPayload.error, it)
+                        }
                 }
             }
 
@@ -166,11 +198,29 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
         }
 
-    private fun applyFeeds(feeds: List<DroidItem<Any>>): Unit {
+    private fun applyFeeds(feeds: PagedList<DroidItem<Any>>): Unit {
 
-        adapter.submitList(feeds)
+        val items =
+            if (feeds.isCompleted) feeds.data
+            else feeds.data.plus(PagedRequestLoadingItem)
+
+        adapter.submitList(items)
 
     }
+
+    private suspend fun applyPageError(
+        error: ForYouAndMeError,
+        configuration: Configuration
+    ): Unit =
+        evalOnMain {
+
+            adapter.submitList(
+                viewModel.state().feeds.data
+                    .plus(listOf(PagedRequestErrorItem(configuration, error)))
+            )
+            swipe_refresh.isRefreshing = false
+
+        }
 
     private fun setupList(): Unit {
 
@@ -208,6 +258,10 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 }
             )
         )
+
+        adapter.pageListener = {
+            configuration { viewModel.nextPage(rootNavController(), it) }
+        }
 
     }
 }
