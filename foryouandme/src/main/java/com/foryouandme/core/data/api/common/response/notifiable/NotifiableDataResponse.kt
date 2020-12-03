@@ -1,6 +1,8 @@
 package com.foryouandme.core.data.api.common.response.notifiable
 
 import com.foryouandme.core.entity.configuration.HEXGradient
+import com.foryouandme.core.entity.integration.IntegrationApp
+import com.foryouandme.core.entity.notifiable.FeedAction
 import com.foryouandme.core.entity.notifiable.FeedAlert
 import com.foryouandme.core.entity.notifiable.FeedEducational
 import com.foryouandme.core.entity.notifiable.FeedReward
@@ -42,7 +44,7 @@ class FeedRewardResponse(
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
             image?.decodeBase64ImageFx()?.orNull(),
-            linkUrl,
+            linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
 }
@@ -64,7 +66,7 @@ class FeedAlertResponse(
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
             image?.decodeBase64ImageFx()?.orNull(),
-            linkUrl,
+            linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
 }
@@ -92,7 +94,27 @@ class FeedEducationalResponse(
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
             image?.decodeBase64ImageFx()?.orNull(),
-            linkUrl,
+            linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
+}
+
+private fun String.toFeedAction(): FeedAction? {
+
+    val integration = IntegrationApp.fromIdentifier(this)
+
+    return when {
+        this == "feed" -> FeedAction.Feed
+        this == "task" -> FeedAction.Tasks
+        this == "your_data" -> FeedAction.YourData
+        this == "study_info" -> FeedAction.StudyInfo
+        this == "about_you" -> FeedAction.AboutYou
+        this == "faq" -> FeedAction.Faq
+        this == "rewards" -> FeedAction.Rewards
+        this == "contacts" -> FeedAction.Contacts
+        integration != null -> FeedAction.Integration(integration)
+        isNotEmpty() -> FeedAction.Web(this)
+        else -> null
+    }
+
 }
