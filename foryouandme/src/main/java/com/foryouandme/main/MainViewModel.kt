@@ -36,6 +36,21 @@ class MainViewModel(
             state()
         ) { MainStateUpdate.PageNavigation(R.id.feed_navigation) }
 
+    suspend fun selectTasks(): Unit =
+        setState(
+            state()
+        ) { MainStateUpdate.PageNavigation(R.id.tasks_navigation) }
+
+    suspend fun selectYourData(): Unit =
+        setState(
+            state()
+        ) { MainStateUpdate.PageNavigation(R.id.user_data_navigation) }
+
+    suspend fun selectStudyInfo(): Unit =
+        setState(
+            state()
+        ) { MainStateUpdate.PageNavigation(R.id.study_info_navigation) }
+
     fun getPagedIds(): List<Int> =
         listOf(
             R.navigation.feed_navigation,

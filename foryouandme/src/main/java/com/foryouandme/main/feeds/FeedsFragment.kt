@@ -3,6 +3,7 @@ package com.foryouandme.main.feeds
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
@@ -11,6 +12,7 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.configuration.HEXGradient
+import com.foryouandme.core.entity.notifiable.FeedAction
 import com.foryouandme.core.entity.user.User
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.items.PagedRequestErrorItem
@@ -24,6 +26,7 @@ import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import kotlinx.android.synthetic.main.feeds.*
+import kotlinx.coroutines.launch
 import java.text.MessageFormat
 
 
@@ -49,9 +52,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             TaskActivityViewHolder.factory {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
-            FeedRewardViewHolder.factory { },
-            FeedEducationalViewHolder.factory { },
-            FeedAlertViewHolder.factory { },
+            FeedRewardViewHolder.factory { item -> item.data.action?.let { feedNavigation(it)} },
+            FeedEducationalViewHolder.factory { item -> item.data.action?.let { feedNavigation(it)} },
+            FeedAlertViewHolder.factory { item -> item.data.action?.let { feedNavigation(it)} },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),
@@ -259,4 +262,26 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
         }
 
     }
+
+    private fun feedNavigation(feedAction: FeedAction): Unit {
+        lifecycleScope.launch {
+
+            when (feedAction) {
+                FeedAction.Feed -> {
+                }
+                FeedAction.Tasks -> mainViewModel.selectTasks()
+                FeedAction.YourData -> mainViewModel.selectYourData()
+                FeedAction.StudyInfo -> mainViewModel.selectStudyInfo()
+                FeedAction.AboutYou -> viewModel.aboutYouPage(rootNavController())
+                FeedAction.Faq -> TODO()
+                FeedAction.Rewards -> TODO()
+                FeedAction.Contacts -> TODO()
+                is FeedAction.Integration -> viewModel.openIntegrationApp(feedAction.app)
+                is FeedAction.Web -> viewModel.web(rootNavController(), feedAction.url)
+            }
+
+        }
+
+    }
+
 }

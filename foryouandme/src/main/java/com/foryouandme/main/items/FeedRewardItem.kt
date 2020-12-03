@@ -74,7 +74,7 @@ class FeedRewardViewHolder(viewGroup: ViewGroup, val start: (FeedRewardItem) -> 
             body.isVisible = item.data.description != null
             body.setTextColor(item.configuration.theme.secondaryColor.color())
 
-            link.isVisible = item.data.linkUrl.isNullOrEmpty().not()
+            link.isVisible = item.data.action.isNullOrEmpty().not()
             link.text =
                 item.data.taskActionButtonLabel.getOr { item.configuration.text.feed.rewardButtonDefault }
             link.setTextColor(item.configuration.theme.primaryTextColor.color())

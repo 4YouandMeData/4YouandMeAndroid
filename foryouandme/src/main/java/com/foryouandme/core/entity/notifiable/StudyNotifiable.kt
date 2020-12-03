@@ -12,7 +12,7 @@ data class FeedReward(
     val description: String?,
     val gradient: HEXGradient?,
     val image: Bitmap?,
-    val linkUrl: FeedAction?,
+    val action: FeedAction?,
     val taskActionButtonLabel: String?
 ) : StudyNotifiable()
 
@@ -22,7 +22,7 @@ data class FeedAlert(
     val description: String?,
     val gradient: HEXGradient?,
     val image: Bitmap?,
-    val linkUrl: FeedAction?,
+    val action: FeedAction?,
     val taskActionButtonLabel: String?
 ) : StudyNotifiable()
 
@@ -32,7 +32,7 @@ data class FeedEducational(
     val description: String?,
     val gradient: HEXGradient?,
     val image: Bitmap?,
-    val linkUrl: FeedAction?,
+    val action: FeedAction?,
     val taskActionButtonLabel: String?
 ) : StudyNotifiable()
 

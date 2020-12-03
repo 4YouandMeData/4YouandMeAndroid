@@ -12,8 +12,10 @@ import com.foryouandme.core.arch.deps.modules.FeedModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.arch.navigation.openApp
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
@@ -27,6 +29,7 @@ import com.foryouandme.core.entity.activity.TaskActivity
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.feed.Feed
 import com.foryouandme.core.entity.feed.FeedType
+import com.foryouandme.core.entity.integration.IntegrationApp
 import com.foryouandme.core.entity.notifiable.FeedAlert
 import com.foryouandme.core.entity.notifiable.FeedEducational
 import com.foryouandme.core.entity.notifiable.FeedReward
@@ -473,11 +476,20 @@ class FeedsViewModel(
         }
     }
 
-    suspend fun aboutYouPage(navController: RootNavController): Unit =
+    suspend fun aboutYouPage(rootNavController: RootNavController): Unit =
         navigator.navigateTo(
-            navController,
+            rootNavController,
             MainPageToAboutYouPage
         )
+
+    suspend fun web(rootNavController: RootNavController, url: String): Unit =
+        navigator.navigateTo(
+            rootNavController,
+            AnywhereToWeb(url)
+        )
+
+    suspend fun openIntegrationApp(integrationApp: IntegrationApp): Unit =
+        navigator.performAction(openApp(integrationApp.packageName))
 
     /* --- analytics --- */
 
