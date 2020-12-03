@@ -119,10 +119,10 @@ class TaskViewModel(
 
     suspend fun skipToStep(
         stepNavController: StepNavController,
-        stepId: String,
+        stepId: String?,
         currentStepIndex: Int
     ): Unit =
-        if (stepId.contains("exit")) end() // TODO: go to next block
+        if (stepId == null) end()
         else getStepById(stepId)
             .foldSuspend(
                 {

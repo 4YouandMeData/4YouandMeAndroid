@@ -10,6 +10,7 @@ import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.core.entity.configuration.Configuration
 import com.foryouandme.core.entity.page.Page
 import com.foryouandme.core.entity.survey.Survey
+import com.foryouandme.core.entity.survey.SurveyBlock
 import com.foryouandme.core.entity.survey.SurveyQuestion
 import com.foryouandme.core.researchkit.step.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
@@ -130,7 +131,11 @@ fun buildSurvey(
                                         SurveySkip.Range(
                                             it.min,
                                             it.max,
-                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                            getSkipSurveyQuestionStepId(
+                                                survey.surveyBlocks,
+                                                surveyBlock,
+                                                it.questionId
+                                            )
                                         )
                                     }
                                 )
@@ -171,7 +176,11 @@ fun buildSurvey(
                                     question.targets.map {
                                         SurveySkip.Answer(
                                             it.answerId,
-                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                            getSkipSurveyQuestionStepId(
+                                                survey.surveyBlocks,
+                                                surveyBlock,
+                                                it.questionId
+                                            )
                                         )
                                     }
                                 )
@@ -211,7 +220,11 @@ fun buildSurvey(
                                     question.targets.map {
                                         SurveySkip.Answer(
                                             it.answerId,
-                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                            getSkipSurveyQuestionStepId(
+                                                survey.surveyBlocks,
+                                                surveyBlock,
+                                                it.questionId
+                                            )
                                         )
                                     }
                                 )
@@ -275,7 +288,11 @@ fun buildSurvey(
                                         SurveySkip.Range(
                                             it.min,
                                             it.max,
-                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                            getSkipSurveyQuestionStepId(
+                                                survey.surveyBlocks,
+                                                surveyBlock,
+                                                it.questionId
+                                            )
                                         )
                                     }
                                 )
@@ -316,7 +333,11 @@ fun buildSurvey(
                                         SurveySkip.Range(
                                             it.min,
                                             it.max,
-                                            getSurveyQuestionStepId(surveyBlock.id, it.questionId)
+                                            getSkipSurveyQuestionStepId(
+                                                survey.surveyBlocks,
+                                                surveyBlock,
+                                                it.questionId
+                                            )
                                         )
                                     }
                                 )
@@ -397,6 +418,32 @@ private fun getSurveyBlockSuccessStepId(blockId: String, successId: String): Str
 
 private fun getSurveyQuestionStepId(blockId: String, questionId: String): String =
     "survey_block_${blockId}_question_${questionId}"
+
+private fun getSkipSurveyQuestionStepId(
+    surveyBlocks: List<SurveyBlock>,
+    block: SurveyBlock,
+    questionId: String
+): String? =
+    if (questionId == "exit") {
+
+        // try to skip to the success of the block if exist or to the next block
+
+        val successId = block.successPage?.let { getSurveyBlockSuccessStepId(block.id, it.id) }
+
+        if (successId != null) successId
+        else {
+
+            val blockIndex = surveyBlocks.indexOf(block.id)
+
+            val nextBlockIndex = if (blockIndex >= 0) blockIndex + 1 else null
+
+            val nextBlock = nextBlockIndex?.let { surveyBlocks.getOrNull(it) }
+
+            nextBlock?.introPage?.let { getSurveyBlockIntroStepId(block.id, it.id) }
+
+        }
+
+    } else getSurveyQuestionStepId(block.id, questionId)
 
 suspend fun FYAMTaskConfiguration.sendSurveyData(
     taskModule: TaskModule,
