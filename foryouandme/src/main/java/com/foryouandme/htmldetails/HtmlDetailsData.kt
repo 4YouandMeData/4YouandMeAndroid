@@ -18,3 +18,11 @@ sealed class HtmlDetailsLoading {
 sealed class HtmlDetailsError {
     object Initialization : HtmlDetailsError()
 }
+
+enum class EHtmlDetails {
+
+    INFO,
+    REWARD,
+    FAQ
+
+}

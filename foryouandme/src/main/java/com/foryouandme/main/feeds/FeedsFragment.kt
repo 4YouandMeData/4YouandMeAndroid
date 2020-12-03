@@ -52,9 +52,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
             TaskActivityViewHolder.factory {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
-            FeedRewardViewHolder.factory { item -> item.data.action?.let { feedNavigation(it)} },
-            FeedEducationalViewHolder.factory { item -> item.data.action?.let { feedNavigation(it)} },
-            FeedAlertViewHolder.factory { item -> item.data.action?.let { feedNavigation(it)} },
+            FeedRewardViewHolder.factory { item -> item.data.action?.let { feedNavigation(it) } },
+            FeedEducationalViewHolder.factory { item -> item.data.action?.let { feedNavigation(it) } },
+            FeedAlertViewHolder.factory { item -> item.data.action?.let { feedNavigation(it) } },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             FeedHeaderViewHolder.factory(),
@@ -273,9 +273,9 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
                 FeedAction.YourData -> mainViewModel.selectYourData()
                 FeedAction.StudyInfo -> mainViewModel.selectStudyInfo()
                 FeedAction.AboutYou -> viewModel.aboutYouPage(rootNavController())
-                FeedAction.Faq -> TODO()
-                FeedAction.Rewards -> TODO()
-                FeedAction.Contacts -> TODO()
+                FeedAction.Faq -> viewModel.faq(rootNavController())
+                FeedAction.Rewards -> viewModel.reward(rootNavController())
+                FeedAction.Contacts -> viewModel.info(rootNavController())
                 is FeedAction.Integration -> viewModel.openIntegrationApp(feedAction.app)
                 is FeedAction.Web -> viewModel.web(rootNavController(), feedAction.url)
             }

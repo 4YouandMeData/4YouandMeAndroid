@@ -79,7 +79,7 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
         secondItem.setOnClickListener {
             startCoroutineAsync {
-                viewModel.detailsPage(rootNavController(), 0)
+                viewModel.info(rootNavController())
             }
         }
 
@@ -91,7 +91,7 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
         thirdItem.setOnClickListener {
             startCoroutineAsync {
-                viewModel.detailsPage(rootNavController(), 1)
+                viewModel.reward(rootNavController())
             }
         }
 
@@ -103,7 +103,7 @@ class StudyInfoFragment : BaseFragment<StudyInfoViewModel>(R.layout.study_info) 
 
         fourthItem.setOnClickListener {
             startCoroutineAsync {
-                viewModel.detailsPage(rootNavController(), 2)
+                viewModel.faq(rootNavController())
             }
         }
 

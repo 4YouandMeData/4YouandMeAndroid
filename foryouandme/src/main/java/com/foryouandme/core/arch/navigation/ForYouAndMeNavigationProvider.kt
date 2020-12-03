@@ -27,9 +27,7 @@ import com.foryouandme.auth.splash.SplashToOnboarding
 import com.foryouandme.auth.splash.SplashToWelcome
 import com.foryouandme.auth.welcome.WelcomeToSignUpInfo
 import com.foryouandme.core.arch.navigation.execution.*
-import com.foryouandme.main.MainPageToAboutYouPage
-import com.foryouandme.main.MainPageToHtmlDetailsPage
-import com.foryouandme.main.MainToTask
+import com.foryouandme.main.*
 import com.foryouandme.main.feeds.FeedsToTask
 import com.foryouandme.main.tasks.TasksToTask
 import com.foryouandme.tasks.StepToStep
@@ -148,8 +146,12 @@ class ForYouAndMeNavigationProvider : NavigationProvider {
 
             is MainPageToAboutYouPage ->
                 mainPageToAboutYouPage()
-            is MainPageToHtmlDetailsPage ->
-                mainPageToHtmlDetailsPage(action.pageId)
+            is MainPageToInformation ->
+                mainPageToInformation()
+            is MainPageToReward ->
+                mainPageToReward()
+            is MainPageToFaq ->
+                mainPageToFaq()
             is MainToTask ->
                 mainToTask(action.id)
 

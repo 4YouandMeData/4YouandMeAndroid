@@ -72,20 +72,20 @@ class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_det
 
         }
 
-    private suspend fun setupWebView(pageId: Int): Unit =
+    private suspend fun setupWebView(page: EHtmlDetails): Unit =
         evalOnMain {
 
             var source = ""
-            when (pageId) {
-                0 -> {
+            when (page) {
+                EHtmlDetails.INFO -> {
                     title.text = viewModel.state().studyInfo.informationPage.title
                     source = viewModel.state().studyInfo.informationPage.body
                 }
-                1 -> {
+                EHtmlDetails.REWARD -> {
                     title.text = viewModel.state().studyInfo.rewardPage.title
                     source = viewModel.state().studyInfo.rewardPage.body
                 }
-                2 -> {
+                EHtmlDetails.FAQ -> {
                     title.text = viewModel.state().studyInfo.faqPage.title
                     source = viewModel.state().studyInfo.faqPage.body
                 }
@@ -100,6 +100,12 @@ class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_det
                 it.javaScriptEnabled = true
             }
 
-            web_view.loadDataWithBaseURL(null, source, "text/html; charset=utf-8", "utf-8", null)
+            web_view.loadDataWithBaseURL(
+                null,
+                source,
+                "text/html; charset=utf-8",
+                "utf-8",
+                null
+            )
         }
 }

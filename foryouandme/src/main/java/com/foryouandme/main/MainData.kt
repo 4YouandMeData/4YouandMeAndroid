@@ -16,6 +16,10 @@ sealed class MainStateUpdate {
 
 object MainPageToAboutYouPage : NavigationAction
 
-data class MainPageToHtmlDetailsPage(val pageId: Int) : NavigationAction
+object MainPageToInformation : NavigationAction
+
+object MainPageToReward: NavigationAction
+
+object MainPageToFaq: NavigationAction
 
 data class MainToTask(val id: String) : NavigationAction

@@ -40,6 +40,9 @@ import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
 import com.foryouandme.data.network.Order
 import com.foryouandme.main.MainPageToAboutYouPage
+import com.foryouandme.main.MainPageToFaq
+import com.foryouandme.main.MainPageToInformation
+import com.foryouandme.main.MainPageToReward
 import com.foryouandme.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
@@ -490,6 +493,24 @@ class FeedsViewModel(
 
     suspend fun openIntegrationApp(integrationApp: IntegrationApp): Unit =
         navigator.performAction(openApp(integrationApp.packageName))
+
+    suspend fun info(navController: RootNavController): Unit =
+        navigator.navigateTo(
+            navController,
+            MainPageToInformation
+        )
+
+    suspend fun reward(navController: RootNavController): Unit =
+        navigator.navigateTo(
+            navController,
+            MainPageToReward
+        )
+
+    suspend fun faq(navController: RootNavController): Unit =
+        navigator.navigateTo(
+            navController,
+            MainPageToFaq
+        )
 
     /* --- analytics --- */
 

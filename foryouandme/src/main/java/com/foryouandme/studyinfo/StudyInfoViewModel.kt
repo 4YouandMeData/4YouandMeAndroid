@@ -6,8 +6,7 @@ import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
-import com.foryouandme.main.MainPageToAboutYouPage
-import com.foryouandme.main.MainPageToHtmlDetailsPage
+import com.foryouandme.main.*
 
 class StudyInfoViewModel(
     navigator: Navigator,
@@ -48,9 +47,22 @@ class StudyInfoViewModel(
             MainPageToAboutYouPage
         )
 
-    suspend fun detailsPage(navController: RootNavController, pageId: Int): Unit =
+    suspend fun info(navController: RootNavController): Unit =
         navigator.navigateTo(
             navController,
-            MainPageToHtmlDetailsPage(pageId)
+            MainPageToInformation
         )
+
+    suspend fun reward(navController: RootNavController): Unit =
+        navigator.navigateTo(
+            navController,
+            MainPageToReward
+        )
+
+    suspend fun faq(navController: RootNavController): Unit =
+        navigator.navigateTo(
+            navController,
+            MainPageToFaq
+        )
+
 }
