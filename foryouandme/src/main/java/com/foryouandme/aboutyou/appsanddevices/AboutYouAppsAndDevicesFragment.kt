@@ -9,6 +9,7 @@ import com.foryouandme.aboutyou.AboutYouSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.core.entity.integration.IntegrationApp
 import com.foryouandme.core.ext.*
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
@@ -54,43 +55,43 @@ class AboutYouAppsAndDevicesFragment :
 
         refreshUserAndConfiguration { config, user ->
 
-            val integrations = config.getStudyIntegrations()
+            val integrations = config.getAppIntegrations()
                 .map {
                     when (it) {
-                        StudyIntegration.Garmin -> viewModel.createGarminItem(
+                        IntegrationApp.Garmin -> viewModel.createGarminItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Garmin).not()
+                            user.identities.contains(IntegrationApp.Garmin).not()
                         )
 
-                        StudyIntegration.Fitbit -> viewModel.createFitbitItem(
+                        IntegrationApp.Fitbit -> viewModel.createFitbitItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Fitbit).not()
+                            user.identities.contains(IntegrationApp.Fitbit).not()
                         )
 
-                        StudyIntegration.Oura -> viewModel.createOuraItem(
+                        IntegrationApp.Oura -> viewModel.createOuraItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Oura).not()
+                            user.identities.contains(IntegrationApp.Oura).not()
                         )
 
-                        StudyIntegration.Instagram -> viewModel.createInstagramItem(
+                        IntegrationApp.Instagram -> viewModel.createInstagramItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Instagram).not()
+                            user.identities.contains(IntegrationApp.Instagram).not()
                         )
 
-                        StudyIntegration.RescueTime -> viewModel.createRescueTimeItem(
+                        IntegrationApp.RescueTime -> viewModel.createRescueTimeItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.RescueTime).not()
+                            user.identities.contains(IntegrationApp.RescueTime).not()
                         )
 
-                        StudyIntegration.Twitter -> viewModel.createTwitterItem(
+                        IntegrationApp.Twitter -> viewModel.createTwitterItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(StudyIntegration.Twitter).not()
+                            user.identities.contains(IntegrationApp.Twitter).not()
                         )
                     }
                 }

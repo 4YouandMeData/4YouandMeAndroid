@@ -1,6 +1,6 @@
 package com.foryouandme.core.entity.user
 
-import com.foryouandme.core.ext.StudyIntegration
+import com.foryouandme.core.entity.integration.IntegrationApp
 import org.threeten.bp.ZoneId
 
 data class User(
@@ -8,7 +8,7 @@ data class User(
     val email: String?,
     val phoneNumber: String?,
     val daysInStudy: Int,
-    val identities: List<StudyIntegration>,
+    val identities: List<IntegrationApp>,
     val onBoardingCompleted: Boolean,
     val token: String,
     val customData: List<UserCustomData>,

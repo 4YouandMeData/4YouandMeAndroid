@@ -1,11 +1,11 @@
 package com.foryouandme.core.data.api.auth.response
 
 import arrow.core.Either
+import com.foryouandme.core.entity.integration.IntegrationApp
 import com.foryouandme.core.entity.user.User
 import com.foryouandme.core.entity.user.UserCustomData
 import com.foryouandme.core.entity.user.UserCustomDataItem
 import com.foryouandme.core.entity.user.UserCustomDataType
-import com.foryouandme.core.ext.StudyIntegration
 import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
@@ -33,7 +33,7 @@ data class UserResponse(
                 phoneNumber = phoneNumber,
                 daysInStudy = daysInStudy ?: 0,
                 identities =
-                identities?.mapNotNull { StudyIntegration.fromIdentifier(it) } ?: emptyList(),
+                identities?.mapNotNull { IntegrationApp.fromIdentifier(it) } ?: emptyList(),
                 onBoardingCompleted = onBoardingCompleted!!,
                 token = token,
                 customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList(),
