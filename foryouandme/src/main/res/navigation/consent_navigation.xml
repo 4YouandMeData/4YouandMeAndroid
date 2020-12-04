@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/consent_info"
-        android:name="com.foryouandme.auth.onboarding.step.consent.informed.ConsentInfoFragment"
+        android:name="com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoFragment"
         android:label="consent_info"
         tools:layout="@layout/consent_info">
 
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/consent_review"
-        android:name="com.foryouandme.auth.onboarding.step.consent.review.ConsentReviewFragment"
+        android:name="com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewFragment"
         android:label="consent_review"
         tools:layout="@layout/consent_review">
 
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/opt_in"
-        android:name="com.foryouandme.auth.onboarding.step.consent.optin.OptInFragment"
+        android:name="com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInFragment"
         android:label="opt_in"
         tools:layout="@layout/opt_in">
 
@@ -61,7 +61,7 @@
 
     <fragment
         android:id="@+id/consent_user"
-        android:name="com.foryouandme.auth.onboarding.step.consent.user.ConsentUserFragment"
+        android:name="com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserFragment"
         android:label="consent_user"
         tools:layout="@layout/consent_user" />
 

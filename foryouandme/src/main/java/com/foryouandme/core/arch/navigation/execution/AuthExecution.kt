@@ -1,9 +1,8 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
-import com.foryouandme.auth.phone.EnterPhoneFragmentDirections
-import com.foryouandme.auth.phone.code.PhoneValidationCodeFragmentDirections
-import com.foryouandme.auth.splash.SplashFragmentDirections
+import com.foryouandme.ui.auth.phone.EnterPhoneFragmentDirections
+import com.foryouandme.ui.auth.phone.code.PhoneValidationCodeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun splashToWelcome(): NavigationExecution = {

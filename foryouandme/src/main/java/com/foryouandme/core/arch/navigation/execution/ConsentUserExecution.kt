@@ -1,9 +1,9 @@
 package com.foryouandme.core.arch.navigation.execution
 
-import com.foryouandme.auth.onboarding.step.consent.user.email.ConsentUserEmailFragmentDirections
-import com.foryouandme.auth.onboarding.step.consent.user.email.code.ConsentUserEmailValidationCodeFragmentDirections
-import com.foryouandme.auth.onboarding.step.consent.user.name.ConsentUserNameFragmentDirections
-import com.foryouandme.auth.onboarding.step.consent.user.signature.ConsentUserSignatureFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.consent.user.email.ConsentUserEmailFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.consent.user.email.code.ConsentUserEmailValidationCodeFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.consent.user.name.ConsentUserNameFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.consent.user.signature.ConsentUserSignatureFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun consentUserNameToConsentUserEmail(): NavigationExecution = {

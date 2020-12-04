@@ -2,9 +2,9 @@ package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
 import com.foryouandme.core.arch.navigation.NavigationExecution
-import com.foryouandme.htmldetails.EHtmlDetails
-import com.foryouandme.main.MainFragmentDirections
-import com.foryouandme.tasks.TaskFragment
+import com.foryouandme.ui.htmldetails.EHtmlDetails
+import com.foryouandme.ui.main.MainFragmentDirections
+import com.foryouandme.ui.tasks.TaskFragment
 
 fun mainPageToAboutYouPage(): NavigationExecution =
     {

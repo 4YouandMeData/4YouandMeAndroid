@@ -11,9 +11,9 @@ import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
 import com.foryouandme.researchkit.task.TaskInjector
-import com.foryouandme.tasks.TaskFragment
-import com.foryouandme.tasks.TaskNavController
-import com.foryouandme.tasks.TaskViewModel
+import com.foryouandme.ui.tasks.TaskFragment
+import com.foryouandme.ui.tasks.TaskNavController
+import com.foryouandme.ui.tasks.TaskViewModel
 import kotlinx.android.synthetic.main.task.*
 
 open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(contentLayoutId) {

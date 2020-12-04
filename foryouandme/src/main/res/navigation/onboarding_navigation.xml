@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/onboarding_step"
-        android:name="com.foryouandme.auth.onboarding.step.OnboardingStepContainerFragment"
+        android:name="com.foryouandme.ui.auth.onboarding.step.OnboardingStepContainerFragment"
         android:label="onboarding"
         tools:layout="@layout/onboarding_step">
 

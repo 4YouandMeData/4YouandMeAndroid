@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/splash"
-        android:name="com.foryouandme.auth.splash.SplashFragment"
+        android:name="com.foryouandme.ui.auth.splash.SplashFragment"
         android:label="splash"
         tools:layout="@layout/splash">
 
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/welcome"
-        android:name="com.foryouandme.auth.welcome.WelcomeFragment"
+        android:name="com.foryouandme.ui.auth.welcome.WelcomeFragment"
         android:label="welcome"
         tools:layout="@layout/welcome">
 
@@ -59,7 +59,7 @@
 
     <fragment
         android:id="@+id/sign_up_info"
-        android:name="com.foryouandme.auth.signup.info.SignUpInfoFragment"
+        android:name="com.foryouandme.ui.auth.signup.info.SignUpInfoFragment"
         android:label="sign_up_info"
         tools:layout="@layout/sign_up_info">
 
@@ -84,13 +84,13 @@
 
     <fragment
         android:id="@+id/sign_up_later"
-        android:name="com.foryouandme.auth.signup.later.SignUpLaterFragment"
+        android:name="com.foryouandme.ui.auth.signup.later.SignUpLaterFragment"
         android:label="sign_up_later"
         tools:layout="@layout/sign_up_later" />
 
     <fragment
         android:id="@+id/enter_phone"
-        android:name="com.foryouandme.auth.phone.EnterPhoneFragment"
+        android:name="com.foryouandme.ui.auth.phone.EnterPhoneFragment"
         android:label="enter_phone"
         tools:layout="@layout/enter_phone">
 
@@ -118,7 +118,7 @@
 
     <fragment
         android:id="@+id/phone_validation_code"
-        android:name="com.foryouandme.auth.phone.code.PhoneValidationCodeFragment"
+        android:name="com.foryouandme.ui.auth.phone.code.PhoneValidationCodeFragment"
         android:label="phone_validation_code"
         tools:layout="@layout/phone_validation_code">
 
@@ -146,7 +146,7 @@
 
     <fragment
         android:id="@+id/onboarding"
-        android:name="com.foryouandme.auth.onboarding.OnboardingFragment"
+        android:name="com.foryouandme.ui.auth.onboarding.OnboardingFragment"
         android:label="onboarding"
         tools:layout="@layout/onboarding" />
 

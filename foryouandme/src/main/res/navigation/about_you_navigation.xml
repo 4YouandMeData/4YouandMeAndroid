@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/about_you_menu"
-        android:name="com.foryouandme.aboutyou.menu.AboutYouMenuFragment"
+        android:name="com.foryouandme.ui.aboutyou.menu.AboutYouMenuFragment"
         android:label="about_you_menu"
         tools:layout="@layout/about_you_menu">
 
@@ -47,13 +47,13 @@
 
     <fragment
         android:id="@+id/about_you_review_consent"
-        android:name="com.foryouandme.aboutyou.review.AboutYouReviewConsentFragment"
+        android:name="com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentFragment"
         android:label="AboutYouReviewConsentFragment"
         tools:layout="@layout/about_you_review_consent" />
 
     <fragment
         android:id="@+id/about_you_apps_and_devices"
-        android:name="com.foryouandme.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragment"
+        android:name="com.foryouandme.ui.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragment"
         android:label="AboutYouAppsAndDevicesFragment"
         tools:layout="@layout/apps_and_devices">
 
@@ -76,7 +76,7 @@
 
     <fragment
         android:id="@+id/about_you_integration_login"
-        android:name="com.foryouandme.aboutyou.integration.AboutYouIntegrationLoginFragment"
+        android:name="com.foryouandme.ui.aboutyou.integration.AboutYouIntegrationLoginFragment"
         android:label="about_you_integration_login"
         tools:layout="@layout/about_you_integration_login">
 
@@ -88,13 +88,13 @@
 
     <fragment
         android:id="@+id/about_you_permissions"
-        android:name="com.foryouandme.aboutyou.permissions.AboutYouPermissionsFragment"
+        android:name="com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsFragment"
         android:label="about_you_permissions"
         tools:layout="@layout/permissions" />
 
     <fragment
         android:id="@+id/about_you_user_info"
-        android:name="com.foryouandme.aboutyou.userInfo.AboutYouUserInfoFragment"
+        android:name="com.foryouandme.ui.aboutyou.userInfo.AboutYouUserInfoFragment"
         android:label="about_you_user_info"
         tools:layout="@layout/user_info" />
 

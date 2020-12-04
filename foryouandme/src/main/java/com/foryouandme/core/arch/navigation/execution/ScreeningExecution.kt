@@ -1,9 +1,9 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
-import com.foryouandme.auth.onboarding.step.screening.page.ScreeningPageFragmentDirections
-import com.foryouandme.auth.onboarding.step.screening.questions.ScreeningQuestionsFragmentDirections
-import com.foryouandme.auth.onboarding.step.screening.welcome.ScreeningWelcomeFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.screening.page.ScreeningPageFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.screening.questions.ScreeningQuestionsFragmentDirections
+import com.foryouandme.ui.auth.onboarding.step.screening.welcome.ScreeningWelcomeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun screeningWelcomeToScreeningQuestions(): NavigationExecution = {

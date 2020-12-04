@@ -1,7 +1,7 @@
 package com.foryouandme.core.arch.navigation.execution
 
-import com.foryouandme.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragmentDirections
-import com.foryouandme.aboutyou.menu.AboutYouMenuFragmentDirections
+import com.foryouandme.ui.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragmentDirections
+import com.foryouandme.ui.aboutyou.menu.AboutYouMenuFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 
 fun aboutYouMenuPageToAboutYouReviewConsentPage(): NavigationExecution =

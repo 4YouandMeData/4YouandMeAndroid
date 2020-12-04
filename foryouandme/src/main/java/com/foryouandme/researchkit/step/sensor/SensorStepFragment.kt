@@ -14,7 +14,7 @@ import com.foryouandme.researchkit.recorder.RecorderServiceConnection
 import com.foryouandme.researchkit.recorder.RecordingState
 import com.foryouandme.researchkit.recorder.SensorData
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.tasks.TaskStateUpdate
+import com.foryouandme.ui.tasks.TaskStateUpdate
 import kotlinx.android.synthetic.main.step_sensor.*
 import kotlin.math.roundToInt
 

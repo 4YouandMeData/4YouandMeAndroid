@@ -11,8 +11,8 @@ import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.researchkit.task.TaskInjector
-import com.foryouandme.tasks.TaskFragment
-import com.foryouandme.tasks.TaskViewModel
+import com.foryouandme.ui.tasks.TaskFragment
+import com.foryouandme.ui.tasks.TaskViewModel
 
 class StepContainerFragment : BaseFragment<TaskViewModel>(R.layout.step) {
 
