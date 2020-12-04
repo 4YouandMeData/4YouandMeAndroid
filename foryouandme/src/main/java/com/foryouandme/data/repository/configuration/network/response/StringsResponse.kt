@@ -43,6 +43,7 @@ data class StringsResponse(
     @Json(name = "ONBOARDING_DISAGREE_BUTTON") val onboradingDisagreeButton: String? = null,
 
     @Json(name = "ONBOARDING_USER_NAME_TITLE") val onboardingUserNameTitle: String? = null,
+    @Json(name = "ONBOARDING_USER_NAME_BODY") val onboardingUserNameBody: String? = null,
     @Json(name = "ONBOARDING_USER_NAME_LAST_NAME_DESCRIPTION") val onboardingNameLastNameDescription: String? = null,
     @Json(name = "ONBOARDING_USER_NAME_FIRST_NAME_DESCRIPTION") val onboardingNameFirstNameDescription: String? = null,
     @Json(name = "ONBOARDING_USER_SIGNATURE_TITLE") val onboardingSignatureTitle: String? = null,
@@ -363,7 +364,7 @@ data class StringsResponse(
         val onboardingUserError = toOnboardingUserError()
 
         return when (null) {
-            onboardingUserNameTitle, onboardingNameLastNameDescription,
+            onboardingUserNameTitle, onboardingUserNameBody, onboardingNameLastNameDescription,
             onboardingNameFirstNameDescription, onboardingSignatureTitle, onboardingSignatureBody,
             onboardingSignatureClear, onboardingSignaturePlaceholder, onboardingEmailInfo,
             onboardingEmailDescription, onboardingEmailVerificationTitle,
@@ -373,6 +374,7 @@ data class StringsResponse(
             else ->
                 OnboardingUser(
                     onboardingUserNameTitle,
+                    onboardingUserNameBody,
                     onboardingNameLastNameDescription,
                     onboardingNameFirstNameDescription,
                     onboardingSignatureTitle,

@@ -88,6 +88,7 @@ data class Onboarding(
 
 data class OnboardingUser(
     val nameTitle: String,
+    val nameBody: String,
     val nameLastNameDescription: String,
     val nameFirstNameDescription: String,
     val signatureTitle: String,

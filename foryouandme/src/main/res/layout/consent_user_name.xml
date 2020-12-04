@@ -34,6 +34,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/body"
+                style="@style/text_paragraph"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/first_name"
                 style="@style/text_paragraph"
                 android:layout_width="0dp"
@@ -43,7 +55,7 @@
                 android:layout_marginEnd="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title" />
+                app:layout_constraintTop_toBottomOf="@id/body" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/first_name_entry"

@@ -80,6 +80,9 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
             title.text = configuration.text.onboarding.user.nameTitle
             title.setTextColor(configuration.theme.secondaryColor.color())
 
+            body.text = configuration.text.onboarding.user.nameBody
+            body.setTextColor(configuration.theme.secondaryColor.color())
+
             first_name.text = configuration.text.onboarding.user.nameFirstNameDescription
             first_name.setTextColor(configuration.theme.secondaryColor.color())
 
