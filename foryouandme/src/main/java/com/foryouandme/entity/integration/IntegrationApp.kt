@@ -1,13 +1,13 @@
 package com.foryouandme.entity.integration
 
-sealed class IntegrationApp(val packageName: String) {
+sealed class IntegrationApp(val identifier: String, val packageName: String) {
 
-    object Oura : IntegrationApp("com.ouraring.oura")
-    object Fitbit : IntegrationApp("com.fitbit.FitbitMobile")
-    object Garmin : IntegrationApp("com.garmin.android.apps.connectmobile")
-    object RescueTime : IntegrationApp("com.rescuetime.android")
-    object Instagram : IntegrationApp("instagram")
-    object Twitter : IntegrationApp("twitter")
+    object Oura : IntegrationApp("oura", "com.ouraring.oura")
+    object Fitbit : IntegrationApp("fitbit", "com.fitbit.FitbitMobile")
+    object Garmin : IntegrationApp("garmin", "com.garmin.android.apps.connectmobile")
+    object RescueTime : IntegrationApp("rescuetime", "com.rescuetime.android")
+    object Instagram : IntegrationApp("instagram", "instagram")
+    object Twitter : IntegrationApp("twitter", "twitter")
 
 
     companion object {

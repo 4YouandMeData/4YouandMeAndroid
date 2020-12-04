@@ -5,12 +5,13 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
-import com.foryouandme.core.ext.*
+import com.foryouandme.entity.integration.IntegrationApp.*
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import kotlinx.android.synthetic.main.apps_and_devices.*
@@ -55,43 +56,43 @@ class AboutYouAppsAndDevicesFragment :
 
         refreshUserAndConfiguration { config, user ->
 
-            val integrations = config.getAppIntegrations()
+            val integrations = config.integrations
                 .map {
                     when (it) {
-                        IntegrationApp.Garmin -> viewModel.createGarminItem(
+                        Garmin -> viewModel.createGarminItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(IntegrationApp.Garmin).not()
+                            user.identities.contains(Garmin).not()
                         )
 
-                        IntegrationApp.Fitbit -> viewModel.createFitbitItem(
+                        Fitbit -> viewModel.createFitbitItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(IntegrationApp.Fitbit).not()
+                            user.identities.contains(Fitbit).not()
                         )
 
-                        IntegrationApp.Oura -> viewModel.createOuraItem(
+                        Oura -> viewModel.createOuraItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(IntegrationApp.Oura).not()
+                            user.identities.contains(Oura).not()
                         )
 
-                        IntegrationApp.Instagram -> viewModel.createInstagramItem(
+                        Instagram -> viewModel.createInstagramItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(IntegrationApp.Instagram).not()
+                            user.identities.contains(Instagram).not()
                         )
 
-                        IntegrationApp.RescueTime -> viewModel.createRescueTimeItem(
+                        RescueTime -> viewModel.createRescueTimeItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(IntegrationApp.RescueTime).not()
+                            user.identities.contains(RescueTime).not()
                         )
 
-                        IntegrationApp.Twitter -> viewModel.createTwitterItem(
+                        Twitter -> viewModel.createTwitterItem(
                             config,
                             imageConfiguration,
-                            user.identities.contains(IntegrationApp.Twitter).not()
+                            user.identities.contains(Twitter).not()
                         )
                     }
                 }

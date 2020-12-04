@@ -178,8 +178,6 @@ data class StringsResponse(
     @Json(name = "ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteServer: String? = null,
     @Json(name = "ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null,
 
-    @Json(name = "OAUTH_AVAILABLE_INTERATIONS") val oauthAvailableInterations: String? = null
-
 ) {
 
     fun toText(): Text? {
@@ -544,8 +542,7 @@ data class StringsResponse(
             profileTitle, aboutYouYourPregnancy, aboutYouAppsAndDevices, aboutYouReviewConsent,
             aboutYouPermissions, aboutYouDisclaimer, yourAppsAndDevicesConnect, permissionsAllow,
             permissionsAllowed, permissionDenied, permissionCancel, permissionMessage,
-            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit,
-            oauthAvailableInterations -> null
+            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit -> null
             else ->
                 Profile(
                     profileTitle,
@@ -562,8 +559,7 @@ data class StringsResponse(
                     permissionMessage,
                     permissionSettings,
                     profileUserInfoButtonEdit,
-                    profileUserInfoButtonSubmit,
-                    oauthAvailableInterations
+                    profileUserInfoButtonSubmit
                 )
 
         }

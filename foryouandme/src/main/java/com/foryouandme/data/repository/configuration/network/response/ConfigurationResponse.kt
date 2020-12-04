@@ -9,7 +9,8 @@ data class ConfigurationResponse(
     @Json(name = "id") val id: Int? = null,
     @Json(name = "study_id") val studyId: Int? = null,
     @Json(name = "color_palette") val colorPalette: ColorPaletteResponse? = null,
-    @Json(name = "country_codes") val countryCodes: List<String>? = null
+    @Json(name = "country_codes") val countryCodes: List<String>? = null,
+    @Json(name = "supported_integrations") val integration: SupportedIntegrationResponse? = null
 
 ) {
 
@@ -24,7 +25,8 @@ data class ConfigurationResponse(
                 Configuration(
                     theme,
                     text,
-                    countryCodes ?: emptyList()
+                    countryCodes ?: emptyList(),
+                    integration?.toIntegrationAppsIdentifiers() ?: emptyList()
                 )
         }
 

@@ -206,7 +206,6 @@ data class Profile(
     val permissionSettings: String,
     val edit: String,
     val submit: String,
-    val oauth: String
 )
 
 data class YourData(
