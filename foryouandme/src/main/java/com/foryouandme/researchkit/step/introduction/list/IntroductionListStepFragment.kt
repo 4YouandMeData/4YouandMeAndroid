@@ -5,9 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.HEXColor
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.HEXColor
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync

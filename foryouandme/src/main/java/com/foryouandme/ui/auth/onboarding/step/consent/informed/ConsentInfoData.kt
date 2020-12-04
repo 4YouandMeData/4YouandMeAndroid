@@ -2,7 +2,7 @@ package com.foryouandme.ui.auth.onboarding.step.consent.informed
 
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.ConsentAnswerItem
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.consent.informed.ConsentInfo
+import com.foryouandme.entity.consent.informed.ConsentInfo
 
 data class ConsentInfoState(
     val consentInfo: ConsentInfo,

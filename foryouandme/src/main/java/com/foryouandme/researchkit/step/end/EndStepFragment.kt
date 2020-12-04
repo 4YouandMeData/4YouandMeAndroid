@@ -7,7 +7,7 @@ import android.view.View
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
 import kotlinx.android.synthetic.main.step_end.*

@@ -5,7 +5,7 @@ import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.modules.SurveyModule
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.entity.survey.Survey
+import com.foryouandme.entity.survey.Survey
 
 object SurveyRepository {
 

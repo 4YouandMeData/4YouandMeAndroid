@@ -7,10 +7,10 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserError
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserLoading
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXColor
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXColor
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import com.github.gcacace.signaturepad.views.SignaturePad
 import kotlinx.android.synthetic.main.consent_user.*

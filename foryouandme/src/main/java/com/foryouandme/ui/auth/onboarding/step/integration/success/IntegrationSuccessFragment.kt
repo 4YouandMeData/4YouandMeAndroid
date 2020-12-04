@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.integration.Integration
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.integration.Integration
 import com.foryouandme.core.ext.*
 import kotlinx.android.synthetic.main.integration.*
 import kotlinx.android.synthetic.main.integration_page.*

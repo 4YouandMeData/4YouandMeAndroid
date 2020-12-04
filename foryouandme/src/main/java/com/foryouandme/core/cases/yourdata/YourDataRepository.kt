@@ -4,8 +4,8 @@ import arrow.core.Either
 import com.foryouandme.core.arch.deps.modules.YourDataModule
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.entity.yourdata.UserDataAggregation
-import com.foryouandme.core.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.UserDataAggregation
+import com.foryouandme.entity.yourdata.YourData
 
 object YourDataRepository {
 

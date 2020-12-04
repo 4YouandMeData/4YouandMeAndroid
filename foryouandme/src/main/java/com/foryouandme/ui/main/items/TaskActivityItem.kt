@@ -4,10 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.entity.activity.TaskActivity
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.getOr
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.startCoroutine

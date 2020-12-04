@@ -1,7 +1,7 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.review
 
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.consent.review.ConsentReview
+import com.foryouandme.entity.consent.review.ConsentReview
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 
 data class ConsentReviewState(

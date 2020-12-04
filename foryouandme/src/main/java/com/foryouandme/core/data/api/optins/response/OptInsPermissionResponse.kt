@@ -1,12 +1,11 @@
 package com.foryouandme.core.data.api.optins.response
 
-import android.Manifest
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOrElse
 import arrow.core.toOption
 import com.foryouandme.core.cases.permission.Permission
-import com.foryouandme.core.entity.optins.OptInsPermission
+import com.foryouandme.entity.optins.OptInsPermission
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.button.button
-import com.foryouandme.core.entity.screening.Screening
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.entity.screening.Screening
 import com.foryouandme.core.ext.*
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.screening.*

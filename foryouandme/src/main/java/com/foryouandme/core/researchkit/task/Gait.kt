@@ -10,9 +10,9 @@ import com.foryouandme.core.data.api.task.request.GaitOutboundRequest
 import com.foryouandme.core.data.api.task.request.GaitRestRequest
 import com.foryouandme.core.data.api.task.request.GaitReturnRequest
 import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
-import com.foryouandme.core.entity.activity.Reschedule
-import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.activity.Reschedule
+import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.invokeAsForYouAndMeError
 import com.foryouandme.core.ext.readJson
 import com.foryouandme.researchkit.result.FileResult

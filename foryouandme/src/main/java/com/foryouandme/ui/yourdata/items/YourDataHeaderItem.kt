@@ -3,8 +3,8 @@ package com.foryouandme.ui.yourdata.items
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.yourdata.YourData
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.yourdata.YourData
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory

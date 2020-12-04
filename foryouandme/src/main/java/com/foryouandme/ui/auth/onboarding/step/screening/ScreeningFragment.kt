@@ -9,7 +9,7 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator

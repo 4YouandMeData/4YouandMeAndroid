@@ -7,7 +7,7 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.studyinfo.StudyInfoRepository.fetchStudyInfo
-import com.foryouandme.core.entity.studyinfo.StudyInfo
+import com.foryouandme.entity.studyinfo.StudyInfo
 
 object StudyInfoUseCase {
 

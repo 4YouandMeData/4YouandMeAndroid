@@ -7,7 +7,6 @@ import android.widget.MediaController
 import androidx.annotation.experimental.UseExperimental
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.VideoCapture
 import androidx.camera.view.CameraView
 import androidx.camera.view.video.ExperimentalVideo
 import androidx.camera.view.video.OnVideoSavedCallback
@@ -18,9 +17,9 @@ import arrow.core.Either
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.background.roundTopBackground
-import com.foryouandme.core.entity.configuration.button.button
-import com.foryouandme.core.entity.configuration.progressbar.progressDrawable
+import com.foryouandme.entity.configuration.background.roundTopBackground
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.entity.configuration.progressbar.progressDrawable
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.permission.Permission
 import com.foryouandme.core.permission.PermissionError

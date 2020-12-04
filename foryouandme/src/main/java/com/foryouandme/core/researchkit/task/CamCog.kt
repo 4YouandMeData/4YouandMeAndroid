@@ -1,9 +1,9 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.entity.activity.Reschedule
-import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.activity.Reschedule
+import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.IntegrationLoginInterface
 import com.foryouandme.researchkit.task.camcog.CamCogTask

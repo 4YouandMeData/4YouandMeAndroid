@@ -5,8 +5,8 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.user.User
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator

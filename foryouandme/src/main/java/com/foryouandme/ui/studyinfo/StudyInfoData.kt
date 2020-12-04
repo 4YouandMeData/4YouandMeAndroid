@@ -1,6 +1,6 @@
 package com.foryouandme.studyinfo
 
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 
 data class StudyInfoState(
     val configuration: Configuration

@@ -1,6 +1,6 @@
 package com.foryouandme.ui.htmldetails
 
-import com.foryouandme.core.entity.studyinfo.StudyInfo
+import com.foryouandme.entity.studyinfo.StudyInfo
 
 
 data class HtmlDetailsState(

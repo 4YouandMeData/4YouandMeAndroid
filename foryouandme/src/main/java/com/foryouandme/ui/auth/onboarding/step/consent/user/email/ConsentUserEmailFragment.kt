@@ -10,8 +10,8 @@ import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserError
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserLoading
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import kotlinx.android.synthetic.main.consent_user.*
 import kotlinx.android.synthetic.main.consent_user_email.*

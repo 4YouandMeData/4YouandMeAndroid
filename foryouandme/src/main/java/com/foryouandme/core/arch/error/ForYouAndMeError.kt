@@ -2,7 +2,7 @@ package com.foryouandme.core.arch.error
 
 import android.content.Context
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.Text
+import com.foryouandme.entity.configuration.Text
 
 sealed class ForYouAndMeError(val title: (Context) -> String, val message: (Context) -> String) {
 

@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.consent.user.ConsentUser
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.consent.user.ConsentUser
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.startCoroutineAsync

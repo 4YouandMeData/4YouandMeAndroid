@@ -13,11 +13,11 @@ import com.foryouandme.R
 import com.foryouandme.core.cases.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXColor
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
-import com.foryouandme.core.entity.page.Page
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXColor
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.view.page.EPageType.*

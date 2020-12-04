@@ -13,7 +13,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
 import kotlinx.android.synthetic.main.web.*
 import timber.log.Timber

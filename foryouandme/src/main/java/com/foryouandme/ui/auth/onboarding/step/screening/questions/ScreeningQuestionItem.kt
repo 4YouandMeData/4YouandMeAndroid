@@ -6,8 +6,8 @@ import android.widget.RadioButton
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.EScreeningQuestionPayload.ANSWER
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.EScreeningQuestionPayload.NONE
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.screening.ScreeningQuestion
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.screening.ScreeningQuestion
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory

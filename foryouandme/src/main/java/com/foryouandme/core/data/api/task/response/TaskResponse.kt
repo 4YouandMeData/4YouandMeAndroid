@@ -7,7 +7,7 @@ import com.foryouandme.core.data.api.common.response.activity.ActivityDataRespon
 import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
-import com.foryouandme.core.entity.task.Task
+import com.foryouandme.entity.task.Task
 import com.foryouandme.core.ext.toEither
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne

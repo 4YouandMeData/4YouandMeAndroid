@@ -1,8 +1,8 @@
 package com.foryouandme.core.data.api.configuration.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.configuration.Theme
-import com.foryouandme.core.entity.configuration.toHEXColor
+import com.foryouandme.entity.configuration.Theme
+import com.foryouandme.entity.configuration.toHEXColor
 import com.squareup.moshi.Json
 
 data class ColorPaletteResponse(

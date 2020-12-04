@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.common.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.page.Page
+import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.emptyOrBlankToNull
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.Document

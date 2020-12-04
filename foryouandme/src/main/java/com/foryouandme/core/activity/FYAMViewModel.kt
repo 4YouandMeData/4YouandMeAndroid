@@ -13,8 +13,8 @@ import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.integration.IntegrationApp
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.integration.IntegrationApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 

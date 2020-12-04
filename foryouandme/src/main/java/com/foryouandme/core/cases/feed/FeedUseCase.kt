@@ -7,7 +7,7 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.feed.FeedRepository.fetchFeeds
-import com.foryouandme.core.entity.feed.Feed
+import com.foryouandme.entity.feed.Feed
 import com.foryouandme.data.network.Order
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList

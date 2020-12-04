@@ -10,7 +10,7 @@ import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.EventObserver
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync

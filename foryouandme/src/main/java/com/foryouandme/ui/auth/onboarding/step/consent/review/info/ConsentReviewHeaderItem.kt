@@ -3,8 +3,8 @@ package com.foryouandme.ui.auth.onboarding.step.consent.review.info
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.consent.review.ConsentReview
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.consent.review.ConsentReview
 import com.foryouandme.core.ext.html.setHtmlText
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder

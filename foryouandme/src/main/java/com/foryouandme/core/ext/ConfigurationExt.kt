@@ -1,7 +1,7 @@
 package com.foryouandme.core.ext
 
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.integration.IntegrationApp
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.integration.IntegrationApp
 
 fun Configuration.getAppIntegrations(): List<IntegrationApp> =
     text.profile.oauth

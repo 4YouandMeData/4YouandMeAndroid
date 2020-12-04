@@ -4,11 +4,11 @@ import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.entity.activity.QuickActivity
-import com.foryouandme.core.entity.activity.QuickActivityAnswer
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.activity.QuickActivity
+import com.foryouandme.entity.activity.QuickActivityAnswer
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.getOr
 import com.foryouandme.ui.main.items.EQuickActivityPayload.SELECTED_ANSWER
 import com.giacomoparisi.recyclerdroid.core.DroidItem

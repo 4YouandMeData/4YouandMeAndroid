@@ -4,8 +4,8 @@ import arrow.core.Either
 import arrow.core.Nel
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
-import com.foryouandme.core.entity.consent.informed.ConsentInfoQuestion
-import com.foryouandme.core.entity.screening.ScreeningQuestion
+import com.foryouandme.entity.consent.informed.ConsentInfoQuestion
+import com.foryouandme.entity.screening.ScreeningQuestion
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi

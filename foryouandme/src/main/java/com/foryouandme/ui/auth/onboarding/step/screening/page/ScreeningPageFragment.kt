@@ -5,8 +5,8 @@ import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.screening.Screening
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.screening.Screening
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.view.page.EPageType
 import kotlinx.android.synthetic.main.screening.*

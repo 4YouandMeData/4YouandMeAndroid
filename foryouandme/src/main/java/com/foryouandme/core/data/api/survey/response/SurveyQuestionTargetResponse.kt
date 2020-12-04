@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.survey.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.survey.SurveyTarget
+import com.foryouandme.entity.survey.SurveyTarget
 import com.squareup.moshi.Json
 
 data class SurveyQuestionTargetResponse(

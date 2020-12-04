@@ -6,7 +6,7 @@ import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.web.setupWebViewWithCookies
 import kotlinx.android.synthetic.main.integration.*

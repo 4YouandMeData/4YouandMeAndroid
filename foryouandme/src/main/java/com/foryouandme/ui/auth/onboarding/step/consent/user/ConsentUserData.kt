@@ -1,7 +1,7 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.user
 
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.consent.user.ConsentUser
+import com.foryouandme.entity.consent.user.ConsentUser
 
 data class ConsentUserState(
     val consent: ConsentUser,

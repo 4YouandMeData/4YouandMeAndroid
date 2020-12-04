@@ -14,7 +14,7 @@ import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.core.cases.permission.PermissionResult
 import com.foryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted
 import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 
 class AboutYouPermissionsViewModel(
     navigator: Navigator,

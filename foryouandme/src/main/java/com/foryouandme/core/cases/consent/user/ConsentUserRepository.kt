@@ -10,7 +10,7 @@ import com.foryouandme.core.data.api.consent.user.request.ConfirmUserConsentEmai
 import com.foryouandme.core.data.api.consent.user.request.CreateUserConsentRequest
 import com.foryouandme.core.data.api.consent.user.request.UpdateUserConsentRequest
 import com.foryouandme.core.data.api.consent.user.request.UserConsentRequest
-import com.foryouandme.core.entity.consent.user.ConsentUser
+import com.foryouandme.entity.consent.user.ConsentUser
 
 object ConsentUserRepository {
 

@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewSectionDialogFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.background.roundBackground
-import com.foryouandme.core.entity.configuration.button.button
-import com.foryouandme.core.entity.consent.review.ConsentReview
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.background.roundBackground
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.entity.consent.review.ConsentReview
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.startCoroutineAsync

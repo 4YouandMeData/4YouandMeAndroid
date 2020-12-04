@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.imageConfiguration
 import kotlinx.android.synthetic.main.menu_item.view.*
 

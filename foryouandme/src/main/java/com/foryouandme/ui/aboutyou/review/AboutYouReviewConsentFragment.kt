@@ -10,7 +10,7 @@ import com.foryouandme.ui.auth.onboarding.step.consent.review.info.ConsentReview
 import com.foryouandme.ui.auth.onboarding.step.consent.review.info.ConsentReviewPageViewHolder
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter

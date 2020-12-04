@@ -1,7 +1,7 @@
 package com.foryouandme.core.cases
 
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.user.User
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
 
 sealed class CachePolicy {
 

@@ -2,7 +2,7 @@ package com.foryouandme.ui.auth.onboarding.step.screening
 
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.ScreeningQuestionItem
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.screening.Screening
+import com.foryouandme.entity.screening.Screening
 
 data class ScreeningState(
     val screening: Screening,

@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.common.response.activity
 
-import com.foryouandme.core.entity.activity.QuickActivityAnswer
+import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.core.ext.decodeBase64ImageFx
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi

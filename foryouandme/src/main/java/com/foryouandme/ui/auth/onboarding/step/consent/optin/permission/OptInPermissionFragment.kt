@@ -10,11 +10,11 @@ import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInError
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInLoading
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInState
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXColor
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
-import com.foryouandme.core.entity.configuration.checkbox.checkbox
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXColor
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.entity.configuration.checkbox.checkbox
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.removeBackButton

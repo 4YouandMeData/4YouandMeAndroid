@@ -2,7 +2,7 @@ package com.foryouandme.core.data.api.studyinfo.response
 
 import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
-import com.foryouandme.core.entity.studyinfo.StudyInfo
+import com.foryouandme.entity.studyinfo.StudyInfo
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi

@@ -23,7 +23,7 @@ import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.integration.IntegrationUseCase.getIntegration
-import com.foryouandme.core.entity.page.Page
+import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.web.asIntegrationCookies
 
 

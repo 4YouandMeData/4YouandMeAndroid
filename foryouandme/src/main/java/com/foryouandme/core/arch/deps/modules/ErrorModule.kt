@@ -7,7 +7,7 @@ import arrow.core.right
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.toForYouAndMeError
 import com.foryouandme.core.arch.error.unknownError
-import com.foryouandme.core.entity.configuration.Text
+import com.foryouandme.entity.configuration.Text
 import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import retrofit2.Response

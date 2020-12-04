@@ -12,8 +12,8 @@ import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfigur
 import com.foryouandme.core.cases.survey.SurveyUseCase.getSurvey
 import com.foryouandme.core.cases.task.TaskUseCase.getTask
 import com.foryouandme.core.cases.task.TaskUseCase.reschedule
-import com.foryouandme.core.entity.activity.TaskActivity
-import com.foryouandme.core.entity.activity.TaskActivityType
+import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.activity.TaskActivityType
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.asIntegrationCookies

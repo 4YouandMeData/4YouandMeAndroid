@@ -1,11 +1,11 @@
 package com.foryouandme.core.data.api.common.response.notifiable
 
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.integration.IntegrationApp
-import com.foryouandme.core.entity.notifiable.FeedAction
-import com.foryouandme.core.entity.notifiable.FeedAlert
-import com.foryouandme.core.entity.notifiable.FeedEducational
-import com.foryouandme.core.entity.notifiable.FeedReward
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.integration.IntegrationApp
+import com.foryouandme.entity.notifiable.FeedAction
+import com.foryouandme.entity.notifiable.FeedAlert
+import com.foryouandme.entity.notifiable.FeedEducational
+import com.foryouandme.entity.notifiable.FeedReward
 import com.foryouandme.core.ext.decodeBase64ImageFx
 import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json

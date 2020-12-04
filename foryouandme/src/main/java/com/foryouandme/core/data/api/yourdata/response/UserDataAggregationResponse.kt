@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.yourdata.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.yourdata.UserDataAggregation
+import com.foryouandme.entity.yourdata.UserDataAggregation
 import com.squareup.moshi.Json
 
 data class UserDataAggregationResponse(

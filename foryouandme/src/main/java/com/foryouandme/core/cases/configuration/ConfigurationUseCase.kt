@@ -10,7 +10,7 @@ import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.Memory
 import com.foryouandme.core.cases.configuration.ConfigurationRepository.fetchConfiguration
 import com.foryouandme.core.cases.configuration.ConfigurationRepository.loadConfiguration
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.startCoroutineAsync
 
 object ConfigurationUseCase {

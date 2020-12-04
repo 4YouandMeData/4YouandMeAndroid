@@ -1,8 +1,8 @@
 package com.foryouandme.core.data.api.common.response.activity
 
-import com.foryouandme.core.entity.activity.QuickActivity
-import com.foryouandme.core.entity.activity.QuickActivityAnswer
-import com.foryouandme.core.entity.configuration.HEXGradient
+import com.foryouandme.entity.activity.QuickActivity
+import com.foryouandme.entity.activity.QuickActivityAnswer
+import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasMany

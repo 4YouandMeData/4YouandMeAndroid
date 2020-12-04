@@ -5,7 +5,7 @@ import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.modules.IntegrationModule
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.entity.integration.Integration
+import com.foryouandme.entity.integration.Integration
 
 object IntegrationRepository {
 

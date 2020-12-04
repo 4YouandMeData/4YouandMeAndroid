@@ -9,9 +9,9 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.items.PagedRequestErrorItem
 import com.foryouandme.core.items.PagedRequestErrorViewHolder

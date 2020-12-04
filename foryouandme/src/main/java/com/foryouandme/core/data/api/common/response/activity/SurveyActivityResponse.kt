@@ -1,11 +1,10 @@
 package com.foryouandme.core.data.api.common.response.activity
 
-import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
-import com.foryouandme.core.entity.activity.Reschedule
-import com.foryouandme.core.entity.activity.TaskActivity
-import com.foryouandme.core.entity.activity.TaskActivityType
-import com.foryouandme.core.entity.configuration.HEXGradient
+import com.foryouandme.entity.activity.Reschedule
+import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.activity.TaskActivityType
+import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.core.ext.decodeBase64ImageFx
 import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json

@@ -4,7 +4,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.decodeBase64ImageFx
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync

@@ -17,8 +17,8 @@ import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.yourdata.YourDataPeriod
 import com.foryouandme.core.cases.yourdata.YourDataUseCase.getUserDataAggregation
 import com.foryouandme.core.cases.yourdata.YourDataUseCase.getYourData
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.yourdata.UserDataAggregation
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.yourdata.UserDataAggregation
 import com.foryouandme.ui.yourdata.items.YourDataButtonsItem
 import com.foryouandme.ui.yourdata.items.YourDataGraphErrorItem
 import com.foryouandme.ui.yourdata.items.YourDataGraphItem

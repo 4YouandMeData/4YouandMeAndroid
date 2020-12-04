@@ -5,7 +5,7 @@ import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
 import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.entity.consent.review.ConsentReview
+import com.foryouandme.entity.consent.review.ConsentReview
 
 object ConsentReviewRepository {
 

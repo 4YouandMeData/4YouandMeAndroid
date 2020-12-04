@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.background.shadow
+import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.result.SingleAnswerResult

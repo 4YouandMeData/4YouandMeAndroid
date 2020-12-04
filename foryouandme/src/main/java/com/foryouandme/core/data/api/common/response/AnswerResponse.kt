@@ -1,8 +1,8 @@
 package com.foryouandme.core.data.api.common.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.consent.informed.ConsentInfoAnswer
-import com.foryouandme.core.entity.screening.ScreeningAnswer
+import com.foryouandme.entity.consent.informed.ConsentInfoAnswer
+import com.foryouandme.entity.screening.ScreeningAnswer
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource

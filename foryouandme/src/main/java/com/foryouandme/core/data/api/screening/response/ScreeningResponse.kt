@@ -4,7 +4,7 @@ package com.foryouandme.core.data.api.screening.response
 import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
 import com.foryouandme.core.data.api.common.response.QuestionResponse
-import com.foryouandme.core.entity.screening.Screening
+import com.foryouandme.entity.screening.Screening
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 

@@ -6,7 +6,7 @@ import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.data.api.task.request.*
 import com.foryouandme.core.data.api.task.response.toTaskItems
-import com.foryouandme.core.entity.task.Task
+import com.foryouandme.entity.task.Task
 import com.foryouandme.data.network.Order
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

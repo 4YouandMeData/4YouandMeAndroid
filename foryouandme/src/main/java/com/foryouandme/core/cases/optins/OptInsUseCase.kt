@@ -8,7 +8,7 @@ import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.optins.OptInsRepository.fetchOptIns
 import com.foryouandme.core.cases.optins.OptInsRepository.uploadPermission
-import com.foryouandme.core.entity.optins.OptIns
+import com.foryouandme.entity.optins.OptIns
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter

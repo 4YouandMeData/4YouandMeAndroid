@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.optins.OptIns
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.optins.OptIns
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar

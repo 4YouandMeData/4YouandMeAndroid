@@ -7,7 +7,7 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.consent.informed.ConsentInfoRepository.fetchConsent
-import com.foryouandme.core.entity.consent.informed.ConsentInfo
+import com.foryouandme.entity.consent.informed.ConsentInfo
 
 object ConsentInfoUseCase {
 

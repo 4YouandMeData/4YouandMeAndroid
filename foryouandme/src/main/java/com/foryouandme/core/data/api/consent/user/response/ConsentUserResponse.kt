@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.consent.user.response
 
 import com.foryouandme.core.data.api.common.response.PageResponse
-import com.foryouandme.core.entity.consent.user.ConsentUser
+import com.foryouandme.entity.consent.user.ConsentUser
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi

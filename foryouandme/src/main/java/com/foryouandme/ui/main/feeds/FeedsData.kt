@@ -1,7 +1,7 @@
 package com.foryouandme.ui.main.feeds
 
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.user.User
+import com.foryouandme.entity.user.User
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 

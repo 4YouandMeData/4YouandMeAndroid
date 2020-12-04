@@ -6,9 +6,9 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.AuthSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import kotlinx.android.synthetic.main.sign_up_later.*

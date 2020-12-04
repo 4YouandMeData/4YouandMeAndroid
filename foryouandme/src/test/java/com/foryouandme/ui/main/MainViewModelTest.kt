@@ -7,7 +7,7 @@ import com.foryouandme.core.arch.navigation.ActivityAction
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.openApp
-import com.foryouandme.core.entity.integration.IntegrationApp
+import com.foryouandme.entity.integration.IntegrationApp
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Before

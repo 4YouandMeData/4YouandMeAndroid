@@ -1,8 +1,8 @@
 package com.foryouandme.core.activity
 
 import com.foryouandme.core.arch.livedata.Event
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.integration.IntegrationApp
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.integration.IntegrationApp
 
 data class FYAMState(
     val configuration: Configuration,

@@ -11,7 +11,7 @@ import com.foryouandme.core.cases.consent.user.ConsentUserRepository.createUserC
 import com.foryouandme.core.cases.consent.user.ConsentUserRepository.fetchConsent
 import com.foryouandme.core.cases.consent.user.ConsentUserRepository.resendConfirmationEmail
 import com.foryouandme.core.cases.consent.user.ConsentUserRepository.updateUserConsent
-import com.foryouandme.core.entity.consent.user.ConsentUser
+import com.foryouandme.entity.consent.user.ConsentUser
 
 object ConsentUserUseCase {
 

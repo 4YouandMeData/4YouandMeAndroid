@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.background.shadow
+import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.navigator

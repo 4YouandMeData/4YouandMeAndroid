@@ -25,7 +25,7 @@ import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.common.AnswerUseCase.sendAnswer
 import com.foryouandme.core.cases.screening.ScreeningUseCase.getScreening
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.countAndAccumulate
 import com.foryouandme.core.ext.startCoroutineAsync
 

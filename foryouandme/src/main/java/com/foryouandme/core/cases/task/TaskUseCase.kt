@@ -17,7 +17,7 @@ import com.foryouandme.core.cases.task.TaskRepository.uploadSurvey
 import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
 import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
 import com.foryouandme.core.data.api.task.request.SurveyUpdateRequest
-import com.foryouandme.core.entity.task.Task
+import com.foryouandme.entity.task.Task
 import com.foryouandme.data.network.Order
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList

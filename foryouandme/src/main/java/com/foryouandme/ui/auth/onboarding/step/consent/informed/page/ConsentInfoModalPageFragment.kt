@@ -7,8 +7,8 @@ import arrow.core.extensions.list.foldable.firstOrNone
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.consent.informed.ConsentInfo
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.consent.informed.ConsentInfo
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import kotlinx.android.synthetic.main.consent_info.*

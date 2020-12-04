@@ -5,7 +5,7 @@ import android.text.InputFilter
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.background.shadow
+import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.hideKeyboard
 import com.foryouandme.core.ext.startCoroutineAsync

@@ -4,7 +4,7 @@ import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
 import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
 import com.foryouandme.core.data.api.task.request.SurveyUpdateRequest
-import com.foryouandme.core.entity.task.Task
+import com.foryouandme.entity.task.Task
 import java.io.File
 
 interface TaskRepository {

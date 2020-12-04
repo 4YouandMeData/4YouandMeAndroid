@@ -1,7 +1,7 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.optin
 
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.optins.OptIns
+import com.foryouandme.entity.optins.OptIns
 
 data class OptInState(
     val optIns: OptIns,

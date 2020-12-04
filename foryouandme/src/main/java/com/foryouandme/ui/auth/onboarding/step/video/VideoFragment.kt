@@ -9,8 +9,8 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player

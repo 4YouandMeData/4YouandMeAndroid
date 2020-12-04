@@ -1,11 +1,11 @@
 package com.foryouandme.core.data.api.auth.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.integration.IntegrationApp
-import com.foryouandme.core.entity.user.User
-import com.foryouandme.core.entity.user.UserCustomData
-import com.foryouandme.core.entity.user.UserCustomDataItem
-import com.foryouandme.core.entity.user.UserCustomDataType
+import com.foryouandme.entity.integration.IntegrationApp
+import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
+import com.foryouandme.entity.user.UserCustomDataItem
+import com.foryouandme.entity.user.UserCustomDataType
 import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi

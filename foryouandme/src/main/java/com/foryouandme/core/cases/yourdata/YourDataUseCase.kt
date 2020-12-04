@@ -8,8 +8,8 @@ import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.yourdata.YourDataRepository.fetchUserDataAttributes
 import com.foryouandme.core.cases.yourdata.YourDataRepository.fetchYourData
-import com.foryouandme.core.entity.yourdata.UserDataAggregation
-import com.foryouandme.core.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.UserDataAggregation
+import com.foryouandme.entity.yourdata.YourData
 
 object YourDataUseCase {
 

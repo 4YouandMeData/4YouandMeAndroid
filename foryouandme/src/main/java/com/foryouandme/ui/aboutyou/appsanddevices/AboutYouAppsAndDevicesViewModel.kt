@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.cases.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 
 class AboutYouAppsAndDevicesViewModel(
     navigator: Navigator,

@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.foldSuspend
 
 class OnboardingViewModel(

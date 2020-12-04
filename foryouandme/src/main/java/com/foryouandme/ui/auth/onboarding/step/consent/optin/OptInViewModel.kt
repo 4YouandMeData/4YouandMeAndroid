@@ -18,7 +18,7 @@ import com.foryouandme.core.cases.optins.OptInsUseCase.getOptIns
 import com.foryouandme.core.cases.optins.OptInsUseCase.setPermission
 import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
 import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermissions
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.mapNotNull
 
 

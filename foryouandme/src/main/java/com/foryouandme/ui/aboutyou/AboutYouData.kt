@@ -1,7 +1,7 @@
 package com.foryouandme.ui.aboutyou
 
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.user.User
+import com.foryouandme.entity.user.User
 
 data class AboutYouState(val user: User)
 

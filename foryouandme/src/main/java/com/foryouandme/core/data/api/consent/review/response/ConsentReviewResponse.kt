@@ -2,7 +2,7 @@ package com.foryouandme.core.data.api.consent.review.response
 
 import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
-import com.foryouandme.core.entity.consent.review.ConsentReview
+import com.foryouandme.entity.consent.review.ConsentReview
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 

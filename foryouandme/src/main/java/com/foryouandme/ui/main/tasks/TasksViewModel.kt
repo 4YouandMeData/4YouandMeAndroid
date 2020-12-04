@@ -13,11 +13,11 @@ import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.task.TaskUseCase.getTasks
 import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
-import com.foryouandme.core.entity.activity.QuickActivity
-import com.foryouandme.core.entity.activity.QuickActivityAnswer
-import com.foryouandme.core.entity.activity.TaskActivity
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.task.Task
+import com.foryouandme.entity.activity.QuickActivity
+import com.foryouandme.entity.activity.QuickActivityAnswer
+import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.task.Task
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.ext.startCoroutineCancellableAsync

@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.yourdata.response
 
-import com.foryouandme.core.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.YourData
 import com.squareup.moshi.Json
 
 data class YourDataResponse(@Json(name = "data") val data: YourDataInfoResponse? = null) {

@@ -3,7 +3,7 @@ package com.foryouandme.core.data.api.consent.informed.response
 import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
 import com.foryouandme.core.data.api.common.response.QuestionResponse
-import com.foryouandme.core.entity.consent.informed.ConsentInfo
+import com.foryouandme.entity.consent.informed.ConsentInfo
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 

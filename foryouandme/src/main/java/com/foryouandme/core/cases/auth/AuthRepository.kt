@@ -15,8 +15,8 @@ import com.foryouandme.core.data.api.auth.request.*
 import com.foryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.response.UserResponse
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.user.*
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.*
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.mapNotNull
 import org.threeten.bp.ZoneId

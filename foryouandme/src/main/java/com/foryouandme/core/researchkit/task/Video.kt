@@ -1,7 +1,7 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.researchkit.step.introduction.list.IntroductionItem
 import com.foryouandme.researchkit.task.video.VideoDiaryTask
 

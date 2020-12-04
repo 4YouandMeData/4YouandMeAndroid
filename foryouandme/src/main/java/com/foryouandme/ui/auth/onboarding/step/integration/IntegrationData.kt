@@ -2,8 +2,8 @@ package com.foryouandme.ui.auth.onboarding.step.integration
 
 
 import com.foryouandme.core.arch.navigation.NavigationAction
-import com.foryouandme.core.entity.integration.Integration
-import com.foryouandme.core.entity.integration.IntegrationApp
+import com.foryouandme.entity.integration.Integration
+import com.foryouandme.entity.integration.IntegrationApp
 
 data class IntegrationState(
     val integration: Integration,

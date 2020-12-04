@@ -21,8 +21,8 @@ import com.foryouandme.core.cases.auth.AuthRepository.updateUserCustomData
 import com.foryouandme.core.cases.auth.AuthRepository.updateUserTimeZone
 import com.foryouandme.core.cases.auth.AuthRepository.verifyPhoneNumber
 import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
-import com.foryouandme.core.entity.user.User
-import com.foryouandme.core.entity.user.UserCustomData
+import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
 import org.threeten.bp.ZoneId
 
 object AuthUseCase {

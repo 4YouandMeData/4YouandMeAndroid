@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import com.foryouandme.R
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.EConsentAnswerPayload.ANSWER
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.consent.informed.ConsentInfoAnswer
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.consent.informed.ConsentInfoAnswer
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory

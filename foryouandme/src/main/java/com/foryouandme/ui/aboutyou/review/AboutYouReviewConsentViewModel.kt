@@ -8,8 +8,8 @@ import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.page.Page
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.page.Page
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 
 class AboutYouReviewConsentViewModel(

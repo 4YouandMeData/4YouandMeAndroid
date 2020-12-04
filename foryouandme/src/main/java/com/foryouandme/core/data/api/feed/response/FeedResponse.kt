@@ -9,8 +9,8 @@ import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertRespons
 import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import com.foryouandme.core.data.api.common.response.notifiable.NotifiableDataResponse
-import com.foryouandme.core.entity.feed.Feed
-import com.foryouandme.core.entity.feed.FeedType
+import com.foryouandme.entity.feed.Feed
+import com.foryouandme.entity.feed.FeedType
 import com.foryouandme.core.ext.toEither
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne

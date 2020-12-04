@@ -9,9 +9,9 @@ import com.foryouandme.core.cases.task.TaskUseCase.updateFitnessTask
 import com.foryouandme.core.data.api.task.request.FitnessSitRequest
 import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
 import com.foryouandme.core.data.api.task.request.FitnessWalkRequest
-import com.foryouandme.core.entity.activity.Reschedule
-import com.foryouandme.core.entity.activity.Reschedule.Companion.isEnabled
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.activity.Reschedule
+import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.invokeAsForYouAndMeError
 import com.foryouandme.core.ext.readJson
 import com.foryouandme.researchkit.result.FileResult

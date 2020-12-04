@@ -7,7 +7,7 @@ import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.Memory
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.evalOnMain
 import kotlinx.coroutines.Dispatchers
 

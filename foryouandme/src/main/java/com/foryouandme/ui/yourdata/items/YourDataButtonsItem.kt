@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
 import com.foryouandme.core.cases.yourdata.YourDataPeriod
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.background.roundBackground
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.background.roundBackground
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory

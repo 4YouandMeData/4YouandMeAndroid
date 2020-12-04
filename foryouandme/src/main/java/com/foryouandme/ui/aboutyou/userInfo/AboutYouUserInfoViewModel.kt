@@ -12,11 +12,11 @@ import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase.getUser
 import com.foryouandme.core.cases.auth.AuthUseCase.updateUser
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.user.User
-import com.foryouandme.core.entity.user.UserCustomData
-import com.foryouandme.core.entity.user.UserCustomDataItem
-import com.foryouandme.core.entity.user.UserCustomDataType
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
+import com.foryouandme.entity.user.UserCustomDataItem
+import com.foryouandme.entity.user.UserCustomDataType
 import com.foryouandme.core.ext.emptyOrBlankToNull
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import org.threeten.bp.LocalDate

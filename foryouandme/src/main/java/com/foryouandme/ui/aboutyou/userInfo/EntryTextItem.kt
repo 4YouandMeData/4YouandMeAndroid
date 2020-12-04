@@ -9,7 +9,7 @@ import arrow.fx.coroutines.Disposable
 import arrow.fx.coroutines.cancelBoundary
 import com.foryouandme.R
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.compare

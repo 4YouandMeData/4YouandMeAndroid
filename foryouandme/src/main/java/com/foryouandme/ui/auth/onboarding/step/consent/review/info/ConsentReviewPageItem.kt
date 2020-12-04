@@ -3,9 +3,9 @@ package com.foryouandme.ui.auth.onboarding.step.consent.review.info
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.background.roundBackground
-import com.foryouandme.core.entity.page.Page
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.background.roundBackground
+import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.html.setHtmlText
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder

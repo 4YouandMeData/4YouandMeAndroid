@@ -3,10 +3,9 @@ package com.foryouandme.core.items
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.activity.FYAMError
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.entity.configuration.Configuration
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.button.button
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.compare
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder

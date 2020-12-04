@@ -5,7 +5,7 @@ import arrow.core.Either
 import arrow.fx.coroutines.evalOn
 import com.foryouandme.R
 import com.foryouandme.core.arch.deps.modules.ErrorModule
-import com.foryouandme.core.entity.configuration.Text
+import com.foryouandme.entity.configuration.Text
 import com.squareup.moshi.Json
 import kotlinx.coroutines.Dispatchers
 import okhttp3.RequestBody

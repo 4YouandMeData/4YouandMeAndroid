@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.configuration.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.Configuration
 import com.squareup.moshi.Json
 
 data class ConfigurationResponse(

@@ -4,9 +4,9 @@ import com.foryouandme.core.data.api.auth.request.UserCustomDataItemRequest.Comp
 import com.foryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_DATE
 import com.foryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_ITEMS
 import com.foryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_STRING
-import com.foryouandme.core.entity.user.UserCustomData
-import com.foryouandme.core.entity.user.UserCustomDataItem
-import com.foryouandme.core.entity.user.UserCustomDataType
+import com.foryouandme.entity.user.UserCustomData
+import com.foryouandme.entity.user.UserCustomDataItem
+import com.foryouandme.entity.user.UserCustomDataType
 import com.squareup.moshi.Json
 
 data class UserCustomDataUpdateRequest(

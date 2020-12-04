@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.entity.configuration.HEXColor
-import com.foryouandme.core.entity.configuration.HEXGradient
-import com.foryouandme.core.entity.configuration.button.button
+import com.foryouandme.entity.configuration.HEXColor
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.setOnClickListenerAsync

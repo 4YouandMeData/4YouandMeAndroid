@@ -6,7 +6,7 @@ import android.os.Build
 import android.webkit.*
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
-import com.foryouandme.core.entity.user.User
+import com.foryouandme.entity.user.User
 import com.foryouandme.core.ext.evalOnMain
 import timber.log.Timber
 import java.net.URL

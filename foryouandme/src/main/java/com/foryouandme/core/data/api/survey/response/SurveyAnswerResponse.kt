@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.survey.response
 
 import arrow.core.Either
-import com.foryouandme.core.entity.survey.SurveyAnswer
+import com.foryouandme.entity.survey.SurveyAnswer
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
