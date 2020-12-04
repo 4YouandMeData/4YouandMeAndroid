@@ -1,4 +1,4 @@
-package com.foryouandme.core.arch.deps
+package com.foryouandme.data.datasource
 
 abstract class Environment {
 

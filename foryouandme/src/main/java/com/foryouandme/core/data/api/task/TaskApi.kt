@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.task
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.task.request.*
 import com.foryouandme.core.data.api.task.response.TaskResponse
 import okhttp3.MultipartBody

@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.consent.user
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.consent.user.request.ConfirmUserConsentEmailRequest
 import com.foryouandme.core.data.api.consent.user.request.CreateUserConsentRequest
 import com.foryouandme.core.data.api.consent.user.request.UpdateUserConsentRequest

@@ -1,17 +1,17 @@
 package com.foryouandme.app
 
-import android.app.Application
-import com.foryouandme.core.arch.deps.Environment
+import android.content.Context
+import com.foryouandme.data.datasource.Environment
 
-class SampleEnvironment(private val application: Application) : Environment() {
+class SampleEnvironment(private val context: Context) : Environment() {
 
     override fun isDebuggable(): Boolean = true
 
     override fun isStaging(): Boolean = true
 
     override fun studyId(): String =
-        application.getString(R.string.STUDY_ID)
+        context.getString(R.string.STUDY_ID)
 
     override fun getApiBaseUrl(): String =
-        application.getString(R.string.BASE_URL)
+        context.getString(R.string.BASE_URL)
 }

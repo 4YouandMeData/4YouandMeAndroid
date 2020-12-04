@@ -19,7 +19,7 @@ import com.foryouandme.core.data.api.common.response.activity.QuickActivityRespo
 import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
-import com.foryouandme.core.data.api.configuration.ConfigurationApi
+import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
@@ -47,6 +47,7 @@ import com.foryouandme.core.data.api.task.TaskApi
 import com.foryouandme.core.data.api.task.response.TaskResponse
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.core.researchkit.task.FYAMTaskConfiguration
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi

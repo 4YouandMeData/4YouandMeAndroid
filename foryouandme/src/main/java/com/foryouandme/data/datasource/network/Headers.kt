@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api
+package com.foryouandme.data.datasource.network
 
 object Headers {
 

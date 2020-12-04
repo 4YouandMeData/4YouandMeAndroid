@@ -1,11 +1,10 @@
 package com.foryouandme.core.cases.task
 
 import arrow.core.right
-import com.foryouandme.core.arch.deps.Environment
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.core.arch.deps.modules.AuthModule
 import com.foryouandme.core.arch.deps.modules.ErrorModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.auth.AuthUseCase
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.task.TaskRepository.reschedule

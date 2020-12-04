@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.auth
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.auth.request.*
 import com.foryouandme.core.data.api.auth.response.UserResponse
 import retrofit2.Response

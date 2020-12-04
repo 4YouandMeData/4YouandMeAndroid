@@ -38,7 +38,7 @@ import com.foryouandme.entity.user.User
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.data.network.Order
+import com.foryouandme.data.datasource.network.Order
 import com.foryouandme.ui.main.MainPageToAboutYouPage
 import com.foryouandme.ui.main.MainPageToFaq
 import com.foryouandme.ui.main.MainPageToInformation

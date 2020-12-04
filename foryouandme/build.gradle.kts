@@ -101,7 +101,7 @@ dependencies {
 
     /* --- moshi --- */
 
-    implementation(Squareup.Moshi.Kotlin.get())
+    api(Squareup.Moshi.Kotlin.get())
     implementation(Squareup.Moshi.Adapters.get())
 
     /* --- json api --- */

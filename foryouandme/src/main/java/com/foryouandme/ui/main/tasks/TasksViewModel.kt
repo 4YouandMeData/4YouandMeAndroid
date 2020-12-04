@@ -21,7 +21,7 @@ import com.foryouandme.entity.task.Task
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.data.network.Order
+import com.foryouandme.data.datasource.network.Order
 import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter

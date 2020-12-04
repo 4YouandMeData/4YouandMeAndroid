@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.common
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.common.request.AnswersRequest
 import retrofit2.http.Body
 import retrofit2.http.Header

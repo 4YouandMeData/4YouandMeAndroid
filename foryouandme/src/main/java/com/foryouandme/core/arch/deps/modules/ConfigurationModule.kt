@@ -1,8 +1,8 @@
 package com.foryouandme.core.arch.deps.modules
 
 import android.content.SharedPreferences
-import com.foryouandme.core.arch.deps.Environment
-import com.foryouandme.core.data.api.configuration.ConfigurationApi
+import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.squareup.moshi.Moshi
 
 data class ConfigurationModule(

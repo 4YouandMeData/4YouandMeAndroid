@@ -5,15 +5,17 @@ import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
 import com.foryouandme.BuildConfig
 import com.foryouandme.core.arch.android.AppInjector
-import com.foryouandme.core.arch.deps.*
-import com.foryouandme.core.ext.videoConfiguration
+import com.foryouandme.core.arch.deps.ForYouAndMeInjector
+import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.Injector
+import com.foryouandme.core.arch.deps.VideoConfiguration
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskInjector
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import timber.log.Timber
 import timber.log.Timber.DebugTree
-
 
 abstract class ForYouAndMeApp : Application(), AppInjector, TaskInjector, CameraXConfig.Provider {
 

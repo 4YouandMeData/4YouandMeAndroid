@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.survey
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.survey.response.SurveyResponse
 import retrofit2.http.GET
 import retrofit2.http.Header

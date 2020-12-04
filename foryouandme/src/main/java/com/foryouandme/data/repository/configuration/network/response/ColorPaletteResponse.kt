@@ -1,6 +1,5 @@
-package com.foryouandme.core.data.api.configuration.response
+package com.foryouandme.data.repository.configuration.network.response
 
-import arrow.core.Either
 import com.foryouandme.entity.configuration.Theme
 import com.foryouandme.entity.configuration.toHEXColor
 import com.squareup.moshi.Json
@@ -24,25 +23,28 @@ data class ColorPaletteResponse(
 
 ) {
 
-    suspend fun toTheme(): Theme? =
-        Either.catch {
-
-            Theme(
-                primaryColorStart?.toHEXColor()!!,
-                primaryColorEnd?.toHEXColor()!!,
-                secondaryColor?.toHEXColor()!!,
-                tertiaryColorStart?.toHEXColor()!!,
-                tertiaryColorEnd?.toHEXColor()!!,
-                primaryTextColor?.toHEXColor()!!,
-                secondaryTextColor?.toHEXColor()!!,
-                tertiaryTextColor?.toHEXColor()!!,
-                fourthTextColor?.toHEXColor()!!,
-                primaryMenuColor?.toHEXColor()!!,
-                secondaryMenuColor?.toHEXColor()!!,
-                activeColor?.toHEXColor()!!,
-                deactiveColor?.toHEXColor()!!,
-                fourthColor?.toHEXColor()!!
+    fun toTheme(): Theme? =
+        when (null) {
+            primaryColorStart, primaryColorEnd, secondaryColor, tertiaryColorStart,
+            tertiaryColorEnd, primaryTextColor, secondaryColor, secondaryTextColor,
+            tertiaryTextColor, fourthTextColor, primaryMenuColor, secondaryMenuColor,
+            activeColor, deactiveColor, fourthColor -> null
+            else -> Theme(
+                primaryColorStart.toHEXColor(),
+                primaryColorEnd.toHEXColor(),
+                secondaryColor.toHEXColor(),
+                tertiaryColorStart.toHEXColor(),
+                tertiaryColorEnd.toHEXColor(),
+                primaryTextColor.toHEXColor(),
+                secondaryTextColor.toHEXColor(),
+                tertiaryTextColor.toHEXColor(),
+                fourthTextColor.toHEXColor(),
+                primaryMenuColor.toHEXColor(),
+                secondaryMenuColor.toHEXColor(),
+                activeColor.toHEXColor(),
+                deactiveColor.toHEXColor(),
+                fourthColor.toHEXColor()
             )
 
-        }.orNull()
+        }
 }

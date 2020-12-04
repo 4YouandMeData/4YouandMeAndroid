@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.studyinfo
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.http.GET

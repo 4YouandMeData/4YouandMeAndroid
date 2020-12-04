@@ -7,7 +7,7 @@ import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.data.api.feed.response.toFeedItems
 import com.foryouandme.entity.feed.Feed
-import com.foryouandme.data.network.Order
+import com.foryouandme.data.datasource.network.Order
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody

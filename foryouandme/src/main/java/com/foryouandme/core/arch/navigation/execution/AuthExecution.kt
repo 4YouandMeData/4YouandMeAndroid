@@ -4,6 +4,7 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.phone.EnterPhoneFragmentDirections
 import com.foryouandme.ui.auth.phone.code.PhoneValidationCodeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
+import com.foryouandme.ui.auth.splash.SplashFragmentDirections
 
 fun splashToWelcome(): NavigationExecution = {
     it.navigate(R.id.action_splash_to_welcome)

@@ -1,6 +1,5 @@
-package com.foryouandme.core.data.api.configuration.response
+package com.foryouandme.data.repository.configuration.network.response
 
-import arrow.core.Either
 import com.foryouandme.entity.configuration.Configuration
 import com.squareup.moshi.Json
 
@@ -14,14 +13,21 @@ data class ConfigurationResponse(
 
 ) {
 
-    suspend fun toConfiguration(): Configuration? =
-        Either.catch {
+    fun toConfiguration(): Configuration? {
 
-            Configuration(
-                colorPalette?.toTheme()!!,
-                strings?.toText()!!,
-                countryCodes ?: emptyList()
-            )
+        val theme = colorPalette?.toTheme()
+        val text = strings?.toText()
 
-        }.orNull()
+        return when (null) {
+            theme, text -> null
+            else ->
+                Configuration(
+                    theme,
+                    text,
+                    countryCodes ?: emptyList()
+                )
+        }
+
+    }
+
 }

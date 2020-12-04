@@ -1,6 +1,6 @@
-package com.foryouandme.core.data.api.configuration
+package com.foryouandme.data.repository.configuration.network
 
-import com.foryouandme.core.data.api.configuration.response.ConfigurationResponse
+import com.foryouandme.data.repository.configuration.network.response.ConfigurationResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 

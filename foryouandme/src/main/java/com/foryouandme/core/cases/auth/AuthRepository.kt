@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.Memory
 import com.foryouandme.core.cases.push.PushUseCase
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.auth.request.*
 import com.foryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest.Companion.asRequest

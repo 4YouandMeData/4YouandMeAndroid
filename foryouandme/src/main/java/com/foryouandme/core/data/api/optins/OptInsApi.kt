@@ -1,6 +1,6 @@
 package com.foryouandme.core.data.api.optins
 
-import com.foryouandme.core.data.api.Headers
+import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.optins.request.OptInPermissionRequest
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import moe.banana.jsonapi2.ObjectDocument

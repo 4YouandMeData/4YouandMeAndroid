@@ -1,4 +1,4 @@
-package com.foryouandme.data.network
+package com.foryouandme.data.datasource.network
 
 sealed class Order(val value: String) {
 

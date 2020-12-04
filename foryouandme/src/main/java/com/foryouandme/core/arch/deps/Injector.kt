@@ -5,7 +5,7 @@ import com.foryouandme.core.arch.deps.modules.*
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.data.api.auth.AuthApi
 import com.foryouandme.core.data.api.common.AnswerApi
-import com.foryouandme.core.data.api.configuration.ConfigurationApi
+import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
 import com.foryouandme.core.data.api.consent.user.ConsentUserApi
@@ -17,6 +17,7 @@ import com.foryouandme.core.data.api.studyinfo.StudyInfoApi
 import com.foryouandme.core.data.api.survey.SurveyApi
 import com.foryouandme.core.data.api.task.TaskApi
 import com.foryouandme.core.data.api.yourdata.YourDataApi
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
