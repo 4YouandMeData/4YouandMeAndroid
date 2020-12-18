@@ -12,11 +12,12 @@ import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfigur
 import com.foryouandme.core.cases.survey.SurveyUseCase.getSurvey
 import com.foryouandme.core.cases.task.TaskUseCase.getTask
 import com.foryouandme.core.cases.task.TaskUseCase.reschedule
-import com.foryouandme.entity.activity.TaskActivity
-import com.foryouandme.entity.activity.TaskActivityType
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.asIntegrationCookies
+import com.foryouandme.data.datasource.Environment
+import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.activity.TaskActivityType
 import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.video.VideoStep
@@ -27,6 +28,7 @@ import com.foryouandme.researchkit.task.TaskResponse
 import com.squareup.moshi.Moshi
 
 class FYAMTaskConfiguration(
+    private val environment: Environment,
     private val configurationModule: ConfigurationModule,
     private val imageConfiguration: ImageConfiguration,
     private val moshi: Moshi,
@@ -91,7 +93,7 @@ class FYAMTaskConfiguration(
                             ?.let { token ->
 
                                 val camCogUrl =
-                                    "https://api-4youandme-staging.balzo.eu/camcog/tasks/$id"
+                                    "${environment.getApiBaseUrl()}camcog/tasks/$id"
 
                                 FYAMCamCogTask(
                                     id,

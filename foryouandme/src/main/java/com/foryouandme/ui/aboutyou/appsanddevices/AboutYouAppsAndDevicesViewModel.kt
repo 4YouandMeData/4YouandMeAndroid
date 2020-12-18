@@ -1,7 +1,5 @@
 package com.foryouandme.ui.aboutyou.appsanddevices
 
-import com.foryouandme.ui.aboutyou.AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin
-import com.foryouandme.ui.aboutyou.AboutYouNavController
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
 import com.foryouandme.core.arch.deps.ImageConfiguration
@@ -10,7 +8,10 @@ import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.cases.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.aboutyou.AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin
+import com.foryouandme.ui.aboutyou.AboutYouNavController
 
 class AboutYouAppsAndDevicesViewModel(
     navigator: Navigator,
@@ -21,6 +22,7 @@ class AboutYouAppsAndDevicesViewModel(
     /*--- data ---*/
 
     fun createGarminItem(
+        environment: Environment,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
@@ -30,10 +32,11 @@ class AboutYouAppsAndDevicesViewModel(
             "Garmin",
             imageConfiguration.garmin(),
             isConnected,
-            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/garmin"
+            "${environment.getOAuthBaseUrl()}/users/integration_oauth/garmin"
         )
 
     fun createFitbitItem(
+        environment: Environment,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
@@ -43,10 +46,11 @@ class AboutYouAppsAndDevicesViewModel(
             "Fitbit",
             imageConfiguration.smartwatch(),
             isConnected,
-            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/fitbit"
+            "${environment.getOAuthBaseUrl()}/users/integration_oauth/fitbit"
         )
 
     fun createOuraItem(
+        environment: Environment,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
@@ -56,10 +60,11 @@ class AboutYouAppsAndDevicesViewModel(
             "Oura",
             imageConfiguration.oura(),
             isConnected,
-            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/oura"
+            "${environment.getOAuthBaseUrl()}/users/integration_oauth/oura"
         )
 
     fun createInstagramItem(
+        environment: Environment,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
@@ -69,10 +74,11 @@ class AboutYouAppsAndDevicesViewModel(
             "Instagram",
             imageConfiguration.instagram(),
             isConnected,
-            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/instagram"
+            "${environment.getOAuthBaseUrl()}/users/integration_oauth/instagram"
         )
 
     fun createRescueTimeItem(
+        environment: Environment,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
@@ -82,10 +88,11 @@ class AboutYouAppsAndDevicesViewModel(
             "RescueTime",
             imageConfiguration.rescuetime(),
             isConnected,
-            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/rescuetime"
+            "${environment.getOAuthBaseUrl()}/users/integration_oauth/rescuetime"
         )
 
     fun createTwitterItem(
+        environment: Environment,
         configuration: Configuration,
         imageConfiguration: ImageConfiguration,
         isConnected: Boolean
@@ -95,7 +102,7 @@ class AboutYouAppsAndDevicesViewModel(
             "Twitter",
             imageConfiguration.twitter(),
             isConnected,
-            "https://admin-4youandme-staging.balzo.eu/users/integration_oauth/twitter"
+            "${environment.getOAuthBaseUrl()}/users/integration_oauth/twitter"
         )
 
     /*--- navigation ---*/

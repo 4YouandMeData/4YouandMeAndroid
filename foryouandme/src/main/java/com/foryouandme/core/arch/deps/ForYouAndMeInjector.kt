@@ -221,6 +221,7 @@ class ForYouAndMeInjector(
 
     override val taskConfiguration: TaskConfiguration =
         FYAMTaskConfiguration(
+            environment,
             configurationModule(),
             imageConfiguration,
             moshi,

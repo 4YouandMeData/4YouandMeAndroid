@@ -9,7 +9,6 @@ import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.integration.IntegrationApp.*
 import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
@@ -60,36 +59,42 @@ class AboutYouAppsAndDevicesFragment :
                 .map {
                     when (it) {
                         Garmin -> viewModel.createGarminItem(
+                            injector.environment,
                             config,
                             imageConfiguration,
                             user.identities.contains(Garmin).not()
                         )
 
                         Fitbit -> viewModel.createFitbitItem(
+                            injector.environment,
                             config,
                             imageConfiguration,
                             user.identities.contains(Fitbit).not()
                         )
 
                         Oura -> viewModel.createOuraItem(
+                            injector.environment,
                             config,
                             imageConfiguration,
                             user.identities.contains(Oura).not()
                         )
 
                         Instagram -> viewModel.createInstagramItem(
+                            injector.environment,
                             config,
                             imageConfiguration,
                             user.identities.contains(Instagram).not()
                         )
 
                         RescueTime -> viewModel.createRescueTimeItem(
+                            injector.environment,
                             config,
                             imageConfiguration,
                             user.identities.contains(RescueTime).not()
                         )
 
                         Twitter -> viewModel.createTwitterItem(
+                            injector.environment,
                             config,
                             imageConfiguration,
                             user.identities.contains(Twitter).not()

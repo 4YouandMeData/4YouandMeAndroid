@@ -14,4 +14,8 @@ class SampleEnvironment(private val context: Context) : Environment() {
 
     override fun getApiBaseUrl(): String =
         context.getString(R.string.BASE_URL)
+
+    override fun getOAuthBaseUrl(): String =
+        context.getString(R.string.OAUTH_BASE_URL)
+
 }
