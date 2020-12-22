@@ -18,6 +18,8 @@ import com.foryouandme.core.data.api.common.response.activity.QuickActivityOptio
 import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
+import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
+import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
@@ -153,6 +155,8 @@ class ForYouAndMeInjector(
                     .add(TaskActivityResponse::class.java)
                     .add(SurveyActivityResponse::class.java)
                     .add(FeedRewardResponse::class.java)
+                    .add(FeedAlertResponse::class.java)
+                    .add(FeedEducationalResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
