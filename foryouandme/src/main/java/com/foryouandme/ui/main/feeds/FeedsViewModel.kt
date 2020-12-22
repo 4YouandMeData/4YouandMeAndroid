@@ -23,6 +23,10 @@ import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthUseCase.getUser
 import com.foryouandme.core.cases.feed.FeedUseCase.getFeeds
 import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
+import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.startCoroutineCancellableAsync
+import com.foryouandme.data.datasource.network.Order
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
@@ -35,10 +39,6 @@ import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
 import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
-import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.data.datasource.network.Order
 import com.foryouandme.ui.main.MainPageToAboutYouPage
 import com.foryouandme.ui.main.MainPageToFaq
 import com.foryouandme.ui.main.MainPageToInformation
@@ -48,10 +48,7 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import kotlinx.coroutines.Dispatchers
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
@@ -341,7 +338,8 @@ class FeedsViewModel(
                             else -> ZonedDateTime.now()
                         }
 
-                    date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    date.withZoneSameInstant(ZoneId.systemDefault())
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE)
 
                 },
                 { it }

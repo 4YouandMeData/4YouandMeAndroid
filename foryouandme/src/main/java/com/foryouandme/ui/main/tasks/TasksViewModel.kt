@@ -13,20 +13,21 @@ import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.task.TaskUseCase.getTasks
 import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
+import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.startCoroutineCancellableAsync
+import com.foryouandme.data.datasource.network.Order
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.task.Task
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
-import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.data.datasource.network.Order
 import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 class TasksViewModel(
@@ -178,7 +179,10 @@ class TasksViewModel(
         tasks
             .sortedByDescending { it.from.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) }
             .groupBy(
-                { it.from.format(DateTimeFormatter.ISO_LOCAL_DATE) },
+                {
+                    it.from.withZoneSameInstant(ZoneId.systemDefault())
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE)
+                },
                 { it }
             ).forEach { (key, value) ->
 
