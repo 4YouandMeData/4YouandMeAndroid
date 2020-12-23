@@ -145,7 +145,8 @@ data class Tab(
 
 data class Activity(
     val activityButtonDefault: String,
-    val quickActivityButtonDefault: String
+    val quickActivityButtonDefault: String,
+    val quickActivityButtonNext: String
 )
 
 data class Feed(

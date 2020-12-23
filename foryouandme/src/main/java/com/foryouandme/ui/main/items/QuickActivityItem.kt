@@ -4,12 +4,12 @@ import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
+import com.foryouandme.core.ext.getOr
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.getOr
 import com.foryouandme.ui.main.items.EQuickActivityPayload.SELECTED_ANSWER
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.compare
@@ -125,11 +125,21 @@ class QuickActivityViewHolder(
         review.background = button(item.configuration.theme.secondaryColor.color())
         review.setTextColor(item.configuration.theme.primaryTextColor.color())
         review.text =
-            item.data.button.getOr { item.configuration.text.activity.quickActivityButtonDefault }
+            item.data.button
+                .getOr {
+                    if (position == adapter.getItems().size - 1)
+                        item.configuration.text.activity.quickActivityButtonDefault
+                    else
+                        item.configuration.text.activity.quickActivityButtonNext
+                }
 
     }
 
-    override fun bind(item: QuickActivityItem, position: Int, payloads: List<EQuickActivityPayload>) {
+    override fun bind(
+        item: QuickActivityItem,
+        position: Int,
+        payloads: List<EQuickActivityPayload>
+    ) {
         super.bind(item, position, payloads)
 
         payloads.forEach { payload ->

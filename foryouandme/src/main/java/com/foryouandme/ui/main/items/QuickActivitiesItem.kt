@@ -64,6 +64,7 @@ class QuickActivitiesViewHolder(
 
             }
         })
+        view_pager.isUserInputEnabled = false
 
         val counterText = "${position + 1}/${item.quickActivities.itemCount}"
         count.text = counterText

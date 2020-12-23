@@ -92,6 +92,7 @@ data class StringsResponse(
 
     @Json(name = "ACTIVITY_BUTTON_DEFAULT") val activityButtonDefault: String? = null,
     @Json(name = "QUICK_ACTIVITY_BUTTON_DEFAULT") val quickActivityButtonDefault: String? = null,
+    @Json(name = "QUICK_ACTIVITY_BUTTON_NEXT") val quickActivityButtonNext: String? = null,
 
     @Json(name = "EDUCATIONAL_BUTTON_DEFAULT") val educationalButtonDefault: String? = null,
     @Json(name = "REWARD_BUTTON_DEFAULT") val rewardButtonDefault: String? = null,
@@ -459,11 +460,12 @@ data class StringsResponse(
 
     private fun toActivity(): Activity? =
         when (null) {
-            activityButtonDefault, quickActivityButtonDefault -> null
+            activityButtonDefault, quickActivityButtonDefault, quickActivityButtonNext -> null
             else ->
                 Activity(
                     activityButtonDefault,
-                    quickActivityButtonDefault
+                    quickActivityButtonDefault,
+                    quickActivityButtonNext
                 )
 
         }
