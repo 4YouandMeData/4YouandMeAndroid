@@ -59,14 +59,16 @@ class QuickActivitiesViewHolder(
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val counterText = "${position + 1}/${item.quickActivities.itemCount}"
+                val currentQuestionNumber = item.configuration.text.activity.quickActivitiesTotalNumber.toInt() + 1 - item.quickActivities.itemCount.toInt()
+                val counterText = "${currentQuestionNumber}/${item.configuration.text.activity.quickActivitiesTotalNumber}"
                 count.text = counterText
 
             }
         })
         view_pager.isUserInputEnabled = false
 
-        val counterText = "${position + 1}/${item.quickActivities.itemCount}"
+        val currentQuestionNumber = item.configuration.text.activity.quickActivitiesTotalNumber.toInt() + 1 - item.quickActivities.itemCount.toInt()
+        val counterText = "${currentQuestionNumber}/${item.configuration.text.activity.quickActivitiesTotalNumber}"
         count.text = counterText
         count.setTextColor(item.configuration.theme.primaryTextColor.color())
 
