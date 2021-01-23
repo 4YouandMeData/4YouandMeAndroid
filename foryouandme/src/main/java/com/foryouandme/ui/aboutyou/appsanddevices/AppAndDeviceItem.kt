@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import com.foryouandme.R
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.compare
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
@@ -18,7 +18,8 @@ data class AppAndDeviceItem(
     val name: String,
     @DrawableRes val image: Int,
     val isConnected: Boolean,
-    val link: String
+    val connectLink: String,
+    val deauthenticateLink: String
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -51,14 +52,14 @@ class AppAndDeviceViewHolder(parent: ViewGroup, onItemClicked: (AppAndDeviceItem
         name.text = item.name
         name.setTextColor(item.configuration.theme.secondaryTextColor.color())
 
-        connect.text = item.configuration.text.profile.connect
-
         if (item.isConnected.not()) {
             arrow.setImageResource(context.imageConfiguration.deactivatedButton())
             connect.setTextColor(item.configuration.theme.primaryColorEnd.color())
+            connect.text = item.configuration.text.profile.deauthorize
         } else {
             arrow.setImageResource(context.imageConfiguration.nextStep())
             connect.setTextColor(item.configuration.theme.secondaryTextColor.color())
+            connect.text = item.configuration.text.profile.connect
         }
     }
 

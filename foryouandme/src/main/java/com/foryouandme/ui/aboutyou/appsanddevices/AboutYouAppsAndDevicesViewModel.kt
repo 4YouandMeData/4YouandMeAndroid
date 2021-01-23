@@ -14,112 +14,118 @@ import com.foryouandme.ui.aboutyou.AboutYouDataAppsAndDevicesToAboutYouIntegrati
 import com.foryouandme.ui.aboutyou.AboutYouNavController
 
 class AboutYouAppsAndDevicesViewModel(
-    navigator: Navigator,
-    private val analyticsModule: AnalyticsModule
+        navigator: Navigator,
+        private val analyticsModule: AnalyticsModule
 ) :
-    BaseViewModel<Empty, Empty, Empty, Empty>(navigator, Empty) {
+        BaseViewModel<Empty, Empty, Empty, Empty>(navigator, Empty) {
 
     /*--- data ---*/
 
     fun createGarminItem(
-        environment: Environment,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        isConnected: Boolean
+            environment: Environment,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration,
+            isConnected: Boolean
     ): AppAndDeviceItem =
-        AppAndDeviceItem(
-            configuration,
-            "Garmin",
-            imageConfiguration.garmin(),
-            isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/garmin"
-        )
+            AppAndDeviceItem(
+                    configuration,
+                    "Garmin",
+                    imageConfiguration.garmin(),
+                    isConnected,
+                    "${environment.getOAuthBaseUrl()}/users/integration_oauth/garmin",
+                    "${environment.getOAuthBaseUrl()}/users/deauthenticate/garmin"
+            )
 
     fun createFitbitItem(
-        environment: Environment,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        isConnected: Boolean
+            environment: Environment,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration,
+            isConnected: Boolean
     ): AppAndDeviceItem =
-        AppAndDeviceItem(
-            configuration,
-            "Fitbit",
-            imageConfiguration.smartwatch(),
-            isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/fitbit"
-        )
+            AppAndDeviceItem(
+                    configuration,
+                    "Fitbit",
+                    imageConfiguration.smartwatch(),
+                    isConnected,
+                    "${environment.getOAuthBaseUrl()}/users/integration_oauth/fitbit",
+                    "${environment.getOAuthBaseUrl()}/users/deauthenticate/fitbit"
+            )
 
     fun createOuraItem(
-        environment: Environment,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        isConnected: Boolean
+            environment: Environment,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration,
+            isConnected: Boolean
     ): AppAndDeviceItem =
-        AppAndDeviceItem(
-            configuration,
-            "Oura",
-            imageConfiguration.oura(),
-            isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/oura"
-        )
+            AppAndDeviceItem(
+                    configuration,
+                    "Oura",
+                    imageConfiguration.oura(),
+                    isConnected,
+                    "${environment.getOAuthBaseUrl()}/users/integration_oauth/oura",
+                    "${environment.getOAuthBaseUrl()}/users/deauthenticate/oura"
+            )
 
     fun createInstagramItem(
-        environment: Environment,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        isConnected: Boolean
+            environment: Environment,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration,
+            isConnected: Boolean
     ): AppAndDeviceItem =
-        AppAndDeviceItem(
-            configuration,
-            "Instagram",
-            imageConfiguration.instagram(),
-            isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/instagram"
-        )
+            AppAndDeviceItem(
+                    configuration,
+                    "Instagram",
+                    imageConfiguration.instagram(),
+                    isConnected,
+                    "${environment.getOAuthBaseUrl()}/users/integration_oauth/instagram",
+                    "${environment.getOAuthBaseUrl()}/users/deauthenticate/instagram"
+            )
 
     fun createRescueTimeItem(
-        environment: Environment,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        isConnected: Boolean
+            environment: Environment,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration,
+            isConnected: Boolean
     ): AppAndDeviceItem =
-        AppAndDeviceItem(
-            configuration,
-            "RescueTime",
-            imageConfiguration.rescuetime(),
-            isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/rescuetime"
-        )
+            AppAndDeviceItem(
+                    configuration,
+                    "RescueTime",
+                    imageConfiguration.rescuetime(),
+                    isConnected,
+                    "${environment.getOAuthBaseUrl()}/users/integration_oauth/rescuetime",
+                    "${environment.getOAuthBaseUrl()}/users/deauthenticate/rescuetime"
+            )
 
     fun createTwitterItem(
-        environment: Environment,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration,
-        isConnected: Boolean
+            environment: Environment,
+            configuration: Configuration,
+            imageConfiguration: ImageConfiguration,
+            isConnected: Boolean
     ): AppAndDeviceItem =
-        AppAndDeviceItem(
-            configuration,
-            "Twitter",
-            imageConfiguration.twitter(),
-            isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/twitter"
-        )
+            AppAndDeviceItem(
+                    configuration,
+                    "Twitter",
+                    imageConfiguration.twitter(),
+                    isConnected,
+                    "${environment.getOAuthBaseUrl()}/users/integration_oauth/twitter",
+                    "${environment.getOAuthBaseUrl()}/users/deauthenticate/twitter"
+            )
 
     /*--- navigation ---*/
 
     suspend fun navigateToWeb(url: String, navController: AboutYouNavController) {
         navigator.navigateTo(
-            navController,
-            AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(
-                url
-            )
+                navController,
+                AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(
+                        url
+                )
         )
     }
 
     /* --- analytics --- */
 
     suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.AppsAndDevices, EAnalyticsProvider.ALL)
+            analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.AppsAndDevices, EAnalyticsProvider.ALL)
 
 
 }

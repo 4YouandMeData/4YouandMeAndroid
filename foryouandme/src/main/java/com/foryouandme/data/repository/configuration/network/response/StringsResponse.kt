@@ -157,6 +157,7 @@ data class StringsResponse(
         @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
 
         @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
+        @Json(name = "YOUR_APPS_AND_DEVICES_DEAUTHORIZE") val yourAppsAndDevicesDeauthorize: String? = null,
 
         @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
         @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
@@ -546,7 +547,7 @@ data class StringsResponse(
     private fun toProfile(): Profile? =
             when (null) {
                 profileTitle, aboutYouYourPregnancy, aboutYouAppsAndDevices, aboutYouReviewConsent,
-                aboutYouPermissions, aboutYouDisclaimer, yourAppsAndDevicesConnect, permissionsAllow,
+                aboutYouPermissions, aboutYouDisclaimer, yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
                 permissionsAllowed, permissionDenied, permissionCancel, permissionMessage,
                 permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit -> null
                 else ->
@@ -558,6 +559,7 @@ data class StringsResponse(
                             aboutYouPermissions,
                             aboutYouDisclaimer,
                             yourAppsAndDevicesConnect,
+                            yourAppsAndDevicesDeauthorize,
                             permissionsAllow,
                             permissionsAllowed,
                             permissionDenied,

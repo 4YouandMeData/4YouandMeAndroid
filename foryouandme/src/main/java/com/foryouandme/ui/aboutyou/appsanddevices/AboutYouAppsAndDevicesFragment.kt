@@ -33,7 +33,11 @@ class AboutYouAppsAndDevicesFragment :
 
             if (it.isConnected) {
                 startCoroutineAsync {
-                    viewModel.navigateToWeb(it.link, aboutYouNavController())
+                    viewModel.navigateToWeb(it.connectLink, aboutYouNavController())
+                }
+            } else {
+                startCoroutineAsync {
+                    viewModel.navigateToWeb(it.deauthenticateLink, aboutYouNavController())
                 }
             }
         })

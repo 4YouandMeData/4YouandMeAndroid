@@ -201,6 +201,7 @@ data class Profile(
     val fourthItem: String,
     val disclaimer: String,
     val connect: String,
+    val deauthorize: String,
     val permissionAllow: String,
     val permissionAllowed: String,
     val permissionDenied: String,
