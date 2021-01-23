@@ -10,15 +10,18 @@ import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.Memory
 import com.foryouandme.core.cases.push.PushUseCase
-import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.core.data.api.auth.request.*
 import com.foryouandme.core.data.api.auth.request.UserCustomDataUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.request.UserTimeZoneUpdateRequest.Companion.asRequest
 import com.foryouandme.core.data.api.auth.response.UserResponse
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.user.*
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.mapNotNull
+import com.foryouandme.data.datasource.network.Headers
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
+import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
+import com.foryouandme.entity.user.UserCustomDataType
 import org.threeten.bp.ZoneId
 import retrofit2.Response
 
@@ -132,25 +135,7 @@ object AuthRepository {
                 type = UserCustomDataType.Date,
                 name = "Your due date",
                 value = null
-            ),
-            UserCustomData(
-                identifier = BABY_GENDER_IDENTIFIER,
-                type =
-                UserCustomDataType.Items(
-                    listOf(
-                        UserCustomDataItem(identifier = "1", value = "It's a Boy!"),
-                        UserCustomDataItem(identifier = "2", value = "It's a Girl!"),
-                    )
-                ),
-                name = "Your baby's gender",
-                value = null
-            ),
-            UserCustomData(
-                identifier = BABY_NAME_IDENTIFIER,
-                type = UserCustomDataType.String,
-                name = "Your baby's name",
-                value = null
-            ),
+            )
         )
 
     internal suspend fun AuthModule.updateUserCustomData(
