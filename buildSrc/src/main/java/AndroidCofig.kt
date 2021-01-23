@@ -3,8 +3,8 @@ object AndroidConfig {
     const val min_sdk = 23
     const val target_sdk = 29
     const val compile_sdk = 29
-    const val version_code = 20
-    const val version_name = "0.1.19"
+    const val version_code = 21
+    const val version_name = "0.1.20"
 
     const val test_instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"
 }
