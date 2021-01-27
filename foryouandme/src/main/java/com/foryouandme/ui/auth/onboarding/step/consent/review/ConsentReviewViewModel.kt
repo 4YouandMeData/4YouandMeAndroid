@@ -58,7 +58,7 @@ class ConsentReviewViewModel(
 
                         items.addAll(
                             consentReview.welcomePage
-                                .asList()
+                                .asList(consentReview.pages)
                                 .map { it.toConsentReviewPageItem(configuration) }
                         )
 

@@ -65,7 +65,7 @@ class ConsentInfoViewModel(
 
                         val questions =
                             consentInfo.questions.associateWith { question ->
-                                question.answers.map { it.toItem(configuration) }.all
+                                question.answers.map { it.toItem(configuration) }
                             }.mapKeys { it.key.id }
 
                         val state =

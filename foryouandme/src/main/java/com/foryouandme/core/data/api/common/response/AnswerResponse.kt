@@ -1,6 +1,5 @@
 package com.foryouandme.core.data.api.common.response
 
-import arrow.core.Either
 import com.foryouandme.entity.consent.informed.ConsentInfoAnswer
 import com.foryouandme.entity.screening.ScreeningAnswer
 import com.squareup.moshi.Json
@@ -13,17 +12,20 @@ data class AnswerResponse(
     @field:Json(name = "correct") val correct: Boolean? = null
 ) : Resource() {
 
-    suspend fun toScreeningAnswer(): ScreeningAnswer? =
-        Either.catch {
-            ScreeningAnswer(id, text!!, correct!!)
-        }.orNull()
+    fun toScreeningAnswer(): ScreeningAnswer? =
+        when (null) {
+            text, correct -> null
+            else -> ScreeningAnswer(id, text, correct)
+        }
 
-    suspend fun toConsentAnswer(): ConsentInfoAnswer? =
-        Either.catch {
-            ConsentInfoAnswer(
+
+    fun toConsentAnswer(): ConsentInfoAnswer? =
+        when (null) {
+            text, correct -> null
+            else -> ConsentInfoAnswer(
                 id,
-                text!!,
-                correct!!
+                text,
+                correct
             )
-        }.orNull()
+        }
 }

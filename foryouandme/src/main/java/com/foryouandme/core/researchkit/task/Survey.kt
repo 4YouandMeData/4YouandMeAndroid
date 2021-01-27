@@ -42,6 +42,7 @@ fun buildSurvey(
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     survey: Survey,
+    pages: List<Page>,
     welcomePage: Page,
     successPage: Page?,
     reschedule: Reschedule?
@@ -55,7 +56,7 @@ fun buildSurvey(
             survey.surveyBlocks.forEach { surveyBlock ->
 
                 val intro =
-                    surveyBlock.introPage.asList().mapIndexed { _, page ->
+                    surveyBlock.introPage.asList(surveyBlock.pages).mapIndexed { _, page ->
 
                         FYAMPageStep(
                             getSurveyBlockIntroStepId(surveyBlock.id, page.id),
@@ -367,7 +368,7 @@ fun buildSurvey(
             }
 
             val intro =
-                welcomePage.asList().mapIndexed { index, page ->
+                welcomePage.asList(pages).mapIndexed { index, page ->
 
                     FYAMPageStep(
                         getSurveyIntroStepId(page.id),

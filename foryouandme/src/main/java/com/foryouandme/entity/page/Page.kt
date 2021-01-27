@@ -5,29 +5,28 @@ data class Page(
     val title: String,
     val body: String,
     val image: String?,
-    val link1: Page?,
+    val link1: PageRef?,
     val link1Label: String?,
-    val link2: Page?,
+    val link2: PageRef?,
     val link2Label: String?,
     val externalLinkLabel: String?,
     val externalLinkUrl: String?,
     val specialLinkLabel: String?,
     val specialLinkValue: String?,
     val linkModalLabel: String?,
-    val linkModalValue: Page?
+    val linkModalValue: PageRef?
 ) {
 
-    fun asList(): MutableList<Page> {
+    fun asList(pages: List<Page>): MutableList<Page> {
 
-        var page = this
+        var page = pages.firstOrNull { it.id == link1?.id }
 
         val items = mutableListOf(this)
 
-        while (page.link1 != null) {
+        while (page != null) {
 
-            items.add(page.link1!!)
-
-            page = page.link1!!
+            items.add(page)
+            page = pages.firstOrNull { it.id == page?.link1?.id }
 
         }
 
@@ -35,5 +34,7 @@ data class Page(
 
     }
 
-
 }
+
+
+data class PageRef(val id: String)

@@ -16,6 +16,7 @@ import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.entity.page.PageRef
 import kotlinx.android.synthetic.main.integration_page_view.view.*
 
 // TODO: Remove use standard page
@@ -30,9 +31,9 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
     suspend fun applyData(
         configuration: Configuration,
         page: Page,
-        nextAction: (Page?) -> Unit,
+        nextAction: (PageRef?) -> Unit,
         specialLinkAction: (SpecialLinkAction) -> Unit,
-        externalLinkAction: (String, Page?) -> Unit
+        externalLinkAction: (String, PageRef?) -> Unit
     ): Unit =
         evalOnMain {
 

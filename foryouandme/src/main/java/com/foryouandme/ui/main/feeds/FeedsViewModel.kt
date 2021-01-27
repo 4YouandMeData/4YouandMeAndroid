@@ -47,6 +47,7 @@ import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
+import com.giacomoparisi.recyclerdroid.core.paging.addPage
 import kotlinx.coroutines.Dispatchers
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter

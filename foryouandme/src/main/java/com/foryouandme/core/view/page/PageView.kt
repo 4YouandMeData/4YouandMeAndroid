@@ -21,6 +21,7 @@ import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.view.page.EPageType.*
+import com.foryouandme.entity.page.PageRef
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.page.view.*
@@ -37,12 +38,12 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         configuration: Configuration,
         page: Page,
         pageType: EPageType,
-        action1: (Page?) -> Unit,
-        action2: ((Page?) -> Unit)? = null,
+        action1: (PageRef?) -> Unit,
+        action2: ((PageRef?) -> Unit)? = null,
         extraStringAction: ((String) -> Unit)? = null,
-        extraPageAction: ((Page) -> Unit)? = null,
+        extraPageAction: ((PageRef) -> Unit)? = null,
         specialStringAction: ((String) -> Unit)? = null,
-        specialStringPageAction: ((String, Page?) -> Unit)? = null
+        specialStringPageAction: ((String, PageRef?) -> Unit)? = null
     ): Unit =
 
         evalOnMain {
@@ -105,7 +106,7 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
     private suspend fun setUpExtraAction(
         page: Page,
-        extraPageAction: ((Page) -> Unit)?,
+        extraPageAction: ((PageRef) -> Unit)?,
         extraStringAction: ((String) -> Unit)?,
         configuration: Configuration
     ): Unit =
@@ -171,8 +172,8 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         page: Page,
         pageType: EPageType,
         configuration: Configuration,
-        action1: (Page?) -> Unit,
-        action2: ((Page?) -> Unit)?,
+        action1: (PageRef?) -> Unit,
+        action2: ((PageRef?) -> Unit)?,
     ): Unit =
         evalOnMain {
 
@@ -216,9 +217,9 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
 
     private suspend fun setUpButtonsClick(
         page: Page,
-        action2: ((Page?) -> Unit)?,
+        action2: ((PageRef?) -> Unit)?,
         specialStringAction: ((String) -> Unit)?,
-        specialStringPageAction: ((String, Page?) -> Unit)?
+        specialStringPageAction: ((String, PageRef?) -> Unit)?
     ): Unit =
         evalOnMain {
 

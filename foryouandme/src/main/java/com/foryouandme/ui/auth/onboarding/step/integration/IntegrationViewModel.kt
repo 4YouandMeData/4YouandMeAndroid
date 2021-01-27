@@ -25,6 +25,7 @@ import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.integration.IntegrationUseCase.getIntegration
 import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.web.asIntegrationCookies
+import com.foryouandme.entity.page.PageRef
 
 
 class IntegrationViewModel(
@@ -108,7 +109,7 @@ class IntegrationViewModel(
 
     suspend fun nextPage(
         integrationNavController: IntegrationNavController,
-        page: Page?,
+        page: PageRef?,
         fromWelcome: Boolean = false
     ): Unit {
 
@@ -143,7 +144,7 @@ class IntegrationViewModel(
     suspend fun pageToLogin(
         integrationNavController: IntegrationNavController,
         link: String,
-        nextPage: Page?,
+        nextPage: PageRef?,
     ): Unit =
         navigator.navigateTo(
             integrationNavController,
@@ -153,7 +154,7 @@ class IntegrationViewModel(
     suspend fun welcomeToLogin(
         integrationNavController: IntegrationNavController,
         link: String,
-        nextPage: Page?
+        nextPage: PageRef?
     ): Unit =
         navigator.navigateTo(
             integrationNavController,

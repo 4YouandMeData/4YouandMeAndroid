@@ -19,6 +19,7 @@ class FYAMGaitTask(
     id: String,
     private val configuration: Configuration,
     private val imageConfiguration: ImageConfiguration,
+    private val pages: List<Page>,
     private val welcomePage: Page,
     private val successPage: Page?,
     private val reschedule: Reschedule?,
@@ -36,7 +37,7 @@ class FYAMGaitTask(
         val primaryEnd =
             configuration.theme.primaryColorEnd.color()
 
-        welcomePage.asList().mapIndexed { index, page ->
+        welcomePage.asList(pages).mapIndexed { index, page ->
 
             FYAMPageStep(
                 getGaitWelcomeStepId(page.id),

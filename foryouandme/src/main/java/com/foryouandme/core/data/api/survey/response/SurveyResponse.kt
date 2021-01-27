@@ -39,6 +39,7 @@ data class SurveyResponse(
 
 @JsonApi(type = "survey_block")
 data class SurveyBlockResponse(
+    @field:Json(name = "pages") val pages: HasMany<PageResponse>? = null,
     @field:Json(name = "intro_page") val introPage: HasOne<PageResponse>? = null,
     @field:Json(name = "success_page") val successPage: HasOne<PageResponse>? = null,
     @field:Json(name = "questions") val questions: HasMany<SurveyQuestionResponse>? = null,
@@ -49,6 +50,7 @@ data class SurveyBlockResponse(
 
             SurveyBlock(
                 id,
+                pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
                 introPage?.get(document)?.toPage(document)!!,
                 successPage?.get(document)?.toPage(document),
                 questions?.get(document)

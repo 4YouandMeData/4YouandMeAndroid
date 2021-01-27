@@ -1,7 +1,5 @@
 package com.foryouandme.ui.aboutyou.review
 
-import arrow.core.toOption
-import com.foryouandme.ui.auth.onboarding.step.consent.review.info.toConsentReviewPageItem
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
 import com.foryouandme.core.arch.error.handleAuthError
@@ -9,7 +7,7 @@ import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.page.Page
+import com.foryouandme.ui.auth.onboarding.step.consent.review.info.toConsentReviewPageItem
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 
 class AboutYouReviewConsentViewModel(
@@ -41,7 +39,7 @@ class AboutYouReviewConsentViewModel(
 
                     items.addAll(
                         consent.welcomePage
-                            .asList()
+                            .asList(consent.pages)
                             .map { it.toConsentReviewPageItem(configuration) }
                     )
 
@@ -60,24 +58,4 @@ class AboutYouReviewConsentViewModel(
 
     }
 
-
-    private fun Page.toItems(): MutableList<Page> {
-
-        var page = this.toOption()
-
-        val items = mutableListOf(this)
-
-        while (page.flatMap { it.link1.toOption() }.isDefined()) {
-
-            val nextPage = page.flatMap { it.link1.toOption() }
-
-            nextPage.map { items.add(it) }
-
-            page = nextPage
-
-        }
-
-        return items
-
-    }
 }

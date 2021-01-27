@@ -1,6 +1,5 @@
 package com.foryouandme.core.data.api.consent.informed.response
 
-import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
 import com.foryouandme.core.data.api.common.response.QuestionResponse
 import com.foryouandme.entity.consent.informed.ConsentInfo
@@ -23,20 +22,30 @@ data class ConsentInfoResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    suspend fun toConsentInfo(document: ObjectDocument<ConsentInfoResponse>): ConsentInfo? =
-        Either.catch {
+    fun toConsentInfo(document: ObjectDocument<ConsentInfoResponse>): ConsentInfo? {
 
-            ConsentInfo(
-                minimumAnswer!!,
-                questions?.get(document)
-                    ?.mapNotNull { it.toConsentQuestion(document) }!!,
-                pages?.get(document)
-                    ?.mapNotNull { it.toPage(document) }!!,
-                welcomePage?.get(document)?.toPage(document)!!,
-                successPage?.get(document)?.toPage(document)!!,
-                failurePage?.get(document)?.toPage(document)!!
-            )
+        val questionsList =
+            questions?.get(document)?.mapNotNull { it.toConsentQuestion(document) }
 
-        }.orNull()
+        val pageList = pages?.get(document)?.mapNotNull { it.toPage(document) }
+        val welcomePage = welcomePage?.get(document)?.toPage(document)
+        val successPage = successPage?.get(document)?.toPage(document)
+        val failurePage = failurePage?.get(document)?.toPage(document)
+
+        return when (null) {
+
+            minimumAnswer, questionsList, pageList, welcomePage, successPage, failurePage -> null
+            else ->
+                ConsentInfo(
+                    minimumAnswer = minimumAnswer,
+                    questions = questionsList,
+                    pages = pageList,
+                    welcomePage = welcomePage,
+                    successPage = successPage,
+                    failurePage = failurePage
+                )
+
+        }
+    }
 }
 
