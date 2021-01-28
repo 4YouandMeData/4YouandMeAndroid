@@ -76,6 +76,7 @@ dependencies {
     implementation(AndroidX.Lifecycle.ViewModelKtx.get())
     implementation(AndroidX.Lifecycle.LiveDataKtx.get())
     implementation(AndroidX.Lifecycle.ViewModelSavedState.get())
+    implementation(AndroidX.Lifecycle.CommonJava8.get())
 
     /* --- arrow --- */
 

@@ -1,15 +1,35 @@
 object AndroidX {
 
-    object AppCompat : Dependency("androidx.appcompat", "appcompat", "1.2.0")
+    object AppCompat : Dependency(
+        "androidx.appcompat",
+        "appcompat",
+        "1.2.0"
+    )
 
-    object RecyclerView : Dependency("androidx.recyclerview", "recyclerview", "1.1.0")
+    object RecyclerView : Dependency(
+        "androidx.recyclerview",
+        "recyclerview",
+        "1.1.0"
+    )
 
-    object FragmentKtx : Dependency("androidx.fragment", "fragment-ktx", "1.2.5")
+    object FragmentKtx : Dependency(
+        "androidx.fragment",
+        "fragment-ktx",
+        "1.2.5"
+    )
 
-    object ViewPager2 : Dependency("androidx.viewpager2", "viewpager2", "1.0.0")
+    object ViewPager2 : Dependency(
+        "androidx.viewpager2",
+        "viewpager2",
+        "1.0.0"
+    )
 
     object SwipeRefreshLayout :
-        Dependency("androidx.swiperefreshlayout", "swiperefreshlayout", "1.1.0")
+        Dependency(
+            "androidx.swiperefreshlayout",
+            "swiperefreshlayout",
+            "1.1.0"
+        )
 
     object Core : DependencyGroup("androidx.core", "1.3.2") {
 
@@ -17,7 +37,11 @@ object AndroidX {
 
     }
 
-    object ConstraintLayout : Dependency("androidx.constraintlayout", "constraintlayout", "2.0.4")
+    object ConstraintLayout : Dependency(
+        "androidx.constraintlayout",
+        "constraintlayout",
+        "2.0.4"
+    )
 
     object Paging : DependencyGroup("androidx.paging", "3.0.0-alpha09") {
 
@@ -40,18 +64,36 @@ object AndroidX {
             Dependency(Lifecycle.group, "lifecycle-viewmodel-ktx", Lifecycle.version)
 
         object ViewModelSavedState :
-            Dependency(Lifecycle.group, "lifecycle-viewmodel-savedstate", Lifecycle.version)
+            Dependency(
+                Lifecycle.group,
+                "lifecycle-viewmodel-savedstate",
+                Lifecycle.version
+            )
 
         object LiveDataKtx :
             Dependency(Lifecycle.group, "lifecycle-livedata-ktx", Lifecycle.version)
 
-        object Service : Dependency(Lifecycle.group, "lifecycle-service", Lifecycle.version)
+        object Service : Dependency(
+            Lifecycle.group,
+            "lifecycle-service",
+            Lifecycle.version
+        )
+
+        object CommonJava8 : Dependency(
+            Lifecycle.group,
+            "lifecycle-common-java8",
+            Lifecycle.version
+        )
 
     }
 
     object Security : DependencyGroup("androidx.security", "1.1.0-alpha02") {
 
-        object CryptoKtx : Dependency(Security.group, "security-crypto-ktx", Security.version)
+        object CryptoKtx : Dependency(
+            Security.group,
+            "security-crypto-ktx",
+            Security.version
+        )
 
     }
 
@@ -73,7 +115,11 @@ object AndroidX {
 
     object Hilt : DependencyGroup("androidx.hilt", "1.0.0-alpha02") {
 
-        object LifecycleViewModel : Dependency(Hilt.group, "hilt-lifecycle-viewmodel", Hilt.version)
+        object LifecycleViewModel : Dependency(
+            Hilt.group,
+            "hilt-lifecycle-viewmodel",
+            Hilt.version
+        )
 
         object Compiler : Dependency(Hilt.group, "hilt-compiler", Hilt.version)
 
@@ -93,11 +139,11 @@ object AndroidX {
 
         }
 
-        object Core: Dependency(Test.group, "core", "1.3.0")
+        object Core : Dependency(Test.group, "core", "1.3.0")
 
-        object Rules: Dependency(Test.group, "rules", "1.1.0")
+        object Rules : Dependency(Test.group, "rules", "1.1.0")
 
-        object Runner: Dependency(Test.group, "runner", "1.1.0")
+        object Runner : Dependency(Test.group, "runner", "1.1.0")
 
     }
 }
