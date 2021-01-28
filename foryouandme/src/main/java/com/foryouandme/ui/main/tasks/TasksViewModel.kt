@@ -8,9 +8,9 @@ import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.task.TaskUseCase.getTasks
 import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import com.foryouandme.core.ext.evalOnMain

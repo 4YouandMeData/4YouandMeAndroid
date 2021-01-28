@@ -5,9 +5,9 @@ import com.foryouandme.core.arch.android.Empty
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.aboutyou.AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin

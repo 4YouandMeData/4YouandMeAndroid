@@ -9,10 +9,10 @@ import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.core.cases.Memory
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.setUserId
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthRepository.fetchUser
 import com.foryouandme.core.cases.auth.AuthRepository.loadToken
 import com.foryouandme.core.cases.auth.AuthRepository.login

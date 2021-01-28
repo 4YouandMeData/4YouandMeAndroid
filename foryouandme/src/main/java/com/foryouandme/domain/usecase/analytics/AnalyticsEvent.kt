@@ -1,13 +1,8 @@
-package com.foryouandme.core.cases.analytics
+package com.foryouandme.domain.usecase.analytics
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
 import com.foryouandme.core.cases.yourdata.YourDataPeriod
 
 sealed class AnalyticsEvent(val eventName: String) {
-
-    open fun firebaseBundle(): Bundle = bundleOf()
-
 
     /* --- screen events --- */
 
@@ -44,12 +39,7 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     data class UserRegistration(
         val countryCode: String
-    ) : AnalyticsEvent("user_registration") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply { putString("account_type", countryCode) }
-
-    }
+    ) : AnalyticsEvent("user_registration")
 
     /* --- screening --- */
 
@@ -59,21 +49,11 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     data class CancelDuringInformedConsent(
         val pageId: String
-    ) : AnalyticsEvent("informed_consent_cancelled") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply { putString("page_id", pageId) }
-
-    }
+    ) : AnalyticsEvent("informed_consent_cancelled")
 
     data class CancelDuringComprehension(
         val pageId: String
-    ) : AnalyticsEvent("comprehension_quiz_cancelled") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply { putString("question_id", pageId) }
-
-    }
+    ) : AnalyticsEvent("comprehension_quiz_cancelled")
 
     object ConsentDisagreed : AnalyticsEvent("consent_disagreed")
 
@@ -90,11 +70,7 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     }
 
-    data class SwitchTab(val tab: Tab) : AnalyticsEvent("tab_switch") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply { putString("tab", tab.name) }
-    }
+    data class SwitchTab(val tab: Tab) : AnalyticsEvent("tab_switch")
 
     /* --- quick activity --- */
 
@@ -107,22 +83,7 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     data class YourDataSelectDataPeriod(
         val period: YourDataPeriod
-    ) : AnalyticsEvent("your_data_period_selection") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply {
-
-                putString(
-                    "period",
-                    when (period) {
-                        YourDataPeriod.Week -> "WEEK"
-                        YourDataPeriod.Month -> "MONTH"
-                        YourDataPeriod.Year -> "YEAR"
-                    }
-                )
-            }
-
-    }
+    ) : AnalyticsEvent("your_data_period_selection")
 
     /* --- task --- */
 
@@ -136,22 +97,12 @@ sealed class AnalyticsEvent(val eventName: String) {
 
     data class VideoDiaryAction(
         val action: RecordingAction
-    ) : AnalyticsEvent("video_diary_action") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply { putString("action", action.name) }
-
-    }
+    ) : AnalyticsEvent("video_diary_action")
 
     /* --- permission --- */
 
     data class LocationPermissionChanged(
         val granted: Boolean
-    ) : AnalyticsEvent("location_permission_changed") {
-
-        override fun firebaseBundle(): Bundle =
-            Bundle().apply { putString("status", if(granted) "true" else "false") }
-
-    }
+    ) : AnalyticsEvent("location_permission_changed")
 
 }

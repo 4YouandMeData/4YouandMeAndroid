@@ -16,9 +16,9 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
 import com.foryouandme.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem

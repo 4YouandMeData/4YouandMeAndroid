@@ -19,9 +19,9 @@ import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.toastAction
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.confirmEmail
 import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.createUserConsent
 import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.getConsent

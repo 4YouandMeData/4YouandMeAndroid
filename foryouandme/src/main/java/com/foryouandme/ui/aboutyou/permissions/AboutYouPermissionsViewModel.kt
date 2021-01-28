@@ -7,9 +7,9 @@ import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.permissionSettingsDialogAction
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.core.cases.permission.PermissionResult
 import com.foryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted

@@ -6,9 +6,9 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.foryouandme.core.arch.deps.modules.PermissionModule
-import com.foryouandme.core.cases.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport

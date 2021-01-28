@@ -1,4 +1,4 @@
-package com.foryouandme.core.cases.analytics
+package com.foryouandme.domain.usecase.analytics
 
 enum class EAnalyticsProvider {
     FIREBASE,
