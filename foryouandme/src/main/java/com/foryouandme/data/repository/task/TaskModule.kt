@@ -1,5 +1,6 @@
 package com.foryouandme.data.repository.task
 
+import com.foryouandme.data.DataModule
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.task.network.TaskApi
@@ -10,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -18,7 +20,7 @@ object TaskModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): TaskApi =
+    fun provideApi(environment: Environment, @Named(DataModule.TASK_MOSHI) moshi: Moshi): TaskApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
 

@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -16,7 +16,7 @@ import com.foryouandme.core.ext.startCoroutineAsync
 
 abstract class IntegrationSectionFragment(
     contentLayoutId: Int
-) : BaseFragment<IntegrationViewModel>(contentLayoutId) {
+) : BaseFragmentOld<IntegrationViewModel>(contentLayoutId) {
 
     override val viewModel: IntegrationViewModel by lazy {
         viewModelFactory(

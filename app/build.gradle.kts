@@ -63,6 +63,8 @@ dependencies {
     /* --- hilt --- */
 
     implementation(Google.Dagger.Hilt.Android.get())
+    implementation(AndroidX.Hilt.LifecycleViewModel.get())
+    kapt(AndroidX.Hilt.Compiler.get())
     kapt(Google.Dagger.Hilt.Compiler.get())
 
     /* --- test --- */

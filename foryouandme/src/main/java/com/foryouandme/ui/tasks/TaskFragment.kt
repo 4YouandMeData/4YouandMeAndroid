@@ -6,7 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.error.ForYouAndMeError
@@ -16,7 +16,7 @@ import com.foryouandme.core.ext.startCoroutineAsync
 import kotlinx.android.synthetic.main.task.*
 import java.io.File
 
-class TaskFragment : BaseFragment<TaskViewModel>(R.layout.task) {
+class TaskFragment : BaseFragmentOld<TaskViewModel>(R.layout.task) {
 
     override val viewModel: TaskViewModel by lazy {
         viewModelFactory(this, getFactory {

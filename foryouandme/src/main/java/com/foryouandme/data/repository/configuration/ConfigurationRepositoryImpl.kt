@@ -20,19 +20,24 @@ class ConfigurationRepositoryImpl @Inject constructor(
     override suspend fun fetchConfiguration(): Configuration =
         api.getConfiguration(environment.studyId()).toConfiguration()!!
 
-    override suspend fun loadConfiguration(): Configuration? {
-        val configurationJson =
-            prefs.getString(CONFIGURATION, null)
+    override suspend fun loadConfiguration(): Configuration? =
 
-        val configuration =
-            configurationJson?.let {
-                moshi.adapter(Configuration::class.java).fromJson(it)
-            }
+        if (memory.configuration != null) memory.configuration
+        else {
 
-        memory.configuration = configuration
+            val configurationJson =
+                prefs.getString(CONFIGURATION, null)
 
-        return configuration
-    }
+            val configuration =
+                configurationJson?.let {
+                    moshi.adapter(Configuration::class.java).fromJson(it)
+                }
+
+            memory.configuration = configuration
+
+            configuration
+
+        }
 
     override suspend fun saveConfiguration(configuration: Configuration) {
 

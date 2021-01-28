@@ -1,7 +1,7 @@
 package com.foryouandme.ui.aboutyou
 
 import androidx.navigation.fragment.findNavController
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
@@ -12,7 +12,7 @@ import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 
 abstract class AboutYouSectionFragment<T : BaseViewModel<*, *, *, *>>(contentLayoutId: Int) :
-    BaseFragment<T>(contentLayoutId) {
+    BaseFragmentOld<T>(contentLayoutId) {
 
     val aboutYouViewModel: AboutYouViewModel by lazy {
         viewModelFactory(

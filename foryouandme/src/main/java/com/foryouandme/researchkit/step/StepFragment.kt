@@ -6,7 +6,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
@@ -16,7 +16,7 @@ import com.foryouandme.ui.tasks.TaskNavController
 import com.foryouandme.ui.tasks.TaskViewModel
 import kotlinx.android.synthetic.main.task.*
 
-open class StepFragment(contentLayoutId: Int) : BaseFragment<TaskViewModel>(contentLayoutId) {
+open class StepFragment(contentLayoutId: Int) : BaseFragmentOld<TaskViewModel>(contentLayoutId) {
 
     override val viewModel by lazy {
         viewModelFactory(

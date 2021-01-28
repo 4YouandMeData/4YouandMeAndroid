@@ -30,3 +30,16 @@ fun <T1, T2, T3> mapNotNull(one: T1?, two: T2?, three: T3?): Tuple3<T1, T2, T3>?
 fun <T> T?.toEither(): Either<Unit, T> =
     this?.right() ?: Unit.left()
 
+fun <T> catchToNull(block: () -> T): T? =
+    try {
+        block()
+    } catch (e: Throwable) {
+        null
+    }
+
+suspend fun <T> catchToNullSuspend(block: suspend () -> T): T? =
+    try {
+        block()
+    } catch (e: Throwable) {
+        null
+    }

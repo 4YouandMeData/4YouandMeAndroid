@@ -1,99 +1,78 @@
 package com.foryouandme.core.arch.android
 
-import android.content.ServiceConnection
-import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import arrow.core.Either
-import com.foryouandme.core.activity.FYAMActivity
-import com.foryouandme.core.activity.FYAMState
-import com.foryouandme.core.activity.FYAMViewModel
-import com.foryouandme.core.arch.livedata.Event
-import com.foryouandme.core.arch.livedata.EventObserver
+import com.foryouandme.core.arch.error.ErrorMessenger
+import com.foryouandme.core.arch.error.ErrorView
+import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
-import com.foryouandme.researchkit.task.TaskConfiguration
-import com.foryouandme.researchkit.task.TaskInjector
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+abstract class BaseFragment : Fragment {
 
-abstract class BaseFragment<T : BaseViewModel<*, *, *, *>> : Fragment {
+    @Inject
+    protected lateinit var errorMessenger: ErrorMessenger
 
-    protected abstract val viewModel: T
-
-    protected val fyamViewModel: FYAMViewModel by lazy {
-
-        viewModelFactory(
-            requireActivity(),
-            getFactory {
-                FYAMViewModel(
-                    navigator,
-                    injector.configurationModule()
-                )
-            }
-        )
-
-    }
+    @Inject
+    lateinit var navigator: Navigator
 
     constructor() : super()
     constructor(contentLayoutId: Int) : super(contentLayoutId)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    /* --- activity --- */
 
-        viewModel.activityActions()
-            .observeEvent { it(requireActivity()) }
+    //fun getBaseActivity(): BaseActivity = requireActivity() as BaseActivity
+
+    /* --- navigation --- */
+
+    fun rootNavController(): RootNavController =
+        RootNavController(
+            requireActivity().supportFragmentManager.fragments[0].findNavController()
+        )
+
+
+    fun name(): String = javaClass.simpleName
+
+
+    /* --- coroutine --- */
+
+    protected fun CoroutineScope.launchSafe(block: suspend () -> Unit): Job =
+        launch(CoroutineExceptionHandler { _, _ -> }) { block() }
+
+    /* --- error --- */
+
+    fun errorToast(throwable: Throwable, configuration: Configuration?) {
+
+        val message = errorMessenger.getMessage(throwable, configuration)
+
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
     }
 
-    fun rootNavController(): RootNavController =
-        RootNavController(requireActivity().supportFragmentManager.fragments[0].findNavController())
+    protected fun ErrorView.setError(
+        throwable: Throwable,
+        configuration: Configuration?,
+        retry: () -> Unit = {}
+    ) {
 
-    fun <A> LiveData<Event<A>>.observeEvent(handlerId: String? = null, handle: (A) -> Unit): Unit =
-        observe(this@BaseFragment, EventObserver(handlerId) { handle(it) })
+        lifecycleScope.launchSafe {
 
-    fun <A> LiveData<Event<A>>.observeEventPeek(handle: (A) -> Unit): Unit =
-        observe(this@BaseFragment, { handle(it.peekContent()) })
+            setError(
+                errorMessenger.getTitle(),
+                errorMessenger.getMessage(throwable, configuration),
+                retry
+            )
 
-    fun unbindService(serviceConnection: ServiceConnection): Unit =
-        startCoroutineAsync {
-            Either.catch {
-                evalOnMain { requireActivity().applicationContext.unbindService(serviceConnection) }
-            }
-        }
-
-    fun name(): String = this.javaClass.simpleName
-
-    fun fyamActivity(): FYAMActivity = requireActivity() as FYAMActivity
-
-    suspend fun fyamState(): FYAMState =
-        if (fyamViewModel.isInitialized())
-            fyamViewModel.state()
-        else
-            fyamViewModel.initialize(
-                rootNavController(),
-                fyamActivity().taskIdArg(),
-                fyamActivity().urlArg(),
-                fyamActivity().openAppIntegrationArg()
-            ).orNull()!!
-
-    fun configuration(block: suspend (Configuration) -> Unit): Unit =
-        startCoroutineAsync {
-
-            val configuration = fyamState().configuration
-
-            block(configuration)
 
         }
 
-    fun fyamState(block: suspend (FYAMState) -> Unit): Unit =
-        startCoroutineAsync { block(fyamState()) }
-
-    fun taskConfiguration(): TaskConfiguration =
-        (requireContext().applicationContext as TaskInjector).provideBuilder()
+    }
 
 }

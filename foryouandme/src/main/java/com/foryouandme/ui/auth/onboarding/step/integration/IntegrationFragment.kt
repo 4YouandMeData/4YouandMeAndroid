@@ -52,8 +52,7 @@ class IntegrationFragment : OnboardingStepFragment<IntegrationViewModel>(R.layou
                 when (payload.cause) {
                     IntegrationError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             startCoroutineAsync { viewModel.initialize(rootNavController()) }
                         }
                 }

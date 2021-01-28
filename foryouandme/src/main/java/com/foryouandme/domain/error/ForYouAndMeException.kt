@@ -8,6 +8,16 @@ sealed class ForYouAndMeException : Throwable() {
 
     object MissingConfiguration : ForYouAndMeException()
 
+    object Unknown: ForYouAndMeException()
+
+    /* --- network --- */
+
+    class NetworkErrorUnknownHost: ForYouAndMeException()
+
+    class NetworkErrorTimeOut: ForYouAndMeException()
+
+    class NetworkHTTPException: ForYouAndMeException()
+
     /* --- auth --- */
 
     object UserNotLoggedIn : ForYouAndMeException()

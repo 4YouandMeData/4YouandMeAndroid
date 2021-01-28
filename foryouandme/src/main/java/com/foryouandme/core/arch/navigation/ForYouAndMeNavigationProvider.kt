@@ -1,5 +1,6 @@
 package com.foryouandme.core.arch.navigation
 
+import com.foryouandme.core.arch.navigation.execution.*
 import com.foryouandme.ui.aboutyou.*
 import com.foryouandme.ui.auth.onboarding.OnboardingStepToOnboardingStep
 import com.foryouandme.ui.auth.onboarding.OnboardingToMain
@@ -26,15 +27,17 @@ import com.foryouandme.ui.auth.splash.SplashToMain
 import com.foryouandme.ui.auth.splash.SplashToOnboarding
 import com.foryouandme.ui.auth.splash.SplashToWelcome
 import com.foryouandme.ui.auth.welcome.WelcomeToSignUpInfo
-import com.foryouandme.core.arch.navigation.execution.*
 import com.foryouandme.ui.main.*
 import com.foryouandme.ui.main.feeds.FeedsToTask
 import com.foryouandme.ui.main.tasks.TasksToTask
 import com.foryouandme.ui.tasks.StepToStep
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ForYouAndMeNavigationProvider : NavigationProvider {
+@Singleton
+class ForYouAndMeNavigationProvider @Inject constructor() {
 
-    override fun getNavigation(action: NavigationAction): NavigationExecution =
+    fun getNavigation(action: NavigationAction): NavigationExecution =
         when (action) {
 
             is AnywhereToAuth -> anywhereToAuth()

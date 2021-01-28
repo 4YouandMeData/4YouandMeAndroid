@@ -3,21 +3,21 @@ package com.foryouandme.ui.main.tasks
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.configuration.HEXGradient
-import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.ext.dpToPx
+import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.items.PagedRequestErrorItem
 import com.foryouandme.core.items.PagedRequestErrorViewHolder
 import com.foryouandme.core.items.PagedRequestLoadingItem
 import com.foryouandme.core.items.PagedRequestLoadingViewHolder
-import com.foryouandme.ui.main.MainSectionFragment
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.main.feeds.FeedHeaderItem
 import com.foryouandme.ui.main.items.DateViewHolder
 import com.foryouandme.ui.main.items.QuickActivitiesItem
@@ -27,37 +27,32 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.tasks.*
+import kotlinx.coroutines.flow.onEach
 
-class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
+@AndroidEntryPoint
+class TasksFragment : BaseFragment(R.layout.tasks) {
 
-    override val viewModel: TasksViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                TasksViewModel(
-                    navigator,
-                    injector.taskModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    private val viewModel: TasksViewModel by viewModels()
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
-            TaskActivityViewHolder.factory {
-                startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
+            TaskActivityViewHolder.factory { task ->
+                task.data.activityType?.let {
+                    navigator.navigateTo(
+                        rootNavController(),
+                        TasksToTask(task.data.taskId)
+                    )
+                }
             },
             DateViewHolder.factory(),
             QuickActivitiesViewHolder.factory(),
             PagedRequestLoadingViewHolder.factory(),
             PagedRequestErrorViewHolder.factory {
 
-                configuration {
-                    applyTasks(viewModel.state().tasks)
-                    viewModel.nextPage(rootNavController(), it)
-                }
+                applyTasks(viewModel.state.tasks)
+                viewModel.execute(TasksStateEvent.GetTasksNextPage)
 
             }
         )
@@ -66,16 +61,20 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { state ->
-                when (state) {
+        viewModel.stateUpdate
+            .onEach {
+                when (it) {
                     is TasksStateUpdate.Tasks ->
-                        applyTasks(state.tasks)
+                        applyTasks(it.tasks)
+                    is TasksStateUpdate.Config ->
+                        applyData(it.configuration)
+
                 }
             }
+            .observeIn(this)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .onEach {
                 when (it.task) {
                     is TasksLoading.Tasks ->
                         if (it.task.page == 1)
@@ -84,23 +83,23 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
                         loading.setVisibility(it.active, true)
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) { errorPayload ->
-                when (errorPayload.cause) {
+        viewModel.error
+            .onEach { uiError ->
+                loading.setVisibility(false)
+                when (uiError.cause) {
                     is TasksError.Tasks ->
-
-                        if (errorPayload.cause.page == 1 || errorPayload.cause.page == -1)
-                            error.setError(errorPayload.error) {
-                                configuration { viewModel.reloadTasks(rootNavController(), it) }
-                            }
-                        else configuration {
-                            applyPageError(errorPayload.error, it)
-                        }
+                        if (uiError.cause.page == 1 || uiError.cause.page == -1)
+                            error.setError(uiError.error, viewModel.state.configuration)
+                            { viewModel.execute(TasksStateEvent.GetTasks) }
+                        else
+                            viewModel.state.configuration?.let { applyPageError(uiError.error, it) }
                     TasksError.QuickActivityUpload ->
-                        errorToast(errorPayload.error)
+                        errorToast(uiError.error, viewModel.state.configuration)
                 }
             }
+            .observeIn(this)
 
     }
 
@@ -112,58 +111,53 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
         // TODO: add the empty view as item
         empty.isVisible = false
 
+        val configuration = viewModel.state.configuration
+        if (configuration != null) applyData(configuration)
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        configuration {
-
-            applyData(it)
-            viewModel.reloadTasks(rootNavController(), it)
-        }
+        viewModel.execute(TasksStateEvent.GetTasks)
 
     }
 
-    private suspend fun applyData(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun applyData(configuration: Configuration) {
 
-            setStatusBar(configuration.theme.primaryColorStart.color())
+        setStatusBar(configuration.theme.primaryColorStart.color())
 
-            tasks_root.setBackgroundColor(configuration.theme.secondaryColor.color())
+        tasks_root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            title.text = configuration.text.tab.tasksTitle
-            title.setTextColor(configuration.theme.secondaryColor.color())
-            title.background =
-                HEXGradient.from(
-                    configuration.theme.primaryColorStart,
-                    configuration.theme.primaryColorEnd
-                ).drawable()
+        title.text = configuration.text.tab.tasksTitle
+        title.setTextColor(configuration.theme.secondaryColor.color())
+        title.background =
+            HEXGradient.from(
+                configuration.theme.primaryColorStart,
+                configuration.theme.primaryColorEnd
+            ).drawable()
 
-            empty_title.setTextColor(configuration.theme.primaryTextColor.color())
-            empty_title.text = configuration.text.tab.tabTaskEmptyTitle
+        empty_title.setTextColor(configuration.theme.primaryTextColor.color())
+        empty_title.text = configuration.text.tab.tabTaskEmptyTitle
 
-            empty_description.setTextColor(configuration.theme.primaryTextColor.color())
-            empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
+        empty_description.setTextColor(configuration.theme.primaryTextColor.color())
+        empty_description.text = configuration.text.tab.tabTaskEmptySubtitle
 
-            empty_button.setTextColor(configuration.theme.secondaryColor.color())
-            empty_button.background = button(configuration.theme.primaryColorEnd.color())
-            empty_button.text = configuration.text.tab.tabTaskEmptyButton
-            empty_button.setOnClickListener { startCoroutineAsync { mainViewModel.selectFeed() } }
-
-            swipe_refresh.setOnRefreshListener {
-                startCoroutineAsync {
-                    viewModel.reloadTasks(rootNavController(), configuration)
-                    swipe_refresh.isRefreshing = false
-                }
-            }
-
-            adapter.pageListener = {
-                configuration { viewModel.nextPage(rootNavController(), it) }
-            }
-
+        empty_button.setTextColor(configuration.theme.secondaryColor.color())
+        empty_button.background = button(configuration.theme.primaryColorEnd.color())
+        empty_button.text = configuration.text.tab.tabTaskEmptyButton
+        empty_button.setOnClickListener {
+            //mainViewModel.selectFeed()
         }
+
+        swipe_refresh.setOnRefreshListener {
+            viewModel.execute(TasksStateEvent.GetTasks)
+            swipe_refresh.isRefreshing = false
+        }
+
+        adapter.pageListener = { viewModel.execute(TasksStateEvent.GetTasksNextPage) }
+
+    }
 
     private fun applyTasks(tasks: PagedList<DroidItem<Any>>): Unit {
 
@@ -177,7 +171,7 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
     }
 
-    private fun setupList(): Unit {
+    private fun setupList() {
 
         recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -206,19 +200,22 @@ class TasksFragment : MainSectionFragment<TasksViewModel>(R.layout.tasks) {
 
     }
 
-    private suspend fun applyPageError(
-        error: ForYouAndMeError,
-        configuration: Configuration
-    ): Unit =
-        evalOnMain {
+    private fun applyPageError(error: Throwable, configuration: Configuration) {
 
-            adapter.submitList(
-                viewModel.state().tasks.data
-                    .plus(listOf(PagedRequestErrorItem(configuration, error)))
-            )
-            swipe_refresh.isRefreshing = false
+        adapter.submitList(
+            viewModel.state.tasks.data
+                .plus(
+                    listOf(
+                        PagedRequestErrorItem(
+                            configuration,
+                            errorMessenger.getMessage(error, configuration)
+                        )
+                    )
+                )
+        )
+        swipe_refresh.isRefreshing = false
 
-        }
+    }
 
 
 }

@@ -53,8 +53,7 @@ class ConsentInfoFragment : ConsentSectionFragment<ConsentInfoViewModel>(R.layou
                 when (payload.cause) {
                     ConsentInfoError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             configuration { viewModel.initialize(rootNavController(), it) }
                         }
                 }

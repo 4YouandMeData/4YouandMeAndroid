@@ -7,14 +7,14 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.OnboardingFragment
 import com.foryouandme.ui.auth.onboarding.OnboardingViewModel
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.navigator
 
-class OnboardingStepContainerFragment : BaseFragment<OnboardingViewModel>(
+class OnboardingStepContainerFragment : BaseFragmentOld<OnboardingViewModel>(
     R.layout.onboarding_step
 ) {
 

@@ -56,8 +56,7 @@ class ScreeningFragment : OnboardingStepFragment<ScreeningViewModel>(R.layout.sc
                 when (payload.cause) {
                     ScreeningError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             configuration { viewModel.initialize(rootNavController(), it) }
                         }
                 }

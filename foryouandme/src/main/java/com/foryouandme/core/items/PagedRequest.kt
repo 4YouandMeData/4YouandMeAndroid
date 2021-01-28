@@ -43,7 +43,7 @@ class PagedRequestLoadingViewHolder(
 
 data class PagedRequestErrorItem(
     val configuration: Configuration,
-    val error: ForYouAndMeError
+    val message: String
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -77,7 +77,7 @@ class PagedRequestErrorViewHolder(
         retry.setTextColor(item.configuration.theme.secondaryColor.color())
 
         message.setTextColor(item.configuration.theme.primaryTextColor.color())
-        message.text = item.error.message(context)
+        message.text = item.message
 
     }
 

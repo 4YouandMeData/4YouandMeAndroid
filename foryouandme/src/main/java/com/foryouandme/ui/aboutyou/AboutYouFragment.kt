@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.injector
@@ -12,7 +12,7 @@ import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
 import kotlinx.android.synthetic.main.screening.*
 
-class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
+class AboutYouFragment : BaseFragmentOld<AboutYouViewModel>(R.layout.about_you) {
 
     override val viewModel: AboutYouViewModel by lazy {
         viewModelFactory(
@@ -52,16 +52,14 @@ class AboutYouFragment : BaseFragment<AboutYouViewModel>(R.layout.about_you) {
                 when (payload.cause) {
                     AboutYouError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             startCoroutineAsync {
                                 viewModel.initialize(rootNavController(), true)
                             }
                         }
                     AboutYouError.Refresh ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             startCoroutineAsync {
                                 viewModel.refreshUser(rootNavController(), true)
                             }

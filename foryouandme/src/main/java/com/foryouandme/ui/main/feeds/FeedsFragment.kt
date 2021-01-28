@@ -214,7 +214,7 @@ class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
 
             adapter.submitList(
                 viewModel.state().feeds.data
-                    .plus(listOf(PagedRequestErrorItem(configuration, error)))
+                    .plus(listOf(PagedRequestErrorItem(configuration, error.message(requireContext()))))
             )
             swipe_refresh.isRefreshing = false
 

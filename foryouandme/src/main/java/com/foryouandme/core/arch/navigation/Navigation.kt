@@ -7,11 +7,14 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.toEvent
 import com.foryouandme.core.ext.evalOnMain
+import javax.inject.Inject
+import javax.inject.Singleton
 
 typealias NavigationExecution = (NavController) -> Unit
 
-class Navigator(
-    private val navigationProvider: NavigationProvider
+@Singleton
+class Navigator @Inject constructor(
+    private val navigationProvider: ForYouAndMeNavigationProvider
 ) {
 
     private val activityActionLiveData = MutableLiveData<Event<ActivityAction>>()
@@ -52,10 +55,6 @@ class Navigator(
         evalOnMain { activityActionLiveData.value = action.toEvent() }
 
     fun activityAction(): LiveData<Event<ActivityAction>> = activityActionLiveData
-}
-
-interface NavigationProvider {
-    fun getNavigation(action: NavigationAction): NavigationExecution
 }
 
 abstract class FYAMNavController(val navController: NavController)

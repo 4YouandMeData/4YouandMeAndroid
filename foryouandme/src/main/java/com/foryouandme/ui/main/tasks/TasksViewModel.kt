@@ -1,124 +1,98 @@
 package com.foryouandme.ui.main.tasks
 
-import arrow.fx.coroutines.Disposable
-import arrow.fx.coroutines.cancelBoundary
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.task.TaskUseCase.getTasks
-import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
-import com.foryouandme.core.ext.evalOnMain
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.*
+import com.foryouandme.core.ext.isTerminated
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.startCoroutineAsync
-import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.entity.order.Order
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.task.GetTasksUseCase
+import com.foryouandme.domain.usecase.task.SubmitQuickActivityAnswer
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.task.Task
 import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.addPage
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.SharedFlow
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
-class TasksViewModel(
-    navigator: Navigator,
-    private val taskModule: TaskModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        TasksState,
-        TasksStateUpdate,
-        TasksError,
-        TasksLoading>
-    (navigator = navigator, TasksState()) {
+class TasksViewModel @ViewModelInject constructor(
+    private val errorFlow: ErrorFlow<TasksError>,
+    private val loadingFlow: LoadingFlow<TasksLoading>,
+    private val stateUpdateFlow: StateUpdateFlow<TasksStateUpdate>,
+    private val getTasksUseCase: GetTasksUseCase,
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val submitQuickActivityAnswer: SubmitQuickActivityAnswer,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
+
+    /* --- state --- */
+
+    var state: TasksState = TasksState()
+        private set
+
+    /* --- flow --- */
+
+    val stateUpdate: SharedFlow<TasksStateUpdate> = stateUpdateFlow.stateUpdates
+    val loading: SharedFlow<UILoading<TasksLoading>> = loadingFlow.loading
+    val error: SharedFlow<UIError<TasksError>> = errorFlow.error
+
+    /* --- job --- */
 
     private val pageSize: Int = 20
-
-    private var fetchDisposable: Disposable? = null
+    private var fetchJob: Job? = null
 
     /* --- tasks --- */
 
-    suspend fun reloadTasks(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit =
-        loadTasks(rootNavController, 1, configuration)
+    private suspend fun getTasks(page: Int) {
+        coroutineScope {
 
-    suspend fun nextPage(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit =
-        loadTasks(rootNavController, state().tasks.page + 1, configuration)
+            loadingFlow.show(TasksLoading.Tasks(page))
 
-    suspend fun loadTasks(
-        rootNavController: RootNavController,
-        page: Int,
-        configuration: Configuration
-    ): Unit {
+            val tasks = async { getTasksUseCase(Order.Descending, page, pageSize) }
+            val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
 
-        // the first page has the high priority
-        if (page == 1) {
+            val items = buildItems(page, tasks.await(), configuration.await())
 
-            fetchDisposable?.let { it() }
-            fetchDisposable = null
+            state = state.copy(tasks = items, configuration = configuration.await())
+            stateUpdateFlow.update(TasksStateUpdate.Tasks(items))
+            stateUpdateFlow.update(TasksStateUpdate.Config(configuration.await()))
+
+            loadingFlow.hide(TasksLoading.Tasks(page))
 
         }
-
-        if (page == 1 || fetchDisposable == null)
-            fetchDisposable =
-                startCoroutineCancellableAsync {
-
-                    showLoading(TasksLoading.Tasks(page))
-
-                    val response =
-                        taskModule.getTasks(
-                            Order.Descending,
-                            page,
-                            pageSize
-                        ).map { list ->
-
-                            val tasks =
-                                if (page == 1) list.map { task -> task.toItem(configuration) }
-                                else state().tasks.addPage(list.map { task ->
-                                    task.toItem(
-                                        configuration
-                                    )
-                                })
-
-
-                            tasks.sort(rootNavController, configuration)
-
-
-                        }.handleAuthError(rootNavController, navigator)
-
-
-                    cancelBoundary()
-
-                    response.fold(
-                        { setError(it, TasksError.Tasks(page)) },
-                        { setTasks(it) }
-                    )
-
-                    fetchDisposable = null
-
-                    hideLoading(TasksLoading.Tasks(page))
-
-                }
-
     }
 
-    private suspend fun setTasks(tasks: PagedList<DroidItem<Any>>): Unit =
-        setState(state().copy(tasks = tasks)) { TasksStateUpdate.Tasks(tasks) }
+    private fun buildItems(
+        page: Int,
+        tasks: PagedList<Task>,
+        configuration: Configuration
+    ): PagedList<DroidItem<Any>> {
+
+        val items =
+            if (page == 1) tasks.map { it.toItem(configuration) }
+            else state.tasks.addPage(tasks.map { it.toItem(configuration) })
+
+        return items.sort(configuration)
+
+    }
 
     private fun Task.toItem(
         configuration: Configuration
@@ -132,7 +106,6 @@ class TasksViewModel(
         }
 
     private fun PagedList<DroidItem<Any>>.sort(
-        rootNavController: RootNavController,
         configuration: Configuration
     ): PagedList<DroidItem<Any>> {
 
@@ -155,15 +128,7 @@ class TasksViewModel(
                                 { item, answer ->
                                     startCoroutineAsync { selectAnswer(item, answer) }
                                 },
-                                { item ->
-                                    startCoroutineAsync {
-                                        submitAnswer(
-                                            item,
-                                            rootNavController,
-                                            configuration
-                                        )
-                                    }
-                                }
+                                { item -> execute(TasksStateEvent.SubmitQuickActivityAnswer(item)) }
                             )
                         ).also { it.submitList(quickActivitiesItems.toList()) }
                     )
@@ -203,11 +168,13 @@ class TasksViewModel(
 
     }
 
+    /* --- quick activities --- */
+
     private suspend fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
 
         logQuickActivityOptionSelected(item.data.id, answer.id)
 
-        state().tasks.data.map { droidItem ->
+        state.tasks.data.map { droidItem ->
             when (droidItem) {
                 is QuickActivitiesItem -> {
 
@@ -229,7 +196,7 @@ class TasksViewModel(
                             }
                         }
 
-                    evalOnMain { droidItem.quickActivities.submitList(updatedActivities) }
+                    droidItem.quickActivities.submitList(updatedActivities)
 
                     QuickActivitiesItem(
                         droidItem.id,
@@ -244,48 +211,77 @@ class TasksViewModel(
 
     }
 
-    private suspend fun submitAnswer(
-        item: QuickActivityItem,
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ) {
+    private suspend fun submitAnswer(item: QuickActivityItem) {
+
         if (item.selectedAnswer.isNullOrEmpty().not()) {
 
-            showLoading(TasksLoading.QuickActivityUpload)
-            taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
-                .fold(
-                    {
-                        setError(it, TasksError.QuickActivityUpload)
-                    },
-                    {
-                        reloadTasks(rootNavController, configuration)
-                    }
-                )
+            loadingFlow.show(TasksLoading.QuickActivityUpload)
 
-            hideLoading(TasksLoading.QuickActivityUpload)
+            submitQuickActivityAnswer(item.data.id, item.selectedAnswer!!.toInt())
+            execute(TasksStateEvent.GetTasks)
+
+            loadingFlow.hide(TasksLoading.QuickActivityUpload)
+
         }
+
     }
 
-/* --- navigation --- */
-
-    suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
-        task.data.activityType?.let {
-            navigator.navigateToSuspend(
-                rootNavController,
-                TasksToTask(task.data.taskId)
-            )
-        }
-    }
-
-/* --- analytics --- */
+    /* --- analytics --- */
 
     private suspend fun logQuickActivityOptionSelected(
         activityId: String,
         optionId: String
     ): Unit =
-        analyticsModule.logEvent(
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.QuickActivityOptionClicked(activityId, optionId),
             EAnalyticsProvider.ALL
         )
+
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: TasksStateEvent) {
+
+        when (stateEvent) {
+            TasksStateEvent.GetTasks -> {
+
+                if (fetchJob?.isActive == true) {
+                    fetchJob?.cancel()
+                    fetchJob = null
+                }
+
+                fetchJob = errorFlow.launchCatch(
+                    viewModelScope,
+                    TasksError.Tasks(1)
+                )
+                { getTasks(1) }
+
+            }
+            TasksStateEvent.GetTasksNextPage -> {
+
+                if (state.tasks.isCompleted.not()) {
+
+                    val nextPage = state.tasks.page + 1
+
+                    if (fetchJob == null || fetchJob.isTerminated && nextPage != 1)
+                        fetchJob =
+                            errorFlow.launchCatch(
+                                viewModelScope,
+                                TasksError.Tasks(nextPage)
+                            )
+                            { getTasks(nextPage) }
+                }
+
+            }
+            is TasksStateEvent.SelectQuickActivityAnswer ->
+                viewModelScope.launchSafe {
+                    selectAnswer(stateEvent.quickActivity, stateEvent.answer)
+                }
+            is TasksStateEvent.SubmitQuickActivityAnswer ->
+                errorFlow.launchCatch(viewModelScope, TasksError.QuickActivityUpload)
+                { submitAnswer(stateEvent.quickActivity) }
+        }
+
+    }
 
 }

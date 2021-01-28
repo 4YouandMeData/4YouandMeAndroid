@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.navigation.setupWithNavController
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.main.*
 
-class MainFragment : BaseFragment<MainViewModel>(R.layout.main) {
+@AndroidEntryPoint
+class MainFragment : BaseFragmentOld<MainViewModel>(R.layout.main) {
 
     override val viewModel: MainViewModel by lazy {
 

@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -17,7 +17,7 @@ import com.foryouandme.core.ext.startCoroutineAsync
 
 abstract class ConsentUserSectionFragment(
     contentLayoutId: Int
-) : BaseFragment<ConsentUserViewModel>(contentLayoutId) {
+) : BaseFragmentOld<ConsentUserViewModel>(contentLayoutId) {
 
     override val viewModel: ConsentUserViewModel by lazy {
         viewModelFactory(

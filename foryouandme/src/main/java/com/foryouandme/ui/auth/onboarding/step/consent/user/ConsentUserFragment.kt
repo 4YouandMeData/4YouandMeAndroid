@@ -51,8 +51,7 @@ class ConsentUserFragment : ConsentSectionFragment<ConsentUserViewModel>(R.layou
                 when (payload.cause) {
                     ConsentUserError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             startCoroutineAsync { viewModel.initialize(rootNavController()) }
                         }
                 }

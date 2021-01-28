@@ -53,8 +53,7 @@ class ConsentReviewFragment : ConsentSectionFragment<ConsentReviewViewModel>(
                 when (payload.cause) {
                     ConsentReviewError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             configuration { viewModel.initialize(rootNavController(), it) }
                         }
                 }

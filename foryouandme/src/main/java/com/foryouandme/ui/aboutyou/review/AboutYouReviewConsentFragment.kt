@@ -60,7 +60,6 @@ class AboutYouReviewConsentFragment :
                 when (it.cause) {
                     AboutYouReviewConsentError.Initialization ->
                         error.setError(it.error) {
-                            it.hide()
                             configuration {
                                 viewModel.initialize(
                                     rootNavController(),

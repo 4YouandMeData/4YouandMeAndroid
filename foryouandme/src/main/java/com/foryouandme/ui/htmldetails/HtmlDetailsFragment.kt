@@ -5,14 +5,14 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
 import kotlinx.android.synthetic.main.html_detail.*
 
-class HtmlDetailsFragment : BaseFragment<HtmlDetailsViewModel>(R.layout.html_detail) {
+class HtmlDetailsFragment : BaseFragmentOld<HtmlDetailsViewModel>(R.layout.html_detail) {
 
     private val args: HtmlDetailsFragmentArgs by navArgs()
 

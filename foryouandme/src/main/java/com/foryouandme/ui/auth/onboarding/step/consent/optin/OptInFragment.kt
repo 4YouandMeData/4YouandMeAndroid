@@ -51,8 +51,7 @@ class OptInFragment : ConsentSectionFragment<OptInViewModel>(R.layout.opt_in) {
                 when (payload.cause) {
                     OptInError.Initialization ->
                         error.setError(payload.error)
-                        { view ->
-                            view.hide()
+                        {
                             startCoroutineAsync { viewModel.initialize(rootNavController()) }
                         }
                 }
