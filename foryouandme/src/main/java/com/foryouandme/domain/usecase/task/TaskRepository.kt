@@ -1,28 +1,34 @@
 package com.foryouandme.domain.usecase.task
 
-import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
-import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
-import com.foryouandme.core.data.api.task.request.SurveyUpdateRequest
+import com.foryouandme.entity.order.Order
+import com.foryouandme.data.repository.task.network.request.FitnessUpdateRequest
+import com.foryouandme.data.repository.task.network.request.GaitUpdateRequest
+import com.foryouandme.data.repository.task.network.request.SurveyUpdateRequest
 import com.foryouandme.entity.task.Task
+import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import java.io.File
 
 interface TaskRepository {
 
-    suspend fun getTask(taskId: String): Task?
+    suspend fun getTask(token: String, taskId: String): Task?
 
-    suspend fun TaskModule.getTasks(): List<Task>
+    suspend fun getTasks(
+        token: String,
+        order: Order,
+        page: Int,
+        pageSize: Int
+    ): PagedList<Task>
 
-    suspend fun TaskModule.attachVideo(taskId: String, file: File): Unit
+    suspend fun attachVideo(token: String, taskId: String, file: File)
 
-    suspend fun TaskModule.updateGaitTask(taskId: String, result: GaitUpdateRequest): Unit
+    suspend fun updateGaitTask(token: String, taskId: String, result: GaitUpdateRequest)
 
-    suspend fun TaskModule.updateFitnessTask(taskId: String, result: FitnessUpdateRequest): Unit
+    suspend fun updateFitnessTask(token: String, taskId: String, result: FitnessUpdateRequest)
 
-    suspend fun TaskModule.updateQuickActivity(taskId: String, answerId: Int): Unit
+    suspend fun updateQuickActivity(token: String, taskId: String, answerId: Int)
 
-    suspend fun TaskModule.updateSurvey(taskId: String, result: SurveyUpdateRequest): Unit
+    suspend fun updateSurvey(token: String, taskId: String, result: SurveyUpdateRequest)
 
-    suspend fun TaskModule.reschedule(taskId: String): Unit
+    suspend fun reschedule(token: String, taskId: String)
 
 }

@@ -4,10 +4,11 @@ import arrow.core.Either
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.data.api.task.request.*
-import com.foryouandme.core.data.api.task.response.toTaskItems
+import com.foryouandme.data.datasource.network.value
+import com.foryouandme.data.repository.task.network.response.toTaskItems
 import com.foryouandme.entity.task.Task
-import com.foryouandme.data.datasource.network.Order
+import com.foryouandme.entity.order.Order
+import com.foryouandme.data.repository.task.network.request.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody

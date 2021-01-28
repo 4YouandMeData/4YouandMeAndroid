@@ -59,12 +59,12 @@ class SplashViewModel(
     }
 
     private suspend fun main(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(rootNavController, SplashToMain)
+        navigator.navigateToSuspend(rootNavController, SplashToMain)
 
     private suspend fun welcome(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, SplashToWelcome)
+        navigator.navigateToSuspend(authNavController, SplashToWelcome)
 
     private suspend fun onboarding(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, SplashToOnboarding)
+        navigator.navigateToSuspend(authNavController, SplashToOnboarding)
 
 }

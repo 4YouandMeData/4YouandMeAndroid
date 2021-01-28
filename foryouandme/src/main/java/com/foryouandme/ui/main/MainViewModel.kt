@@ -74,9 +74,9 @@ class MainViewModel(
         when {
 
             taskId != null ->
-                navigator.navigateTo(rootNavController, MainToTask(taskId))
+                navigator.navigateToSuspend(rootNavController, MainToTask(taskId))
             url != null ->
-                navigator.navigateTo(rootNavController, AnywhereToWeb(url))
+                navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
             openApplicationIntegration != null ->
                 navigator.performAction(openApp(openApplicationIntegration.packageName))
 

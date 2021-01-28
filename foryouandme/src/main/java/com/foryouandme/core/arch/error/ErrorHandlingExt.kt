@@ -22,13 +22,13 @@ suspend fun <A> Either<ForYouAndMeError, A>.handleAuthError(
                         // navigate to auth page
                         410,
                         401 ->
-                            navigator.navigateTo(controller, AnywhereToAuth)
+                            navigator.navigateToSuspend(controller, AnywhereToAuth)
                     }
                 }
                 is ForYouAndMeError.UserNotLoggedIn ->
-                    navigator.navigateTo(controller, AnywhereToAuth)
+                    navigator.navigateToSuspend(controller, AnywhereToAuth)
                 is ForYouAndMeError.MissingConfiguration ->
-                    navigator.navigateTo(controller, AnywhereToAuth)
+                    navigator.navigateToSuspend(controller, AnywhereToAuth)
             }
 
             error.left()

@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.task.request
+package com.foryouandme.data.repository.task.network.request
 
 import com.squareup.moshi.Json
 

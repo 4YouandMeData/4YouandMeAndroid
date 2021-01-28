@@ -6,9 +6,9 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.ErrorModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.cases.task.TaskUseCase.updateFitnessTask
-import com.foryouandme.core.data.api.task.request.FitnessSitRequest
-import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
-import com.foryouandme.core.data.api.task.request.FitnessWalkRequest
+import com.foryouandme.data.repository.task.network.request.FitnessSitRequest
+import com.foryouandme.data.repository.task.network.request.FitnessUpdateRequest
+import com.foryouandme.data.repository.task.network.request.FitnessWalkRequest
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration

@@ -55,7 +55,7 @@ class OnboardingViewModel(
             .foldSuspend(
                 { end(rootNavController) },
                 {
-                    navigator.navigateTo(
+                    navigator.navigateToSuspend(
                         onboardingStepNavController,
                         OnboardingStepToOnboardingStep(currentStepIndex + 1)
                     )
@@ -63,6 +63,6 @@ class OnboardingViewModel(
             )
 
     suspend fun end(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(rootNavController, OnboardingToMain)
+        navigator.navigateToSuspend(rootNavController, OnboardingToMain)
 
 }

@@ -16,7 +16,7 @@ import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.data.datasource.network.Order
+import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
@@ -270,7 +270,7 @@ class TasksViewModel(
 
     suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
         task.data.activityType?.let {
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 rootNavController,
                 TasksToTask(task.data.taskId)
             )

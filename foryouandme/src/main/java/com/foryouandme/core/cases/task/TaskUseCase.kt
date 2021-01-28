@@ -14,11 +14,11 @@ import com.foryouandme.core.cases.task.TaskRepository.uploadFitnessTask
 import com.foryouandme.core.cases.task.TaskRepository.uploadGaitTask
 import com.foryouandme.core.cases.task.TaskRepository.uploadQuickActivity
 import com.foryouandme.core.cases.task.TaskRepository.uploadSurvey
-import com.foryouandme.core.data.api.task.request.FitnessUpdateRequest
-import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
-import com.foryouandme.core.data.api.task.request.SurveyUpdateRequest
+import com.foryouandme.data.repository.task.network.request.FitnessUpdateRequest
+import com.foryouandme.data.repository.task.network.request.GaitUpdateRequest
+import com.foryouandme.data.repository.task.network.request.SurveyUpdateRequest
 import com.foryouandme.entity.task.Task
-import com.foryouandme.data.datasource.network.Order
+import com.foryouandme.entity.order.Order
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList
 import java.io.File

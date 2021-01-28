@@ -128,12 +128,12 @@ class ConsentInfoViewModel(
         startCoroutineAsync { correctAnswers.b.parSequence() }
 
         if (correctAnswers.a >= state().consentInfo.minimumAnswer)
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 consentInfoNavController,
                 ConsentInfoQuestionToConsentInfoSuccess
             )
         else
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 consentInfoNavController,
                 ConsentInfoQuestionToConsentInfoFailure
             )
@@ -187,14 +187,14 @@ class ConsentInfoViewModel(
         id: String,
         fromWelcome: Boolean
     ): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentInfoNavController,
             if (fromWelcome) ConsentInfoWelcomeToConsentInfoPage(id)
             else ConsentInfoPageToConsentInfoPage(id)
         )
 
     suspend fun modalPage(consentInfoNavController: ConsentInfoNavController, id: String): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentInfoNavController,
             ConsentInfoPageToConsentInfoModalPage(id)
         )
@@ -210,7 +210,7 @@ class ConsentInfoViewModel(
             else -> ConsentInfoPageToConsentInfoQuestion(
                 0
             )
-        }.pipe { navigator.navigateTo(consentInfoNavController, it) }
+        }.pipe { navigator.navigateToSuspend(consentInfoNavController, it) }
 
     suspend fun nextQuestion(
         consentInfoNavController: ConsentInfoNavController,
@@ -219,7 +219,7 @@ class ConsentInfoViewModel(
     ): Unit {
 
         if (currentIndex < (state().questions.keys.size - 1))
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 consentInfoNavController,
                 ConsentInfoQuestionToConsentInfoQuestion(currentIndex + 1)
             )
@@ -228,7 +228,7 @@ class ConsentInfoViewModel(
     }
 
     suspend fun consentReview(consentNavController: ConsentNavController): Unit =
-        navigator.navigateTo(consentNavController, ConsentInfoToConsentReview)
+        navigator.navigateToSuspend(consentNavController, ConsentInfoToConsentReview)
 
     suspend fun restartFromWelcome(consentInfoNavController: ConsentInfoNavController): Unit {
 
@@ -242,7 +242,7 @@ class ConsentInfoViewModel(
         { ConsentInfoStateUpdate.Questions(questions) }
 
 
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentInfoNavController,
             ConsentInfoFailureToConsentInfoWelcome
         )
@@ -264,7 +264,7 @@ class ConsentInfoViewModel(
         { ConsentInfoStateUpdate.Questions(questions) }
 
 
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentInfoNavController,
             ConsentInfoFailureToConsentInfoPage(id)
         )
@@ -278,11 +278,11 @@ class ConsentInfoViewModel(
             is ConsentInfoAbort.FromQuestion -> logAbortFromQuestionEvent(abort.questionId)
         }
 
-        navigator.navigateTo(authNavController, AnywhereToWelcome)
+        navigator.navigateToSuspend(authNavController, AnywhereToWelcome)
     }
 
     suspend fun web(rootNavController: RootNavController, url: String): Unit =
-        navigator.navigateTo(rootNavController, AnywhereToWeb(url))
+        navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
 
     /* --- analytics --- */
 

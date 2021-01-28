@@ -23,7 +23,6 @@ import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.core.cases.analytics.EAnalyticsProvider
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.integration.IntegrationUseCase.getIntegration
-import com.foryouandme.entity.page.Page
 import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.entity.page.PageRef
 
@@ -114,13 +113,13 @@ class IntegrationViewModel(
     ): Unit {
 
         if (page == null)
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 integrationNavController,
                 if (fromWelcome) IntegrationWelcomeToIntegrationSuccess
                 else IntegrationPageToIntegrationSuccess
             )
         else
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 integrationNavController,
                 if (fromWelcome) IntegrationWelcomeToIntegrationPage(page.id)
                 else IntegrationPageToIntegrationPage(page.id)
@@ -146,7 +145,7 @@ class IntegrationViewModel(
         link: String,
         nextPage: PageRef?,
     ): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             integrationNavController,
             IntegrationPageToIntegrationLogin(link, nextPage?.id)
         )
@@ -156,7 +155,7 @@ class IntegrationViewModel(
         link: String,
         nextPage: PageRef?
     ): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             integrationNavController,
             IntegrationWelcomeToIntegrationLogin(link, nextPage?.id)
         )
@@ -167,12 +166,12 @@ class IntegrationViewModel(
     ): Unit {
 
         if (nextPageId == null)
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 integrationNavController,
                 IntegrationLoginToIntegrationSuccess
             )
         else
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 integrationNavController,
                 IntegrationLoginToIntegrationPage(nextPageId)
             )

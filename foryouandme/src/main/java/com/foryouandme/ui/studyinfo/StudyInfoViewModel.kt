@@ -42,25 +42,25 @@ class StudyInfoViewModel(
     /* --- navigation --- */
 
     suspend fun aboutYouPage(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToAboutYouPage
         )
 
     suspend fun info(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToInformation
         )
 
     suspend fun reward(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToReward
         )
 
     suspend fun faq(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToFaq
         )

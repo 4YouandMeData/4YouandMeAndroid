@@ -114,7 +114,7 @@ class AboutYouAppsAndDevicesViewModel(
     /*--- navigation ---*/
 
     suspend fun navigateToWeb(url: String, navController: AboutYouNavController) {
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
                 navController,
                 AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(
                         url

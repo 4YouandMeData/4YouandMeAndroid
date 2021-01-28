@@ -6,10 +6,10 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.ErrorModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.cases.task.TaskUseCase.updateGaitTask
-import com.foryouandme.core.data.api.task.request.GaitOutboundRequest
-import com.foryouandme.core.data.api.task.request.GaitRestRequest
-import com.foryouandme.core.data.api.task.request.GaitReturnRequest
-import com.foryouandme.core.data.api.task.request.GaitUpdateRequest
+import com.foryouandme.data.repository.task.network.request.GaitOutboundRequest
+import com.foryouandme.data.repository.task.network.request.GaitRestRequest
+import com.foryouandme.data.repository.task.network.request.GaitReturnRequest
+import com.foryouandme.data.repository.task.network.request.GaitUpdateRequest
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration

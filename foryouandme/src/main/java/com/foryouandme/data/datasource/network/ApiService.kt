@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api
+package com.foryouandme.data.datasource.network
 
 import com.squareup.moshi.Moshi
 import moe.banana.jsonapi2.JsonApiConverterFactory

@@ -9,6 +9,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseActivity
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.arch.navigation.AnywhereToAuth
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
@@ -91,7 +92,7 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
 
     }
 
-    private fun setupNavigation(): Unit {
+    private fun setupNavigation() {
 
         val navHostFragment =
             supportFragmentManager
@@ -106,6 +107,12 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
     fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)
     fun urlArg(): String? = intent.extras?.getString(URL)
     fun openAppIntegrationArg(): String? = intent.extras?.getString(OPEN_APP_INTEGRATION)
+
+    fun auth() {
+
+        navigator.navigateTo(rootNavController(), AnywhereToAuth)
+
+    }
 
     companion object {
 

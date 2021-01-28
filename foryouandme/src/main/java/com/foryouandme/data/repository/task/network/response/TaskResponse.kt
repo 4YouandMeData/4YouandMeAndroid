@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.task.response
+package com.foryouandme.data.repository.task.network.response
 
 import arrow.core.computations.either
 import arrow.core.flatMap

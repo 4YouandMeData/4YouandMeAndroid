@@ -22,10 +22,10 @@ class SignUpInfoViewModel(
     /* --- navigation --- */
 
     suspend fun signUpLater(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, SignUpInfoToSignUpLater)
+        navigator.navigateToSuspend(authNavController, SignUpInfoToSignUpLater)
 
     suspend fun enterPhone(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, SignUpInfoToEnterPhone)
+        navigator.navigateToSuspend(authNavController, SignUpInfoToEnterPhone)
 
     /* --- analytics --- */
 

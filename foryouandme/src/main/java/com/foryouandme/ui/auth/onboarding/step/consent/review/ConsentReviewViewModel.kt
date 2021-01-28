@@ -87,7 +87,7 @@ class ConsentReviewViewModel(
 
         logDisagree()
 
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentReviewNavController,
             ConsentReviewInfoToConsentReviewDisagree
         )
@@ -95,7 +95,7 @@ class ConsentReviewViewModel(
     }
 
     suspend fun exit(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             rootNavController,
             ConsentReviewDisagreeToAuth
         )
@@ -104,7 +104,7 @@ class ConsentReviewViewModel(
 
         logAgree()
 
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentNavController,
             ConsentReviewToOptIns
         )

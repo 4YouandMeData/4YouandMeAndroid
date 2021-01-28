@@ -21,7 +21,7 @@ class WelcomeViewModel(
 
 
     suspend fun signUpInfo(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, WelcomeToSignUpInfo)
+        navigator.navigateToSuspend(authNavController, WelcomeToSignUpInfo)
 
     /* --- analytics --- */
 

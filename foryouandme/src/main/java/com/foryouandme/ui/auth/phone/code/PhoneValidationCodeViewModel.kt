@@ -82,10 +82,10 @@ class PhoneValidationCodeViewModel(
     }
 
     private suspend fun onboarding(authNavController: AuthNavController): Unit =
-        navigator.navigateTo(authNavController, PhoneValidationCodeToOnboarding)
+        navigator.navigateToSuspend(authNavController, PhoneValidationCodeToOnboarding)
 
     private suspend fun main(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(rootNavController, PhoneValidationCodeToMain)
+        navigator.navigateToSuspend(rootNavController, PhoneValidationCodeToMain)
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
         navigator.performAction(toastAction(error))

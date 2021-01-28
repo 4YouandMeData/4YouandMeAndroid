@@ -1,8 +1,8 @@
-package com.foryouandme.core.data.api.task
+package com.foryouandme.data.repository.task.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.task.request.*
-import com.foryouandme.core.data.api.task.response.TaskResponse
+import com.foryouandme.data.repository.task.network.request.*
+import com.foryouandme.data.repository.task.network.response.TaskResponse
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
@@ -30,7 +30,7 @@ interface TaskApi {
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,
         @Part file: MultipartBody.Part
-    ): Unit
+    )
 
     @PATCH("api/v1/tasks/{id}")
     suspend fun updateGaitTask(
@@ -38,7 +38,7 @@ interface TaskApi {
         @Path("id") taskId: String,
         @Body request: TaskResultRequest<GaitUpdateRequest>
 
-    ): Unit
+    )
 
     @PATCH("api/v1/tasks/{id}")
     suspend fun updateFitnessTask(
@@ -46,7 +46,7 @@ interface TaskApi {
         @Path("id") taskId: String,
         @Body request: TaskResultRequest<FitnessUpdateRequest>
 
-    ): Unit
+    )
 
     @PATCH("api/v1/tasks/{id}")
     suspend fun updateQuickActivity(
@@ -61,14 +61,14 @@ interface TaskApi {
         @Path("id") taskId: String,
         @Body request: TaskResultRequest<SurveyUpdateRequest>
 
-    ): Unit
+    )
 
     @PATCH("api/v1/tasks/{id}/reschedule")
     suspend fun reschedule(
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String
 
-    ): Unit
+    )
 
 }
 

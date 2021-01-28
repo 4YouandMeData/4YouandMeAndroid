@@ -15,25 +15,25 @@ class AboutYouMenuViewModel(navigator: Navigator, private val analyticsModule: A
     /* --- navigation --- */
 
     suspend fun toAboutYouReviewConsentPage(navController: AboutYouNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             AboutYouMenuPageToAboutYouReviewConsentPage
         )
 
     suspend fun toAboutYouAppsAndDevicesPage(navController: AboutYouNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             AboutYouMenuPageToAppsAndDevicesPage
         )
 
     suspend fun toAboutYouPermissionsPage(navController: AboutYouNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             AboutYouMenuPageToPermissionsPage
         )
 
     suspend fun toAboutYouUserInfoPage(navController: AboutYouNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             AboutYouMenuPageToUserInfoPage
         )

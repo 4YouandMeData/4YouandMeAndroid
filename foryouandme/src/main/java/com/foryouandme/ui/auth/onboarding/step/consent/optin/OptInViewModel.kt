@@ -181,7 +181,7 @@ class OptInViewModel(
     suspend fun permission(optInNavController: OptInNavController): Unit {
 
         if (state().optIns.permissions.firstOrNull() != null)
-            navigator.navigateTo(optInNavController, OptInWelcomeToOptInPermission(0))
+            navigator.navigateToSuspend(optInNavController, OptInWelcomeToOptInPermission(0))
 
     }
 
@@ -191,7 +191,7 @@ class OptInViewModel(
     ): Unit {
 
         if (state().optIns.permissions.size > (currentIndex + 1))
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 optInNavController,
                 OptInPermissionToOptInPermission(currentIndex + 1)
             )
@@ -200,10 +200,10 @@ class OptInViewModel(
     }
 
     private suspend fun success(optInNavController: OptInNavController): Unit =
-        navigator.navigateTo(optInNavController, OptInPermissionToOptInSuccess)
+        navigator.navigateToSuspend(optInNavController, OptInPermissionToOptInSuccess)
 
     suspend fun consentUser(consentNavController: ConsentNavController): Unit =
-        navigator.navigateTo(consentNavController, OptInToConsentUser)
+        navigator.navigateToSuspend(consentNavController, OptInToConsentUser)
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
         navigator.performAction(toastAction(error))
@@ -212,6 +212,6 @@ class OptInViewModel(
         navigator.performAction(alertAction(title, message, close))
 
     suspend fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateTo(navController, AnywhereToWeb(url))
+        navigator.navigateToSuspend(navController, AnywhereToWeb(url))
 
 }

@@ -110,7 +110,7 @@ class TaskViewModel(
                 { end() },
                 {
                     taskConfiguration.onStepLoaded(state().task, it)
-                    navigator.navigateTo(
+                    navigator.navigateToSuspend(
                         stepNavController,
                         StepToStep(currentStepIndex + 1)
                     )
@@ -139,7 +139,7 @@ class TaskViewModel(
                         nextStep(stepNavController, currentStepIndex)
                     } else {
                         taskConfiguration.onStepLoaded(state().task, it)
-                        navigator.navigateTo(stepNavController, StepToStep(skipIndex))
+                        navigator.navigateToSuspend(stepNavController, StepToStep(skipIndex))
                     }
                 }
             )

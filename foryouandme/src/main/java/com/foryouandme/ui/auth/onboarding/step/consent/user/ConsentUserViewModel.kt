@@ -204,25 +204,25 @@ class ConsentUserViewModel(
         else true
 
     suspend fun email(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentUserNavController,
             ConsentUserNameToConsentUserEmail
         )
 
     private suspend fun emailVerification(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentUserNavController,
             ConsentUserEmailToConsentUserEmailValidationCode
         )
 
     private suspend fun signature(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentUserNavController,
             ConsentUserEmailValidationCodeToConsentUserSignature
         )
 
     private suspend fun success(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             consentUserNavController,
             ConsentUserSignatureToConsentUserSuccess
         )
@@ -231,7 +231,7 @@ class ConsentUserViewModel(
         navigator.performAction(toastAction(error))
 
     suspend fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateTo(navController, AnywhereToWeb(url))
+        navigator.navigateToSuspend(navController, AnywhereToWeb(url))
 
     /* --- analytics --- */
 

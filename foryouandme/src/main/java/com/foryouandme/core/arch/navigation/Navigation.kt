@@ -16,7 +16,7 @@ class Navigator(
 
     private val activityActionLiveData = MutableLiveData<Event<ActivityAction>>()
 
-    suspend fun navigateTo(
+    suspend fun navigateToSuspend(
         controller: FYAMNavController,
         navigationAction: NavigationAction
     ): Unit =
@@ -28,6 +28,16 @@ class Navigator(
             navigation(controller.navController)
 
         }
+
+    fun navigateTo(
+        controller: FYAMNavController,
+        navigationAction: NavigationAction
+    ) {
+
+        val navigation = navigationProvider.getNavigation(navigationAction)
+        navigation(controller.navController)
+
+    }
 
     suspend fun back(navController: FYAMNavController): Boolean =
         back(navController.navController)

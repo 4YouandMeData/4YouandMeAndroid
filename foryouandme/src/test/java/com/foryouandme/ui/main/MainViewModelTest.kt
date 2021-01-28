@@ -31,7 +31,7 @@ class MainViewModelTest {
 
         viewModel = spyk(MainViewModel(navigator))
 
-        coEvery { navigator.navigateTo(allAny(), allAny()) } returns Unit
+        coEvery { navigator.navigateToSuspend(allAny(), allAny()) } returns Unit
         coEvery { navigator.performAction(allAny()) } returns Unit
 
     }
@@ -43,7 +43,7 @@ class MainViewModelTest {
 
         runBlocking { viewModel.handleDeepLink(mockk(), state) }
 
-        coVerify { navigator.navigateTo(allAny(), match { it is MainToTask }) }
+        coVerify { navigator.navigateToSuspend(allAny(), match { it is MainToTask }) }
 
     }
 
@@ -54,7 +54,7 @@ class MainViewModelTest {
 
         runBlocking { viewModel.handleDeepLink(mockk(), state) }
 
-        coVerify { navigator.navigateTo(allAny(), match { it is AnywhereToWeb }) }
+        coVerify { navigator.navigateToSuspend(allAny(), match { it is AnywhereToWeb }) }
 
     }
 

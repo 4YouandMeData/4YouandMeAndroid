@@ -26,7 +26,7 @@ import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.data.datasource.network.Order
+import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
@@ -471,7 +471,7 @@ class FeedsViewModel(
 
     suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
         task.data.activityType?.let {
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 rootNavController,
                 FeedsToTask(task.data.taskId)
             )
@@ -479,13 +479,13 @@ class FeedsViewModel(
     }
 
     suspend fun aboutYouPage(rootNavController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             rootNavController,
             MainPageToAboutYouPage
         )
 
     suspend fun web(rootNavController: RootNavController, url: String): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             rootNavController,
             AnywhereToWeb(url)
         )
@@ -494,19 +494,19 @@ class FeedsViewModel(
         navigator.performAction(openApp(integrationApp.packageName))
 
     suspend fun info(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToInformation
         )
 
     suspend fun reward(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToReward
         )
 
     suspend fun faq(navController: RootNavController): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             navController,
             MainPageToFaq
         )

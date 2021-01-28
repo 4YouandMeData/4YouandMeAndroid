@@ -30,7 +30,7 @@ import com.foryouandme.core.data.api.consent.user.ConsentUserApi
 import com.foryouandme.core.data.api.consent.user.response.ConsentUserResponse
 import com.foryouandme.core.data.api.feed.FeedApi
 import com.foryouandme.core.data.api.feed.response.FeedResponse
-import com.foryouandme.core.data.api.getApiService
+import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.core.data.api.integration.IntegrationApi
 import com.foryouandme.core.data.api.integration.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.OptInsApi
@@ -45,8 +45,8 @@ import com.foryouandme.core.data.api.survey.response.SurveyAnswerResponse
 import com.foryouandme.core.data.api.survey.response.SurveyBlockResponse
 import com.foryouandme.core.data.api.survey.response.SurveyQuestionResponse
 import com.foryouandme.core.data.api.survey.response.SurveyResponse
-import com.foryouandme.core.data.api.task.TaskApi
-import com.foryouandme.core.data.api.task.response.TaskResponse
+import com.foryouandme.data.repository.task.network.TaskApi
+import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.core.researchkit.task.FYAMTaskConfiguration
 import com.foryouandme.data.datasource.Environment

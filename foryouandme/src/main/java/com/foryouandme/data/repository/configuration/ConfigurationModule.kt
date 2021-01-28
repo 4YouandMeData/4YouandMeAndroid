@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.configuration
 
-import com.foryouandme.core.data.api.getApiService
+import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.domain.usecase.configuration.ConfigurationRepository

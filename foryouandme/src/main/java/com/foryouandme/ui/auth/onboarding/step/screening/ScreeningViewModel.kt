@@ -115,12 +115,12 @@ class ScreeningViewModel(
         startCoroutineAsync { correctAnswers.b.parSequence() }
 
         if (correctAnswers.a >= state().screening.minimumAnswer)
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 screeningNavController,
                 ScreeningQuestionsToScreeningSuccess
             )
         else
-            navigator.navigateTo(
+            navigator.navigateToSuspend(
                 screeningNavController,
                 ScreeningQuestionsToScreeningFailure
             )
@@ -163,7 +163,7 @@ class ScreeningViewModel(
         screeningNavController: ScreeningNavController,
         fromWelcome: Boolean
     ): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             screeningNavController,
             if (fromWelcome) ScreeningWelcomeToScreeningQuestions
             else ScreeningPageToScreeningQuestions
@@ -174,7 +174,7 @@ class ScreeningViewModel(
         id: String,
         fromWelcome: Boolean
     ): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             screeningNavController,
             if (fromWelcome) ScreeningWelcomeToScreeningPage(id)
             else ScreeningPageToScreeningPage(id)
@@ -182,11 +182,11 @@ class ScreeningViewModel(
 
     suspend fun abort(authNavController: AuthNavController): Unit {
         logAbortEvent()
-        navigator.navigateTo(authNavController, AnywhereToWelcome)
+        navigator.navigateToSuspend(authNavController, AnywhereToWelcome)
     }
 
     suspend fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateTo(navController, AnywhereToWeb(url))
+        navigator.navigateToSuspend(navController, AnywhereToWeb(url))
 
     suspend fun retryFromWelcome(screeningNavController: ScreeningNavController): Unit {
 
@@ -197,7 +197,7 @@ class ScreeningViewModel(
         setState(state().copy(questions = questions))
         { ScreeningStateUpdate.Questions(questions) }
 
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             screeningNavController,
             ScreeningFailureToScreeningWelcome
         )

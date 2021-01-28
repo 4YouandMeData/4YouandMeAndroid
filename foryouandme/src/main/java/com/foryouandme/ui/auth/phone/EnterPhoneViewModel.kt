@@ -73,13 +73,13 @@ class EnterPhoneViewModel(
         phone: String,
         countryCode: String
     ): Unit =
-        navigator.navigateTo(
+        navigator.navigateToSuspend(
             authNavController,
             EnterPhoneToPhoneValidationCode(phone, countryCode)
         )
 
     suspend fun web(rootNavController: RootNavController, url: String): Unit =
-        navigator.navigateTo(rootNavController, AnywhereToWeb(url))
+        navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
         navigator.performAction(toastAction(error))

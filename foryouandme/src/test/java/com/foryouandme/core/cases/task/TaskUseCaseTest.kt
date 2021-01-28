@@ -9,7 +9,7 @@ import com.foryouandme.core.cases.auth.AuthUseCase
 import com.foryouandme.core.cases.auth.AuthUseCase.getToken
 import com.foryouandme.core.cases.task.TaskRepository.reschedule
 import com.foryouandme.core.cases.task.TaskUseCase.reschedule
-import com.foryouandme.core.data.api.task.TaskApi
+import com.foryouandme.data.repository.task.network.TaskApi
 import com.squareup.moshi.Moshi
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
