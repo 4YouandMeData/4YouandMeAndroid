@@ -2,9 +2,9 @@ package com.foryouandme.researchkit.step.web
 
 interface JavaScriptInterfaceListener {
 
-    fun nextStep(): Unit
+    fun nextStep()
 
-    fun close(): Unit
+    fun close()
 
 }
 
@@ -12,20 +12,20 @@ abstract class WebStepInterface {
 
     private var listener: JavaScriptInterfaceListener? = null
 
-    fun setListener(listener: JavaScriptInterfaceListener): Unit {
+    fun setListener(listener: JavaScriptInterfaceListener) {
         this.listener = listener
     }
 
-    fun clearListener(): Unit {
+    fun clearListener() {
         listener = null
     }
 
 
-    protected fun nextStep(): Unit {
+    protected fun nextStep() {
         listener?.nextStep()
     }
 
-    protected fun close(): Unit {
+    protected fun close() {
         listener?.close()
     }
 

@@ -96,7 +96,7 @@ class FYAMTaskConfiguration(
                             ?.let { token ->
 
                                 val camCogUrl =
-                                    "${environment.getApiBaseUrl()}camcog/tasks/$id"
+                                    "${environment.getApiBaseUrl()}/camcog/tasks/$id"
 
                                 FYAMCamCogTask(
                                     id,

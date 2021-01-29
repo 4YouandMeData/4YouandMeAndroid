@@ -9,8 +9,10 @@ import android.view.View
 import android.webkit.*
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
@@ -49,11 +51,11 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
                 object : JavaScriptInterfaceListener {
 
                     override fun nextStep() {
-                        nextStep()
+                        lifecycleScope.launchSafe { next() }
                     }
 
                     override fun close() {
-                        close()
+                        lifecycleScope.launchSafe { viewModel.close(taskNavController()) }
                     }
 
                 }

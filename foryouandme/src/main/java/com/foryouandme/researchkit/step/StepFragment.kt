@@ -78,7 +78,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragmentOld<TaskViewModel>(c
         viewModel.skipToStep(stepNavController(), stepId, indexArg())
     }
 
-    protected open fun reschedule(): Unit {
+    protected open fun reschedule() {
 
     }
 
@@ -89,7 +89,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragmentOld<TaskViewModel>(c
 
     protected fun stepNavController(): StepNavController = StepNavController(findNavController())
 
-    protected fun showCancelDialog(): Unit {
+    protected fun showCancelDialog() {
 
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.TASK_cancel_title)
