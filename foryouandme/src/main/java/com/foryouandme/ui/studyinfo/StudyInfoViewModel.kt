@@ -1,68 +1,55 @@
-package com.foryouandme.studyinfo
+package com.foryouandme.ui.studyinfo
 
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.ConfigurationModule
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.CachePolicy
-import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
-import com.foryouandme.ui.main.*
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.*
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import kotlinx.coroutines.flow.SharedFlow
 
-class StudyInfoViewModel(
-    navigator: Navigator,
-    private val configurationModule: ConfigurationModule
-) : BaseViewModel<
-        StudyInfoState,
-        StudyInfoStateUpdate,
-        StudyInfoError,
-        StudyInfoLoading>
-    (
-    navigator = navigator,
-) {
+class StudyInfoViewModel @ViewModelInject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<StudyInfoStateUpdate>,
+    private val loadingFlow: LoadingFlow<StudyInfoLoading>,
+    private val errorFlow: ErrorFlow<StudyInfoError>,
+    private val getConfigurationUseCase: GetConfigurationUseCase
+) : ViewModel() {
 
-    /* --- data --- */
+    /* --- state --- */
 
-    suspend fun initialize(): Unit {
+    var state = StudyInfoState()
+        private set
 
-        val configuration =
-            configurationModule.getConfiguration(CachePolicy.MemoryFirst)
+    /* --- flow --- */
 
-        configuration.fold(
-            { setError(it, StudyInfoError.Initialization) },
-            {
-                setState(
-                    StudyInfoState(it),
-                ) { state ->
-                    StudyInfoStateUpdate.Initialization(state.configuration)
-                }
-            }
-        )
+    val stateUpdate: SharedFlow<StudyInfoStateUpdate> = stateUpdateFlow.stateUpdates
+    val loading: SharedFlow<UILoading<StudyInfoLoading>> = loadingFlow.loading
+    val error: SharedFlow<UIError<StudyInfoError>> = errorFlow.error
+
+    /* --- initialization --- */
+
+    suspend fun initialize() {
+
+        loadingFlow.show(StudyInfoLoading.Initialization)
+
+        val configuration = getConfigurationUseCase(Policy.LocalFirst)
+        state = state.copy(configuration = configuration)
+        stateUpdateFlow.update(StudyInfoStateUpdate.Initialization(configuration))
+
+        loadingFlow.hide(StudyInfoLoading.Initialization)
+
     }
 
-    /* --- navigation --- */
+    /* --- state events --- */
 
-    suspend fun aboutYouPage(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MainPageToAboutYouPage
-        )
+    fun execute(stateEvent: StudyInfoStateEvent) {
 
-    suspend fun info(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MainPageToInformation
-        )
+        when (stateEvent) {
+            StudyInfoStateEvent.Initialization ->
+                errorFlow.launchCatch(viewModelScope, StudyInfoError.Initialization)
+                { initialize() }
+        }
 
-    suspend fun reward(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MainPageToReward
-        )
-
-    suspend fun faq(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MainPageToFaq
-        )
+    }
 
 }

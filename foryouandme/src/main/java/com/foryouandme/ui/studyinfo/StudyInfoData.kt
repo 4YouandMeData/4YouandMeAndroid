@@ -1,9 +1,9 @@
-package com.foryouandme.studyinfo
+package com.foryouandme.ui.studyinfo
 
 import com.foryouandme.entity.configuration.Configuration
 
 data class StudyInfoState(
-    val configuration: Configuration
+    val configuration: Configuration? = null
 )
 
 sealed class StudyInfoStateUpdate {
@@ -16,4 +16,10 @@ sealed class StudyInfoLoading {
 
 sealed class StudyInfoError {
     object Initialization : StudyInfoError()
+}
+
+sealed class StudyInfoStateEvent {
+
+    object Initialization : StudyInfoStateEvent()
+
 }

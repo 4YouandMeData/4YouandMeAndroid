@@ -66,6 +66,10 @@ class MainFragment : BaseFragment(R.layout.main) {
             }
             .observeIn(this)
 
+        viewModel.navigation
+            .onEach { navigator.navigateTo(rootNavController(), it) }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
