@@ -20,6 +20,7 @@ import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.main.MainSectionFragment
+import com.foryouandme.ui.main.MainStateEvent
 import com.foryouandme.ui.main.feeds.FeedHeaderItem
 import com.foryouandme.ui.main.items.DateViewHolder
 import com.foryouandme.ui.main.items.QuickActivitiesItem
@@ -149,7 +150,7 @@ class TasksFragment : MainSectionFragment(R.layout.tasks) {
         empty_button.background = button(configuration.theme.primaryColorEnd.color())
         empty_button.text = configuration.text.tab.tabTaskEmptyButton
         empty_button.setOnClickListener {
-            lifecycleScope.launchSafe { mainViewModel.selectFeed() }
+            lifecycleScope.launchSafe { mainViewModel.execute(MainStateEvent.SelectFeed) }
         }
 
         swipe_refresh.setOnRefreshListener {

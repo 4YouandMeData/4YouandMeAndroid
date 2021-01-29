@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class StateUpdateFlow<T> @Inject constructor() {
 
-    private val stateUpdatesFlow: MutableSharedFlow<T> = MutableSharedFlow()
+    private val stateUpdatesFlow: MutableSharedFlow<T> = MutableSharedFlow(replay = 1)
     val stateUpdates: SharedFlow<T>
         get() = stateUpdatesFlow
 

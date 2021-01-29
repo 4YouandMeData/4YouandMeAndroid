@@ -44,6 +44,11 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
 }
 
 dependencies {
@@ -178,7 +183,8 @@ dependencies {
     implementation(Google.ExoPlayer.UI.get())
 
     /* --- location --- */
-    implementation(Google.PlayServices.Location.get())
+
+    api(Google.PlayServices.Location.get())
 
     /* --- hilt --- */
 

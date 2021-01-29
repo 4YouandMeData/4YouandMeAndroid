@@ -2,6 +2,7 @@ package com.foryouandme.core.arch.android
 
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.core.activity.FYAMActivity
@@ -14,25 +15,13 @@ import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
-
+import dagger.hilt.android.AndroidEntryPoint
 
 abstract class BaseDialogFragment<T : BaseViewModel<*, *, *, *>> : DialogFragment() {
 
     protected abstract val viewModel: T
 
-    protected val fyamViewModel: FYAMViewModel by lazy {
-
-        viewModelFactory(
-            requireActivity(),
-            getFactory {
-                FYAMViewModel(
-                    navigator,
-                    injector.configurationModule()
-                )
-            }
-        )
-
-    }
+    protected val fyamViewModel: FYAMViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,27 +40,16 @@ abstract class BaseDialogFragment<T : BaseViewModel<*, *, *, *>> : DialogFragmen
 
     fun fyamActivity(): FYAMActivity = requireActivity() as FYAMActivity
 
-    suspend fun fyamState(): FYAMState =
-        if (fyamViewModel.isInitialized())
-            fyamViewModel.state()
-        else
-            fyamViewModel.initialize(
-                rootNavController(),
-                fyamActivity().taskIdArg(),
-                fyamActivity().urlArg(),
-                fyamActivity().openAppIntegrationArg()
-            ).orNull()!!
-
     fun configuration(block: suspend (Configuration) -> Unit): Unit =
         startCoroutineAsync {
 
-            val configuration = fyamState().configuration
+            val configuration = fyamViewModel.state.configuration
 
-            block(configuration)
+            block(configuration!!)
 
         }
 
     fun fyamState(block: suspend (FYAMState) -> Unit): Unit =
-        startCoroutineAsync { block(fyamState()) }
+        startCoroutineAsync { block(fyamViewModel.state) }
 
 }

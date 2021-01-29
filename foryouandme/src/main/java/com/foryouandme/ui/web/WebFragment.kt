@@ -13,11 +13,13 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
+import com.foryouandme.entity.configuration.Configuration
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.web.*
 import timber.log.Timber
 
+@AndroidEntryPoint
 class WebFragment : BaseFragmentOld<WebViewModel>(R.layout.web) {
 
     private val args: WebFragmentArgs by navArgs()

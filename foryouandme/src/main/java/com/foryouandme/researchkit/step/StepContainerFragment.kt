@@ -13,7 +13,9 @@ import com.foryouandme.core.ext.navigator
 import com.foryouandme.researchkit.task.TaskInjector
 import com.foryouandme.ui.tasks.TaskFragment
 import com.foryouandme.ui.tasks.TaskViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class StepContainerFragment : BaseFragmentOld<TaskViewModel>(R.layout.step) {
 
     private val args: StepContainerFragmentArgs by navArgs()

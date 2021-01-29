@@ -1,103 +1,115 @@
 package com.foryouandme.core.activity
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import arrow.fx.coroutines.parMapN
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.ConfigurationModule
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.*
 import com.foryouandme.core.arch.livedata.toEvent
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.CachePolicy
-import com.foryouandme.core.cases.configuration.ConfigurationUseCase.getConfiguration
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
-import kotlinx.coroutines.Dispatchers
+import com.foryouandme.ui.main.tasks.TasksError
+import com.foryouandme.ui.main.tasks.TasksLoading
+import com.foryouandme.ui.main.tasks.TasksStateUpdate
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharedFlow
 
-class FYAMViewModel(
-    navigator: Navigator,
-    private val configurationModule: ConfigurationModule
-) : BaseViewModel<FYAMState, FYAMStateUpdate, FYAMError, FYAMLoading>(navigator) {
+class FYAMViewModel @ViewModelInject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<FYAMStateUpdate>,
+    private val loadingFlow: LoadingFlow<FYAMLoading>,
+    private val errorFlow: ErrorFlow<FYAMError>,
+    private val getConfigurationUseCase: GetConfigurationUseCase
+) : ViewModel() {
 
-    suspend fun initialize(
-        rootNavController: RootNavController,
+    /* --- state --- */
+
+    var state = FYAMState()
+        private set
+
+    /* --- flow --- */
+
+    val stateUpdate: SharedFlow<FYAMStateUpdate> = stateUpdateFlow.stateUpdates
+    val loading: SharedFlow<UILoading<FYAMLoading>> = loadingFlow.loading
+    val error: SharedFlow<UIError<FYAMError>> = errorFlow.error
+
+    /* --- initialize --- */
+
+    private suspend fun initialize(
         taskId: String?,
         url: String?,
         openAppIntegration: String?,
         splashLoading: Boolean = false
-    ): Either<ForYouAndMeError, FYAMState> {
+    ) {
 
         val configuration =
-            if (splashLoading) getConfigurationWithSplash(rootNavController)
-            else (getConfiguration(rootNavController))
+            if (splashLoading) getConfigurationWithSplash()
+            else getConfiguration()
 
-        val fyamState =
-            configuration.fold(
-                {
-                    setError(it, FYAMError.Config)
-                    it.left()
-                },
-                { config ->
 
-                    val state =
-                        FYAMState(
-                            config,
-                            taskId?.toEvent(),
-                            url?.toEvent(),
-                            openAppIntegration?.let { IntegrationApp.fromIdentifier(it) }?.toEvent()
-                        )
-
-                    setState(state)
-                    { FYAMStateUpdate.Config(it.configuration) }
-
-                    state.right()
-
-                }
+        val initializedState =
+            FYAMState(
+                configuration,
+                taskId?.toEvent(),
+                url?.toEvent(),
+                openAppIntegration?.let { IntegrationApp.fromIdentifier(it) }?.toEvent()
             )
 
-        hideLoading(FYAMLoading.Config)
-        hideLoading(FYAMLoading.Splash)
+        state = initializedState
+        stateUpdateFlow.update(FYAMStateUpdate.Config(configuration))
 
-        return fyamState
-
-    }
-
-    private suspend fun getConfigurationWithSplash(
-        rootNavController: RootNavController
-    ): Either<ForYouAndMeError, Configuration> {
-
-        showLoading(FYAMLoading.Splash)
-
-        return parMapN(
-            Dispatchers.IO,
-            suspend {
-                delay(1000)
-                hideLoading(FYAMLoading.Splash)
-                showLoading(FYAMLoading.Config)
-            },
-            suspend {
-                configurationModule.getConfiguration(CachePolicy.MemoryFirst)
-                    .handleAuthError(rootNavController, navigator)
-            },
-            { _, config -> config }
-        )
-    }
-
-    private suspend fun getConfiguration(
-        rootNavController: RootNavController
-    ): Either<ForYouAndMeError, Configuration> {
-
-        showLoading(FYAMLoading.Config)
-
-        return configurationModule.getConfiguration(CachePolicy.MemoryFirst)
-            .handleAuthError(rootNavController, navigator)
-
+        loadingFlow.hide(FYAMLoading.Config)
+        loadingFlow.hide(FYAMLoading.Splash)
 
     }
 
+    /* --- configuration --- */
+
+    private suspend fun getConfigurationWithSplash(): Configuration =
+        coroutineScope {
+
+            loadingFlow.show(FYAMLoading.Splash)
+
+            val animationDelay =
+                async {
+                    delay(1000)
+                    loadingFlow.hide(FYAMLoading.Splash)
+                    loadingFlow.show(FYAMLoading.Config)
+                }
+            val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
+
+            animationDelay.await()
+            configuration.await()
+
+        }
+
+    private suspend fun getConfiguration(): Configuration {
+
+        loadingFlow.show(FYAMLoading.Config)
+
+        return getConfigurationUseCase(Policy.LocalFirst)
+
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: FYAMStateEvent) {
+
+        when (stateEvent) {
+            is FYAMStateEvent.Initialize ->
+                errorFlow.launchCatch(viewModelScope, FYAMError.Config)
+                {
+                    initialize(
+                        stateEvent.taskId,
+                        stateEvent.url,
+                        stateEvent.openAppIntegration,
+                        stateEvent.splashLoading
+                    )
+                }
+        }
+
+    }
 
 }

@@ -3,119 +3,149 @@ package com.foryouandme.ui.main
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.activity.FYAMViewModel
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observe
+import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.navigation.setupWithNavController
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.selectedUnselectedColor
+import com.foryouandme.databinding.MainBinding
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.main.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class MainFragment : BaseFragmentOld<MainViewModel>(R.layout.main) {
+class MainFragment : BaseFragment(R.layout.main) {
 
-    override val viewModel: MainViewModel by lazy {
+    val viewModel: MainViewModel by viewModels()
 
-        viewModelFactory(
-            this,
-            getFactory { MainViewModel(navigator, injector.analyticsModule()) }
-        )
+    private val fyamViewModel: FYAMViewModel by viewModels({ requireActivity() })
 
-    }
+    private val binding: MainBinding?
+        get() = view?.let { MainBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        viewModel.stateLiveData()
-            .observeEvent(name()) {
-
-                when(it) {
-                    is MainStateUpdate.PageNavigation ->
-                        bottom_navigation.selectedItemId = it.selectedPage
+        viewModel.loading
+            .onEach {
+                when (it.task) {
+                    MainLoading.Config ->
+                        binding?.loading?.setVisibility(it.active)
                 }
-
             }
+            .observeIn(this)
+
+        viewModel.error
+            .onEach {
+
+                binding?.loading?.setVisibility(false)
+
+                when (it.cause) {
+                    MainError.Config ->
+                        binding?.error?.setError(it.error, null)
+                        { viewModel.execute(MainStateEvent.GetConfig) }
+                }
+            }
+            .observeIn(this)
+
+        viewModel.stateUpdate
+            .onEach {
+                when (it) {
+                    is MainStateUpdate.PageNavigation ->
+                        binding?.bottomNavigation?.selectedItemId = it.selectedPage
+                    is MainStateUpdate.Config ->
+                        setupView(it.configuration)
+                    else ->
+                        Unit
+                }
+            }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fyamState {
+        val configuration = viewModel.state.configuration
 
-            setupNavigation(it.configuration)
-
-            viewModel.handleDeepLink(rootNavController(), it)
-
-        }
+        if (configuration != null) setupView(configuration)
+        else viewModel.execute(MainStateEvent.GetConfig)
 
     }
 
-    private suspend fun setupNavigation(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun setupView(configuration: Configuration) {
 
-            bottom_navigation.menu.clear()
+        setupNavigation(configuration)
+        viewModel.execute(MainStateEvent.HandleDeepLink(fyamViewModel.state))
 
-            bottom_navigation.menu
-                .add(Menu.NONE, R.id.feed_navigation, Menu.NONE, configuration.text.tab.feed)
-                .setIcon(imageConfiguration.tabFeed())
+    }
 
-            bottom_navigation.menu
-                .add(Menu.NONE, R.id.tasks_navigation, Menu.NONE, configuration.text.tab.tasks)
-                .setIcon(imageConfiguration.tabTask())
+    private fun setupNavigation(configuration: Configuration) {
 
-            bottom_navigation.menu
-                .add(
-                    Menu.NONE,
-                    R.id.user_data_navigation,
-                    Menu.NONE,
-                    configuration.text.tab.userData
-                )
-                .setIcon(imageConfiguration.tabUserData())
+        val viewBinding = binding
 
-            bottom_navigation.menu
-                .add(
-                    Menu.NONE,
-                    R.id.study_info_navigation,
-                    Menu.NONE,
-                    configuration.text.tab.studyInfo
-                )
-                .setIcon(imageConfiguration.tabStudyInfo())
+        viewBinding?.bottomNavigation?.menu?.clear()
 
-            bottom_navigation.itemIconTintList =
-                selectedUnselectedColor(
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.secondaryMenuColor.color()
-                )
-            bottom_navigation.itemTextColor =
-                selectedUnselectedColor(
-                    configuration.theme.primaryTextColor.color(),
-                    configuration.theme.secondaryMenuColor.color()
-                )
+        viewBinding?.bottomNavigation?.menu
+            ?.add(Menu.NONE, R.id.feed_navigation, Menu.NONE, configuration.text.tab.feed)
+            ?.setIcon(imageConfiguration.tabFeed())
 
-            val navGraphIds = viewModel.getPagedIds()
+        viewBinding?.bottomNavigation?.menu
+            ?.add(Menu.NONE, R.id.tasks_navigation, Menu.NONE, configuration.text.tab.tasks)
+            ?.setIcon(imageConfiguration.tabTask())
 
-            bottom_navigation.selectedItemId = viewModel.state().restorePage
+        viewBinding?.bottomNavigation?.menu
+            ?.add(
+                Menu.NONE,
+                R.id.user_data_navigation,
+                Menu.NONE,
+                configuration.text.tab.userData
+            )
+            ?.setIcon(imageConfiguration.tabUserData())
 
-            evalOnIO { viewModel.logBottomBarPageEvent(viewModel.state().restorePage) }
+        viewBinding?.bottomNavigation?.menu
+            ?.add(
+                Menu.NONE,
+                R.id.study_info_navigation,
+                Menu.NONE,
+                configuration.text.tab.studyInfo
+            )
+            ?.setIcon(imageConfiguration.tabStudyInfo())
 
-            // Setup the bottom navigation view with a list of navigation graphs
-            bottom_navigation.setupWithNavController(
-                navGraphIds = navGraphIds,
-                fragmentManager = childFragmentManager,
-                containerId = R.id.main_nav_host_container,
-                intent = requireActivity().intent
-            ) {
-                startCoroutineAsync {
+        viewBinding?.bottomNavigation?.itemIconTintList =
+            selectedUnselectedColor(
+                configuration.theme.primaryTextColor.color(),
+                configuration.theme.secondaryMenuColor.color()
+            )
+        viewBinding?.bottomNavigation?.itemTextColor =
+            selectedUnselectedColor(
+                configuration.theme.primaryTextColor.color(),
+                configuration.theme.secondaryMenuColor.color()
+            )
 
-                    viewModel.setRestorePage(it.itemId)
-                    viewModel.logBottomBarPageEvent(it.itemId)
+        val navGraphIds = viewModel.getPagedIds()
 
-                }
-            }
+        viewBinding?.bottomNavigation?.selectedItemId = viewModel.state.restorePage
+
+        viewModel.execute(MainStateEvent.LoadPageSelected(viewModel.state.restorePage))
+
+        // Setup the bottom navigation view with a list of navigation graphs
+        viewBinding?.bottomNavigation?.setupWithNavController(
+            navGraphIds = navGraphIds,
+            fragmentManager = childFragmentManager,
+            containerId = R.id.main_nav_host_container,
+            intent = requireActivity().intent
+        ) {
+
+            viewModel.execute(MainStateEvent.SetRestorePage(it.itemId))
+            viewModel.execute(MainStateEvent.LoadPageSelected(it.itemId))
+
         }
+    }
 
 }

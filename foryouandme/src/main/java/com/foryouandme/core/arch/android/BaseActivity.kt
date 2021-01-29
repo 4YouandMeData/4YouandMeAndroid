@@ -2,22 +2,51 @@ package com.foryouandme.core.arch.android
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.arch.error.ErrorMessenger
+import com.foryouandme.core.arch.error.ErrorView
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.EventObserver
+import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.entity.configuration.Configuration
+import javax.inject.Inject
 
-abstract class BaseActivity<T : BaseViewModel<*, *, *, *>> : FragmentActivity {
-
-    protected abstract val viewModel: T
+abstract class BaseActivity : FragmentActivity {
 
     constructor() : super()
     constructor(contentLayoutId: Int) : super(contentLayoutId)
 
-    fun <A> LiveData<Event<A>>.observeEvent(handle: (A) -> Unit): Unit =
-        observe(this@BaseActivity, EventObserver { handle(it) })
+    @Inject
+    lateinit var errorMessenger: ErrorMessenger
+
+    @Inject
+    lateinit var navigator: Navigator
 
     fun rootNavController(): RootNavController =
         RootNavController(supportFragmentManager.fragments[0].findNavController())
+
+    /* --- error --- */
+
+    protected fun ErrorView.setError(
+        throwable: Throwable,
+        configuration: Configuration?,
+        retry: () -> Unit = {}
+    ) {
+
+        lifecycleScope.launchSafe {
+
+            setError(
+                errorMessenger.getTitle(),
+                errorMessenger.getMessage(throwable, configuration),
+                retry
+            )
+
+
+        }
+
+    }
 
 }

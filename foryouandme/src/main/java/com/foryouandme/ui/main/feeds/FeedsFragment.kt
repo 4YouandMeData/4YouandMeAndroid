@@ -20,16 +20,18 @@ import com.foryouandme.core.items.PagedRequestErrorViewHolder
 import com.foryouandme.core.items.PagedRequestLoadingItem
 import com.foryouandme.core.items.PagedRequestLoadingViewHolder
 import com.foryouandme.ui.main.MainSectionOldFragment
+import com.foryouandme.ui.main.MainStateEvent
 import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.feeds.*
 import kotlinx.coroutines.launch
 import java.text.MessageFormat
 
-
+@AndroidEntryPoint
 class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
 
     override val viewModel: FeedsViewModel by lazy {
@@ -269,9 +271,9 @@ class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
             when (feedAction) {
                 FeedAction.Feed -> {
                 }
-                FeedAction.Tasks -> mainViewModel.selectTasks()
-                FeedAction.YourData -> mainViewModel.selectYourData()
-                FeedAction.StudyInfo -> mainViewModel.selectStudyInfo()
+                FeedAction.Tasks -> mainViewModel.execute(MainStateEvent.SelectTasks)
+                FeedAction.YourData -> mainViewModel.execute(MainStateEvent.SelectYourData)
+                FeedAction.StudyInfo -> mainViewModel.execute(MainStateEvent.SelectStudyInfo)
                 FeedAction.AboutYou -> viewModel.aboutYouPage(rootNavController())
                 FeedAction.Faq -> viewModel.faq(rootNavController())
                 FeedAction.Rewards -> viewModel.reward(rootNavController())

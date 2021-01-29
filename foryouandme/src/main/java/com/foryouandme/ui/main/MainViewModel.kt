@@ -1,55 +1,79 @@
 package com.foryouandme.ui.main
 
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMState
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.android.Empty
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
+import com.foryouandme.core.arch.flow.*
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
+import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.openApp
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import kotlinx.coroutines.flow.SharedFlow
 
-class MainViewModel(
-    navigator: Navigator,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        MainState,
-        MainStateUpdate,
-        Empty,
-        Empty>
-    (navigator, MainState()) {
+class MainViewModel @ViewModelInject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<MainStateUpdate>,
+    private val loadingFlow: LoadingFlow<MainLoading>,
+    private val errorFlow: ErrorFlow<MainError>,
+    private val navigationFlow: NavigationFlow,
+    private val navigator: Navigator,
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
-    /* --- page --- */
+    /* --- state --- */
 
-    suspend fun setRestorePage(id: Int): Unit {
+    var state = MainState()
+        private set
 
-        setState(state().copy(restorePage = id)) { MainStateUpdate.RestorePage(id) }
+    /* --- flow --- */
+
+    val stateUpdate: SharedFlow<MainStateUpdate> = stateUpdateFlow.stateUpdates
+    val loading: SharedFlow<UILoading<MainLoading>> = loadingFlow.loading
+    val error: SharedFlow<UIError<MainError>> = errorFlow.error
+    val navigation: SharedFlow<NavigationAction> = navigationFlow.navigation
+
+    /* --- configuration --- */
+
+    private suspend fun getConfiguration() {
+
+        loadingFlow.show(MainLoading.Config)
+
+        val configuration = getConfigurationUseCase(Policy.LocalFirst)
+        //state = state.copy(configuration = configuration)
+        stateUpdateFlow.update(MainStateUpdate.Config(configuration))
+
+        loadingFlow.hide(MainLoading.Config)
 
     }
 
-    suspend fun selectFeed(): Unit =
-        setState(
-            state()
-        ) { MainStateUpdate.PageNavigation(R.id.feed_navigation) }
+    /* --- page --- */
 
-    suspend fun selectTasks(): Unit =
-        setState(
-            state()
-        ) { MainStateUpdate.PageNavigation(R.id.tasks_navigation) }
+    private suspend fun setRestorePage(id: Int) {
 
-    suspend fun selectYourData(): Unit =
-        setState(
-            state()
-        ) { MainStateUpdate.PageNavigation(R.id.user_data_navigation) }
+        state = state.copy(restorePage = id)
+        stateUpdateFlow.update(MainStateUpdate.RestorePage(id))
 
-    suspend fun selectStudyInfo(): Unit =
-        setState(
-            state()
-        ) { MainStateUpdate.PageNavigation(R.id.study_info_navigation) }
+    }
+
+    private suspend fun selectFeed(): Unit =
+        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.feed_navigation))
+
+    private suspend fun selectTasks(): Unit =
+        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.tasks_navigation))
+
+    private suspend fun selectYourData(): Unit =
+        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.user_data_navigation))
+
+    private suspend fun selectStudyInfo(): Unit =
+        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.study_info_navigation))
 
     fun getPagedIds(): List<Int> =
         listOf(
@@ -62,7 +86,7 @@ class MainViewModel(
 
     /* --- deep link --- */
 
-    suspend fun handleDeepLink(rootNavController: RootNavController, fyamState: FYAMState): Unit {
+    suspend fun handleDeepLink(fyamState: FYAMState) {
 
         val taskId =
             fyamState.taskId?.getContentOnce()?.orNull()?.item
@@ -74,9 +98,9 @@ class MainViewModel(
         when {
 
             taskId != null ->
-                navigator.navigateToSuspend(rootNavController, MainToTask(taskId))
+                navigationFlow.navigateTo(MainToTask(taskId))
             url != null ->
-                navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
+                navigationFlow.navigateTo(AnywhereToWeb(url))
             openApplicationIntegration != null ->
                 navigator.performAction(openApp(openApplicationIntegration.packageName))
 
@@ -86,7 +110,7 @@ class MainViewModel(
 
     /* --- analytics --- */
 
-    suspend fun logBottomBarPageEvent(itemId: Int): Unit {
+    private suspend fun logBottomBarPageEvent(itemId: Int) {
 
         when (itemId) {
             R.id.feed_navigation -> logFeedsViewed()
@@ -97,43 +121,81 @@ class MainViewModel(
 
     }
 
-    private suspend fun logFeedsViewed(): Unit {
+    private suspend fun logFeedsViewed() {
 
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Feed, EAnalyticsProvider.ALL)
-        analyticsModule.logEvent(
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.Feed,
+            EAnalyticsProvider.ALL
+        )
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.Feed),
             EAnalyticsProvider.ALL
         )
 
     }
 
-    private suspend fun logTasksViewed(): Unit {
+    private suspend fun logTasksViewed() {
 
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Task, EAnalyticsProvider.ALL)
-        analyticsModule.logEvent(
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.Task,
+            EAnalyticsProvider.ALL
+        )
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.Task),
             EAnalyticsProvider.ALL
         )
 
     }
 
-    private suspend fun logYourDataViewed(): Unit {
+    private suspend fun logYourDataViewed() {
 
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.YourData, EAnalyticsProvider.ALL)
-        analyticsModule.logEvent(
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.YourData,
+            EAnalyticsProvider.ALL
+        )
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.UserData),
             EAnalyticsProvider.ALL
         )
 
     }
 
-    private suspend fun logStudyInfoViewed(): Unit {
+    private suspend fun logStudyInfoViewed() {
 
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.StudyInfo, EAnalyticsProvider.ALL)
-        analyticsModule.logEvent(
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.StudyInfo,
+            EAnalyticsProvider.ALL
+        )
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.SwitchTab(AnalyticsEvent.Tab.StudyInfo),
             EAnalyticsProvider.ALL
         )
+
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: MainStateEvent) {
+
+        when (stateEvent) {
+            MainStateEvent.GetConfig ->
+                errorFlow.launchCatch(viewModelScope, MainError.Config)
+                { getConfiguration() }
+            is MainStateEvent.LoadPageSelected ->
+                viewModelScope.launchSafe { logBottomBarPageEvent(stateEvent.itemId) }
+            is MainStateEvent.SetRestorePage ->
+                viewModelScope.launchSafe { setRestorePage(stateEvent.itemId) }
+            is MainStateEvent.HandleDeepLink ->
+                viewModelScope.launchSafe { handleDeepLink(stateEvent.fyamState) }
+            MainStateEvent.SelectFeed ->
+                viewModelScope.launchSafe { selectFeed() }
+            MainStateEvent.SelectTasks ->
+                viewModelScope.launchSafe { selectTasks() }
+            MainStateEvent.SelectYourData ->
+                viewModelScope.launchSafe { selectYourData() }
+            MainStateEvent.SelectStudyInfo ->
+                viewModelScope.launchSafe { selectStudyInfo() }
+        }
 
     }
 

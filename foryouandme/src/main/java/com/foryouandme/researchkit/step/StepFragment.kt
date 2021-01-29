@@ -14,8 +14,10 @@ import com.foryouandme.researchkit.task.TaskInjector
 import com.foryouandme.ui.tasks.TaskFragment
 import com.foryouandme.ui.tasks.TaskNavController
 import com.foryouandme.ui.tasks.TaskViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.task.*
 
+@AndroidEntryPoint
 open class StepFragment(contentLayoutId: Int) : BaseFragmentOld<TaskViewModel>(contentLayoutId) {
 
     override val viewModel by lazy {

@@ -10,8 +10,10 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.screening.*
 
+@AndroidEntryPoint
 class AboutYouFragment : BaseFragmentOld<AboutYouViewModel>(R.layout.about_you) {
 
     override val viewModel: AboutYouViewModel by lazy {

@@ -3,51 +3,42 @@ package com.foryouandme.core.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseActivity
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.navigation.AnywhereToAuth
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.databinding.FyamBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fyam.*
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
+class FYAMActivity : BaseActivity() {
 
-    override val viewModel: FYAMViewModel by lazy {
-
-        viewModelFactory(
-            this,
-            getFactory {
-                FYAMViewModel(
-                    navigator,
-                    injector.configurationModule()
-                )
-            }
-        )
-    }
+    private val viewModel: FYAMViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.loadingLiveData()
-            .observeEvent {
+        val binding = FyamBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        viewModel.loading
+            .onEach {
                 when (it.task) {
-                    FYAMLoading.Config -> loading.setVisibility(it.active, false)
+                    FYAMLoading.Config -> binding.loading.setVisibility(it.active, false)
                     FYAMLoading.Splash -> {
 
                         if (it.active) {
-                            splash_logo.alpha = 1f
-                            splash_logo.isVisible = true
+                            binding.splashLogo.alpha = 1f
+                            binding.splashLogo.isVisible = true
                         } else {
-                            splash_logo.animate()
+                            binding.splashLogo.animate()
                                 .alpha(0f)
-                                .withEndAction { splash_logo.isVisible = false }
+                                .withEndAction { binding.splashLogo.isVisible = false }
                                 .start()
 
                         }
@@ -55,40 +46,40 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
                     }
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent {
-                error.setError(it.error) {
-                    startCoroutineAsync {
-                        viewModel.initialize(
-                            rootNavController(),
+        viewModel.error
+            .onEach {
+                binding.error.setError(it.error, viewModel.state.configuration) {
+
+                    viewModel.execute(
+                        FYAMStateEvent.Initialize(
                             taskIdArg(),
                             urlArg(),
                             openAppIntegrationArg()
                         )
-                    }
+                    )
+
                 }
             }
+            .observeIn(this)
 
-        viewModel.stateLiveData()
-            .observeEvent {
+        viewModel.stateUpdate
+            .onEach {
                 when (it) {
                     is FYAMStateUpdate.Config -> setupNavigation()
                 }
             }
+            .observeIn(this)
 
-        startCoroutineAsync {
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(
-                    rootNavController(),
-                    taskIdArg(),
-                    urlArg(),
-                    openAppIntegrationArg(),
-                    true
-                )
-
-        }
+        viewModel.execute(
+            FYAMStateEvent.Initialize(
+                taskIdArg(),
+                urlArg(),
+                openAppIntegrationArg(),
+                true
+            )
+        )
 
     }
 
@@ -133,7 +124,7 @@ class FYAMActivity : BaseActivity<FYAMViewModel>(R.layout.fyam) {
                 args[OPEN_APP_INTEGRATION]
             )
 
-        fun getIntent(
+        private fun getIntent(
             context: Context,
             taskId: String?,
             url: String?,
