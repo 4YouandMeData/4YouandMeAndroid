@@ -12,7 +12,6 @@ import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.navigation.AnywhereToAuth
 import com.foryouandme.databinding.FyamBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fyam.*
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
@@ -95,9 +94,16 @@ class FYAMActivity : BaseActivity() {
 
     }
 
-    fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)
-    fun urlArg(): String? = intent.extras?.getString(URL)
-    fun openAppIntegrationArg(): String? = intent.extras?.getString(OPEN_APP_INTEGRATION)
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.execute(FYAMStateEvent.SendDeviceInfo)
+
+    }
+
+    private fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)
+    private fun urlArg(): String? = intent.extras?.getString(URL)
+    private fun openAppIntegrationArg(): String? = intent.extras?.getString(OPEN_APP_INTEGRATION)
 
     fun auth() {
 

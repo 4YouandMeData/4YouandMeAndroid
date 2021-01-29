@@ -5,13 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.*
 import com.foryouandme.core.arch.livedata.toEvent
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.device.GetDeviceInfoUseCase
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
-import com.foryouandme.ui.main.tasks.TasksError
-import com.foryouandme.ui.main.tasks.TasksLoading
-import com.foryouandme.ui.main.tasks.TasksStateUpdate
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -21,7 +20,8 @@ class FYAMViewModel @ViewModelInject constructor(
     private val stateUpdateFlow: StateUpdateFlow<FYAMStateUpdate>,
     private val loadingFlow: LoadingFlow<FYAMLoading>,
     private val errorFlow: ErrorFlow<FYAMError>,
-    private val getConfigurationUseCase: GetConfigurationUseCase
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getDeviceInfoUseCase: GetDeviceInfoUseCase
 ) : ViewModel() {
 
     /* --- state --- */
@@ -93,6 +93,16 @@ class FYAMViewModel @ViewModelInject constructor(
 
     }
 
+    /* --- device info --- */
+
+    private suspend fun sendDeviceInfo() {
+
+        val deviceInfo = getDeviceInfoUseCase()
+
+        val i = 0
+
+    }
+
     /* --- state event --- */
 
     fun execute(stateEvent: FYAMStateEvent) {
@@ -108,6 +118,8 @@ class FYAMViewModel @ViewModelInject constructor(
                         stateEvent.splashLoading
                     )
                 }
+            FYAMStateEvent.SendDeviceInfo ->
+                viewModelScope.launchSafe { sendDeviceInfo() }
         }
 
     }

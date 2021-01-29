@@ -7,7 +7,11 @@ import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import androidx.annotation.RequiresPermission
+import com.foryouandme.data.datasource.network.AuthErrorInterceptor
+import com.foryouandme.data.repository.device.network.DeviceApi
+import com.foryouandme.data.repository.device.network.request.DeviceInfoRequest
 import com.foryouandme.domain.usecase.device.DeviceRepository
+import com.foryouandme.entity.device.DeviceInfo
 import com.foryouandme.entity.device.DeviceLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,6 +23,8 @@ import kotlin.coroutines.suspendCoroutine
 class DeviceRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val fusedLocationProviderClient: FusedLocationProviderClient,
+    private val api: DeviceApi,
+    private val authErrorInterceptor: AuthErrorInterceptor
 ) : DeviceRepository {
 
     override suspend fun getCurrentBatteryLevel(): Float? {
@@ -76,6 +82,24 @@ class DeviceRepositoryImpl @Inject constructor(
 
         val wifiInfo: WifiInfo = wifiManager.connectionInfo
         return wifiInfo.ssid.replace("\"", "")
+
+    }
+
+    override suspend fun sendDeviceInfo(token: String, deviceInfo: DeviceInfo) {
+
+        authErrorInterceptor.execute {
+            api.sendDeviceInfo(
+                token,
+                DeviceInfoRequest(
+                    batteryLevel = deviceInfo.batteryLevel,
+                    longitude = deviceInfo.location?.longitude,
+                    latitude = deviceInfo.location?.latitude,
+                    timeZone = deviceInfo.timeZone,
+                    hashedSSID = deviceInfo.hashedSSID,
+                    timestamp = deviceInfo.timestamp
+                )
+            )
+        }
 
     }
 

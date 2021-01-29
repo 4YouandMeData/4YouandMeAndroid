@@ -37,6 +37,8 @@ sealed class FYAMStateEvent {
         val url: String?,
         val openAppIntegration: String?,
         val splashLoading: Boolean = false
-    ): FYAMStateEvent()
+    ) : FYAMStateEvent()
+
+    object SendDeviceInfo : FYAMStateEvent()
 
 }

@@ -23,7 +23,6 @@ object TaskModule {
     fun provideApi(environment: Environment, @Named(DataModule.TASK_MOSHI) moshi: Moshi): TaskApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
-
 }
 
 @Module
