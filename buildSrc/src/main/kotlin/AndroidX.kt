@@ -125,6 +125,16 @@ object AndroidX {
 
     }
 
+    object Room : DependencyGroup("androidx.room", "2.2.6") {
+
+        object Runtime : Dependency(Room.group, "room-runtime", Room.version)
+
+        object Ktx : Dependency(Room.group, "room-ktx", Room.version)
+
+        object Compiler : Dependency(Room.group, "room-compiler", Room.version)
+
+    }
+
     object Test : DependencyIndependentGroup("androidx.test") {
 
         object Ext : DependencyGroup("${Test.group}.ext", "1.1.2") {

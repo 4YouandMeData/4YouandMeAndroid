@@ -1,14 +1,11 @@
 package com.foryouandme.data.repository.task.network.response
 
-import arrow.core.computations.either
-import arrow.core.flatMap
-import arrow.core.left
 import com.foryouandme.core.data.api.common.response.activity.ActivityDataResponse
 import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.entity.task.Task
-import com.foryouandme.core.ext.toEither
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi
@@ -24,27 +21,36 @@ data class TaskResponse(
 ) : Resource() {
 
 
-    suspend fun toTask(): Task? =
-        either.invoke<Unit, Task> {
+    fun toTask(): Task? {
 
-            Task(
-                id,
-                !from.toEither().map { ZonedDateTime.parse(it) },
-                !to.toEither().map { ZonedDateTime.parse(it) },
-                !activity?.get(document).toEither().flatMap {
-                    when (it) {
-                        is QuickActivityResponse -> it.toQuickActivity(id).toEither()
-                        is TaskActivityResponse ->
-                            it.toTaskActivity(document, id, rescheduledTimes).toEither()
-                        is SurveyActivityResponse ->
-                            it.toTaskActivity(document, id, rescheduledTimes).toEither()
-                        else -> Unit.left()
-                    }
+        val from = catchToNull { from?.let { ZonedDateTime.parse(it) } }
+        val to = catchToNull { to?.let { ZonedDateTime.parse(it) } }
+
+        val activity =
+            activity?.get(document)?.let {
+                when (it) {
+                    is QuickActivityResponse -> it.toQuickActivity(id)
+                    is TaskActivityResponse ->
+                        it.toTaskActivity(document, id, rescheduledTimes)
+                    is SurveyActivityResponse ->
+                        it.toTaskActivity(document, id, rescheduledTimes)
+                    else -> null
                 }
-            )
+            }
 
-        }.orNull()
+        return when (null) {
+            from, to, activity -> null
+            else ->
+                Task(
+                    id,
+                    from,
+                    to,
+                    activity
+                )
+        }
+
+    }
 }
 
-suspend fun Array<TaskResponse>.toTaskItems(): List<Task> = mapNotNull { it.toTask() }
+fun Array<TaskResponse>.toTaskItems(): List<Task> = mapNotNull { it.toTask() }
 

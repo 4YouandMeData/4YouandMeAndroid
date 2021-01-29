@@ -13,7 +13,7 @@ class SampleEnvironment(private val context: Context) : Environment() {
         context.getString(R.string.STUDY_ID)
 
     override fun getApiBaseUrl(): String =
-        context.getString(R.string.BASE_URL_STAGING)
+        context.getString(R.string.BASE_URL_PRODUCTION)
 
     override fun getOAuthBaseUrl(): String =
         context.getString(R.string.OAUTH_BASE_URL)

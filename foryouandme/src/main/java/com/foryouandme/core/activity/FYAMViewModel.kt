@@ -8,7 +8,7 @@ import com.foryouandme.core.arch.livedata.toEvent
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
-import com.foryouandme.domain.usecase.device.GetDeviceInfoUseCase
+import com.foryouandme.domain.usecase.device.SendDeviceInfoUseCase
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
 import kotlinx.coroutines.async
@@ -21,7 +21,7 @@ class FYAMViewModel @ViewModelInject constructor(
     private val loadingFlow: LoadingFlow<FYAMLoading>,
     private val errorFlow: ErrorFlow<FYAMError>,
     private val getConfigurationUseCase: GetConfigurationUseCase,
-    private val getDeviceInfoUseCase: GetDeviceInfoUseCase
+    private val sendDeviceInfoUseCase: SendDeviceInfoUseCase
 ) : ViewModel() {
 
     /* --- state --- */
@@ -97,9 +97,7 @@ class FYAMViewModel @ViewModelInject constructor(
 
     private suspend fun sendDeviceInfo() {
 
-        val deviceInfo = getDeviceInfoUseCase()
-
-        val i = 0
+        sendDeviceInfoUseCase()
 
     }
 

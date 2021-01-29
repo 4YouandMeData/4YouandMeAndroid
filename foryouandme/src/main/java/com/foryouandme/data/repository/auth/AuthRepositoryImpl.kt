@@ -16,6 +16,9 @@ class AuthRepositoryImpl @Inject constructor(
             prefs.getString(USER_TOKEN, null) ?: throw ForYouAndMeException.UserNotLoggedIn
         }
 
+    override suspend fun getTokenOrNull(): String? =
+        prefs.getString(USER_TOKEN, null)
+
     companion object {
 
         private const val USER_TOKEN = "user_token"

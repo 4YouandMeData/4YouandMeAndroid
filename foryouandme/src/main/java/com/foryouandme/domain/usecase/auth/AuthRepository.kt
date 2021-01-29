@@ -4,4 +4,6 @@ interface AuthRepository {
 
     suspend fun getToken(): String
 
+    suspend fun getTokenOrNull(): String?
+
 }

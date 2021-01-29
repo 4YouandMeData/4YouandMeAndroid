@@ -27,7 +27,7 @@ class QuickActivityResponse(
     button
 ) {
 
-    suspend fun toQuickActivity(id: String): QuickActivity =
+    fun toQuickActivity(id: String): QuickActivity =
         QuickActivity(
             id,
             title,
@@ -43,7 +43,7 @@ class QuickActivityResponse(
         )
 
 
-    private suspend fun getAnswer(position: Int): QuickActivityAnswer? =
+    private fun getAnswer(position: Int): QuickActivityAnswer? =
         options?.get(document)
             ?.firstOrNull { it.position == position }?.toQuickActivityAnswer()
 

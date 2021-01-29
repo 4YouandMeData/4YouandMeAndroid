@@ -8,4 +8,6 @@ class GetTokenUseCase @Inject constructor(
 
     suspend operator fun invoke(): String = repository.getToken()
 
+    suspend fun safe(): String? = repository.getTokenOrNull()
+
 }

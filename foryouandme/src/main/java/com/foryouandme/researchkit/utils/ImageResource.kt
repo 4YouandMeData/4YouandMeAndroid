@@ -4,10 +4,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.decodeBase64ImageFx
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.decodeBase64Image
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.entity.configuration.button.button
 
 sealed class ImageResource {
 
@@ -25,19 +24,17 @@ sealed class ImageResource {
 
 }
 
-fun ImageView.applyImage(imageResource: ImageResource): Unit =
+fun ImageView.applyImage(imageResource: ImageResource) {
     when (imageResource) {
         is ImageResource.AndroidResource -> setImageResource(imageResource.image)
-        is ImageResource.Base64 -> startCoroutineAsync {
+        is ImageResource.Base64 -> {
 
-            val bitmap =
-                imageResource.image.decodeBase64ImageFx()
-                    .orNull()
-
-            evalOnMain { bitmap?.let { setImageBitmap(it) } }
+            val bitmap = imageResource.image.decodeBase64Image()
+            bitmap?.let { setImageBitmap(it) }
 
         }
     }
+}
 
 fun Button.applyImage(imageResource: ImageResource): Unit =
     when (imageResource) {
@@ -45,11 +42,11 @@ fun Button.applyImage(imageResource: ImageResource): Unit =
         is ImageResource.Base64 -> startCoroutineAsync {
 
             val bitmap =
-                imageResource.image.decodeBase64ImageFx()
-                    .map { BitmapDrawable(context.resources, it) }
-                    .orNull()
+                imageResource.image
+                    .decodeBase64Image()
+                    ?.let { BitmapDrawable(context.resources, it) }
 
-            evalOnMain { bitmap?.let { background = it } }
+            bitmap?.let { background = it }
 
         }
     }
@@ -58,14 +55,14 @@ fun ImageView.applyImageAsButton(imageResource: ImageResource): Unit {
     when (imageResource) {
         is ImageResource.AndroidResource -> background =
             button(context.resources, imageResource.image)
-        is ImageResource.Base64 -> startCoroutineAsync {
+        is ImageResource.Base64 -> {
 
             val bitmap =
-                imageResource.image.decodeBase64ImageFx()
-                    .map { BitmapDrawable(context.resources, it) }
-                    .orNull()
+                imageResource.image
+                    .decodeBase64Image()
+                    ?.let { BitmapDrawable(context.resources, it) }
 
-            evalOnMain { bitmap?.let { background = it } }
+            bitmap?.let { background = it }
 
         }
     }

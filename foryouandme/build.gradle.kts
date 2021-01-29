@@ -193,6 +193,11 @@ dependencies {
     kapt(AndroidX.Hilt.Compiler.get())
     kapt(Google.Dagger.Hilt.Compiler.get())
 
+    /* --- room --- */
+    api(AndroidX.Room.Runtime.get())
+    api(AndroidX.Room.Ktx.get())
+    kapt(AndroidX.Room.Compiler.get())
+
     /* --- test --- */
 
     testImplementation(Kotlin.Test.JUnit.get())

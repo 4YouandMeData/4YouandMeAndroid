@@ -2,6 +2,7 @@ package com.foryouandme.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.foryouandme.core.data.api.auth.response.UserResponse
@@ -23,6 +24,7 @@ import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
 import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
+import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -122,5 +124,14 @@ class DataModule {
         const val TASK_MOSHI: String = "task_moshi"
 
     }
+
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext context: Context): ForYouAndMeDatabase =
+        Room.databaseBuilder(
+            context,
+            ForYouAndMeDatabase::class.java,
+            "for_you_and_me_database"
+        ).fallbackToDestructiveMigration().build()
 
 }

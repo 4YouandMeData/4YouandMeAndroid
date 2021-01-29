@@ -1,17 +1,19 @@
 package com.foryouandme.domain.usecase.device
 
 import com.foryouandme.entity.device.DeviceInfo
-import com.foryouandme.entity.device.DeviceLocation
+import java.util.*
 
 interface DeviceRepository {
 
-    suspend fun getCurrentBatteryLevel(): Float?
+    suspend fun trackDeviceInfo(isLocationPermissionEnabled: Boolean)
 
-    suspend fun getLastKnownLocation(): DeviceLocation?
+    suspend fun saveDeviceInfo(deviceInfo: DeviceInfo)
 
-    suspend fun getTimeZone(): String
+    suspend fun getDeviceInfo(): List<DeviceInfo>
 
-    suspend fun getHashedSSID(): String
+    suspend fun deleteDeviceInfoOlderThan(timestamp: Date)
+
+    suspend fun deleteDeviceInfo(timestamp: Date)
 
     suspend fun sendDeviceInfo(token: String, deviceInfo: DeviceInfo)
 

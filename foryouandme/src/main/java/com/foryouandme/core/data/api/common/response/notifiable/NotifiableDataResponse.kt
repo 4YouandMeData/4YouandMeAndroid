@@ -1,13 +1,13 @@
 package com.foryouandme.core.data.api.common.response.notifiable
 
+import com.foryouandme.core.ext.decodeBase64Image
+import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.notifiable.FeedAction
 import com.foryouandme.entity.notifiable.FeedAlert
 import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
-import com.foryouandme.core.ext.decodeBase64ImageFx
-import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
@@ -43,7 +43,7 @@ class FeedRewardResponse(
             title,
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
-            image?.decodeBase64ImageFx()?.orNull(),
+            image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
@@ -65,7 +65,7 @@ class FeedAlertResponse(
             title,
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
-            image?.decodeBase64ImageFx()?.orNull(),
+            image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
@@ -93,7 +93,7 @@ class FeedEducationalResponse(
             title,
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
-            image?.decodeBase64ImageFx()?.orNull(),
+            image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
