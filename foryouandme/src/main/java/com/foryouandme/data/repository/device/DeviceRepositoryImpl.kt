@@ -123,13 +123,13 @@ class DeviceRepositoryImpl @Inject constructor(
         val wifiInfo: WifiInfo = wifiManager.connectionInfo
         val ssid = wifiInfo.ssid.replace("\"", "")
 
-        return ssid.md5()
+        return ssid.sha512()
 
     }
 
-    private fun String.md5(): String =
+    private fun String.sha512(): String =
         MessageDigest
-            .getInstance("MD5")
+            .getInstance("SHA-512")
             .digest(toByteArray())
             .printHexBinary()
 
