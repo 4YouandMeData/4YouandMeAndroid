@@ -52,6 +52,16 @@ object Google {
 
     }
 
+    object PlayServices : DependencyIndependentGroup("com.google.android.gms") {
+
+        object Location : Dependency(
+            PlayServices.group,
+            "play-services-location",
+            "17.1.0"
+        )
+
+    }
+
     object Test {
 
         object Truth : Dependency("com.google.truth", "truth", "1.1.2")

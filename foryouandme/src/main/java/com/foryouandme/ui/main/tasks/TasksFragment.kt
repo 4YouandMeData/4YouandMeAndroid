@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
@@ -18,6 +19,7 @@ import com.foryouandme.core.items.PagedRequestLoadingViewHolder
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.ui.main.MainSectionFragment
 import com.foryouandme.ui.main.feeds.FeedHeaderItem
 import com.foryouandme.ui.main.items.DateViewHolder
 import com.foryouandme.ui.main.items.QuickActivitiesItem
@@ -32,7 +34,7 @@ import kotlinx.android.synthetic.main.tasks.*
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class TasksFragment : BaseFragment(R.layout.tasks) {
+class TasksFragment : MainSectionFragment(R.layout.tasks) {
 
     private val viewModel: TasksViewModel by viewModels()
 
@@ -147,7 +149,7 @@ class TasksFragment : BaseFragment(R.layout.tasks) {
         empty_button.background = button(configuration.theme.primaryColorEnd.color())
         empty_button.text = configuration.text.tab.tabTaskEmptyButton
         empty_button.setOnClickListener {
-            //mainViewModel.selectFeed()
+            lifecycleScope.launchSafe { mainViewModel.selectFeed() }
         }
 
         swipe_refresh.setOnRefreshListener {

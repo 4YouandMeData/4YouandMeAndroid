@@ -19,7 +19,7 @@ import com.foryouandme.core.items.PagedRequestErrorItem
 import com.foryouandme.core.items.PagedRequestErrorViewHolder
 import com.foryouandme.core.items.PagedRequestLoadingItem
 import com.foryouandme.core.items.PagedRequestLoadingViewHolder
-import com.foryouandme.ui.main.MainSectionFragment
+import com.foryouandme.ui.main.MainSectionOldFragment
 import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import java.text.MessageFormat
 
 
-class FeedsFragment : MainSectionFragment<FeedsViewModel>(R.layout.feeds) {
+class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
 
     override val viewModel: FeedsViewModel by lazy {
         viewModelFactory(

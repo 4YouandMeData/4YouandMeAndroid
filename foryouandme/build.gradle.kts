@@ -177,6 +177,9 @@ dependencies {
     implementation(Google.ExoPlayer.Core.get())
     implementation(Google.ExoPlayer.UI.get())
 
+    /* --- location --- */
+    implementation(Google.PlayServices.Location.get())
+
     /* --- hilt --- */
 
     implementation(Google.Dagger.Hilt.Android.get())

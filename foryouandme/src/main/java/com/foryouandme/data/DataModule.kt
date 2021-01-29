@@ -24,6 +24,8 @@ import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
 import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
 import com.foryouandme.data.repository.task.network.response.TaskResponse
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -107,6 +109,13 @@ class DataModule {
         )
 
     }
+
+    @Singleton
+    @Provides
+    fun provideFusedLocationClient(
+        @ApplicationContext context: Context
+    ): FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 
     companion object {
 
