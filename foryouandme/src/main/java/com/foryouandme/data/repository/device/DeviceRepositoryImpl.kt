@@ -23,6 +23,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.threeten.bp.ZoneId
+import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.*
 import javax.inject.Inject
@@ -115,23 +116,38 @@ class DeviceRepositoryImpl @Inject constructor(
 
     private fun getTimeZone(): String = ZoneId.systemDefault().id
 
-    private fun getHashedSSID(): String? {
+    private fun getHashedSSID(): String {
 
         val wifiManager =
             context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         val wifiInfo: WifiInfo = wifiManager.connectionInfo
-        val ssid = wifiInfo.ssid.replace("\"", "")
+        val wifiSSID = wifiInfo.ssid.replace("\"", "")
 
-        return ssid.sha512()
+        return wifiSSID.sha512()
 
     }
 
-    private fun String.sha512(): String =
-        MessageDigest
-            .getInstance("SHA-512")
-            .digest(toByteArray())
-            .printHexBinary()
+    private fun String.sha512(): String {
+
+        val md: MessageDigest = MessageDigest.getInstance("SHA-512")
+        val messageDigest = md.digest(toByteArray())
+
+        // Convert byte array into signum representation
+        val no = BigInteger(1, messageDigest)
+
+        // Convert message digest into hex value
+        var hashtext: String = no.toString(16)
+
+        // Add preceding 0s to make it 32 bit
+        while (hashtext.length < 32) {
+            hashtext = "0$hashtext"
+        }
+
+        // return the HashText
+        return hashtext
+
+    }
 
     private fun ByteArray.printHexBinary(): String {
         val r = StringBuilder(size * 2)
