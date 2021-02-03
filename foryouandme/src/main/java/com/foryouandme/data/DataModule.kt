@@ -25,6 +25,7 @@ import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
 import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
+import com.foryouandme.data.datasource.network.SerializeNulls
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -71,6 +72,7 @@ class DataModule {
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
+            .add(SerializeNulls.JSON_ADAPTER_FACTORY)
             .build()
 
     @Singleton
