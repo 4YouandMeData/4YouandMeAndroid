@@ -1,23 +1,9 @@
 package com.foryouandme.core.researchkit.task
 
-import arrow.core.computations.either
-import arrow.core.flatMap
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.modules.ErrorModule
-import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.cases.task.TaskUseCase.updateGaitTask
-import com.foryouandme.data.repository.task.network.request.GaitOutboundRequest
-import com.foryouandme.data.repository.task.network.request.GaitRestRequest
-import com.foryouandme.data.repository.task.network.request.GaitReturnRequest
-import com.foryouandme.data.repository.task.network.request.GaitUpdateRequest
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.invokeAsForYouAndMeError
-import com.foryouandme.core.ext.readJson
-import com.foryouandme.researchkit.result.FileResult
-import com.foryouandme.researchkit.result.TaskResult
-import com.foryouandme.researchkit.task.TaskResponse
 import com.foryouandme.researchkit.task.gait.GaitTask
 import com.squareup.moshi.Moshi
 
@@ -111,91 +97,4 @@ suspend fun FYAMTaskConfiguration.buildGait(
         endCheckMarkColor = secondary,
         moshi = moshi
     )
-}
-
-suspend fun FYAMTaskConfiguration.sendGaitData(
-    taskModule: TaskModule,
-    errorModule: ErrorModule,
-    taskId: String,
-    result: TaskResult
-): TaskResponse {
-
-
-    // parse all file result content
-
-    val outBoundPedometer =
-        result.results[GaitTask.GAIT_OUTBOUND_PEDOMETER] as? FileResult
-    val outBoundPedometerJson =
-        outBoundPedometer?.file.readJson(errorModule)
-
-    val outBoundAccelerometer =
-        result.results[GaitTask.GAIT_OUTBOUND_ACCELEROMETER] as? FileResult
-    val outBoundAccelerometerJson =
-        outBoundAccelerometer?.file.readJson(errorModule)
-
-    val outBoundDeviceMotion =
-        result.results[GaitTask.GAIT_OUTBOUND_DEVICE_MOTION] as? FileResult
-    val outBoundDeviceMotionJson =
-        outBoundDeviceMotion?.file.readJson(errorModule)
-
-
-    val returnPedometer =
-        result.results[GaitTask.GAIT_RETURN_PEDOMETER] as? FileResult
-    val returnPedometerJson =
-        returnPedometer?.file.readJson(errorModule)
-
-    val returnAccelerometer =
-        result.results[GaitTask.GAIT_RETURN_ACCELEROMETER] as? FileResult
-    val returnAccelerometerJson =
-        returnAccelerometer?.file.readJson(errorModule)
-
-    val returnDeviceMotion =
-        result.results[GaitTask.GAIT_RETURN_DEVICE_MOTION] as? FileResult
-    val returnDeviceMotionJson =
-        returnDeviceMotion?.file.readJson(errorModule)
-
-
-    val restAccelerometer =
-        result.results[GaitTask.GAIT_REST_ACCELEROMETER] as? FileResult
-    val restAccelerometerJson =
-        restAccelerometer?.file.readJson(errorModule)
-
-    val restDeviceMotion =
-        result.results[GaitTask.GAIT_REST_DEVICE_MOTION] as? FileResult
-    val restDeviceMotionJson =
-        restDeviceMotion?.file.readJson(errorModule)
-
-    // build the request object for the api
-
-    val request =
-        either.invokeAsForYouAndMeError {
-
-            GaitUpdateRequest(
-                GaitOutboundRequest(
-                    deviceMotion = !outBoundDeviceMotionJson,
-                    accelerometer = !outBoundAccelerometerJson,
-                    pedometer = !outBoundPedometerJson
-                ),
-                GaitReturnRequest(
-                    deviceMotion = !returnDeviceMotionJson,
-                    accelerometer = !returnAccelerometerJson,
-                    pedometer = !returnPedometerJson
-                ),
-                GaitRestRequest(
-                    deviceMotion = !restDeviceMotionJson,
-                    accelerometer = !restAccelerometerJson,
-                ),
-
-                )
-        }
-
-    // upload data to task api
-
-    val response =
-        request.flatMap { taskModule.updateGaitTask(taskId, it) }
-
-    // convert the result to TaskHandleResult
-
-    return response.fold({ TaskResponse.Error(it.message) }, { TaskResponse.Success })
-
 }

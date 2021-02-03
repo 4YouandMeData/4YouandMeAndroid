@@ -98,10 +98,10 @@ class IntegrationViewModel(
         authNavController: AuthNavController,
         rootNavController: RootNavController
     ): Boolean =
-        if (navigator.back(integrationNavController).not())
-            if (navigator.back(onboardingStepNavController).not())
-                if (navigator.back(authNavController).not())
-                    navigator.back(rootNavController)
+        if (navigator.backSuspend(integrationNavController).not())
+            if (navigator.backSuspend(onboardingStepNavController).not())
+                if (navigator.backSuspend(authNavController).not())
+                    navigator.backSuspend(rootNavController)
                 else true
             else true
         else true

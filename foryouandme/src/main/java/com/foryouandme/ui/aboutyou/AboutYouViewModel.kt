@@ -99,7 +99,7 @@ class AboutYouViewModel(
         aboutYouNavController: AboutYouNavController,
         rootNavController: RootNavController
     ): Unit {
-        if (navigator.back(aboutYouNavController).not())
-            navigator.back(rootNavController)
+        if (navigator.backSuspend(aboutYouNavController).not())
+            navigator.backSuspend(rootNavController)
     }
 }

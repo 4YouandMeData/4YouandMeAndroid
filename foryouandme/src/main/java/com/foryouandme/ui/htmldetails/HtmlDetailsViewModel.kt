@@ -60,7 +60,7 @@ class HtmlDetailsViewModel(
     /* --- navigation --- */
 
     suspend fun back(navController: NavController): Unit {
-        navigator.back(navController)
+        navigator.backSuspend(navController)
     }
 
 }

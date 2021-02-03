@@ -77,8 +77,8 @@ class PhoneValidationCodeViewModel(
         authNavController: AuthNavController,
         rootNavController: RootNavController
     ): Unit {
-        if (navigator.back(authNavController).not())
-            navigator.back(rootNavController)
+        if (navigator.backSuspend(authNavController).not())
+            navigator.backSuspend(rootNavController)
     }
 
     private suspend fun onboarding(authNavController: AuthNavController): Unit =

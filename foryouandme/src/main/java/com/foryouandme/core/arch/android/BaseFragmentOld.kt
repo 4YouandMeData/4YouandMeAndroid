@@ -3,13 +3,10 @@ package com.foryouandme.core.arch.android
 import android.content.ServiceConnection
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import arrow.core.Either
 import com.foryouandme.core.activity.FYAMActivity
-import com.foryouandme.core.activity.FYAMState
-import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.EventObserver
@@ -22,7 +19,6 @@ import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.researchkit.task.TaskConfiguration
-import com.foryouandme.researchkit.task.TaskInjector
 
 abstract class BaseFragmentOld<T : BaseViewModel<*, *, *, *>> : Fragment {
 
@@ -70,8 +66,5 @@ abstract class BaseFragmentOld<T : BaseViewModel<*, *, *, *>> : Fragment {
             configuration?.let { block(it) }
 
         }
-
-    fun taskConfiguration(): TaskConfiguration =
-        (requireContext().applicationContext as TaskInjector).provideBuilder()
 
 }

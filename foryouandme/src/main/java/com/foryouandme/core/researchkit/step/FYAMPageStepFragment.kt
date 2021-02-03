@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.step_fyam_page.*
 
 class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -22,7 +21,7 @@ class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
 
     private fun applyData(
         step: FYAMPageStep
-    ): Unit {
+    ) {
 
         root.setBackgroundColor(step.configuration.theme.secondaryColor.color())
 
@@ -39,7 +38,7 @@ class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
 
             val specialAction: ((String) -> Unit)? =
                 if (step.remind) {
-                    { startCoroutineAsync { viewModel.reschedule(taskNavController()) } }
+                    { reschedule() }
                 } else null
 
             page.applyData(

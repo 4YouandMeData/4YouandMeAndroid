@@ -1,16 +1,29 @@
 package com.foryouandme.researchkit.step.chooseone
 
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.android.Empty
-import com.foryouandme.core.arch.navigation.Navigator
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.researchkit.step.common.QuestionItem
+import kotlinx.coroutines.flow.SharedFlow
 
-class ChooseOneViewModel(navigator: Navigator) :
-    BaseViewModel<ChooseOneStepState, ChooseOneStepStateUpdate, Empty, Empty>(
-        navigator = navigator
-    ) {
+class ChooseOneViewModel @ViewModelInject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<ChooseOneStepStateUpdate>
+): ViewModel() {
 
-    suspend fun initialize(step: ChooseOneStep, answers: List<ChooseOneAnswer>): Unit {
+    /* --- state --- */
+
+    var state: ChooseOneStepState = ChooseOneStepState()
+        private set
+
+    /* --- flow --- */
+
+    val stateUpdate: SharedFlow<ChooseOneStepStateUpdate> = stateUpdateFlow.stateUpdates
+
+    /* --- initialize --- */
+
+    private suspend fun initialize(step: ChooseOneStep, answers: List<ChooseOneAnswer>) {
 
         val items =
             listOf(QuestionItem(step.questionId, step.question, step.questionColor, step.image))
@@ -27,26 +40,44 @@ class ChooseOneViewModel(navigator: Navigator) :
                     }
                 )
 
-        setState(ChooseOneStepState(items)) { ChooseOneStepStateUpdate.Initialization(it.items) }
+        state = state.copy(items = items)
+        stateUpdateFlow.update(ChooseOneStepStateUpdate.Initialization(items))
 
     }
 
-    suspend fun answer(answerId: String): Unit {
+    /* --- answer --- */
 
-        val items = state().items.map {
+    private suspend fun answer(answerId: String) {
+
+        val items = state.items.map {
             if (it is ChooseOneAnswerItem) it.copy(isSelected = it.id == answerId)
             else it
         }
 
-        setState(state().copy(items = items)) { ChooseOneStepStateUpdate.Answer(it.items) }
+        state = state.copy(items = items)
+        stateUpdateFlow.update(ChooseOneStepStateUpdate.Answer(items))
 
     }
 
     fun getSelectedAnswer(): ChooseOneAnswerItem? =
-        state().items.firstOrNull {
+        state.items.firstOrNull {
             when (it) {
                 is ChooseOneAnswerItem -> it.isSelected
                 else -> false
             }
         } as? ChooseOneAnswerItem
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: ChooseOneStepStateEvent) {
+
+        when(stateEvent) {
+            is ChooseOneStepStateEvent.Initialize ->
+                viewModelScope.launchSafe { initialize(stateEvent.step, stateEvent.answers) }
+            is ChooseOneStepStateEvent.Answer ->
+                viewModelScope.launchSafe { answer(stateEvent.answerId) }
+        }
+
+    }
+
 }

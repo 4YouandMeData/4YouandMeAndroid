@@ -1,101 +1,115 @@
 package com.foryouandme.ui.tasks
 
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.error.unknownError
-import com.foryouandme.core.arch.livedata.toEvent
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.foldSuspend
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.*
+import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.researchkit.result.StepResult
 import com.foryouandme.researchkit.result.TaskResult
-import com.foryouandme.researchkit.result.results
 import com.foryouandme.researchkit.step.Step
-import com.foryouandme.researchkit.step.StepNavController
 import com.foryouandme.researchkit.task.TaskConfiguration
-import com.foryouandme.researchkit.task.TaskResponse
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.SharedFlow
 import timber.log.Timber
 
-class TaskViewModel(
-    navigator: Navigator,
+class TaskViewModel @ViewModelInject constructor(
+    private val errorFlow: ErrorFlow<TaskError>,
+    private val loadingFlow: LoadingFlow<TaskLoading>,
+    private val stateUpdateFlow: StateUpdateFlow<TaskStateUpdate>,
+    private val navigationFlow: NavigationFlow,
     private val taskConfiguration: TaskConfiguration,
-) : BaseViewModel<
-        TaskState,
-        TaskStateUpdate,
-        TaskError,
-        TaskLoading>
-    (navigator = navigator) {
-
-    /* --- initialization --- */
-
-    suspend fun initialize(id: String, data: Map<String, String>): Unit {
-
-        showLoading(TaskLoading.Initialization)
-
-        taskConfiguration.build(id, data)
-            .foldSuspend(
-                { setError(unknownError(), TaskError.Initialization) },
-                { task ->
-
-                    setState(
-                        TaskState(
-                            task = task,
-                            isCancelled = false,
-                            isCompleted = false,
-                            result = TaskResult(task.type, emptyMap())
-                        )
-                    ) { TaskStateUpdate.Initialization(it.task) }
-                }
-            )
-
-        hideLoading(TaskLoading.Initialization)
-
-    }
+    private val getConfigurationUseCase: GetConfigurationUseCase
+) : ViewModel() {
 
     /* --- state --- */
 
-    suspend fun cancel(): Unit {
-        setState(state().copy(isCancelled = true))
-        { TaskStateUpdate.Cancelled(it.isCancelled) }
-    }
+    var state: TaskState = TaskState()
+        private set
 
-    suspend fun end(): Unit {
+    /* --- flow --- */
 
-        showLoading(TaskLoading.Result)
+    val stateUpdate: SharedFlow<TaskStateUpdate> = stateUpdateFlow.stateUpdates
+    val loading: SharedFlow<UILoading<TaskLoading>> = loadingFlow.loading
+    val error: SharedFlow<UIError<TaskError>> = errorFlow.error
+    val navigation: SharedFlow<NavigationAction> = navigationFlow.navigation
 
-        val result =
-            taskConfiguration.handleTaskResult(state().result, state().task.type, state().task.id)
+    /* --- initialization --- */
 
-        evalOnMain { taskConfiguration.taskResultLiveData.value = result.toEvent() }
+    private suspend fun initialize(id: String, data: Map<String, String>) {
+        coroutineScope {
 
-        when (result) {
-            TaskResponse.Success ->
-                setState(TaskState.isCompleted.modify(state()) { true })
-                { TaskStateUpdate.Completed }
-            is TaskResponse.Error ->
-                setError(unknownError(), TaskError.Result)
+            loadingFlow.show(TaskLoading.Initialization)
+
+            val task = async { taskConfiguration.build(id, data)!! }
+            val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
+
+            state =
+                state.copy(
+                    task = task.await(),
+                    result = TaskResult(task.await().type, emptyMap()),
+                    configuration = configuration.await()
+                )
+            stateUpdateFlow.update(TaskStateUpdate.Initialization(task.await()))
+
+            loadingFlow.hide(TaskLoading.Initialization)
+
         }
+    }
 
-        hideLoading(TaskLoading.Result)
+    /* --- action --- */
+
+    private suspend fun cancel() {
+        state = state.copy(isCancelled = true)
+        stateUpdateFlow.update(TaskStateUpdate.Cancelled(true))
+    }
+
+    private suspend fun end() {
+
+        loadingFlow.show(TaskLoading.Result)
+
+        val task = state.task
+        val result = state.result
+
+        if (task != null && result != null)
+            taskConfiguration.handleTaskResult(result, task.type, task.id)
+
+        state = state.copy(isCompleted = true)
+        stateUpdateFlow.update(TaskStateUpdate.Completed)
+
+        loadingFlow.hide(TaskLoading.Result)
 
     }
 
-    suspend fun addResult(result: StepResult): Unit {
+    private suspend fun addResult(result: StepResult) {
 
-        setStateSilent(
-            TaskState.result.results.modify(state()) {
-                val map = it.toMutableMap()
-                map[result.identifier] = result
-                map
-            }
-        )
+        val update =
+            state.result
+                ?.results
+                ?.toMutableMap()
+                ?.also { it[result.identifier] = result }
+                ?: emptyMap()
+
+        state =
+            state.copy(
+                result =
+                state.result?.copy(
+                    results = update
+                )
+            )
 
     }
 
     /* --- step --- */
 
-    fun getStepByIndex(index: Int): Step? = state().task.steps.getOrNull(index)
+    fun getStepByIndex(index: Int): Step? = state.task?.steps?.getOrNull(index)
 
-    fun getStepById(id: String): Step? = state().task.steps.firstOrNull { it.identifier == id }
+    private fun getStepById(id: String): Step? =
+        state.task?.steps?.firstOrNull { it.identifier == id }
 
     inline fun <reified T : Step> getStepByIndexAs(index: Int): T? = getStepByIndex(index) as? T
 
@@ -104,77 +118,90 @@ class TaskViewModel(
 
     /* --- navigation --- */
 
-    suspend fun nextStep(stepNavController: StepNavController, currentStepIndex: Int): Unit =
-        getStepByIndex(currentStepIndex + 1)
-            .foldSuspend(
-                { end() },
-                {
-                    taskConfiguration.onStepLoaded(state().task, it)
-                    navigator.navigateToSuspend(
-                        stepNavController,
-                        StepToStep(currentStepIndex + 1)
-                    )
-                }
-            )
+    private suspend fun nextStep(currentStepIndex: Int) {
 
-    suspend fun skipToStep(
-        stepNavController: StepNavController,
+        val task = state.task
+        val step = getStepByIndex(currentStepIndex + 1)
+
+        if (step != null && task != null) {
+            taskConfiguration.onStepLoaded(task, step)
+            navigationFlow.navigateTo(StepToStep(currentStepIndex + 1))
+        } else end()
+
+    }
+
+    private suspend fun skipToStep(
         stepId: String?,
         currentStepIndex: Int
-    ): Unit =
-        if (stepId == null) end()
-        else getStepById(stepId)
-            .foldSuspend(
-                {
-                    Timber.tag(TAG)
-                        .e("Unable to skip to step $stepId for task ${state().task.id}, there is no step with this id")
-                    nextStep(stepNavController, currentStepIndex)
-                },
-                {
-                    val skipIndex = state().task.steps.indexOf(it)
+    ) {
 
-                    if (skipIndex <= currentStepIndex) {
-                        Timber.tag(TAG)
-                            .e("Unable to skip to step $stepId for task ${state().task.id}, the step index is <= to the index of the current step")
-                        nextStep(stepNavController, currentStepIndex)
-                    } else {
-                        taskConfiguration.onStepLoaded(state().task, it)
-                        navigator.navigateToSuspend(stepNavController, StepToStep(skipIndex))
-                    }
+        val task = state.task
+        val step = stepId?.let { getStepById(it) }
+
+        if (step != null && task != null) {
+
+            val skipIndex = task.steps.indexOf(step)
+
+            if (skipIndex <= currentStepIndex) {
+                Timber.tag(TAG)
+                    .e("Unable to skip to step $stepId for task ${task.id}, the step index is <= to the index of the current step")
+                nextStep(currentStepIndex)
+            } else {
+                taskConfiguration.onStepLoaded(task, step)
+                navigationFlow.navigateTo(StepToStep(skipIndex))
+            }
+
+        } else {
+            Timber.tag(TAG)
+                .e("Unable to skip to step $stepId for task ${state.task?.id}, there is no step with this id")
+            nextStep(currentStepIndex)
+        }
+    }
+
+    private suspend fun reschedule() {
+
+        loadingFlow.show(TaskLoading.Reschedule)
+
+        val task = state.task
+
+        if (task != null)
+            taskConfiguration.reschedule(task.id)
+
+        stateUpdateFlow.update(TaskStateUpdate.Rescheduled)
+
+        loadingFlow.hide(TaskLoading.Reschedule)
+
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: TaskStateEvent) {
+
+        when (stateEvent) {
+            is TaskStateEvent.Initialize ->
+                errorFlow.launchCatch(viewModelScope, TaskError.Initialization)
+                { initialize(stateEvent.id, stateEvent.data) }
+            TaskStateEvent.Reschedule ->
+                errorFlow.launchCatch(viewModelScope, TaskError.Reschedule)
+                { reschedule() }
+            TaskStateEvent.End ->
+                errorFlow.launchCatch(viewModelScope, TaskError.Result)
+                { end() }
+            is TaskStateEvent.SkipToStep ->
+                viewModelScope.launchSafe {
+                    skipToStep(stateEvent.stepId, stateEvent.currentStepIndex)
                 }
-            )
-
-    suspend fun reschedule(taskNavController: TaskNavController): Unit {
-
-        showLoading(TaskLoading.Reschedule)
-
-        taskConfiguration.reschedule(state().task.id)
-            .foldSuspend(
-                { setError(unknownError(), TaskError.Reschedule) },
-                { close(taskNavController) }
-            )
-
-        hideLoading(TaskLoading.Reschedule)
-
-    }
-
-    suspend fun close(taskNavController: TaskNavController): Unit {
-        navigator.back(taskNavController)
-    }
-
-    suspend fun back(
-        stepIndex: Int,
-        stepNavController: StepNavController,
-        taskNavController: TaskNavController
-    ): Unit {
-
-        if (canGoBack(stepIndex) && navigator.back(stepNavController).not())
-            navigator.back(taskNavController)
+            is TaskStateEvent.NextStep ->
+                viewModelScope.launchSafe {
+                    nextStep(stateEvent.currentStepIndex)
+                }
+        }
 
     }
 
     companion object {
 
         private const val TAG: String = "Research Kit"
+
     }
 }

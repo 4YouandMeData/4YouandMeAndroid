@@ -3,72 +3,67 @@ package com.foryouandme.ui.tasks
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.arch.error.ForYouAndMeError
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
-import kotlinx.android.synthetic.main.task.*
+import com.foryouandme.databinding.TaskBinding
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 
-class TaskFragment : BaseFragmentOld<TaskViewModel>(R.layout.task) {
+class TaskFragment : BaseFragment(R.layout.task) {
 
-    override val viewModel: TaskViewModel by lazy {
-        viewModelFactory(this, getFactory {
-            TaskViewModel(
-                navigator,
-                taskConfiguration()
-            )
-        })
-    }
+    private val viewModel: TaskViewModel by viewModels()
+
+    val binding: TaskBinding?
+        get() = view?.let { TaskBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { stateUpdate ->
-                when (stateUpdate) {
-                    is TaskStateUpdate.Initialization ->
-                        startCoroutineAsync { applyData() }
-                    is TaskStateUpdate.Completed ->
-                        startCoroutineAsync { viewModel.close(taskNavController()) }
+        viewModel.stateUpdate
+            .onEach {
+                when (it) {
+                    is TaskStateUpdate.Initialization -> applyData()
+                    is TaskStateUpdate.Completed,
+                    is TaskStateUpdate.Cancelled,
+                    TaskStateUpdate.Rescheduled -> navigator.backSuspend(taskNavController())
                 }
             }
+            .observeIn(this)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .onEach {
                 when (it.task) {
                     TaskLoading.Initialization ->
-                        task_loading.setVisibility(it.active, false)
+                        binding?.taskLoading?.setVisibility(it.active, false)
                     TaskLoading.Reschedule ->
-                        task_loading.setVisibility(it.active)
+                        binding?.taskLoading?.setVisibility(it.active)
                     TaskLoading.Result ->
-                        task_loading.setVisibility(it.active)
+                        binding?.taskLoading?.setVisibility(it.active)
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) {
+        viewModel.error
+            .onEach {
+
+                binding?.taskLoading?.setVisibility(false)
+
                 when (it.cause) {
                     TaskError.Initialization ->
-                        errorAlert(it.error) {
-                            viewModel.initialize(
-                                idArg(),
-                                dataArg()
-                            )
-                        }
+                        errorAlert(it.error)
+                        { viewModel.execute(TaskStateEvent.Initialize(idArg(), dataArg())) }
                     TaskError.Reschedule ->
-                        errorAlert(it.error) { viewModel.reschedule(taskNavController()) }
+                        errorAlert(it.error) { viewModel.execute(TaskStateEvent.Reschedule) }
                     TaskError.Result ->
-                        errorAlert(it.error) { viewModel.end() }
+                        errorAlert(it.error) { viewModel.execute(TaskStateEvent.End) }
                 }
             }
+            .observeIn(this)
 
         clearSensorFolder()
 
@@ -77,62 +72,53 @@ class TaskFragment : BaseFragmentOld<TaskViewModel>(R.layout.task) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        if (viewModel.state.task == null)
+            viewModel.execute(TaskStateEvent.Initialize(idArg(), dataArg()))
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(idArg(), dataArg())
+    }
 
+    private fun applyData() {
+
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val currentGraph = catchToNull { navHostFragment.navController.graph }
+        if (currentGraph == null) {
+            val graphInflater = navHostFragment.navController.navInflater
+            val navGraph = graphInflater.inflate(R.navigation.task_navigation)
+            val navController = navHostFragment.navController
+
+            val destination = R.id.step
+            navGraph.startDestination = destination
+            navController.graph = navGraph
         }
 
     }
 
-    private suspend fun applyData(): Unit =
-        evalOnMain {
+    private fun errorAlert(error: Throwable, retry: () -> Unit) {
 
-            val navHostFragment =
-                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-
-            val currentGraph = catchToNull { navHostFragment.navController.graph }
-            if (currentGraph == null) {
-                val graphInflater = navHostFragment.navController.navInflater
-                val navGraph = graphInflater.inflate(R.navigation.task_navigation)
-                val navController = navHostFragment.navController
-
-                val destination = R.id.step
-                navGraph.startDestination = destination
-                navController.graph = navGraph
-            }
-
-        }
-
-
-    private fun errorAlert(error: ForYouAndMeError, retry: suspend () -> Unit): Unit {
+        val title = errorMessenger.getTitle()
+        val message = errorMessenger.getMessage(error, viewModel.state.configuration)
 
         AlertDialog.Builder(requireContext())
-            .setTitle(error.title(requireContext()))
-            .setMessage(error.message(requireContext()))
+            .setTitle(title)
+            .setMessage(message)
             .setPositiveButton(R.string.TASK_error_retry)
             { dialog, _ ->
-                startCoroutineAsync { retry() }
+                retry()
                 dialog.dismiss()
             }
             .setNegativeButton(R.string.TASK_error_cancel)
-            { _, _ ->
-                startCoroutineAsync {
-                    viewModel.close(taskNavController())
-                }
-            }
+            { _, _ -> navigator.back(taskNavController()) }
             .setCancelable(false)
             .show()
 
     }
 
-    private fun clearSensorFolder(): Unit {
+    private fun clearSensorFolder() {
 
         val dir = getSensorOutputDirectory()
 
-        if (dir.exists())
-            dir.deleteRecursively()
+        if (dir.exists()) dir.deleteRecursively()
 
     }
 

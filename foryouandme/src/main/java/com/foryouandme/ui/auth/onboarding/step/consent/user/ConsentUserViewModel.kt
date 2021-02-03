@@ -193,11 +193,11 @@ class ConsentUserViewModel(
         authNavController: AuthNavController,
         rootNavController: RootNavController
     ): Boolean =
-        if (navigator.back(consentUserNavController).not())
-            if (navigator.back(consentNavController).not())
-                if (navigator.back(onboardingStepNavController).not())
-                    if (navigator.back(authNavController).not())
-                        navigator.back(rootNavController)
+        if (navigator.backSuspend(consentUserNavController).not())
+            if (navigator.backSuspend(consentNavController).not())
+                if (navigator.backSuspend(onboardingStepNavController).not())
+                    if (navigator.backSuspend(authNavController).not())
+                        navigator.backSuspend(rootNavController)
                     else true
                 else true
             else true

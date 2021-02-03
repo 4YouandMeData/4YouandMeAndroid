@@ -1,19 +1,18 @@
 package com.foryouandme.ui.tasks
 
-import arrow.optics.optics
 import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.researchkit.result.StepResult
 import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.task.Task
 
-@optics
 data class TaskState(
-    val task: Task,
-    val isCancelled: Boolean,
-    val isCompleted: Boolean,
-    val result: TaskResult
-) {
-    companion object
-}
+    val task: Task? = null,
+    val isCancelled: Boolean = false,
+    val isCompleted: Boolean = false,
+    val result: TaskResult? = null,
+    val configuration: Configuration? = null
+)
 
 sealed class TaskStateUpdate {
 
@@ -22,6 +21,8 @@ sealed class TaskStateUpdate {
     ) : TaskStateUpdate()
 
     data class Cancelled(val isCancelled: Boolean) : TaskStateUpdate()
+
+    object Rescheduled : TaskStateUpdate()
 
     object Completed : TaskStateUpdate()
 
@@ -42,7 +43,18 @@ sealed class TaskError {
 
 }
 
+sealed class TaskStateEvent {
+
+    data class Initialize(val id: String, val data: Map<String, String>) : TaskStateEvent()
+    object Reschedule : TaskStateEvent()
+    object End : TaskStateEvent()
+    object Cancel: TaskStateEvent()
+    data class NextStep(val currentStepIndex: Int): TaskStateEvent()
+    data class SkipToStep(val stepId: String?, val currentStepIndex: Int): TaskStateEvent()
+    data class AddResult(val result: StepResult): TaskStateEvent()
+
+}
+
 /* --- navigation --- */
 
 data class StepToStep(val index: Int) : NavigationAction
-

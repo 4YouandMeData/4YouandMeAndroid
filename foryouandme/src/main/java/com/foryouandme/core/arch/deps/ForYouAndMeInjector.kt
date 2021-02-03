@@ -40,11 +40,11 @@ import com.foryouandme.core.data.api.screening.ScreeningApi
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
 import com.foryouandme.core.data.api.studyinfo.StudyInfoApi
 import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
-import com.foryouandme.core.data.api.survey.SurveyApi
-import com.foryouandme.core.data.api.survey.response.SurveyAnswerResponse
-import com.foryouandme.core.data.api.survey.response.SurveyBlockResponse
-import com.foryouandme.core.data.api.survey.response.SurveyQuestionResponse
-import com.foryouandme.core.data.api.survey.response.SurveyResponse
+import com.foryouandme.data.repository.survey.network.SurveyApi
+import com.foryouandme.data.repository.survey.network.response.SurveyAnswerResponse
+import com.foryouandme.data.repository.survey.network.response.SurveyBlockResponse
+import com.foryouandme.data.repository.survey.network.response.SurveyQuestionResponse
+import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.foryouandme.core.data.api.yourdata.YourDataApi
@@ -221,20 +221,6 @@ class ForYouAndMeInjector(
     override val surveyApi: SurveyApi =
         getApiService(environment.getApiBaseUrl(), surveyMoshi)
 
-    /* --- task --- */
-
-    override val taskConfiguration: TaskConfiguration =
-        FYAMTaskConfiguration(
-            environment,
-            configurationModule(),
-            imageConfiguration,
-            moshi,
-            taskModule(),
-            surveyModule(),
-            authModule(),
-            errorModule(),
-            analyticsModule()
-        )
 
     /* --- modules --- */
 

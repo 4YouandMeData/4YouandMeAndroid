@@ -2,135 +2,128 @@ package com.foryouandme.researchkit.step.choosemany
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.background.shadow
+import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.databinding.StepChooseManyBinding
+import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.MultipleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.common.QuestionViewHolder
 import com.foryouandme.researchkit.utils.applyImageAsButton
-import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.step_choose_many.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 import org.threeten.bp.ZonedDateTime
 
+@AndroidEntryPoint
 class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
-    private val chooseManyStepViewModel: ChooseManyViewModel by lazy {
+    private val chooseManyStepViewModel: ChooseManyViewModel by viewModels()
 
-        viewModelFactory(
-            this,
-            getFactory { ChooseManyViewModel(navigator) }
-        )
-
-    }
-
-    private val adapter: DroidAdapter by lazy {
+    private val droidAdapter: DroidAdapter by lazy {
         DroidAdapter(
             QuestionViewHolder.factory(),
             ChooseManyAnswerViewHolder.factory {
-
-                startCoroutineAsync {
-
-                    chooseManyStepViewModel.answer(it.id)
-
-                }
-
-            })
+                chooseManyStepViewModel.execute(ChooseManyStepStateEvent.Answer(it.id))
+            }
+        )
     }
+
+    private val binding: StepChooseManyBinding?
+        get() = view?.let { StepChooseManyBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        chooseManyStepViewModel.stateLiveData()
-            .observeEvent(name()) {
+        chooseManyStepViewModel.stateUpdates
+            .onEach {
                 when (it) {
                     is ChooseManyStepStateUpdate.Initialization -> applyItems(it.items)
                     is ChooseManyStepStateUpdate.Answer -> applyItems(it.items)
                 }
             }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        setupRecyclerView()
 
-            setupRecyclerView()
+        val step =
+            viewModel.getStepByIndexAs<ChooseManyStep>(indexArg())
 
-            val step =
-                viewModel.getStepByIndexAs<ChooseManyStep>(indexArg())
+        step?.let {
 
-            step?.let {
+            applyData(it)
 
-                if (chooseManyStepViewModel.isInitialized().not())
-                    chooseManyStepViewModel.initialize(it, it.values)
+            if (chooseManyStepViewModel.state.items.isEmpty())
+                chooseManyStepViewModel.execute(ChooseManyStepStateEvent.Initialize(it, it.values))
+            else
+                applyItems(chooseManyStepViewModel.state.items)
 
-                applyData(it)
+        }
+
+    }
+
+    private fun applyData(step: ChooseManyStep) {
+
+        val viewBinding = binding
+
+        val start = ZonedDateTime.now()
+
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
+
+        viewBinding?.shadow?.background = shadow(step.shadowColor)
+
+        viewBinding?.button?.applyImageAsButton(step.buttonImage)
+        viewBinding?.button?.setOnClickListener {
+            startCoroutineAsync { next() }
+        }
+
+        viewBinding?.button?.setOnClickListener {
+
+            val answers =
+                chooseManyStepViewModel.getSelectedAnswers()
+
+            if (answers.isNotEmpty()) {
+
+                addResult(
+                    MultipleAnswerResult(
+                        step.identifier,
+                        start,
+                        ZonedDateTime.now(),
+                        step.questionId,
+                        answers.map { it.id }
+                    )
+                )
+
+                checkSkip(step, answers)
+
             }
         }
     }
 
-    private suspend fun applyData(
-        step: ChooseManyStep
-    ): Unit =
-        evalOnMain {
+    private fun setupRecyclerView() {
 
-            val start = ZonedDateTime.now()
+        binding?.recyclerView?.apply {
 
-            root.setBackgroundColor(step.backgroundColor)
-
-            shadow.background = shadow(step.shadowColor)
-
-            button.applyImageAsButton(step.buttonImage)
-            button.setOnClickListener {
-                startCoroutineAsync { next() }
-            }
-
-            button.setOnClickListener {
-
-                val answers =
-                    chooseManyStepViewModel.getSelectedAnswers()
-
-                if (answers.isNotEmpty()) {
-
-                    startCoroutineAsync {
-
-                        viewModel.addResult(
-                            MultipleAnswerResult(
-                                step.identifier,
-                                start,
-                                ZonedDateTime.now(),
-                                step.questionId,
-                                answers.map { it.id }
-                            )
-                        )
-
-                        checkSkip(step, answers)
-                    }
-
-                }
-            }
-        }
-
-    private suspend fun setupRecyclerView(): Unit =
-
-        evalOnMain {
-
-            recycler_view.layoutManager =
+            layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-            recycler_view.adapter = adapter
 
-            recycler_view.addItemDecoration(
+            adapter = droidAdapter
+
+
+            addItemDecoration(
                 LinearMarginItemDecoration(
                     {
                         if (it.index == 0) 30.dpToPx()
@@ -147,24 +140,29 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
         }
 
-    private fun applyItems(items: List<DroidItem<Any>>): Unit {
-
-        button.isEnabled = chooseManyStepViewModel.getSelectedAnswers().isEmpty().not()
-
-        adapter.submitList(items)
     }
 
-    private suspend fun checkSkip(step: ChooseManyStep, answers: List<ChooseManyAnswerItem>): Unit =
-        evalOnMain {
+    private fun applyItems(items: List<DroidItem<Any>>) {
 
-            val answersId = answers.map { it.id }
+        binding?.button?.isEnabled = chooseManyStepViewModel.getSelectedAnswers().isEmpty().not()
 
-            val skip =
-                step.skips.firstOrNull { answersId.contains(it.answerId) }
+        droidAdapter.submitList(items)
 
-            if (skip != null) skipTo(skip.stepId)
-            else next()
+    }
 
-        }
+    private fun checkSkip(
+        step: ChooseManyStep,
+        answers: List<ChooseManyAnswerItem>
+    ) {
+
+        val answersId = answers.map { it.id }
+
+        val skip =
+            step.skips.firstOrNull { answersId.contains(it.answerId) }
+
+        if (skip != null) skipTo(skip.stepId)
+        else next()
+
+    }
 
 }

@@ -2,168 +2,154 @@ package com.foryouandme.researchkit.step.chooseone
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.background.shadow
+import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.databinding.StepChooseOneBinding
+import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.common.QuestionViewHolder
 import com.foryouandme.researchkit.utils.applyImageAsButton
-import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.step_choose_one.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 import org.threeten.bp.ZonedDateTime
 
+@AndroidEntryPoint
 class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
-    private val chooseOneStepViewModel: ChooseOneViewModel by lazy {
-
-        viewModelFactory(
-            this,
-            getFactory { ChooseOneViewModel(navigator) }
-        )
-
-    }
+    private val chooseOneStepViewModel: ChooseOneViewModel by viewModels()
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
             QuestionViewHolder.factory(),
             ChooseOneAnswerViewHolder.factory {
-
-                startCoroutineAsync {
-
-                    chooseOneStepViewModel.answer(it.id)
-
-                }
-
+                chooseOneStepViewModel.execute(ChooseOneStepStateEvent.Answer(it.id))
             })
     }
+
+    private val binding: StepChooseOneBinding?
+        get() = view?.let { StepChooseOneBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        chooseOneStepViewModel.stateLiveData()
-            .observeEvent(name()) {
+        chooseOneStepViewModel.stateUpdate
+            .onEach {
                 when (it) {
                     is ChooseOneStepStateUpdate.Initialization -> applyItems(it.items)
                     is ChooseOneStepStateUpdate.Answer -> applyItems(it.items)
                 }
             }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        setupRecyclerView()
 
-            setupRecyclerView()
+        val step = viewModel.getStepByIndexAs<ChooseOneStep>(indexArg())
 
-            val step =
-                viewModel.getStepByIndexAs<ChooseOneStep>(indexArg())
+        step?.let {
 
-            step?.let {
+            if (chooseOneStepViewModel.state.items.isEmpty())
+                chooseOneStepViewModel.execute(ChooseOneStepStateEvent.Initialize(it, it.values))
+            else
+                applyItems(chooseOneStepViewModel.state.items)
 
-                if (chooseOneStepViewModel.isInitialized().not())
-                    chooseOneStepViewModel.initialize(it, it.values)
+            applyData(it)
 
-                applyData(it)
-            }
         }
     }
 
-    private suspend fun applyData(
-        step: ChooseOneStep
-    ): Unit =
-        evalOnMain {
+    private fun applyData(step: ChooseOneStep) {
 
-            val start = ZonedDateTime.now()
+        val viewBinding = binding
 
-            root.setBackgroundColor(step.backgroundColor)
+        val start = ZonedDateTime.now()
 
-            shadow.background = shadow(step.shadowColor)
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
 
-            button.applyImageAsButton(step.buttonImage)
-            button.setOnClickListener {
-                startCoroutineAsync { next() }
-            }
+        viewBinding?.shadow?.background = shadow(step.shadowColor)
 
-            button.setOnClickListener {
-
-                val answer =
-                    chooseOneStepViewModel.getSelectedAnswer()
-
-                answer?.let {
-
-                    startCoroutineAsync {
-
-                        viewModel.addResult(
-
-                            SingleAnswerResult(
-                                step.identifier,
-                                start,
-                                ZonedDateTime.now(),
-                                step.questionId,
-                                it.id,
-                            )
-
-                        )
-
-                        checkSkip(step, answer)
-                    }
-
-                }
-            }
+        viewBinding?.button?.applyImageAsButton(step.buttonImage)
+        viewBinding?.button?.setOnClickListener {
+            startCoroutineAsync { next() }
         }
 
-    private suspend fun setupRecyclerView(): Unit =
+        viewBinding?.button?.setOnClickListener {
 
-        evalOnMain {
+            val answer =
+                chooseOneStepViewModel.getSelectedAnswer()
 
-            recycler_view.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            answer?.let {
 
-            recycler_view.adapter = adapter
-
-            recycler_view.addItemDecoration(
-                LinearMarginItemDecoration(
-                    {
-                        if (it.index == 0) 30.dpToPx()
-                        else 0.dpToPx()
-                    },
-                    { 20.dpToPx() },
-                    { 20.dpToPx() },
-                    {
-                        if (it.index == it.itemCount) 30.dpToPx()
-                        else 0.dpToPx()
-                    }
+                addResult(
+                    SingleAnswerResult(
+                        step.identifier,
+                        start,
+                        ZonedDateTime.now(),
+                        step.questionId,
+                        it.id,
+                    )
                 )
-            )
+
+                checkSkip(step, answer)
+            }
 
         }
+    }
 
-    private fun applyItems(items: List<DroidItem<Any>>): Unit {
+    private fun setupRecyclerView() {
 
-        button.isEnabled = chooseOneStepViewModel.getSelectedAnswer() != null
+        val viewBinding = binding
+
+        viewBinding?.recyclerView?.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        viewBinding?.recyclerView?.adapter = adapter
+
+        viewBinding?.recyclerView?.addItemDecoration(
+            LinearMarginItemDecoration(
+                {
+                    if (it.index == 0) 30.dpToPx()
+                    else 0.dpToPx()
+                },
+                { 20.dpToPx() },
+                { 20.dpToPx() },
+                {
+                    if (it.index == it.itemCount) 30.dpToPx()
+                    else 0.dpToPx()
+                }
+            )
+        )
+
+    }
+
+    private fun applyItems(items: List<DroidItem<Any>>) {
+
+        binding?.button?.isEnabled = chooseOneStepViewModel.getSelectedAnswer() != null
 
         adapter.submitList(items)
+
     }
 
-    private suspend fun checkSkip(step: ChooseOneStep, answerItem: ChooseOneAnswerItem): Unit =
-        evalOnMain {
+    private fun checkSkip(step: ChooseOneStep, answerItem: ChooseOneAnswerItem) {
 
-            val skip = step.skips.firstOrNull { it.answerId == answerItem.id }
+        val skip = step.skips.firstOrNull { it.answerId == answerItem.id }
 
-            if (skip != null) skipTo(skip.stepId)
-            else next()
+        if (skip != null) skipTo(skip.stepId)
+        else next()
 
-        }
+    }
 
 }

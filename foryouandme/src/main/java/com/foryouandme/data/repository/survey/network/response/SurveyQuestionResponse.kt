@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.survey.response
+package com.foryouandme.data.repository.survey.network.response
 
 import arrow.core.Either
 import com.foryouandme.entity.survey.SurveyQuestion

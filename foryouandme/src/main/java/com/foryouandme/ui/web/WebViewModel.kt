@@ -22,7 +22,7 @@ class WebViewModel(
     /* --- navigation --- */
 
     suspend fun back(rootNavController: RootNavController): Unit {
-        navigator.back(rootNavController)
+        navigator.backSuspend(rootNavController)
     }
 
     suspend fun logScreenViewed(): Unit =

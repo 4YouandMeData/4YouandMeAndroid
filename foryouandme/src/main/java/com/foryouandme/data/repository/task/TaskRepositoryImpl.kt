@@ -2,10 +2,11 @@ package com.foryouandme.data.repository.task
 
 import com.foryouandme.data.datasource.network.AuthErrorInterceptor
 import com.foryouandme.data.datasource.network.value
-import com.foryouandme.entity.order.Order
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.data.repository.task.network.request.*
 import com.foryouandme.domain.usecase.task.TaskRepository
+import com.foryouandme.entity.order.Order
+import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList
@@ -66,10 +67,42 @@ class TaskRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun updateGaitTask(token: String, taskId: String, result: GaitUpdateRequest) {
+    override suspend fun updateGaitTask(
+        token: String,
+        taskId: String,
+        outboundDeviceMotion: String,
+        outboundAccelerometer: String,
+        outboundPedometer: String,
+        returnDeviceMotion: String,
+        returnAccelerometer: String,
+        returnPedometer: String,
+        restDeviceMotion: String,
+        restAccelerometer: String,
+    ) {
 
         authErrorInterceptor.execute {
-            api.updateGaitTask(token, taskId, TaskResultRequest(result))
+            api.updateGaitTask(
+                token,
+                taskId,
+                TaskResultRequest(
+                    GaitUpdateRequest(
+                        GaitOutboundRequest(
+                            outboundDeviceMotion,
+                            outboundAccelerometer,
+                            outboundPedometer
+                        ),
+                        GaitReturnRequest(
+                            returnDeviceMotion,
+                            restAccelerometer,
+                            returnPedometer
+                        ),
+                        GaitRestRequest(
+                            restDeviceMotion,
+                            restAccelerometer
+                        )
+                    )
+                )
+            )
         }
 
     }
@@ -77,7 +110,11 @@ class TaskRepositoryImpl @Inject constructor(
     override suspend fun updateFitnessTask(
         token: String,
         taskId: String,
-        result: FitnessUpdateRequest
+        walkDeviceMotion: String,
+        walkAccelerometer: String,
+        walkPedometer: String,
+        sitDeviceMotion: String,
+        sitAccelerometer: String,
     ) {
 
         authErrorInterceptor.execute {
@@ -85,7 +122,12 @@ class TaskRepositoryImpl @Inject constructor(
             api.updateFitnessTask(
                 token,
                 taskId,
-                TaskResultRequest(result)
+                TaskResultRequest(
+                    FitnessUpdateRequest(
+                        FitnessWalkRequest(walkDeviceMotion, walkAccelerometer, walkPedometer),
+                        FitnessSitRequest(sitDeviceMotion, sitAccelerometer)
+                    )
+                )
             )
 
         }
@@ -106,14 +148,27 @@ class TaskRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun updateSurvey(token: String, taskId: String, result: SurveyUpdateRequest) {
+    override suspend fun updateSurvey(
+        token: String,
+        taskId: String,
+        answers: List<SurveyAnswerUpdate>
+    ) {
 
         authErrorInterceptor.execute {
 
             api.updateSurvey(
                 token,
                 taskId,
-                TaskResultRequest(result)
+                TaskResultRequest(
+                    SurveyUpdateRequest(
+                        answers.map {
+                            AnswerUpdateRequest(
+                                it.questionId,
+                                it.answer
+                            )
+                        }
+                    )
+                )
             )
 
         }

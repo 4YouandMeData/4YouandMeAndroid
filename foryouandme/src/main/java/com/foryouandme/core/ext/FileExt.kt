@@ -24,3 +24,20 @@ suspend fun File?.readJson(errorModule: ErrorModule): Either<ForYouAndMeError, S
             stringBuilder.toString()
         }
     }
+
+fun File?.readJson(): String? {
+
+    val stringBuilder = StringBuilder()
+
+    return if (this != null) {
+
+        forEachLine {
+            stringBuilder.append(it).append("\n")
+        }
+
+        // This response will have Json Format String
+        stringBuilder.toString()
+
+    } else null
+
+}

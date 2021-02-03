@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.entity.configuration.HEXColor
-import com.foryouandme.entity.configuration.HEXGradient
-import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.ext.setOnClickListenerAsync
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.entity.configuration.HEXColor
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.researchkit.step.StepFragment
 import kotlinx.android.synthetic.main.step_welcome.*
 
@@ -33,7 +33,7 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
     private suspend fun setupView(): Unit =
         evalOnMain {
 
-            remind_me_later.setOnClickListenerAsync { viewModel.reschedule(taskNavController()) }
+            remind_me_later.setOnClickListener { reschedule() }
 
             start_now.setOnClickListenerAsync { next() }
             start_now_full.setOnClickListenerAsync { next() }

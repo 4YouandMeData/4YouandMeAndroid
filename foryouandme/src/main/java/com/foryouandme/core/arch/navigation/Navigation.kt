@@ -42,13 +42,16 @@ class Navigator @Inject constructor(
 
     }
 
-    suspend fun back(navController: FYAMNavController): Boolean =
-        back(navController.navController)
+    suspend fun backSuspend(navController: FYAMNavController): Boolean =
+        backSuspend(navController.navController)
+
+    fun back(navController: FYAMNavController): Boolean =
+        navController.navController.popBackStack()
 
     suspend fun close(rootNavController: RootNavController): Boolean =
         rootNavController.navController.popBackStack(R.id.navigation, true)
 
-    suspend fun back(navController: NavController): Boolean =
+    suspend fun backSuspend(navController: NavController): Boolean =
         navController.popBackStack()
 
     suspend fun performAction(action: ActivityAction): Unit =

@@ -1,12 +1,8 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.cases.task.TaskUseCase.updateSurvey
 import com.foryouandme.core.researchkit.step.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
-import com.foryouandme.data.repository.task.network.request.AnswerUpdateRequest
-import com.foryouandme.data.repository.task.network.request.SurveyUpdateRequest
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration
@@ -14,10 +10,6 @@ import com.foryouandme.entity.page.Page
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.foryouandme.entity.survey.SurveyQuestion
-import com.foryouandme.researchkit.result.MultipleAnswerResult
-import com.foryouandme.researchkit.result.SingleAnswerResult
-import com.foryouandme.researchkit.result.SingleIntAnswerResult
-import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.skip.SurveySkip
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Skip
@@ -32,7 +24,6 @@ import com.foryouandme.researchkit.step.range.RangeStep
 import com.foryouandme.researchkit.step.scale.ScaleStep
 import com.foryouandme.researchkit.step.textinput.TextInputStep
 import com.foryouandme.researchkit.task.Task
-import com.foryouandme.researchkit.task.TaskResponse
 import com.foryouandme.researchkit.utils.ImageResource
 import com.foryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 import org.threeten.bp.ZoneOffset
@@ -469,38 +460,3 @@ private fun getSkipSurveyQuestionStepId(
         }
 
     } else getSurveyQuestionStepId(block.id, questionId)
-
-suspend fun FYAMTaskConfiguration.sendSurveyData(
-    taskModule: TaskModule,
-    taskId: String,
-    result: TaskResult
-): TaskResponse {
-
-
-    val answers =
-        result.results.toList().mapNotNull {
-            when (val value = it.second) {
-                is SingleAnswerResult ->
-                    AnswerUpdateRequest(value.questionId, value.answer)
-                is SingleIntAnswerResult ->
-                    AnswerUpdateRequest(value.questionId, value.answer)
-                is MultipleAnswerResult ->
-                    AnswerUpdateRequest(value.questionId, value.answers)
-                else -> null
-
-            }
-        }
-
-    // build the request object for the api
-
-    val request = SurveyUpdateRequest(answers)
-
-    // upload data to task api
-
-    val response = taskModule.updateSurvey(taskId, request)
-
-    // convert the result to TaskHandleResult
-
-    return response.fold({ TaskResponse.Error(it.message) }, { TaskResponse.Success })
-
-}

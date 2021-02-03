@@ -14,7 +14,7 @@ import com.foryouandme.core.data.api.integration.IntegrationApi
 import com.foryouandme.core.data.api.optins.OptInsApi
 import com.foryouandme.core.data.api.screening.ScreeningApi
 import com.foryouandme.core.data.api.studyinfo.StudyInfoApi
-import com.foryouandme.core.data.api.survey.SurveyApi
+import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.data.datasource.Environment
@@ -69,9 +69,6 @@ interface Injector {
     val studyInfoApi: StudyInfoApi
     val surveyApi: SurveyApi
 
-    /* --- task --- */
-
-    val taskConfiguration: TaskConfiguration
 
     /* --- modules --- */
 

@@ -1,6 +1,7 @@
 package com.foryouandme.app
 
 import android.content.Context
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.data.datasource.Environment
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
@@ -18,6 +19,11 @@ object SampleModule {
     @Singleton
     fun provideEnvironment(@ApplicationContext context: Context): Environment =
         SampleEnvironment(context)
+
+    @Provides
+    @Singleton
+    fun provideImageConfiguration(): ImageConfiguration =
+        SampleImageConfiguration()
 
     @Provides
     @Singleton
