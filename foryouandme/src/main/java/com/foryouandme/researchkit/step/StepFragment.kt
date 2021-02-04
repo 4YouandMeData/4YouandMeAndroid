@@ -89,10 +89,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             .setTitle(R.string.TASK_cancel_title)
             .setMessage(R.string.TASK_cancel_description)
             .setPositiveButton(R.string.TASK_cancel_positive)
-            { _, _ ->
-                viewModel.execute(TaskStateEvent.Cancel)
-                navigator.back(rootNavController())
-            }
+            { _, _ -> viewModel.execute(TaskStateEvent.Cancel) }
             .setNegativeButton(R.string.TASK_cancel_negative)
             { dialog, _ -> dialog.dismiss() }
             .show()

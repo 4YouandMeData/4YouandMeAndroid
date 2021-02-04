@@ -86,7 +86,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                     .onEach {
                         when (it) {
                             is TaskStateUpdate.Cancelled ->
-                                if (it.isCancelled) startCoroutineAsync { binder.stop() }
+                                if (it.isCancelled) lifecycleScope.launchSafe { binder.stop() }
                             else -> Unit
                         }
                     }
