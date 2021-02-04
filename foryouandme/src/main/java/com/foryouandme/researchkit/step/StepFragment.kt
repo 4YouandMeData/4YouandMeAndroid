@@ -76,15 +76,12 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
     }
 
     protected open fun close() {
-        navigator.back(taskNavController())
+        navigator.back(rootNavController())
     }
 
     protected fun taskFragment(): TaskFragment = find()
 
-    protected fun taskNavController(): TaskNavController =
-        taskFragment().taskNavController()
-
-    protected fun stepNavController(): StepNavController = StepNavController(findNavController())
+    fun stepNavController(): StepNavController = StepNavController(findNavController())
 
     protected fun showCancelDialog() {
 
@@ -94,7 +91,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             .setPositiveButton(R.string.TASK_cancel_positive)
             { _, _ ->
                 viewModel.execute(TaskStateEvent.Cancel)
-                navigator.back(taskNavController())
+                navigator.back(rootNavController())
             }
             .setNegativeButton(R.string.TASK_cancel_negative)
             { dialog, _ -> dialog.dismiss() }
@@ -110,7 +107,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             setNavigationOnClickListener {
 
                 if (navigator.back(stepNavController()).not())
-                    navigator.back(taskNavController())
+                    navigator.back(rootNavController())
 
             }
 

@@ -10,6 +10,8 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.TaskBinding
+import com.foryouandme.researchkit.step.StepFragment
+import com.foryouandme.researchkit.step.StepNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 import java.io.File
@@ -70,7 +72,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
             .onEach {
                 when (it) {
                     is StepToStep ->
-                        navigator.navigateTo(rootNavController(), it)
+                        navigator.navigateTo(stepNavController(), it)
                     else ->
                         navigator.navigateTo(rootNavController(), it)
                 }
@@ -146,6 +148,11 @@ class TaskFragment : BaseFragment(R.layout.task) {
     @Suppress("UNCHECKED_CAST")
     private fun dataArg(): HashMap<String, String> =
         (arguments?.getSerializable(TASK_DATA) as HashMap<String, String>)
+
+    private fun stepNavController(): StepNavController =
+        (childFragmentManager.fragments[0]
+            .childFragmentManager.fragments[0]
+            .childFragmentManager.fragments[0] as StepFragment).stepNavController()
 
     companion object {
 
