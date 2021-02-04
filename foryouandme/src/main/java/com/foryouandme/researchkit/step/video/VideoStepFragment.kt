@@ -3,6 +3,7 @@ package com.foryouandme.researchkit.step.video
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.View
 import android.widget.MediaController
 import androidx.annotation.experimental.UseExperimental
 import androidx.appcompat.app.AlertDialog
@@ -92,6 +93,10 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
             }
             .observeIn(this)
 
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.getStepByIndexAs<VideoStep>(indexArg())?.let {
             lifecycleScope.launchSafe { setupCamera(it) }
