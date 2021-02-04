@@ -27,7 +27,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
 
     private fun applyData(
         step: IntroductionStep
-    ): Unit {
+    ) {
 
         root.setBackgroundColor(step.backgroundColor)
 

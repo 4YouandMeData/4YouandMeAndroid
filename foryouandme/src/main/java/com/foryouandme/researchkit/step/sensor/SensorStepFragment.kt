@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
