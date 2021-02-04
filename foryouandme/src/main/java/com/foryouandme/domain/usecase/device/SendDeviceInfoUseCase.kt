@@ -21,7 +21,9 @@ class SendDeviceInfoUseCase @Inject constructor(
 
         coroutineScope {
 
-            repository.trackDeviceInfo(isPermissionGrantedUseCase(Permission.Location))
+            val locationPermission = isPermissionGrantedUseCase(Permission.Location)
+
+            repository.trackDeviceInfo(locationPermission)
 
             repository.deleteDeviceInfoOlderThan(getTimestampDateUTC().minusDays(5))
 
@@ -34,10 +36,7 @@ class SendDeviceInfoUseCase @Inject constructor(
                 deviceInfo.map {
                     async {
                         catchToNullSuspend {
-                            repository.sendDeviceInfo(
-                                token,
-                                it
-                            )
+                            repository.sendDeviceInfo(token, it, locationPermission)
                             repository.deleteDeviceInfo(it.timestamp)
                         }
                     }

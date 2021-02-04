@@ -15,6 +15,6 @@ interface DeviceRepository {
 
     suspend fun deleteDeviceInfo(timestamp: Date)
 
-    suspend fun sendDeviceInfo(token: String, deviceInfo: DeviceInfo)
+    suspend fun sendDeviceInfo(token: String, deviceInfo: DeviceInfo, locationPermission: Boolean)
 
 }

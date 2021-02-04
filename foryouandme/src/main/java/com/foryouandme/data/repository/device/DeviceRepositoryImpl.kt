@@ -13,7 +13,6 @@ import com.foryouandme.data.datasource.network.AuthErrorInterceptor
 import com.foryouandme.data.ext.getTimestampDateUTC
 import com.foryouandme.data.repository.device.database.toDatabaseEntity
 import com.foryouandme.data.repository.device.network.DeviceApi
-import com.foryouandme.data.repository.device.network.request.DeviceInfoDataRequest
 import com.foryouandme.data.repository.device.network.request.DeviceInfoRequest
 import com.foryouandme.domain.usecase.device.DeviceRepository
 import com.foryouandme.entity.device.DeviceInfo
@@ -174,22 +173,14 @@ class DeviceRepositoryImpl @Inject constructor(
         database.deviceInfoDao().deleteDeviceInfo(timestamp)
     }
 
-    override suspend fun sendDeviceInfo(token: String, deviceInfo: DeviceInfo) {
+    override suspend fun sendDeviceInfo(
+        token: String,
+        deviceInfo: DeviceInfo,
+        locationPermission: Boolean
+    ) {
 
         authErrorInterceptor.execute {
-            api.sendDeviceInfo(
-                token,
-                DeviceInfoRequest(
-                    DeviceInfoDataRequest(
-                        batteryLevel = deviceInfo.batteryLevel,
-                        longitude = deviceInfo.location?.longitude,
-                        latitude = deviceInfo.location?.latitude,
-                        timeZone = deviceInfo.timeZone,
-                        hashedSSID = deviceInfo.hashedSSID,
-                        timestamp = deviceInfo.timestamp.time
-                    )
-                )
-            )
+            api.sendDeviceInfo(token, DeviceInfoRequest.build(deviceInfo, locationPermission))
         }
 
     }
