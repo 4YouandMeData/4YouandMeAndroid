@@ -102,7 +102,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
             val lp = image.layoutParams
             val displayMetrics = DisplayMetrics()
 
-            (context as FragmentActivity).windowManager
+            requireActivity().windowManager
                 .defaultDisplay
                 .getMetrics(displayMetrics)
 

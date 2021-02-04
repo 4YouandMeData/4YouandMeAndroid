@@ -34,7 +34,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         val lp = image.layoutParams
         val displayMetrics = DisplayMetrics()
 
-        (context as FragmentActivity).windowManager
+        requireActivity().windowManager
             .defaultDisplay
             .getMetrics(displayMetrics)
 

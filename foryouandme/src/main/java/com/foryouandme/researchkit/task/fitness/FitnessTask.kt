@@ -260,7 +260,7 @@ class FitnessTask(
                     description = {
                         startDescription ?: it.getString(
                             R.string.FITNESS_start,
-                            "one minute"
+                            "two minute"
                         )
                     },
                     descriptionColor = startDescriptionColor,
@@ -278,8 +278,8 @@ class FitnessTask(
                     description = {
                         introDescription ?: it.getString(
                             R.string.FITNESS_intro,
-                            "one minute",
-                            "ten seconds"
+                            "two minute",
+                            "thirty seconds"
                         )
                     },
                     descriptionColor = introDescriptionColor,
@@ -308,12 +308,12 @@ class FitnessTask(
                     description = {
                         walkDescription ?: it.getString(
                             R.string.FITNESS_walk,
-                            "one minute"
+                            "two minute"
                         )
                     },
                     descriptionColor = walkDescriptionColor,
                     image = walkImage,
-                    target = SensorRecorderTarget.Time(60),
+                    target = SensorRecorderTarget.Time(120),
                     recorderConfigurations =
                     listOf(
                         DeviceMotionRecorderConfig(moshi, 10.toDouble()),
@@ -323,7 +323,7 @@ class FitnessTask(
                     spokenInstruction = {
                         walkDescription ?: it.getString(
                             R.string.FITNESS_walk,
-                            "one minute"
+                            "two minute"
                         )
                     }
                 ),
@@ -335,12 +335,12 @@ class FitnessTask(
                     description = {
                         sitDescription ?: it.getString(
                             R.string.FITNESS_sit,
-                            "ten seconds"
+                            "thirty seconds"
                         )
                     },
                     descriptionColor = sitDescriptionColor,
                     image = sitImage,
-                    target = SensorRecorderTarget.Time(10),
+                    target = SensorRecorderTarget.Time(30),
                     recorderConfigurations =
                     listOf(
                         DeviceMotionRecorderConfig(moshi, 10.toDouble()),
@@ -349,7 +349,7 @@ class FitnessTask(
                     spokenInstruction = {
                         sitDescription ?: it.getString(
                             R.string.FITNESS_sit,
-                            "ten seconds"
+                            "thirty seconds"
                         )
                     }
                 )
