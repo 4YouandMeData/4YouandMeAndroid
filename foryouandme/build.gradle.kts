@@ -77,7 +77,7 @@ dependencies {
 
     /* --- android arch --- */
 
-    implementation(AndroidX.Lifecycle.Service.get())
+    api(AndroidX.Lifecycle.Service.get())
     implementation(AndroidX.Lifecycle.ViewModelKtx.get())
     implementation(AndroidX.Lifecycle.LiveDataKtx.get())
     implementation(AndroidX.Lifecycle.ViewModelSavedState.get())

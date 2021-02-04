@@ -7,46 +7,42 @@ import android.view.View
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.foryouandme.R
+import com.foryouandme.databinding.StepEndBinding
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_end.*
-import kotlinx.android.synthetic.main.step_introduction.description
-import kotlinx.android.synthetic.main.step_introduction.action_1
-import kotlinx.android.synthetic.main.step_introduction.root
-import kotlinx.android.synthetic.main.step_introduction.title
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class EndStepFragment : StepFragment(R.layout.step_end) {
 
+    private val binding: StepEndBinding?
+        get() = view?.let { StepEndBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val step =
-            viewModel.getStepByIndexAs<EndStep>(indexArg())
+        viewModel.getStepByIndexAs<EndStep>(indexArg())?.let { applyData(it) }
 
-        step?.let { applyData(it) }
     }
 
-    private fun applyData(
-        step: EndStep
-    ): Unit {
+    private fun applyData(step: EndStep) {
 
-        root.setBackgroundColor(step.backgroundColor)
+        val viewBinding = binding
 
-        title.text = step.title(requireContext())
-        title.setTextColor(step.titleColor)
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
 
-        description.text = step.description(requireContext())
-        description.setTextColor(step.descriptionColor)
+        viewBinding?.title?.text = step.title(requireContext())
+        viewBinding?.title?.setTextColor(step.titleColor)
 
-        action_1.background = button(step.buttonColor)
-        action_1.text = step.button(requireContext())
-        action_1.setTextColor(step.buttonTextColor)
-        action_1.setOnClickListener { startCoroutineAsync { viewModel.end() } }
+        viewBinding?.description?.text = step.description(requireContext())
+        viewBinding?.description?.setTextColor(step.descriptionColor)
 
-        animationView.addValueCallback(
+        viewBinding?.action1?.background = button(step.buttonColor)
+        viewBinding?.action1?.text = step.button(requireContext())
+        viewBinding?.action1?.setTextColor(step.buttonTextColor)
+        viewBinding?.action1?.setOnClickListener { end() }
+
+        viewBinding?.animationView?.addValueCallback(
             KeyPath("Shape Outlines", "**"),
             LottieProperty.COLOR_FILTER,
             {
@@ -57,7 +53,7 @@ class EndStepFragment : StepFragment(R.layout.step_end) {
             }
         )
 
-        animationView.addValueCallback(
+        binding?.animationView?.addValueCallback(
             KeyPath("Line Outlines", "**"),
             LottieProperty.COLOR_FILTER,
             {

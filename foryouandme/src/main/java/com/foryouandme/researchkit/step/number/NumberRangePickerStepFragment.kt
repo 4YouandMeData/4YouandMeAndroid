@@ -4,74 +4,79 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.databinding.StepNumberRangePickerBinding
 import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.skip.isInOptionalRange
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
-import kotlinx.android.synthetic.main.step_number_range_picker.*
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 
+@AndroidEntryPoint
 class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_picker) {
+
+    private val binding: StepNumberRangePickerBinding?
+        get() = view?.let { StepNumberRangePickerBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
-
-            val step =
-                viewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())
-
-            step?.let { applyData(it) }
-        }
+        viewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())?.let { applyData(it) }
     }
 
-    private suspend fun applyData(
-        step: NumberRangePickerStep
-    ): Unit =
+    private fun applyData(step: NumberRangePickerStep) {
 
-        evalOnMain {
-            val start = ZonedDateTime.now()
+        val viewBinding = binding
 
-            root.setBackgroundColor(step.backgroundColor)
+        val start = ZonedDateTime.now()
 
-            step.image?.let { icon.applyImage(it) }
-            icon.isVisible = step.image != null
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
 
-            question.text = step.question(requireContext())
-            question.setTextColor(step.questionColor)
+        step.image?.let { viewBinding?.icon?.applyImage(it) }
+        viewBinding?.icon?.isVisible = step.image != null
 
-            val values = getValues(step)
+        viewBinding?.question?.text = step.question(requireContext())
+        viewBinding?.question?.setTextColor(step.questionColor)
 
-            number_picker.minValue = 0
-            number_picker.maxValue = values.size - 1
-            number_picker.displayedValues = values.toTypedArray()
+        val values = getValues(step)
 
-            shadow.background = shadow(step.shadowColor)
+        viewBinding?.numberPicker?.minValue = 0
+        viewBinding?.numberPicker?.maxValue = values.size - 1
+        viewBinding?.numberPicker?.displayedValues = values.toTypedArray()
 
-            button.applyImage(step.buttonImage)
-            button.setOnClickListener {
-                startCoroutineAsync {
+        viewBinding?.shadow?.background = shadow(step.shadowColor)
 
-                    viewModel.addResult(
+        viewBinding?.button?.applyImage(step.buttonImage)
+        viewBinding?.button?.setOnClickListener {
 
-                        SingleAnswerResult(
-                            step.identifier,
-                            start,
-                            ZonedDateTime.now(),
-                            step.questionId,
-                            number_picker.displayedValues[number_picker.value]
-                        )
+            val answer =
+                binding
+                    ?.numberPicker
+                    ?.value
+                    ?.let { binding?.numberPicker?.displayedValues?.get(it) }
 
+            answer?.let {
+
+                addResult(
+
+                    SingleAnswerResult(
+                        step.identifier,
+                        start,
+                        ZonedDateTime.now(),
+                        step.questionId,
+                        answer
                     )
 
-                    checkSkip(step)
-                }
+                )
+
             }
 
+            checkSkip(step)
+
         }
+
+    }
 
     private fun getValues(step: NumberRangePickerStep): List<String> {
 
@@ -89,22 +94,26 @@ class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_pi
 
     }
 
-    private suspend fun checkSkip(step: NumberRangePickerStep): Unit =
-        evalOnMain {
+    private fun checkSkip(step: NumberRangePickerStep) {
 
-            val skip = step.skips.firstOrNull()
+        val viewBinding = binding
 
-            val index = number_picker.value
-            val value = number_picker.displayedValues[index]
-            val numericValue = getNumericalValue(value, step)
+        val skip = step.skips.firstOrNull()
 
-            if (skip != null && isInOptionalRange(numericValue, skip.min, skip.max))
-                skipTo(skip.stepId)
-            else
-                next()
+        val index = viewBinding?.numberPicker?.value
+        val value = index?.let { viewBinding.numberPicker.displayedValues[it] }
+        val numericValue = value?.let { getNumericalValue(it, step) }
 
-        }
+        if (
+            skip != null &&
+            numericValue != null &&
+            isInOptionalRange(numericValue, skip.min, skip.max)
+        )
+            skipTo(skip.stepId)
+        else
+            next()
 
+    }
 
     private fun getNumericalValue(value: String, step: NumberRangePickerStep): Int =
         when (value) {

@@ -206,10 +206,10 @@ class OptInViewModel(
         navigator.navigateToSuspend(consentNavController, OptInToConsentUser)
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performAction(toastAction(error))
+        navigator.performActionSuspend(toastAction(error))
 
     private suspend fun alert(title: String, message: String, close: String): Unit =
-        navigator.performAction(alertAction(title, message, close))
+        navigator.performActionSuspend(alertAction(title, message, close))
 
     suspend fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateToSuspend(navController, AnywhereToWeb(url))

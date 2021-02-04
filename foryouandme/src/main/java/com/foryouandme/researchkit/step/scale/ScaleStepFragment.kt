@@ -1,109 +1,110 @@
 package com.foryouandme.researchkit.step.scale
 
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.databinding.StepScaleBinding
 import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.result.SingleIntAnswerResult
 import com.foryouandme.researchkit.skip.isInOptionalRange
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
-import kotlinx.android.synthetic.main.step_scale.*
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 import kotlin.math.absoluteValue
 
+@AndroidEntryPoint
 class ScaleStepFragment : StepFragment(R.layout.step_scale) {
+
+    private val binding: StepScaleBinding?
+        get() = view?.let { StepScaleBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        viewModel.getStepByIndexAs<ScaleStep>(indexArg())?.let { applyData(it) }
 
-            val step =
-                viewModel.getStepByIndexAs<ScaleStep>(indexArg())
-
-            step?.let { applyData(it) }
-        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun applyData(
-        step: ScaleStep
-    ): Unit =
+    private fun applyData(step: ScaleStep) {
 
-        evalOnMain {
+        val viewBinding = binding
 
-            val start = ZonedDateTime.now()
+        val start = ZonedDateTime.now()
 
-            root.setBackgroundColor(step.backgroundColor)
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
 
-            step.image?.let { icon.applyImage(it) }
-            icon.isVisible = step.image != null
+        step.image?.let { viewBinding?.icon?.applyImage(it) }
+        viewBinding?.icon?.isVisible = step.image != null
 
-            question.text = step.question(requireContext())
-            question.setTextColor(step.questionColor)
+        viewBinding?.question?.text = step.question(requireContext())
+        viewBinding?.question?.setTextColor(step.questionColor)
 
-            value.text = step.minValue.toString()
+        viewBinding?.value?.text = step.minValue.toString()
 
-            slider.progressTintList = ColorStateList.valueOf(step.progressColor)
-            slider.min = 0
-            slider.max = (step.maxValue.minus(step.minValue)).absoluteValue.div(step.interval)
-            slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        viewBinding?.slider?.progressTintList = ColorStateList.valueOf(step.progressColor)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+            viewBinding?.slider?.min = 0
+        viewBinding?.slider?.max =
+            (step.maxValue.minus(step.minValue)).absoluteValue.div(step.interval)
+        viewBinding?.slider?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
-                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                val progress = if (i < 0) 0 else i
+                binding?.value?.text = progress.times(step.interval).plus(step.minValue).toString()
 
-                    value.text = i.times(step.interval).plus(step.minValue).toString()
+            }
 
-                }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
+        })
 
-            shadow.background = shadow(step.shadowColor)
+        viewBinding?.shadow?.background = shadow(step.shadowColor)
 
-            button.applyImage(step.buttonImage)
-            button.setOnClickListener {
+        viewBinding?.button?.applyImage(step.buttonImage)
+        viewBinding?.button?.setOnClickListener {
 
-                startCoroutineAsync {
+            val answer = binding?.slider?.progress?.times(step.interval)?.plus(step.minValue)
 
-                    viewModel.addResult(
+            answer?.let {
 
-                        SingleIntAnswerResult(
-                            step.identifier,
-                            start,
-                            ZonedDateTime.now(),
-                            step.questionId,
-                            slider.progress.times(step.interval).plus(step.minValue)
-                        )
-
+                addResult(
+                    SingleIntAnswerResult(
+                        step.identifier,
+                        start,
+                        ZonedDateTime.now(),
+                        step.questionId,
+                        it
                     )
 
-                    checkSkip(step)
+                )
 
-                }
+                checkSkip(step)
+
             }
 
         }
 
-    private suspend fun checkSkip(step: ScaleStep): Unit =
-        evalOnMain {
+    }
 
-            val skip = step.skips.firstOrNull()
+    private fun checkSkip(step: ScaleStep) {
 
-            val value = slider.progress + step.minValue
+        val skip = step.skips.firstOrNull()
 
-            if (skip != null && isInOptionalRange(value, skip.min, skip.max)) skipTo(skip.stepId)
-            else next()
+        val value = binding?.slider?.progress?.let { it + step.minValue }
 
-        }
+        if (
+            skip != null &&
+            value != null &&
+            isInOptionalRange(value, skip.min, skip.max)
+        ) skipTo(skip.stepId)
+        else next()
+
+    }
 
 }

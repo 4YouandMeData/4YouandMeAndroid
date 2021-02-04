@@ -95,7 +95,7 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
 
             action_1.setOnClickListenerAsync {
 
-                hideKeyboard()
+                hideKeyboardSuspend()
                 viewModel.createUser(
                     rootNavController(),
                     consentUserNavController()

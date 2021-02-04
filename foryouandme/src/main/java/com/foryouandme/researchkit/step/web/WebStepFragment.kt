@@ -11,80 +11,73 @@ import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.mapNotNull
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.databinding.StepWebBinding
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_web.*
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.net.URL
 
-
+@AndroidEntryPoint
 class WebStepFragment : StepFragment(R.layout.step_web) {
 
+    private val binding: StepWebBinding?
+        get() = view?.let { StepWebBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val step =
-            viewModel.getStepByIndexAs<WebStep>(indexArg())
-
-        startCoroutineAsync {
-            step?.let { applyData(it) }
-        }
+        viewModel.getStepByIndexAs<WebStep>(indexArg())?.let { applyData(it) }
 
     }
 
-    private suspend fun applyData(
-        step: WebStep
-    ): Unit =
+    private fun applyData(step: WebStep) {
 
-        evalOnMain {
+        val viewBinding = binding
 
-            root.setBackgroundColor(step.backgroundColor)
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
 
-            progress_bar.progressTintList = ColorStateList.valueOf(step.progressBarColor)
+        viewBinding?.progressBar?.progressTintList = ColorStateList.valueOf(step.progressBarColor)
 
-            step.javascriptInterface?.setListener(
+        step.javascriptInterface?.setListener(
 
-                object : JavaScriptInterfaceListener {
+            object : JavaScriptInterfaceListener {
 
-                    override fun nextStep() {
-                        lifecycleScope.launchSafe { next() }
-                    }
-
-                    override fun close() {
-                        lifecycleScope.launchSafe { viewModel.close(taskNavController()) }
-                    }
-
+                override fun nextStep() {
+                    lifecycleScope.launchSafe { next() }
                 }
 
-            )
+                override fun close() {
+                    this@WebStepFragment.close()
+                }
 
+            }
 
-            web_view.setupWebView(
-                progress_bar,
-                step.url,
-                step.cookies,
-                step.javascriptInterface,
-                step.javascriptInterfaceName
-            )
+        )
 
-        }
+        viewBinding?.webView?.setupWebView(
+            step.url,
+            step.cookies,
+            step.javascriptInterface,
+            step.javascriptInterfaceName
+        )
+
+    }
 
     @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
-    suspend fun WebView.setupWebView(
-        progressBar: ProgressBar,
+    fun WebView.setupWebView(
         url: String,
         cookies: Map<String, String>,
         javascriptInterface: Any?,
         javascriptInterfaceName: String?
-    ): Unit =
-        evalOnMain {
+    ) {
 
-            val cookieManager =
-                CookieManager.getInstance()
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            val cookieManager = CookieManager.getInstance()
+
             cookies.forEach {
 
                 val host = "${URL(url).protocol}://${URL(url).host}/"
@@ -97,13 +90,15 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
             settings.domStorageEnabled = true
             settings.javaScriptEnabled = true
             webViewClient = getWebClient()
-            webChromeClient = getWebChromeClient(progressBar)
+            webChromeClient = getWebChromeClient(viewBinding.progressBar)
 
             mapNotNull(javascriptInterface, javascriptInterfaceName)
                 ?.let { addJavascriptInterface(it.a, it.b) }
 
             loadUrl(url)
+
         }
+    }
 
     private fun getWebClient(): WebViewClient =
         object : WebViewClient() {
@@ -158,9 +153,10 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
         }
 
     override fun onDestroyView() {
-        super.onDestroyView()
 
-        web_view.destroy()
+        binding?.webView?.destroy()
+
+        super.onDestroyView()
 
     }
 

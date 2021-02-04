@@ -72,6 +72,14 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
         viewModel.execute(TaskStateEvent.AddResult(result))
     }
 
+    protected open fun end() {
+        viewModel.execute(TaskStateEvent.End)
+    }
+
+    protected open fun close() {
+        navigator.back(taskNavController())
+    }
+
     protected fun taskFragment(): TaskFragment = find()
 
     protected fun taskNavController(): TaskNavController =

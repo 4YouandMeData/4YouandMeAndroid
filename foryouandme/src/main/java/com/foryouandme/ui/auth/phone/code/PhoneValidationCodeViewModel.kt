@@ -64,7 +64,7 @@ class PhoneValidationCodeViewModel(
             .fold(
                 { setError(it, PhoneValidationCodeError.ResendCode) },
                 // TODO: fix hardcoded text
-                { navigator.performAction(toastAction("Code sent successfully")) }
+                { navigator.performActionSuspend(toastAction("Code sent successfully")) }
             )
 
         hideLoading(PhoneValidationCodeLoading.ResendCode)
@@ -88,7 +88,7 @@ class PhoneValidationCodeViewModel(
         navigator.navigateToSuspend(rootNavController, PhoneValidationCodeToMain)
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performAction(toastAction(error))
+        navigator.performActionSuspend(toastAction(error))
 
 
     /* --- analytics --- */

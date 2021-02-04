@@ -13,134 +13,119 @@ import androidx.camera.view.video.OnVideoSavedCallback
 import androidx.camera.view.video.OutputFileResults
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import arrow.core.Either
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.navigation.permissionSettingsAction
+import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.StepVideoDiaryBinding
+import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.entity.configuration.background.roundTopBackground
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.configuration.progressbar.progressDrawable
-import com.foryouandme.core.ext.*
-import com.foryouandme.core.permission.Permission
-import com.foryouandme.core.permission.PermissionError
-import com.foryouandme.core.permission.requestMultiplePermission
+import com.foryouandme.entity.permission.Permission
+import com.foryouandme.entity.permission.PermissionResult
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_video_diary.*
-import kotlinx.android.synthetic.main.task.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 import java.io.File
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
+
+    @Inject
+    lateinit var requestPermissionsUseCase: RequestPermissionsUseCase
 
     private val mediaController: MediaController by lazy { MediaController(requireContext()) }
 
-    private val videoViewModel: VideoViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                VideoViewModel(
-                    navigator,
-                    injector.taskModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    private val videoViewModel: VideoViewModel by viewModels()
+
+    private val binding: StepVideoDiaryBinding?
+        get() = view?.let { StepVideoDiaryBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         getVideoDirectory().deleteRecursively()
 
-        videoViewModel.stateLiveData()
-            .observeEvent {
+        videoViewModel.stateUpdate
+            .onEach {
 
                 when (it) {
                     is VideoStateUpdate.RecordTime -> bindRecordingHeader()
                     is VideoStateUpdate.Recording -> {
-                        bindRecordingState(it.recordingState)
+                        bindRecordingState(videoViewModel.state.recordingState)
                         bindRecordingHeader()
                     }
                     is VideoStateUpdate.Flash ->
-                        bindFlash(it.isFlashEnabled)
+                        bindFlash(videoViewModel.state.isFlashEnabled)
                     is VideoStateUpdate.Camera ->
-                        bindCamera(it.isBackCameraToggled)
+                        bindCamera(videoViewModel.state.isBackCameraToggled)
                 }
 
             }
+            .observeIn(this)
 
-        videoViewModel.errorLiveData()
-            .observeEvent {
+        videoViewModel.error
+            .onEach {
 
                 when (it.cause) {
                     VideoError.Recording ->
-                        errorToast(it.error.message(requireContext()))
+                        errorToast(it.error, null)
                     VideoError.Merge ->
-                        errorToast(it.error.message(requireContext()))
+                        errorToast(it.error, null)
                     VideoError.Upload ->
-                        errorToast(it.error.message(requireContext()))
+                        errorToast(it.error, null)
                 }
 
             }
+            .observeIn(this)
 
-        videoViewModel.loadingLiveData()
-            .observeEvent {
+        videoViewModel.loading
+            .onEach {
                 when (it.task) {
-                    VideoLoading.Merge -> loading.setVisibility(it.active)
-                    VideoLoading.Upload -> loading.setVisibility(it.active)
+                    VideoLoading.Merge -> binding?.loading?.setVisibility(it.active)
+                    VideoLoading.Upload -> binding?.loading?.setVisibility(it.active)
                 }
             }
+            .observeIn(this)
 
-        startCoroutineAsync {
 
-            if (videoViewModel.isInitialized().not()) {
-
-                val step =
-                    viewModel.getStepByIndexAs<VideoStep>(indexArg())
-
-                step?.let { videoViewModel.initialize(it) }
-
-            }
-
-            setupCamera(videoViewModel.state().step)
+        viewModel.getStepByIndexAs<VideoStep>(indexArg())?.let {
+            lifecycleScope.launchSafe { setupCamera(it) }
         }
 
     }
 
     @UseExperimental(markerClass = ExperimentalVideo::class)
     @SuppressLint("MissingPermission")
-    private suspend fun setupCamera(step: VideoStep): Unit {
+    private suspend fun setupCamera(step: VideoStep) {
 
-        val permsission =
-            requestMultiplePermission(requireContext(), Permission.Camera, Permission.RecordAudio)
+        val viewBinding = binding
 
-        permsission.fold(
-            {
-                when (it) {
-                    is PermissionError.PermissionDenied ->
-                        handleMissingPermission(it.permission, step)
-                    PermissionError.Unknown ->
-                        viewModel.close(taskNavController())
-                }
-            },
-            {
-                /* All permission are granted */
-                evalOnMain {
+        val permissions =
+            requestPermissionsUseCase(listOf(Permission.Camera, Permission.RecordAudio))
 
-                    camera.isVisible = true
-                    camera.bindToLifecycle(this)
-                    camera.captureMode = CameraView.CaptureMode.VIDEO
+        val deniedPermission = permissions.firstOrNull { it is PermissionResult.Denied }?.permission
 
-                }
+        if (deniedPermission != null) handleMissingPermission(deniedPermission, step)
+        else {
 
-            }
-        )
+            /* All permission are granted */
+            viewBinding?.camera?.isVisible = true
+            viewBinding?.camera?.bindToLifecycle(this)
+            viewBinding?.camera?.captureMode = CameraView.CaptureMode.VIDEO
+
+        }
+
     }
 
-    private suspend fun handleMissingPermission(
+    private fun handleMissingPermission(
         permission: Permission,
         step: VideoStep
-    ): Unit {
+    ) {
 
         when (permission) {
             Permission.Camera ->
@@ -157,343 +142,335 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     step.settings,
                     step.cancel
                 )
+            else -> Unit
         }
 
     }
 
-    private suspend fun showPermissionError(
+    private fun showPermissionError(
         title: String,
         description: String,
         settings: String,
         cancel: String
-    ): Unit {
-
-        evalOnMain {
-            AlertDialog.Builder(requireContext())
-                .setTitle(title)
-                .setMessage(description)
-                .setPositiveButton(settings) { _, _ ->
-                    startCoroutineAsync {
-                        videoViewModel.permissionSettings()
-                        viewModel.close(taskNavController())
-                    }
-                }
-                .setNegativeButton(cancel) { _, _ ->
-                    startCoroutineAsync { viewModel.close(taskNavController()) }
-                }
-                .setCancelable(false)
-                .show()
-        }
+    ) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setMessage(description)
+            .setPositiveButton(settings) { _, _ ->
+                navigator.performAction(permissionSettingsAction())
+                close()
+            }
+            .setNegativeButton(cancel) { _, _ -> close() }
+            .setCancelable(false)
+            .show()
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync {
+        setupUI()
 
-            if (videoViewModel.isInitialized().not()) {
+    }
 
-                val step =
-                    viewModel.getStepByIndexAs<VideoStep>(indexArg())
+    private fun setupUI() {
 
-                step?.let { videoViewModel.initialize(it) }
+        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val task = viewModel.state.task
+        val viewBinding = binding
 
+        if (step != null && task != null && viewBinding != null) {
+
+            viewBinding.title.setTextColor(step.titleColor)
+
+            viewBinding.cameraToggle.setImageResource(imageConfiguration.videoDiaryToggleCamera())
+            viewBinding.cameraToggle.setOnClickListener {
+                videoViewModel.execute(VideoStateEvent.ToggleCamera)
             }
 
-            evalOnMain { setupUI() }
+            viewBinding.flashToggle.setOnClickListener {
+                videoViewModel.execute(VideoStateEvent.ToggleFlash)
+            }
+
+            viewBinding.recordInfo.background =
+                roundTopBackground(step.infoBackgroundColor, 30)
+            viewBinding.reviewInfo.background =
+                roundTopBackground(step.infoBackgroundColor, 30)
+
+            viewBinding.closeRecording.setImageResource(step.closeImage)
+            viewBinding.closeRecording.setOnClickListener { showCancelDialog() }
+            viewBinding.closeReview.setImageResource(step.closeImage)
+            viewBinding.closeReview.setOnClickListener { showCancelDialog() }
+
+            viewBinding.recordingTitle.setTextColor(step.startRecordingDescriptionColor)
+
+            viewBinding.recordingTime.setTextColor(step.timeColor)
+            viewBinding.reviewTime.setTextColor(step.reviewTimeColor)
+
+            viewBinding.recordingTimeImage.setImageResource(step.timeImage)
+
+            viewBinding.recordingProgress.progressDrawable =
+                progressDrawable(step.timeProgressBackgroundColor, step.timeProgressColor)
+            viewBinding.recordingProgress.max = 100
+            viewBinding.recordingProgress.progress = 50
+
+            viewBinding.recordingInfoTitle.text = step.infoTitle
+            viewBinding.recordingInfoTitle.setTextColor(step.infoTitleColor)
+
+            viewBinding.recordingInfoBody.text = step.infoBody
+            viewBinding.recordingInfoBody.setTextColor(step.infoBodyColor)
+
+            viewBinding.review.background = button(step.buttonColor)
+            viewBinding.review.setTextColor(step.buttonTextColor)
+            viewBinding.review.setOnClickListener { review() }
+            viewBinding.review.text = step.reviewButton
+
+            viewBinding.submit.background = button(step.buttonColor)
+            viewBinding.submit.setTextColor(step.buttonTextColor)
+            viewBinding.submit.setOnClickListener {
+                videoViewModel.execute(VideoStateEvent.Submit(task.id, getVideoMergeFile()))
+            }
+            viewBinding.submit.text = step.submitButton
+
+            bindRecordingState(videoViewModel.state.recordingState)
+            bindRecordingHeader()
+            bindFlash(videoViewModel.state.isFlashEnabled)
+            bindCamera(videoViewModel.state.isBackCameraToggled)
+
+            taskFragment().binding?.toolbar?.hide()
 
         }
 
     }
 
-    private fun setupUI(): Unit {
+    private fun bindRecordingState(state: RecordingState) {
 
-        val step = videoViewModel.state().step
+        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val viewBinding = binding
 
-        title.setTextColor(step.titleColor)
+        if (viewBinding != null && step != null) {
 
-        camera_toggle.setImageResource(imageConfiguration.videoDiaryToggleCamera())
-        camera_toggle.setOnClickListener {
-            startCoroutineAsync { videoViewModel.toggleCamera() }
-        }
+            when (state) {
+                RecordingState.Recording -> {
 
-        flash_toggle.setOnClickListener {
-            startCoroutineAsync { videoViewModel.toggleFlash() }
-        }
+                    viewBinding.recordingPause.isVisible = true
+                    viewBinding.reviewPause.isEnabled = false
 
-        record_info.background =
-            roundTopBackground(step.infoBackgroundColor, 30)
-        review_info.background =
-            roundTopBackground(step.infoBackgroundColor, 30)
+                    viewBinding.videoView.isVisible = false
 
-        close_recording.setImageResource(step.closeImage)
-        close_recording.setOnClickListener { showCancelDialog() }
-        close_review.setImageResource(step.closeImage)
-        close_review.setOnClickListener { showCancelDialog() }
+                    viewBinding.flashToggle.isVisible = videoViewModel.state.isBackCameraToggled
+                    viewBinding.cameraToggle.isVisible = false
 
-        recording_title.setTextColor(step.startRecordingDescriptionColor)
+                    viewBinding.recordingPause.setImageResource(step.pauseImage)
 
-        recording_time.setTextColor(step.timeColor)
-        review_time.setTextColor(step.reviewTimeColor)
+                    viewBinding.recordingPause.setOnClickListener {
 
-        recording_time_image.setImageResource(step.timeImage)
+                        videoViewModel.execute(VideoStateEvent.Pause)
+                        pause()
 
-        recording_progress.progressDrawable =
-            progressDrawable(step.timeProgressBackgroundColor, step.timeProgressColor)
-        recording_progress.max = 100
-        recording_progress.progress = 50
+                    }
 
-        recording_info_title.text = step.infoTitle
-        recording_info_title.setTextColor(step.infoTitleColor)
-
-        recording_info_body.text = step.infoBody
-        recording_info_body.setTextColor(step.infoBodyColor)
-
-        review.background = button(step.buttonColor)
-        review.setTextColor(step.buttonTextColor)
-        review.setOnClickListener { startCoroutineAsync { review() } }
-        review.text = step.reviewButton
-
-        submit.background = button(step.buttonColor)
-        submit.setTextColor(step.buttonTextColor)
-        submit.setOnClickListener {
-            startCoroutineAsync {
-                videoViewModel.submit(viewModel.state().task.id, getVideoMergeFile())
-            }
-        }
-        submit.text = step.submitButton
-
-        bindRecordingState(videoViewModel.state().recordingState)
-        bindRecordingHeader()
-        bindFlash(videoViewModel.state().isFlashEnabled)
-        bindCamera(videoViewModel.state().isBackCameraToggled)
-
-        taskFragment().toolbar.apply { hide() }
-
-    }
-
-    private fun bindRecordingState(state: RecordingState): Unit {
-
-        val step = videoViewModel.state().step
-
-        when (state) {
-            RecordingState.Recording -> {
-
-                recording_pause.isVisible = true
-                review_pause.isEnabled = false
-
-                video_view.isVisible = false
-
-                flash_toggle.isVisible = videoViewModel.state().isBackCameraToggled
-                camera_toggle.isVisible = false
-
-                recording_pause.setImageResource(step.pauseImage)
-
-                recording_pause.setOnClickListener {
-
-                    startCoroutineAsync { videoViewModel.pause() }
-                    pause()
+                    viewBinding.recordInfo.isVisible = false
+                    viewBinding.reviewInfo.isVisible = false
 
                 }
+                is RecordingState.RecordingPause -> {
 
-                record_info.isVisible = false
-                review_info.isVisible = false
+                    viewBinding.recordingPause.isVisible = true
+                    viewBinding.reviewPause.isEnabled = false
 
-            }
-            is RecordingState.RecordingPause -> {
+                    viewBinding.videoView.isVisible = false
 
-                recording_pause.isVisible = true
-                review_pause.isEnabled = false
+                    viewBinding.flashToggle.isVisible = videoViewModel.state.isBackCameraToggled
+                    viewBinding.cameraToggle.isVisible = true
 
-                video_view.isVisible = false
+                    viewBinding.recordingPause.setImageResource(step.recordImage)
 
-                flash_toggle.isVisible = videoViewModel.state().isBackCameraToggled
-                camera_toggle.isVisible = true
+                    viewBinding.recordingTitle.text = step.startRecordingDescription
 
-                recording_pause.setImageResource(step.recordImage)
+                    val currentRecordTime =
+                        DateUtils.formatElapsedTime(videoViewModel.state.recordTimeSeconds)
+                    val maxRecordTime =
+                        DateUtils.formatElapsedTime(videoViewModel.state.maxRecordTimeSeconds)
 
-                recording_title.text = step.startRecordingDescription
+                    val recordTimeLabel =
+                        "$currentRecordTime/$maxRecordTime"
 
-                val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state().recordTimeSeconds)
-                val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state().maxRecordTimeSeconds)
+                    viewBinding.recordingTime.text = recordTimeLabel
 
-                val recordTimeLabel =
-                    "$currentRecordTime/$maxRecordTime"
+                    viewBinding.recordingProgress.max =
+                        videoViewModel.state.maxRecordTimeSeconds.toInt()
+                    viewBinding.recordingProgress.progress =
+                        videoViewModel.state.recordTimeSeconds.toInt()
 
-                recording_time.text = recordTimeLabel
+                    viewBinding.recordingPause.setOnClickListener {
 
-                recording_progress.max = videoViewModel.state().maxRecordTimeSeconds.toInt()
-                recording_progress.progress = videoViewModel.state().recordTimeSeconds.toInt()
+                        val file = createVideoFile()
+                        videoViewModel.execute(VideoStateEvent.Record(file.absolutePath))
+                        record(file)
 
-                recording_pause.setOnClickListener {
+                    }
 
-                    val file = createVideoFile()
-                    startCoroutineAsync { videoViewModel.record(file.absolutePath) }
-                    record(file)
+                    viewBinding.review.isEnabled = videoViewModel.state.recordTimeSeconds > 0
 
-                }
-
-                review.isEnabled = videoViewModel.state().recordTimeSeconds > 0
-
-                record_info.isVisible = true
-                review_info.isVisible = false
-
-            }
-            RecordingState.Merged -> {
-
-                recording_pause.isVisible = false
-                review_pause.isEnabled = false
-                flash_toggle.isVisible = false
-                camera_toggle.isVisible = false
-
-                review_loading.setVisibility(isVisible = true, opaque = false)
-
-                mediaController.setMediaPlayer(video_view)
-                mediaController.setAnchorView(video_view)
-                video_view.setMediaController(mediaController)
-                video_view.isVisible = true
-                video_view.setVideoPath(getVideoMergeFilePath())
-                video_view.setOnPreparedListener {
-                    review_loading.setVisibility(isVisible = false, opaque = false)
-                    it.isLooping = true
-                    startCoroutineAsync { videoViewModel.reviewPause() }
+                    viewBinding.recordInfo.isVisible = true
+                    viewBinding.reviewInfo.isVisible = false
 
                 }
-            }
-            RecordingState.ReviewPause -> {
+                RecordingState.Merged -> {
 
-                recording_pause.isVisible = false
-                review_pause.isEnabled = true
-                flash_toggle.isVisible = false
-                camera_toggle.isVisible = false
-                video_view.isVisible = true
-                camera.isVisible = false
+                    viewBinding.recordingPause.isVisible = false
+                    viewBinding.reviewPause.isEnabled = false
+                    viewBinding.flashToggle.isVisible = false
+                    viewBinding.cameraToggle.isVisible = false
 
-                recording_title.text = step.startRecordingDescription
+                    viewBinding?.reviewLoading.setVisibility(isVisible = true, opaque = false)
 
-                val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state().recordTimeSeconds)
-                val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state().maxRecordTimeSeconds)
-                recording_title.text = step.startRecordingDescription
+                    mediaController.setMediaPlayer(viewBinding.videoView)
+                    mediaController.setAnchorView(viewBinding.videoView)
+                    viewBinding.videoView.setMediaController(mediaController)
+                    viewBinding.videoView.isVisible = true
+                    viewBinding.videoView.setVideoPath(getVideoMergeFilePath())
+                    viewBinding.videoView.setOnPreparedListener {
+                        binding?.reviewLoading?.setVisibility(isVisible = false, opaque = false)
+                        it.isLooping = true
+                        videoViewModel.execute(VideoStateEvent.ReviewPause)
 
-                val recordTimeLabel =
-                    "$currentRecordTime/$maxRecordTime"
-
-                review_time.text = recordTimeLabel
-
-
-                mediaController.hide()
-                mediaController.isVisible = false
-
-                review_pause.setImageResource(step.playImage)
-                review_pause.setOnClickListener {
-                    startCoroutineAsync {
-                        video_view.start()
-                        videoViewModel.reviewPlay()
                     }
                 }
+                RecordingState.ReviewPause -> {
 
-                record_info.isVisible = false
-                review_info.isVisible = true
+                    viewBinding.recordingPause.isVisible = false
+                    viewBinding.reviewPause.isEnabled = true
+                    viewBinding.flashToggle.isVisible = false
+                    viewBinding.cameraToggle.isVisible = false
+                    viewBinding.videoView.isVisible = true
+                    viewBinding.camera.isVisible = false
 
-            }
-            RecordingState.Review -> {
+                    viewBinding.recordingTitle.text = step.startRecordingDescription
 
-                recording_pause.isVisible = false
-                review_pause.isEnabled = true
-                flash_toggle.isVisible = false
-                camera_toggle.isVisible = false
-                video_view.isVisible = true
-                camera.isVisible = false
+                    val currentRecordTime =
+                        DateUtils.formatElapsedTime(videoViewModel.state.recordTimeSeconds)
+                    val maxRecordTime =
+                        DateUtils.formatElapsedTime(videoViewModel.state.maxRecordTimeSeconds)
+                    viewBinding.recordingTitle.text = step.startRecordingDescription
 
-                recording_title.text = step.startRecordingDescription
+                    val recordTimeLabel =
+                        "$currentRecordTime/$maxRecordTime"
 
-                mediaController.isVisible = true
-                mediaController.show()
+                    viewBinding.reviewTime.text = recordTimeLabel
 
-                review_pause.setImageResource(step.pauseImage)
-                review_pause.setOnClickListener {
-                    startCoroutineAsync {
-                        video_view.pause()
-                        videoViewModel.reviewPause()
+
+                    mediaController.hide()
+                    mediaController.isVisible = false
+
+                    viewBinding.reviewPause.setImageResource(step.playImage)
+                    viewBinding.reviewPause.setOnClickListener {
+                        binding?.videoView?.start()
+                        videoViewModel.execute(VideoStateEvent.ReviewPlay)
                     }
+
+                    viewBinding.recordInfo.isVisible = false
+                    viewBinding.reviewInfo.isVisible = true
+
                 }
+                RecordingState.Review -> {
 
-                record_info.isVisible = false
-                review_info.isVisible = false
+                    viewBinding.recordingPause.isVisible = false
+                    viewBinding.reviewPause.isEnabled = true
+                    viewBinding.flashToggle.isVisible = false
+                    viewBinding.cameraToggle.isVisible = false
+                    viewBinding.videoView.isVisible = true
+                    viewBinding.camera.isVisible = false
 
+                    viewBinding.recordingTitle.text = step.startRecordingDescription
+
+                    mediaController.isVisible = true
+                    mediaController.show()
+
+                    viewBinding.reviewPause.setImageResource(step.pauseImage)
+                    viewBinding.reviewPause.setOnClickListener {
+                        binding?.videoView?.pause()
+                        videoViewModel.execute(VideoStateEvent.ReviewPause)
+                    }
+
+                    viewBinding.recordInfo.isVisible = false
+                    viewBinding.reviewInfo.isVisible = false
+
+                }
+                RecordingState.Uploaded -> next()
             }
-            RecordingState.Uploaded -> startCoroutineAsync { next() }
         }
-
     }
 
-    private fun bindRecordingHeader(): Unit {
+    private fun bindRecordingHeader() {
 
-        when (videoViewModel.state().recordingState) {
+        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+
+        when (videoViewModel.state.recordingState) {
             RecordingState.Recording -> {
 
                 val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state().recordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state.recordTimeSeconds)
                 val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state().maxRecordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModel.state.maxRecordTimeSeconds)
 
                 val recordTimeLabel =
                     "$currentRecordTime/$maxRecordTime"
 
-                title.text = recordTimeLabel
+                binding?.title?.text = recordTimeLabel
 
             }
             RecordingState.RecordingPause ->
-                title.text = videoViewModel.state().step.title
+                binding?.title?.text = step?.title.orEmpty()
             RecordingState.Review ->
-                title.text = videoViewModel.state().step.title
+                binding?.title?.text = step?.title.orEmpty()
         }
     }
 
     // TODO: check if flash is available
-    private fun bindFlash(isFlashEnabled: Boolean): Unit {
+    private fun bindFlash(isFlashEnabled: Boolean) {
 
-        startCoroutine { Either.catch { camera.enableTorch(isFlashEnabled) } }
+        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val viewBinding = binding
 
-        flash_toggle.setImageResource(
-            if (isFlashEnabled) videoViewModel.state().step.flashOnImage
-            else videoViewModel.state().step.flashOffImage
-        )
+        if (viewBinding != null && step != null) {
+            catchToNull { viewBinding.camera.enableTorch(isFlashEnabled) }
 
-    }
-
-    // TODO: check if camera lens is available
-    private fun bindCamera(isBackCameraToggled: Boolean): Unit {
-
-        startCoroutine {
-
-            Either.catch {
-                camera.cameraLensFacing =
-                    if (isBackCameraToggled) CameraSelector.LENS_FACING_BACK
-                    else CameraSelector.LENS_FACING_FRONT
-            }
-
-            // enable flash button only for back camera
-            flash_toggle.isVisible = isBackCameraToggled
+            viewBinding.flashToggle.setImageResource(
+                if (isFlashEnabled) step.flashOnImage
+                else step.flashOffImage
+            )
         }
 
     }
 
-    @UseExperimental(markerClass = ExperimentalVideo::class)
-    private fun record(file: File): Unit {
+    // TODO: check if camera lens is available
+    private fun bindCamera(isBackCameraToggled: Boolean) {
 
-        camera.startRecording(
+        val viewBinding = binding
+
+        catchToNull {
+            viewBinding?.camera?.cameraLensFacing =
+                if (isBackCameraToggled) CameraSelector.LENS_FACING_BACK
+                else CameraSelector.LENS_FACING_FRONT
+        }
+
+        // enable flash button only for back camera
+        viewBinding?.flashToggle?.isVisible = isBackCameraToggled
+
+    }
+
+    @UseExperimental(markerClass = ExperimentalVideo::class)
+    private fun record(file: File) {
+
+        binding?.camera?.startRecording(
             file,
             ContextCompat.getMainExecutor(requireContext()),
             object : OnVideoSavedCallback {
 
                 override fun onVideoSaved(outputFileResults: OutputFileResults) {
-                    startCoroutineAsync { videoViewModel.pause() }
+                    videoViewModel.execute(VideoStateEvent.Pause)
                 }
 
                 override fun onError(
@@ -502,7 +479,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     cause: Throwable?
                 ) {
 
-                    startCoroutineAsync { videoViewModel.handleRecordError() }
+                    videoViewModel.execute(VideoStateEvent.HandleRecordError)
 
                 }
 
@@ -512,24 +489,25 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
     }
 
     @UseExperimental(markerClass = ExperimentalVideo::class)
-    private fun pause(): Unit {
+    private fun pause() {
 
-        camera.stopRecording()
+        binding?.camera?.stopRecording()
 
     }
 
-    private suspend fun review(): Unit {
-
+    private fun review() {
 
         val mergeDirectory = File(getVideoMergeDirectoryPath())
 
         if (mergeDirectory.exists().not())
             mergeDirectory.mkdir()
 
-        videoViewModel.merge(
-            getVideoDirectoryPath(),
-            mergeDirectory.absolutePath,
-            getVideoMergeFileName()
+        videoViewModel.execute(
+            VideoStateEvent.Merge(
+                getVideoDirectoryPath(),
+                mergeDirectory.absolutePath,
+                getVideoMergeFileName()
+            )
         )
     }
 

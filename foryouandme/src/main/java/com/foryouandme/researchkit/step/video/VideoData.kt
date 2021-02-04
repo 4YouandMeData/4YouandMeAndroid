@@ -1,20 +1,16 @@
 package com.foryouandme.researchkit.step.video
 
-import arrow.optics.optics
+import java.io.File
 
-@optics
-data class VideoDiaryState(
-    val step: VideoStep,
-    val startRecordTimeSeconds: Long,
-    val recordTimeSeconds: Long,
-    val maxRecordTimeSeconds: Long,
-    val lastRecordedFilePath: String?,
+data class VideoState(
+    val startRecordTimeSeconds: Long = 0,
+    val recordTimeSeconds: Long = 0,
+    val maxRecordTimeSeconds: Long = 120,
+    val lastRecordedFilePath: String? = null,
     val recordingState: RecordingState = RecordingState.RecordingPause,
-    val isFlashEnabled: Boolean,
-    val isBackCameraToggled: Boolean,
-) {
-    companion object
-}
+    val isFlashEnabled: Boolean = false,
+    val isBackCameraToggled: Boolean = true,
+)
 
 sealed class VideoStateUpdate {
 
@@ -22,11 +18,9 @@ sealed class VideoStateUpdate {
         val time: Long,
     ) : VideoStateUpdate()
 
-    data class Recording(val recordingState: RecordingState) : VideoStateUpdate()
-
-    data class Flash(val isFlashEnabled: Boolean) : VideoStateUpdate()
-
-    data class Camera(val isBackCameraToggled: Boolean) : VideoStateUpdate()
+    object Recording : VideoStateUpdate()
+    object Flash : VideoStateUpdate()
+    object Camera : VideoStateUpdate()
 
 }
 
@@ -53,5 +47,25 @@ sealed class VideoLoading {
 
     object Merge : VideoLoading()
     object Upload : VideoLoading()
+
+}
+
+sealed class VideoStateEvent {
+
+    object ToggleCamera : VideoStateEvent()
+    object ToggleFlash : VideoStateEvent()
+
+    data class Merge(
+        val videoDirectoryPath: String,
+        val mergeDirectory: String,
+        val videoMergeFileName: String
+    ): VideoStateEvent()
+
+    data class Submit(val taskId: String, val file: File) : VideoStateEvent()
+    object HandleRecordError : VideoStateEvent()
+    object Pause : VideoStateEvent()
+    data class Record(val filePath: String): VideoStateEvent()
+    object ReviewPlay: VideoStateEvent()
+    object ReviewPause: VideoStateEvent()
 
 }

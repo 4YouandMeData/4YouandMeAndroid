@@ -115,7 +115,7 @@ class PhoneValidationCodeFragment : AuthSectionFragmentOld<PhoneValidationCodeVi
 
             action_1.setOnClickListenerAsync {
 
-                hideKeyboard()
+                hideKeyboardSuspend()
                 viewModel.auth(
                     rootNavController(),
                     authNavController(),

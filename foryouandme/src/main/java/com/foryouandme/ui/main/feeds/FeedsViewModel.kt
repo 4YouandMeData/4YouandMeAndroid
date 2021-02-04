@@ -491,7 +491,7 @@ class FeedsViewModel(
         )
 
     suspend fun openIntegrationApp(integrationApp: IntegrationApp): Unit =
-        navigator.performAction(openApp(integrationApp.packageName))
+        navigator.performActionSuspend(openApp(integrationApp.packageName))
 
     suspend fun info(navController: RootNavController): Unit =
         navigator.navigateToSuspend(

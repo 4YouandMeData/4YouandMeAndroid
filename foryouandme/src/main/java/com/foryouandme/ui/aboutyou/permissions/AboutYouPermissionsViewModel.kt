@@ -59,7 +59,7 @@ class AboutYouPermissionsViewModel(
         val permissionRequest = permissionModule.requestPermission(permissionsItem.permission)
 
         if(permissionRequest is PermissionResult.Denied && permissionRequest.isPermanentlyDenied)
-            navigator.performAction(
+            navigator.performActionSuspend(
                 permissionSettingsDialogAction(
                     navigator,
                     configuration.text.profile.permissionDenied,

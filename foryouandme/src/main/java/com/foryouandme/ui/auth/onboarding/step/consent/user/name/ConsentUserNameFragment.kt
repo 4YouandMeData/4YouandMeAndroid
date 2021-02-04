@@ -56,7 +56,7 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
             action_1.background = button(resources, imageConfiguration.nextStep())
             action_1.setOnClickListenerAsync {
 
-                hideKeyboard()
+                hideKeyboardSuspend()
                 viewModel.email(consentUserNavController())
 
             }

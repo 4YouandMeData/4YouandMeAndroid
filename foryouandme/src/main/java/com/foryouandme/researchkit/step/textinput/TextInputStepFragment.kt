@@ -5,77 +5,75 @@ import android.text.InputFilter
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.hideKeyboard
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.databinding.StepTextInputBinding
+import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
 import com.foryouandme.researchkit.utils.applyImageAsButton
-import kotlinx.android.synthetic.main.step_text_input.*
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 
+@AndroidEntryPoint
 class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
+
+    private val binding: StepTextInputBinding?
+        get() = view?.let { StepTextInputBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        viewModel.getStepByIndexAs<TextInputStep>(indexArg())?.let { applyData(it) }
 
-            val step =
-                viewModel.getStepByIndexAs<TextInputStep>(indexArg())
-
-            step?.let { applyData(it) }
-        }
     }
 
-    private suspend fun applyData(
-        step: TextInputStep
-    ): Unit =
+    private fun applyData(step: TextInputStep) {
 
-        evalOnMain {
-            val start = ZonedDateTime.now()
+        val viewBinding = binding
 
-            root.setBackgroundColor(step.backgroundColor)
+        val start = ZonedDateTime.now()
 
-            step.image?.let { icon.applyImage(it) }
-            icon.isVisible = step.image != null
+        binding?.root?.setBackgroundColor(step.backgroundColor)
 
-            question.text = step.question(requireContext())
-            question.setTextColor(step.questionColor)
+        step.image?.let { viewBinding?.icon?.applyImage(it) }
+        viewBinding?.icon?.isVisible = step.image != null
 
-            text_input.setTextColor(step.textColor)
-            text_input.setHintTextColor(step.placeholderColor)
+        viewBinding?.question?.text = step.question(requireContext())
+        viewBinding?.question?.setTextColor(step.questionColor)
 
-            shadow.background = shadow(step.shadowColor)
+        viewBinding?.textInput?.setTextColor(step.textColor)
+        viewBinding?.textInput?.setHintTextColor(step.placeholderColor)
 
-            step.placeholder?.let { text_input.hint = it }
-            step.maxCharacters?.let { text_input.filters += InputFilter.LengthFilter(it) }
+        viewBinding?.shadow?.background = shadow(step.shadowColor)
 
-            button.applyImageAsButton(step.buttonImage)
-            button.setOnClickListener {
-                startCoroutineAsync {
+        step.placeholder?.let { viewBinding?.textInput?.hint = it }
+        step.maxCharacters?.let {
+            if (viewBinding != null)
+                viewBinding.textInput.filters += InputFilter.LengthFilter(it)
+        }
 
-                    viewModel.addResult(
+        viewBinding?.button?.applyImageAsButton(step.buttonImage)
+        viewBinding?.button?.setOnClickListener {
 
-                        SingleAnswerResult(
-                            step.identifier,
-                            start,
-                            ZonedDateTime.now(),
-                            step.questionId,
-                            text_input.text.toString()
-                        )
+            addResult(
 
-                    )
+                SingleAnswerResult(
+                    step.identifier,
+                    start,
+                    ZonedDateTime.now(),
+                    step.questionId,
+                    binding?.textInput?.text.toString()
+                )
 
-                    hideKeyboard()
+            )
 
-                    next()
+            hideKeyboard()
 
-                }
-            }
+            next()
 
         }
+
+    }
 
 }

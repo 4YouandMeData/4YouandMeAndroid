@@ -32,7 +32,7 @@ class MainViewModelTest {
         viewModel = spyk(MainViewModel(navigator))
 
         coEvery { navigator.navigateToSuspend(allAny(), allAny()) } returns Unit
-        coEvery { navigator.performAction(allAny()) } returns Unit
+        coEvery { navigator.performActionSuspend(allAny()) } returns Unit
 
     }
 
@@ -71,7 +71,7 @@ class MainViewModelTest {
 
         runBlocking { viewModel.handleDeepLink(mockk(), state) }
 
-        coVerify { navigator.performAction(match { it == openAppActivityActionMock }) }
+        coVerify { navigator.performActionSuspend(match { it == openAppActivityActionMock }) }
 
     }
 

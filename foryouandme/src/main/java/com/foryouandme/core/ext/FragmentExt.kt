@@ -83,7 +83,10 @@ fun Fragment.infoToast(message: String): Unit = requireContext().infoToast(messa
 
 /* --- keyboard --- */
 
-suspend fun Fragment.hideKeyboard(): Unit =
+suspend fun Fragment.hideKeyboardSuspend(): Unit =
+    requireActivity().hideKeyboardSuspend()
+
+fun Fragment.hideKeyboard(): Unit =
     requireActivity().hideKeyboard()
 
 suspend fun Fragment.showKeyboard(): Unit =

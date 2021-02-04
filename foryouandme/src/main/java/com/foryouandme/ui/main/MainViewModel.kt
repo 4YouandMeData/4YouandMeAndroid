@@ -105,7 +105,7 @@ class MainViewModel @Inject constructor(
             url != null ->
                 navigationFlow.navigateTo(AnywhereToWeb(url))
             openApplicationIntegration != null ->
-                navigator.performAction(openApp(openApplicationIntegration.packageName))
+                navigator.performActionSuspend(openApp(openApplicationIntegration.packageName))
 
         }
 

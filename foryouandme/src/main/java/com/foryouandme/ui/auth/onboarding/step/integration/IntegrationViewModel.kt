@@ -133,9 +133,9 @@ class IntegrationViewModel(
 
         when (specialLinkAction) {
             is SpecialLinkAction.OpenApp ->
-                navigator.performAction(openApp(specialLinkAction.app.packageName))
+                navigator.performActionSuspend(openApp(specialLinkAction.app.packageName))
             is SpecialLinkAction.Download ->
-                navigator.performAction(playStoreAction(specialLinkAction.app.packageName))
+                navigator.performActionSuspend(playStoreAction(specialLinkAction.app.packageName))
         }
 
     }

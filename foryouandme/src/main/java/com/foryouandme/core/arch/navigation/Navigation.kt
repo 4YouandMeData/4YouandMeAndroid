@@ -54,8 +54,13 @@ class Navigator @Inject constructor(
     suspend fun backSuspend(navController: NavController): Boolean =
         navController.popBackStack()
 
-    suspend fun performAction(action: ActivityAction): Unit =
+    suspend fun performActionSuspend(action: ActivityAction): Unit =
         evalOnMain { activityActionLiveData.value = action.toEvent() }
+
+    fun performAction(action: ActivityAction) {
+        activityActionLiveData.value = action.toEvent()
+    }
+
 
     fun activityAction(): LiveData<Event<ActivityAction>> = activityActionLiveData
 }

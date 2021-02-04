@@ -4,86 +4,87 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.databinding.StepDateBinding
 import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
-import kotlinx.android.synthetic.main.step_date.*
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
+@AndroidEntryPoint
 class DatePickerStepFragment : StepFragment(R.layout.step_date) {
+
+    private val binding: StepDateBinding?
+        get() = view?.let { StepDateBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        viewModel.getStepByIndexAs<DatePickerStep>(indexArg())?.let { applyData(it) }
 
-            val step =
-                viewModel.getStepByIndexAs<DatePickerStep>(indexArg())
-
-            step?.let { applyData(it) }
-        }
     }
 
-    private suspend fun applyData(
-        step: DatePickerStep
-    ): Unit =
+    private fun applyData(step: DatePickerStep) {
 
-        evalOnMain {
-            val start = ZonedDateTime.now()
+        val viewBinding = binding
 
-            root.setBackgroundColor(step.backgroundColor)
+        val start = ZonedDateTime.now()
 
-            step.minDate?.let { date_picker.minDate = it }
-            step.maxDate?.let { date_picker.maxDate = it }
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
 
-            step.image?.let { icon.applyImage(it) }
-            icon.isVisible = step.image != null
+        step.minDate?.let { viewBinding?.datePicker?.minDate = it }
+        step.maxDate?.let { viewBinding?.datePicker?.maxDate = it }
 
-            question.text = step.question(requireContext())
-            question.setTextColor(step.questionColor)
+        step.image?.let { viewBinding?.icon?.applyImage(it) }
+        viewBinding?.icon?.isVisible = step.image != null
 
-            shadow.background = shadow(step.shadowColor)
+        viewBinding?.question?.text = step.question(requireContext())
+        viewBinding?.question?.setTextColor(step.questionColor)
 
-            button.applyImage(step.buttonImage)
-            button.setOnClickListener {
-                startCoroutineAsync {
+        viewBinding?.shadow?.background = shadow(step.shadowColor)
 
-                    viewModel.addResult(
+        viewBinding?.button?.applyImage(step.buttonImage)
+        viewBinding?.button?.setOnClickListener {
 
-                        SingleAnswerResult(
-                            step.identifier,
-                            start,
-                            ZonedDateTime.now(),
-                            step.questionId,
-                            getFormattedSelectedDate()
-                        )
+            addResult(
 
-                    )
+                SingleAnswerResult(
+                    step.identifier,
+                    start,
+                    ZonedDateTime.now(),
+                    step.questionId,
+                    getFormattedSelectedDate()
+                )
 
-                    next()
-                }
-            }
+            )
+
+            next()
 
         }
+
+    }
 
     private fun getFormattedSelectedDate(): String {
 
-        val year = date_picker.year
-        val month = date_picker.month
-        val day = date_picker.dayOfMonth
+        val viewBinding = binding
 
-        val date =
-            LocalDate.of(
-                year,
-                month + 1,  // +1 because Android starts to count months from 0
-                day
-            )
+        val year = viewBinding?.datePicker?.year
+        val month = viewBinding?.datePicker?.month
+        val day = viewBinding?.datePicker?.dayOfMonth
 
-        return date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        return if (year != null && month != null && day != null) {
+            val date =
+                LocalDate.of(
+                    year,
+                    month + 1,  // +1 because Android starts to count months from 0
+                    day
+                )
+
+            date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        } else ""
+
     }
 }

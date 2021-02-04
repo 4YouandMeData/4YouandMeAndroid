@@ -82,7 +82,7 @@ class EnterPhoneViewModel(
         navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performAction(toastAction(error))
+        navigator.performActionSuspend(toastAction(error))
 
     /* --- analytics --- */
 

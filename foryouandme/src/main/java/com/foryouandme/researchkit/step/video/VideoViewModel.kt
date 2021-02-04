@@ -1,21 +1,16 @@
 package com.foryouandme.researchkit.step.video
 
-import arrow.core.Either
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import arrow.core.toOption
-import arrow.fx.coroutines.Disposable
-import arrow.fx.coroutines.evalOn
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.arch.error.unknownError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.permissionSettingsAction
+import com.foryouandme.core.arch.flow.*
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.task.TaskUseCase.attachVideo
-import com.foryouandme.core.ext.startCoroutineCancellableAsync
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.task.AttachVideoUseCase
 import com.googlecode.mp4parser.BasicContainer
 import com.googlecode.mp4parser.authoring.Movie
 import com.googlecode.mp4parser.authoring.Track
@@ -23,74 +18,68 @@ import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.withContext
 import org.threeten.bp.Instant
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.util.*
 
-class VideoViewModel(
-    navigator: Navigator,
-    private val taskModule: TaskModule,
-    private val analyticsModule: AnalyticsModule
-) :
-    BaseViewModel<
-            VideoDiaryState,
-            VideoStateUpdate,
-            VideoError,
-            VideoLoading>(
-        navigator = navigator
-    ) {
-
-    private var timer: Disposable? = null
-
-
-    /* --- initialize --- */
-
-    suspend fun initialize(step: VideoStep): Unit =
-        setStateSilent(
-            VideoDiaryState(
-                step,
-                0,
-                0,
-                120,
-                null,
-                RecordingState.RecordingPause,
-                false,
-                true
-            )
-        )
+class VideoViewModel @ViewModelInject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<VideoStateUpdate>,
+    private val loadingFlow: LoadingFlow<VideoLoading>,
+    private val errorFlow: ErrorFlow<VideoError>,
+    private val attachVideoUseCase: AttachVideoUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
     /* --- state --- */
 
-    suspend fun record(filePath: String) {
+    var state: VideoState = VideoState()
+        private set
 
-        if(state().lastRecordedFilePath == null) logStartRecording() else logResumeRecording()
+    /* --- flow --- */
 
-        timer = startCoroutineCancellableAsync { resumeTimer() }
-        setState(
-            state().copy(
+    val stateUpdate: SharedFlow<VideoStateUpdate> = stateUpdateFlow.stateUpdates
+    val loading: SharedFlow<UILoading<VideoLoading>> = loadingFlow.loading
+    val error: SharedFlow<UIError<VideoError>> = errorFlow.error
+
+    /* --- job --- */
+
+    private var timer: Job? = null
+
+    /* --- state --- */
+
+    private suspend fun record(filePath: String) {
+
+        if (state.lastRecordedFilePath == null) logStartRecording() else logResumeRecording()
+
+        timer?.cancel()
+        timer = viewModelScope.launchSafe { resumeTimer() }
+        state =
+            state.copy(
                 recordingState = RecordingState.Recording,
-                startRecordTimeSeconds = state().recordTimeSeconds,
+                startRecordTimeSeconds = state.recordTimeSeconds,
                 lastRecordedFilePath = filePath
             )
-        ) { VideoStateUpdate.Recording(state().recordingState) }
+        stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
 
-    suspend fun pause() {
+    private suspend fun pause() {
 
         logPauseRecording()
 
-        timer?.invoke()
-        setState(
-            VideoDiaryState.recordingState.modify(state()) { RecordingState.RecordingPause }
-        ) { VideoStateUpdate.Recording(state().recordingState) }
+        timer?.cancel()
+        state = state.copy(recordingState = RecordingState.RecordingPause)
+        stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
 
-    private suspend fun resumeTimer(): Unit {
+    private suspend fun resumeTimer() {
 
         delay(1000)
         incrementRecordTime()
@@ -98,16 +87,15 @@ class VideoViewModel(
 
     }
 
-    private suspend fun incrementRecordTime(): Unit =
-        setState(
-            VideoDiaryState.recordTimeSeconds.modify(state()) { it + 1 }
-        ) { VideoStateUpdate.RecordTime(state().recordTimeSeconds) }
+    private suspend fun incrementRecordTime() {
+        state = state.copy(recordTimeSeconds = state.recordTimeSeconds + 1)
+        stateUpdateFlow.update(VideoStateUpdate.RecordTime(state.recordTimeSeconds))
+    }
 
-
-    suspend fun handleRecordError(): Unit {
+    private suspend fun handleRecordError() {
 
         // delete the last file if exist
-        state().lastRecordedFilePath?.let {
+        state.lastRecordedFilePath?.let {
 
             val file = File(it)
 
@@ -116,89 +104,69 @@ class VideoViewModel(
         }
 
         // reset the time and the remove the deleted file path
-        setStateSilent(
-            state().copy(
-                recordTimeSeconds = state().startRecordTimeSeconds,
+        state =
+            state.copy(
+                recordTimeSeconds = state.startRecordTimeSeconds,
                 lastRecordedFilePath = null
             )
-        )
-
-        setError(unknownError(), VideoError.Recording)
 
         pause()
 
     }
 
-    suspend fun toggleCamera(): Unit {
+    suspend fun setCamera(isBackCameraToggled: Boolean) {
 
-        setState(
-            VideoDiaryState.isBackCameraToggled.modify(state()) { it.not() }
-        ) { VideoStateUpdate.Camera(it.isBackCameraToggled) }
+        state = state.copy(isBackCameraToggled = isBackCameraToggled)
+        stateUpdateFlow.update(VideoStateUpdate.Camera)
 
         // disable the flash when the front camera is toggled
-        if (state().isBackCameraToggled)
-            setState(
-                VideoDiaryState.isFlashEnabled.modify(state()) { false }
-            ) { VideoStateUpdate.Flash(it.isFlashEnabled) }
+        if (state.isBackCameraToggled) setFlash(false)
 
     }
 
-    suspend fun toggleFlash(): Unit =
-        setState(
-            VideoDiaryState.isFlashEnabled.modify(state()) { it.not() }
-        ) { VideoStateUpdate.Flash(it.isFlashEnabled) }
+    private suspend fun setFlash(flash: Boolean) {
+        state = state.copy(isFlashEnabled = flash)
+        stateUpdateFlow.update(VideoStateUpdate.Flash)
+    }
 
-    suspend fun merge(videosPath: String, outputPath: String, outputFileName: String): Unit {
+    private suspend fun merge(videosPath: String, outputPath: String, outputFileName: String) {
 
-        showLoading(VideoLoading.Merge)
+        loadingFlow.show(VideoLoading.Merge)
 
         // disable the flash when the user start the review flow
-        if (state().isBackCameraToggled)
-            setState(
-                VideoDiaryState.isFlashEnabled.modify(state()) { false }
-            ) { VideoStateUpdate.Flash(it.isFlashEnabled) }
+        if (state.isBackCameraToggled) setFlash(false)
 
-        val merge =
-            Either.catch { mergeVideoDiary(videosPath, outputPath, outputFileName) }
+        val merge = mergeVideoDiary(videosPath, outputPath, outputFileName)
 
-        merge.fold(
-            { setError(unknownError(), VideoError.Merge) },
-            {
-                setState(
-                    VideoDiaryState.recordingState.modify(state()) { RecordingState.Merged }
-                ) { VideoStateUpdate.Recording(it.recordingState) }
-            }
-        )
+        state = state.copy(recordingState = RecordingState.Merged)
+        stateUpdateFlow.update(VideoStateUpdate.Recording)
 
-        hideLoading(VideoLoading.Merge)
+        loadingFlow.hide(VideoLoading.Merge)
 
     }
 
-    suspend fun reviewPause(): Unit {
+    private suspend fun reviewPause() {
 
-        setState(
-            VideoDiaryState.recordingState.modify(state()) { RecordingState.ReviewPause }
-        ) { VideoStateUpdate.Recording(it.recordingState) }
+        state = state.copy(recordingState = RecordingState.ReviewPause)
+        stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
 
-    suspend fun reviewPlay(): Unit {
+    private suspend fun reviewPlay() {
 
-        setState(
-            VideoDiaryState.recordingState.modify(state()) { RecordingState.Review }
-        ) { VideoStateUpdate.Recording(it.recordingState) }
+        state = state.copy(recordingState = RecordingState.Review)
+        stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
 
     /* --- merge --- */
-
 
     private suspend fun mergeVideoDiary(
         videosPath: String,
         outputPath: String,
         outputFileName: String
     ): String =
-        evalOn(Dispatchers.IO) { // ensure that run on IO dispatcher
+        withContext(Dispatchers.IO) { // ensure that run on IO dispatcher
 
             val directory = File(videosPath)
 
@@ -216,8 +184,7 @@ class VideoViewModel(
                         o1Instant.compareTo(o2Instant)
                     }
 
-            val inMovies =
-                videoFiles.map { MovieCreator.build(it.absolutePath) }
+            val inMovies = videoFiles.map { MovieCreator.build(it.absolutePath) }
 
             val videoTracks: MutableList<Track> = LinkedList()
             val audioTracks: MutableList<Track> = LinkedList()
@@ -252,53 +219,75 @@ class VideoViewModel(
 
     /* --- submit --- */
 
-    suspend fun submit(taskId: String, file: File): Unit {
+    private suspend fun submit(taskId: String, file: File) {
 
-        showLoading(VideoLoading.Upload)
+        loadingFlow.show(VideoLoading.Upload)
 
-        val upload = taskModule.attachVideo(taskId, file)
+        attachVideoUseCase(taskId, file)
 
-        upload.fold(
-            {
-                setError(it, VideoError.Upload)
-            },
-            {
-                setState(
-                    VideoDiaryState.recordingState.modify(state()) { RecordingState.Uploaded })
-                { VideoStateUpdate.Recording(it.recordingState) }
-            }
-        )
+        state = state.copy(recordingState = RecordingState.Uploaded)
+        stateUpdateFlow.update(VideoStateUpdate.Recording)
 
-        hideLoading(VideoLoading.Upload)
-
-    }
-
-    /* --- navigation --- */
-
-    suspend fun permissionSettings(): Unit {
-
-        navigator.performAction(permissionSettingsAction())
+        loadingFlow.hide(VideoLoading.Upload)
 
     }
 
     /* --- analytics --- */
 
-    private suspend fun logPauseRecording(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logPauseRecording() {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.VideoDiaryAction(AnalyticsEvent.RecordingAction.Pause),
             EAnalyticsProvider.ALL
         )
+    }
 
-    private suspend fun logStartRecording(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logStartRecording() {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.VideoDiaryAction(AnalyticsEvent.RecordingAction.Start),
             EAnalyticsProvider.ALL
         )
+    }
 
-    private suspend fun logResumeRecording(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logResumeRecording() {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.VideoDiaryAction(AnalyticsEvent.RecordingAction.Resume),
             EAnalyticsProvider.ALL
         )
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: VideoStateEvent) {
+
+        when (stateEvent) {
+            VideoStateEvent.ToggleCamera ->
+                viewModelScope.launchSafe { setCamera(state.isBackCameraToggled.not()) }
+            VideoStateEvent.ToggleFlash ->
+                viewModelScope.launchSafe { setFlash(state.isFlashEnabled.not()) }
+            is VideoStateEvent.Submit ->
+                errorFlow.launchCatch(viewModelScope, VideoError.Upload)
+                { submit(stateEvent.taskId, stateEvent.file) }
+            is VideoStateEvent.Merge ->
+                errorFlow.launchCatch(viewModelScope, VideoError.Merge)
+                {
+                    merge(
+                        stateEvent.videoDirectoryPath,
+                        stateEvent.mergeDirectory,
+                        stateEvent.videoMergeFileName
+                    )
+                }
+            VideoStateEvent.HandleRecordError ->
+                viewModelScope.launchSafe { handleRecordError() }
+            VideoStateEvent.Pause ->
+                viewModelScope.launchSafe { pause() }
+            is VideoStateEvent.Record ->
+                viewModelScope.launchSafe { record(stateEvent.filePath) }
+            VideoStateEvent.ReviewPlay ->
+                viewModelScope.launchSafe { reviewPlay() }
+            VideoStateEvent.ReviewPause ->
+                viewModelScope.launchSafe { reviewPause() }
+        }
+
+    }
 
 }

@@ -104,7 +104,7 @@ class ConsentUserViewModel(
             .fold(
                 { setError(it, ConsentUserError.ResendConfirmationEmail) },
                 // TODO: remove hardcoded string
-                { navigator.performAction(toastAction("Email sent successfully")) }
+                { navigator.performActionSuspend(toastAction("Email sent successfully")) }
             )
 
         hideLoading(ConsentUserLoading.ResendConfirmationEmail)
@@ -228,7 +228,7 @@ class ConsentUserViewModel(
         )
 
     suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performAction(toastAction(error))
+        navigator.performActionSuspend(toastAction(error))
 
     suspend fun web(navController: RootNavController, url: String): Unit =
         navigator.navigateToSuspend(navController, AnywhereToWeb(url))

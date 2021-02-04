@@ -5,17 +5,18 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
+import com.foryouandme.core.ext.dpToPx
+import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.databinding.StepIntroductionListBinding
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import kotlinx.android.synthetic.main.step_introduction_list.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_list) {
 
     private val adapter: DroidAdapter by lazy {
@@ -27,84 +28,78 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
 
     }
 
+    private val binding: StepIntroductionListBinding?
+        get() = view?.let { StepIntroductionListBinding.bind(it) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val step =
-            viewModel.getStepByIndexAs<IntroductionListStep>(indexArg())
-
-        configuration {
-            setupView()
-            step?.let { applyData(it) }
-        }
+        setupView()
+        viewModel.getStepByIndexAs<IntroductionListStep>(indexArg())?.let { applyData(it) }
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            remind_me_later.setOnClickListener {
-                startCoroutineAsync {
-                    // TODO: handle remind me
-                    startCoroutineAsync { viewModel.close(taskNavController()) }
+        val viewBinding = binding
+
+        viewBinding?.remindMeLater?.setOnClickListener { reschedule() }
+
+        viewBinding?.action1?.setOnClickListener { next() }
+
+    }
+
+    private fun applyData(step: IntroductionListStep) {
+
+        val viewBinding = binding
+
+        viewBinding?.root?.setBackgroundColor(step.backgroundColor)
+
+        viewBinding?.recyclerView?.layoutManager =
+            LinearLayoutManager(
+                requireContext(),
+                RecyclerView.VERTICAL,
+                false
+            )
+
+        adapter.submitList(
+            listOf(IntroductionHeaderItem(step.title, step.titleColor, step.image))
+                .plus(step.list)
+        )
+
+        viewBinding?.recyclerView?.adapter = adapter
+
+        viewBinding?.recyclerView?.addItemDecoration(
+            LinearMarginItemDecoration(
+                topMargin = {
+                    if (it.index == 0) 70.dpToPx()
+                    else 45.dpToPx()
+                },
+                startMargin = { 25.dpToPx() },
+                endMargin = { 25.dpToPx() },
+                bottomMargin = {
+                    if (it.index == it.itemCount - 1) 30.dpToPx()
+                    else 0
                 }
-            }
-
-            action_1.setOnClickListener { startCoroutineAsync { next() } }
-        }
-
-    private suspend fun applyData(
-        step: IntroductionListStep
-    ): Unit =
-        evalOnMain {
-
-            root.setBackgroundColor(step.backgroundColor)
-
-            recycler_view.layoutManager =
-                LinearLayoutManager(
-                    requireContext(),
-                    RecyclerView.VERTICAL,
-                    false
-                )
-
-            adapter.submitList(
-                listOf(IntroductionHeaderItem(step.title, step.titleColor, step.image))
-                    .plus(step.list)
             )
+        )
 
-            recycler_view.adapter = adapter
+        viewBinding?.shadow?.background =
+            HEXGradient.from(
+                HEXColor.transparent(),
+                HEXColor.parse(step.shadowColor)
+            ).drawable(0.3f)
 
-            recycler_view.addItemDecoration(
-                LinearMarginItemDecoration(
-                    topMargin = {
-                        if (it.index == 0) 70.dpToPx()
-                        else 45.dpToPx()
-                    },
-                    startMargin = { 25.dpToPx() },
-                    endMargin = { 25.dpToPx() },
-                    bottomMargin = {
-                        if (it.index == it.itemCount - 1) 30.dpToPx()
-                        else 0
-                    }
-                )
-            )
+        viewBinding?.footer?.setBackgroundColor(step.footerBackgroundColor)
 
-            shadow.background =
-                HEXGradient.from(
-                    HEXColor.transparent(),
-                    HEXColor.parse(step.shadowColor)
-                ).drawable(0.3f)
+        viewBinding?.remindMeLater?.background = button(step.remindButtonColor)
+        viewBinding?.remindMeLater?.text = step.remindButton(requireContext())
+        viewBinding?.remindMeLater?.setTextColor(step.remindButtonTextColor)
 
-            footer.setBackgroundColor(step.footerBackgroundColor)
+        viewBinding?.action1?.background = button(step.buttonColor)
+        viewBinding?.action1?.text = step.button
+        viewBinding?.action1?.setTextColor(step.buttonTextColor)
 
-            remind_me_later.background = button(step.remindButtonColor)
-            remind_me_later.text = step.remindButton(requireContext())
-            remind_me_later.setTextColor(step.remindButtonTextColor)
-
-            action_1.background = button(step.buttonColor)
-            action_1.text = step.button
-            action_1.setTextColor(step.buttonTextColor)
-
-        }
+    }
 
 }

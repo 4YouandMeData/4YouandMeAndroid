@@ -1,5 +1,6 @@
 package com.foryouandme.core.arch.android
 
+import android.content.ServiceConnection
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -8,12 +9,9 @@ import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.entity.configuration.Configuration
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment {
@@ -67,6 +65,12 @@ abstract class BaseFragment : Fragment {
 
         }
 
+    }
+
+    /* --- service --- */
+
+    fun unbindService(serviceConnection: ServiceConnection) {
+        catchToNull { requireActivity().applicationContext.unbindService(serviceConnection) }
     }
 
 }

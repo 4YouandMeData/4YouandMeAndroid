@@ -19,3 +19,9 @@ sealed class PermissionResult(val permission: Permission) {
     ) : PermissionResult(permission)
 
 }
+
+fun List<PermissionResult>.areAllGranted(): Boolean =
+    fold(true) { acc, permissionResult ->
+        acc && permissionResult is PermissionResult.Granted
+    }
+

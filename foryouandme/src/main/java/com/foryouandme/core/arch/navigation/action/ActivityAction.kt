@@ -91,7 +91,7 @@ fun permissionSettingsDialogAction(
         .setMessage(description)
         .setPositiveButton(settings) { _, _ ->
             startCoroutineAsync {
-                navigator.performAction(permissionSettingsAction())
+                navigator.performActionSuspend(permissionSettingsAction())
                 onSettings()
             }
         }
