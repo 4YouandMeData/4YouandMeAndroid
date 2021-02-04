@@ -43,11 +43,11 @@
 
     <string name="FITNESS_welcome_title">6-Minute walk test</string>
     <string name="FITNESS_welcome_description">"About this activity\nEvery other week, we’ll ask you to complete this task in which you’ll walk continuously at a regular walking pace for six minutes.\nWhy this activity\nThis activity will help us understand how your body reacts to and recovers from activity."</string>
-    <string name="FITNESS_title">Fitness</string>
+    <string name="FITNESS_title">Walk Test</string>
     <string name="FITNESS_start">This activity monitors your heart rate and measures how far you can walk in %1$s.</string>
-    <string name="FITNESS_intro">Walk outdoors at your fastest possible pace for %1$s. When you’re done, sit and rest comfortably for %2$s. To begin, tap Get Started.</string>
-    <string name="FITNESS_walk">Walk as fast as you can for %s.</string>
-    <string name="FITNESS_sit">Sit comfortably for %s.</string>
+    <string name="FITNESS_intro">Walk outdoors at your fastest possible pace for %1$s. When you’re done, sit (or stand) and rest comfortably for %2$s. To begin, tap Get Started.</string>
+    <string name="FITNESS_walk">Walk as fast as you can for %1$s.</string>
+    <string name="FITNESS_sit">Sit or stand for %1$s.</string>
     <string name="FITNESS_end_title">Activity Complete</string>
     <string name="FITNESS_end_description">Your data will be analyzed and you will be notified when your results are ready.</string>
     <string name="FITNESS_button">Done</string>
