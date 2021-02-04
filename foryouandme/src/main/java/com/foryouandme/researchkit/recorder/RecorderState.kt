@@ -14,17 +14,22 @@ data class RecorderState(
     val output: File
 )
 
-sealed class RecordingState {
+sealed class RecorderStateUpdate {
 
-    data class Recording(val stepIdentifier: String) : RecordingState()
+    data class Recording(val stepIdentifier: String) : RecorderStateUpdate()
 
     data class ResultCollected(
         val stepIdentifier: String,
         val files: List<FileResult>
-    ) : RecordingState()
+    ) : RecorderStateUpdate()
 
-    data class Completed(val stepIdentifier: String) : RecordingState()
-    data class Failure(val stepIdentifier: String) : RecordingState()
+    data class Completed(val stepIdentifier: String) : RecorderStateUpdate()
+
+}
+
+sealed class RecorderError {
+
+    data class Recording(val stepIdentifier: String) : RecorderError()
 
 }
 

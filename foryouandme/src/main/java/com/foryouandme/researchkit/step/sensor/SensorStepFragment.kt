@@ -11,10 +11,7 @@ import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.infoToast
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepSensorBinding
-import com.foryouandme.researchkit.recorder.RecorderService
-import com.foryouandme.researchkit.recorder.RecorderServiceConnection
-import com.foryouandme.researchkit.recorder.RecordingState
-import com.foryouandme.researchkit.recorder.SensorData
+import com.foryouandme.researchkit.recorder.*
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.ui.tasks.TaskStateUpdate
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,24 +42,31 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                         .onEach { state ->
 
                             when (state) {
-                                is RecordingState.ResultCollected ->
+                                is RecorderStateUpdate.ResultCollected ->
                                     if (state.stepIdentifier == step.identifier)
                                         startCoroutineAsync {
                                             state.files.forEach { addResult(it) }
                                         }
-                                is RecordingState.Completed ->
+                                is RecorderStateUpdate.Completed ->
                                     if (state.stepIdentifier == step.identifier)
                                         startCoroutineAsync { next() }
-                                is RecordingState.Failure ->
-                                    if (state.stepIdentifier == step.identifier)
+                                else -> Unit
+                            }
+
+                        }
+                        .observeIn(this)
+
+                    binder.error
+                        .onEach {
+                            when (it.cause) {
+                                is RecorderError.Recording ->
+                                    if (it.cause.stepIdentifier == step.identifier)
                                         Toast.makeText(
                                             requireContext(),
                                             "Fallito",
                                             Toast.LENGTH_LONG
                                         ).show()
-                                else -> Unit
                             }
-
                         }
                         .observeIn(this)
 

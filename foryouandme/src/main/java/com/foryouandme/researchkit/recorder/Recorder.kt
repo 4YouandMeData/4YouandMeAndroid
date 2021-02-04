@@ -1,12 +1,12 @@
 package com.foryouandme.researchkit.recorder
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
-import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.toEvent
 import com.foryouandme.researchkit.recorder.sensor.RecorderData
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.step.Step
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import java.io.File
 import java.util.*
 
@@ -67,11 +67,11 @@ abstract class Recorder(
 ) {
 
     /**
-     * live data the emit e RecorderData, which represents a data recorded by the recorder
+     * flow that emit a RecorderData, which represents a data recorded by the recorder
      */
-    private val recorderLiveData: MutableLiveData<Event<RecorderData>> = MutableLiveData()
+    private val recorderFlow: MutableSharedFlow<RecorderData> = MutableSharedFlow(replay = 1)
 
-    fun liveData(): MutableLiveData<Event<RecorderData>> = recorderLiveData
+    val flow: SharedFlow<RecorderData> = recorderFlow
 
     /**
      * A unique filename for this Recorder
@@ -91,11 +91,6 @@ abstract class Recorder(
      */
     var isRecording = false
         protected set
-
-    /**
-     * Used to communicate with the listener if the recording completed successfully or failed
-     */
-    var recorderListener: RecorderListener? = null
 
     /**
      * Timestamp indicating when the recorder started recording
@@ -144,15 +139,7 @@ abstract class Recorder(
 
     suspend fun onRecordDataCollected(data: RecorderData): Unit =
         // set the live data value on the main thread
-        recorderLiveData.postValue(data.toEvent())
-
-    protected fun onRecorderFailed(error: String): Unit {
-        recorderListener?.onFail(this, Throwable(error))
-    }
-
-    protected fun onRecorderFailed(throwable: Throwable): Unit {
-        recorderListener?.onFail(this, throwable)
-    }
+        recorderFlow.emit(data)
 
     private fun generateUniqueFileName(): String = UUID.randomUUID().toString()
 

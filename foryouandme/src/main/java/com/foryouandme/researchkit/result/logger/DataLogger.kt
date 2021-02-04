@@ -1,8 +1,7 @@
 package com.foryouandme.researchkit.result.logger
 
-import arrow.core.Either
-import arrow.fx.coroutines.evalOn
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 
 /**
@@ -18,24 +17,27 @@ object DataLogger {
     suspend fun write(
         fileOutputStream: FileOutputStream,
         data: String
-    ): Either<Throwable, Unit> =
+    ) {
         fileOutputStream.writeSuspend(data)
+    }
 
     suspend fun write(
         fileOutputStream: FileOutputStream,
         byteArray: ByteArray
-    ): Either<Throwable, Unit> =
+    ) {
         fileOutputStream.writeSuspend(byteArray)
+    }
 
-    private suspend fun FileOutputStream.writeSuspend(data: String): Either<Throwable, Unit> =
+    private suspend fun FileOutputStream.writeSuspend(data: String) {
         writeSuspend(data.toByteArray(charset(UTF_8)))
+    }
 
     private suspend fun FileOutputStream.writeSuspend(
         byteArray: ByteArray
-    ): Either<Throwable, Unit> =
-        Either.catch {
-            // write the bytes on IO dispatcher
-            evalOn(Dispatchers.IO) { write(byteArray) }
-        }
+    ) {
+        // write the bytes on IO dispatcher
+        withContext(Dispatchers.IO) { write(byteArray) }
+
+    }
 
 }

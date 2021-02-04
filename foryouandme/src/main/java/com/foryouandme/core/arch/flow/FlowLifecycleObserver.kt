@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-@PublishedApi
-internal class FlowLifecycleObserver<T> (
+class FlowLifecycleObserver<T>(
     lifecycleOwner: LifecycleOwner,
     private val flow: Flow<T>,
     private val collector: suspend (T) -> Unit
 ) : DefaultLifecycleObserver {
 
-    private var job: Job? = null
+    var job: Job? = null
+        private set
 
     override fun onStart(owner: LifecycleOwner) {
         job = owner.lifecycleScope.launch {
@@ -47,6 +47,5 @@ inline fun <reified T> Flow<T>.observe(
 
 inline fun <reified T> Flow<T>.observeIn(
     lifecycleOwner: LifecycleOwner
-) {
+): FlowLifecycleObserver<T> =
     FlowLifecycleObserver(lifecycleOwner, this, {})
-}

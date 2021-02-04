@@ -9,14 +9,14 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import arrow.core.Either
-import com.foryouandme.core.ext.evalOnIO
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.*
 import com.foryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.step.Step
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 
@@ -52,7 +52,7 @@ open class LocationRecorder(
     private var firstLocation: Location? = null
     private var lastLocation: Location? = null
 
-    override suspend fun start(context: Context): Unit {
+    override suspend fun start(context: Context) {
 
         // reset location data
         firstLocation = null
@@ -70,14 +70,8 @@ open class LocationRecorder(
             locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
 
         if (!isGpsProviderEnabled) {
-
-            recorderListener?.let {
-                val errorMsg =
-                    "The app needs GPS enabled to record accurate location-based data"
-                it.onFail(this, IllegalStateException(errorMsg))
-            }
-
-            return
+            val errorMsg = "The app needs GPS enabled to record accurate location-based data"
+            throw IllegalStateException(errorMsg)
         }
 
         // In-app permissions were added in Android 6.0
@@ -89,14 +83,9 @@ open class LocationRecorder(
                 pm.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, context.packageName)
 
             if (hasPerm != PackageManager.PERMISSION_GRANTED) {
-
-                recorderListener?.let {
-                    val errorMsg =
-                        "The app needs location permissions to show accurate location-based data"
-                    it.onFail(this, IllegalStateException(errorMsg))
-                }
-
-                return
+                val errorMsg =
+                    "The app needs location permissions to show accurate location-based data"
+                throw IllegalStateException(errorMsg)
             }
         }
 
@@ -104,67 +93,62 @@ open class LocationRecorder(
         // Let's just register for both and log all locations to the data file
         // with their corresponding accuracy and other data associated
         //startLocationTracking().unsafeRunAsync()
-        startCoroutineAsync { startLocationTracking() }
+        startLocationTracking()
 
         super.start(context)
 
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun startLocationTracking(): Unit {
-
-        val start =
-            Either.catch {
-
-                evalOnMain {
-
+    private suspend fun startLocationTracking() {
+        withContext(Dispatchers.Main) {
+            catch(
+                {
                     locationManager?.let {
 
                         it.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER,
                             minTime,
                             minDistance,
-                            this
+                            this@LocationRecorder
                         )
                         it.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             minTime,
                             minDistance,
-                            this
+                            this@LocationRecorder
                         )
                     }
-                }
-            }
+                },
+                {
+                    when (it) {
+                        is SecurityException ->
+                            Timber.tag(TAG)
+                                .e(it, "fail to request location update, ignore")
+                        is IllegalArgumentException ->
+                            Timber.tag(TAG)
+                                .e(it, "gps provider does not exist ${it.message}")
+                        else ->
+                            Timber.tag(TAG)
+                                .e(it, "can't start gps tracking ${it.message}")
 
-        start.mapLeft {
-            when (it) {
-                is SecurityException ->
-                    Timber.tag(TAG)
-                        .e(it, "fail to request location update, ignore")
-                is IllegalArgumentException ->
-                    Timber.tag(TAG)
-                        .e(it, "gps provider does not exist ${it.message}")
-                else ->
-                    Timber.tag(TAG)
-                        .e(it, "can't start gps tracking ${it.message}")
-
-            }
+                    }
+                },
+            )
         }
     }
 
-    private suspend fun stopLocationListener(): Unit {
+    private fun stopLocationListener() {
 
-        val stop =
-            Either.catch { locationManager?.removeUpdates(this) }
-
-        stop.mapLeft {
-            Timber.tag(TAG)
-                .e(it, "fail to remove location listener")
-        }
+        catch(
+            { locationManager?.removeUpdates(this) },
+            { Timber.tag(TAG).e(it, "fail to remove location listener") }
+        )
 
     }
 
     override suspend fun stop(): FileResult? {
+
         stopLocationListener()
 
         return super.stop()
@@ -174,13 +158,12 @@ open class LocationRecorder(
     // locationListener methods
     override fun onLocationChanged(location: Location) {
 
-        startCoroutineAsync { recordLocationData(location) }
+        GlobalScope.launchSafe { recordLocationData(location) }
 
     }
 
-    private suspend fun recordLocationData(location: Location): Unit {
-
-        evalOnIO {
+    private suspend fun recordLocationData(location: Location) {
+        withContext(Dispatchers.IO) {
 
             // Initialize first location
             if (firstLocation == null) firstLocation = location

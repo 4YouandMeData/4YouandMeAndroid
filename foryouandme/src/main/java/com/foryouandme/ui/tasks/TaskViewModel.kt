@@ -192,9 +192,11 @@ class TaskViewModel @ViewModelInject constructor(
                     skipToStep(stateEvent.stepId, stateEvent.currentStepIndex)
                 }
             is TaskStateEvent.NextStep ->
-                viewModelScope.launchSafe {
-                    nextStep(stateEvent.currentStepIndex)
-                }
+                viewModelScope.launchSafe { nextStep(stateEvent.currentStepIndex) }
+            TaskStateEvent.Cancel ->
+                viewModelScope.launchSafe { cancel() }
+            is TaskStateEvent.AddResult ->
+                viewModelScope.launchSafe { addResult(stateEvent.result) }
         }
 
     }

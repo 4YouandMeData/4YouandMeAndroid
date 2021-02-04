@@ -9,10 +9,12 @@ import android.os.Handler
 import android.os.HandlerThread
 import arrow.core.toOption
 import com.foryouandme.core.ext.evalOnIO
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.step.Step
+import kotlinx.coroutines.GlobalScope
 import timber.log.Timber
 import java.io.File
 
@@ -114,17 +116,18 @@ abstract class SensorRecorder(
                 }.toMutableList()
             }
 
-            if (!anySucceeded) super.onRecorderFailed("Failed to initialize any sensor")
+            if (!anySucceeded) throw Throwable("Failed to initialize any sensor")
             else super.start(context)
 
         }
     }
 
-    override fun onSensorChanged(sensorEvent: SensorEvent): Unit {
+    override fun onSensorChanged(sensorEvent: SensorEvent) {
 
-        startCoroutineAsync {
+        GlobalScope.launchSafe {
             recordSensorEvent(sensorEvent)?.let { writeJsonObjectToFile(it) }
         }
+
     }
 
     /***

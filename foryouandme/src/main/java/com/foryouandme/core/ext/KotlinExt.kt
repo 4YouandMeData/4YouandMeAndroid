@@ -39,6 +39,14 @@ fun <T> catchToNull(block: () -> T): T? =
         null
     }
 
+fun catch(block: () -> Unit, error: (Throwable) -> Unit) {
+    try {
+        block()
+    } catch (e: Throwable) {
+        error(e)
+    }
+}
+
 suspend fun <T> catchToNullSuspend(block: suspend () -> T): T? =
     try {
         block()

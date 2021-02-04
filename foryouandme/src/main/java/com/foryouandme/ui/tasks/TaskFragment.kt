@@ -5,15 +5,16 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.TaskBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 import java.io.File
 
+@AndroidEntryPoint
 class TaskFragment : BaseFragment(R.layout.task) {
 
     private val viewModel: TaskViewModel by viewModels()
@@ -30,7 +31,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
                     is TaskStateUpdate.Initialization -> applyData()
                     is TaskStateUpdate.Completed,
                     is TaskStateUpdate.Cancelled,
-                    TaskStateUpdate.Rescheduled -> navigator.backSuspend(taskNavController())
+                    TaskStateUpdate.Rescheduled -> navigator.back(rootNavController())
                 }
             }
             .observeIn(this)
@@ -62,6 +63,18 @@ class TaskFragment : BaseFragment(R.layout.task) {
                     TaskError.Result ->
                         errorAlert(it.error) { viewModel.execute(TaskStateEvent.End) }
                 }
+            }
+            .observeIn(this)
+
+        viewModel.navigation
+            .onEach {
+                when (it) {
+                    is StepToStep ->
+                        navigator.navigateTo(rootNavController(), it)
+                    else ->
+                        navigator.navigateTo(rootNavController(), it)
+                }
+
             }
             .observeIn(this)
 
@@ -108,7 +121,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
                 dialog.dismiss()
             }
             .setNegativeButton(R.string.TASK_error_cancel)
-            { _, _ -> navigator.back(taskNavController()) }
+            { _, _ -> navigator.back(rootNavController()) }
             .setCancelable(false)
             .show()
 
@@ -133,8 +146,6 @@ class TaskFragment : BaseFragment(R.layout.task) {
     @Suppress("UNCHECKED_CAST")
     private fun dataArg(): HashMap<String, String> =
         (arguments?.getSerializable(TASK_DATA) as HashMap<String, String>)
-
-    fun taskNavController(): TaskNavController = TaskNavController(findNavController())
 
     companion object {
 

@@ -11,7 +11,6 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.ext.find
 import com.foryouandme.researchkit.result.StepResult
 import com.foryouandme.ui.tasks.TaskFragment
-import com.foryouandme.ui.tasks.TaskNavController
 import com.foryouandme.ui.tasks.TaskStateEvent
 import com.foryouandme.ui.tasks.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint

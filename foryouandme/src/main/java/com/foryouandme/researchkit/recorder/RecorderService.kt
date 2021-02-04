@@ -13,8 +13,12 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseService
+import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.flow.UIError
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorderData
 import com.foryouandme.researchkit.step.sensor.SensorRecorderTarget
@@ -25,27 +29,36 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import java.io.File
 import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-open class RecorderService : BaseService(), RecorderListener {
+open class RecorderService : BaseService() {
 
+    /* --- state --- */
     private var state: RecorderState? = null
 
+    /* --- tts --- */
     private var tts: TextToSpeech? = null
 
+    /* --- job --- */
     private var taskTimer: Job? = null
-
     private var middleInstruction: List<Job>? = null
+    private var sensorJob: Job? = null
+    private var recorderJob: List<Job>? = null
 
+    /* --- flow --- */
     @Inject
-    lateinit var stateUpdateFlow: StateUpdateFlow<RecordingState>
+    lateinit var stateUpdateFlow: StateUpdateFlow<RecorderStateUpdate>
 
     @Inject
     lateinit var sensorFlow: StateUpdateFlow<SensorData>
+
+    @Inject
+    lateinit var errorFlow: ErrorFlow<RecorderError>
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -56,7 +69,7 @@ open class RecorderService : BaseService(), RecorderListener {
         if (tts == null)
             tts =
                 if (step.hasVoice())
-                    TextToSpeech(this) { startCoroutineAsync { setupTTS(step, it) } }
+                    TextToSpeech(this) { setupTTS(step, it) }
                 else null
         else if (step.hasVoice()) {
             setupTaskTimer(step)
@@ -101,7 +114,6 @@ open class RecorderService : BaseService(), RecorderListener {
         step.recorderConfigurations.map {
 
             val recorder = it.recorderForStep(step, outputDirectory)
-            recorder.recorderListener = this
             recorder
 
         }
@@ -120,24 +132,27 @@ open class RecorderService : BaseService(), RecorderListener {
                     }
             }
             is SensorRecorderTarget.Steps -> {
-                state?.recorderList
-                    ?.firstOrNull { it is PedometerRecorder }
-                    ?.liveData()
-                    ?.observeEvent { recorderData ->
-                        (recorderData as? PedometerRecorderData)
-                            ?.let {
+                sensorJob =
+                    state?.recorderList
+                        ?.firstOrNull { it is PedometerRecorder }
+                        ?.flow
+                        ?.onEach { recorderData ->
+                            (recorderData as? PedometerRecorderData)
+                                ?.let {
 
-                                lifecycleScope.launchSafe {
+                                    lifecycleScope.launchSafe {
 
-                                    sensorFlow.update(SensorData.Steps(it.steps))
+                                        sensorFlow.update(SensorData.Steps(it.steps))
 
-                                    if (it.steps >= step.target.steps)
-                                        onRecorderDurationFinished(step)
+                                        if (it.steps >= step.target.steps)
+                                            onRecorderDurationFinished(step)
+
+                                    }
 
                                 }
-
-                            }
-                    }
+                        }
+                        ?.observeIn(this)
+                        ?.job
 
                 // start also a timer for timeout = steps * 1.5
                 taskTimer =
@@ -151,7 +166,11 @@ open class RecorderService : BaseService(), RecorderListener {
         }
 
         // start recording from sensor
-        lifecycleScope.launchSafe { state?.recorderList?.map { it.start(applicationContext) } }
+        state?.recorderList?.map {
+            errorFlow.launchCatch(lifecycleScope, RecorderError.Recording(getStepIdentifier())) {
+                it.start(applicationContext)
+            }
+        }
 
     }
 
@@ -259,26 +278,11 @@ open class RecorderService : BaseService(), RecorderListener {
 
         // await some time before sending the completed event
         delay(step.estimateTimeInMsToSpeakEndInstruction)
-        stateUpdateFlow.update(RecordingState.Completed(getStepIdentifier()))
+        stateUpdateFlow.update(RecorderStateUpdate.Completed(getStepIdentifier()))
         // reset replay cache to avoid to send again the
         // last value to new subscribers
         stateUpdateFlow.resetReplayCache()
         sensorFlow.resetReplayCache()
-
-    }
-
-    /**
-     * RecorderListener callback
-     *
-     * @param recorder The generating recorder object.
-     * @param error    The error that occurred.
-     */
-    override fun onFail(recorder: Recorder, error: Throwable) {
-
-        lifecycleScope.launchSafe {
-            stateUpdateFlow.update(RecordingState.Failure(getStepIdentifier()))
-            shutDownRecorder()
-        }
 
     }
 
@@ -294,12 +298,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
     private suspend fun shutDownRecorders() {
 
-        state?.let { recorderState ->
-            recorderState.recorderList.map {
-                it.recorderListener = null
-                it.cancel()
-            }
-        }
+        state?.let { recorderState -> recorderState.recorderList.map { it.cancel() } }
 
     }
 
@@ -309,7 +308,7 @@ open class RecorderService : BaseService(), RecorderListener {
 
         mapNotNull(state?.step?.identifier, results)
             ?.let {
-                stateUpdateFlow.update(RecordingState.ResultCollected(it.a, it.b))
+                stateUpdateFlow.update(RecorderStateUpdate.ResultCollected(it.a, it.b))
             }
 
     }
@@ -348,10 +347,8 @@ open class RecorderService : BaseService(), RecorderListener {
         taskTimer = null
 
         // stop step counter
-        state?.recorderList
-            ?.firstOrNull { it is PedometerRecorder }
-            ?.liveData()
-            ?.removeObservers(this)
+        sensorJob?.cancel()
+        sensorJob = null
 
         // stop instruction
         middleInstruction?.forEach { it.cancel() }
@@ -370,10 +367,8 @@ open class RecorderService : BaseService(), RecorderListener {
         taskTimer = null
 
         // stop step counter
-        state?.recorderList
-            ?.firstOrNull { it is PedometerRecorder }
-            ?.liveData()
-            ?.removeObservers(this)
+        sensorJob?.cancel()
+        sensorJob = null
 
         // stop instruction
         middleInstruction?.forEach { it.cancel() }
@@ -404,9 +399,8 @@ open class RecorderService : BaseService(), RecorderListener {
             val recorders = buildRecorderList(sensorStep, outputDirectory)
 
             // clear old listeners
-            state?.let { recorderState ->
-                recorderState.recorderList.map { it.recorderListener = null }
-            }
+            recorderJob?.forEach { it.cancel() }
+            recorderJob = null
 
             showForegroundNotification(task)
 
@@ -424,12 +418,13 @@ open class RecorderService : BaseService(), RecorderListener {
 
 
             lifecycleScope.launchSafe {
-                stateUpdateFlow.update(RecordingState.Recording(sensorStep.identifier))
+                stateUpdateFlow.update(RecorderStateUpdate.Recording(sensorStep.identifier))
             }
 
         }
 
-        val stateUpdate: SharedFlow<RecordingState> = stateUpdateFlow.stateUpdates
+        val stateUpdate: SharedFlow<RecorderStateUpdate> = stateUpdateFlow.stateUpdates
+        val error: SharedFlow<UIError<RecorderError>> = errorFlow.error
         val sensor: SharedFlow<SensorData> = sensorFlow.stateUpdates
 
         suspend fun stop(): Unit = shutDownRecorder()

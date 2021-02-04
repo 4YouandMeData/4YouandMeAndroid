@@ -1,18 +1,16 @@
 package com.foryouandme.researchkit.recorder.sensor.json
 
 import android.content.Context
-import arrow.core.Either
-import arrow.core.flatMap
-import arrow.fx.coroutines.evalOn
 import arrow.fx.typeclasses.Disposable
-import com.foryouandme.core.ext.evalOnIO
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.mapNull
 import com.foryouandme.researchkit.recorder.Recorder
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.result.logger.DataLogger
 import com.foryouandme.researchkit.step.Step
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneOffset
 import java.io.File
@@ -32,7 +30,6 @@ abstract class JsonArrayDataRecorder(
 
     private var isFirstJsonObject = false
 
-    private var writing: Disposable? = null
     private val file = File(outputDirectory, uniqueFilename + JSON_FILE_SUFFIX)
     private var fileOutputStream: FileOutputStream? = null
 
@@ -45,16 +42,12 @@ abstract class JsonArrayDataRecorder(
 
     }
 
-    private suspend fun startJsonDataLogging(): Unit {
+    private suspend fun startJsonDataLogging() {
 
         isRecording = true
         isFirstJsonObject = true
 
-        val write =
-            evalOnIO { openStream().flatMap { DataLogger.write(it, "[") } }
-
-        if (write is Either.Left)
-            evalOnMain { recorderListener?.onFail(this, write.a) }
+        openStream()?.let { DataLogger.write(it, "[") }
 
     }
 
@@ -63,35 +56,28 @@ abstract class JsonArrayDataRecorder(
         endTime = System.currentTimeMillis()
 
         return stopJsonDataLogging()
+
     }
 
     private suspend fun stopJsonDataLogging(): FileResult? =
-        evalOnIO {
+        withContext(Dispatchers.IO) {
+
             isRecording = false
 
-            val write =
-                openStream().flatMap { DataLogger.write(it, "]") }
+            openStream()?.let { DataLogger.write(it, "]") }
 
-            when (write) {
+            FileResult(
+                fileResultIdentifier(),
+                file,
+                JSON_MIME_CONTENT_TYPE,
+                Instant.ofEpochMilli(startTime ?: 0).atZone(ZoneOffset.UTC),
+                Instant.ofEpochMilli(endTime ?: 0).atZone(ZoneOffset.UTC)
+            )
 
-                is Either.Left -> {
-                    evalOnMain { recorderListener?.onFail(this, write.a) }
-                    null
-                }
-                is Either.Right ->
-                    FileResult(
-                        fileResultIdentifier(),
-                        file,
-                        JSON_MIME_CONTENT_TYPE,
-                        Instant.ofEpochMilli(startTime ?: 0).atZone(ZoneOffset.UTC),
-                        Instant.ofEpochMilli(endTime ?: 0).atZone(ZoneOffset.UTC)
-                    )
-            }
         }
 
-    suspend fun writeJsonObjectToFile(json: String): Unit {
-
-        evalOnIO {
+    suspend fun writeJsonObjectToFile(json: String) {
+        withContext(Dispatchers.IO) {
 
             if (isRecording) {
 
@@ -100,28 +86,18 @@ abstract class JsonArrayDataRecorder(
 
                 val jsonString = "$jsonSeparator${json}"
 
-                val write =
-                    openStream()
-                        .flatMap { DataLogger.write(it, jsonString) }
+                openStream()?.let { DataLogger.write(it, jsonString) }
 
-                when (write) {
+                isFirstJsonObject = false
 
-                    is Either.Left ->
-                        evalOnMain {
-                            recorderListener?.onFail(this@JsonArrayDataRecorder, write.a)
-                        }
-                    is Either.Right ->
-                        isFirstJsonObject = false
-                }
             }
         }
 
     }
 
-    private suspend fun openStream(): Either<Throwable, FileOutputStream> =
-        Either.catch {
-
-            evalOn(Dispatchers.IO) {
+    private suspend fun openStream(): FileOutputStream? =
+        withContext(Dispatchers.IO) {
+            catchToNull {
 
                 if (outputDirectory.exists().not())
                     outputDirectory.mkdirs()
@@ -139,21 +115,17 @@ abstract class JsonArrayDataRecorder(
             }
         }
 
-    private suspend fun deleteFileAndClose(): Unit {
-
-        Either.catch {
-
-            evalOn(Dispatchers.IO) {
+    private suspend fun deleteFileAndClose() {
+        withContext(Dispatchers.IO) {
+            catchToNull {
                 file.delete()
                 fileOutputStream?.close()
             }
         }
-
     }
 
-    override suspend fun cancel(): Unit {
+    override suspend fun cancel() {
 
-        writing?.invoke()
         deleteFileAndClose()
 
     }
