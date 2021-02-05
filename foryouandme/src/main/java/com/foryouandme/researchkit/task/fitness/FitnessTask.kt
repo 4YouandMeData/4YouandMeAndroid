@@ -260,7 +260,7 @@ class FitnessTask(
                     description = {
                         startDescription ?: it.getString(
                             R.string.FITNESS_start,
-                            "two minute"
+                            "two minutes"
                         )
                     },
                     descriptionColor = startDescriptionColor,
@@ -278,7 +278,7 @@ class FitnessTask(
                     description = {
                         introDescription ?: it.getString(
                             R.string.FITNESS_intro,
-                            "two minute",
+                            "two minutes",
                             "thirty seconds"
                         )
                     },
@@ -308,7 +308,7 @@ class FitnessTask(
                     description = {
                         walkDescription ?: it.getString(
                             R.string.FITNESS_walk,
-                            "two minute"
+                            "two minutes"
                         )
                     },
                     descriptionColor = walkDescriptionColor,
@@ -323,7 +323,7 @@ class FitnessTask(
                     spokenInstruction = {
                         walkDescription ?: it.getString(
                             R.string.FITNESS_walk,
-                            "two minute"
+                            "two minutes"
                         )
                     }
                 ),
