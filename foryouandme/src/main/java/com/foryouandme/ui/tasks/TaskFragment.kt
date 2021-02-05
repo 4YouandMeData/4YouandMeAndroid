@@ -10,6 +10,7 @@ import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.error.ForYouAndMeError
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
@@ -90,13 +91,17 @@ class TaskFragment : BaseFragmentOld<TaskViewModel>(R.layout.task) {
 
             val navHostFragment =
                 childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            val graphInflater = navHostFragment.navController.navInflater
-            val navGraph = graphInflater.inflate(R.navigation.task_navigation)
-            val navController = navHostFragment.navController
 
-            val destination = R.id.step
-            navGraph.startDestination = destination
-            navController.graph = navGraph
+            val currentGraph = catchToNull { navHostFragment.navController.graph }
+            if (currentGraph == null) {
+                val graphInflater = navHostFragment.navController.navInflater
+                val navGraph = graphInflater.inflate(R.navigation.task_navigation)
+                val navController = navHostFragment.navController
+
+                val destination = R.id.step
+                navGraph.startDestination = destination
+                navController.graph = navGraph
+            }
 
         }
 

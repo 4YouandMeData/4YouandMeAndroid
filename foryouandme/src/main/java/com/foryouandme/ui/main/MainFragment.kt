@@ -7,7 +7,6 @@ import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.android.BaseFragment
-import com.foryouandme.core.arch.flow.observe
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.navigation.setupWithNavController
 import com.foryouandme.core.ext.imageConfiguration
@@ -15,7 +14,6 @@ import com.foryouandme.core.ext.selectedUnselectedColor
 import com.foryouandme.databinding.MainBinding
 import com.foryouandme.entity.configuration.Configuration
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
@@ -77,8 +75,7 @@ class MainFragment : BaseFragment(R.layout.main) {
 
         val configuration = viewModel.state.configuration
 
-        if (configuration != null) setupView(configuration)
-        else viewModel.execute(MainStateEvent.GetConfig)
+        if (configuration == null) viewModel.execute(MainStateEvent.GetConfig)
 
     }
 

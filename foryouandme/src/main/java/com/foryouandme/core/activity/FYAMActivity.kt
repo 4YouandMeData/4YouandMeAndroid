@@ -10,6 +10,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseActivity
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.navigation.AnywhereToAuth
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.FyamBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
@@ -88,9 +89,12 @@ class FYAMActivity : BaseActivity() {
             supportFragmentManager
                 .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.navigation)
-        navHostFragment.navController.graph = graph
+        val currentGraph = catchToNull { navHostFragment.navController.graph }
+        if (currentGraph == null) {
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.navigation)
+            navHostFragment.navController.graph = graph
+        }
 
     }
 
