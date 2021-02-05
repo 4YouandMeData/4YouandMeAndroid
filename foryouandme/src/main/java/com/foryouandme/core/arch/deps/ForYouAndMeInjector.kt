@@ -38,8 +38,8 @@ import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.ScreeningApi
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
-import com.foryouandme.core.data.api.studyinfo.StudyInfoApi
-import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
+import com.foryouandme.data.repository.study.network.StudyInfoApi
+import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.data.repository.survey.network.response.SurveyAnswerResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyBlockResponse
@@ -48,9 +48,7 @@ import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.foryouandme.core.data.api.yourdata.YourDataApi
-import com.foryouandme.core.researchkit.task.FYAMTaskConfiguration
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.researchkit.task.TaskConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

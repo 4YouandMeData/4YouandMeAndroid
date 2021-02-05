@@ -1,106 +1,133 @@
 package com.foryouandme.ui.htmldetails
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.*
-import kotlinx.android.synthetic.main.html_detail.*
+import com.foryouandme.databinding.HtmlDetailBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
-class HtmlDetailsFragment : BaseFragmentOld<HtmlDetailsViewModel>(R.layout.html_detail) {
+@AndroidEntryPoint
+class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
 
     private val args: HtmlDetailsFragmentArgs by navArgs()
 
-    override val viewModel: HtmlDetailsViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                HtmlDetailsViewModel(
-                    navigator,
-                    injector.studyInfoModule()
-                )
-            }
-        )
-    }
+    private val viewModel: HtmlDetailsViewModel by viewModels()
+
+    private val binding: HtmlDetailBinding?
+        get() = view?.let { HtmlDetailBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent {
+        viewModel.stateUpdate
+            .onEach {
                 when (it) {
                     is HtmlDetailsStateUpdate.Initialization -> {
-                        startCoroutineAsync {
-                            setupWebView(args.pageId)
-                        }
+                        applyConfiguration()
+                        setupWebView(args.pageId)
                     }
                 }
             }
+            .observeIn(this)
+
+        viewModel.error
+            .onEach {
+                when (it.cause) {
+                    HtmlDetailsError.Initialization -> {
+                        binding?.loading?.setVisibility(false)
+                        binding?.error?.setError(it.error, null)
+                        { viewModel.execute(HtmlDetailsStateEvent.Initialize) }
+                    }
+                }
+            }
+            .observeIn(this)
+
+        viewModel.loading
+            .onEach {
+                when(it.task) {
+                    HtmlDetailsLoading.Initialization ->
+                        binding?.loading?.setVisibility(it.active, false)
+                }
+            }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController())
-
-            applyConfiguration(it)
-
+        if (viewModel.state.configuration == null && viewModel.state.studyInfo != null)
+            viewModel.execute(HtmlDetailsStateEvent.Initialize)
+        else {
+            applyConfiguration()
         }
+
     }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
+
+        val viewBinding = binding
+        val configuration = viewModel.state.configuration
+
+        if (viewBinding != null && configuration != null) {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-            toolbar.showBackButtonSuspend(imageConfiguration) {
-                viewModel.back(findNavController())
+            viewBinding.toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+            viewBinding.toolbar.showBackButton(imageConfiguration) {
+                navigator.back(rootNavController())
             }
 
-            title.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.title.setTextColor(configuration.theme.secondaryColor.color())
 
         }
 
-    private suspend fun setupWebView(page: EHtmlDetails): Unit =
-        evalOnMain {
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView(page: EHtmlDetails) {
+
+        val viewBinding = binding
+        val studyInfo = viewModel.state.studyInfo
+
+        if (viewBinding != null && studyInfo != null) {
 
             var source = ""
             when (page) {
                 EHtmlDetails.INFO -> {
-                    title.text = viewModel.state().studyInfo.informationPage.title
-                    source = viewModel.state().studyInfo.informationPage.body
+                    viewBinding.title.text = studyInfo.informationPage.title
+                    source = studyInfo.informationPage.body
                 }
                 EHtmlDetails.REWARD -> {
-                    title.text = viewModel.state().studyInfo.rewardPage.title
-                    source = viewModel.state().studyInfo.rewardPage.body
+                    viewBinding.title.text = studyInfo.rewardPage.title
+                    source = studyInfo.rewardPage.body
                 }
                 EHtmlDetails.FAQ -> {
-                    title.text = viewModel.state().studyInfo.faqPage.title
-                    source = viewModel.state().studyInfo.faqPage.body
+                    viewBinding.title.text = studyInfo.faqPage.title
+                    source = studyInfo.faqPage.body
                 }
                 else -> {
-                    web_view.settings.also {
+                    viewBinding.webView.settings.also {
                         it.javaScriptEnabled = true
                     }
                 }
             }
 
-            web_view.settings.also {
+            viewBinding.webView.settings.also {
                 it.javaScriptEnabled = true
             }
 
-            web_view.loadDataWithBaseURL(
+            viewBinding.webView.loadDataWithBaseURL(
                 null,
                 source,
                 "text/html; charset=utf-8",
@@ -108,4 +135,6 @@ class HtmlDetailsFragment : BaseFragmentOld<HtmlDetailsViewModel>(R.layout.html_
                 null
             )
         }
+    }
+
 }

@@ -1,66 +1,69 @@
 package com.foryouandme.ui.htmldetails
 
-import androidx.navigation.NavController
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.StudyInfoModule
-import com.foryouandme.core.arch.deps.modules.nullToError
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.studyinfo.StudyInfoUseCase.getStudyInfo
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.study.GetStudyInfoUseCase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
-class HtmlDetailsViewModel(
-    navigator: Navigator,
-    private val studyInfoModule: StudyInfoModule
-) : BaseViewModel<
-        HtmlDetailsState,
-        HtmlDetailsStateUpdate,
-        HtmlDetailsError,
-        HtmlDetailsLoading>
-    (
-    navigator = navigator,
-) {
-    /* --- data --- */
+class HtmlDetailsViewModel @ViewModelInject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<HtmlDetailsStateUpdate>,
+    private val loadingFlow: LoadingFlow<HtmlDetailsLoading>,
+    private val errorFlow: ErrorFlow<HtmlDetailsError>,
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getStudyInfoUseCase: GetStudyInfoUseCase
+) : ViewModel() {
 
-    suspend fun initialize(
-        rootNavController: RootNavController
-    ): Either<ForYouAndMeError, HtmlDetailsState> {
+    /* --- state --- */
 
-        showLoading(HtmlDetailsLoading.Initialization)
+    var state: HtmlDetailsState = HtmlDetailsState()
+        private set
 
-        val state =
-            studyInfoModule.getStudyInfo()
-                .nullToError()
-                .handleAuthError(rootNavController, navigator)
-                .fold(
-                    {
-                        setError(it, HtmlDetailsError.Initialization)
-                        it.left()
-                    },
-                    { studyInfo ->
+    /* --- flow --- */
 
-                        val state = HtmlDetailsState(studyInfo)
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
 
-                        setState(state) { HtmlDetailsStateUpdate.Initialization(it.studyInfo) }
+    /* --- initialization --- */
 
-                        state.right()
+    private suspend fun initialize() {
+        coroutineScope {
 
-                    }
+            loadingFlow.show(HtmlDetailsLoading.Initialization)
+
+            val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
+            val studyInfo = async { getStudyInfoUseCase()!! }
+
+            state = state.copy(configuration = configuration.await(), studyInfo = studyInfo.await())
+            stateUpdateFlow.update(
+                HtmlDetailsStateUpdate.Initialization(
+                    configuration.await(),
+                    studyInfo.await()
                 )
+            )
 
-        hideLoading(HtmlDetailsLoading.Initialization)
+            loadingFlow.hide(HtmlDetailsLoading.Initialization)
 
-        return state
+        }
     }
 
-    /* --- navigation --- */
+    /* --- state event --- */
 
-    suspend fun back(navController: NavController): Unit {
-        navigator.backSuspend(navController)
+    fun execute(stateEvent: HtmlDetailsStateEvent) {
+
+        when (stateEvent) {
+            HtmlDetailsStateEvent.Initialize ->
+                errorFlow.launchCatch(viewModelScope, HtmlDetailsError.Initialization)
+                { initialize() }
+        }
+
     }
 
 }

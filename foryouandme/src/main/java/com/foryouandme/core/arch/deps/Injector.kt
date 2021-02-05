@@ -13,12 +13,11 @@ import com.foryouandme.core.data.api.feed.FeedApi
 import com.foryouandme.core.data.api.integration.IntegrationApi
 import com.foryouandme.core.data.api.optins.OptInsApi
 import com.foryouandme.core.data.api.screening.ScreeningApi
-import com.foryouandme.core.data.api.studyinfo.StudyInfoApi
+import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.researchkit.task.TaskConfiguration
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 

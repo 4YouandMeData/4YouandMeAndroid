@@ -1,6 +1,5 @@
-package com.foryouandme.core.data.api.studyinfo.response
+package com.foryouandme.data.repository.study.network.response
 
-import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
 import com.foryouandme.entity.studyinfo.StudyInfo
 import com.squareup.moshi.Json
@@ -16,15 +15,17 @@ data class StudyInfoResponse(
     @field:Json(name = "reward_page") val rewardPage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    suspend fun toStudyInfo(document: ObjectDocument<StudyInfoResponse>): StudyInfo? =
-        Either.catch {
+    fun toStudyInfo(document: ObjectDocument<StudyInfoResponse>): StudyInfo? {
 
-            StudyInfo(
-                informationPage?.get(document)?.toPage(document)!!,
-                faqPage?.get(document)?.toPage(document)!!,
-                rewardPage?.get(document)?.toPage(document)!!
-            )
+        val information = informationPage?.get(document)?.toPage(document)
+        val faq = faqPage?.get(document)?.toPage(document)
+        val reward = rewardPage?.get(document)?.toPage(document)
 
-        }.orNull()
+        return when (null) {
+            information, faq, reward -> null
+            else -> StudyInfo(information, faq, reward)
+        }
+
+    }
 
 }

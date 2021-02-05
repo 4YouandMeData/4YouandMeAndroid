@@ -23,7 +23,7 @@ import com.foryouandme.core.data.api.integration.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
-import com.foryouandme.core.data.api.studyinfo.response.StudyInfoResponse
+import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.SerializeNulls
 import com.foryouandme.data.repository.task.network.response.TaskResponse
