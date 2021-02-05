@@ -127,7 +127,7 @@ open class RecorderService : BaseService() {
                     lifecycleScope.launchSafe {
 
                         delay(step.target.duration * 1000L)
-                        onRecorderDurationFinished(step)
+                        onRecorderDurationFinished(step, false)
 
                     }
             }
@@ -145,7 +145,7 @@ open class RecorderService : BaseService() {
                                         sensorFlow.update(SensorData.Steps(it.steps))
 
                                         if (it.steps >= step.target.steps)
-                                            onRecorderDurationFinished(step)
+                                            onRecorderDurationFinished(step, true)
 
                                     }
 
@@ -159,7 +159,7 @@ open class RecorderService : BaseService() {
                     lifecycleScope.launchSafe {
 
                         delay((step.target.steps * 1.5f).toLong() * 1000L)
-                        onRecorderDurationFinished(step)
+                        onRecorderDurationFinished(step, false)
 
                     }
             }
@@ -268,9 +268,9 @@ open class RecorderService : BaseService() {
     }
 
     @ExperimentalCoroutinesApi
-    private suspend fun onRecorderDurationFinished(step: SensorStep) {
+    private suspend fun onRecorderDurationFinished(step: SensorStep, stopTimer: Boolean) {
 
-        stopRecorder()
+        stopRecorder(stopTimer)
 
         if (step.shouldVibrateOnFinish) vibrate()
         if (step.shouldPlaySoundOnFinish) playSound()
@@ -337,14 +337,16 @@ open class RecorderService : BaseService() {
 
     }
 
-    private suspend fun stopRecorder() {
+    private suspend fun stopRecorder(stopTimer: Boolean) {
 
         // stop all sensor recorder
         stopRecorders()
 
         // stop the timer
-        taskTimer?.cancel()
-        taskTimer = null
+        if (stopTimer) {
+            taskTimer?.cancel()
+            taskTimer = null
+        }
 
         // stop step counter
         sensorJob?.cancel()
