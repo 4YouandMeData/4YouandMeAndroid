@@ -1,17 +1,16 @@
 package com.foryouandme.ui.main.items
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.foryouandme.R
+import com.foryouandme.databinding.QuickActivitiesItemBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.compare
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.quick_activities_item.*
+import com.giacomoparisi.recyclerdroid.core.holder.typeCheckDroidViewHolderFactory
 
 data class QuickActivitiesItem(
     val id: String,
@@ -50,39 +49,43 @@ class QuickActivitiesViewHolder(
 ) : DroidViewHolder<QuickActivitiesItem, Unit>(
     viewGroup,
     R.layout.quick_activities_item
-), LayoutContainer {
+) {
 
     override fun bind(item: QuickActivitiesItem, position: Int) {
 
-        view_pager.adapter = item.quickActivities
-        view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        val binding = QuickActivitiesItemBinding.bind(itemView)
+
+        binding.viewPager.adapter = item.quickActivities
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val currentQuestionNumber = item.configuration.text.activity.quickActivitiesTotalNumber.toInt() + 1 - item.quickActivities.itemCount.toInt()
-                val counterText = "${currentQuestionNumber}/${item.configuration.text.activity.quickActivitiesTotalNumber}"
-                count.text = counterText
+                binding.count.text = getCountText(item)
 
             }
         })
-        view_pager.isUserInputEnabled = false
 
-        val currentQuestionNumber = item.configuration.text.activity.quickActivitiesTotalNumber.toInt() + 1 - item.quickActivities.itemCount.toInt()
-        val counterText = "${currentQuestionNumber}/${item.configuration.text.activity.quickActivitiesTotalNumber}"
-        count.text = counterText
-        count.setTextColor(item.configuration.theme.primaryTextColor.color())
+        binding.viewPager.isUserInputEnabled = false
+
+        binding.count.text = getCountText(item)
+        binding.count.setTextColor(item.configuration.theme.primaryTextColor.color())
 
     }
 
-    override val containerView: View? = itemView
+    private fun getCountText(item: QuickActivitiesItem): String {
+
+        val groupCount = item.configuration.text.activity.quickActivitiesTotalNumber.toInt()
+        val totalCount = item.quickActivities.itemCount
+        val currentQuestionNumber = groupCount - ((totalCount - 1) % groupCount)
+        return "${currentQuestionNumber}/${groupCount}"
+
+    }
+
 
     companion object {
 
         fun factory(): DroidViewHolderFactory =
-            DroidViewHolderFactory(
-                { QuickActivitiesViewHolder(it) },
-                { _, item -> item is QuickActivitiesItem }
-            )
+            typeCheckDroidViewHolderFactory<QuickActivitiesItem> { QuickActivitiesViewHolder(it) }
 
     }
 }
