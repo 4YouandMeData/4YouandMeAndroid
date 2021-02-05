@@ -18,6 +18,7 @@ import com.foryouandme.researchkit.step.sensor.SensorStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskIdentifiers
 import com.squareup.moshi.Moshi
+import java.util.concurrent.TimeUnit
 
 class FitnessTask(
     id: String,
@@ -320,6 +321,7 @@ class FitnessTask(
                         AccelerometerRecorderConfig(moshi, 10.toDouble()),
                         PedometerRecorderConfig(moshi)
                     ),
+                    timerSeconds = TimeUnit.MINUTES.toSeconds(2),
                     spokenInstruction = {
                         walkDescription ?: it.getString(
                             R.string.FITNESS_walk,
@@ -346,6 +348,7 @@ class FitnessTask(
                         DeviceMotionRecorderConfig(moshi, 10.toDouble()),
                         AccelerometerRecorderConfig(moshi, 10.toDouble()),
                     ),
+                    timerSeconds = 30,
                     spokenInstruction = {
                         sitDescription ?: it.getString(
                             R.string.FITNESS_sit,

@@ -47,6 +47,7 @@ class SensorStep(
     val image: Int?,
     val target: SensorRecorderTarget,
     val recorderConfigurations: List<RecorderConfig>,
+    val timerSeconds: Long? = null,
     val spokenInstruction: ((Context) -> String)? = null,
     val finishedSpokenInstruction: String? = null,
     val spokenInstructionMap: Map<Long, String> = emptyMap(),

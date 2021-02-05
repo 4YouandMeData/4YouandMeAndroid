@@ -80,8 +80,6 @@ class TaskFragment : BaseFragmentOld<TaskViewModel>(R.layout.task) {
 
             if (viewModel.isInitialized().not())
                 viewModel.initialize(idArg(), dataArg())
-            else
-                applyData()
 
         }
 
