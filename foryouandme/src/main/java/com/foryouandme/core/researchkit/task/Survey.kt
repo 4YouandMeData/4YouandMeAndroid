@@ -56,7 +56,7 @@ fun buildSurvey(
             survey.surveyBlocks.forEach { surveyBlock ->
 
                 val intro =
-                    surveyBlock.introPage.asList(surveyBlock.pages).mapIndexed { _, page ->
+                    surveyBlock.introPage?.asList(surveyBlock.pages)?.mapIndexed { _, page ->
 
                         FYAMPageStep(
                             getSurveyBlockIntroStepId(surveyBlock.id, page.id),
@@ -67,7 +67,7 @@ fun buildSurvey(
                             false
                         )
 
-                    }
+                    } ?: emptyList()
 
                 val questions =
                     surveyBlock.questions.mapIndexed { index, question ->

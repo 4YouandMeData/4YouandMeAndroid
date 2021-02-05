@@ -15,7 +15,7 @@ data class Survey(
 data class SurveyBlock(
     val id: String,
     val pages: List<Page>,
-    val introPage: Page,
+    val introPage: Page?,
     val successPage: Page?,
     val questions: List<SurveyQuestion>,
 )

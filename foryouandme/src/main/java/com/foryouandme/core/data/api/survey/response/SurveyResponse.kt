@@ -51,7 +51,7 @@ data class SurveyBlockResponse(
             SurveyBlock(
                 id,
                 pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
-                introPage?.get(document)?.toPage(document)!!,
+                introPage?.get(document)?.toPage(document),
                 successPage?.get(document)?.toPage(document),
                 questions?.get(document)
                     ?.mapNotNull { it.toSurveyQuestion() } ?: emptyList()
