@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.foryouandme.entity.device.DeviceInfo
-import com.foryouandme.entity.device.DeviceLocation
+import com.foryouandme.entity.location.Location
 import com.squareup.moshi.Json
 import java.util.*
 
@@ -22,10 +22,13 @@ data class DeviceInfoDatabaseEntity(
         DeviceInfo(
             timestamp = timestamp,
             batteryLevel = batteryLevel,
-            location = if (longitude != null && latitude != null) DeviceLocation(
-                latitude,
-                longitude
-            ) else null,
+            location =
+            if (longitude != null && latitude != null)
+                Location(
+                    latitude,
+                    longitude
+                )
+            else null,
             timeZone = timeZone,
             hashedSSID = hashedSSID
         )

@@ -16,7 +16,7 @@ import com.foryouandme.data.repository.device.network.DeviceApi
 import com.foryouandme.data.repository.device.network.request.DeviceInfoRequest
 import com.foryouandme.domain.usecase.device.DeviceRepository
 import com.foryouandme.entity.device.DeviceInfo
-import com.foryouandme.entity.device.DeviceLocation
+import com.foryouandme.entity.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
@@ -85,7 +85,7 @@ class DeviceRepositoryImpl @Inject constructor(
     }
 
     @RequiresPermission(anyOf = ["android.permission.ACCESS_FINE_LOCATION"])
-    private suspend fun getLastKnownLocation(): DeviceLocation? =
+    private suspend fun getLastKnownLocation(): Location? =
         suspendCoroutine { continuation ->
 
             var isResumed = false
@@ -93,7 +93,7 @@ class DeviceRepositoryImpl @Inject constructor(
             fusedLocationProviderClient.lastLocation
                 .addOnSuccessListener {
                     if (isResumed.not()) {
-                        val location = it?.let { DeviceLocation(it.latitude, it.longitude) }
+                        val location = it?.let { Location(it.latitude, it.longitude) }
                         continuation.resume(location)
                         isResumed = true
                     }

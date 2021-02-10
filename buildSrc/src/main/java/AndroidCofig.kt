@@ -7,4 +7,5 @@ object AndroidConfig {
     const val version_name = "0.1.24"
 
     const val test_instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"
+
 }
