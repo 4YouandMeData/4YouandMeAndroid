@@ -28,6 +28,7 @@ import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.SerializeNulls
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -37,6 +38,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import moe.banana.jsonapi2.ResourceAdapterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -116,24 +118,51 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideFusedLocationClient(
-        @ApplicationContext context: Context
-    ): FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
-
-    companion object {
-
-        const val TASK_MOSHI: String = "task_moshi"
-
-    }
-
-    @Singleton
-    @Provides
     fun provideDatabase(@ApplicationContext context: Context): ForYouAndMeDatabase =
         Room.databaseBuilder(
             context,
             ForYouAndMeDatabase::class.java,
             "for_you_and_me_database"
         ).fallbackToDestructiveMigration().build()
+
+    @Singleton
+    @Provides
+    fun provideFusedLocation(@ApplicationContext context: Context): FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
+
+    @Singleton
+    @Provides
+    fun provideLocationRequest(): LocationRequest =
+        LocationRequest()
+            .apply {
+
+                // Sets the desired interval for active location updates. This interval is inexact.
+                // You may not receive updates at all if no location sources are available,
+                // or you may receive them less frequently than requested. You may also receive
+                // updates more frequently than requested if other applications are requesting
+                // location at a more frequent interval.
+                //
+                // IMPORTANT NOTE: Apps running on Android 8.0 and higher devices (regardless of
+                // targetSdkVersion) may receive updates less frequently than this interval when
+                // the app is no longer in the foreground.
+                interval = TimeUnit.SECONDS.toMillis(15)
+
+                // Sets the fastest rate for active location updates. This interval is exact,
+                // and your application will never receive updates more frequently than this value.
+                fastestInterval = TimeUnit.SECONDS.toMillis(10)
+
+                // Sets the maximum time when batched location updates are delivered. Updates may be
+                // delivered sooner than this interval.
+                maxWaitTime = TimeUnit.MINUTES.toMillis(2)
+
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+            }
+
+    companion object {
+
+        const val TASK_MOSHI: String = "task_moshi"
+
+    }
 
 }

@@ -9,6 +9,7 @@ import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.device.SendDeviceInfoUseCase
+import com.foryouandme.domain.usecase.location.LocationTrackingUseCase
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
 import kotlinx.coroutines.async
@@ -21,7 +22,8 @@ class FYAMViewModel @ViewModelInject constructor(
     private val loadingFlow: LoadingFlow<FYAMLoading>,
     private val errorFlow: ErrorFlow<FYAMError>,
     private val getConfigurationUseCase: GetConfigurationUseCase,
-    private val sendDeviceInfoUseCase: SendDeviceInfoUseCase
+    private val sendDeviceInfoUseCase: SendDeviceInfoUseCase,
+    private val locationTrackingUseCase: LocationTrackingUseCase
 ) : ViewModel() {
 
     /* --- state --- */
@@ -118,6 +120,10 @@ class FYAMViewModel @ViewModelInject constructor(
                 }
             FYAMStateEvent.SendDeviceInfo ->
                 viewModelScope.launchSafe { sendDeviceInfo() }
+            FYAMStateEvent.StartLocationTracking ->
+                viewModelScope.launchSafe { locationTrackingUseCase.start() }
+            FYAMStateEvent.StopLocationTracking ->
+                viewModelScope.launchSafe { locationTrackingUseCase.stop() }
         }
 
     }

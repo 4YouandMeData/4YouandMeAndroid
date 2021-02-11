@@ -6,12 +6,23 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface LocationDao {
+interface HomeLocationDao {
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertLocation(location: HomeLocationDatabaseEntity)
+
+    @Query("SELECT * FROM home_location")
+    suspend fun getLocations(): List<HomeLocationDatabaseEntity>
+
+}
+
+@Dao
+interface CurrentLocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: LocationDatabaseEntity)
+    suspend fun insertLocation(location: CurrentLocationDatabaseEntity)
 
-    @Query("SELECT * FROM location")
-    suspend fun getLocation(): List<LocationDatabaseEntity>
+    @Query("SELECT * FROM current_location")
+    suspend fun getLocations(): List<CurrentLocationDatabaseEntity>
 
 }

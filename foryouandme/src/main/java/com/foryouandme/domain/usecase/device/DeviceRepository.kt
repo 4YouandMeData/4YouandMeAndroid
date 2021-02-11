@@ -1,11 +1,15 @@
 package com.foryouandme.domain.usecase.device
 
 import com.foryouandme.entity.device.DeviceInfo
+import com.foryouandme.entity.location.LocationCoordinates
 import java.util.*
 
 interface DeviceRepository {
 
-    suspend fun trackDeviceInfo(isLocationPermissionEnabled: Boolean)
+    suspend fun trackDeviceInfo(
+        homeLocation: LocationCoordinates?,
+        currentLocation: LocationCoordinates?
+    )
 
     suspend fun saveDeviceInfo(deviceInfo: DeviceInfo)
 

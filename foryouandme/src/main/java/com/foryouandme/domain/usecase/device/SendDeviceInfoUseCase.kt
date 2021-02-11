@@ -4,6 +4,8 @@ import com.foryouandme.core.ext.catchToNullSuspend
 import com.foryouandme.data.ext.getTimestampDateUTC
 import com.foryouandme.data.ext.minusDays
 import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.location.GetCurrentLocationUseCase
+import com.foryouandme.domain.usecase.location.GetHomeLocationUseCase
 import com.foryouandme.domain.usecase.permission.IsPermissionGrantedUseCase
 import com.foryouandme.entity.permission.Permission
 import kotlinx.coroutines.async
@@ -14,6 +16,8 @@ import javax.inject.Inject
 class SendDeviceInfoUseCase @Inject constructor(
     private val repository: DeviceRepository,
     private val getTokenUseCase: GetTokenUseCase,
+    private val getHomeLocationUseCase: GetHomeLocationUseCase,
+    private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase
 ) {
 
@@ -22,9 +26,10 @@ class SendDeviceInfoUseCase @Inject constructor(
         coroutineScope {
 
             val locationPermission = isPermissionGrantedUseCase(Permission.Location)
+            val homeLocation = getHomeLocationUseCase()
+            val currentLocation = getCurrentLocationUseCase()
 
-            repository.trackDeviceInfo(locationPermission)
-
+            repository.trackDeviceInfo(homeLocation, currentLocation)
             repository.deleteDeviceInfoOlderThan(getTimestampDateUTC().minusDays(5))
 
             val token = getTokenUseCase.safe()

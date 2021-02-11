@@ -1,6 +1,7 @@
 package com.foryouandme.core.ext
 
 import arrow.core.*
+import kotlinx.coroutines.CancellationException
 
 fun <T> T?.getOr(block: () -> T): T =
     this ?: block()
@@ -34,6 +35,7 @@ fun <T> catchToNull(block: () -> T): T? =
     try {
         block()
     } catch (e: Throwable) {
+        if (e is CancellationException) throw e
         null
     }
 
@@ -41,5 +43,14 @@ suspend fun <T> catchToNullSuspend(block: suspend () -> T): T? =
     try {
         block()
     } catch (e: Throwable) {
+        if (e is CancellationException) throw e
         null
+    }
+
+suspend fun catchSuspend(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) =
+    try {
+        block()
+    } catch (e: Throwable) {
+        if (e is CancellationException) throw e
+        error(e)
     }

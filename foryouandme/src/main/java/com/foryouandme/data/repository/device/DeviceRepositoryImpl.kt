@@ -6,7 +6,6 @@ import android.content.IntentFilter
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
-import androidx.annotation.RequiresPermission
 import com.foryouandme.core.ext.catchToNullSuspend
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.AuthErrorInterceptor
@@ -16,8 +15,7 @@ import com.foryouandme.data.repository.device.network.DeviceApi
 import com.foryouandme.data.repository.device.network.request.DeviceInfoRequest
 import com.foryouandme.domain.usecase.device.DeviceRepository
 import com.foryouandme.entity.device.DeviceInfo
-import com.foryouandme.entity.location.Location
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.foryouandme.entity.location.LocationCoordinates
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -26,37 +24,29 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class DeviceRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val fusedLocationProviderClient: FusedLocationProviderClient,
     private val api: DeviceApi,
     private val authErrorInterceptor: AuthErrorInterceptor,
     private val database: ForYouAndMeDatabase
 ) : DeviceRepository {
 
-    override suspend fun trackDeviceInfo(isLocationPermissionEnabled: Boolean) {
+    override suspend fun trackDeviceInfo(
+        homeLocation: LocationCoordinates?,
+        currentLocation: LocationCoordinates?
+    ) {
         coroutineScope {
 
             val batteryLevel = async { catchToNullSuspend { getCurrentBatteryLevel() } }
-            val location =
-                async {
-                    catchToNullSuspend {
-                        if (isLocationPermissionEnabled)
-                            getLastKnownLocation()
-                        else
-                            null
-                    }
-                }
+            val location = getRelativeLocation(homeLocation, currentLocation)
             val timeZone = async { catchToNullSuspend { getTimeZone() } }
             val hashedSSID = async { catchToNullSuspend { getHashedSSID() } }
 
             val deviceInfo =
                 DeviceInfo(
                     batteryLevel.await(),
-                    location.await(),
+                    location,
                     timeZone.await(),
                     hashedSSID.await(),
                     getTimestampDateUTC()
@@ -84,34 +74,17 @@ class DeviceRepositoryImpl @Inject constructor(
 
     }
 
-    @RequiresPermission(anyOf = ["android.permission.ACCESS_FINE_LOCATION"])
-    private suspend fun getLastKnownLocation(): Location? =
-        suspendCoroutine { continuation ->
+    private fun getRelativeLocation(
+        homeLocation: LocationCoordinates?,
+        currentLocation: LocationCoordinates?
+    ): LocationCoordinates? =
 
-            var isResumed = false
-
-            fusedLocationProviderClient.lastLocation
-                .addOnSuccessListener {
-                    if (isResumed.not()) {
-                        val location = it?.let { Location(it.latitude, it.longitude) }
-                        continuation.resume(location)
-                        isResumed = true
-                    }
-                }
-                .addOnCanceledListener {
-                    if (isResumed.not()) {
-                        continuation.resume(null)
-                        isResumed = true
-                    }
-                }
-                .addOnFailureListener {
-                    if (isResumed.not()) {
-                        continuation.resume(null)
-                        isResumed = true
-                    }
-                }
-
-        }
+        if (homeLocation != null && currentLocation != null)
+            LocationCoordinates(
+                currentLocation.latitude - homeLocation.latitude,
+                currentLocation.longitude - homeLocation.longitude
+            )
+        else null
 
     private fun getTimeZone(): String = ZoneId.systemDefault().id
 

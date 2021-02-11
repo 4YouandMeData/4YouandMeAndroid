@@ -1,11 +1,19 @@
 package com.foryouandme.domain.usecase.location
 
-import com.foryouandme.entity.location.Location
+import com.foryouandme.entity.location.LocationCoordinates
 
 interface LocationRepository {
 
-    suspend fun getHomeLocation(): Location?
+    suspend fun startLocationTracking()
 
-    suspend fun saveHomeLocation(location: Location)
+    suspend fun stopLocationTracking()
+
+    suspend fun getHomeLocation(): LocationCoordinates?
+
+    suspend fun saveHomeLocation(location: LocationCoordinates)
+
+    suspend fun getCurrentLocation(): LocationCoordinates?
+
+    suspend fun saveCurrentLocation(location: LocationCoordinates)
 
 }
