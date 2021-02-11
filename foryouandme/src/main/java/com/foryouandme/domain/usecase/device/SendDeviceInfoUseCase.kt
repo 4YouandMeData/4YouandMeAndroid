@@ -26,8 +26,8 @@ class SendDeviceInfoUseCase @Inject constructor(
         coroutineScope {
 
             val locationPermission = isPermissionGrantedUseCase(Permission.Location)
-            val homeLocation = getHomeLocationUseCase()
             val currentLocation = getCurrentLocationUseCase()
+            val homeLocation = getHomeLocationUseCase()
 
             repository.trackDeviceInfo(homeLocation, currentLocation)
             repository.deleteDeviceInfoOlderThan(getTimestampDateUTC().minusDays(5))

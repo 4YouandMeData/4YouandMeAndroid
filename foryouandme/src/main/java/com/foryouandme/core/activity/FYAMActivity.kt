@@ -101,17 +101,8 @@ class FYAMActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.execute(FYAMStateEvent.StopLocationTracking)
-        viewModel.execute(FYAMStateEvent.StartLocationTracking)
         viewModel.execute(FYAMStateEvent.SendDeviceInfo)
 
-    }
-
-    override fun onDestroy() {
-
-        viewModel.execute(FYAMStateEvent.StopLocationTracking)
-
-        super.onDestroy()
     }
 
     private fun taskIdArg(): String? = intent.extras?.getString(TASK_ID)

@@ -15,14 +15,3 @@ interface HomeLocationDao {
     suspend fun getLocations(): List<HomeLocationDatabaseEntity>
 
 }
-
-@Dao
-interface CurrentLocationDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: CurrentLocationDatabaseEntity)
-
-    @Query("SELECT * FROM current_location")
-    suspend fun getLocations(): List<CurrentLocationDatabaseEntity>
-
-}

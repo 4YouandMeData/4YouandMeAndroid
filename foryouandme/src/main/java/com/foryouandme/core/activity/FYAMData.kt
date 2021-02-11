@@ -41,8 +41,4 @@ sealed class FYAMStateEvent {
 
     object SendDeviceInfo : FYAMStateEvent()
 
-    object StartLocationTracking : FYAMStateEvent()
-
-    object StopLocationTracking : FYAMStateEvent()
-
 }
