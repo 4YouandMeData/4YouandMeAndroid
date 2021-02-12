@@ -3,6 +3,8 @@ package com.foryouandme.core.researchkit.task
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.cases.task.TaskUseCase.updateSurvey
+import com.foryouandme.core.researchkit.step.FYAMPageStep
+import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.data.repository.task.network.request.AnswerUpdateRequest
 import com.foryouandme.data.repository.task.network.request.SurveyUpdateRequest
 import com.foryouandme.entity.activity.Reschedule
@@ -12,8 +14,6 @@ import com.foryouandme.entity.page.Page
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.foryouandme.entity.survey.SurveyQuestion
-import com.foryouandme.core.researchkit.step.FYAMPageStep
-import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.researchkit.result.MultipleAnswerResult
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.result.SingleIntAnswerResult
@@ -434,13 +434,37 @@ private fun getSkipSurveyQuestionStepId(
         if (successId != null) successId
         else {
 
-            val blockIndex = surveyBlocks.indexOf(block.id)
+            val blockIndex = surveyBlocks.indexOfFirst { block.id == it.id }
 
             val nextBlockIndex = if (blockIndex >= 0) blockIndex + 1 else null
 
             val nextBlock = nextBlockIndex?.let { surveyBlocks.getOrNull(it) }
 
-            nextBlock?.introPage?.let { getSurveyBlockIntroStepId(block.id, it.id) }
+            if (nextBlock != null) {
+
+                val nextIntroPage = nextBlock.introPage
+
+                if (nextIntroPage != null)
+                    getSurveyBlockIntroStepId(nextBlock.id, nextIntroPage.id)
+                else {
+
+                    val nextQuestionId =
+                        when (val nextQuestion = nextBlock.questions.firstOrNull()) {
+                            is SurveyQuestion.Date -> nextQuestion.id
+                            is SurveyQuestion.Numerical -> nextQuestion.id
+                            is SurveyQuestion.PickMany -> nextQuestion.id
+                            is SurveyQuestion.PickOne -> nextQuestion.id
+                            is SurveyQuestion.Range -> nextQuestion.id
+                            is SurveyQuestion.Scale -> nextQuestion.id
+                            is SurveyQuestion.TextInput -> nextQuestion.id
+                            null -> null
+                        }
+
+                    nextQuestionId?.let { getSurveyQuestionStepId(nextBlock.id, it) }
+
+                }
+
+            } else null
 
         }
 
