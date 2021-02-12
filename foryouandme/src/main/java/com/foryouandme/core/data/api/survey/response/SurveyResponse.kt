@@ -48,13 +48,18 @@ data class SurveyBlockResponse(
     suspend fun toSurveyBlock(): SurveyBlock? =
         Either.catch {
 
+            val questions =
+                questions
+                    ?.get(document)
+                    ?.mapNotNull { it.toSurveyQuestion() }
+                    ?.let { if (it.isEmpty()) null else it }
+
             SurveyBlock(
                 id,
                 pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
                 introPage?.get(document)?.toPage(document),
                 successPage?.get(document)?.toPage(document),
-                questions?.get(document)
-                    ?.mapNotNull { it.toSurveyQuestion() } ?: emptyList()
+                questions!!
             )
 
         }.orNull()
