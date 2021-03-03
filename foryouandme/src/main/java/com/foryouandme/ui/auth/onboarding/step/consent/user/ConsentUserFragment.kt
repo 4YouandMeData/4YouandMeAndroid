@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
 import kotlinx.android.synthetic.main.screening.*
 
 class ConsentUserFragment : ConsentSectionFragment<ConsentUserViewModel>(R.layout.consent_user) {
@@ -69,15 +70,16 @@ class ConsentUserFragment : ConsentSectionFragment<ConsentUserViewModel>(R.layou
         }
     }
 
-    private fun setupNavigation(): Unit {
+    private suspend fun setupNavigation(): Unit {
+        evalOnMain {
+            val navHostFragment =
+                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.consent_user_navigation)
+            navHostFragment.navController.graph = graph
 
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.consent_user_navigation)
-        navHostFragment.navController.graph = graph
-
+        }
     }
 
 }

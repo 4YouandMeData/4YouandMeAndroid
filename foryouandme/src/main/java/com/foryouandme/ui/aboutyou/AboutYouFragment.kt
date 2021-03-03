@@ -7,6 +7,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
@@ -81,15 +82,17 @@ class AboutYouFragment : BaseFragmentOld<AboutYouViewModel>(R.layout.about_you) 
         }
     }
 
-    private fun setupNavigation(): Unit {
+    private suspend fun setupNavigation(): Unit {
+        evalOnMain {
 
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val navHostFragment =
+                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.about_you_navigation)
-        navHostFragment.navController.graph = graph
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.about_you_navigation)
+            navHostFragment.navController.graph = graph
 
+        }
     }
 
 }

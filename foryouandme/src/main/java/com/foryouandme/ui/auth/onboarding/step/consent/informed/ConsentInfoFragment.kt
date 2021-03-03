@@ -71,15 +71,17 @@ class ConsentInfoFragment : ConsentSectionFragment<ConsentInfoViewModel>(R.layou
         }
     }
 
-    private fun setupNavigation(): Unit {
+    private suspend fun setupNavigation(): Unit {
+        evalOnMain {
 
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val navHostFragment =
+                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.consent_info_navigation)
-        navHostFragment.navController.graph = graph
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.consent_info_navigation)
+            navHostFragment.navController.graph = graph
 
+        }
     }
 
     suspend fun showAbort(configuration: Configuration, color: Int, type: ConsentInfoAbort): Unit =

@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.injector
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import kotlinx.android.synthetic.main.screening.*
 
 class IntegrationFragment : OnboardingStepFragment<IntegrationViewModel>(R.layout.integration) {
@@ -34,7 +35,8 @@ class IntegrationFragment : OnboardingStepFragment<IntegrationViewModel>(R.layou
         viewModel.stateLiveData()
             .observeEvent(name()) { update ->
                 when (update) {
-                    is IntegrationStateUpdate.Initialization -> setupNavigation()
+                    is IntegrationStateUpdate.Initialization ->
+                        startCoroutineAsync { setupNavigation() }
                 }
             }
 
@@ -69,15 +71,16 @@ class IntegrationFragment : OnboardingStepFragment<IntegrationViewModel>(R.layou
         }
     }
 
-    private fun setupNavigation(): Unit {
+    private suspend fun setupNavigation(): Unit {
+        evalOnMain {
+            val navHostFragment =
+                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.integration_navigation)
+            navHostFragment.navController.graph = graph
 
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.integration_navigation)
-        navHostFragment.navController.graph = graph
-
+        }
     }
 
 }
