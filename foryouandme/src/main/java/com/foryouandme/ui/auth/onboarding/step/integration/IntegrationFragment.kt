@@ -34,8 +34,7 @@ class IntegrationFragment : OnboardingStepFragment<IntegrationViewModel>(R.layou
         viewModel.stateLiveData()
             .observeEvent(name()) { update ->
                 when (update) {
-                    is IntegrationStateUpdate.Initialization ->
-                        startCoroutineAsync { setupNavigation() }
+                    is IntegrationStateUpdate.Initialization -> setupNavigation()
                 }
             }
 
