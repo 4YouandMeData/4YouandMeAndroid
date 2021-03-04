@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.consent.user.request
+package com.foryouandme.data.repository.consent.user.network.request
 
 import com.squareup.moshi.Json
 

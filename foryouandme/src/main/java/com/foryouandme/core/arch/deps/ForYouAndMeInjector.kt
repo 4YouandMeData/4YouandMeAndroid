@@ -26,8 +26,8 @@ import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
 import com.foryouandme.core.data.api.consent.review.response.ConsentReviewResponse
-import com.foryouandme.core.data.api.consent.user.ConsentUserApi
-import com.foryouandme.core.data.api.consent.user.response.ConsentUserResponse
+import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
+import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
 import com.foryouandme.core.data.api.feed.FeedApi
 import com.foryouandme.core.data.api.feed.response.FeedResponse
 import com.foryouandme.data.datasource.network.getApiService

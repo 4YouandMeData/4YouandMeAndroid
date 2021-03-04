@@ -17,7 +17,7 @@ import com.foryouandme.core.data.api.common.response.activity.TaskActivityRespon
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.consent.review.response.ConsentReviewResponse
-import com.foryouandme.core.data.api.consent.user.response.ConsentUserResponse
+import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
 import com.foryouandme.core.data.api.feed.response.FeedResponse
 import com.foryouandme.core.data.api.integration.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse

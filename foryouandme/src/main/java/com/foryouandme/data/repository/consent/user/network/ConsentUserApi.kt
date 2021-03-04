@@ -1,11 +1,8 @@
-package com.foryouandme.core.data.api.consent.user
+package com.foryouandme.data.repository.consent.user.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.consent.user.request.ConfirmUserConsentEmailRequest
-import com.foryouandme.core.data.api.consent.user.request.CreateUserConsentRequest
-import com.foryouandme.core.data.api.consent.user.request.UpdateUserConsentRequest
-import com.foryouandme.core.data.api.consent.user.request.UserConsentRequest
-import com.foryouandme.core.data.api.consent.user.response.ConsentUserResponse
+import com.foryouandme.data.repository.consent.user.network.request.*
+import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.Response
 import retrofit2.http.*
@@ -23,14 +20,21 @@ interface ConsentUserApi {
         @Header(Headers.AUTH) token: String,
         @Path("study_id") studyId: String,
         @Body request: UserConsentRequest<CreateUserConsentRequest>
-    ): Unit
+    )
 
     @PATCH("api/v1/studies/{study_id}/user_consent")
     suspend fun updateUserConsent(
         @Header(Headers.AUTH) token: String,
         @Path("study_id") studyId: String,
         @Body request: UserConsentRequest<UpdateUserConsentRequest>
-    ): Unit
+    )
+
+    @POST("api/v1/studies/{study_id}/user_consent")
+    suspend fun completeConsent(
+        @Header(Headers.AUTH) token: String,
+        @Path("study_id") studyId: String,
+        @Body request: UserConsentRequest<CompleteUserConsentRequest>
+    )
 
     @PATCH("api/v1/studies/{study_id}/user_consent/confirm_email")
     suspend fun confirmEmail(

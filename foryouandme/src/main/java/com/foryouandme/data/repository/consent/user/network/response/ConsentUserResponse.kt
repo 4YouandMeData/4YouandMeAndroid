@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.consent.user.response
+package com.foryouandme.data.repository.consent.user.network.response
 
 import com.foryouandme.core.data.api.common.response.PageResponse
 import com.foryouandme.entity.consent.user.ConsentUser

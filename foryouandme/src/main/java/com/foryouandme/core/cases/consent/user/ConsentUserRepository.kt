@@ -6,10 +6,10 @@ import com.foryouandme.core.arch.deps.modules.ConsentUserModule
 import com.foryouandme.core.arch.deps.modules.unwrapResponse
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.data.api.consent.user.request.ConfirmUserConsentEmailRequest
-import com.foryouandme.core.data.api.consent.user.request.CreateUserConsentRequest
-import com.foryouandme.core.data.api.consent.user.request.UpdateUserConsentRequest
-import com.foryouandme.core.data.api.consent.user.request.UserConsentRequest
+import com.foryouandme.data.repository.consent.user.network.request.ConfirmUserConsentEmailRequest
+import com.foryouandme.data.repository.consent.user.network.request.CreateUserConsentRequest
+import com.foryouandme.data.repository.consent.user.network.request.UpdateUserConsentRequest
+import com.foryouandme.data.repository.consent.user.network.request.UserConsentRequest
 import com.foryouandme.entity.consent.user.ConsentUser
 
 object ConsentUserRepository {

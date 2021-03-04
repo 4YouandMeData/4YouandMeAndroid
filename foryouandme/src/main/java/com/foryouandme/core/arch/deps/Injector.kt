@@ -8,7 +8,7 @@ import com.foryouandme.core.data.api.common.AnswerApi
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
-import com.foryouandme.core.data.api.consent.user.ConsentUserApi
+import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
 import com.foryouandme.core.data.api.feed.FeedApi
 import com.foryouandme.core.data.api.integration.IntegrationApi
 import com.foryouandme.core.data.api.optins.OptInsApi
