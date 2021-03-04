@@ -7,10 +7,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.screening.*
 
@@ -88,9 +85,12 @@ class AboutYouFragment : BaseFragmentOld<AboutYouViewModel>(R.layout.about_you) 
             val navHostFragment =
                 childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-            val inflater = navHostFragment.navController.navInflater
-            val graph = inflater.inflate(R.navigation.about_you_navigation)
-            navHostFragment.navController.graph = graph
+            val currentGraph = catchToNull { navHostFragment.navController.graph }
+            if (currentGraph == null) {
+                val inflater = navHostFragment.navController.navInflater
+                val graph = inflater.inflate(R.navigation.about_you_navigation)
+                navHostFragment.navController.graph = graph
+            }
 
         }
     }

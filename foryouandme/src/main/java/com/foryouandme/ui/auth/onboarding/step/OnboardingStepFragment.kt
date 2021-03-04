@@ -46,7 +46,7 @@ abstract class OnboardingStepFragment<T : BaseViewModel<*, *, *, *>>(contentLayo
 
         fun <T : OnboardingStepFragment<*>> buildWithParams(index: Int, fragment: T): T {
 
-            val bundle = Bundle()
+            val bundle = fragment.arguments ?: Bundle()
             bundle.putInt(INDEX, index)
             fragment.arguments = bundle
 

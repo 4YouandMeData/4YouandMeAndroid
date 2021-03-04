@@ -77,9 +77,12 @@ class ConsentInfoFragment : ConsentSectionFragment<ConsentInfoViewModel>(R.layou
             val navHostFragment =
                 childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-            val inflater = navHostFragment.navController.navInflater
-            val graph = inflater.inflate(R.navigation.consent_info_navigation)
-            navHostFragment.navController.graph = graph
+            val currentGraph = catchToNull { navHostFragment.navController.graph }
+            if (currentGraph == null) {
+                val inflater = navHostFragment.navController.navInflater
+                val graph = inflater.inflate(R.navigation.consent_info_navigation)
+                navHostFragment.navController.graph = graph
+            }
 
         }
     }

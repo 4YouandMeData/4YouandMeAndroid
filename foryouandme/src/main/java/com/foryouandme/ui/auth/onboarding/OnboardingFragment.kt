@@ -7,6 +7,7 @@ import com.foryouandme.R
 import com.foryouandme.ui.auth.AuthSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.navigator
 
@@ -41,9 +42,12 @@ class OnboardingFragment : AuthSectionFragment<OnboardingViewModel>(R.layout.onb
             val navHostFragment =
                 childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-            val inflater = navHostFragment.navController.navInflater
-            val graph = inflater.inflate(R.navigation.onboarding_navigation)
-            navHostFragment.navController.graph = graph
+            val currentGraph = catchToNull { navHostFragment.navController.graph }
+            if (currentGraph == null) {
+                val inflater = navHostFragment.navController.navInflater
+                val graph = inflater.inflate(R.navigation.onboarding_navigation)
+                navHostFragment.navController.graph = graph
+            }
 
         }
 

@@ -8,10 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import kotlinx.android.synthetic.main.screening.*
@@ -79,9 +76,12 @@ class ScreeningFragment : OnboardingStepFragment<ScreeningViewModel>(R.layout.sc
             val navHostFragment =
                 childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-            val inflater = navHostFragment.navController.navInflater
-            val graph = inflater.inflate(R.navigation.screening_navigation)
-            navHostFragment.navController.graph = graph
+            val currentGraph = catchToNull { navHostFragment.navController.graph }
+            if (currentGraph == null) {
+                val inflater = navHostFragment.navController.navInflater
+                val graph = inflater.inflate(R.navigation.screening_navigation)
+                navHostFragment.navController.graph = graph
+            }
 
         }
     }

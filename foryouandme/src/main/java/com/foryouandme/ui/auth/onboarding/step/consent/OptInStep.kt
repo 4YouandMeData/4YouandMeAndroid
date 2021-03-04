@@ -2,4 +2,4 @@ package com.foryouandme.ui.auth.onboarding.step.consent
 
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStep
 
-object ConsentStep : OnboardingStep("consent", { ConsentFragment.build(false) })
+object OptInStep : OnboardingStep("opt-ins", { ConsentFragment.build(true) })

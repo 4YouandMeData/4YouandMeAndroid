@@ -3,14 +3,14 @@ package com.foryouandme.ui.auth.onboarding.step.consent.optin.success
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.optins.OptIns
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.optins.OptIns
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
 import kotlinx.android.synthetic.main.opt_in.*
 import kotlinx.android.synthetic.main.opt_in_success.*
 
@@ -50,8 +50,22 @@ class OptInSuccessFragment : OptInSectionFragment(R.layout.opt_in_success) {
                 configuration = configuration,
                 page = optIns.successPage,
                 pageType = EPageType.SUCCESS,
-                action1 = { startCoroutineAsync { viewModel.consentUser(consentNavController()) } },
-                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
+                action1 = {
+                    startCoroutineAsync {
+                        if (optInFragment().consentFragment().onlyOptInArg())
+                            optInFragment().consentFragment().next()
+                        else
+                            viewModel.consentUser(consentNavController())
+                    }
+                },
+                extraStringAction = {
+                    startCoroutineAsync {
+                        viewModel.web(
+                            rootNavController(),
+                            it
+                        )
+                    }
+                }
             )
 
         }

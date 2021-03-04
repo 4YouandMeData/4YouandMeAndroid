@@ -1,17 +1,18 @@
 package com.foryouandme.ui.auth.onboarding
 
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStep
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
-import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationStep
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStep
-import com.foryouandme.ui.auth.onboarding.step.video.VideoStep
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.foldSuspend
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStep
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
+import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
+import com.foryouandme.ui.auth.onboarding.step.consent.OptInStep
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationStep
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStep
+import com.foryouandme.ui.auth.onboarding.step.video.VideoStep
 
 class OnboardingViewModel(
     navigator: Navigator
@@ -28,6 +29,7 @@ class OnboardingViewModel(
                     "intro_video" -> VideoStep
                     "screening" -> ScreeningStep
                     "consent_group" -> ConsentStep
+                    "opt-ins" -> OptInStep
                     "integration" -> IntegrationStep
                     else -> null
                 }
