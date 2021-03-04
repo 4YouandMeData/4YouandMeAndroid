@@ -31,9 +31,9 @@ class FYAMViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate: SharedFlow<FYAMStateUpdate> = stateUpdateFlow.stateUpdates
-    val loading: SharedFlow<UILoading<FYAMLoading>> = loadingFlow.loading
-    val error: SharedFlow<UIError<FYAMError>> = errorFlow.error
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
 
     /* --- initialize --- */
 

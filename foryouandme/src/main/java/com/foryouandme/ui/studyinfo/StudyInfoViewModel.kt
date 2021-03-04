@@ -22,9 +22,9 @@ class StudyInfoViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate: SharedFlow<StudyInfoStateUpdate> = stateUpdateFlow.stateUpdates
-    val loading: SharedFlow<UILoading<StudyInfoLoading>> = loadingFlow.loading
-    val error: SharedFlow<UIError<StudyInfoError>> = errorFlow.error
+    val stateUpdate= stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
 
     /* --- initialization --- */
 

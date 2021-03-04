@@ -50,9 +50,9 @@ class TasksViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate: SharedFlow<TasksStateUpdate> = stateUpdateFlow.stateUpdates
-    val loading: SharedFlow<UILoading<TasksLoading>> = loadingFlow.loading
-    val error: SharedFlow<UIError<TasksError>> = errorFlow.error
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
 
     /* --- job --- */
 

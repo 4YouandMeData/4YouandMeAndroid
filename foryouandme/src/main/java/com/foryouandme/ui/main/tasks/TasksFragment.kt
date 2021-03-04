@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.items.PagedRequestErrorItem
@@ -65,6 +66,7 @@ class TasksFragment : MainSectionFragment(R.layout.tasks) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is TasksStateUpdate.Tasks ->
@@ -77,6 +79,7 @@ class TasksFragment : MainSectionFragment(R.layout.tasks) {
             .observeIn(this)
 
         viewModel.loading
+            .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     is TasksLoading.Tasks ->
@@ -89,6 +92,7 @@ class TasksFragment : MainSectionFragment(R.layout.tasks) {
             .observeIn(this)
 
         viewModel.error
+            .unwrapEvent(name)
             .onEach { uiError ->
                 loading.setVisibility(false)
                 when (uiError.cause) {

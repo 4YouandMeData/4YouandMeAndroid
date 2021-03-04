@@ -9,6 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseActivity
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToAuth
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.FyamBinding
@@ -27,6 +28,7 @@ class FYAMActivity : BaseActivity() {
         setContentView(binding.root)
 
         viewModel.loading
+            .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     FYAMLoading.Config -> binding.loading.setVisibility(it.active, false)
@@ -49,6 +51,7 @@ class FYAMActivity : BaseActivity() {
             .observeIn(this)
 
         viewModel.error
+            .unwrapEvent(name)
             .onEach {
                 binding.error.setError(it.error, viewModel.state.configuration) {
 
@@ -65,6 +68,7 @@ class FYAMActivity : BaseActivity() {
             .observeIn(this)
 
         viewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is FYAMStateUpdate.Config -> setupNavigation()

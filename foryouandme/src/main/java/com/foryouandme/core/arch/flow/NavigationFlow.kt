@@ -7,14 +7,14 @@ import javax.inject.Inject
 
 class NavigationFlow @Inject constructor() {
 
-    private val navigationFlow: MutableSharedFlow<NavigationAction> = MutableSharedFlow()
-    val navigation: SharedFlow<NavigationAction>
+    private val navigationFlow: MutableSharedFlow<UIEvent<NavigationAction>> = MutableSharedFlow()
+    val navigation: SharedFlow<UIEvent<NavigationAction>>
         get() = navigationFlow
 
 
     suspend fun navigateTo(action: NavigationAction) {
 
-        navigationFlow.emit(action)
+        navigationFlow.emit(action.toUIEvent())
 
     }
 

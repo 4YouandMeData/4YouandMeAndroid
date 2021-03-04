@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.databinding.StudyInfoBinding
@@ -29,6 +30,7 @@ class StudyInfoFragment : BaseFragment(R.layout.study_info) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is StudyInfoStateUpdate.Initialization ->
@@ -38,6 +40,7 @@ class StudyInfoFragment : BaseFragment(R.layout.study_info) {
             .observeIn(this)
 
         viewModel.error
+            .unwrapEvent(name)
             .onEach {
 
                 binding?.loading?.setVisibility(false)
@@ -51,6 +54,7 @@ class StudyInfoFragment : BaseFragment(R.layout.study_info) {
             .observeIn(this)
 
         viewModel.loading
+            .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     StudyInfoLoading.Initialization ->

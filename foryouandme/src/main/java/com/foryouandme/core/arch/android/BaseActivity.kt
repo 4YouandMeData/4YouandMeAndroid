@@ -1,13 +1,10 @@
 package com.foryouandme.core.arch.android
 
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
-import com.foryouandme.core.arch.livedata.Event
-import com.foryouandme.core.arch.livedata.EventObserver
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.ext.launchSafe
@@ -24,6 +21,9 @@ abstract class BaseActivity : FragmentActivity {
 
     @Inject
     lateinit var navigator: Navigator
+
+    val name: String
+        get() = javaClass.simpleName
 
     fun rootNavController(): RootNavController =
         RootNavController(supportFragmentManager.fragments[0].findNavController())

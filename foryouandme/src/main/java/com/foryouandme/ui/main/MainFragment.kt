@@ -8,6 +8,7 @@ import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.setupWithNavController
 import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.selectedUnselectedColor
@@ -30,6 +31,7 @@ class MainFragment : BaseFragment(R.layout.main) {
         super.onCreate(savedInstanceState)
 
         viewModel.loading
+            .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     MainLoading.Config ->
@@ -39,6 +41,7 @@ class MainFragment : BaseFragment(R.layout.main) {
             .observeIn(this)
 
         viewModel.error
+            .unwrapEvent(name)
             .onEach {
 
                 binding?.loading?.setVisibility(false)
@@ -52,6 +55,7 @@ class MainFragment : BaseFragment(R.layout.main) {
             .observeIn(this)
 
         viewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is MainStateUpdate.PageNavigation ->
@@ -65,6 +69,7 @@ class MainFragment : BaseFragment(R.layout.main) {
             .observeIn(this)
 
         viewModel.navigation
+            .unwrapEvent(name)
             .onEach { navigator.navigateTo(rootNavController(), it) }
             .observeIn(this)
 

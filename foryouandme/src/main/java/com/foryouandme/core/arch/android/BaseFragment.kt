@@ -26,6 +26,9 @@ abstract class BaseFragment : Fragment {
     constructor() : super()
     constructor(contentLayoutId: Int) : super(contentLayoutId)
 
+    val name: String
+        get() = javaClass.simpleName
+
     /* --- activity --- */
 
     //fun getBaseActivity(): BaseActivity = requireActivity() as BaseActivity

@@ -35,10 +35,10 @@ class MainViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate: SharedFlow<MainStateUpdate> = stateUpdateFlow.stateUpdates
-    val loading: SharedFlow<UILoading<MainLoading>> = loadingFlow.loading
-    val error: SharedFlow<UIError<MainError>> = errorFlow.error
-    val navigation: SharedFlow<NavigationAction> = navigationFlow.navigation
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
 
     /* --- configuration --- */
 
