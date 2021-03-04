@@ -21,12 +21,14 @@ sealed class OnboardingStateUpdate {
 sealed class OnboardingLoading {
 
     object Initialization : OnboardingLoading()
+    object NextStep: OnboardingLoading()
 
 }
 
 sealed class OnboardingError {
 
     object Initialization : OnboardingError()
+    object NextStep: OnboardingError()
 
 }
 

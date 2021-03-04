@@ -30,9 +30,9 @@ class OnboardingFragment : AuthSectionFragment(R.layout.onboarding) {
             .unwrapEvent(name)
             .onEach {
                 when (it.task) {
-                    OnboardingLoading.Initialization ->
+                    OnboardingLoading.Initialization,
+                    OnboardingLoading.NextStep ->
                         binding?.loading?.setVisibility(it.active)
-
                 }
             }
             .observeIn(this)
@@ -44,6 +44,8 @@ class OnboardingFragment : AuthSectionFragment(R.layout.onboarding) {
                     OnboardingError.Initialization ->
                         binding?.error?.setError(it.error, viewModel.state.configuration)
                         { viewModel.execute(OnboardingStateEvent.Initialize) }
+                    OnboardingError.NextStep ->
+                        binding?.error?.setError(it.error, viewModel.state.configuration)
                 }
             }
             .observeIn(this)

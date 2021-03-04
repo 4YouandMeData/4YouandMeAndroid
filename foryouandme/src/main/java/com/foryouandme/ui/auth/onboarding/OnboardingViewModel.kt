@@ -6,9 +6,9 @@ import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.NavigationFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.consent.user.CompleteConsentUseCase
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStep
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
 import com.foryouandme.ui.auth.onboarding.step.consent.OptInStep
@@ -24,7 +24,8 @@ class OnboardingViewModel @Inject constructor(
     private val errorFlow: ErrorFlow<OnboardingError>,
     private val stateUpdateFlow: StateUpdateFlow<OnboardingStateUpdate>,
     private val navigationFlow: NavigationFlow,
-    private val getConfigurationUseCase: GetConfigurationUseCase
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val completeUserConsentUseCase: CompleteConsentUseCase
 ) : ViewModel() {
 
     /* --- state --- */
@@ -85,6 +86,9 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private suspend fun end() {
+        loadingFlow.show(OnboardingLoading.NextStep)
+        completeUserConsentUseCase()
+        loadingFlow.hide(OnboardingLoading.NextStep)
         navigationFlow.navigateTo(OnboardingToMain)
     }
 
@@ -101,7 +105,12 @@ class OnboardingViewModel @Inject constructor(
                     OnboardingLoading.Initialization
                 ) { initialize() }
             is OnboardingStateEvent.NextStep ->
-                viewModelScope.launchSafe { nextStep(stateEvent.currentStepIndex) }
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    OnboardingError.NextStep,
+                    loadingFlow,
+                    OnboardingLoading.NextStep
+                ) { nextStep(stateEvent.currentStepIndex) }
         }
 
     }
