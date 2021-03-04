@@ -12,6 +12,7 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.items.PagedRequestErrorItem
 import com.foryouandme.core.items.PagedRequestErrorViewHolder

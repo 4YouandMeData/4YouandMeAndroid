@@ -19,9 +19,11 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.video.*
 import kotlinx.android.synthetic.main.video_controls.*
 
+@AndroidEntryPoint
 class VideoFragment : OnboardingStepFragment<VideoViewModel>(R.layout.video) {
 
     lateinit var player: SimpleExoPlayer

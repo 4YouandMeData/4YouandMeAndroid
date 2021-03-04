@@ -1,28 +1,22 @@
 package com.foryouandme.ui.auth.onboarding.step
 
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.OnboardingFragment
-import com.foryouandme.ui.auth.onboarding.OnboardingViewModel
 import com.foryouandme.core.arch.android.BaseFragmentOld
 import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.find
-import com.foryouandme.core.ext.navigator
+import com.foryouandme.ui.auth.AuthNavController
+import com.foryouandme.ui.auth.onboarding.OnboardingFragment
+import com.foryouandme.ui.auth.onboarding.OnboardingStateEvent
+import com.foryouandme.ui.auth.onboarding.OnboardingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 abstract class OnboardingStepFragment<T : BaseViewModel<*, *, *, *>>(contentLayoutId: Int) :
     BaseFragmentOld<T>(contentLayoutId) {
 
-    val onboardingViewModel: OnboardingViewModel by lazy {
-
-        viewModelFactory(
-            onboardingFragment(),
-            getFactory { OnboardingViewModel(navigator) }
-        )
-
-    }
+    val onboardingViewModel: OnboardingViewModel
+            by viewModels(ownerProducer = { onboardingFragment() })
 
     fun onboardingFragment(): OnboardingFragment = find()
 
@@ -32,8 +26,8 @@ abstract class OnboardingStepFragment<T : BaseViewModel<*, *, *, *>>(contentLayo
     fun authNavController(): AuthNavController =
         onboardingFragment().authNavController()
 
-    open suspend fun next(): Unit {
-        onboardingViewModel.nextStep(rootNavController(), onboardingStepNavController(), indexArg())
+    open fun next() {
+        onboardingViewModel.execute(OnboardingStateEvent.NextStep(indexArg()))
     }
 
     protected fun indexArg(): Int =

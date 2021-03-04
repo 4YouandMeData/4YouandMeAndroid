@@ -3,7 +3,7 @@ package com.foryouandme.ui.auth.signup.later
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.AuthSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -13,7 +13,7 @@ import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import kotlinx.android.synthetic.main.sign_up_later.*
 
-class SignUpLaterFragment : AuthSectionFragment<SignUpLaterViewModel>(R.layout.sign_up_later) {
+class SignUpLaterFragment : AuthSectionFragmentOld<SignUpLaterViewModel>(R.layout.sign_up_later) {
 
     override val viewModel: SignUpLaterViewModel by lazy {
         viewModelFactory(

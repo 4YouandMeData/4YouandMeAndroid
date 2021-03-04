@@ -1,13 +1,14 @@
 package com.foryouandme.ui.main
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMState
-import com.foryouandme.core.arch.flow.*
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.openApp
 import com.foryouandme.core.ext.launchSafe
@@ -16,9 +17,11 @@ import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
-import kotlinx.coroutines.flow.SharedFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<MainStateUpdate>,
     private val loadingFlow: LoadingFlow<MainLoading>,
     private val errorFlow: ErrorFlow<MainError>,

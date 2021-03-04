@@ -2,53 +2,107 @@ package com.foryouandme.ui.auth.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.navigator
+import com.foryouandme.databinding.OnboardingBinding
+import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
-class OnboardingFragment : AuthSectionFragment<OnboardingViewModel>(R.layout.onboarding) {
+@AndroidEntryPoint
+class OnboardingFragment : AuthSectionFragment(R.layout.onboarding) {
 
-    override val viewModel: OnboardingViewModel by lazy {
+    private val viewModel: OnboardingViewModel by viewModels()
 
-        viewModelFactory(
-            this,
-            getFactory { OnboardingViewModel(navigator) }
-        )
+    private val binding: OnboardingBinding?
+        get() = view?.let { OnboardingBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
+                when (it.task) {
+                    OnboardingLoading.Initialization ->
+                        binding?.loading?.setVisibility(it.active)
+
+                }
+            }
+            .observeIn(this)
+
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    OnboardingError.Initialization ->
+                        binding?.error?.setError(it.error, viewModel.state.configuration)
+                        { viewModel.execute(OnboardingStateEvent.Initialize) }
+                }
+            }
+            .observeIn(this)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is OnboardingStateUpdate.Initialized -> setupNavigation()
+                }
+            }
+            .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    OnboardingToMain ->
+                        navigator.navigateTo(rootNavController(), it)
+                    is OnboardingStepToOnboardingStep ->
+                        navigator.navigateTo(onboardingNavController(), it)
+                }
+            }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(it)
-
+        if (viewModel.isInitialized().not())
+            viewModel.execute(OnboardingStateEvent.Initialize)
+        else
             setupNavigation()
 
+    }
+
+    private fun setupNavigation() {
+
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
+        val currentGraph = catchToNull { navHostFragment.navController.graph }
+        if (currentGraph == null) {
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.onboarding_navigation)
+            navHostFragment.navController.graph = graph
         }
 
     }
 
-    private suspend fun setupNavigation(): Unit =
-        evalOnMain {
+    private fun onboardingNavController(): OnboardingStepNavController {
 
-            val navHostFragment =
-                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val stepFragment = childFragmentManager.fragments[0]
+            .childFragmentManager.fragments[0]
+            .childFragmentManager.fragments[0]
 
-            val currentGraph = catchToNull { navHostFragment.navController.graph }
-            if (currentGraph == null) {
-                val inflater = navHostFragment.navController.navInflater
-                val graph = inflater.inflate(R.navigation.onboarding_navigation)
-                navHostFragment.navController.graph = graph
-            }
+        return (stepFragment as OnboardingStepFragment<*>).onboardingStepNavController()
 
-        }
+    }
 
 }

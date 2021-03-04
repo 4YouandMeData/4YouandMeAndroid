@@ -1,13 +1,39 @@
 package com.foryouandme.ui.auth.onboarding
 
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStep
 import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStep
 
-data class OnboardingState(val onboardingSteps: List<OnboardingStep>)
+data class OnboardingState(
+    val configuration: Configuration? = null,
+    val onboardingSteps: List<OnboardingStep> = emptyList()
+)
 
 sealed class OnboardingStateUpdate {
 
-    data class Initialization(val onboardingSteps: List<OnboardingStep>) : OnboardingStateUpdate()
+    data class Initialized(
+        val configuration: Configuration,
+        val onboardingSteps: List<OnboardingStep>
+    ) : OnboardingStateUpdate()
+
+}
+
+sealed class OnboardingLoading {
+
+    object Initialization : OnboardingLoading()
+
+}
+
+sealed class OnboardingError {
+
+    object Initialization : OnboardingError()
+
+}
+
+sealed class OnboardingStateEvent {
+
+    object Initialize : OnboardingStateEvent()
+    data class NextStep(val currentStepIndex: Int): OnboardingStateEvent()
 
 }
 
@@ -15,4 +41,4 @@ sealed class OnboardingStateUpdate {
 
 data class OnboardingStepToOnboardingStep(val index: Int) : NavigationAction
 
-object OnboardingToMain: NavigationAction
+object OnboardingToMain : NavigationAction

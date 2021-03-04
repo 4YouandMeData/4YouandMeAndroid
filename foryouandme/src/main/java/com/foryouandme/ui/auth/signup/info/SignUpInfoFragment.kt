@@ -3,7 +3,7 @@ package com.foryouandme.ui.auth.signup.info
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.AuthSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -12,7 +12,7 @@ import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import kotlinx.android.synthetic.main.sign_up_info.*
 
-class SignUpInfoFragment : AuthSectionFragment<SignUpInfoViewModel>(R.layout.sign_up_info) {
+class SignUpInfoFragment : AuthSectionFragmentOld<SignUpInfoViewModel>(R.layout.sign_up_info) {
 
     override val viewModel: SignUpInfoViewModel by lazy {
         viewModelFactory(

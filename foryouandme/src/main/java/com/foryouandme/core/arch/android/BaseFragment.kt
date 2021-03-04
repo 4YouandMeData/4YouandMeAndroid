@@ -8,6 +8,7 @@ import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.entity.configuration.Configuration
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -29,10 +30,6 @@ abstract class BaseFragment : Fragment {
     val name: String
         get() = javaClass.simpleName
 
-    /* --- activity --- */
-
-    //fun getBaseActivity(): BaseActivity = requireActivity() as BaseActivity
-
     /* --- navigation --- */
 
     fun rootNavController(): RootNavController =
@@ -42,12 +39,6 @@ abstract class BaseFragment : Fragment {
 
 
     fun name(): String = javaClass.simpleName
-
-
-    /* --- coroutine --- */
-
-    protected fun CoroutineScope.launchSafe(block: suspend () -> Unit): Job =
-        launch(CoroutineExceptionHandler { _, _ -> }) { block() }
 
     /* --- error --- */
 

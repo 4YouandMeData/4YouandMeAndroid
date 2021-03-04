@@ -113,7 +113,7 @@ object AndroidX {
 
     }
 
-    object Hilt : DependencyGroup("androidx.hilt", "1.0.0-alpha02") {
+    object Hilt : DependencyGroup("androidx.hilt", "1.0.0-alpha03") {
 
         object LifecycleViewModel : Dependency(
             Hilt.group,

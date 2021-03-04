@@ -9,7 +9,9 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.navigator
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ConsentFragment private constructor(
 ) : OnboardingStepFragment<ConsentViewModel>(R.layout.consent) {
 

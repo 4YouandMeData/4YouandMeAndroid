@@ -8,7 +8,7 @@ import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.AuthSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.error.ForYouAndMeError
@@ -21,7 +21,7 @@ import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.enter_phone.*
 
 
-class EnterPhoneFragment : AuthSectionFragment<EnterPhoneViewModel>(R.layout.enter_phone) {
+class EnterPhoneFragment : AuthSectionFragmentOld<EnterPhoneViewModel>(R.layout.enter_phone) {
 
     override val viewModel: EnterPhoneViewModel by lazy {
         viewModelFactory(this, getFactory {

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.AuthSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -13,7 +13,7 @@ import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
 import kotlinx.android.synthetic.main.welcome.*
 
-class WelcomeFragment : AuthSectionFragment<WelcomeViewModel>(R.layout.welcome) {
+class WelcomeFragment : AuthSectionFragmentOld<WelcomeViewModel>(R.layout.welcome) {
 
     override val viewModel: WelcomeViewModel by lazy {
         viewModelFactory(

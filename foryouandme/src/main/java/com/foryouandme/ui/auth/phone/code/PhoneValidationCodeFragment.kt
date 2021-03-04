@@ -8,7 +8,7 @@ import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.AuthSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.arch.error.ForYouAndMeError
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.phone_validation_code.title
 import kotlinx.android.synthetic.main.phone_validation_code.toolbar
 
 
-class PhoneValidationCodeFragment : AuthSectionFragment<PhoneValidationCodeViewModel>(
+class PhoneValidationCodeFragment : AuthSectionFragmentOld<PhoneValidationCodeViewModel>(
     R.layout.phone_validation_code
 ) {
 

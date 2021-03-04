@@ -3,7 +3,7 @@ package com.foryouandme.ui.auth.splash
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.AuthSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.injector
@@ -11,7 +11,7 @@ import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
 import kotlinx.android.synthetic.main.splash.*
 
-class SplashFragment : AuthSectionFragment<SplashViewModel>(R.layout.splash) {
+class SplashFragment : AuthSectionFragmentOld<SplashViewModel>(R.layout.splash) {
 
     override val viewModel: SplashViewModel by lazy {
         viewModelFactory(

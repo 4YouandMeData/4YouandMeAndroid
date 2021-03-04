@@ -1,14 +1,17 @@
 package com.foryouandme.ui.studyinfo
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.flow.*
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
-import kotlinx.coroutines.flow.SharedFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class StudyInfoViewModel @ViewModelInject constructor(
+@HiltViewModel
+class StudyInfoViewModel @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<StudyInfoStateUpdate>,
     private val loadingFlow: LoadingFlow<StudyInfoLoading>,
     private val errorFlow: ErrorFlow<StudyInfoError>,
@@ -22,7 +25,7 @@ class StudyInfoViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate= stateUpdateFlow.stateUpdates
+    val stateUpdate = stateUpdateFlow.stateUpdates
     val loading = loadingFlow.loading
     val error = errorFlow.error
 
