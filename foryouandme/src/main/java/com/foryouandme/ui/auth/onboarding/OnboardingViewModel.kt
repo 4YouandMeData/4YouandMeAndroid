@@ -54,11 +54,11 @@ class OnboardingViewModel @Inject constructor(
             configuration.text.onboarding.sections.mapNotNull {
 
                 when (it) {
-                    "intro_video" -> VideoStep
-                    "screening" -> ScreeningStep
-                    "consent_group" -> ConsentStep
-                    "opt-ins" -> OptInStep
-                    "integration" -> IntegrationStep
+                    VideoStep.identifier -> VideoStep
+                    ScreeningStep.identifier -> ScreeningStep
+                    ConsentStep.identifier -> ConsentStep
+                    OptInStep.identifier -> OptInStep
+                    IntegrationStep.identifier -> IntegrationStep
                     else -> null
                 }
 

@@ -10,6 +10,7 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
 import com.foryouandme.core.ext.*
+import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
 import kotlinx.android.synthetic.main.about_you_menu.*
 
 class AboutYouMenuFragment :
@@ -113,6 +114,9 @@ class AboutYouMenuFragment :
                     viewModel.toAboutYouReviewConsentPage(aboutYouNavController())
                 }
             }
+
+            thirdItem.isVisible =
+                configuration.text.onboarding.sections.contains(ConsentStep.identifier)
 
             fourthItem.applyData(
                 configuration,
