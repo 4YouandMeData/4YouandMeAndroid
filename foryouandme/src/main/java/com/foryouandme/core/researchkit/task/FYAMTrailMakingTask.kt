@@ -13,10 +13,17 @@ class FYAMTrailMakingTask(
 
     override val steps: List<Step> by lazy {
 
+        val primaryEnd =
+            configuration.theme.primaryColorEnd.color()
+
         val secondary =
             configuration.theme.secondaryColor.color()
 
-        TrailMakingTask.getTrailMakingCoreSteps(trailMakingBackgroundColor = secondary)
+        TrailMakingTask.getTrailMakingCoreSteps(
+            trailMakingBackgroundColor = secondary,
+            trailMakingPointColor = primaryEnd,
+            trailMakingPointTextColor = secondary
+        )
 
     }
 

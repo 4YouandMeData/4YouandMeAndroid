@@ -4,16 +4,21 @@ import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.trailmaking.TrailMakingStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskIdentifiers
-import com.squareup.moshi.Moshi
 
 class TrailMakingTask(
     id: String,
     trailMakingBackgroundColor: Int,
-    ) : Task(TaskIdentifiers.GAIT, id) {
+    trailMakingPointColor: Int,
+    trailMakingPointTextColor: Int,
+) : Task(TaskIdentifiers.GAIT, id) {
 
     override val steps: List<Step> by lazy {
 
-        getTrailMakingCoreSteps(trailMakingBackgroundColor = trailMakingBackgroundColor)
+        getTrailMakingCoreSteps(
+            trailMakingBackgroundColor = trailMakingBackgroundColor,
+            trailMakingPointColor = trailMakingPointColor,
+            trailMakingPointTextColor = trailMakingPointTextColor
+        )
 
     }
 
@@ -24,10 +29,17 @@ class TrailMakingTask(
 
         fun getTrailMakingCoreSteps(
             trailMakingBackgroundColor: Int,
+            trailMakingPointColor: Int,
+            trailMakingPointTextColor: Int,
         ): List<Step> =
 
             listOf(
-                TrailMakingStep(TRAIL_MAKING, trailMakingBackgroundColor)
+                TrailMakingStep(
+                    TRAIL_MAKING,
+                    trailMakingBackgroundColor,
+                    trailMakingPointColor,
+                    trailMakingPointTextColor
+                )
             )
 
     }
