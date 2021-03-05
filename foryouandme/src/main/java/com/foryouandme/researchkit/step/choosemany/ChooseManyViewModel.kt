@@ -1,14 +1,15 @@
 package com.foryouandme.researchkit.step.choosemany
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.researchkit.step.common.QuestionItem
-import kotlinx.coroutines.flow.SharedFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ChooseManyViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ChooseManyViewModel @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<ChooseManyStepStateUpdate>
 ) : ViewModel() {
 
@@ -19,7 +20,7 @@ class ChooseManyViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdates: SharedFlow<ChooseManyStepStateUpdate> = stateUpdateFlow.stateUpdates
+    val stateUpdates = stateUpdateFlow.stateUpdates
 
     /* --- initialize --- */
 

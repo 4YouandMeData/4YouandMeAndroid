@@ -425,9 +425,9 @@ open class RecorderService : BaseService() {
 
         }
 
-        val stateUpdate: SharedFlow<RecorderStateUpdate> = stateUpdateFlow.stateUpdates
-        val error: SharedFlow<UIError<RecorderError>> = errorFlow.error
-        val sensor: SharedFlow<SensorData> = sensorFlow.stateUpdates
+        val stateUpdate = stateUpdateFlow.stateUpdates
+        val error = errorFlow.error
+        val sensor = sensorFlow.stateUpdates
 
         suspend fun stop(): Unit = shutDownRecorder()
 

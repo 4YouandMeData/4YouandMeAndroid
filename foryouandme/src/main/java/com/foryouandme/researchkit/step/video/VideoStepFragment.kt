@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.permissionSettingsAction
 import com.foryouandme.core.ext.*
 import com.foryouandme.databinding.StepVideoDiaryBinding
@@ -52,6 +53,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
         getVideoDirectory().deleteRecursively()
 
         videoViewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
 
                 when (it) {
@@ -70,6 +72,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
             .observeIn(this)
 
         videoViewModel.error
+            .unwrapEvent(name)
             .onEach {
 
                 when (it.cause) {
@@ -85,6 +88,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
             .observeIn(this)
 
         videoViewModel.loading
+            .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     VideoLoading.Merge -> binding?.loading?.setVisibility(it.active)
@@ -329,7 +333,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.flashToggle.isVisible = false
                     viewBinding.cameraToggle.isVisible = false
 
-                    viewBinding?.reviewLoading.setVisibility(isVisible = true, opaque = false)
+                    viewBinding.reviewLoading.setVisibility(isVisible = true, opaque = false)
 
                     mediaController.setMediaPlayer(viewBinding.videoView)
                     mediaController.setAnchorView(viewBinding.videoView)

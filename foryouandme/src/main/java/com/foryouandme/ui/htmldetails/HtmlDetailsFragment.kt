@@ -8,7 +8,10 @@ import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showBackButton
 import com.foryouandme.databinding.HtmlDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
@@ -27,6 +30,7 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is HtmlDetailsStateUpdate.Initialization -> {
@@ -38,6 +42,7 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
             .observeIn(this)
 
         viewModel.error
+            .unwrapEvent(name)
             .onEach {
                 when (it.cause) {
                     HtmlDetailsError.Initialization -> {
@@ -50,8 +55,9 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
             .observeIn(this)
 
         viewModel.loading
+            .unwrapEvent(name)
             .onEach {
-                when(it.task) {
+                when (it.task) {
                     HtmlDetailsLoading.Initialization ->
                         binding?.loading?.setVisibility(it.active, false)
                 }
@@ -115,11 +121,6 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
                 EHtmlDetails.FAQ -> {
                     viewBinding.title.text = studyInfo.faqPage.title
                     source = studyInfo.faqPage.body
-                }
-                else -> {
-                    viewBinding.webView.settings.also {
-                        it.javaScriptEnabled = true
-                    }
                 }
             }
 

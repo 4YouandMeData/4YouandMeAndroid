@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepChooseOneBinding
@@ -42,6 +43,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
         super.onCreate(savedInstanceState)
 
         chooseOneStepViewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is ChooseOneStepStateUpdate.Initialization -> applyItems(it.items)

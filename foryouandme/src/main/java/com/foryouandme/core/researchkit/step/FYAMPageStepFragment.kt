@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepFyamPageBinding
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint

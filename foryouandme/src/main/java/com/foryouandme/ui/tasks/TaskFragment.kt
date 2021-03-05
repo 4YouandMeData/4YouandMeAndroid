@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.TaskBinding
 import com.foryouandme.researchkit.step.StepFragment
@@ -28,6 +29,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateUpdate
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is TaskStateUpdate.Initialization -> applyData()
@@ -39,6 +41,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
             .observeIn(this)
 
         viewModel.loading
+            .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     TaskLoading.Initialization ->
@@ -52,6 +55,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
             .observeIn(this)
 
         viewModel.error
+            .unwrapEvent(name)
             .onEach {
 
                 binding?.taskLoading?.setVisibility(false)
@@ -69,6 +73,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
             .observeIn(this)
 
         viewModel.navigation
+            .unwrapEvent(name)
             .onEach {
                 when (it) {
                     is StepToStep ->

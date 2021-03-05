@@ -1,10 +1,11 @@
 package com.foryouandme.ui.tasks
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.flow.*
-import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
@@ -12,12 +13,14 @@ import com.foryouandme.researchkit.result.StepResult
 import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.task.TaskConfiguration
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.SharedFlow
 import timber.log.Timber
+import javax.inject.Inject
 
-class TaskViewModel @ViewModelInject constructor(
+@HiltViewModel
+class TaskViewModel @Inject constructor(
     private val errorFlow: ErrorFlow<TaskError>,
     private val loadingFlow: LoadingFlow<TaskLoading>,
     private val stateUpdateFlow: StateUpdateFlow<TaskStateUpdate>,
@@ -33,10 +36,10 @@ class TaskViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate: SharedFlow<TaskStateUpdate> = stateUpdateFlow.stateUpdates
-    val loading: SharedFlow<UILoading<TaskLoading>> = loadingFlow.loading
-    val error: SharedFlow<UIError<TaskError>> = errorFlow.error
-    val navigation: SharedFlow<NavigationAction> = navigationFlow.navigation
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
 
     /* --- initialization --- */
 
@@ -85,7 +88,7 @@ class TaskViewModel @ViewModelInject constructor(
 
     }
 
-    private suspend fun addResult(result: StepResult) {
+    private fun addResult(result: StepResult) {
 
         val update =
             state.result

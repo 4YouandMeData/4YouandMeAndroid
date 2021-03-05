@@ -44,7 +44,7 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
             object : JavaScriptInterfaceListener {
 
                 override fun nextStep() {
-                    lifecycleScope.launchSafe { next() }
+                    next()
                 }
 
                 override fun close() {

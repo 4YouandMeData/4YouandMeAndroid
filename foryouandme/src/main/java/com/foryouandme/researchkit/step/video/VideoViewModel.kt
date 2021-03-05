@@ -1,11 +1,12 @@
 package com.foryouandme.researchkit.step.video
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import arrow.core.toOption
-import com.foryouandme.core.arch.flow.*
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
@@ -17,18 +18,20 @@ import com.googlecode.mp4parser.authoring.Track
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.withContext
 import org.threeten.bp.Instant
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.util.*
+import javax.inject.Inject
 
-class VideoViewModel @ViewModelInject constructor(
+@HiltViewModel
+class VideoViewModel @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<VideoStateUpdate>,
     private val loadingFlow: LoadingFlow<VideoLoading>,
     private val errorFlow: ErrorFlow<VideoError>,
@@ -43,9 +46,9 @@ class VideoViewModel @ViewModelInject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate: SharedFlow<VideoStateUpdate> = stateUpdateFlow.stateUpdates
-    val loading: SharedFlow<UILoading<VideoLoading>> = loadingFlow.loading
-    val error: SharedFlow<UIError<VideoError>> = errorFlow.error
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
 
     /* --- job --- */
 
@@ -136,7 +139,7 @@ class VideoViewModel @ViewModelInject constructor(
         // disable the flash when the user start the review flow
         if (state.isBackCameraToggled) setFlash(false)
 
-        val merge = mergeVideoDiary(videosPath, outputPath, outputFileName)
+        mergeVideoDiary(videosPath, outputPath, outputFileName)
 
         state = state.copy(recordingState = RecordingState.Merged)
         stateUpdateFlow.update(VideoStateUpdate.Recording)

@@ -1,6 +1,5 @@
 package com.foryouandme.ui.htmldetails
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.ErrorFlow
@@ -9,10 +8,13 @@ import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.study.GetStudyInfoUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
 
-class HtmlDetailsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class HtmlDetailsViewModel @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<HtmlDetailsStateUpdate>,
     private val loadingFlow: LoadingFlow<HtmlDetailsLoading>,
     private val errorFlow: ErrorFlow<HtmlDetailsError>,

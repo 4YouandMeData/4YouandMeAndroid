@@ -8,7 +8,9 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.infoToast
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepSensorBinding
 import com.foryouandme.researchkit.recorder.*
@@ -30,15 +32,14 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
                 if (step != null && task != null) {
 
-                    lifecycleScope.launchSafe {
-                        binder.bind(
-                            taskFragment().getSensorOutputDirectory(),
-                            step,
-                            task
-                        )
-                    }
+                    binder.bind(
+                        taskFragment().getSensorOutputDirectory(),
+                        step,
+                        task
+                    )
 
                     binder.stateUpdate
+                        .unwrapEvent(name)
                         .onEach { state ->
 
                             when (state) {
@@ -57,6 +58,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                         .observeIn(this)
 
                     binder.error
+                        .unwrapEvent(name)
                         .onEach {
                             when (it.cause) {
                                 is RecorderError.Recording ->
@@ -71,6 +73,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                         .observeIn(this)
 
                     binder.sensor
+                        .unwrapEvent(name)
                         .onEach {
 
                             when (it) {
@@ -83,6 +86,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                 }
 
                 viewModel.stateUpdate
+                    .unwrapEvent(name)
                     .onEach {
                         when (it) {
                             is TaskStateUpdate.Cancelled ->
