@@ -16,14 +16,14 @@ class StartStepFragment : StepFragment(R.layout.step_start) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<StartStep>(indexArg())
+            taskViewModel.getStepByIndexAs<StartStep>(indexArg())
 
         step?.let { applyData(it) }
     }
 
     private fun applyData(
         step: StartStep
-    ): Unit {
+    ) {
 
         root.setBackgroundColor(step.backgroundColor)
 

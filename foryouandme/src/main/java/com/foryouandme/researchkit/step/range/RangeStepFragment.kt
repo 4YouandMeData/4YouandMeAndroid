@@ -25,7 +25,7 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<RangeStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<RangeStep>(indexArg())?.let { applyData(it) }
 
     }
 

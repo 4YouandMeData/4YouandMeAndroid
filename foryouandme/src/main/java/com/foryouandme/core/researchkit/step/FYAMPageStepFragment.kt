@@ -18,7 +18,7 @@ class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<FYAMPageStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<FYAMPageStep>(indexArg())?.let { applyData(it) }
     }
 
     private fun applyData(step: FYAMPageStep) {

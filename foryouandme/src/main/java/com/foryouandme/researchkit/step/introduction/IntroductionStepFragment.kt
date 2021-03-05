@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import androidx.fragment.app.FragmentActivity
 import com.foryouandme.R
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.startCoroutineAsync
@@ -20,7 +19,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<IntroductionStep>(indexArg())
+            taskViewModel.getStepByIndexAs<IntroductionStep>(indexArg())
 
         step?.let { applyData(it) }
     }

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepIntroductionListBinding
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
@@ -35,7 +34,7 @@ class IntroductionListStepFragment : StepFragment(R.layout.step_introduction_lis
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
-        viewModel.getStepByIndexAs<IntroductionListStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<IntroductionListStep>(indexArg())?.let { applyData(it) }
 
     }
 

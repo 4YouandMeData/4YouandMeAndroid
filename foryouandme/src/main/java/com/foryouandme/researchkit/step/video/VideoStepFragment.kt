@@ -102,7 +102,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<VideoStep>(indexArg())?.let {
+        taskViewModel.getStepByIndexAs<VideoStep>(indexArg())?.let {
             lifecycleScope.launchSafe { setupCamera(it) }
         }
 
@@ -184,8 +184,8 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun setupUI() {
 
-        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
-        val task = viewModel.state.task
+        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val task = taskViewModel.state.task
         val viewBinding = binding
 
         if (step != null && task != null && viewBinding != null) {
@@ -254,7 +254,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun bindRecordingState(state: RecordingState) {
 
-        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
         val viewBinding = binding
 
         if (viewBinding != null && step != null) {
@@ -414,7 +414,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     private fun bindRecordingHeader() {
 
-        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
 
         when (videoViewModel.state.recordingState) {
             RecordingState.Recording -> {
@@ -440,7 +440,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
     // TODO: check if flash is available
     private fun bindFlash(isFlashEnabled: Boolean) {
 
-        val step = viewModel.getStepByIndexAs<VideoStep>(indexArg())
+        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
         val viewBinding = binding
 
         if (viewBinding != null && step != null) {

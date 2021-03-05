@@ -25,7 +25,7 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<ScaleStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<ScaleStep>(indexArg())?.let { applyData(it) }
 
     }
 

@@ -24,7 +24,7 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<TextInputStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<TextInputStep>(indexArg())?.let { applyData(it) }
 
     }
 

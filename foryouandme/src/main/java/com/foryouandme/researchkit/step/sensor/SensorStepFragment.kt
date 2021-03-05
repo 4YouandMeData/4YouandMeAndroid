@@ -27,8 +27,8 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
         RecorderServiceConnection(
             { binder ->
 
-                val step = viewModel.getStepByIndexAs<SensorStep>(indexArg())
-                val task = viewModel.state.task
+                val step = taskViewModel.getStepByIndexAs<SensorStep>(indexArg())
+                val task = taskViewModel.state.task
 
                 if (step != null && task != null) {
 
@@ -85,7 +85,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
                 }
 
-                viewModel.stateUpdate
+                taskViewModel.stateUpdate
                     .unwrapEvent(name)
                     .onEach {
                         when (it) {
@@ -106,7 +106,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<SensorStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<SensorStep>(indexArg())?.let { applyData(it) }
 
     }
 

@@ -22,7 +22,7 @@ class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_pi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())?.let { applyData(it) }
     }
 
     private fun applyData(step: NumberRangePickerStep) {

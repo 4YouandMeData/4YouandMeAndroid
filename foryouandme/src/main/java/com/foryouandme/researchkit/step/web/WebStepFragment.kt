@@ -9,7 +9,6 @@ import android.view.View
 import android.webkit.*
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.databinding.StepWebBinding
@@ -27,7 +26,7 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<WebStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<WebStep>(indexArg())?.let { applyData(it) }
 
     }
 

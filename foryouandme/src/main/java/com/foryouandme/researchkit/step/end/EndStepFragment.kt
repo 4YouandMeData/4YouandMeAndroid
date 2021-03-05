@@ -21,7 +21,7 @@ class EndStepFragment : StepFragment(R.layout.step_end) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<EndStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<EndStep>(indexArg())?.let { applyData(it) }
 
     }
 

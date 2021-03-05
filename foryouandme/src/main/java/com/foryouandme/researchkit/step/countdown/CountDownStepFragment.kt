@@ -18,14 +18,14 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<CountDownStep>(indexArg())
+            taskViewModel.getStepByIndexAs<CountDownStep>(indexArg())
 
         step?.let { applyData(it) }
     }
 
     private fun applyData(
         step: CountDownStep
-    ): Unit {
+    ) {
 
         root.setBackgroundColor(step.backgroundColor)
 
@@ -74,7 +74,7 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
     private suspend fun startCounter(
         seconds: Int,
         onCounterEnd: suspend () -> Unit
-    ): Unit {
+    ) {
 
         startCounterAnimation(seconds)
         startCounterProgressAnimation(seconds)

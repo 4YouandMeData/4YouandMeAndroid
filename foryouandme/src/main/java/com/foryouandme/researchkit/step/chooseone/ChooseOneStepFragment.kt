@@ -59,7 +59,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
         setupRecyclerView()
 
-        val step = viewModel.getStepByIndexAs<ChooseOneStep>(indexArg())
+        val step = taskViewModel.getStepByIndexAs<ChooseOneStep>(indexArg())
 
         step?.let {
 

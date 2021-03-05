@@ -7,5 +7,6 @@ object TaskIdentifiers {
     const val FITNESS = "fitness"
     const val CAMCOG = "camcog"
     const val SURVEY = "survey"
+    const val TRAIL_MAKING = "trail_making"
 
 }

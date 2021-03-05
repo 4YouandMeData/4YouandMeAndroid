@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
 
-    val viewModel: TaskViewModel by viewModels({ taskFragment() })
+    val taskViewModel: TaskViewModel by viewModels({ taskFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +38,9 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndex(indexArg())?.let {
+        taskViewModel.getStepByIndex(indexArg())?.let {
 
-            if (viewModel.canGoBack(indexArg()) && indexArg() != 0 && it.back != null)
+            if (taskViewModel.canGoBack(indexArg()) && indexArg() != 0 && it.back != null)
                 showBack(it.back.image)
             else
                 hideToolbar()
@@ -56,23 +56,23 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             ?.let { if (it == -1) null else it }!!
 
     protected open fun next() {
-        viewModel.execute(TaskStateEvent.NextStep(indexArg()))
+        taskViewModel.execute(TaskStateEvent.NextStep(indexArg()))
     }
 
     protected open fun skipTo(stepId: String?) {
-        viewModel.execute(TaskStateEvent.SkipToStep(stepId, indexArg()))
+        taskViewModel.execute(TaskStateEvent.SkipToStep(stepId, indexArg()))
     }
 
     protected open fun reschedule() {
-        viewModel.execute(TaskStateEvent.Reschedule)
+        taskViewModel.execute(TaskStateEvent.Reschedule)
     }
 
     protected open fun addResult(result: StepResult) {
-        viewModel.execute(TaskStateEvent.AddResult(result))
+        taskViewModel.execute(TaskStateEvent.AddResult(result))
     }
 
     protected open fun end() {
-        viewModel.execute(TaskStateEvent.End)
+        taskViewModel.execute(TaskStateEvent.End)
     }
 
     protected open fun close() {
@@ -89,7 +89,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             .setTitle(R.string.TASK_cancel_title)
             .setMessage(R.string.TASK_cancel_description)
             .setPositiveButton(R.string.TASK_cancel_positive)
-            { _, _ -> viewModel.execute(TaskStateEvent.Cancel) }
+            { _, _ -> taskViewModel.execute(TaskStateEvent.Cancel) }
             .setNegativeButton(R.string.TASK_cancel_negative)
             { dialog, _ -> dialog.dismiss() }
             .show()

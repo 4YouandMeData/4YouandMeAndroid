@@ -22,7 +22,7 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
         super.onViewCreated(view, savedInstanceState)
 
         val step =
-            viewModel.getStepByIndexAs<WelcomeStep>(indexArg())
+            taskViewModel.getStepByIndexAs<WelcomeStep>(indexArg())
 
         startCoroutineAsync {
             setupView()

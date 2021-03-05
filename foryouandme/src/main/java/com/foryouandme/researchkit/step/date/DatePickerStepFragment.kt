@@ -23,7 +23,7 @@ class DatePickerStepFragment : StepFragment(R.layout.step_date) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getStepByIndexAs<DatePickerStep>(indexArg())?.let { applyData(it) }
+        taskViewModel.getStepByIndexAs<DatePickerStep>(indexArg())?.let { applyData(it) }
 
     }
 

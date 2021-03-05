@@ -1,0 +1,13 @@
+***REMOVED***
+<androidx.appcompat.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dot"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:background="@drawable/trail_making_point"
+    android:fontFamily="@font/helvetica"
+    android:gravity="center"
+    android:textSize="18sp"
+    tools:backgroundTint="#395BD6"
+    tools:text="1"
+    tools:textColor="#FFF" />

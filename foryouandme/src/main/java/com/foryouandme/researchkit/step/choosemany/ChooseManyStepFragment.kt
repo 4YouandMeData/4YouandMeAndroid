@@ -61,7 +61,7 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
         setupRecyclerView()
 
         val step =
-            viewModel.getStepByIndexAs<ChooseManyStep>(indexArg())
+            taskViewModel.getStepByIndexAs<ChooseManyStep>(indexArg())
 
         step?.let {
 

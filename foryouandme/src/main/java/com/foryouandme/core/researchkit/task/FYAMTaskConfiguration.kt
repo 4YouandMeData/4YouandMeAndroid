@@ -28,6 +28,7 @@ import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskIdentifiers
+import com.foryouandme.researchkit.task.trailmaking.TrailMakingTask
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -64,7 +65,7 @@ class FYAMTaskConfiguration @Inject constructor(
         task: TaskActivity
     ): Task? =
         when (task.activityType) {
-            TaskActivityType.VideoDiary ->
+            /*TaskActivityType.VideoDiary ->
                 FYAMVideoDiaryTask(
                     id,
                     configuration,
@@ -130,8 +131,10 @@ class FYAMTaskConfiguration @Inject constructor(
                     task.welcomePage,
                     task.successPage,
                     task.reschedule
-                )
+                )*/
             null -> null
+            else ->
+                FYAMTrailMakingTask(id, configuration)
         }
 
     override suspend fun handleTaskResult(
