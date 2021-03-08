@@ -92,7 +92,7 @@ class StudyInfoFragment : BaseFragment(R.layout.study_info) {
 
         viewBinding?.firstItem?.applyData(
             configuration,
-            requireContext().imageConfiguration.contactInfo(),
+            requireContext().imageConfiguration.aboutYou(),
             configuration.text.studyInfo.aboutYou
         )
 

@@ -114,6 +114,9 @@ interface ImageConfiguration {
     /* --- menu item --- */
 
     @DrawableRes
+    fun aboutYou(): Int
+
+    @DrawableRes
     fun contactInfo(): Int
 
     @DrawableRes

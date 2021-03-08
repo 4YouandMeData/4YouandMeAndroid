@@ -80,6 +80,8 @@ class SampleImageConfiguration : ImageConfiguration {
 
     /* --- menu item --- */
 
+    override fun aboutYou(): Int = R.drawable.about_you
+
     override fun contactInfo(): Int = R.drawable.contact_info
 
     override fun rewards(): Int = R.drawable.rewards
