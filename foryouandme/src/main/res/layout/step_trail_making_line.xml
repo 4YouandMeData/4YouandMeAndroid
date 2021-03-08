@@ -1,0 +1,12 @@
+***REMOVED***
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dot"
+    android:layout_width="0dp"
+    android:layout_height="50dp"
+    android:fontFamily="@font/helvetica"
+    android:gravity="center"
+    android:textSize="18sp"
+    tools:baco="#395BD6"
+    tools:text="1"
+    tools:textColor="#FFF" />

@@ -1,7 +1,6 @@
 package com.foryouandme.researchkit.step.trailmaking
 
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
@@ -22,6 +21,8 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
 
     private val binding: StepTrailMakingBinding?
         get() = view?.let { StepTrailMakingBinding.bind(it) }
+
+    private val pointsId: MutableList<Int> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,7 +53,8 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
             viewBinding.root.setBackgroundColor(step.backgroundColor)
 
             viewBinding.pointsArea.post {
-                viewModel.state.points
+
+                val screenPoints = viewModel.state.points
                     .map {
 
                         val width = viewBinding.pointsArea.width - 80.dpToPx()
@@ -62,50 +64,65 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                         it.copy(x = x, y = y)
 
                     }
-                    .forEachIndexed { index, position ->
 
-                        val point = TrailMakingPointView(requireContext())
-                        point.setText(index.toString())
-                        point.setCircleBackgroundColor(step.pointColor)
-                        point.setTextColor(step.pointTextColor)
-                        point.id = View.generateViewId()
+                screenPoints.forEachIndexed { index, position ->
 
-                        viewBinding.root.addView(point, 0)
+                    val point = TrailMakingPointView(requireContext())
+                    point.setText(index.toString())
+                    point.setCircleBackgroundColor(step.pointColor)
+                    point.setTextColor(step.pointTextColor)
+                    val id = View.generateViewId()
+                    pointsId.add(id)
+                    point.id = id
+
+                    viewBinding.root.addView(point, 0)
+
+                    val set = ConstraintSet()
+                    set.clone(viewBinding.root)
+                    set.connect(
+                        point.id,
+                        ConstraintSet.TOP,
+                        viewBinding.root.id,
+                        ConstraintSet.TOP,
+                        60
+                    )
+                    set.applyTo(viewBinding.root)
+
+                    point.translationX = position.x.toFloat()
+                    point.translationY = position.y.toFloat()
+
+                }
+
+                screenPoints.forEachIndexed { index, point ->
+
+                    val nextPoint = screenPoints.getOrNull(index + 1)
+
+                    if (nextPoint != null) {
+
+                        val line = TrailMakingLineView(requireContext())
+                        line.setPoints(point, nextPoint)
+                        val id = View.generateViewId()
+                        line.id = id
+
+                        viewBinding.root.addView(line, 0)
 
                         val set = ConstraintSet()
-                        set.clone(viewBinding.root);
-                        // connect start and end point of views,
-                        // in this case top of child to top of parent.
+                        set.clone(viewBinding.root)
                         set.connect(
-                            point.id,
+                            line.id,
                             ConstraintSet.TOP,
                             viewBinding.root.id,
                             ConstraintSet.TOP,
                             60
                         )
-                        // ... similarly add other constraints
                         set.applyTo(viewBinding.root)
 
-                        point.translationX = position.x.toFloat()
-                        point.translationY = position.y.toFloat()
-
                     }
+                }
             }
 
         }
 
-    }
-
-    private fun getScreenWidth(): Int {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    private fun getScreenHeight(): Int {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.heightPixels
     }
 
 }
