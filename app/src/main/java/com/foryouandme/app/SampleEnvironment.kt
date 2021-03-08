@@ -18,4 +18,6 @@ class SampleEnvironment(private val context: Context) : Environment() {
     override fun getOAuthBaseUrl(): String =
         context.getString(R.string.OAUTH_BASE_URL)
 
+    override fun useCustomData(): Boolean = true
+
 }
