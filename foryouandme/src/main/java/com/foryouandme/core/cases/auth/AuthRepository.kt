@@ -117,7 +117,7 @@ object AuthRepository {
             .flatMap {
 
                 // if user has empty custom data update it with default configuration
-                if (it.customData == null || it.customData.isEmpty())
+                if (environment.useCustomData() && (it.customData == null || it.customData.isEmpty()))
 
                     updateUserCustomData(token, defaultUserCustomData())
                         .flatMap { fetchUser(token) }

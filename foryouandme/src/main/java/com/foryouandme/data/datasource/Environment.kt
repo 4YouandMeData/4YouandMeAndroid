@@ -12,4 +12,6 @@ abstract class Environment {
 
     abstract fun getOAuthBaseUrl(): String
 
+    abstract fun useCustomData(): Boolean
+
 }
