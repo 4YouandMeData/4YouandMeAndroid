@@ -82,43 +82,37 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                     set.connect(
                         point.id,
                         ConstraintSet.TOP,
-                        viewBinding.root.id,
+                        viewBinding.pointsArea.id,
                         ConstraintSet.TOP,
-                        60
+                        0
+                    )
+                    set.connect(
+                        point.id,
+                        ConstraintSet.START,
+                        viewBinding.pointsArea.id,
+                        ConstraintSet.START,
+                        0
                     )
                     set.applyTo(viewBinding.root)
 
-                    point.translationX = position.x.toFloat()
-                    point.translationY = position.y.toFloat()
+                    point.post {
+                        point.translationX = position.x.toFloat() - (point.width / 2)
+                        point.translationY = position.y.toFloat() - (point.width / 2)
+                        point.elevation = 5.dpToPx().toFloat()
+                    }
 
                 }
 
-                screenPoints.forEachIndexed { index, point ->
+                screenPoints.mapIndexedNotNull { index, point ->
 
                     val nextPoint = screenPoints.getOrNull(index + 1)
 
-                    if (nextPoint != null) {
+                    if (nextPoint != null)
+                        point to nextPoint
+                    else null
 
-                        val line = TrailMakingLineView(requireContext())
-                        line.setPoints(point, nextPoint)
-                        val id = View.generateViewId()
-                        line.id = id
+                }.let { viewBinding.pointsArea.setLines(it, step.lineColor) }
 
-                        viewBinding.root.addView(line, 0)
-
-                        val set = ConstraintSet()
-                        set.clone(viewBinding.root)
-                        set.connect(
-                            line.id,
-                            ConstraintSet.TOP,
-                            viewBinding.root.id,
-                            ConstraintSet.TOP,
-                            60
-                        )
-                        set.applyTo(viewBinding.root)
-
-                    }
-                }
             }
 
         }

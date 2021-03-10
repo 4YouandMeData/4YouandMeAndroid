@@ -10,6 +10,7 @@ class TrailMakingTask(
     trailMakingBackgroundColor: Int,
     trailMakingPointColor: Int,
     trailMakingPointTextColor: Int,
+    trailMakingLineTextColor: Int,
 ) : Task(TaskIdentifiers.GAIT, id) {
 
     override val steps: List<Step> by lazy {
@@ -17,7 +18,8 @@ class TrailMakingTask(
         getTrailMakingCoreSteps(
             trailMakingBackgroundColor = trailMakingBackgroundColor,
             trailMakingPointColor = trailMakingPointColor,
-            trailMakingPointTextColor = trailMakingPointTextColor
+            trailMakingPointTextColor = trailMakingPointTextColor,
+            trailMakingLineTextColor = trailMakingLineTextColor
         )
 
     }
@@ -31,6 +33,7 @@ class TrailMakingTask(
             trailMakingBackgroundColor: Int,
             trailMakingPointColor: Int,
             trailMakingPointTextColor: Int,
+            trailMakingLineTextColor: Int,
         ): List<Step> =
 
             listOf(
@@ -38,7 +41,8 @@ class TrailMakingTask(
                     TRAIL_MAKING,
                     trailMakingBackgroundColor,
                     trailMakingPointColor,
-                    trailMakingPointTextColor
+                    trailMakingPointTextColor,
+                    trailMakingLineTextColor
                 )
             )
 

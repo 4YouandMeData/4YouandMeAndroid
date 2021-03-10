@@ -22,7 +22,8 @@ class FYAMTrailMakingTask(
         TrailMakingTask.getTrailMakingCoreSteps(
             trailMakingBackgroundColor = secondary,
             trailMakingPointColor = primaryEnd,
-            trailMakingPointTextColor = secondary
+            trailMakingPointTextColor = secondary,
+            trailMakingLineTextColor = primaryEnd
         )
 
     }
