@@ -12,9 +12,12 @@ sealed class TrailMakingStateUpdate {
 
 sealed class TrailMakingStateEvent {
 
-    object Initialize : TrailMakingStateEvent()
+    data class Initialize(val type: ETrailMakingType) : TrailMakingStateEvent()
 
 }
 
-data class TrailMakingPoint(val x: Double, val y: Double)
+data class Point(val x: Double, val y: Double)
+data class TrailMakingPoint(val x: Double, val y: Double, val name: String)
+
+
 

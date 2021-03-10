@@ -36,8 +36,10 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
             }
             .observeIn(this)
 
-        if (viewModel.state.points.isEmpty())
-            viewModel.execute(TrailMakingStateEvent.Initialize)
+        val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
+
+        if (viewModel.state.points.isEmpty() && step != null)
+            viewModel.execute(TrailMakingStateEvent.Initialize(step.type))
         else
             applyData()
 
@@ -65,10 +67,10 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
 
                     }
 
-                screenPoints.forEachIndexed { index, position ->
+                screenPoints.forEach { position ->
 
                     val point = TrailMakingPointView(requireContext())
-                    point.setText(index.toString())
+                    point.setText(position.name)
                     point.setCircleBackgroundColor(step.pointColor)
                     point.setTextColor(step.pointTextColor)
                     val id = View.generateViewId()

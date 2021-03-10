@@ -24,6 +24,7 @@ import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.result.fitness.toFitnessResult
 import com.foryouandme.researchkit.result.gait.toGaitResult
 import com.foryouandme.researchkit.step.Step
+import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
@@ -134,7 +135,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )*/
             null -> null
             else ->
-                FYAMTrailMakingTask(id, configuration)
+                FYAMTrailMakingTask(id, ETrailMakingType.NUMBER, configuration)
         }
 
     override suspend fun handleTaskResult(
