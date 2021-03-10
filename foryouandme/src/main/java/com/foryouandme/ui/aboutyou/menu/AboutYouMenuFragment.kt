@@ -54,7 +54,9 @@ class AboutYouMenuFragment :
                     showCloseSecondaryButton(imageConfiguration)
                     {
                         startCoroutineAsync {
-                            aboutYouViewModel.back(aboutYouNavController(), rootNavController())
+                            evalOnMain {
+                                aboutYouViewModel.back(aboutYouNavController(), rootNavController())
+                            }
                         }
                     }
                 }
