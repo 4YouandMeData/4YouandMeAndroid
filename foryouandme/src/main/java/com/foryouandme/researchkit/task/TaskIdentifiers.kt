@@ -8,5 +8,6 @@ object TaskIdentifiers {
     const val CAMCOG = "camcog"
     const val SURVEY = "survey"
     const val TRAIL_MAKING = "trail_making"
+    const val REACTION_TIME = "reaction_time"
 
 }

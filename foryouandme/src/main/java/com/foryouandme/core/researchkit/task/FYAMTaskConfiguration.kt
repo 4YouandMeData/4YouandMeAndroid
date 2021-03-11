@@ -1,8 +1,6 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.ext.web.CamCogInterface
-import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.policy.Policy
@@ -24,12 +22,10 @@ import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.result.fitness.toFitnessResult
 import com.foryouandme.researchkit.result.gait.toGaitResult
 import com.foryouandme.researchkit.step.Step
-import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskIdentifiers
-import com.foryouandme.researchkit.task.trailmaking.TrailMakingTask
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -135,7 +131,16 @@ class FYAMTaskConfiguration @Inject constructor(
                 )*/
             null -> null
             else ->
-                FYAMTrailMakingTask(id, "Trail-Making test", ETrailMakingType.NUMBER_AND_LETTER, configuration)
+                FYAMReactionTimeTask(
+                    id,
+                    null,
+                    10.0,
+                    2.0,
+                    1.0,
+                    3,
+                    5.0,
+                    configuration
+                )
         }
 
     override suspend fun handleTaskResult(

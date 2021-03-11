@@ -17,6 +17,9 @@ import com.foryouandme.researchkit.step.Step
  */
 class ReactionTimeStep(
     identifier: String,
+    val titleText: String?,
+    val titleTextColor: Int,
+    val backgroundColor: Int,
     val maximumStimulusIntervalSeconds: Double,
     val minimumStimulusIntervalSeconds: Double,
     val thresholdAcceleration: Double,
