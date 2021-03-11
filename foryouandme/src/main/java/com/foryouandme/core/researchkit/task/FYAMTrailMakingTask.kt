@@ -1,5 +1,6 @@
 package com.foryouandme.core.researchkit.task
 
+import android.graphics.Color
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType
@@ -25,6 +26,7 @@ class FYAMTrailMakingTask(
             trailMakingType = trailMakingType,
             trailMakingBackgroundColor = secondary,
             trailMakingPointColor = primaryEnd,
+            trailMakingPointErrorColor = Color.RED,
             trailMakingPointTextColor = secondary,
             trailMakingLineTextColor = primaryEnd
         )

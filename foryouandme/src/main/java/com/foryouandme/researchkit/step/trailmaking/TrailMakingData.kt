@@ -8,7 +8,13 @@ data class TrailMakingState(
 sealed class TrailMakingStateUpdate {
 
     object Initialized : TrailMakingStateUpdate()
-    object CurrentIndex: TrailMakingStateUpdate()
+    object CurrentIndex : TrailMakingStateUpdate()
+
+}
+
+sealed class TrailMakingError {
+
+    data class WrongPoint(val point: TrailMakingPoint): TrailMakingError()
 
 }
 

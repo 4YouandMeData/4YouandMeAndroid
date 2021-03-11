@@ -1,11 +1,14 @@
 package com.foryouandme.researchkit.step.trailmaking
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType.NUMBER
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType.NUMBER_AND_LETTER
 import com.squareup.moshi.JsonAdapter
@@ -18,8 +21,10 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 
 @HiltViewModel
+@SuppressLint("StaticFieldLeak")
 class TrailMakingViewModel @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<TrailMakingStateUpdate>,
+    private val errorFlow: ErrorFlow<TrailMakingError>,
     private val moshi: Moshi,
     @ApplicationContext private val application: Context
 ) : ViewModel() {
@@ -32,6 +37,7 @@ class TrailMakingViewModel @Inject constructor(
     /* --- flow --- */
 
     val stateUpdate = stateUpdateFlow.stateUpdates
+    val error = errorFlow.error
 
     /* --- initialize --- */
 
@@ -132,15 +138,15 @@ class TrailMakingViewModel @Inject constructor(
         val selectedIndex =
             state.points
                 .indexOfFirst { it.name == point.name }
-                .let { if(it < 0) null else it }
+                .let { if (it < 0) null else it }
 
-        if(selectedIndex == (state.currentIndex + 1)) {
+        if (selectedIndex == (state.currentIndex + 1)) {
             // correct point selected
             state = state.copy(currentIndex = selectedIndex)
             stateUpdateFlow.update(TrailMakingStateUpdate.CurrentIndex)
         } else {
             // wrong point selected
-
+            throw ForYouAndMeException.Unknown
         }
 
     }
@@ -153,7 +159,10 @@ class TrailMakingViewModel @Inject constructor(
             is TrailMakingStateEvent.Initialize ->
                 viewModelScope.launchSafe { initialize(stateEvent.type) }
             is TrailMakingStateEvent.SelectPoint ->
-                viewModelScope.launchSafe { selectPoint(stateEvent.point) }
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    TrailMakingError.WrongPoint(stateEvent.point)
+                ) { selectPoint(stateEvent.point) }
         }
 
     }

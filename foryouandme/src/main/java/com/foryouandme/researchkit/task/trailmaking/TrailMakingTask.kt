@@ -11,6 +11,7 @@ class TrailMakingTask(
     trailMakingType: ETrailMakingType,
     trailMakingBackgroundColor: Int,
     trailMakingPointColor: Int,
+    trailMakingPointErrorColor: Int,
     trailMakingPointTextColor: Int,
     trailMakingLineTextColor: Int,
 ) : Task(TaskIdentifiers.GAIT, id) {
@@ -21,6 +22,7 @@ class TrailMakingTask(
             trailMakingType = trailMakingType,
             trailMakingBackgroundColor = trailMakingBackgroundColor,
             trailMakingPointColor = trailMakingPointColor,
+            trailMakingPointErrorColor = trailMakingPointErrorColor,
             trailMakingPointTextColor = trailMakingPointTextColor,
             trailMakingLineTextColor = trailMakingLineTextColor
         )
@@ -36,6 +38,7 @@ class TrailMakingTask(
             trailMakingType: ETrailMakingType,
             trailMakingBackgroundColor: Int,
             trailMakingPointColor: Int,
+            trailMakingPointErrorColor: Int,
             trailMakingPointTextColor: Int,
             trailMakingLineTextColor: Int,
         ): List<Step> =
@@ -46,6 +49,7 @@ class TrailMakingTask(
                     trailMakingType,
                     trailMakingBackgroundColor,
                     trailMakingPointColor,
+                    trailMakingPointErrorColor,
                     trailMakingPointTextColor,
                     trailMakingLineTextColor
                 )

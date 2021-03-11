@@ -3,6 +3,7 @@ package com.foryouandme.researchkit.step.trailmaking
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
@@ -37,6 +38,15 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
             }
             .observeIn(this)
 
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    is TrailMakingError.WrongPoint -> applyPointError(it.cause.point)
+                }
+            }
+            .observeIn(this)
+
         val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
 
         if (viewModel.state.points.isEmpty() && step != null)
@@ -64,7 +74,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                 screenPoints.forEach { position ->
 
                     val point = TrailMakingPointView(requireContext())
-                    point.setText(position.name)
+                    point.text = position.name
                     point.setCircleBackgroundColor(step.pointColor)
                     point.setTextColor(step.pointTextColor)
                     val id = View.generateViewId()
@@ -119,7 +129,42 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
         val viewBinding = binding
 
         if (currentPoint != null && previousPoint != null && viewBinding != null) {
+            clearErrors()
             viewBinding.pointsArea.addLine(currentPoint to previousPoint)
+        }
+
+    }
+
+    private fun applyPointError(point: TrailMakingPoint) {
+
+        clearErrors()
+
+        val viewBinding = binding
+        val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
+
+        if(viewBinding != null && step != null) {
+
+            val pointsViews =
+                viewBinding.root.children.toList().filterIsInstance<TrailMakingPointView>()
+
+            val pointView = pointsViews.firstOrNull { it.text == point.name }
+            pointView?.setCircleBackgroundColor(step.pointErrorColor)
+
+        }
+
+    }
+
+    private fun clearErrors() {
+
+        val viewBinding = binding
+        val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
+
+        if(viewBinding != null && step != null) {
+
+            viewBinding.root.children.toList()
+                .filterIsInstance<TrailMakingPointView>()
+                .forEach { it.setCircleBackgroundColor(step.pointColor) }
+
         }
 
     }

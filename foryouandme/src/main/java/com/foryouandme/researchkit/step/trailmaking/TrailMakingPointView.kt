@@ -15,11 +15,11 @@ class TrailMakingPointView(context: Context) : FrameLayout(context) {
             true
         )
 
-    fun setText(text: String) {
-
-        binding.dot.text = text
-
-    }
+    var text: CharSequence
+        get() = binding.dot.text
+        set(value) {
+            binding.dot.text = value
+        }
 
     fun setTextColor(color: Int) {
 

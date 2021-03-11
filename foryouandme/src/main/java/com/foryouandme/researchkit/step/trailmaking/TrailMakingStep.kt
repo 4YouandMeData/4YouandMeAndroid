@@ -7,6 +7,7 @@ class TrailMakingStep(
     val type: ETrailMakingType,
     val backgroundColor: Int,
     val pointColor: Int,
+    val pointErrorColor: Int,
     val pointTextColor: Int,
     val lineColor: Int,
 ) : Step(identifier, null, null, { TrailMakingStepFragment() })
