@@ -2,13 +2,15 @@ package com.foryouandme.researchkit.step.trailmaking
 
 import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
 import com.foryouandme.entity.task.trailmaking.TrailMakingTap
+import org.threeten.bp.ZonedDateTime
 
 data class TrailMakingState(
     val points: List<TrailMakingPoint> = emptyList(),
     val currentIndex: Int = 0,
     val secondsElapsed: Long = 0,
     val errorCount: Int = 0,
-    val taps: List<TrailMakingTap> = emptyList()
+    val taps: List<TrailMakingTap> = emptyList(),
+    val start: ZonedDateTime = ZonedDateTime.now()
 )
 
 sealed class TrailMakingStateUpdate {
@@ -17,7 +19,7 @@ sealed class TrailMakingStateUpdate {
     object CurrentIndex : TrailMakingStateUpdate()
     object SecondsElapsed : TrailMakingStateUpdate()
     object ErrorCount : TrailMakingStateUpdate()
-    object Completed: TrailMakingStateUpdate()
+    object Completed : TrailMakingStateUpdate()
 
 }
 

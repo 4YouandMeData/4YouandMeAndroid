@@ -13,10 +13,12 @@ import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepTrailMakingBinding
 import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
+import com.foryouandme.researchkit.result.TrailMakingResult
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
+import org.threeten.bp.ZonedDateTime
 
 
 @AndroidEntryPoint
@@ -43,7 +45,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                     TrailMakingStateUpdate.Completed ->
                         lifecycleScope.launchSafe {
                             delay(1000)
-                            next()
+                            complete()
                         }
                 }
             }
@@ -63,8 +65,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
         if (viewModel.state.points.isEmpty() && step != null) {
             viewModel.execute(TrailMakingStateEvent.Initialize(step.type))
             viewModel.execute(TrailMakingStateEvent.StartTimer)
-        }
-        else {
+        } else {
             applyData()
             applyTimerErrorText()
         }
@@ -224,6 +225,24 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
             viewBinding.timerAndErrorCount.text = timerError
 
         }
+
+    }
+
+    private fun complete() {
+
+        val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
+        if (step != null) {
+            addResult(
+                TrailMakingResult(
+                    step.identifier,
+                    viewModel.state.start,
+                    ZonedDateTime.now(),
+                    viewModel.state.errorCount,
+                    viewModel.state.taps
+                )
+            )
+        }
+        next()
 
     }
 
