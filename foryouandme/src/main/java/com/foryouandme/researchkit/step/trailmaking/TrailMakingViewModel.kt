@@ -125,6 +125,26 @@ class TrailMakingViewModel @Inject constructor(
 
     }
 
+    /* --- point --- */
+
+    private suspend fun selectPoint(point: TrailMakingPoint) {
+
+        val selectedIndex =
+            state.points
+                .indexOfFirst { it.name == point.name }
+                .let { if(it < 0) null else it }
+
+        if(selectedIndex == (state.currentIndex + 1)) {
+            // correct point selected
+            state = state.copy(currentIndex = selectedIndex)
+            stateUpdateFlow.update(TrailMakingStateUpdate.CurrentIndex)
+        } else {
+            // wrong point selected
+
+        }
+
+    }
+
     /* --- state event --- */
 
     fun execute(stateEvent: TrailMakingStateEvent) {
@@ -132,6 +152,8 @@ class TrailMakingViewModel @Inject constructor(
         when (stateEvent) {
             is TrailMakingStateEvent.Initialize ->
                 viewModelScope.launchSafe { initialize(stateEvent.type) }
+            is TrailMakingStateEvent.SelectPoint ->
+                viewModelScope.launchSafe { selectPoint(stateEvent.point) }
         }
 
     }

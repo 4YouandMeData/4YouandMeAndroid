@@ -32,6 +32,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
             .onEach {
                 when (it) {
                     TrailMakingStateUpdate.Initialized -> applyData()
+                    TrailMakingStateUpdate.CurrentIndex -> drawLine()
                 }
             }
             .observeIn(this)
@@ -54,18 +55,11 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
 
             viewBinding.root.setBackgroundColor(step.backgroundColor)
 
+            viewBinding.pointsArea.setLineColor(step.lineColor)
+
             viewBinding.pointsArea.post {
 
-                val screenPoints = viewModel.state.points
-                    .map {
-
-                        val width = viewBinding.pointsArea.width - 80.dpToPx()
-                        val height = viewBinding.pointsArea.height - 80.dpToPx()
-                        val x = (width * it.x) + 40.dpToPx()
-                        val y = (height * it.y) + 40.dpToPx()
-                        it.copy(x = x, y = y)
-
-                    }
+                val screenPoints = getScreenPoints()
 
                 screenPoints.forEach { position ->
 
@@ -101,23 +95,52 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                         point.translationX = position.x.toFloat() - (point.width / 2)
                         point.translationY = position.y.toFloat() - (point.width / 2)
                         point.elevation = 5.dpToPx().toFloat()
+                        point.setOnClickListener {
+                            viewModel.execute(TrailMakingStateEvent.SelectPoint(position))
+                        }
                     }
 
                 }
 
-                screenPoints.mapIndexedNotNull { index, point ->
-
-                    val nextPoint = screenPoints.getOrNull(index + 1)
-
-                    if (nextPoint != null)
-                        point to nextPoint
-                    else null
-
-                }.let { viewBinding.pointsArea.setLines(it, step.lineColor) }
-
             }
 
         }
+
+    }
+
+    private fun drawLine() {
+
+        val screenPoints = getScreenPoints()
+
+        val currentPoint =
+            screenPoints.getOrNull(viewModel.state.currentIndex)
+        val previousPoint =
+            screenPoints.getOrNull(viewModel.state.currentIndex - 1)
+        val viewBinding = binding
+
+        if (currentPoint != null && previousPoint != null && viewBinding != null) {
+            viewBinding.pointsArea.addLine(currentPoint to previousPoint)
+        }
+
+    }
+
+    private fun getScreenPoints(): List<TrailMakingPoint> {
+
+        val viewBinding = binding
+
+        return if (viewBinding != null)
+            viewModel.state.points
+                .map {
+
+                    val width = viewBinding.pointsArea.width - 80.dpToPx()
+                    val height = viewBinding.pointsArea.height - 80.dpToPx()
+                    val x = (width * it.x) + 40.dpToPx()
+                    val y = (height * it.y) + 40.dpToPx()
+                    it.copy(x = x, y = y)
+
+                }
+        else
+            emptyList()
 
     }
 

@@ -2,7 +2,6 @@ package com.foryouandme.researchkit.step.trailmaking
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.widget.FrameLayout
@@ -24,9 +23,16 @@ class TrailMakingLineView(context: Context, attrs: AttributeSet?) : FrameLayout(
 
     }
 
-    fun setLines(lines: List<Pair<TrailMakingPoint, TrailMakingPoint>>, color: Int) {
-        this.lines = lines
+    fun setLineColor(color: Int) {
         paint.color = color
+    }
+
+    fun addLine(line: Pair<TrailMakingPoint, TrailMakingPoint>) {
+        lines =
+            lines.toMutableList()
+                .also { it.add(line) }
+                .distinctBy { "${it.first.name}_${it.second.name}" }
+        postInvalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
