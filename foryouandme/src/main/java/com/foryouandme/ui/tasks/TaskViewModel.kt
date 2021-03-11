@@ -129,7 +129,7 @@ class TaskViewModel @Inject constructor(
         if (step != null && task != null) {
             taskConfiguration.onStepLoaded(task, step)
             navigationFlow.navigateTo(StepToStep(currentStepIndex + 1))
-        } else end()
+        } else execute(TaskStateEvent.End)
 
     }
 
@@ -182,14 +182,26 @@ class TaskViewModel @Inject constructor(
 
         when (stateEvent) {
             is TaskStateEvent.Initialize ->
-                errorFlow.launchCatch(viewModelScope, TaskError.Initialization)
-                { initialize(stateEvent.id, stateEvent.data) }
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    TaskError.Initialization,
+                    loadingFlow,
+                    TaskLoading.Initialization
+                ) { initialize(stateEvent.id, stateEvent.data) }
             TaskStateEvent.Reschedule ->
-                errorFlow.launchCatch(viewModelScope, TaskError.Reschedule)
-                { reschedule() }
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    TaskError.Reschedule,
+                    loadingFlow,
+                    TaskLoading.Reschedule
+                ) { reschedule() }
             TaskStateEvent.End ->
-                errorFlow.launchCatch(viewModelScope, TaskError.Result)
-                { end() }
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    TaskError.Result,
+                    loadingFlow,
+                    TaskLoading.Result
+                ) { end() }
             is TaskStateEvent.SkipToStep ->
                 viewModelScope.launchSafe {
                     skipToStep(stateEvent.stepId, stateEvent.currentStepIndex)

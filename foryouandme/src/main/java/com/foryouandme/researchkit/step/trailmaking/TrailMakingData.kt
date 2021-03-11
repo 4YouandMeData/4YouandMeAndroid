@@ -17,6 +17,7 @@ sealed class TrailMakingStateUpdate {
     object CurrentIndex : TrailMakingStateUpdate()
     object SecondsElapsed : TrailMakingStateUpdate()
     object ErrorCount : TrailMakingStateUpdate()
+    object Completed: TrailMakingStateUpdate()
 
 }
 

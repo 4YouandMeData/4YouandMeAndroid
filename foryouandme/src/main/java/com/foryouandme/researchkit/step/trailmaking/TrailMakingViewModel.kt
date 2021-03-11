@@ -157,6 +157,8 @@ class TrailMakingViewModel @Inject constructor(
                 // correct point selected
                 state = state.copy(currentIndex = selectedIndex)
                 stateUpdateFlow.update(TrailMakingStateUpdate.CurrentIndex)
+                if(selectedIndex == state.points.lastIndex)
+                    stateUpdateFlow.update(TrailMakingStateUpdate.Completed)
             } else {
                 // wrong point selected
                 state = state.copy(errorCount = state.errorCount + 1)

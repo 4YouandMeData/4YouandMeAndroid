@@ -5,14 +5,17 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepTrailMakingBinding
 import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
 
 
@@ -37,6 +40,11 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                     TrailMakingStateUpdate.CurrentIndex -> drawLine()
                     TrailMakingStateUpdate.SecondsElapsed,
                     TrailMakingStateUpdate.ErrorCount -> applyTimerErrorText()
+                    TrailMakingStateUpdate.Completed ->
+                        lifecycleScope.launchSafe {
+                            delay(1000)
+                            next()
+                        }
                 }
             }
             .observeIn(this)
