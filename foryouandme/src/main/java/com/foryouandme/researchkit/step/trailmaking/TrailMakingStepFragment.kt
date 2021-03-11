@@ -10,6 +10,7 @@ import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.databinding.StepTrailMakingBinding
+import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach

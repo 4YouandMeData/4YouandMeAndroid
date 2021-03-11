@@ -8,7 +8,11 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.data.ext.getTimestampDateUTC
 import com.foryouandme.domain.error.ForYouAndMeException
+import com.foryouandme.entity.task.trailmaking.Point
+import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
+import com.foryouandme.entity.task.trailmaking.TrailMakingTap
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType.NUMBER
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType.NUMBER_AND_LETTER
 import com.squareup.moshi.JsonAdapter
@@ -141,15 +145,25 @@ class TrailMakingViewModel @Inject constructor(
                 .indexOfFirst { it.name == point.name }
                 .let { if (it < 0) null else it }
 
-        if (selectedIndex == (state.currentIndex + 1)) {
-            // correct point selected
-            state = state.copy(currentIndex = selectedIndex)
-            stateUpdateFlow.update(TrailMakingStateUpdate.CurrentIndex)
-        } else {
-            // wrong point selected
-            state = state.copy(errorCount = state.errorCount + 1)
-            stateUpdateFlow.update(TrailMakingStateUpdate.ErrorCount)
-            throw ForYouAndMeException.Unknown
+        if (selectedIndex != null) {
+
+            val correct = selectedIndex == (state.currentIndex + 1)
+
+            val tap = TrailMakingTap(selectedIndex, getTimestampDateUTC().time, correct.not())
+            val taps = state.taps.plus(tap)
+            state = state.copy(taps = taps)
+
+            if (correct) {
+                // correct point selected
+                state = state.copy(currentIndex = selectedIndex)
+                stateUpdateFlow.update(TrailMakingStateUpdate.CurrentIndex)
+            } else {
+                // wrong point selected
+                state = state.copy(errorCount = state.errorCount + 1)
+                stateUpdateFlow.update(TrailMakingStateUpdate.ErrorCount)
+                throw ForYouAndMeException.Unknown
+            }
+
         }
 
     }
