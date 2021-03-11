@@ -34,6 +34,8 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                 when (it) {
                     TrailMakingStateUpdate.Initialized -> applyData()
                     TrailMakingStateUpdate.CurrentIndex -> drawLine()
+                    TrailMakingStateUpdate.SecondsElapsed,
+                    TrailMakingStateUpdate.ErrorCount -> applyTimerErrorText()
                 }
             }
             .observeIn(this)
@@ -49,10 +51,14 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
 
         val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
 
-        if (viewModel.state.points.isEmpty() && step != null)
+        if (viewModel.state.points.isEmpty() && step != null) {
             viewModel.execute(TrailMakingStateEvent.Initialize(step.type))
-        else
+            viewModel.execute(TrailMakingStateEvent.StartTimer)
+        }
+        else {
             applyData()
+            applyTimerErrorText()
+        }
 
     }
 
@@ -64,6 +70,11 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
         if (viewBinding != null && step != null) {
 
             viewBinding.root.setBackgroundColor(step.backgroundColor)
+
+            viewBinding.timerAndErrorCount.setTextColor(step.timerAndErrorTextColor)
+
+            viewBinding.title.text = step.titleText
+            viewBinding.title.setTextColor(step.titleTextColor)
 
             viewBinding.pointsArea.setLineColor(step.lineColor)
 
@@ -142,7 +153,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
         val viewBinding = binding
         val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
 
-        if(viewBinding != null && step != null) {
+        if (viewBinding != null && step != null) {
 
             val pointsViews =
                 viewBinding.root.children.toList().filterIsInstance<TrailMakingPointView>()
@@ -159,7 +170,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
         val viewBinding = binding
         val step = taskViewModel.getStepByIndexAs<TrailMakingStep>(indexArg())
 
-        if(viewBinding != null && step != null) {
+        if (viewBinding != null && step != null) {
 
             viewBinding.root.children.toList()
                 .filterIsInstance<TrailMakingPointView>()
@@ -186,6 +197,24 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
                 }
         else
             emptyList()
+
+    }
+
+    private fun applyTimerErrorText() {
+
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            val secondsElapsed = viewModel.state.secondsElapsed
+            val errorCount = viewModel.state.errorCount
+            val errors = getString(R.string.TRAIL_MAKING_errors)
+
+            val timerError = "${secondsElapsed}s ($errorCount $errors)"
+
+            viewBinding.timerAndErrorCount.text = timerError
+
+        }
 
     }
 

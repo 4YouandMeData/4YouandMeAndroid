@@ -135,7 +135,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )*/
             null -> null
             else ->
-                FYAMTrailMakingTask(id, ETrailMakingType.NUMBER_AND_LETTER, configuration)
+                FYAMTrailMakingTask(id, "Trail-Making test", ETrailMakingType.NUMBER_AND_LETTER, configuration)
         }
 
     override suspend fun handleTaskResult(

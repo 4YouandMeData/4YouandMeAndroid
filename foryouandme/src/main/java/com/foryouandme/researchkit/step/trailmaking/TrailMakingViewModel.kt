@@ -16,6 +16,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -146,7 +147,24 @@ class TrailMakingViewModel @Inject constructor(
             stateUpdateFlow.update(TrailMakingStateUpdate.CurrentIndex)
         } else {
             // wrong point selected
+            state = state.copy(errorCount = state.errorCount + 1)
+            stateUpdateFlow.update(TrailMakingStateUpdate.ErrorCount)
             throw ForYouAndMeException.Unknown
+        }
+
+    }
+
+    /* --- timer --- */
+
+    private suspend fun startTimer() {
+
+        var secondsElapsed = 0L
+
+        while (true) {
+            delay(1000)
+            secondsElapsed += 1
+            state = state.copy(secondsElapsed = secondsElapsed)
+            stateUpdateFlow.update(TrailMakingStateUpdate.SecondsElapsed)
         }
 
     }
@@ -163,6 +181,8 @@ class TrailMakingViewModel @Inject constructor(
                     viewModelScope,
                     TrailMakingError.WrongPoint(stateEvent.point)
                 ) { selectPoint(stateEvent.point) }
+            TrailMakingStateEvent.StartTimer ->
+                viewModelScope.launchSafe { startTimer() }
         }
 
     }
