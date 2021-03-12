@@ -26,4 +26,8 @@ sealed class ReactionTimeStateEvent {
         val timeoutSeconds: Double
     ) : ReactionTimeStateEvent()
 
+    object StartShakeTracking: ReactionTimeStateEvent()
+
+    object StopShakeTracking: ReactionTimeStateEvent()
+
 }

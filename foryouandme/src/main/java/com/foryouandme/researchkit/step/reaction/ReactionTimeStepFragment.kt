@@ -30,7 +30,7 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
         viewModel.stateUpdate
             .unwrapEvent(name)
             .onEach {
-                when(it) {
+                when (it) {
                     ReactionTimeStateUpdate.Spawn -> spawnCircle()
                 }
             }
@@ -105,7 +105,8 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
         if (step != null && viewBinding != null) {
 
             viewBinding.attempt.text =
-                getString(R.string.REATION_TIME_attempts,
+                getString(
+                    R.string.REATION_TIME_attempts,
                     viewModel.state.attempt,
                     step.numberOfAttempts
                 )
@@ -125,6 +126,16 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
 
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.execute(ReactionTimeStateEvent.StartShakeTracking)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.execute(ReactionTimeStateEvent.StopShakeTracking)
     }
 
 }
