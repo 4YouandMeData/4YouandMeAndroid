@@ -1,9 +1,12 @@
 package com.foryouandme.researchkit.task.reaction
 
+import com.foryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
+import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.reaction.ReactionTimeStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskIdentifiers
+import com.foryouandme.researchkit.task.gait.GaitTask
 
 class ReactionTimeTask(
     id: String,
@@ -39,7 +42,7 @@ class ReactionTimeTask(
 
     companion object {
 
-        const val REACTION_TIME = "reaction_time"
+        private const val REACTION_TIME = "reaction_time"
 
         fun getReactionTimeCoreSteps(
             reactionTimeBackgroundColor: Int,
@@ -69,6 +72,11 @@ class ReactionTimeTask(
                     timeoutSeconds = reactionTimeTimeoutSeconds
                 )
             )
+
+        /* --- result keys --- */
+
+        const val REACTION_TIME_DEVICE_MOTION: String =
+            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${REACTION_TIME}"
 
     }
 

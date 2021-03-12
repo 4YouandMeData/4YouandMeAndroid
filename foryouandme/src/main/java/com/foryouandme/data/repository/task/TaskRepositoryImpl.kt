@@ -8,6 +8,7 @@ import com.foryouandme.domain.usecase.task.TaskRepository
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
+import com.foryouandme.researchkit.result.reaction.ReactionTimeResult
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -126,6 +127,30 @@ class TaskRepositoryImpl @Inject constructor(
                     FitnessUpdateRequest(
                         FitnessWalkRequest(walkDeviceMotion, walkAccelerometer, walkPedometer),
                         FitnessSitRequest(sitDeviceMotion, sitAccelerometer)
+                    )
+                )
+            )
+
+        }
+
+    }
+
+    override suspend fun updateReactionTimeTask(
+        token: String,
+        taskId: String,
+        result: ReactionTimeResult
+    ) {
+
+        authErrorInterceptor.execute {
+
+            api.updateReactionTimeTask(
+                token,
+                taskId,
+                TaskResultRequest(
+                    ReactionTimeUpdateRequest(
+                        result.attempts.map {
+                            ReactionTimeAttemptRequest(it.deviceMotion, it.timestamp)
+                        }
                     )
                 )
             )

@@ -49,6 +49,14 @@ interface TaskApi {
     )
 
     @PATCH("api/v1/tasks/{id}")
+    suspend fun updateReactionTimeTask(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String,
+        @Body request: TaskResultRequest<ReactionTimeUpdateRequest>
+
+    )
+
+    @PATCH("api/v1/tasks/{id}")
     suspend fun updateQuickActivity(
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,

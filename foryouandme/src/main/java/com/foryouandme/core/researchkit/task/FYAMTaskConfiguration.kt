@@ -21,6 +21,7 @@ import com.foryouandme.researchkit.result.SingleIntAnswerResult
 import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.result.fitness.toFitnessResult
 import com.foryouandme.researchkit.result.gait.toGaitResult
+import com.foryouandme.researchkit.result.reaction.toReactionTimeResult
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
@@ -39,6 +40,7 @@ class FYAMTaskConfiguration @Inject constructor(
     private val getSurveyUseCase: GetSurveyUseCase,
     private val sendGaitTaskUseCase: SendGaitTaskUseCase,
     private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
+    private val sendReactionTimeUseCase: SendReactionTimeUseCase,
     private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
     private val rescheduleTaskUseCase: RescheduleTaskUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
@@ -182,6 +184,10 @@ class FYAMTaskConfiguration @Inject constructor(
                         sitDeviceMotion = fitnessResult.fitnessSitResult.deviceMotion,
                         sitAccelerometer = fitnessResult.fitnessSitResult.accelerometer
                     )
+            }
+            TaskIdentifiers.REACTION_TIME -> {
+                val reactionTimeResult = result.toReactionTimeResult()
+                sendReactionTimeUseCase(taskId = id, reactionTimeResult = reactionTimeResult)
             }
             TaskActivityType.Survey.typeId -> {
 

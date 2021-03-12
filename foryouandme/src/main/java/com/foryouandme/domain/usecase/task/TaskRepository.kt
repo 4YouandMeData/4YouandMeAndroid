@@ -3,6 +3,7 @@ package com.foryouandme.domain.usecase.task
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
+import com.foryouandme.researchkit.result.reaction.ReactionTimeResult
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import java.io.File
 
@@ -41,6 +42,13 @@ interface TaskRepository {
         sitDeviceMotion: String,
         sitAccelerometer: String,
     )
+
+    suspend fun updateReactionTimeTask(
+        token: String,
+        taskId: String,
+        result: ReactionTimeResult
+    )
+
 
     suspend fun updateQuickActivity(token: String, taskId: String, answerId: Int)
 

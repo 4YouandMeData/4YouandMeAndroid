@@ -134,10 +134,17 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
                 ReactionTimeStateEvent.StartAttempt(
                     step.maximumStimulusIntervalSeconds,
                     step.minimumStimulusIntervalSeconds,
-                    step.timeoutSeconds
+                    step.timeoutSeconds,
+                    step,
+                    taskFragment().getSensorOutputDirectory()
                 )
             )
-        } else next()
+        } else {
+
+            viewModel.state.results.forEach { addResult(it) }
+            next()
+
+        }
 
     }
 

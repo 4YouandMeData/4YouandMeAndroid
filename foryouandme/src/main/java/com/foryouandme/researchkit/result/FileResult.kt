@@ -1,5 +1,6 @@
 package com.foryouandme.researchkit.result
 
+import com.foryouandme.core.ext.readJson
 import org.threeten.bp.ZonedDateTime
 import java.io.File
 
@@ -42,4 +43,9 @@ class FileResult(
     val contentType: String,
     startDate: ZonedDateTime,
     endDate: ZonedDateTime
-) : StepResult(identifier, startDate, endDate)
+) : StepResult(identifier, startDate, endDate) {
+
+    fun toJsonResult(): JsonResult? =
+        file.readJson()?.let { JsonResult(identifier, it, startDate, endDate) }
+
+}
