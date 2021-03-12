@@ -13,11 +13,10 @@ class ReactionTimeTask(
     reactionTimeAttemptColor: Int,
     reactionCheckMarkBackgroundColor: Int,
     reactionCheckMarkColor: Int,
-    reactionTimeMaximumStimulusIntervalSeconds: Double,
-    reactionTimeMinimumStimulusIntervalSeconds: Double,
-    reactionTimeThresholdAcceleration: Double,
+    reactionTimeMaximumStimulusIntervalSeconds: Long,
+    reactionTimeMinimumStimulusIntervalSeconds: Long,
     reactionTimeNumberOfAttempts: Int,
-    reactionTimeTimeoutSeconds: Double
+    reactionTimeTimeoutSeconds: Long
 ) : Task(TaskIdentifiers.REACTION_TIME, id) {
 
     override val steps: List<Step> by lazy {
@@ -31,7 +30,6 @@ class ReactionTimeTask(
             reactionCheckMarkColor = reactionCheckMarkColor,
             reactionTimeMaximumStimulusIntervalSeconds = reactionTimeMaximumStimulusIntervalSeconds,
             reactionTimeMinimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
-            reactionTimeThresholdAcceleration = reactionTimeThresholdAcceleration,
             reactionTimeNumberOfAttempts = reactionTimeNumberOfAttempts,
             reactionTimeTimeoutSeconds = reactionTimeTimeoutSeconds
         )
@@ -50,11 +48,10 @@ class ReactionTimeTask(
             reactionTimeAttemptColor: Int,
             reactionCheckMarkBackgroundColor: Int,
             reactionCheckMarkColor: Int,
-            reactionTimeMaximumStimulusIntervalSeconds: Double,
-            reactionTimeMinimumStimulusIntervalSeconds: Double,
-            reactionTimeThresholdAcceleration: Double,
+            reactionTimeMaximumStimulusIntervalSeconds: Long,
+            reactionTimeMinimumStimulusIntervalSeconds: Long,
             reactionTimeNumberOfAttempts: Int,
-            reactionTimeTimeoutSeconds: Double
+            reactionTimeTimeoutSeconds: Long
         ): List<Step> =
 
             listOf(
@@ -68,7 +65,6 @@ class ReactionTimeTask(
                     checkMarkColor = reactionCheckMarkColor,
                     maximumStimulusIntervalSeconds = reactionTimeMaximumStimulusIntervalSeconds,
                     minimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
-                    thresholdAcceleration = reactionTimeThresholdAcceleration,
                     numberOfAttempts = reactionTimeNumberOfAttempts,
                     timeoutSeconds = reactionTimeTimeoutSeconds
                 )

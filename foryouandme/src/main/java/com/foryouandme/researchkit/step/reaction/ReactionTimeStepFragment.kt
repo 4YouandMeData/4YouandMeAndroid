@@ -6,14 +6,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.model.KeyPath
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.core.ext.onAnimationEnd
 import com.foryouandme.databinding.StepReactionTimeBinding
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
@@ -31,7 +35,21 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
             .unwrapEvent(name)
             .onEach {
                 when (it) {
-                    ReactionTimeStateUpdate.Spawn -> spawnCircle()
+                    ReactionTimeStateUpdate.Spawn ->
+                        spawnCircle()
+                    ReactionTimeStateUpdate.Attempt -> {
+                        applyAttemptText()
+                        attemptCompleted()
+                    }
+                }
+            }
+            .observeIn(this)
+
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    ReactionTimeError.AttemptError -> showError()
                 }
             }
             .observeIn(this)
@@ -60,7 +78,26 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
             viewBinding.attempt.setTextColor(step.attemptsTextColor)
             applyAttemptText()
 
+
             viewBinding.reaction.isVisible = false
+            viewBinding.error.isVisible = false
+
+
+            viewBinding.reaction.onAnimationEnd {
+                lifecycleScope.launchSafe {
+                    delay(1000)
+                    viewBinding.reaction.isVisible = false
+                    startAttempt()
+                }
+            }
+            viewBinding.error.onAnimationEnd {
+                lifecycleScope.launchSafe {
+                    delay(1000)
+                    viewBinding.error.isVisible = false
+                    startAttempt()
+                }
+            }
+
             viewBinding.reaction.addValueCallback(
                 KeyPath("Shape Outlines", "**"),
                 LottieProperty.COLOR_FILTER,
@@ -83,17 +120,24 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
                 }
             )
 
+            startAttempt()
+
+        }
+
+    }
+
+    private fun startAttempt() {
+
+        val step = taskViewModel.getStepByIndexAs<ReactionTimeStep>(indexArg())
+        if (step != null && viewModel.state.attempt <= step.numberOfAttempts) {
             viewModel.execute(
                 ReactionTimeStateEvent.StartAttempt(
                     step.maximumStimulusIntervalSeconds,
                     step.minimumStimulusIntervalSeconds,
-                    step.thresholdAcceleration,
-                    step.numberOfAttempts,
                     step.timeoutSeconds
                 )
             )
-
-        }
+        } else next()
 
     }
 
@@ -121,8 +165,36 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
 
         if (viewBinding != null) {
 
+            viewBinding.reaction.progress = 0.4f
             viewBinding.reaction.isVisible = true
-            viewBinding.reaction.playAnimation()
+
+        }
+
+    }
+
+    private fun attemptCompleted() {
+
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            viewBinding.reaction.isVisible = true
+            viewBinding.reaction.resumeAnimation()
+
+        }
+
+    }
+
+    private fun showError() {
+
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            viewBinding.error.progress = 0f
+            viewBinding.reaction.isVisible = false
+            viewBinding.error.isVisible = true
+            viewBinding.error.playAnimation()
 
         }
 

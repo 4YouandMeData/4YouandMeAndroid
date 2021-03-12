@@ -9,11 +9,10 @@ import com.foryouandme.researchkit.task.reaction.ReactionTimeTask
 class FYAMReactionTimeTask(
     id: String,
     reactionTimeTitle: String?,
-    reactionTimeMaximumStimulusIntervalSeconds: Double,
-    reactionTimeMinimumStimulusIntervalSeconds: Double,
-    reactionTimeThresholdAcceleration: Double,
+    reactionTimeMaximumStimulusIntervalSeconds: Long,
+    reactionTimeMinimumStimulusIntervalSeconds: Long,
     reactionTimeNumberOfAttempts: Int,
-    reactionTimeTimeoutSeconds: Double,
+    reactionTimeTimeoutSeconds: Long,
     private val configuration: Configuration
 ) : Task(TaskIdentifiers.TRAIL_MAKING, id) {
 
@@ -37,7 +36,6 @@ class FYAMReactionTimeTask(
             reactionCheckMarkColor = secondary,
             reactionTimeMaximumStimulusIntervalSeconds = reactionTimeMaximumStimulusIntervalSeconds,
             reactionTimeMinimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
-            reactionTimeThresholdAcceleration = reactionTimeThresholdAcceleration,
             reactionTimeNumberOfAttempts = reactionTimeNumberOfAttempts,
             reactionTimeTimeoutSeconds = reactionTimeTimeoutSeconds
         )

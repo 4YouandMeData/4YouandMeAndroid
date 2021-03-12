@@ -5,17 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.usecase.shake.StartShakeTrackingUseCase
 import com.foryouandme.domain.usecase.shake.StopShakeTrackingUseCase
 import com.foryouandme.entity.sensor.ShakeSensitivity
+import com.foryouandme.researchkit.step.reaction.EReactionState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.roundToLong
 import kotlin.random.Random
 
 @HiltViewModel
@@ -38,19 +38,24 @@ class ReactionTimeViewModel @Inject constructor(
 
     /* --- reaction --- */
 
+    private var reactionJob: Job? = null
+
     private suspend fun startReaction(
-        maximumStimulusIntervalSeconds: Double,
-        minimumStimulusIntervalSeconds: Double,
-        thresholdAcceleration: Double,
-        numberOfAttempts: Int,
-        timeoutSeconds: Double
+        maximumStimulusIntervalSeconds: Long,
+        minimumStimulusIntervalSeconds: Long,
+        timeoutSeconds: Long
     ) {
 
         val spawnDelaySeconds =
-            Random.nextDouble(minimumStimulusIntervalSeconds, maximumStimulusIntervalSeconds)
+            Random.nextLong(minimumStimulusIntervalSeconds, maximumStimulusIntervalSeconds)
 
-        delay(TimeUnit.SECONDS.toMillis(spawnDelaySeconds.roundToLong()))
+        state = state.copy(reactionState = IDLE)
+        delay(TimeUnit.SECONDS.toMillis(spawnDelaySeconds))
+        state = state.copy(reactionState = REACTION)
         stateUpdateFlow.update(ReactionTimeStateUpdate.Spawn)
+        delay(TimeUnit.SECONDS.toMillis(timeoutSeconds))
+        state = state.copy(reactionState = IDLE)
+        throw ForYouAndMeException.Unknown
 
     }
 
@@ -60,7 +65,19 @@ class ReactionTimeViewModel @Inject constructor(
 
     private suspend fun onShake() {
 
-        Timber.tag("SHAKE").d("SHAKE")
+        when(state.reactionState) {
+            IDLE -> {
+                reactionJob?.cancel()
+                state = state.copy(reactionState = ERROR)
+                throw ForYouAndMeException.Unknown
+            }
+            REACTION -> {
+                reactionJob?.cancel()
+                state = state.copy(attempt = state.attempt + 1)
+                stateUpdateFlow.update(ReactionTimeStateUpdate.Attempt)
+            }
+            ERROR -> {}
+        }
 
     }
 
@@ -68,23 +85,26 @@ class ReactionTimeViewModel @Inject constructor(
 
     fun execute(stateEvent: ReactionTimeStateEvent) {
         when (stateEvent) {
-            is ReactionTimeStateEvent.StartAttempt ->
-                errorFlow.launchCatch(viewModelScope, ReactionTimeError.AttemptError)
-                {
-                    startReaction(
-                        stateEvent.maximumStimulusIntervalSeconds,
-                        stateEvent.minimumStimulusIntervalSeconds,
-                        stateEvent.thresholdAcceleration,
-                        stateEvent.numberOfAttempts,
-                        stateEvent.timeoutSeconds
-                    )
-                }
+            is ReactionTimeStateEvent.StartAttempt -> {
+                reactionJob =
+                    errorFlow.launchCatch(viewModelScope, ReactionTimeError.AttemptError)
+                    {
+                        startReaction(
+                            stateEvent.maximumStimulusIntervalSeconds,
+                            stateEvent.minimumStimulusIntervalSeconds,
+                            stateEvent.timeoutSeconds
+                        )
+                    }
+            }
             ReactionTimeStateEvent.StartShakeTracking -> {
                 shakeJob?.cancel()
                 shakeJob = viewModelScope.launchSafe {
 
                     startShakeTrackingUseCase(ShakeSensitivity.Medium)
-                        .collect { onShake() }
+                        .collect {
+                            errorFlow.launchCatch(viewModelScope, ReactionTimeError.AttemptError)
+                            { onShake() }
+                        }
 
                 }
             }

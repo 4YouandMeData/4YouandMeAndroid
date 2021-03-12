@@ -8,8 +8,6 @@ import com.foryouandme.researchkit.step.Step
  * maximum seconds (starting from the beginning of the step) within which to make the circle appear
  * @param minimumStimulusIntervalSeconds:
  * minimum seconds (starting from the beginning of the step) after which the circle will appear
- * @param thresholdAcceleration:
- * Acceleration threshold beyond which the reaction took place
  * @param timeoutSeconds:
  * seconds (starting from when the circle appears) beyond which the attempt is considered
  * unsuccessful and is repeated
@@ -23,9 +21,8 @@ class ReactionTimeStep(
     val attemptsTextColor: Int,
     val checkMarkBackgroundColor: Int,
     val checkMarkColor: Int,
-    val maximumStimulusIntervalSeconds: Double,
-    val minimumStimulusIntervalSeconds: Double,
-    val thresholdAcceleration: Double,
+    val maximumStimulusIntervalSeconds: Long,
+    val minimumStimulusIntervalSeconds: Long,
     val numberOfAttempts: Int,
-    val timeoutSeconds: Double
+    val timeoutSeconds: Long
 ) : Step(identifier, null, null, { ReactionTimeStepFragment() })
