@@ -7,9 +7,12 @@ import com.foryouandme.researchkit.task.TaskIdentifiers
 
 class ReactionTimeTask(
     id: String,
+    reactionTimeBackgroundColor: Int,
     reactionTimeTitle: String?,
     reactionTimeTitleColor: Int,
-    reactionTimeBackgroundColor: Int,
+    reactionTimeAttemptColor: Int,
+    reactionCheckMarkBackgroundColor: Int,
+    reactionCheckMarkColor: Int,
     reactionTimeMaximumStimulusIntervalSeconds: Double,
     reactionTimeMinimumStimulusIntervalSeconds: Double,
     reactionTimeThresholdAcceleration: Double,
@@ -20,9 +23,12 @@ class ReactionTimeTask(
     override val steps: List<Step> by lazy {
 
         getReactionTimeCoreSteps(
+            reactionTimeBackgroundColor = reactionTimeBackgroundColor,
             reactionTimeTitle = reactionTimeTitle,
             reactionTimeTitleColor = reactionTimeTitleColor,
-            reactionTimeBackgroundColor = reactionTimeBackgroundColor,
+            reactionTimeAttemptColor = reactionTimeAttemptColor,
+            reactionCheckMarkBackgroundColor = reactionCheckMarkBackgroundColor,
+            reactionCheckMarkColor = reactionCheckMarkColor,
             reactionTimeMaximumStimulusIntervalSeconds = reactionTimeMaximumStimulusIntervalSeconds,
             reactionTimeMinimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
             reactionTimeThresholdAcceleration = reactionTimeThresholdAcceleration,
@@ -38,9 +44,12 @@ class ReactionTimeTask(
         const val REACTION_TIME = "reaction_time"
 
         fun getReactionTimeCoreSteps(
+            reactionTimeBackgroundColor: Int,
             reactionTimeTitle: String?,
             reactionTimeTitleColor: Int,
-            reactionTimeBackgroundColor: Int,
+            reactionTimeAttemptColor: Int,
+            reactionCheckMarkBackgroundColor: Int,
+            reactionCheckMarkColor: Int,
             reactionTimeMaximumStimulusIntervalSeconds: Double,
             reactionTimeMinimumStimulusIntervalSeconds: Double,
             reactionTimeThresholdAcceleration: Double,
@@ -51,9 +60,12 @@ class ReactionTimeTask(
             listOf(
                 ReactionTimeStep(
                     REACTION_TIME,
+                    backgroundColor = reactionTimeBackgroundColor,
                     titleText = reactionTimeTitle,
                     titleTextColor = reactionTimeTitleColor,
-                    backgroundColor = reactionTimeBackgroundColor,
+                    attemptsTextColor = reactionTimeAttemptColor,
+                    checkMarkBackgroundColor = reactionCheckMarkBackgroundColor,
+                    checkMarkColor = reactionCheckMarkColor,
                     maximumStimulusIntervalSeconds = reactionTimeMaximumStimulusIntervalSeconds,
                     minimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
                     thresholdAcceleration = reactionTimeThresholdAcceleration,

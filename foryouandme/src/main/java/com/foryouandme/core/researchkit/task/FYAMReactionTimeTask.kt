@@ -19,6 +19,9 @@ class FYAMReactionTimeTask(
 
     override val steps: List<Step> by lazy {
 
+        val primaryEnd =
+            configuration.theme.primaryColorEnd.color()
+
         val primaryText =
             configuration.theme.primaryTextColor.color()
 
@@ -26,14 +29,17 @@ class FYAMReactionTimeTask(
             configuration.theme.secondaryColor.color()
 
         ReactionTimeTask.getReactionTimeCoreSteps(
-            reactionTimeTitle,
-            primaryText,
-            secondary,
-            reactionTimeMaximumStimulusIntervalSeconds,
-            reactionTimeMinimumStimulusIntervalSeconds,
-            reactionTimeThresholdAcceleration,
-            reactionTimeNumberOfAttempts,
-            reactionTimeTimeoutSeconds
+            reactionTimeBackgroundColor = secondary,
+            reactionTimeTitle = reactionTimeTitle,
+            reactionTimeTitleColor = primaryText,
+            reactionTimeAttemptColor = primaryText,
+            reactionCheckMarkBackgroundColor = primaryEnd,
+            reactionCheckMarkColor = secondary,
+            reactionTimeMaximumStimulusIntervalSeconds = reactionTimeMaximumStimulusIntervalSeconds,
+            reactionTimeMinimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
+            reactionTimeThresholdAcceleration = reactionTimeThresholdAcceleration,
+            reactionTimeNumberOfAttempts = reactionTimeNumberOfAttempts,
+            reactionTimeTimeoutSeconds = reactionTimeTimeoutSeconds
         )
 
     }
