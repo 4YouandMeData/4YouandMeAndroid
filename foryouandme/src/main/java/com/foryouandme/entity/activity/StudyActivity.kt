@@ -48,6 +48,8 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
     object VideoDiary : TaskActivityType("video_diary", TaskIdentifiers.VIDEO_DIARY)
     object GaitTask : TaskActivityType("gait_task", TaskIdentifiers.GAIT)
     object WalkTask : TaskActivityType("walk_task", TaskIdentifiers.FITNESS)
+    object TrailMaking : TaskActivityType("trail_making_task", TaskIdentifiers.TRAIL_MAKING)
+    object ReactionTime : TaskActivityType("reaction_time_task", TaskIdentifiers.REACTION_TIME)
     object CamCogPvt : TaskActivityType("camcog_pvt", TaskIdentifiers.CAMCOG)
     object CamCogNbx : TaskActivityType("camcog_nbx", TaskIdentifiers.CAMCOG)
     object CamCogEbt : TaskActivityType("camcog_ebt", TaskIdentifiers.CAMCOG)
@@ -77,12 +79,12 @@ data class Reschedule(
     val rescheduledTimes: Int?
 ) {
 
-   companion object {
+    companion object {
 
-       fun Reschedule?.isEnabled(): Boolean =
-           this != null && rescheduleTimes > 0 && rescheduledTimes ?: 0 < rescheduleTimes
+        fun Reschedule?.isEnabled(): Boolean =
+            this != null && rescheduleTimes > 0 && rescheduledTimes ?: 0 < rescheduleTimes
 
-   }
+    }
 
 }
 
