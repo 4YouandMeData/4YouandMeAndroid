@@ -1,9 +1,11 @@
 package com.foryouandme.researchkit.step.reaction
 
 import com.foryouandme.researchkit.result.FileResult
+import org.threeten.bp.ZonedDateTime
 import java.io.File
 
 data class ReactionTimeState(
+    val startTime: ZonedDateTime = ZonedDateTime.now(),
     val attempt: Int = 1,
     val reactionState: EReactionState = EReactionState.IDLE,
     val results: List<FileResult> = emptyList()
@@ -40,8 +42,8 @@ sealed class ReactionTimeStateEvent {
         val outputDirectory: File
     ) : ReactionTimeStateEvent()
 
-    object StartShakeTracking: ReactionTimeStateEvent()
+    object StartShakeTracking : ReactionTimeStateEvent()
 
-    object StopShakeTracking: ReactionTimeStateEvent()
+    object StopShakeTracking : ReactionTimeStateEvent()
 
 }

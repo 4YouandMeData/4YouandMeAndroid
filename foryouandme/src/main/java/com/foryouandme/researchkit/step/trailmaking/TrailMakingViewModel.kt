@@ -10,9 +10,9 @@ import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.data.ext.getTimestampDateUTC
 import com.foryouandme.domain.error.ForYouAndMeException
-import com.foryouandme.entity.task.trailmaking.Point
-import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
-import com.foryouandme.entity.task.trailmaking.TrailMakingTap
+import com.foryouandme.entity.task.result.trailmaking.Point
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingPoint
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingTap
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType.NUMBER
 import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType.NUMBER_AND_LETTER
 import com.squareup.moshi.JsonAdapter

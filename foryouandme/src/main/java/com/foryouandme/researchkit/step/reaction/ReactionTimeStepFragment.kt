@@ -15,10 +15,12 @@ import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.onAnimationEnd
 import com.foryouandme.databinding.StepReactionTimeBinding
+import com.foryouandme.entity.task.result.reaction.ReactionTimeResult
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
+import org.threeten.bp.ZonedDateTime
 
 @AndroidEntryPoint
 class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
@@ -129,21 +131,30 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
     private fun startAttempt() {
 
         val step = taskViewModel.getStepByIndexAs<ReactionTimeStep>(indexArg())
-        if (step != null && viewModel.state.attempt <= step.numberOfAttempts) {
-            viewModel.execute(
-                ReactionTimeStateEvent.StartAttempt(
-                    step.maximumStimulusIntervalSeconds,
-                    step.minimumStimulusIntervalSeconds,
-                    step.timeoutSeconds,
-                    step,
-                    taskFragment().getSensorOutputDirectory()
+        if (step != null) {
+            if (viewModel.state.attempt <= step.numberOfAttempts) {
+                viewModel.execute(
+                    ReactionTimeStateEvent.StartAttempt(
+                        step.maximumStimulusIntervalSeconds,
+                        step.minimumStimulusIntervalSeconds,
+                        step.timeoutSeconds,
+                        step,
+                        taskFragment().getSensorOutputDirectory()
+                    )
                 )
-            )
-        } else {
+            } else {
 
-            viewModel.state.results.forEach { addResult(it) }
-            next()
+                addResult(
+                    ReactionTimeResult(
+                        step.identifier,
+                        viewModel.state.startTime,
+                        viewModel.state.results,
+                        ZonedDateTime.now()
+                    )
+                )
+                next()
 
+            }
         }
 
     }

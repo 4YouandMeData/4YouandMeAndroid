@@ -37,7 +37,6 @@ interface TaskApi {
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,
         @Body request: TaskResultRequest<GaitUpdateRequest>
-
     )
 
     @PATCH("api/v1/tasks/{id}")
@@ -45,7 +44,6 @@ interface TaskApi {
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,
         @Body request: TaskResultRequest<FitnessUpdateRequest>
-
     )
 
     @PATCH("api/v1/tasks/{id}")
@@ -53,7 +51,13 @@ interface TaskApi {
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,
         @Body request: TaskResultRequest<ReactionTimeUpdateRequest>
+    )
 
+    @PATCH("api/v1/tasks/{id}")
+    suspend fun updateTrailMakingTimeTask(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String,
+        @Body request: TaskResultRequest<TrailMakingUpdateRequest>
     )
 
     @PATCH("api/v1/tasks/{id}")

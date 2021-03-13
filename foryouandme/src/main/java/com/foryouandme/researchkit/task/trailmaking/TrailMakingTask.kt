@@ -44,7 +44,7 @@ class TrailMakingTask(
             trailMakingType: ETrailMakingType,
             trailMakingBackgroundColor: Int,
             trailMakingTimerAndErrorTextColor: Int,
-            trailMakingTitleText: String,
+            trailMakingTitleText: String?,
             trailMakingTitleTextColor: Int,
             trailMakingPointColor: Int,
             trailMakingPointErrorColor: Int,

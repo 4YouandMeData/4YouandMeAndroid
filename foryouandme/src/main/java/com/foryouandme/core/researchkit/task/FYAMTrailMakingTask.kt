@@ -10,7 +10,7 @@ import com.foryouandme.researchkit.task.trailmaking.TrailMakingTask
 
 class FYAMTrailMakingTask(
     id: String,
-    private val title: String,
+    private val title: String?,
     private val trailMakingType: ETrailMakingType,
     private val configuration: Configuration
 ) : Task(TaskIdentifiers.TRAIL_MAKING, id) {

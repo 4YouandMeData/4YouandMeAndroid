@@ -1,7 +1,7 @@
 package com.foryouandme.researchkit.step.trailmaking
 
-import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
-import com.foryouandme.entity.task.trailmaking.TrailMakingTap
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingPoint
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingTap
 import org.threeten.bp.ZonedDateTime
 
 data class TrailMakingState(

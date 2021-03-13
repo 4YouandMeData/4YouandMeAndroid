@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingPoint
 
 class TrailMakingLineView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 

@@ -100,18 +100,7 @@ class ReactionTimeViewModel @Inject constructor(
                 state = state.copy(attempt = state.attempt + 1)
                 stateUpdateFlow.update(ReactionTimeStateUpdate.Attempt)
                 recorder?.stop()?.let {
-
-                    //update the file result id to handle multiple result for this step
-                    val updatedResult =
-                        FileResult(
-                            identifier = "${it.identifier}_${state.results.size + 1}",
-                            it.file,
-                            it.contentType,
-                            it.startDate,
-                            it.endDate
-                        )
-                    state = state.copy(results = state.results.plus(updatedResult))
-
+                    state = state.copy(results = state.results.plus(it))
                 }
                 recorder = null
             }

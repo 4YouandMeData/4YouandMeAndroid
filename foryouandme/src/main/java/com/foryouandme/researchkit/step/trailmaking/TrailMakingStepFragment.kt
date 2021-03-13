@@ -12,8 +12,8 @@ import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepTrailMakingBinding
-import com.foryouandme.entity.task.trailmaking.TrailMakingPoint
-import com.foryouandme.researchkit.result.TrailMakingResult
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingPoint
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingResult
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -83,7 +83,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
 
             viewBinding.timerAndErrorCount.setTextColor(step.timerAndErrorTextColor)
 
-            viewBinding.title.text = step.titleText
+            viewBinding.title.text = step.titleText ?: getString(R.string.TRAIL_MAKING_title)
             viewBinding.title.setTextColor(step.titleTextColor)
 
             viewBinding.pointsArea.setLineColor(step.lineColor)

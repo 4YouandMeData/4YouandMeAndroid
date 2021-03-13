@@ -15,14 +15,16 @@ import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.activity.TaskActivityType
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
+import com.foryouandme.entity.task.result.reaction.toReactionTimeResult
+import com.foryouandme.entity.task.result.trailmaking.toTrailMakingResult
 import com.foryouandme.researchkit.result.MultipleAnswerResult
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.result.SingleIntAnswerResult
 import com.foryouandme.researchkit.result.TaskResult
 import com.foryouandme.researchkit.result.fitness.toFitnessResult
 import com.foryouandme.researchkit.result.gait.toGaitResult
-import com.foryouandme.researchkit.result.reaction.toReactionTimeResult
 import com.foryouandme.researchkit.step.Step
+import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
@@ -41,6 +43,7 @@ class FYAMTaskConfiguration @Inject constructor(
     private val sendGaitTaskUseCase: SendGaitTaskUseCase,
     private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
     private val sendReactionTimeUseCase: SendReactionTimeUseCase,
+    private val sendTrailMakingUseCase: SendTrailMakingUseCase,
     private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
     private val rescheduleTaskUseCase: RescheduleTaskUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
@@ -133,13 +136,10 @@ class FYAMTaskConfiguration @Inject constructor(
                 )*/
             null -> null
             else ->
-                FYAMReactionTimeTask(
+                FYAMTrailMakingTask(
                     id,
                     null,
-                    10,
-                    2,
-                    3,
-                    5,
+                    ETrailMakingType.NUMBER_AND_LETTER,
                     configuration
                 )
         }
@@ -187,7 +187,13 @@ class FYAMTaskConfiguration @Inject constructor(
             }
             TaskIdentifiers.REACTION_TIME -> {
                 val reactionTimeResult = result.toReactionTimeResult()
-                sendReactionTimeUseCase(taskId = id, reactionTimeResult = reactionTimeResult)
+                if (reactionTimeResult != null)
+                    sendReactionTimeUseCase(taskId = id, reactionTimeResult = reactionTimeResult)
+            }
+            TaskIdentifiers.TRAIL_MAKING -> {
+                val trailMakingResult = result.toTrailMakingResult()
+                if (trailMakingResult != null)
+                    sendTrailMakingUseCase(taskId = id, trailMakingResult = trailMakingResult)
             }
             TaskActivityType.Survey.typeId -> {
 

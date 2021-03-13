@@ -7,7 +7,7 @@ class TrailMakingStep(
     val type: ETrailMakingType,
     val backgroundColor: Int,
     val timerAndErrorTextColor: Int,
-    val titleText: String,
+    val titleText: String?,
     val titleTextColor: Int,
     val pointColor: Int,
     val pointErrorColor: Int,

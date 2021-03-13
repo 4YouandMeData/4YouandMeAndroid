@@ -42,7 +42,7 @@ class ReactionTimeTask(
 
     companion object {
 
-        private const val REACTION_TIME = "reaction_time"
+        const val REACTION_TIME = "reaction_time"
 
         fun getReactionTimeCoreSteps(
             reactionTimeBackgroundColor: Int,
@@ -72,11 +72,6 @@ class ReactionTimeTask(
                     timeoutSeconds = reactionTimeTimeoutSeconds
                 )
             )
-
-        /* --- result keys --- */
-
-        const val REACTION_TIME_DEVICE_MOTION: String =
-            "${DeviceMotionRecorder.DEVICE_MOTION_IDENTIFIER}_${REACTION_TIME}"
 
     }
 

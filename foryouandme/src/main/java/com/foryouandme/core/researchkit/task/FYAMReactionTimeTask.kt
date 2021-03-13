@@ -14,7 +14,7 @@ class FYAMReactionTimeTask(
     reactionTimeNumberOfAttempts: Int,
     reactionTimeTimeoutSeconds: Long,
     private val configuration: Configuration
-) : Task(TaskIdentifiers.TRAIL_MAKING, id) {
+) : Task(TaskIdentifiers.REACTION_TIME, id) {
 
     override val steps: List<Step> by lazy {
 

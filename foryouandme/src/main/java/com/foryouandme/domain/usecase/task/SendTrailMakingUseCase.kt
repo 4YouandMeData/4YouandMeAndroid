@@ -1,23 +1,23 @@
 package com.foryouandme.domain.usecase.task
 
 import com.foryouandme.domain.usecase.auth.GetTokenUseCase
-import com.foryouandme.entity.task.result.reaction.ReactionTimeResult
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingResult
 import javax.inject.Inject
 
-class SendReactionTimeUseCase @Inject constructor(
+class SendTrailMakingUseCase @Inject constructor(
     private val repository: TaskRepository,
     private val getTokenUseCase: GetTokenUseCase
 ) {
 
     suspend operator fun invoke(
         taskId: String,
-        reactionTimeResult: ReactionTimeResult
+        trailMakingResult: TrailMakingResult
     ) {
 
-        repository.updateReactionTimeTask(
+        repository.updateTrailMakingTask(
             getTokenUseCase(),
             taskId,
-            reactionTimeResult
+            trailMakingResult
         )
 
     }

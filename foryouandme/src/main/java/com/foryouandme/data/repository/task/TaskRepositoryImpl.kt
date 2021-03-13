@@ -8,7 +8,8 @@ import com.foryouandme.domain.usecase.task.TaskRepository
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
-import com.foryouandme.researchkit.result.reaction.ReactionTimeResult
+import com.foryouandme.entity.task.result.reaction.ReactionTimeResult
+import com.foryouandme.entity.task.result.trailmaking.TrailMakingResult
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -148,15 +149,47 @@ class TaskRepositoryImpl @Inject constructor(
                 taskId,
                 TaskResultRequest(
                     ReactionTimeUpdateRequest(
-                        result.attempts.map {
-                            ReactionTimeAttemptRequest(it.deviceMotion, it.timestamp)
-                        }
+                        result.startDate.toInstant().toEpochMilli(),
+                        result.attempts
+                            .mapNotNull { it.toJsonResult() }
+                            .map {
+                                ReactionTimeAttemptRequest(
+                                    it.json,
+                                    it.startDate.toInstant().toEpochMilli()
+                                )
+                            },
+                        result.endDate.toInstant().toEpochMilli()
                     )
                 )
             )
 
         }
 
+    }
+
+    override suspend fun updateTrailMakingTask(
+        token: String,
+        taskId: String,
+        result: TrailMakingResult
+    ) {
+        authErrorInterceptor.execute {
+
+            api.updateTrailMakingTimeTask(
+                token,
+                taskId,
+                TaskResultRequest(
+                    TrailMakingUpdateRequest(
+                        result.startDate.toInstant().toEpochMilli(),
+                        result.numberOfErrors,
+                        result.taps.map {
+                            TrailMakingTapUpdateRequest(it.index, it.timestamp, it.incorrect)
+                        },
+                        result.endDate.toInstant().toEpochMilli()
+                    )
+                )
+            )
+
+        }
     }
 
     override suspend fun updateQuickActivity(token: String, taskId: String, answerId: Int) {
