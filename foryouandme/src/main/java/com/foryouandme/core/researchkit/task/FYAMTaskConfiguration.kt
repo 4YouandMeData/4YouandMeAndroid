@@ -1,6 +1,8 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.ext.web.CamCogInterface
+import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.policy.Policy
@@ -67,7 +69,7 @@ class FYAMTaskConfiguration @Inject constructor(
         task: TaskActivity
     ): Task? =
         when (task.activityType) {
-            /*TaskActivityType.VideoDiary ->
+            TaskActivityType.VideoDiary ->
                 FYAMVideoDiaryTask(
                     id,
                     configuration,
@@ -98,6 +100,23 @@ class FYAMTaskConfiguration @Inject constructor(
                     task.successPage,
                     task.reschedule,
                     moshi
+                )
+            TaskActivityType.TrailMaking ->
+                FYAMTrailMakingTask(
+                    id,
+                    null,
+                    ETrailMakingType.NUMBER_AND_LETTER,
+                    configuration
+                )
+            TaskActivityType.ReactionTime ->
+                FYAMReactionTimeTask(
+                    id,
+                    null,
+                    10,
+                    3,
+                    3,
+                    3,
+                    configuration
                 )
             TaskActivityType.CamCogPvt,
             TaskActivityType.CamCogNbx,
@@ -133,15 +152,8 @@ class FYAMTaskConfiguration @Inject constructor(
                     task.welcomePage,
                     task.successPage,
                     task.reschedule
-                )*/
-            null -> null
-            else ->
-                FYAMTrailMakingTask(
-                    id,
-                    null,
-                    ETrailMakingType.NUMBER_AND_LETTER,
-                    configuration
                 )
+            else -> null
         }
 
     override suspend fun handleTaskResult(
