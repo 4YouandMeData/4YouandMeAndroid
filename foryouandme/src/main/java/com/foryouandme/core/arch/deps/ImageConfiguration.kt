@@ -111,6 +111,12 @@ interface ImageConfiguration {
     @DrawableRes
     fun walkingMan(): Int
 
+    @DrawableRes
+    fun phoneShake(): Int
+
+    @DrawableRes
+    fun phoneShakeCircle(): Int
+
     /* --- menu item --- */
 
     @DrawableRes

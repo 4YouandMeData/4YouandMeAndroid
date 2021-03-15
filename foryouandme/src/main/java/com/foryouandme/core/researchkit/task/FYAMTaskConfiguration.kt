@@ -116,7 +116,12 @@ class FYAMTaskConfiguration @Inject constructor(
                     3,
                     3,
                     3,
-                    configuration
+                    configuration,
+                        imageConfiguration,
+                        task.pages,
+                        task.welcomePage,
+                        task.successPage,
+                        task.reschedule
                 )
             TaskActivityType.CamCogPvt,
             TaskActivityType.CamCogNbx,

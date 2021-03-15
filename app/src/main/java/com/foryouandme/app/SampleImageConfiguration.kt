@@ -78,6 +78,10 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun walkingMan(): Int = R.drawable.walkingman
 
+    override fun phoneShake(): Int = R.drawable.phoneshake
+
+    override fun phoneShakeCircle(): Int = R.drawable.phoneshakecircle
+
     /* --- menu item --- */
 
     override fun aboutYou(): Int = R.drawable.about_you

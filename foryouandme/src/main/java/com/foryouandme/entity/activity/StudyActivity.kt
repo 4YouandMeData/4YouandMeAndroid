@@ -62,6 +62,8 @@ sealed class TaskActivityType(val typeId: String, val type: String) {
                 VideoDiary.typeId -> VideoDiary
                 GaitTask.typeId -> GaitTask
                 WalkTask.typeId -> WalkTask
+                TrailMaking.typeId -> TrailMaking
+                ReactionTime.typeId -> ReactionTime
                 CamCogPvt.typeId -> CamCogPvt
                 CamCogEbt.typeId -> CamCogEbt
                 CamCogNbx.typeId -> CamCogNbx

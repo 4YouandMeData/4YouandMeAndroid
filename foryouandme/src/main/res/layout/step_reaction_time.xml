@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_padding"
-        tools:text="@string/REATION_TIME_title" />
+        tools:text="@string/REACTION_TIME_title" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/attempt"

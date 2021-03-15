@@ -74,7 +74,7 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
 
             viewBinding.root.setBackgroundColor(step.backgroundColor)
 
-            viewBinding.title.text = step.titleText ?: getString(R.string.REATION_TIME_title)
+            viewBinding.title.text = step.titleText ?: getString(R.string.REACTION_TIME_title)
             viewBinding.title.setTextColor(step.titleTextColor)
 
             viewBinding.attempt.setTextColor(step.attemptsTextColor)
@@ -168,7 +168,7 @@ class ReactionTimeStepFragment : StepFragment(R.layout.step_reaction_time) {
 
             viewBinding.attempt.text =
                 getString(
-                    R.string.REATION_TIME_attempts,
+                    R.string.REACTION_TIME_attempts,
                     viewModel.state.attempt,
                     step.numberOfAttempts
                 )
