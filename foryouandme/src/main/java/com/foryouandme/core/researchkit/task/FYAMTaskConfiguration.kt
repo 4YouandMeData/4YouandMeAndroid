@@ -37,103 +37,50 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class FYAMTaskConfiguration @Inject constructor(
-    private val environment: Environment,
-    private val getConfigurationUseCase: GetConfigurationUseCase,
-    private val getTokenUseCase: GetTokenUseCase,
-    private val getTaskUseCase: GetTaskUseCase,
-    private val getSurveyUseCase: GetSurveyUseCase,
-    private val sendGaitTaskUseCase: SendGaitTaskUseCase,
-    private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
-    private val sendReactionTimeUseCase: SendReactionTimeUseCase,
-    private val sendTrailMakingUseCase: SendTrailMakingUseCase,
-    private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
-    private val rescheduleTaskUseCase: RescheduleTaskUseCase,
-    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
-    private val imageConfiguration: ImageConfiguration,
-    private val moshi: Moshi,
+        private val environment: Environment,
+        private val getConfigurationUseCase: GetConfigurationUseCase,
+        private val getTokenUseCase: GetTokenUseCase,
+        private val getTaskUseCase: GetTaskUseCase,
+        private val getSurveyUseCase: GetSurveyUseCase,
+        private val sendGaitTaskUseCase: SendGaitTaskUseCase,
+        private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
+        private val sendReactionTimeUseCase: SendReactionTimeUseCase,
+        private val sendTrailMakingUseCase: SendTrailMakingUseCase,
+        private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
+        private val rescheduleTaskUseCase: RescheduleTaskUseCase,
+        private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+        private val imageConfiguration: ImageConfiguration,
+        private val moshi: Moshi,
 ) : TaskConfiguration() {
 
     override suspend fun build(id: String, data: Map<String, String>): Task? =
-        coroutineScope {
+            coroutineScope {
 
-            val config = async { getConfigurationUseCase(Policy.LocalFirst) }
-            val task = async { getTaskUseCase(id)!!.let { it.activity as? TaskActivity }!! }
+                val config = async { getConfigurationUseCase(Policy.LocalFirst) }
+                val task = async { getTaskUseCase(id)!!.let { it.activity as? TaskActivity }!! }
 
-            build(id, config.await(), task.await())
+                build(id, config.await(), task.await())
 
-        }
+            }
 
     private suspend fun build(
-        id: String,
-        configuration: Configuration,
-        task: TaskActivity
+            id: String,
+            configuration: Configuration,
+            task: TaskActivity
     ): Task? =
-        when (task.activityType) {
-            TaskActivityType.VideoDiary ->
-                FYAMVideoDiaryTask(
-                    id,
-                    configuration,
-                    imageConfiguration,
-                    task.pages,
-                    task.welcomePage,
-                    task.successPage,
-                    task.reschedule
-                )
-            TaskActivityType.GaitTask ->
-                FYAMGaitTask(
-                    id,
-                    configuration,
-                    imageConfiguration,
-                    task.pages,
-                    task.welcomePage,
-                    task.successPage,
-                    task.reschedule,
-                    moshi
-                )
-            TaskActivityType.WalkTask ->
-                FYAMFitnessTask(
-                    id,
-                    configuration,
-                    imageConfiguration,
-                    task.pages,
-                    task.welcomePage,
-                    task.successPage,
-                    task.reschedule,
-                    moshi
-                )
-            TaskActivityType.TrailMaking ->
-                FYAMTrailMakingTask(
-                    id,
-                    null,
-                    ETrailMakingType.NUMBER_AND_LETTER,
-                    configuration
-                )
-            TaskActivityType.ReactionTime ->
-                FYAMReactionTimeTask(
-                    id,
-                    null,
-                    10,
-                    3,
-                    3,
-                    3,
-                    configuration,
-                        imageConfiguration,
-                        task.pages,
-                        task.welcomePage,
-                        task.successPage,
-                        task.reschedule
-                )
-            TaskActivityType.CamCogPvt,
-            TaskActivityType.CamCogNbx,
-            TaskActivityType.CamCogEbt ->
-                getTokenUseCase()
-                    .asIntegrationCookies()
-                    .let { token ->
-
-                        val camCogUrl =
-                            "${environment.getApiBaseUrl()}/camcog/tasks/$id"
-
-                        FYAMCamCogTask(
+            when (task.activityType) {
+                TaskActivityType.VideoDiary ->
+                    FYAMVideoDiaryTask(
+                            id,
+                            configuration,
+                            imageConfiguration,
+                            task.pages,
+                            task.welcomePage,
+                            task.successPage,
+                            task.reschedule
+                    )
+                TaskActivityType.GaitTask ->
+                    FYAMGaitTask(
                             id,
                             configuration,
                             imageConfiguration,
@@ -141,37 +88,95 @@ class FYAMTaskConfiguration @Inject constructor(
                             task.welcomePage,
                             task.successPage,
                             task.reschedule,
-                            camCogUrl,
-                            token,
-                            CamCogInterface()
-                        )
+                            moshi
+                    )
+                TaskActivityType.WalkTask ->
+                    FYAMFitnessTask(
+                            id,
+                            configuration,
+                            imageConfiguration,
+                            task.pages,
+                            task.welcomePage,
+                            task.successPage,
+                            task.reschedule,
+                            moshi
+                    )
+                TaskActivityType.TrailMaking ->
+                    FYAMTrailMakingTask(
+                            id,
+                            null,
+                            ETrailMakingType.NUMBER_AND_LETTER,
+                            configuration,
+                            imageConfiguration,
+                            task.pages,
+                            task.welcomePage,
+                            task.successPage,
+                            task.reschedule
+                    )
+                TaskActivityType.ReactionTime ->
+                    FYAMReactionTimeTask(
+                            id,
+                            null,
+                            10,
+                            3,
+                            3,
+                            3,
+                            configuration,
+                            imageConfiguration,
+                            task.pages,
+                            task.welcomePage,
+                            task.successPage,
+                            task.reschedule
+                    )
+                TaskActivityType.CamCogPvt,
+                TaskActivityType.CamCogNbx,
+                TaskActivityType.CamCogEbt ->
+                    getTokenUseCase()
+                            .asIntegrationCookies()
+                            .let { token ->
 
-                    }
-            TaskActivityType.Survey ->
-                buildSurvey(
-                    id,
-                    configuration,
-                    imageConfiguration,
-                    getSurveyUseCase(task.activityId)!!,
-                    task.pages,
-                    task.welcomePage,
-                    task.successPage,
-                    task.reschedule
-                )
-            else -> null
-        }
+                                val camCogUrl =
+                                        "${environment.getApiBaseUrl()}/camcog/tasks/$id"
+
+                                FYAMCamCogTask(
+                                        id,
+                                        configuration,
+                                        imageConfiguration,
+                                        task.pages,
+                                        task.welcomePage,
+                                        task.successPage,
+                                        task.reschedule,
+                                        camCogUrl,
+                                        token,
+                                        CamCogInterface()
+                                )
+
+                            }
+                TaskActivityType.Survey ->
+                    buildSurvey(
+                            id,
+                            configuration,
+                            imageConfiguration,
+                            getSurveyUseCase(task.activityId)!!,
+                            task.pages,
+                            task.welcomePage,
+                            task.successPage,
+                            task.reschedule
+                    )
+                else -> null
+            }
 
     override suspend fun handleTaskResult(
-        result: TaskResult,
-        type: String,
-        id: String
+            result: TaskResult,
+            type: String,
+            id: String
     ) {
 
         when (type) {
             TaskIdentifiers.VIDEO_DIARY -> {
                 sendAnalyticsEventUseCase(
-                    AnalyticsEvent.ScreenViewed.VideoDiaryComplete,
-                    EAnalyticsProvider.ALL
+                        AnalyticsEvent.ScreenViewed.VideoDiaryComplete,
+                        EAnalyticsProvider.ALL
                 )
             }
             TaskIdentifiers.GAIT -> {
@@ -179,27 +184,27 @@ class FYAMTaskConfiguration @Inject constructor(
                 val gaitResult = result.toGaitResult()
                 if (gaitResult != null)
                     sendGaitTaskUseCase(
-                        taskId = id,
-                        outboundDeviceMotion = gaitResult.gaitOutbound.deviceMotion,
-                        outboundAccelerometer = gaitResult.gaitOutbound.accelerometer,
-                        outboundPedometer = gaitResult.gaitOutbound.pedometer,
-                        returnDeviceMotion = gaitResult.gaitReturn.deviceMotion,
-                        returnAccelerometer = gaitResult.gaitReturn.accelerometer,
-                        returnPedometer = gaitResult.gaitReturn.pedometer,
-                        restDeviceMotion = gaitResult.gaitRest.deviceMotion,
-                        restAccelerometer = gaitResult.gaitRest.accelerometer
+                            taskId = id,
+                            outboundDeviceMotion = gaitResult.gaitOutbound.deviceMotion,
+                            outboundAccelerometer = gaitResult.gaitOutbound.accelerometer,
+                            outboundPedometer = gaitResult.gaitOutbound.pedometer,
+                            returnDeviceMotion = gaitResult.gaitReturn.deviceMotion,
+                            returnAccelerometer = gaitResult.gaitReturn.accelerometer,
+                            returnPedometer = gaitResult.gaitReturn.pedometer,
+                            restDeviceMotion = gaitResult.gaitRest.deviceMotion,
+                            restAccelerometer = gaitResult.gaitRest.accelerometer
                     )
             }
             TaskIdentifiers.FITNESS -> {
                 val fitnessResult = result.toFitnessResult()
                 if (fitnessResult != null)
                     sendFitnessTaskUseCase(
-                        taskId = id,
-                        walkDeviceMotion = fitnessResult.fitnessWalkResult.deviceMotion,
-                        walkAccelerometer = fitnessResult.fitnessWalkResult.accelerometer,
-                        walkPedometer = fitnessResult.fitnessWalkResult.pedometer,
-                        sitDeviceMotion = fitnessResult.fitnessSitResult.deviceMotion,
-                        sitAccelerometer = fitnessResult.fitnessSitResult.accelerometer
+                            taskId = id,
+                            walkDeviceMotion = fitnessResult.fitnessWalkResult.deviceMotion,
+                            walkAccelerometer = fitnessResult.fitnessWalkResult.accelerometer,
+                            walkPedometer = fitnessResult.fitnessWalkResult.pedometer,
+                            sitDeviceMotion = fitnessResult.fitnessSitResult.deviceMotion,
+                            sitAccelerometer = fitnessResult.fitnessSitResult.accelerometer
                     )
             }
             TaskIdentifiers.REACTION_TIME -> {
@@ -215,18 +220,18 @@ class FYAMTaskConfiguration @Inject constructor(
             TaskActivityType.Survey.typeId -> {
 
                 val answers =
-                    result.results.toList().mapNotNull {
-                        when (val value = it.second) {
-                            is SingleAnswerResult ->
-                                SurveyAnswerUpdate(value.questionId, value.answer)
-                            is SingleIntAnswerResult ->
-                                SurveyAnswerUpdate(value.questionId, value.answer)
-                            is MultipleAnswerResult ->
-                                SurveyAnswerUpdate(value.questionId, value.answers)
-                            else -> null
+                        result.results.toList().mapNotNull {
+                            when (val value = it.second) {
+                                is SingleAnswerResult ->
+                                    SurveyAnswerUpdate(value.questionId, value.answer)
+                                is SingleIntAnswerResult ->
+                                    SurveyAnswerUpdate(value.questionId, value.answer)
+                                is MultipleAnswerResult ->
+                                    SurveyAnswerUpdate(value.questionId, value.answers)
+                                else -> null
 
+                            }
                         }
-                    }
 
                 sendSurveyTaskUseCase(id, answers)
 
@@ -246,8 +251,8 @@ class FYAMTaskConfiguration @Inject constructor(
         when (step) {
             is VideoStep ->
                 sendAnalyticsEventUseCase(
-                    AnalyticsEvent.ScreenViewed.VideoDiary,
-                    EAnalyticsProvider.ALL
+                        AnalyticsEvent.ScreenViewed.VideoDiary,
+                        EAnalyticsProvider.ALL
                 )
         }
     }

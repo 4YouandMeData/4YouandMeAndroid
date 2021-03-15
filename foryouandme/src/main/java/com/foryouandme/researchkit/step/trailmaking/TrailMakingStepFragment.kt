@@ -83,7 +83,7 @@ class TrailMakingStepFragment : StepFragment(R.layout.step_trail_making) {
 
             viewBinding.timerAndErrorCount.setTextColor(step.timerAndErrorTextColor)
 
-            viewBinding.title.text = step.titleText ?: getString(R.string.TRAIL_MAKING_title)
+            viewBinding.title.text = step.titleText ?: getString(R.string.TRAIL_MAKING_welcome_title)
             viewBinding.title.setTextColor(step.titleTextColor)
 
             viewBinding.pointsArea.setLineColor(step.lineColor)

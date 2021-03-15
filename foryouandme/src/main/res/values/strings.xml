@@ -55,8 +55,14 @@
     <string name="CAMCOG_welcome_title">"2-Back Task"</string>
     <string name="CAMCOG_welcome_description">"About this activity\nTwice each day, we’ll ask you to complete this task in which you’ll be asked to recall a series of numbers.\nWhy this activity\nThis activity will help us understand your attention and memory and how they change throughout your pregnancy."</string>
 
-    <string name="TRAIL_MAKING_title">Trail Making</string>
+    <string name="TRAIL_MAKING_welcome_title">Trail Making Test</string>
+    <string name="TRAIL_MAKING_welcome_description">This activity evaluates your visual attention and task switching by recording the time required to tap a series of dots in order.</string>
+    <string name="TRAIL_MAKING_intro">After the countdown, tap dots in alternating order between numbers and letters. Begin by tapping the first number ‘1’ followed by tapping the first letter ‘A’, and then ‘2’ – ‘B’ – ‘3’ – ‘C’… until you reach the number ‘7’.</string>
+    <string name="TRAIL_MAKING_secondary_intro">Do this as quickly as you can without making mistakes. \nTap Get Started to begin.</string>
     <string name="TRAIL_MAKING_errors">errors</string>
+    <string name="TRAIL_MAKING_end_title">Activity Complete</string>
+    <string name="TRAIL_MAKING_end_description">Your data will be analyzed and you will be notified when your results are ready.</string>
+    <string name="TRAIL_MAKING_button">Done</string>
 
     <string name="REACTION_TIME_welcome_title">Reaction Time</string>
     <string name="REACTION_TIME_welcome_description">This activity evaluates the time it takes for you to respond to a visual cue.</string>

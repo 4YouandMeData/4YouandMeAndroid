@@ -117,6 +117,9 @@ interface ImageConfiguration {
     @DrawableRes
     fun phoneShakeCircle(): Int
 
+    @DrawableRes
+    fun trailMaking(): Int
+
     /* --- menu item --- */
 
     @DrawableRes
