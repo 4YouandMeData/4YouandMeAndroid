@@ -1,5 +1,7 @@
 package com.foryouandme.core.data.api.common.response.notifiable
 
+import com.foryouandme.core.data.api.common.response.meta.MetaResponse
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.decodeBase64Image
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.entity.configuration.HEXGradient
@@ -9,7 +11,9 @@ import com.foryouandme.entity.notifiable.FeedAlert
 import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
 import com.squareup.moshi.Json
+import com.squareup.moshi.Moshi
 import moe.banana.jsonapi2.JsonApi
+import moe.banana.jsonapi2.JsonBuffer
 import moe.banana.jsonapi2.Resource
 
 open class NotifiableDataResponse(
@@ -37,16 +41,23 @@ class FeedRewardResponse(
     taskActionButtonLabel
 ) {
 
-    suspend fun toFeedReward(id: String): FeedReward =
-        FeedReward(
+    fun toFeedReward(id: String, meta: JsonBuffer<Any>?, moshi: Moshi): FeedReward {
+
+        val adapter = moshi.adapter(MetaResponse::class.java)
+        val metadata = catchToNull { meta?.get(adapter) }
+
+        return FeedReward(
             id,
-            title,
+            if (title != null && metadata != null) metadata.applyMeta(title) else title,
             description,
             mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
             image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
+
+    }
+
 }
 
 @JsonApi(type = "feed_alert")
@@ -59,7 +70,7 @@ class FeedAlertResponse(
     @field:Json(name = "image") val image: String? = null
 ) : NotifiableDataResponse(title, description, alertIdentifier, linkUrl, taskActionButtonLabel) {
 
-    suspend fun toFeedAlert(id: String): FeedAlert =
+    fun toFeedAlert(id: String): FeedAlert =
         FeedAlert(
             id,
             title,
@@ -69,6 +80,7 @@ class FeedAlertResponse(
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
         )
+
 }
 
 @JsonApi(type = "feed_educational")
@@ -87,7 +99,7 @@ class FeedEducationalResponse(
     taskActionButtonLabel
 ) {
 
-    suspend fun toFeedEducational(id: String): FeedEducational =
+    fun toFeedEducational(id: String): FeedEducational =
         FeedEducational(
             id,
             title,

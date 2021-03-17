@@ -31,7 +31,7 @@ object FeedRepository {
                 pageSize
             )
 
-        }.map { it.toFeedItems() }
+        }.map { it.toFeedItems(moshi) }
 
 
     //TODO: portare fuori dal task il video
