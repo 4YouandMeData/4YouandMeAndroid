@@ -22,7 +22,7 @@ object SurveyModule {
     @Singleton
     fun provideApi(
         environment: Environment,
-        @Named(DataModule.TASK_MOSHI) moshi: Moshi
+        @Named(DataModule.SURVEY_MOSHI) moshi: Moshi
     ): SurveyApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 

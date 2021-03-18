@@ -152,17 +152,19 @@ class FYAMTaskConfiguration @Inject constructor(
                                 )
 
                             }
-                TaskActivityType.Survey ->
+                TaskActivityType.Survey -> {
+                    val survey = getSurveyUseCase(task.activityId)
                     buildSurvey(
-                            id,
-                            configuration,
-                            imageConfiguration,
-                            getSurveyUseCase(task.activityId)!!,
-                            task.pages,
-                            task.welcomePage,
-                            task.successPage,
-                            task.reschedule
+                        id,
+                        configuration,
+                        imageConfiguration,
+                        survey!!,
+                        task.pages,
+                        task.welcomePage,
+                        task.successPage,
+                        task.reschedule
                     )
+                }
                 else -> null
             }
 

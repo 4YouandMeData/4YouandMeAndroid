@@ -1,6 +1,5 @@
 package com.foryouandme.data.repository.survey.network.response
 
-import arrow.core.Either
 import com.foryouandme.entity.survey.SurveyTarget
 import com.squareup.moshi.Json
 
@@ -11,25 +10,25 @@ data class SurveyQuestionTargetResponse(
     @Json(name = "question_id") val questionId: String? = null
 ) {
 
-    suspend fun toRange(): SurveyTarget.Range? =
-        Either.catch {
+    fun toRange(): SurveyTarget.Range? =
+        when (null) {
+            questionId -> null
+            else ->
+                SurveyTarget.Range(
+                    min,
+                    max,
+                    questionId
+                )
+        }
 
-            SurveyTarget.Range(
-                min,
-                max,
-                questionId!!
-            )
-
-        }.orNull()
-
-    suspend fun toAnswer(): SurveyTarget.Answer? =
-        Either.catch {
-
-            SurveyTarget.Answer(
-                answerId!!,
-                questionId!!
-            )
-
-        }.orNull()
+    fun toAnswer(): SurveyTarget.Answer? =
+        when (null) {
+            answerId, questionId -> null
+            else ->
+                SurveyTarget.Answer(
+                    answerId,
+                    questionId
+                )
+        }
 
 }

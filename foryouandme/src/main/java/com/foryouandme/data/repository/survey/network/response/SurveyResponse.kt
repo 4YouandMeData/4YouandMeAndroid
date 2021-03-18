@@ -1,6 +1,5 @@
 package com.foryouandme.data.repository.survey.network.response
 
-import arrow.core.Either
 import com.foryouandme.core.data.api.common.response.PageResponse
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
@@ -20,21 +19,18 @@ data class SurveyResponse(
     @field:Json(name = "survey_blocks") val surveyBlocks: HasMany<SurveyBlockResponse>? = null
 ) : Resource() {
 
-    suspend fun toSurvey(): Survey? =
-        Either.catch {
+    fun toSurvey(): Survey =
+        Survey(
+            id,
+            title,
+            description,
+            active,
+            color,
+            image,
+            surveyBlocks?.get(document)
+                ?.mapNotNull { it.toSurveyBlock() } ?: emptyList()
+        )
 
-            Survey(
-                id,
-                title,
-                description,
-                active,
-                color,
-                image,
-                surveyBlocks?.get(document)
-                    ?.mapNotNull { it.toSurveyBlock() } ?: emptyList()
-            )
-
-        }.orNull()
 }
 
 @JsonApi(type = "survey_block")
@@ -45,23 +41,26 @@ data class SurveyBlockResponse(
     @field:Json(name = "questions") val questions: HasMany<SurveyQuestionResponse>? = null,
 ) : Resource() {
 
-    suspend fun toSurveyBlock(): SurveyBlock? =
-        Either.catch {
+    fun toSurveyBlock(): SurveyBlock? {
 
-            val questions =
-                questions
-                    ?.get(document)
-                    ?.mapNotNull { it.toSurveyQuestion() }
-                    ?.let { if (it.isEmpty()) null else it }
+        val questions =
+            questions
+                ?.get(document)
+                ?.mapNotNull { it.toSurveyQuestion() }
+                ?.let { if (it.isEmpty()) null else it }
 
-            SurveyBlock(
-                id,
-                pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
-                introPage?.get(document)?.toPage(document),
-                successPage?.get(document)?.toPage(document),
-                questions!!
-            )
+        return when (null) {
+            questions -> null
+            else ->
+                SurveyBlock(
+                    id,
+                    pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
+                    introPage?.get(document)?.toPage(document),
+                    successPage?.get(document)?.toPage(document),
+                    questions
+                )
+        }
 
-        }.orNull()
+    }
 
 }

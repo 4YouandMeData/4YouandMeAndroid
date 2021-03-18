@@ -26,6 +26,10 @@ import com.foryouandme.core.data.api.screening.response.ScreeningResponse
 import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.SerializeNulls
+import com.foryouandme.data.repository.survey.network.response.SurveyAnswerResponse
+import com.foryouandme.data.repository.survey.network.response.SurveyBlockResponse
+import com.foryouandme.data.repository.survey.network.response.SurveyQuestionResponse
+import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -98,6 +102,24 @@ class DataModule {
 
     @Singleton
     @Provides
+    @Named(SURVEY_MOSHI)
+    fun provideSurveyMoshi(): Moshi =
+        Moshi.Builder()
+            .add(
+                ResourceAdapterFactory.builder()
+                    .add(UnknownResourceResponse::class.java)
+                    .add(PageResponse::class.java)
+                    .add(SurveyResponse::class.java)
+                    .add(SurveyBlockResponse::class.java)
+                    .add(SurveyQuestionResponse::class.java)
+                    .add(SurveyAnswerResponse::class.java)
+                    .build()
+            )
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+    @Singleton
+    @Provides
     fun provideSharedPrefs(@ApplicationContext context: Context): SharedPreferences {
 
         val masterKey =
@@ -162,6 +184,7 @@ class DataModule {
     companion object {
 
         const val TASK_MOSHI: String = "task_moshi"
+        const val SURVEY_MOSHI: String = "survey_moshi"
 
     }
 

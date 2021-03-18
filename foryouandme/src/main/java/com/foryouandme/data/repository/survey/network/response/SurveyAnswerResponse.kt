@@ -1,6 +1,5 @@
 package com.foryouandme.data.repository.survey.network.response
 
-import arrow.core.Either
 import com.foryouandme.entity.survey.SurveyAnswer
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
@@ -12,15 +11,15 @@ data class SurveyAnswerResponse(
     @field:Json(name = "correct") val correct: Boolean? = null,
 ) : Resource() {
 
-    suspend fun toSurveyAnswer(): SurveyAnswer? =
-        Either.catch {
-
-            SurveyAnswer(
-                id,
-                text!!,
-                correct!!
-            )
-
-        }.orNull()
+    fun toSurveyAnswer(): SurveyAnswer? =
+        when (null) {
+            text, correct -> null
+            else ->
+                SurveyAnswer(
+                    id,
+                    text,
+                    correct
+                )
+        }
 
 }
