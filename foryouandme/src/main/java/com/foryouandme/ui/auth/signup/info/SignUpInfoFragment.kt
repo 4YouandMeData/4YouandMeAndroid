@@ -2,96 +2,151 @@ package com.foryouandme.ui.auth.signup.info
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.configuration.HEXGradient
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.html.setHtmlText
-import kotlinx.android.synthetic.main.sign_up_info.*
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showBackButton
+import com.foryouandme.databinding.SignUpInfoBinding
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.ui.auth.AuthSectionFragment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
-class SignUpInfoFragment : AuthSectionFragmentOld<SignUpInfoViewModel>(R.layout.sign_up_info) {
+@AndroidEntryPoint
+class SignUpInfoFragment : AuthSectionFragment(R.layout.sign_up_info) {
 
-    override val viewModel: SignUpInfoViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory { SignUpInfoViewModel(navigator, injector.analyticsModule()) }
-        )
+    private val viewModel: SignUpInfoViewModel by viewModels()
+
+    private val binding: SignUpInfoBinding?
+        get() = view?.let { SignUpInfoBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is SignUpInfoStateUpdate.Config -> {
+                        setupView()
+                        applyConfiguration()
+                    }
+                }
+            }
+            .observeIn(this)
+
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
+                when (it.task) {
+                    SignUpInfoLoading.Configuration ->
+                        binding?.loading?.setVisibility(it.active, false)
+                }
+            }
+            .observeIn(this)
+
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    SignUpInfoError.Configuration ->
+                        binding?.error?.setError(it.error, null)
+                        { viewModel.execute(SignUpInfoStateEvent.GetConfiguration) }
+                }
+            }
+            .observeIn(this)
+
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
-            applyConfiguration(it)
+        if (viewModel.state.configuration != null) {
             setupView()
-        }
+            applyConfiguration()
+        } else viewModel.execute(SignUpInfoStateEvent.GetConfiguration)
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logScreenViewed() }
+        viewModel.execute(SignUpInfoStateEvent.ScreenViewed)
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            logo.setImageResource(imageConfiguration.logo())
+        val viewBinding = binding
 
-            sign_up.setImageResource(imageConfiguration.nextStep())
-            sign_up.setOnClickListener {
-                startCoroutineAsync { viewModel.enterPhone(authNavController()) }
+        if (viewBinding != null) {
+
+            viewBinding.logo.setImageResource(imageConfiguration.logo())
+
+            viewBinding.signUp.setImageResource(imageConfiguration.nextStep())
+            viewBinding.signUp.setOnClickListener {
+                navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
             }
 
-            sign_up_text.setOnClickListener {
-                startCoroutineAsync { viewModel.enterPhone(authNavController()) }
+            viewBinding.signUpText.setOnClickListener {
+                navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
             }
 
-            sign_up_later.setImageResource(imageConfiguration.nextStep())
-            sign_up_later.setOnClickListener {
-                startCoroutineAsync { viewModel.signUpLater(authNavController()) }
+            viewBinding.signUpLater.setImageResource(imageConfiguration.nextStep())
+            viewBinding.signUpLater.setOnClickListener {
+                navigator.navigateTo(authNavController(), SignUpInfoToSignUpLater)
             }
 
-            sign_up_later_text.setOnClickListener {
-                startCoroutineAsync { viewModel.signUpLater(authNavController()) }
+            viewBinding.signUpLaterText.setOnClickListener {
+                navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
             }
 
-            toolbar.showBackButton(imageConfiguration) {
-                startCoroutineAsync { authViewModel.back(authNavController(), rootNavController()) }
-            }
+            viewBinding.toolbar.showBackButton(imageConfiguration) { back() }
 
         }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    }
+
+    private fun applyConfiguration() {
+
+        val viewBinding = binding
+        val configuration = viewModel.state.configuration
+
+        if (viewBinding != null && configuration != null) {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
 
-            root.background =
+            viewBinding.root.background =
                 HEXGradient.from(
                     configuration.theme.primaryColorStart,
                     configuration.theme.primaryColorEnd
                 ).drawable()
 
-            title.setTextColor(configuration.theme.secondaryColor.color())
-            title.setHtmlText(configuration.text.intro.title, true)
+            viewBinding.title.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.title.setHtmlText(configuration.text.intro.title, true)
 
-            description.setTextColor(configuration.theme.secondaryColor.color())
-            description.setHtmlText(configuration.text.intro.body, true)
+            viewBinding.description.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.description.setHtmlText(configuration.text.intro.body, true)
 
-            divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
+            viewBinding.divider.setBackgroundColor(configuration.theme.primaryColorEnd.color())
 
-            sign_up_text.setTextColor(configuration.theme.secondaryColor.color())
-            sign_up_text.text = configuration.text.intro.login
+            viewBinding.signUpText.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.signUpText.text = configuration.text.intro.login
 
-            sign_up_later_text.setTextColor(configuration.theme.secondaryColor.color())
-            sign_up_later_text.text = configuration.text.intro.back
+            viewBinding.signUpLaterText.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.signUpLaterText.text = configuration.text.intro.back
 
         }
+
+    }
+
+    private fun back() {
+        if (navigator.back(authNavController()).not())
+            navigator.back(rootNavController())
+    }
+
 }

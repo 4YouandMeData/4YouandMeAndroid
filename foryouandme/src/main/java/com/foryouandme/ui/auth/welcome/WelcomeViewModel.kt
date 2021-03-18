@@ -63,7 +63,12 @@ class WelcomeViewModel @Inject constructor(
     fun execute(stateEvent: WelcomeStateEvent) {
         when (stateEvent) {
             WelcomeStateEvent.GetConfiguration ->
-                errorFlow.launchCatch(viewModelScope, WelcomeError.Configuration)
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    WelcomeError.Configuration,
+                    loadingFlow,
+                    WelcomeLoading.Configuration
+                )
                 { getConfiguration() }
             WelcomeStateEvent.ScreenViewed ->
                 viewModelScope.launchSafe { logScreenViewed() }
