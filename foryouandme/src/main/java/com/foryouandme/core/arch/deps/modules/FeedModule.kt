@@ -1,7 +1,7 @@
 package com.foryouandme.core.arch.deps.modules
 
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.core.data.api.feed.FeedApi
+import com.foryouandme.data.repository.feed.network.FeedApi
 import com.squareup.moshi.Moshi
 
 data class FeedModule(

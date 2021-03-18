@@ -5,7 +5,7 @@ import com.foryouandme.core.arch.deps.modules.FeedModule
 import com.foryouandme.core.arch.deps.modules.TaskModule
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.data.api.feed.response.toFeedItems
+import com.foryouandme.data.repository.feed.network.response.toFeedItems
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.feed.Feed
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

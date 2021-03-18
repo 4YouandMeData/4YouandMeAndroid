@@ -14,18 +14,20 @@ import com.foryouandme.core.data.api.common.response.activity.QuickActivityOptio
 import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
+import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
+import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.consent.review.response.ConsentReviewResponse
-import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
-import com.foryouandme.core.data.api.feed.response.FeedResponse
 import com.foryouandme.core.data.api.integration.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
-import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.SerializeNulls
+import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
+import com.foryouandme.data.repository.feed.network.response.FeedResponse
+import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyAnswerResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyBlockResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyQuestionResponse
@@ -95,6 +97,28 @@ class DataModule {
                     .add(QuickActivityOptionResponse::class.java)
                     .add(SurveyActivityResponse::class.java)
                     .add(TaskActivityResponse::class.java)
+                    .build()
+            )
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+    @Singleton
+    @Provides
+    @Named(FEED_MOSHI)
+    fun provideFeedMoshi(): Moshi =
+        Moshi.Builder()
+            .add(
+                ResourceAdapterFactory.builder()
+                    .add(UnknownResourceResponse::class.java)
+                    .add(PageResponse::class.java)
+                    .add(FeedResponse::class.java)
+                    .add(QuickActivityResponse::class.java)
+                    .add(QuickActivityOptionResponse::class.java)
+                    .add(TaskActivityResponse::class.java)
+                    .add(SurveyActivityResponse::class.java)
+                    .add(FeedRewardResponse::class.java)
+                    .add(FeedAlertResponse::class.java)
+                    .add(FeedEducationalResponse::class.java)
                     .build()
             )
             .add(KotlinJsonAdapterFactory())
@@ -184,6 +208,7 @@ class DataModule {
     companion object {
 
         const val TASK_MOSHI: String = "task_moshi"
+        const val FEED_MOSHI: String = "feed_moshi"
         const val SURVEY_MOSHI: String = "survey_moshi"
 
     }

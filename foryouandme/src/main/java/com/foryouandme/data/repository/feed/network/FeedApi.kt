@@ -1,6 +1,6 @@
-package com.foryouandme.core.data.api.feed
+package com.foryouandme.data.repository.feed.network
 
-import com.foryouandme.core.data.api.feed.response.FeedResponse
+import com.foryouandme.data.repository.feed.network.response.FeedResponse
 import com.foryouandme.data.datasource.network.Headers
 import retrofit2.http.GET
 import retrofit2.http.Header

@@ -1,10 +1,9 @@
-package com.foryouandme.core.data.api.feed.response
+package com.foryouandme.data.repository.feed.network.response
 
 import com.foryouandme.core.data.api.common.response.activity.ActivityDataResponse
 import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
 import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
-import com.foryouandme.core.data.api.common.response.meta.MetaResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
