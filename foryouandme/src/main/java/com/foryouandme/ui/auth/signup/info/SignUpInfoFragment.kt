@@ -102,7 +102,7 @@ class SignUpInfoFragment : AuthSectionFragment(R.layout.sign_up_info) {
             }
 
             viewBinding.signUpLaterText.setOnClickListener {
-                navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
+                navigator.navigateTo(authNavController(), SignUpInfoToSignUpLater)
             }
 
             viewBinding.toolbar.showBackButton(imageConfiguration) { back() }
@@ -142,11 +142,6 @@ class SignUpInfoFragment : AuthSectionFragment(R.layout.sign_up_info) {
 
         }
 
-    }
-
-    private fun back() {
-        if (navigator.back(authNavController()).not())
-            navigator.back(rootNavController())
     }
 
 }
