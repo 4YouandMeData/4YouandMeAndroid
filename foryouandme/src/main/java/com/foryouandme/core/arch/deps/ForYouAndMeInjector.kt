@@ -8,7 +8,7 @@ import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.data.api.auth.AuthApi
-import com.foryouandme.core.data.api.auth.response.UserResponse
+import com.foryouandme.data.repository.user.network.UserResponse
 import com.foryouandme.core.data.api.common.AnswerApi
 import com.foryouandme.core.data.api.common.response.AnswerResponse
 import com.foryouandme.core.data.api.common.response.PageResponse

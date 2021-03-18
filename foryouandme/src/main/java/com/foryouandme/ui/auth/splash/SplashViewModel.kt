@@ -1,70 +1,73 @@
 package com.foryouandme.ui.auth.splash
 
-import arrow.core.getOrElse
-import arrow.syntax.function.pipe
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.android.Empty
-import com.foryouandme.core.arch.deps.modules.AuthModule
-import com.foryouandme.core.arch.deps.modules.nullToError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.CachePolicy
-import com.foryouandme.core.cases.auth.AuthUseCase.getUser
-import com.foryouandme.core.cases.auth.AuthUseCase.isLogged
-import com.foryouandme.core.cases.auth.AuthUseCase.updateUserTimeZone
-import com.foryouandme.core.cases.push.PushUseCase
-import com.foryouandme.core.ext.startCoroutineAsync
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.ext.catchToNullSuspend
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.usecase.auth.IsLoggedUseCase
+import com.foryouandme.domain.usecase.push.GetPushTokenUseCase
+import com.foryouandme.domain.usecase.user.GetUserUseCase
+import com.foryouandme.domain.usecase.user.UpdateUserTimeZoneUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.threeten.bp.ZoneId
 import timber.log.Timber
+import javax.inject.Inject
 
-class SplashViewModel(
-    navigator: Navigator,
-    private val authModule: AuthModule
-) : BaseViewModel<Empty, Empty, Empty, SplashLoading>
-    (navigator, Empty) {
+@HiltViewModel
+class SplashViewModel @Inject constructor(
+    private val loadingFlow: LoadingFlow<SplashLoading>,
+    private val navigationFlow: NavigationFlow,
+    private val getPushTokenUseCase: GetPushTokenUseCase,
+    private val getUserUseCase: GetUserUseCase,
+    private val isLoggedUseCase: IsLoggedUseCase,
+    private val updateUserTimeZoneUseCase: UpdateUserTimeZoneUseCase
+) : ViewModel() {
 
-    suspend fun auth(
-        rootNavController: RootNavController,
-        authNavController: AuthNavController
-    ): Unit {
+    /* --- flow --- */
 
-        showLoading(SplashLoading.Auth)
+    val loading = loadingFlow.loading
+    val navigation = navigationFlow.navigation
+
+    /* --- auth --- */
+
+    private suspend fun auth() {
+
+        loadingFlow.show(SplashLoading.Auth)
 
         // Token logging for debug
-        PushUseCase.getPushToken()
-            .getOrElse { "Error: can't load the token" }
-            .pipe { Timber.tag("FCM_TOKEN").d(it) }
+        val token = catchToNullSuspend { getPushTokenUseCase() } ?: "Error: can't load the token"
+        Timber.tag("FCM_TOKEN").d(token)
 
-        if (authModule.isLogged()) {
+        if (isLoggedUseCase()) {
 
-            startCoroutineAsync { authModule.updateUserTimeZone(ZoneId.systemDefault()) }
+            viewModelScope.launchSafe { updateUserTimeZoneUseCase(ZoneId.systemDefault()) }
 
-            val user =
-                authModule.getUser(CachePolicy.Network)
-                    .nullToError()
+            val user = catchToNullSuspend { getUserUseCase() }
 
-            user.fold(
-                { welcome(authNavController) },
-                {
-                    if (it.onBoardingCompleted) main(rootNavController)
-                    else onboarding(authNavController)
-                }
-            )
+            if (user == null)
+                navigationFlow.navigateTo(SplashToWelcome)
+            else {
+                if (user.onBoardingCompleted) navigationFlow.navigateTo(SplashToMain)
+                else navigationFlow.navigateTo(SplashToOnboarding)
+            }
 
-        } else welcome(authNavController)
+        } else navigationFlow.navigateTo(SplashToWelcome)
 
-        hideLoading(SplashLoading.Auth)
+        loadingFlow.hide(SplashLoading.Auth)
 
     }
 
-    private suspend fun main(rootNavController: RootNavController): Unit =
-        navigator.navigateToSuspend(rootNavController, SplashToMain)
+    /* --- state event --- */
 
-    private suspend fun welcome(authNavController: AuthNavController): Unit =
-        navigator.navigateToSuspend(authNavController, SplashToWelcome)
+    fun execute(stateEvent: SplashStateEvent) {
 
-    private suspend fun onboarding(authNavController: AuthNavController): Unit =
-        navigator.navigateToSuspend(authNavController, SplashToOnboarding)
+        when (stateEvent) {
+            SplashStateEvent.Auth ->
+                viewModelScope.launchSafe { auth() }
+        }
+
+    }
 
 }

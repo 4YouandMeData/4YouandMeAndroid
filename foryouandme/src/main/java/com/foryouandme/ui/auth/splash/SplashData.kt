@@ -8,6 +8,12 @@ sealed class SplashLoading {
 
 }
 
+sealed class SplashStateEvent {
+
+    object Auth : SplashStateEvent()
+
+}
+
 /* --- navigation --- */
 
 object SplashToWelcome : NavigationAction

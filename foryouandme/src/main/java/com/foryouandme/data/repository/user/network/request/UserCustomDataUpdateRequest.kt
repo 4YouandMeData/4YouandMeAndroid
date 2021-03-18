@@ -1,9 +1,9 @@
-package com.foryouandme.core.data.api.auth.request
+package com.foryouandme.data.repository.user.network.request
 
-import com.foryouandme.core.data.api.auth.request.UserCustomDataItemRequest.Companion.asRequest
-import com.foryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_DATE
-import com.foryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_ITEMS
-import com.foryouandme.core.data.api.auth.response.USER_CUSTOM_DATA_TYPE_STRING
+import com.foryouandme.data.repository.user.network.request.UserCustomDataItemRequest.Companion.asRequest
+import com.foryouandme.data.repository.user.network.USER_CUSTOM_DATA_TYPE_DATE
+import com.foryouandme.data.repository.user.network.USER_CUSTOM_DATA_TYPE_ITEMS
+import com.foryouandme.data.repository.user.network.USER_CUSTOM_DATA_TYPE_STRING
 import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.entity.user.UserCustomDataItem
 import com.foryouandme.entity.user.UserCustomDataType
