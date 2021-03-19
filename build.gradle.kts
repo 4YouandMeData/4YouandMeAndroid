@@ -21,11 +21,12 @@ buildscript {
         classpath(GradlePlugin.Bintray.get())
         classpath(GradlePlugin.Hilt.get())
         classpath(GradlePlugin.Versions.get())
-
+        classpath(GradlePlugin.Dokka.get())
     }
 }
 
 apply(plugin = "com.github.ben-manes.versions")
+apply(plugin = "org.jetbrains.dokka")
 
 allprojects {
     repositories {
@@ -39,7 +40,7 @@ allprojects {
 }
 
 tasks {
-    val clean by registering(Delete::class) {
+    val cleanBuild by registering(Delete::class) {
         delete(buildDir)
     }
 }
@@ -66,12 +67,6 @@ fun isNonStable(version: String): Boolean {
     return isStable.not()
 }
 
-tasks.register("listrepos") {
-    doLast {
-        println("Repositories:")
-        project.repositories.map{it as MavenArtifactRepository}
-            .forEach{
-                println("Name: ${it.name}; url: ${it.url}")
-            }
-    }
+tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml").configure {
+    outputDirectory.set(buildDir.resolve("dokka"))
 }

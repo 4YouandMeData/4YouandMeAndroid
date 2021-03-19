@@ -6,8 +6,7 @@ plugins {
     kotlin("kapt")
     kotlin("android.extensions")
     id("androidx.navigation.safeargs")
-    id("maven-publish")
-    id("com.jfrog.bintray")
+    id("publish-mavencentral")
     id("dagger.hilt.android.plugin")
 }
 
@@ -15,14 +14,14 @@ androidExtensions { isExperimental = true }
 
 android {
 
-    compileSdkVersion(AndroidConfig.compile_sdk)
+    compileSdkVersion(ProjectConfig.compile_sdk)
 
     defaultConfig {
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
-        versionCode = AndroidConfig.version_code
-        versionName = AndroidConfig.version_name
-        testInstrumentationRunner = AndroidConfig.test_instrumentation_runner
+        minSdkVersion(ProjectConfig.min_sdk)
+        targetSdkVersion(ProjectConfig.target_sdk)
+        versionCode = ProjectConfig.version_code
+        versionName = ProjectConfig.version_name
+        testInstrumentationRunner = ProjectConfig.test_instrumentation_runner
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -208,114 +207,4 @@ dependencies {
     androidTestImplementation(AndroidX.Test.Ext.JunitKtx.get())
     androidTestImplementation(AndroidX.Test.Espresso.Core.get())
 
-}
-
-/* ======== BINTRAY ======== */
-tasks {
-
-    val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sources")
-        from(android.sourceSets.getByName("main").java.srcDirs)
-    }
-
-    artifacts {
-        archives(sourcesJar)
-    }
-
-}
-
-val artifactName: String = project.name
-val artifactGroup: String = Library.group
-val artifactVersion: String = AndroidConfig.version_name
-
-publishing {
-    publications {
-        create<MavenPublication>("4youandme") {
-
-            groupId = artifactGroup
-            artifactId = artifactName
-            version = artifactVersion
-
-            artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
-            artifact(tasks.getByName("sourcesJar"))
-
-            pom {
-                packaging = "aar"
-                name.set(Library.name)
-                description.set(Library.pomDescription)
-                url.set(Library.pomUrl)
-                licenses {
-                    license {
-                        name.set(Library.pomLicenseName)
-                        url.set(Library.pomLicenseUrl)
-                        distribution.set(Library.repo)
-                    }
-                }
-                developers {
-                    developer {
-                        id.set(Library.pomDeveloperId)
-                        name.set(Library.pomDeveloperName)
-                        email.set(Library.pomDeveloperEmail)
-                    }
-                }
-                scm {
-                    url.set(Library.pomScmUrl)
-                }
-                withXml {
-
-                    // Add dependencies to pom file
-                    val dependenciesNode = asNode().appendNode("dependencies")
-                    (configurations.releaseImplementation.get().allDependencies +
-                            configurations.releaseCompile.get().allDependencies)
-                        .forEach {
-                            val groupId =
-                                if (it.group == rootProject.name) Library.group else it.group
-                            val artifactId = it.name
-                            val version =
-                                if (it.group == rootProject.name) AndroidConfig.version_name
-                                else it.version
-                            if (groupId != null && version != null) {
-                                val dependencyNode =
-                                    dependenciesNode.appendNode("dependency")
-                                dependencyNode.appendNode("groupId", groupId)
-                                dependencyNode.appendNode("artifactId", artifactId)
-                                dependencyNode.appendNode("version", version)
-                            }
-                        }
-                }
-            }
-        }
-    }
-}
-
-bintray {
-
-    user = gradleLocalProperties(rootDir).getProperty("bintray.user").toString()
-    key = gradleLocalProperties(rootDir).getProperty("bintray.apikey").toString()
-
-    publish = true
-
-    setPublications("4youandme")
-
-    pkg.apply {
-        repo = Library.repo
-        name = artifactName
-        userOrg = Library.organization
-        githubRepo = Library.githubRepo
-        vcsUrl = Library.pomScmUrl
-        description = Library.pomDescription
-        setLabels("4youandme")
-        setLicenses(Library.pomLicenseName)
-        desc = Library.pomDescription
-        websiteUrl = Library.pomUrl
-        issueTrackerUrl = Library.pomIssueUrl
-        githubReleaseNotesFile = Library.githubReadme
-        version.apply {
-            name = artifactVersion
-            desc = Library.pomDescription
-            vcsTag = artifactVersion
-            gpg.sign = true
-            gpg.passphrase = gradleLocalProperties(rootDir).getProperty("bintray.gpg.password")
-        }
-    }
 }

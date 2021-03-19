@@ -12,15 +12,15 @@ androidExtensions { isExperimental = true }
 
 android {
 
-    compileSdkVersion(AndroidConfig.compile_sdk)
+    compileSdkVersion(ProjectConfig.compile_sdk)
 
     defaultConfig {
         applicationId = "com.foryouandme.app"
-        minSdkVersion(AndroidConfig.min_sdk)
-        targetSdkVersion(AndroidConfig.target_sdk)
-        versionCode = AndroidConfig.version_code
-        versionName = AndroidConfig.version_name
-        testInstrumentationRunner = AndroidConfig.test_instrumentation_runner
+        minSdkVersion(ProjectConfig.min_sdk)
+        targetSdkVersion(ProjectConfig.target_sdk)
+        versionCode = ProjectConfig.version_code
+        versionName = ProjectConfig.version_name
+        testInstrumentationRunner = ProjectConfig.test_instrumentation_runner
     }
 
     buildTypes {

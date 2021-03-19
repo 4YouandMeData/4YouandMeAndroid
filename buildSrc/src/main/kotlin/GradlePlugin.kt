@@ -59,4 +59,11 @@ object GradlePlugin {
              "[0.12.9, 0.99.99]"
         )
 
+    object Dokka:
+            Dependency(
+                "org.jetbrains.dokka",
+                "dokka-gradle-plugin",
+                "1.4.30"
+            )
+
 }
