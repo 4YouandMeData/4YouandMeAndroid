@@ -21,6 +21,8 @@ import com.foryouandme.ui.auth.onboarding.step.screening.*
 import com.foryouandme.ui.auth.signin.phone.EnterPhoneToPhoneValidationCode
 import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeToMain
 import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeToOnboarding
+import com.foryouandme.ui.auth.signin.pin.PinCodeToMain
+import com.foryouandme.ui.auth.signin.pin.PinCodeToOnboarding
 import com.foryouandme.ui.auth.signup.info.SignUpInfoToEnterPhone
 import com.foryouandme.ui.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.ui.auth.splash.SplashToMain
@@ -61,6 +63,9 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
 
             is PhoneValidationCodeToOnboarding -> phoneValidationCodeToOnboarding()
             is PhoneValidationCodeToMain -> phoneValidationCodeToMain()
+
+            is PinCodeToOnboarding -> pinCodeToOnboarding()
+            is PinCodeToMain -> pinCodeToMain()
 
             is OnboardingStepToOnboardingStep -> onboardingStepToOnboardingStep(action.index)
             is OnboardingToMain -> onboardingToMain()

@@ -80,6 +80,14 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
 
+        <action
+            android:id="@+id/action_sign_up_info_to_pin_code"
+            app:destination="@id/pin_code"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
     </fragment>
 
     <fragment
@@ -134,6 +142,24 @@
 
         <action
             android:id="@+id/action_phone_validation_code_to_onboarding"
+            app:destination="@id/onboarding"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@id/auth_navigation"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/pin_code"
+        android:name="com.foryouandme.ui.auth.signin.pin.PinCodeFragment"
+        android:label="pin_code"
+        tools:layout="@layout/enter_pin">
+
+        <action
+            android:id="@+id/action_pin_code_to_onboarding"
             app:destination="@id/onboarding"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"

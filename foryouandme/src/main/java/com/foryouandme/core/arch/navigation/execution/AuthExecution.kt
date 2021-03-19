@@ -1,9 +1,9 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
+import com.foryouandme.core.arch.navigation.NavigationExecution
 import com.foryouandme.ui.auth.signin.phone.EnterPhoneFragmentDirections
 import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeFragmentDirections
-import com.foryouandme.core.arch.navigation.NavigationExecution
 import com.foryouandme.ui.auth.splash.SplashFragmentDirections
 
 fun splashToWelcome(): NavigationExecution = {
@@ -41,6 +41,14 @@ fun phoneValidationCodeToOnboarding(): NavigationExecution = {
 }
 
 fun phoneValidationCodeToMain(): NavigationExecution = {
+    it.navigate(R.id.action_auth_to_main)
+}
+
+fun pinCodeToOnboarding(): NavigationExecution = {
+    it.navigate(R.id.action_pin_code_to_onboarding)
+}
+
+fun pinCodeToMain(): NavigationExecution = {
     it.navigate(R.id.action_auth_to_main)
 }
 
