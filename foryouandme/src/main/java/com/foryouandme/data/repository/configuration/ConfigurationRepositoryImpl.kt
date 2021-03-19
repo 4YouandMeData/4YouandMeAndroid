@@ -1,6 +1,7 @@
 package com.foryouandme.data.repository.configuration
 
 import android.content.SharedPreferences
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.datasource.cache.Memory
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
@@ -30,7 +31,7 @@ class ConfigurationRepositoryImpl @Inject constructor(
 
             val configuration =
                 configurationJson?.let {
-                    moshi.adapter(Configuration::class.java).fromJson(it)
+                    catchToNull { moshi.adapter(Configuration::class.java).fromJson(it) }
                 }
 
             memory.configuration = configuration

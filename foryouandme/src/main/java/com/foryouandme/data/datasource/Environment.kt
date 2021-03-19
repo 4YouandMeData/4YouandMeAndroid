@@ -14,4 +14,6 @@ abstract class Environment {
 
     abstract fun useCustomData(): Boolean
 
+    open fun pinCodeSuffix(): String = ""
+
 }

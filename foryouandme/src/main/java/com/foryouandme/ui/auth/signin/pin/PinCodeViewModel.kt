@@ -51,6 +51,12 @@ class PinCodeViewModel @Inject constructor(
 
     }
 
+    /* --- legal checkbox --- */
+
+    private fun setLegalCheckbox(isChecked: Boolean) {
+        state = state.copy(legalCheckbox = isChecked)
+    }
+
     /* --- login --- */
 
     private suspend fun auth(pin: String) {
@@ -91,7 +97,7 @@ class PinCodeViewModel @Inject constructor(
     /* --- state event --- */
 
     fun execute(stateEvent: PinCodeStateEvent) {
-        when(stateEvent) {
+        when (stateEvent) {
             is PinCodeStateEvent.Auth ->
                 errorFlow.launchCatch(
                     viewModelScope,
@@ -108,6 +114,12 @@ class PinCodeViewModel @Inject constructor(
                 ) { getConfiguration() }
             PinCodeStateEvent.ScreenViewed ->
                 viewModelScope.launchSafe { logScreenViewed() }
+            PinCodeStateEvent.LogPrivacyPolicy ->
+                viewModelScope.launchSafe { logPrivacyPolicy() }
+            PinCodeStateEvent.LogTermsOfService ->
+                viewModelScope.launchSafe { logTermsOfService() }
+            is PinCodeStateEvent.SetLegalCheckbox ->
+                viewModelScope.launchSafe { setLegalCheckbox(stateEvent.isChecked) }
         }
     }
 

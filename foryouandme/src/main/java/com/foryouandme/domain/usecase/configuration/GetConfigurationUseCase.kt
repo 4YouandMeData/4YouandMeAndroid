@@ -12,7 +12,10 @@ class GetConfigurationUseCase @Inject constructor(
 
     suspend operator fun invoke(policy: Policy): Configuration =
         when (policy) {
-            Network -> repository.fetchConfiguration()
+            Network -> {
+                repository.fetchConfiguration()
+                    .also { repository.saveConfiguration(it) }
+            }
             LocalFirst -> repository.loadConfiguration() ?: invoke(Network)
         }
 

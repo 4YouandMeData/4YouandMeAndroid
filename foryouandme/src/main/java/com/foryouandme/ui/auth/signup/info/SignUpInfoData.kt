@@ -35,3 +35,5 @@ sealed class SignUpInfoStateEvent {
 object SignUpInfoToSignUpLater : NavigationAction
 
 object SignUpInfoToEnterPhone : NavigationAction
+
+object SignUpInfoToPinCode : NavigationAction

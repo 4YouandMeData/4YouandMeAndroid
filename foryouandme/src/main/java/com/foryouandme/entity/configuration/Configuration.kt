@@ -6,7 +6,8 @@ data class Configuration(
     val theme: Theme,
     val text: Text,
     val countryCodes: List<String>,
-    private val integrationsIdentifiers: List<String>
+    private val integrationsIdentifiers: List<String>,
+    val pinCodeLogin: Boolean
 ) {
 
     val integrations: List<IntegrationApp>

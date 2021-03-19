@@ -27,7 +27,10 @@ class PinLoginUseCase @Inject constructor(
 
         try {
 
-            val user = repository.pinLogin(environment.studyId(), pin)!!
+            val user = repository.pinLogin(
+                environment.studyId(),
+                "$pin${environment.pinCodeSuffix()}"
+            )!!
             updateUserTimeZoneUseCase(user.token, ZoneId.systemDefault())
             val firebaseToken = getPushTokenUseCase()
             updateUserFirebaseTokenUseCase(user.token, firebaseToken)

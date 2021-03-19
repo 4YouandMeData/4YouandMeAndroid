@@ -11,8 +11,6 @@ data class PinCodeState(
 
 sealed class PinCodeStateUpdate {
     object Configuration : PinCodeStateUpdate()
-    data class CountryCode(val code: String) : PinCodeStateUpdate()
-    data class LegalCheckBox(val legalCheckbox: Boolean) : PinCodeStateUpdate()
 }
 
 sealed class PinCodeLoading {
@@ -28,10 +26,10 @@ sealed class PinCodeError {
 sealed class PinCodeStateEvent {
     object GetConfiguration : PinCodeStateEvent()
     data class Auth(val pin: String) : PinCodeStateEvent()
-    object ScreenViewed: PinCodeStateEvent()
-    data class SetLegalCheckbox(val isChecked: Boolean): PinCodeStateEvent()
-    object LogPrivacyPolicy: PinCodeStateEvent()
-    object LogTermsOfService: PinCodeStateEvent()
+    object ScreenViewed : PinCodeStateEvent()
+    data class SetLegalCheckbox(val isChecked: Boolean) : PinCodeStateEvent()
+    object LogPrivacyPolicy : PinCodeStateEvent()
+    object LogTermsOfService : PinCodeStateEvent()
 
 }
 

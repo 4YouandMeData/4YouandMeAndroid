@@ -30,6 +30,10 @@ fun signUpInfoToEnterPhone(): NavigationExecution = {
     it.navigate(R.id.action_sign_up_info_to_enter_phone)
 }
 
+fun signUpInfoToPinCode(): NavigationExecution = {
+    it.navigate(R.id.action_sign_up_info_to_pin_code)
+}
+
 fun enterPhoneToPhoneValidationCode(phone: String, countryCode: String): NavigationExecution = {
     it.navigate(
         EnterPhoneFragmentDirections.actionEnterPhoneToPhoneValidationCode(phone, countryCode)

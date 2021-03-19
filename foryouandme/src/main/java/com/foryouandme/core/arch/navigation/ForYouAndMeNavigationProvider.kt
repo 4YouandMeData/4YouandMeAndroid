@@ -24,6 +24,7 @@ import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeToOnboarding
 import com.foryouandme.ui.auth.signin.pin.PinCodeToMain
 import com.foryouandme.ui.auth.signin.pin.PinCodeToOnboarding
 import com.foryouandme.ui.auth.signup.info.SignUpInfoToEnterPhone
+import com.foryouandme.ui.auth.signup.info.SignUpInfoToPinCode
 import com.foryouandme.ui.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.ui.auth.splash.SplashToMain
 import com.foryouandme.ui.auth.splash.SplashToOnboarding
@@ -54,6 +55,7 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
 
             is SignUpInfoToSignUpLater -> signUpInfoToSignUpLater()
             is SignUpInfoToEnterPhone -> signUpInfoToEnterPhone()
+            is SignUpInfoToPinCode -> signUpInfoToPinCode()
 
             is EnterPhoneToPhoneValidationCode ->
                 enterPhoneToPhoneValidationCode(

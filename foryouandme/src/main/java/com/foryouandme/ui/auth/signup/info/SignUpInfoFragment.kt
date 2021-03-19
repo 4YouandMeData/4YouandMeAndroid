@@ -88,13 +88,6 @@ class SignUpInfoFragment : AuthSectionFragment(R.layout.sign_up_info) {
             viewBinding.logo.setImageResource(imageConfiguration.logo())
 
             viewBinding.signUp.setImageResource(imageConfiguration.nextStep())
-            viewBinding.signUp.setOnClickListener {
-                navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
-            }
-
-            viewBinding.signUpText.setOnClickListener {
-                navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
-            }
 
             viewBinding.signUpLater.setImageResource(imageConfiguration.nextStep())
             viewBinding.signUpLater.setOnClickListener {
@@ -139,6 +132,20 @@ class SignUpInfoFragment : AuthSectionFragment(R.layout.sign_up_info) {
 
             viewBinding.signUpLaterText.setTextColor(configuration.theme.secondaryColor.color())
             viewBinding.signUpLaterText.text = configuration.text.intro.back
+
+            viewBinding.signUp.setOnClickListener {
+                if (configuration.pinCodeLogin)
+                    navigator.navigateTo(authNavController(), SignUpInfoToPinCode)
+                else
+                    navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
+            }
+
+            viewBinding.signUpText.setOnClickListener {
+                if (configuration.pinCodeLogin)
+                    navigator.navigateTo(authNavController(), SignUpInfoToPinCode)
+                else
+                    navigator.navigateTo(authNavController(), SignUpInfoToEnterPhone)
+            }
 
         }
 

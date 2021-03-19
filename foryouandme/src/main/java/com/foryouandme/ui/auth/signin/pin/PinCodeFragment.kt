@@ -81,8 +81,6 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
             .onEach {
                 when (it) {
                     PinCodeStateUpdate.Configuration -> applyConfiguration()
-                    else -> {
-                    }
                 }
             }
             .observeIn(this)
@@ -94,7 +92,7 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
 
         setupView()
 
-        if (viewModel.state.configuration != null)
+        if (viewModel.state.configuration == null)
             viewModel.execute(PinCodeStateEvent.GetConfiguration)
         else
             applyConfiguration()
@@ -164,7 +162,10 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
             viewBinding.pin.backgroundTintList =
                 ColorStateList.valueOf(configuration.theme.secondaryColor.color())
             viewBinding.pin.autoCloseKeyboard()
-            viewBinding.pin.addTextChangedListener { setWrongCodeErrorVisibility(false) }
+            viewBinding.pin.addTextChangedListener {
+                viewBinding.action1.isEnabled = viewBinding.checkbox.isChecked && isPinValid()
+                setWrongCodeErrorVisibility(false)
+            }
             viewBinding.pin.setOnFocusChangeListener { _, hasFocus ->
                 binding?.pinValidation?.setImageResource(
                     when {

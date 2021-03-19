@@ -10,7 +10,8 @@ data class ConfigurationResponse(
     @Json(name = "study_id") val studyId: Int? = null,
     @Json(name = "color_palette") val colorPalette: ColorPaletteResponse? = null,
     @Json(name = "country_codes") val countryCodes: List<String>? = null,
-    @Json(name = "supported_integrations") val integration: SupportedIntegrationResponse? = null
+    @Json(name = "supported_integrations") val integration: SupportedIntegrationResponse? = null,
+    @Json(name = "pincode_login") val pinCodeLogin: Boolean? = null
 
 ) {
 
@@ -20,13 +21,14 @@ data class ConfigurationResponse(
         val text = strings?.toText()
 
         return when (null) {
-            theme, text -> null
+            theme, text, pinCodeLogin -> null
             else ->
                 Configuration(
                     theme,
                     text,
                     countryCodes ?: emptyList(),
-                    integration?.toIntegrationAppsIdentifiers() ?: emptyList()
+                    integration?.toIntegrationAppsIdentifiers() ?: emptyList(),
+                    pinCodeLogin
                 )
         }
 
