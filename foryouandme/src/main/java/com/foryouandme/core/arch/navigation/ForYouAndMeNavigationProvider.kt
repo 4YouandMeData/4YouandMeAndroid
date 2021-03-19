@@ -18,9 +18,9 @@ import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserNameToCon
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSignatureToConsentUserSuccess
 import com.foryouandme.ui.auth.onboarding.step.integration.*
 import com.foryouandme.ui.auth.onboarding.step.screening.*
-import com.foryouandme.ui.auth.phone.EnterPhoneToPhoneValidationCode
-import com.foryouandme.ui.auth.phone.code.PhoneValidationCodeToMain
-import com.foryouandme.ui.auth.phone.code.PhoneValidationCodeToOnboarding
+import com.foryouandme.ui.auth.signin.phone.EnterPhoneToPhoneValidationCode
+import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeToMain
+import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeToOnboarding
 import com.foryouandme.ui.auth.signup.info.SignUpInfoToEnterPhone
 import com.foryouandme.ui.auth.signup.info.SignUpInfoToSignUpLater
 import com.foryouandme.ui.auth.splash.SplashToMain

@@ -1,4 +1,4 @@
-package com.foryouandme.ui.auth.phone
+package com.foryouandme.ui.auth.signin.phone
 
 import com.foryouandme.core.arch.navigation.NavigationAction
 

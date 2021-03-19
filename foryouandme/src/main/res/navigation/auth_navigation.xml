@@ -90,7 +90,7 @@
 
     <fragment
         android:id="@+id/enter_phone"
-        android:name="com.foryouandme.ui.auth.phone.EnterPhoneFragment"
+        android:name="com.foryouandme.ui.auth.signin.phone.EnterPhoneFragment"
         android:label="enter_phone"
         tools:layout="@layout/enter_phone">
 
@@ -118,7 +118,7 @@
 
     <fragment
         android:id="@+id/phone_validation_code"
-        android:name="com.foryouandme.ui.auth.phone.code.PhoneValidationCodeFragment"
+        android:name="com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeFragment"
         android:label="phone_validation_code"
         tools:layout="@layout/phone_validation_code">
 

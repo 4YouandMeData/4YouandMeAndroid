@@ -1,8 +1,8 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
-import com.foryouandme.ui.auth.phone.EnterPhoneFragmentDirections
-import com.foryouandme.ui.auth.phone.code.PhoneValidationCodeFragmentDirections
+import com.foryouandme.ui.auth.signin.phone.EnterPhoneFragmentDirections
+import com.foryouandme.ui.auth.signin.phone.code.PhoneValidationCodeFragmentDirections
 import com.foryouandme.core.arch.navigation.NavigationExecution
 import com.foryouandme.ui.auth.splash.SplashFragmentDirections
 

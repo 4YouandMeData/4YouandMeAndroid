@@ -1,7 +1,7 @@
-package com.foryouandme.core.data.api.auth
+package com.foryouandme.data.repository.auth.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.auth.request.*
+import com.foryouandme.data.repository.auth.network.request.*
 import com.foryouandme.data.repository.user.network.UserResponse
 import com.foryouandme.data.repository.user.network.request.UserCustomDataUpdateRequest
 import com.foryouandme.data.repository.user.network.request.UserTimeZoneUpdateRequest

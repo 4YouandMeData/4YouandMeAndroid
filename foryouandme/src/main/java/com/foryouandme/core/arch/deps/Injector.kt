@@ -3,7 +3,7 @@ package com.foryouandme.core.arch.deps
 import android.content.SharedPreferences
 import com.foryouandme.core.arch.deps.modules.*
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.data.api.auth.AuthApi
+import com.foryouandme.data.repository.auth.network.AuthApi
 import com.foryouandme.core.data.api.common.AnswerApi
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi

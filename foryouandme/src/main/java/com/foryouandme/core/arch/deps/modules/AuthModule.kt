@@ -2,7 +2,7 @@ package com.foryouandme.core.arch.deps.modules
 
 import android.content.SharedPreferences
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.core.data.api.auth.AuthApi
+import com.foryouandme.data.repository.auth.network.AuthApi
 import com.squareup.moshi.Moshi
 
 data class AuthModule(
