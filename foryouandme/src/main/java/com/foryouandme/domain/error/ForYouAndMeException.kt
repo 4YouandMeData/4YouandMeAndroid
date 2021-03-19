@@ -22,8 +22,8 @@ sealed class ForYouAndMeException : Throwable() {
 
     object UserNotLoggedIn : ForYouAndMeException()
 
-    class MissingPhoneNumber() : ForYouAndMeException()
+    class MissingPhoneNumber : ForYouAndMeException()
 
-    class WrongPhoneCode(message: (Context) -> String) : ForYouAndMeException()
+    class WrongCode : ForYouAndMeException()
 
 }

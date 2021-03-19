@@ -1,6 +1,5 @@
 package com.foryouandme.domain.usecase.user
 
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
@@ -11,6 +10,10 @@ class UpdateUserTimeZoneUseCase @Inject constructor(
 
     suspend operator fun invoke(zoneId: ZoneId) {
         repository.updateUserTimeZone(getTokenUseCase(), zoneId)
+    }
+
+    suspend operator fun invoke(token: String, zoneId: ZoneId) {
+        repository.updateUserTimeZone(token, zoneId)
     }
 
 }

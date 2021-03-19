@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.task
 
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.task.Task
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList

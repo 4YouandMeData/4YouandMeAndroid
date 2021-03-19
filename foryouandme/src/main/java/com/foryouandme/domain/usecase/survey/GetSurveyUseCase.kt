@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.survey
 
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.entity.survey.Survey
 import javax.inject.Inject
 

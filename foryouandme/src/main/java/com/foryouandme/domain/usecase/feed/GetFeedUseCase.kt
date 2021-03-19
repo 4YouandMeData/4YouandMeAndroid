@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.feed
 
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.entity.feed.Feed
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import javax.inject.Inject

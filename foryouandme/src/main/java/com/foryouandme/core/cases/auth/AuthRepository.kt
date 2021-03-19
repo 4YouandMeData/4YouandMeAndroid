@@ -17,6 +17,8 @@ import com.foryouandme.data.repository.user.network.UserResponse
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.data.datasource.network.Headers
+import com.foryouandme.data.repository.user.network.request.UserFirebaseTokenDataUpdateRequest
+import com.foryouandme.data.repository.user.network.request.UserFirebaseTokenUpdateRequest
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
@@ -51,7 +53,7 @@ object AuthRepository {
         phone: String,
         code: String,
     ): Either<ForYouAndMeError, User> =
-        suspend { api.login(environment.studyId(), LoginRequest(PhoneLoginRequest(phone, code))) }
+        suspend { api.phoneLogin(environment.studyId(), LoginRequest(PhoneLoginRequest(phone, code))) }
             .let { errorModule.unwrapToEither(block = it) }
             .map { it.unwrapUser() }
             .nullToError()

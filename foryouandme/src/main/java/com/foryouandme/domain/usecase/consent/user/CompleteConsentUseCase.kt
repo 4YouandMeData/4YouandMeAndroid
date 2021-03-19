@@ -2,7 +2,7 @@
 package com.foryouandme.domain.usecase.consent.user
 
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import javax.inject.Inject
 
 class CompleteConsentUseCase @Inject constructor(

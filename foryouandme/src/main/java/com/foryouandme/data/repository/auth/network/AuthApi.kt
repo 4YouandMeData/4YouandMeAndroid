@@ -4,6 +4,7 @@ import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.data.repository.auth.network.request.*
 import com.foryouandme.data.repository.user.network.UserResponse
 import com.foryouandme.data.repository.user.network.request.UserCustomDataUpdateRequest
+import com.foryouandme.data.repository.user.network.request.UserFirebaseTokenUpdateRequest
 import com.foryouandme.data.repository.user.network.request.UserTimeZoneUpdateRequest
 import retrofit2.Response
 import retrofit2.http.*
@@ -17,9 +18,15 @@ interface AuthApi {
     ): Response<Unit>
 
     @POST("api/v1/studies/{study_id}/auth/login")
-    suspend fun login(
+    suspend fun phoneLogin(
         @Path("study_id") studyId: String,
-        @Body request: LoginRequest
+        @Body request: LoginRequest<PhoneLoginRequest>
+    ): Response<UserResponse>
+
+    @POST("api/v1/studies/{study_id}/auth/email_login")
+    suspend fun pinLogin(
+        @Path("study_id") studyId: String,
+        @Body request: LoginRequest<PinLoginRequest>
     ): Response<UserResponse>
 
     @GET("api/v1/users/me")

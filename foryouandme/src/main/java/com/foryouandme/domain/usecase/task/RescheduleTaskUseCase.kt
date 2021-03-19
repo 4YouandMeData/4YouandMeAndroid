@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.task
 
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import javax.inject.Inject
 
 class RescheduleTaskUseCase @Inject constructor(

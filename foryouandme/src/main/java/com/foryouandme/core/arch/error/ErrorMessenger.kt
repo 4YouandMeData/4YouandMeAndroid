@@ -23,7 +23,7 @@ class ErrorMessenger @Inject constructor(
             is ForYouAndMeException.MissingPhoneNumber ->
                 configuration?.text?.phoneVerification?.error?.errorMissingNumber
                     ?: genericMessage()
-            is ForYouAndMeException.WrongPhoneCode ->
+            is ForYouAndMeException.WrongCode ->
                 configuration?.text?.phoneVerification?.error?.errorWrongCode
                     ?: genericMessage()
             ForYouAndMeException.Unknown ->

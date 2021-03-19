@@ -21,4 +21,7 @@ class AnalyticsRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun setUserId(id: String) {
+        firebaseDataSource.setUserId(id)
+    }
 }

@@ -9,7 +9,7 @@ import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.survey.GetSurveyUseCase
 import com.foryouandme.domain.usecase.task.*
@@ -37,20 +37,20 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class FYAMTaskConfiguration @Inject constructor(
-        private val environment: Environment,
-        private val getConfigurationUseCase: GetConfigurationUseCase,
-        private val getTokenUseCase: GetTokenUseCase,
-        private val getTaskUseCase: GetTaskUseCase,
-        private val getSurveyUseCase: GetSurveyUseCase,
-        private val sendGaitTaskUseCase: SendGaitTaskUseCase,
-        private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
-        private val sendReactionTimeUseCase: SendReactionTimeUseCase,
-        private val sendTrailMakingUseCase: SendTrailMakingUseCase,
-        private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
-        private val rescheduleTaskUseCase: RescheduleTaskUseCase,
-        private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
-        private val imageConfiguration: ImageConfiguration,
-        private val moshi: Moshi,
+    private val environment: Environment,
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getTokenUseCase: GetTokenUseCase,
+    private val getTaskUseCase: GetTaskUseCase,
+    private val getSurveyUseCase: GetSurveyUseCase,
+    private val sendGaitTaskUseCase: SendGaitTaskUseCase,
+    private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
+    private val sendReactionTimeUseCase: SendReactionTimeUseCase,
+    private val sendTrailMakingUseCase: SendTrailMakingUseCase,
+    private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
+    private val rescheduleTaskUseCase: RescheduleTaskUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    private val imageConfiguration: ImageConfiguration,
+    private val moshi: Moshi,
 ) : TaskConfiguration() {
 
     override suspend fun build(id: String, data: Map<String, String>): Task? =

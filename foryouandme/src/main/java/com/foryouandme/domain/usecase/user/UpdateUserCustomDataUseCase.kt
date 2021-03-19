@@ -1,6 +1,5 @@
 package com.foryouandme.domain.usecase.user
 
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
 import com.foryouandme.entity.user.UserCustomData
 import javax.inject.Inject
 

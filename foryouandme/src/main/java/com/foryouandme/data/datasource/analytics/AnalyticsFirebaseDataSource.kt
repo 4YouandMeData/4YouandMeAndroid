@@ -10,7 +10,7 @@ class AnalyticsFirebaseDataSource @Inject constructor(
     private val firebaseDataMapper: FirebaseDataMapper
 ) {
 
-    suspend fun sendEvent(event: AnalyticsEvent) {
+    fun sendEvent(event: AnalyticsEvent) {
 
         when (event) {
             is AnalyticsEvent.ScreenViewed ->
@@ -23,6 +23,10 @@ class AnalyticsFirebaseDataSource @Inject constructor(
 
         }
 
+    }
+
+    fun setUserId(id: String) {
+        firebaseAnalytics.setUserId(id)
     }
 
 }

@@ -3,7 +3,7 @@ package com.foryouandme.domain.usecase.device
 import com.foryouandme.core.ext.catchToNullSuspend
 import com.foryouandme.data.ext.getTimestampDateUTC
 import com.foryouandme.data.ext.minusDays
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.domain.usecase.location.GetCurrentLocationUseCase
 import com.foryouandme.domain.usecase.location.GetHomeLocationUseCase
 import com.foryouandme.domain.usecase.permission.IsPermissionGrantedUseCase

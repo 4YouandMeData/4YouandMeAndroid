@@ -2,20 +2,12 @@ package com.foryouandme.domain.usecase.auth
 
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
+import org.threeten.bp.ZoneId
 
 interface AuthRepository {
 
-    suspend fun getToken(): String
+    suspend fun phoneLogin(studyId: String, phone: String, code: String): User?
 
-    suspend fun getTokenOrNull(): String?
-
-    suspend fun login(phone: String, code: String, countryCode: String): User
-
-    suspend fun getUser(token: String): User?
-
-    suspend fun updateUserCustomData(
-        token: String,
-        data: List<UserCustomData>
-    )
+    suspend fun pinLogin(studyId: String, pin: String): User?
 
 }

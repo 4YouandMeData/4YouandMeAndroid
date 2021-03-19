@@ -1,7 +1,7 @@
 package com.foryouandme.domain.usecase.study
 
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.domain.usecase.auth.GetTokenUseCase
+import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.entity.studyinfo.StudyInfo
 import javax.inject.Inject
 

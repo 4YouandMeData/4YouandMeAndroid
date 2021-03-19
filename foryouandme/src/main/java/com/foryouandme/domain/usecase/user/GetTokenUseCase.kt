@@ -1,9 +1,9 @@
-package com.foryouandme.domain.usecase.auth
+package com.foryouandme.domain.usecase.user
 
 import javax.inject.Inject
 
 class GetTokenUseCase @Inject constructor(
-    private val repository: AuthRepository
+    private val repository: UserRepository
 ) {
 
     suspend operator fun invoke(): String = repository.getToken()
