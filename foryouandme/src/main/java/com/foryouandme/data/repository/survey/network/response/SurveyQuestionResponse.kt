@@ -25,7 +25,7 @@ data class SurveyQuestionResponse(
     @field:Json(name = "placeholder") val placeholder: String? = null,
     @field:Json(name = "max_characters") val maxCharacters: Int? = null,
     @field:Json(name = "interval") val interval: String? = null,
-    @field:Json(name = "targets") val targets: List<SurveyQuestionTargetResponse>? = null,
+    @field:Json(name = "targets") val targets: List<SurveyQuestionTargetResponse>? = null
 ) : Resource() {
 
     fun toSurveyQuestion(): SurveyQuestion? {
@@ -112,7 +112,7 @@ data class SurveyQuestionResponse(
                                 text,
                                 image,
                                 surveyAnswers,
-                                targets?.mapNotNull { it.toAnswer() } ?: emptyList()
+                                targets?.mapNotNull { it.toAnswer() } ?: emptyList(),
                             )
                     }
                 }

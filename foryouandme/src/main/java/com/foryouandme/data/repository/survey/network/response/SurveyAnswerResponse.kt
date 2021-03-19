@@ -9,6 +9,7 @@ import moe.banana.jsonapi2.Resource
 data class SurveyAnswerResponse(
     @field:Json(name = "text") val text: String? = null,
     @field:Json(name = "correct") val correct: Boolean? = null,
+    @field:Json(name = "is_none") val isNone: Boolean? = null
 ) : Resource() {
 
     fun toSurveyAnswer(): SurveyAnswer? =
@@ -18,7 +19,8 @@ data class SurveyAnswerResponse(
                 SurveyAnswer(
                     id,
                     text,
-                    correct
+                    correct,
+                    isNone ?: false
                 )
         }
 

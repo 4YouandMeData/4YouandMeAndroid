@@ -36,7 +36,8 @@ class ChooseManyViewModel @Inject constructor(
                             it.text,
                             false,
                             it.textColor,
-                            it.buttonColor
+                            it.buttonColor,
+                            it.isNone
                         )
 
 
@@ -52,12 +53,32 @@ class ChooseManyViewModel @Inject constructor(
 
     private suspend fun answer(answerId: String) {
 
-        val items = state.items.map {
-            if (it is ChooseManyAnswerItem) {
-                if (it.id == answerId) it.copy(isSelected = it.isSelected.not())
-                else it
-            } else it
-        }
+        val selectedAnswerIsNone =
+            state.items
+                .filterIsInstance<ChooseManyAnswerItem>()
+                .firstOrNull { it.id == answerId }
+                ?.isNone ?: false
+
+        val items =
+            state.items.map {
+                if (it is ChooseManyAnswerItem) {
+                    when (it.id) {
+                        answerId -> it.copy(isSelected = it.isSelected.not())
+                        else -> {
+
+                            val isSelected =
+                                when {
+                                    selectedAnswerIsNone -> false
+                                    it.isNone -> false
+                                    else -> it.isSelected
+                                }
+
+
+                            it.copy(isSelected = isSelected)
+                        }
+                    }
+                } else it
+            }
 
         state = state.copy(items = items)
         stateUpdateFlow.update(ChooseManyStepStateUpdate.Answer(items))

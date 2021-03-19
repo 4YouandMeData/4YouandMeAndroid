@@ -15,7 +15,8 @@ data class ChooseManyAnswer(
     val id: String,
     val text: String,
     val textColor: Int,
-    val buttonColor: Int
+    val buttonColor: Int,
+    val isNone: Boolean
 )
 
 data class ChooseManyAnswerItem(
@@ -23,7 +24,8 @@ data class ChooseManyAnswerItem(
     val text: String,
     val isSelected: Boolean,
     val textColor: Int,
-    val buttonColor: Int
+    val buttonColor: Int,
+    val isNone: Boolean
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
