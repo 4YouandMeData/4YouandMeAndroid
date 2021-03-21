@@ -18,11 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PinCodeViewModel @Inject constructor(
-    private val stateUpdateFlow: StateUpdateFlow<PinCodeStateUpdate>,
     private val loadingFlow: LoadingFlow<PinCodeLoading>,
     private val errorFlow: ErrorFlow<PinCodeError>,
     private val navigationFlow: NavigationFlow,
-    private val getConfigurationUseCase: GetConfigurationUseCase,
     private val pinLoginUseCase: PinLoginUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
 ) : ViewModel() {
@@ -34,22 +32,9 @@ class PinCodeViewModel @Inject constructor(
 
     /* --- flow --- */
 
-    val stateUpdate = stateUpdateFlow.stateUpdates
     val loading = loadingFlow.loading
     val error = errorFlow.error
     val navigation = navigationFlow.navigation
-
-    /* --- configuration --- */
-
-    private suspend fun getConfiguration() {
-
-        loadingFlow.show(PinCodeLoading.Configuration)
-        val configuration = getConfigurationUseCase(Policy.LocalFirst)
-        state = state.copy(configuration = configuration)
-        stateUpdateFlow.update(PinCodeStateUpdate.Configuration)
-        loadingFlow.hide(PinCodeLoading.Configuration)
-
-    }
 
     /* --- legal checkbox --- */
 
@@ -105,13 +90,6 @@ class PinCodeViewModel @Inject constructor(
                     loadingFlow,
                     PinCodeLoading.Auth
                 ) { auth(stateEvent.pin) }
-            PinCodeStateEvent.GetConfiguration ->
-                errorFlow.launchCatch(
-                    viewModelScope,
-                    PinCodeError.Configuration,
-                    loadingFlow,
-                    PinCodeLoading.Configuration
-                ) { getConfiguration() }
             PinCodeStateEvent.ScreenViewed ->
                 viewModelScope.launchSafe { logScreenViewed() }
             PinCodeStateEvent.LogPrivacyPolicy ->

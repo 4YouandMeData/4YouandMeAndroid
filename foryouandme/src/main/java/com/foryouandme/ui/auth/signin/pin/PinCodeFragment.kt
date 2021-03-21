@@ -42,8 +42,7 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
             .unwrapEvent(name)
             .onEach {
                 when (it.task) {
-                    PinCodeLoading.Auth,
-                    PinCodeLoading.Configuration ->
+                    PinCodeLoading.Auth ->
                         binding?.loading?.setVisibility(it.active)
                 }
             }
@@ -54,14 +53,11 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
             .onEach {
                 when (it.cause) {
                     PinCodeError.Auth -> {
-                        if(it.error is ForYouAndMeException.WrongCode)
+                        if (it.error is ForYouAndMeException.WrongCode)
                             setWrongCodeErrorVisibility(true)
                         else
-                            errorToast(it.error, viewModel.state.configuration)
+                            errorToast(it.error, configuration)
                     }
-                    PinCodeError.Configuration ->
-                        binding?.error?.setError(it.error, null)
-                        { viewModel.execute(PinCodeStateEvent.GetConfiguration) }
                 }
             }
             .observeIn(this)
@@ -76,26 +72,20 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
             }
             .observeIn(this)
 
-        viewModel.stateUpdate
-            .unwrapEvent(name)
-            .onEach {
-                when (it) {
-                    PinCodeStateUpdate.Configuration -> applyConfiguration()
-                }
-            }
-            .observeIn(this)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        applyConfiguration()
 
-        if (viewModel.state.configuration == null)
-            viewModel.execute(PinCodeStateEvent.GetConfiguration)
-        else
-            applyConfiguration()
+    }
+
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+
+        applyConfiguration()
 
     }
 
@@ -131,36 +121,36 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
     private fun applyConfiguration() {
 
         val viewBinding = binding
-        val configuration = viewModel.state.configuration
+        val config = configuration
 
-        if (viewBinding != null && configuration != null) {
+        if (viewBinding != null && config != null) {
 
-            setStatusBar(configuration.theme.primaryColorStart.color())
+            setStatusBar(config.theme.primaryColorStart.color())
 
             viewBinding.root.background =
                 HEXGradient.from(
-                    configuration.theme.primaryColorStart,
-                    configuration.theme.primaryColorEnd
+                    config.theme.primaryColorStart,
+                    config.theme.primaryColorEnd
                 ).drawable()
 
-            viewBinding.title.setTextColor(configuration.theme.secondaryColor.color())
-            viewBinding.title.text = configuration.text.phoneVerification.title
+            viewBinding.title.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.title.text = config.text.phoneVerification.title
 
-            viewBinding.description.setTextColor(configuration.theme.secondaryColor.color())
-            viewBinding.description.text = configuration.text.phoneVerification.body
+            viewBinding.description.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.description.text = config.text.phoneVerification.body
 
 
             viewBinding.pinValidation.imageTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
             viewBinding.pinValidation.setImageResource(
                 if (isPinValid()) imageConfiguration.entryValid()
                 else imageConfiguration.entryWrong()
             )
 
-            viewBinding.pin.setTextColor(configuration.theme.secondaryColor.color())
-            viewBinding.pin.setHintTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.pin.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.pin.setHintTextColor(config.theme.secondaryColor.color())
             viewBinding.pin.backgroundTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
             viewBinding.pin.autoCloseKeyboard()
             viewBinding.pin.addTextChangedListener {
                 viewBinding.action1.isEnabled = viewBinding.checkbox.isChecked && isPinValid()
@@ -179,12 +169,12 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
                 )
             }
 
-            viewBinding.line.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.line.setBackgroundColor(config.theme.secondaryColor.color())
 
             viewBinding.checkbox.buttonTintList =
                 checkbox(
-                    configuration.theme.secondaryColor.color(),
-                    configuration.theme.secondaryColor.color()
+                    config.theme.secondaryColor.color(),
+                    config.theme.secondaryColor.color()
                 )
             viewBinding.checkbox.isChecked = viewModel.state.legalCheckbox
             viewBinding.checkbox.jumpDrawablesToCurrentState()
@@ -195,9 +185,9 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
 
             setLegalCheckboxText(
                 viewBinding,
-                configuration.theme,
-                configuration.text.phoneVerification,
-                configuration.text.url
+                config.theme,
+                config.text.phoneVerification,
+                config.text.url
             )
 
             viewBinding.action1.isEnabled = viewBinding.checkbox.isChecked && isPinValid()
@@ -205,8 +195,8 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
                 button(resources, imageConfiguration.nextStep())
 
             viewBinding.wrongPinError.text =
-                configuration.text.phoneVerification.error.errorMissingNumber
-            viewBinding.wrongPinError.setTextColor(configuration.theme.primaryTextColor.color())
+                config.text.phoneVerification.error.errorMissingNumber
+            viewBinding.wrongPinError.setTextColor(config.theme.primaryTextColor.color())
         }
 
     }
@@ -284,18 +274,16 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
                 .toSpannableString()
     }
 
-    private fun setWrongCodeErrorVisibility(
-        visible: Boolean
-    ) {
+    private fun setWrongCodeErrorVisibility(visible: Boolean) {
 
         val viewBinding = binding
-        val configuration = viewModel.state.configuration
+        val config = configuration
 
-        if (viewBinding != null && configuration != null) {
+        if (viewBinding != null && config != null) {
 
             viewBinding.pin.setTextColor(
-                if (visible) configuration.theme.primaryTextColor.color()
-                else configuration.theme.secondaryColor.color()
+                if (visible) config.theme.primaryTextColor.color()
+                else config.theme.secondaryColor.color()
             )
 
             if (visible)

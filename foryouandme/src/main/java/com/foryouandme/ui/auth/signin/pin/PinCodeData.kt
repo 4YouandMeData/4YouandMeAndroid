@@ -4,26 +4,18 @@ import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.entity.configuration.Configuration
 
 data class PinCodeState(
-    val configuration: Configuration? = null,
     val legalCheckbox: Boolean = false
 )
 
-sealed class PinCodeStateUpdate {
-    object Configuration : PinCodeStateUpdate()
-}
-
 sealed class PinCodeLoading {
-    object Configuration : PinCodeLoading()
     object Auth : PinCodeLoading()
 }
 
 sealed class PinCodeError {
-    object Configuration : PinCodeError()
     object Auth : PinCodeError()
 }
 
 sealed class PinCodeStateEvent {
-    object GetConfiguration : PinCodeStateEvent()
     data class Auth(val pin: String) : PinCodeStateEvent()
     data class SetLegalCheckbox(val isChecked: Boolean) : PinCodeStateEvent()
     object ScreenViewed : PinCodeStateEvent()
