@@ -1,23 +1,32 @@
 package com.foryouandme.core.arch.android
 
 import android.content.ServiceConnection
+import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.activity.FYAMStateUpdate
+import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.entity.configuration.Configuration
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 abstract class BaseFragment : Fragment {
 
     @Inject
     protected lateinit var errorMessenger: ErrorMessenger
+
+    private val fyamViewModel: FYAMViewModel by viewModels(ownerProducer = { requireActivity() })
 
     @Inject
     lateinit var navigator: Navigator
@@ -27,6 +36,20 @@ abstract class BaseFragment : Fragment {
 
     val name: String
         get() = javaClass.simpleName
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        fyamViewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is FYAMStateUpdate.Config -> onConfigurationChange()
+                }
+            }
+            .observeIn(this)
+
+    }
 
     /* --- navigation --- */
 
@@ -71,6 +94,15 @@ abstract class BaseFragment : Fragment {
 
     fun unbindService(serviceConnection: ServiceConnection) {
         catchToNull { requireActivity().applicationContext.unbindService(serviceConnection) }
+    }
+
+    /* --- configuration --- */
+
+    val configuration
+        get() = fyamViewModel.state.configuration
+
+    open fun onConfigurationChange() {
+
     }
 
 }

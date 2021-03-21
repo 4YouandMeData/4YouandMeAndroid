@@ -7,17 +7,25 @@ data class EnterPhoneState(
     val legalCheckbox: Boolean = false
 )
 
-sealed class EnterPhoneStateUpdate {
-    data class CountryCode(val code: String) : EnterPhoneStateUpdate()
-    data class LegalCheckBox(val legalCheckbox: Boolean) : EnterPhoneStateUpdate()
-}
-
 sealed class EnterPhoneLoading {
     object PhoneNumberVerification : EnterPhoneLoading()
 }
 
 sealed class EnterPhoneError {
     object PhoneNumberVerification : EnterPhoneError()
+}
+
+sealed class EnterPhoneStateEvent {
+    data class VerifyPhoneNumber(
+        val phoneAndCode: String,
+        val phone: String,
+        val countryCode: String
+    ) : EnterPhoneStateEvent()
+    data class SetLegalCheckbox(val isChecked: Boolean) : EnterPhoneStateEvent()
+    data class SetCountryCode(val countryCode: String) : EnterPhoneStateEvent()
+    object ScreenViewed : EnterPhoneStateEvent()
+    object LogPrivacyPolicy : EnterPhoneStateEvent()
+    object LogTermsOfService : EnterPhoneStateEvent()
 }
 
 /* --- navigation --- */

@@ -10,4 +10,6 @@ interface AuthRepository {
 
     suspend fun pinLogin(studyId: String, pin: String): User?
 
+    suspend fun verifyPhoneNumber(studyId: String, phone: String)
+
 }

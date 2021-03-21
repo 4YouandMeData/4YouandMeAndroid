@@ -1,107 +1,111 @@
 package com.foryouandme.ui.auth.signin.phone
 
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.AuthModule
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.arch.navigation.toastAction
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.auth.VerifyPhoneNumberUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class EnterPhoneViewModel(
-    navigator: Navigator,
-    private val authModule: AuthModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        EnterPhoneState,
-        EnterPhoneStateUpdate,
-        EnterPhoneError,
-        EnterPhoneLoading>
-    (navigator, EnterPhoneState()) {
+@HiltViewModel
+class EnterPhoneViewModel @Inject constructor(
+    private val loadingFlow: LoadingFlow<EnterPhoneLoading>,
+    private val errorFlow: ErrorFlow<EnterPhoneError>,
+    private val navigationFlow: NavigationFlow,
+    private val verifyPhoneNumberUseCase: VerifyPhoneNumberUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
-    /* --- state update --- */
+    var state = EnterPhoneState()
+        private set
 
-    suspend fun setCountryNameCode(code: String): Unit =
-        setState(
-            state().copy(countryNameCode = code)
-        ) { EnterPhoneStateUpdate.CountryCode(code) }
+    /* --- flow --- */
 
-    suspend fun setLegalCheckbox(isChecked: Boolean): Unit =
-        setState(
-            state().copy(legalCheckbox = isChecked)
-        ) { EnterPhoneStateUpdate.LegalCheckBox(isChecked) }
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
+
+    /* --- country code --- */
+
+    private fun setCountryNameCode(code: String) {
+        state = state.copy(countryNameCode = code)
+    }
+
+    /* --- legal checkbox --- */
+
+    private fun setLegalCheckbox(isChecked: Boolean) {
+        state = state.copy(legalCheckbox = isChecked)
+    }
 
     /* --- auth --- */
 
-    suspend fun verifyNumber(
-        authNavController: AuthNavController,
+    private suspend fun verifyNumber(
         phoneAndCode: String,
         phone: String,
         countryCode: String
-    ): Unit {
+    ) {
 
-        showLoading(EnterPhoneLoading.PhoneNumberVerification)
-
-        authModule.verifyPhoneNumber(phoneAndCode)
-            .fold(
-                { setError(it, EnterPhoneError.PhoneNumberVerification) },
-                { phoneValidationCode(authNavController, phone, countryCode) }
-            )
-
-        hideLoading(EnterPhoneLoading.PhoneNumberVerification)
+        loadingFlow.show(EnterPhoneLoading.PhoneNumberVerification)
+        verifyPhoneNumberUseCase(phoneAndCode)
+        loadingFlow.hide(EnterPhoneLoading.PhoneNumberVerification)
+        navigationFlow.navigateTo(EnterPhoneToPhoneValidationCode(phone, countryCode))
 
     }
-
-    /* --- navigation --- */
-
-    suspend fun back(
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Unit {
-        if (navigator.backSuspend(authNavController).not())
-            navigator.backSuspend(rootNavController)
-    }
-
-    private suspend fun phoneValidationCode(
-        authNavController: AuthNavController,
-        phone: String,
-        countryCode: String
-    ): Unit =
-        navigator.navigateToSuspend(
-            authNavController,
-            EnterPhoneToPhoneValidationCode(phone, countryCode)
-        )
-
-    suspend fun web(rootNavController: RootNavController, url: String): Unit =
-        navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
-
-    suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performActionSuspend(toastAction(error))
 
     /* --- analytics --- */
 
-    suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logScreenViewed(): Unit =
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.ScreenViewed.UserRegistration,
             EAnalyticsProvider.ALL
         )
 
-    suspend fun logPrivacyPolicy(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logPrivacyPolicy(): Unit =
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.ScreenViewed.PrivacyPolicy,
             EAnalyticsProvider.ALL
         )
 
-    suspend fun logTermsOfService(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logTermsOfService(): Unit =
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.ScreenViewed.TermsOfService,
             EAnalyticsProvider.ALL
         )
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: EnterPhoneStateEvent) {
+        when (stateEvent) {
+            is EnterPhoneStateEvent.VerifyPhoneNumber ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    EnterPhoneError.PhoneNumberVerification,
+                    loadingFlow,
+                    EnterPhoneLoading.PhoneNumberVerification
+                ) {
+                    verifyNumber(
+                        stateEvent.phoneAndCode,
+                        stateEvent.phone,
+                        stateEvent.countryCode
+                    )
+                }
+            EnterPhoneStateEvent.ScreenViewed ->
+                viewModelScope.launchSafe { logScreenViewed() }
+            EnterPhoneStateEvent.LogPrivacyPolicy ->
+                viewModelScope.launchSafe { logPrivacyPolicy() }
+            EnterPhoneStateEvent.LogTermsOfService ->
+                viewModelScope.launchSafe { logTermsOfService() }
+            is EnterPhoneStateEvent.SetLegalCheckbox ->
+                viewModelScope.launchSafe { setLegalCheckbox(stateEvent.isChecked) }
+            is EnterPhoneStateEvent.SetCountryCode ->
+                viewModelScope.launchSafe { setCountryNameCode(stateEvent.countryCode) }
+        }
+    }
 
 }

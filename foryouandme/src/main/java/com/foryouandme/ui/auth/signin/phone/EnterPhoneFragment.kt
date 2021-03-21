@@ -7,127 +7,161 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.entity.configuration.*
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
+import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.EnterPhoneBinding
+import com.foryouandme.domain.error.ForYouAndMeException
+import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.configuration.PhoneVerification
+import com.foryouandme.entity.configuration.Theme
+import com.foryouandme.entity.configuration.Url
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.configuration.checkbox.checkbox
-import com.foryouandme.core.ext.*
+import com.foryouandme.ui.auth.AuthSectionFragment
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
-import kotlinx.android.synthetic.main.enter_phone.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
+class EnterPhoneFragment : AuthSectionFragment(R.layout.enter_phone) {
 
-class EnterPhoneFragment : AuthSectionFragmentOld<EnterPhoneViewModel>(R.layout.enter_phone) {
+    private val viewModel: EnterPhoneViewModel by viewModels()
 
-    override val viewModel: EnterPhoneViewModel by lazy {
-        viewModelFactory(this, getFactory {
-            EnterPhoneViewModel(
-                navigator,
-                injector.authModule(),
-                injector.analyticsModule()
-            )
-        })
-    }
+    private val binding: EnterPhoneBinding?
+        get() = view?.let { EnterPhoneBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.loadingLiveData()
-            .observeEvent {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
-                    EnterPhoneLoading.PhoneNumberVerification -> loading.setVisibility(it.active)
+                    EnterPhoneLoading.PhoneNumberVerification ->
+                        binding?.loading?.setVisibility(it.active)
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent { payload ->
-                when (payload.cause) {
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
                     EnterPhoneError.PhoneNumberVerification -> {
 
-                        when (payload.error) {
+                        when (it.error) {
 
-                            is ForYouAndMeError.MissingPhoneNumber ->
-                                configuration { setMissingPhoneErrorVisibility(it, true) }
+                            is ForYouAndMeException.MissingPhoneNumber ->
+                                setMissingPhoneErrorVisibility(true)
                             else ->
-                                startCoroutineAsync { viewModel.toastError(payload.error) }
+                                errorToast(it.error, configuration)
+
                         }
                     }
                 }
             }
+            .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach {
+                when(it) {
+                    is EnterPhoneToPhoneValidationCode ->
+                        navigator.navigateTo(authNavController(), it)
+                }
+            }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
+        setupView()
+        applyConfiguration()
 
-            applyConfiguration(it)
+    }
 
-            viewModel.state().countryNameCode.foldSuspend(
-                {
-                    evalOnMain { ccp.setAutoDetectedCountry(true) }
-                    viewModel.setCountryNameCode(ccp.selectedCountryNameCode)
-                },
-                { evalOnMain { ccp.setCountryForNameCode(it) } }
-            )
-
-            setupView()
-        }
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logScreenViewed() }
+        viewModel.execute(EnterPhoneStateEvent.ScreenViewed)
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            toolbar.showBackButton(imageConfiguration) {
-                startCoroutineAsync { viewModel.back(authNavController(), rootNavController()) }
-            }
+        val viewBinding = binding
 
-            action_1.setOnClickListenerAsync {
+        if (viewBinding != null) {
+
+            viewBinding.toolbar.showBackButton(imageConfiguration) { back() }
+
+            viewBinding.action1.setOnClickListenerAsync {
 
                 hideKeyboardSuspend()
-                viewModel.verifyNumber(
-                    authNavController(),
-                    ccp.fullNumberWithPlus,
-                    phone.text.toString(),
-                    ccp.selectedCountryNameCode
-                )
+                binding?.let {
+                    viewModel.execute(
+                        EnterPhoneStateEvent.VerifyPhoneNumber(
+                            it.ccp.fullNumberWithPlus,
+                            it.phone.text.toString(),
+                            it.ccp.selectedCountryNameCode
+                        )
+                    )
+                }
 
             }
+
+            val countryCode = viewModel.state.countryNameCode
+            if (countryCode == null) {
+                viewBinding.ccp.setAutoDetectedCountry(true)
+                viewModel.execute(
+                    EnterPhoneStateEvent.SetCountryCode(viewBinding.ccp.selectedCountryNameCode)
+                )
+            } else
+                viewBinding.ccp.setCountryForNameCode(countryCode)
+
         }
+    }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
 
-            setStatusBar(configuration.theme.primaryColorStart.color())
+        val viewBinding = binding
+        val config = configuration
 
-            root.background =
+        if (viewBinding != null && config != null) {
+
+            setStatusBar(config.theme.primaryColorStart.color())
+
+            viewBinding.root.background =
                 HEXGradient.from(
-                    configuration.theme.primaryColorStart,
-                    configuration.theme.primaryColorEnd
+                    config.theme.primaryColorStart,
+                    config.theme.primaryColorEnd
                 ).drawable()
 
-            title.setTextColor(configuration.theme.secondaryColor.color())
-            title.text = configuration.text.phoneVerification.title
+            viewBinding.title.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.title.text = config.text.phoneVerification.title
 
-            description.setTextColor(configuration.theme.secondaryColor.color())
-            description.text = configuration.text.phoneVerification.body
+            viewBinding.description.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.description.text = config.text.phoneVerification.body
 
-            ccp.setOnCountryChangeListener {
-                startCoroutineAsync { viewModel.setCountryNameCode(ccp.selectedCountryNameCode) }
+            viewBinding.ccp.setOnCountryChangeListener {
+                binding?.ccp?.selectedCountryNameCode?.let {
+                    viewModel.execute(EnterPhoneStateEvent.SetCountryCode(it))
+                }
             }
-            ccp.setCustomMasterCountries(
-                configuration.countryCodes.fold(
+            viewBinding.ccp.setCustomMasterCountries(
+                config.countryCodes.fold(
                     "",
                     { acc, s ->
                         if (acc.isEmpty()) s
@@ -135,182 +169,199 @@ class EnterPhoneFragment : AuthSectionFragmentOld<EnterPhoneViewModel>(R.layout.
                     }
                 )
             )
-            ccp.contentColor = configuration.theme.secondaryColor.color()
-            ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
-            ccp.ccpDialogShowTitle = false
-            ccp.enableDialogInitialScrollToSelection(true)
-            ccp.setDialogBackgroundColor(configuration.theme.primaryColorStart.color())
-            ccp.setDialogTextColor(configuration.theme.secondaryColor.color())
-            ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
-            ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
-            ccp.setTextSize(15f.spToPx(requireContext()))
-            ccp.setDialogKeyboardAutoPopup(false)
-            ccp.registerCarrierNumberEditText(phone)
-            ccp.setNumberAutoFormattingEnabled(true)
-            ccp.setPhoneNumberValidityChangeListener {
+            viewBinding.ccp.contentColor = config.theme.secondaryColor.color()
+            viewBinding.ccp.setFlagBorderColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.ccpDialogShowTitle = false
+            viewBinding.ccp.enableDialogInitialScrollToSelection(true)
+            viewBinding.ccp.setDialogBackgroundColor(config.theme.primaryColorStart.color())
+            viewBinding.ccp.setDialogTextColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.setDialogSearchEditTextTintColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.setFastScrollerHandleColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.setTextSize(15f.spToPx(requireContext()))
+            viewBinding.ccp.setDialogKeyboardAutoPopup(false)
+            viewBinding.ccp.registerCarrierNumberEditText(viewBinding.phone)
+            viewBinding.ccp.setNumberAutoFormattingEnabled(true)
+            viewBinding.ccp.setPhoneNumberValidityChangeListener { isValid ->
 
-                action_1.isEnabled = checkbox.isChecked && it
+                binding?.let {
+                    it.action1.isEnabled = it.checkbox.isChecked && isValid
+                }
 
             }
 
-            phone_validation.imageTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            phone_validation.setImageResource(
-                if (ccp.isValidFullNumber) imageConfiguration.entryValid()
+            viewBinding.phoneValidation.imageTintList =
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
+            viewBinding.phoneValidation.setImageResource(
+                if (viewBinding.ccp.isValidFullNumber) imageConfiguration.entryValid()
                 else imageConfiguration.entryWrong()
             )
 
-            phone.setTextColor(configuration.theme.secondaryColor.color())
-            phone.setHintTextColor(configuration.theme.secondaryColor.color())
-            phone.backgroundTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            phone.autoCloseKeyboard()
-            phone.addTextChangedListener {
-                configuration { setMissingPhoneErrorVisibility(it, false) }
-            }
-            phone.setOnFocusChangeListener { _, hasFocus ->
-                phone_validation.setImageResource(
-                    when {
-                        hasFocus ->
-                            0
-                        hasFocus.not() && ccp.isValidFullNumber.not() ->
-                            imageConfiguration.entryWrong()
-                        else ->
-                            imageConfiguration.entryValid()
-                    }
-                )
+            viewBinding.phone.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.phone.setHintTextColor(config.theme.secondaryColor.color())
+            viewBinding.phone.backgroundTintList =
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
+            viewBinding.phone.autoCloseKeyboard()
+            viewBinding.phone.addTextChangedListener { setMissingPhoneErrorVisibility(false) }
+            viewBinding.phone.setOnFocusChangeListener { _, hasFocus ->
+
+                binding?.let {
+                    it.phoneValidation.setImageResource(
+                        when {
+                            hasFocus ->
+                                0
+                            hasFocus.not() && it.ccp.isValidFullNumber.not() ->
+                                imageConfiguration.entryWrong()
+                            else ->
+                                imageConfiguration.entryValid()
+                        }
+                    )
+                }
+
             }
 
-            line.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.line.setBackgroundColor(config.theme.secondaryColor.color())
 
-            checkbox.buttonTintList =
+            viewBinding.checkbox.buttonTintList =
                 checkbox(
-                    configuration.theme.secondaryColor.color(),
-                    configuration.theme.secondaryColor.color()
+                    config.theme.secondaryColor.color(),
+                    config.theme.secondaryColor.color()
                 )
-            checkbox.isChecked = viewModel.state().legalCheckbox
-            checkbox.jumpDrawablesToCurrentState()
-            checkbox.setOnCheckedChangeListener { _, isChecked ->
-                action_1.isEnabled = isChecked && ccp.isValidFullNumber
-                startCoroutineAsync { viewModel.setLegalCheckbox(isChecked) }
+            viewBinding.checkbox.isChecked = viewModel.state.legalCheckbox
+            viewBinding.checkbox.jumpDrawablesToCurrentState()
+            viewBinding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                binding?.let {
+                    it.action1.isEnabled = isChecked && it.ccp.isValidFullNumber
+                    viewModel.execute(EnterPhoneStateEvent.SetLegalCheckbox(isChecked))
+                }
             }
 
             setLegalCheckboxText(
-                configuration.theme,
-                configuration.text.phoneVerification,
-                configuration.text.url
+                viewBinding,
+                config.theme,
+                config.text.phoneVerification,
+                config.text.url
             )
 
-            action_1.isEnabled = checkbox.isChecked && ccp.isValidFullNumber
-            action_1.background =
+            viewBinding.action1.isEnabled =
+                viewBinding.checkbox.isChecked && viewBinding.ccp.isValidFullNumber
+            viewBinding.action1.background =
                 button(resources, imageConfiguration.nextStep())
 
-            missing_number_error.text =
-                configuration.text.phoneVerification.error.errorMissingNumber
-            missing_number_error.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.missingNumberError.text =
+                config.text.phoneVerification.error.errorMissingNumber
+            viewBinding.missingNumberError.setTextColor(config.theme.primaryTextColor.color())
+
         }
 
-    private suspend fun setLegalCheckboxText(theme: Theme, text: PhoneVerification, url: Url) =
-        evalOnMain {
+    }
 
-            checkbox_text.setTextColor(theme.secondaryColor.color())
-            checkbox_text.movementMethod = LinkMovementMethod.getInstance()
+    private fun setLegalCheckboxText(
+        viewBinding: EnterPhoneBinding,
+        theme: Theme,
+        text: PhoneVerification,
+        url: Url
+    ) {
 
-            val privacyIndex = text.legal.indexOf(text.legalPrivacyPolicy)
-            val termsIndex = text.legal.indexOf(text.legalTermsOfService)
+        viewBinding.checkboxText.setTextColor(theme.secondaryColor.color())
+        viewBinding.checkboxText.movementMethod = LinkMovementMethod.getInstance()
 
-            val privacySplit = text.legal.split(text.legalPrivacyPolicy)
-            val split = privacySplit.flatMap { it.split(text.legalTermsOfService) }
+        val privacyIndex = text.legal.indexOf(text.legalPrivacyPolicy)
+        val termsIndex = text.legal.indexOf(text.legalTermsOfService)
 
-            checkbox_text.text =
-                SpanDroid()
-                    .append(
-                        split.getOrElse(0) { "" },
-                        spanList(requireContext()) { typeface(R.font.helvetica) }
-                    )
-                    .append(
-                        if (privacyIndex > termsIndex) text.legalPrivacyPolicy
-                        else text.legalTermsOfService,
-                        spanList(requireContext()) {
-                            click {
+        val privacySplit = text.legal.split(text.legalPrivacyPolicy)
+        val split = privacySplit.flatMap { it.split(text.legalTermsOfService) }
 
-                                startCoroutineAsync {
+        viewBinding.checkboxText.text =
+            SpanDroid()
+                .append(
+                    split.getOrElse(0) { "" },
+                    spanList(requireContext()) { typeface(R.font.helvetica) }
+                )
+                .append(
+                    if (privacyIndex > termsIndex) text.legalPrivacyPolicy
+                    else text.legalTermsOfService,
+                    spanList(requireContext()) {
+                        click {
 
-                                    viewModel.logPrivacyPolicy()
+                            viewModel.execute(EnterPhoneStateEvent.LogPrivacyPolicy)
+                            navigator.navigateTo(
+                                rootNavController(),
+                                AnywhereToWeb(
+                                    if (privacyIndex > termsIndex) url.privacy
+                                    else url.terms
+                                )
+                            )
 
-                                    viewModel.web(
-                                        rootNavController(),
-                                        if (privacyIndex > termsIndex) url.privacy
-                                        else url.terms
-                                    )
-
-                                }
-
-                            }
-                            typeface(R.font.helvetica_bold)
-                            custom(ForegroundColorSpan(theme.secondaryColor.color()))
-                            custom(UnderlineSpan())
                         }
-                    )
-                    .append(
-                        split.getOrElse(1) { "" },
-                        spanList(requireContext()) { typeface(R.font.helvetica) }
-                    )
-                    .append(
-                        if (privacyIndex > termsIndex) text.legalTermsOfService
-                        else text.legalPrivacyPolicy,
-                        spanList(requireContext()) {
-                            click {
-                                startCoroutineAsync {
+                        typeface(R.font.helvetica_bold)
+                        custom(ForegroundColorSpan(theme.secondaryColor.color()))
+                        custom(UnderlineSpan())
+                    }
+                )
+                .append(
+                    split.getOrElse(1) { "" },
+                    spanList(requireContext()) { typeface(R.font.helvetica) }
+                )
+                .append(
+                    if (privacyIndex > termsIndex) text.legalTermsOfService
+                    else text.legalPrivacyPolicy,
+                    spanList(requireContext()) {
+                        click {
 
-                                    viewModel.logTermsOfService()
-
-                                    viewModel.web(
-                                        rootNavController(),
-                                        if (privacyIndex > termsIndex) url.terms
-                                        else url.privacy
-                                    )
-
-                                }
-                            }
-                            typeface(R.font.helvetica_bold)
-                            custom(ForegroundColorSpan(theme.secondaryColor.color()))
-                            custom(UnderlineSpan())
+                            viewModel.execute(EnterPhoneStateEvent.LogPrivacyPolicy)
+                            navigator.navigateTo(
+                                rootNavController(),
+                                AnywhereToWeb(
+                                    if (privacyIndex > termsIndex) url.terms
+                                    else url.privacy
+                                )
+                            )
                         }
-                    )
-                    .append(
-                        split.getOrElse(2) { "" },
-                        spanList(requireContext()) { typeface(R.font.helvetica) }
-                    )
-                    .toSpannableString()
-        }
+                        typeface(R.font.helvetica_bold)
+                        custom(ForegroundColorSpan(theme.secondaryColor.color()))
+                        custom(UnderlineSpan())
+                    }
+                )
+                .append(
+                    split.getOrElse(2)
+                    { "" },
+                    spanList(requireContext())
+                    { typeface(R.font.helvetica) }
+                )
+                .toSpannableString()
 
-    private suspend fun setMissingPhoneErrorVisibility(
-        configuration: Configuration,
-        visible: Boolean
-    ): Unit =
-        evalOnMain {
+    }
 
-            phone.setTextColor(
-                if (visible) configuration.theme.primaryTextColor.color()
-                else configuration.theme.secondaryColor.color()
+    private fun setMissingPhoneErrorVisibility(visible: Boolean) {
+
+        val viewBinding = binding
+        val config = configuration
+
+        if (viewBinding != null && config != null) {
+
+            viewBinding.phone.setTextColor(
+                if (visible) config.theme.primaryTextColor.color()
+                else config.theme.secondaryColor.color()
             )
-            ccp.contentColor =
-                if (visible) configuration.theme.primaryTextColor.color()
-                else configuration.theme.secondaryColor.color()
+            viewBinding.ccp.contentColor =
+                if (visible) config.theme.primaryTextColor.color()
+                else config.theme.secondaryColor.color()
 
             if (visible)
-                missing_number_error
+                viewBinding.missingNumberError
                     .animate()
                     .alpha(1f)
                     .setDuration(500L)
                     .start()
             else
-                missing_number_error
+                viewBinding.missingNumberError
                     .animate()
                     .alpha(0f)
                     .setDuration(500L)
                     .start()
 
         }
+
+    }
+
 }

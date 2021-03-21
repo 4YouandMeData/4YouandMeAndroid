@@ -5,7 +5,6 @@ import com.foryouandme.entity.configuration.Configuration
 
 data class PinCodeState(
     val configuration: Configuration? = null,
-    val countryNameCode: String? = null,
     val legalCheckbox: Boolean = false
 )
 
@@ -26,11 +25,10 @@ sealed class PinCodeError {
 sealed class PinCodeStateEvent {
     object GetConfiguration : PinCodeStateEvent()
     data class Auth(val pin: String) : PinCodeStateEvent()
-    object ScreenViewed : PinCodeStateEvent()
     data class SetLegalCheckbox(val isChecked: Boolean) : PinCodeStateEvent()
+    object ScreenViewed : PinCodeStateEvent()
     object LogPrivacyPolicy : PinCodeStateEvent()
     object LogTermsOfService : PinCodeStateEvent()
-
 }
 
 /* --- navigation --- */
