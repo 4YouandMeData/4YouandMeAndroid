@@ -16,37 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpInfoViewModel @Inject constructor(
-    private val stateUpdateFlow: StateUpdateFlow<SignUpInfoStateUpdate>,
-    private val loadingFlow: LoadingFlow<SignUpInfoLoading>,
-    private val errorFlow: ErrorFlow<SignUpInfoError>,
-    private val getConfigurationUseCase: GetConfigurationUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
 ) : ViewModel() {
-
-    /* --- state --- */
-
-    var state: SignUpInfoState = SignUpInfoState()
-        private set
-
-    /* --- flow --- */
-
-    val stateUpdate = stateUpdateFlow.stateUpdates
-    val loading = loadingFlow.loading
-    val error = errorFlow.error
-
-    /* --- configuration --- */
-
-    private suspend fun getConfiguration() {
-
-        loadingFlow.show(SignUpInfoLoading.Configuration)
-
-        val configuration = getConfigurationUseCase(Policy.LocalFirst)
-        state = state.copy(configuration = configuration)
-        stateUpdateFlow.update(SignUpInfoStateUpdate.Config(configuration))
-
-        loadingFlow.hide(SignUpInfoLoading.Configuration)
-
-    }
 
     /* --- analytics --- */
 
@@ -61,14 +32,6 @@ class SignUpInfoViewModel @Inject constructor(
 
     fun execute(stateEvent: SignUpInfoStateEvent) {
         when (stateEvent) {
-            SignUpInfoStateEvent.GetConfiguration ->
-                errorFlow.launchCatch(
-                    viewModelScope,
-                    SignUpInfoError.Configuration,
-                    loadingFlow,
-                    SignUpInfoLoading.Configuration
-                )
-                { getConfiguration() }
             SignUpInfoStateEvent.ScreenViewed ->
                 viewModelScope.launchSafe { logScreenViewed() }
         }
