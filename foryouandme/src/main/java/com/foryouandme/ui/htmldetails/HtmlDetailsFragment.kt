@@ -70,7 +70,7 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (viewModel.state.configuration == null && viewModel.state.studyInfo != null)
+        if (viewModel.state.configuration == null && viewModel.state.studyInfo == null)
             viewModel.execute(HtmlDetailsStateEvent.Initialize)
         else {
             applyConfiguration()
