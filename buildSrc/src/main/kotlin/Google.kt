@@ -11,13 +11,13 @@ object Google {
         object CrashlyticsKtx : Dependency(
             Firebase.group,
             "firebase-crashlytics-ktx",
-            "17.3.0"
+            "17.4.1"
         )
 
         object AnalyticsKtx : Dependency(
             Firebase.group,
             "firebase-analytics-ktx",
-            "18.0.1"
+            "18.0.2"
         )
 
         object MessagingKtx : Dependency(
@@ -28,7 +28,7 @@ object Google {
 
     }
 
-    object ExoPlayer : DependencyGroup("com.google.android.exoplayer", "2.12.3") {
+    object ExoPlayer : DependencyGroup("com.google.android.exoplayer", "2.13.2") {
 
         object Core : Dependency(ExoPlayer.group, "exoplayer-core", ExoPlayer.version)
 
@@ -57,7 +57,7 @@ object Google {
         object Location : Dependency(
             PlayServices.group,
             "play-services-location",
-            "17.1.0"
+            "18.0.0"
         )
 
     }

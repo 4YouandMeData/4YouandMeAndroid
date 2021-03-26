@@ -15,7 +15,7 @@ object AndroidX {
     object FragmentKtx : Dependency(
         "androidx.fragment",
         "fragment-ktx",
-        "1.2.5"
+        "1.3.2"
     )
 
     object ViewPager2 : Dependency(
@@ -49,7 +49,7 @@ object AndroidX {
 
     }
 
-    object Navigation : DependencyGroup("androidx.navigation", "2.2.2") {
+    object Navigation : DependencyGroup("androidx.navigation", "2.3.4") {
 
         object FragmentKtx :
             Dependency(Navigation.group, "navigation-fragment-ktx", Navigation.version)
@@ -58,7 +58,7 @@ object AndroidX {
 
     }
 
-    object Lifecycle : DependencyGroup("androidx.lifecycle", "2.2.0") {
+    object Lifecycle : DependencyGroup("androidx.lifecycle", "2.3.1") {
 
         object ViewModelKtx :
             Dependency(Lifecycle.group, "lifecycle-viewmodel-ktx", Lifecycle.version)
@@ -113,15 +113,15 @@ object AndroidX {
 
     }
 
-    object Hilt : DependencyGroup("androidx.hilt", "1.0.0-alpha03") {
+    object Hilt : DependencyIndependentGroup("androidx.hilt") {
 
         object LifecycleViewModel : Dependency(
             Hilt.group,
             "hilt-lifecycle-viewmodel",
-            Hilt.version
+            "1.0.0-alpha03"
         )
 
-        object Compiler : Dependency(Hilt.group, "hilt-compiler", Hilt.version)
+        object Compiler : Dependency(Hilt.group, "hilt-compiler", "1.0.0-beta01")
 
     }
 

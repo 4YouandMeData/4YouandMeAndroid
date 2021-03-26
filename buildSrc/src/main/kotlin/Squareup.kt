@@ -20,7 +20,7 @@ object Squareup {
 
     }
 
-    object OkHttp3 : DependencyGroup("com.squareup.okhttp3", "4.9.0") {
+    object OkHttp3 : DependencyGroup("com.squareup.okhttp3", "4.9.1") {
 
         object LoggingInterceptor :
             Dependency(OkHttp3.group, "logging-interceptor", OkHttp3.version)

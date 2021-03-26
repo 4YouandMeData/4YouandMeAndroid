@@ -35,15 +35,17 @@ fun BottomNavigationView.setupWithNavController(
 
     // First create a NavHostFragment for each NavGraph ID
     navGraphIds.forEachIndexed { index, navGraphId ->
+
         val fragmentTag = getFragmentTag(index)
 
         // Find or create the Navigation host fragment
-        val navHostFragment = obtainNavHostFragment(
-            fragmentManager,
-            fragmentTag,
-            navGraphId,
-            containerId
-        )
+        val navHostFragment =
+            obtainNavHostFragment(
+                fragmentManager,
+                fragmentTag,
+                navGraphId,
+                containerId
+            )
 
         // Obtain its id
         val graphId = navHostFragment.navController.graph.id
@@ -55,14 +57,22 @@ fun BottomNavigationView.setupWithNavController(
         // Save to the map
         graphIdToTagMap[graphId] = fragmentTag
 
-        // Attach or detach nav host fragment depending on whether it's the selected item.
-        if (this.selectedItemId == graphId) {
-            // Update livedata with the selected graph
-            selectedNavController.value = navHostFragment.navController
-            attachNavHostFragment(fragmentManager, navHostFragment, index == 0)
-        } else {
-            detachNavHostFragment(fragmentManager, navHostFragment)
-        }
+        // detach nav host fragment.
+        detachNavHostFragment(fragmentManager, navHostFragment)
+
+    }
+
+    getSelectedFragment(
+        this,
+        navGraphIds,
+        fragmentManager,
+        containerId
+    )?.let {
+
+        // Update livedata with the selected graph
+        selectedNavController.value = it.navController
+        attachNavHostFragment(fragmentManager, it)
+
     }
 
     // Now connect selecting an item with swapping Fragments
@@ -104,8 +114,8 @@ fun BottomNavigationView.setupWithNavController(
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
                             // Detach all other Fragments
-                            graphIdToTagMap.forEach { _, fragmentTagIter ->
-                                if (fragmentTagIter != newlySelectedItemTag) {
+                            graphIdToTagMap.forEach { _, fragmentTag ->
+                                if (fragmentTag != newlySelectedItemTag) {
                                     detach(fragmentManager.findFragmentByTag(firstFragmentTag)!!)
                                 }
                             }
@@ -144,7 +154,35 @@ fun BottomNavigationView.setupWithNavController(
             }
         }
     }
+
     return selectedNavController
+}
+
+private fun getSelectedFragment(
+    bottomNavigationView: BottomNavigationView,
+    navGraphIds: List<Int>,
+    fragmentManager: FragmentManager,
+    containerId: Int
+): NavHostFragment? {
+
+    navGraphIds.forEachIndexed { index, navGraphId ->
+
+        val fragmentTag = getFragmentTag(index)
+        val navHostFragment = obtainNavHostFragment(
+            fragmentManager,
+            fragmentTag,
+            navGraphId,
+            containerId
+        )
+
+        // Obtain its id
+        val graphId = navHostFragment.navController.graph.id
+        if (bottomNavigationView.selectedItemId == graphId) return navHostFragment
+
+    }
+
+    return null
+
 }
 
 private fun BottomNavigationView.setupDeepLinks(
@@ -200,7 +238,7 @@ private fun detachNavHostFragment(
 private fun attachNavHostFragment(
     fragmentManager: FragmentManager,
     navHostFragment: NavHostFragment,
-    isPrimaryNavFragment: Boolean
+    isPrimaryNavFragment: Boolean = true
 ) {
     fragmentManager.beginTransaction()
         .attach(navHostFragment)

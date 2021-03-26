@@ -3,7 +3,7 @@ object GradlePlugin {
     object Android : Dependency(
         "com.android.tools.build",
         "gradle",
-        "4.1.2"
+        "7.0.0-alpha12"
     )
 
     object KotlinPlugin : Dependency(
@@ -15,21 +15,21 @@ object GradlePlugin {
     object GoogleServices : Dependency(
         "com.google.gms",
         "google-services",
-        "4.3.4"
+        "4.3.5"
     )
 
     object NavigationSafeArgs :
         Dependency(
             "androidx.navigation",
             "navigation-safe-args-gradle-plugin",
-            "2.2.2"
+            "2.3.4"
         )
 
     object FirebaseCrashlytics :
         Dependency(
             "com.google.firebase",
             "firebase-crashlytics-gradle",
-            "2.4.1"
+            "2.5.2"
         )
 
     object Bintray : Dependency(
@@ -49,7 +49,7 @@ object GradlePlugin {
         Dependency(
             "com.github.ben-manes",
              "gradle-versions-plugin",
-             "0.36.0"
+             "0.38.0"
         )
 
     object OneSignal:

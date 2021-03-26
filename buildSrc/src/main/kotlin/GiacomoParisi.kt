@@ -12,7 +12,7 @@ object GiacomoParisi {
 
     object RecyclerDroid : DependencyGroup(
         "com.giacomoparisi.recyclerdroid",
-        "1.8.0-beta09"
+        "1.8.0-beta13"
     ) {
 
         object Core : Dependency(
