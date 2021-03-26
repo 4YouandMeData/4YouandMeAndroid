@@ -1,99 +1,92 @@
 package com.foryouandme.ui.auth.signin.phone.code
 
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.android.Empty
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.AuthModule
-import com.foryouandme.core.arch.error.ForYouAndMeError
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.arch.navigation.toastAction
+import com.foryouandme.core.arch.navigation.action.toastAction
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.auth.AuthUseCase.login
-import com.foryouandme.core.cases.auth.AuthUseCase.verifyPhoneNumber
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.auth.PhoneLoginUseCase
+import com.foryouandme.domain.usecase.auth.VerifyPhoneNumberUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PhoneValidationCodeViewModel(
-    navigator: Navigator,
-    private val authModule: AuthModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        Empty,
-        Empty,
-        PhoneValidationCodeError,
-        PhoneValidationCodeLoading>
-    (navigator = navigator, Empty) {
+@HiltViewModel
+class PhoneValidationCodeViewModel @Inject constructor(
+    private val loadingFlow: LoadingFlow<PhoneValidationCodeLoading>,
+    private val errorFlow: ErrorFlow<PhoneValidationCodeError>,
+    private val navigationFlow: NavigationFlow,
+    private val navigator: Navigator,
+    private val phoneLoginUseCase: PhoneLoginUseCase,
+    private val verifyPhoneNumberUseCase: VerifyPhoneNumberUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
+    /* --- flow --- */
+
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
 
     /* --- auth --- */
 
-    suspend fun auth(
-        rootNavController: RootNavController,
-        authNavController: AuthNavController,
+    private suspend fun auth(
         phone: String,
         code: String,
         countryCode: String
-    ): Unit {
+    ) {
 
-        showLoading(PhoneValidationCodeLoading.Auth)
-
-        val auth =
-            authModule.login(phone, code, countryCode)
-
-        auth.fold(
-            { setError(it, PhoneValidationCodeError.Auth) },
-            {
-                if (it.onBoardingCompleted) main(rootNavController)
-                else onboarding(authNavController)
-            }
-        )
-
-        hideLoading(PhoneValidationCodeLoading.Auth)
+        loadingFlow.show(PhoneValidationCodeLoading.Auth)
+        val user = phoneLoginUseCase(phone, code, countryCode)
+        loadingFlow.hide(PhoneValidationCodeLoading.Auth)
+        if (user.onBoardingCompleted) navigationFlow.navigateTo(PhoneValidationCodeToMain)
+        else navigationFlow.navigateTo(PhoneValidationCodeToOnboarding)
 
     }
 
-    suspend fun resendCode(
-        phoneAndCode: String
-    ): Unit {
+    private suspend fun resendCode(phoneAndCode: String) {
 
-        showLoading(PhoneValidationCodeLoading.ResendCode)
-
-        authModule.verifyPhoneNumber(phoneAndCode)
-            .fold(
-                { setError(it, PhoneValidationCodeError.ResendCode) },
-                // TODO: fix hardcoded text
-                { navigator.performActionSuspend(toastAction("Code sent successfully")) }
-            )
-
-        hideLoading(PhoneValidationCodeLoading.ResendCode)
+        loadingFlow.show(PhoneValidationCodeLoading.ResendCode)
+        verifyPhoneNumberUseCase(phoneAndCode)
+        loadingFlow.hide(PhoneValidationCodeLoading.ResendCode)
 
     }
-
-    /* --- navigation --- */
-
-    suspend fun back(
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Unit {
-        if (navigator.backSuspend(authNavController).not())
-            navigator.backSuspend(rootNavController)
-    }
-
-    private suspend fun onboarding(authNavController: AuthNavController): Unit =
-        navigator.navigateToSuspend(authNavController, PhoneValidationCodeToOnboarding)
-
-    private suspend fun main(rootNavController: RootNavController): Unit =
-        navigator.navigateToSuspend(rootNavController, PhoneValidationCodeToMain)
-
-    suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performActionSuspend(toastAction(error))
-
 
     /* --- analytics --- */
 
-    suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.OtpValidation, EAnalyticsProvider.ALL)
+    private suspend fun logScreenViewed() {
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.OtpValidation,
+            EAnalyticsProvider.ALL
+        )
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: PhoneValidationStateEvent) {
+        when (stateEvent) {
+            is PhoneValidationStateEvent.Auth ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    PhoneValidationCodeError.Auth,
+                    loadingFlow,
+                    PhoneValidationCodeLoading.Auth
+                ) { auth(stateEvent.phone, stateEvent.code, stateEvent.countryCode) }
+            is PhoneValidationStateEvent.ResendCode ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    PhoneValidationCodeError.ResendCode,
+                    loadingFlow,
+                    PhoneValidationCodeLoading.ResendCode
+                ) { resendCode(stateEvent.phoneAndCode) }
+            PhoneValidationStateEvent.LogScreenViewed ->
+                viewModelScope.launchSafe { logScreenViewed() }
+        }
+    }
 
 }

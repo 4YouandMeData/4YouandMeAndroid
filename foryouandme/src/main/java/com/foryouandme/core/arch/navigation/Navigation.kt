@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.foryouandme.R
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.toEvent
+import com.foryouandme.core.arch.navigation.action.ActivityAction
 import com.foryouandme.core.ext.evalOnMain
 import javax.inject.Inject
 import javax.inject.Singleton

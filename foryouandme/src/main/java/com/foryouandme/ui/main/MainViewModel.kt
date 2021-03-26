@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.flow.NavigationFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.openApp
+import com.foryouandme.core.arch.navigation.action.openApp
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent

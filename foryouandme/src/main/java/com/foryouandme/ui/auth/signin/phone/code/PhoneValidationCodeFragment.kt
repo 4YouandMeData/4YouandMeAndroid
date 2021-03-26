@@ -6,261 +6,278 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.ui.auth.AuthSectionFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.PhoneValidationCodeBinding
+import com.foryouandme.domain.error.ForYouAndMeException
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.ui.auth.AuthSectionFragment
 import com.giacomoparisi.spandroid.SpanDroid
 import com.giacomoparisi.spandroid.spanList
-import kotlinx.android.synthetic.main.phone_validation_code.*
-import kotlinx.android.synthetic.main.phone_validation_code.action_1
-import kotlinx.android.synthetic.main.phone_validation_code.ccp
-import kotlinx.android.synthetic.main.phone_validation_code.description
-import kotlinx.android.synthetic.main.phone_validation_code.loading
-import kotlinx.android.synthetic.main.phone_validation_code.phone
-import kotlinx.android.synthetic.main.phone_validation_code.phone_validation
-import kotlinx.android.synthetic.main.phone_validation_code.root
-import kotlinx.android.synthetic.main.phone_validation_code.title
-import kotlinx.android.synthetic.main.phone_validation_code.toolbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
-
-class PhoneValidationCodeFragment : AuthSectionFragmentOld<PhoneValidationCodeViewModel>(
-    R.layout.phone_validation_code
-) {
+@AndroidEntryPoint
+class PhoneValidationCodeFragment : AuthSectionFragment(R.layout.phone_validation_code) {
 
     private val args: PhoneValidationCodeFragmentArgs by navArgs()
 
-    override val viewModel: PhoneValidationCodeViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                PhoneValidationCodeViewModel(
-                    navigator,
-                    injector.authModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    private val viewModel: PhoneValidationCodeViewModel by viewModels()
+
+    private val binding: PhoneValidationCodeBinding?
+        get() = view?.let { PhoneValidationCodeBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        viewModel.loadingLiveData()
-            .observeEvent {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
-                    PhoneValidationCodeLoading.Auth -> loading.setVisibility(it.active)
-                    PhoneValidationCodeLoading.ResendCode -> loading.setVisibility(it.active)
+                    PhoneValidationCodeLoading.Auth,
+                    PhoneValidationCodeLoading.ResendCode ->
+                        binding?.loading?.setVisibility(it.active)
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent { payload ->
-                when (payload.cause) {
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
                     PhoneValidationCodeError.Auth -> {
 
-                        when (payload.error) {
+                        when (it.error) {
 
-                            is ForYouAndMeError.WrongPhoneCode ->
-                                configuration { setWrongCodeErrorVisibility(it, true) }
+                            is ForYouAndMeException.WrongCode ->
+                                setWrongCodeErrorVisibility(true)
                             else ->
-                                errorToast(payload.error)
+                                errorToast(it.error, configuration)
 
-                        }
-
-                        startCoroutineAsync {
-                            viewModel.back(authNavController(), rootNavController())
                         }
 
                     }
                     PhoneValidationCodeError.ResendCode ->
-                        errorToast(payload.error)
+                        errorToast(it.error, configuration)
                 }
             }
+            .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is PhoneValidationCodeToMain ->
+                        navigator.navigateTo(rootNavController(), it)
+                    is PhoneValidationCodeToOnboarding ->
+                        navigator.navigateTo(authNavController(), it)
+                }
+            }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
+        setupView()
+        applyConfiguration()
 
-            applyConfiguration(it)
+    }
 
-            setupView()
-        }
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logScreenViewed() }
+        viewModel.execute(PhoneValidationStateEvent.LogScreenViewed)
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            toolbar.showBackButton(imageConfiguration) {
-                startCoroutineAsync { viewModel.back(authNavController(), rootNavController()) }
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            viewBinding.toolbar.showBackButton(imageConfiguration) { back() }
+
+            viewBinding.phone.setText(args.phone)
+
+            viewBinding.action1.setOnClickListener {
+
+                hideKeyboard()
+                binding?.let {
+                    viewModel.execute(
+                        PhoneValidationStateEvent.Auth(
+                            it.ccp.fullNumberWithPlus,
+                            it.code.text.toString(),
+                            args.countryCode
+                        )
+                    )
+                }
             }
 
-            phone.setText(args.phone)
-
-            action_1.setOnClickListenerAsync {
-
-                hideKeyboardSuspend()
-                viewModel.auth(
-                    rootNavController(),
-                    authNavController(),
-                    ccp.fullNumberWithPlus,
-                    code.text.toString(),
-                    args.countryCode
-                )
-
+            viewBinding.resend.setOnClickListener {
+                binding?.ccp?.let {
+                    viewModel.execute(PhoneValidationStateEvent.ResendCode(it.fullNumberWithPlus))
+                }
             }
 
-            resend.setOnClickListenerAsync { viewModel.resendCode(ccp.fullNumberWithPlus) }
         }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    }
 
-            setStatusBar(configuration.theme.activeColor.color())
+    private fun applyConfiguration() {
 
-            root.setBackgroundColor(configuration.theme.activeColor.color())
+        val viewBinding = binding
+        val config = configuration
 
-            title.setTextColor(configuration.theme.secondaryColor.color())
-            title.text = configuration.text.phoneVerification.codeTitle
+        if (viewBinding != null && config != null) {
 
-            description.setTextColor(configuration.theme.secondaryColor.color())
-            description.text = configuration.text.phoneVerification.codeBody
+            setStatusBar(config.theme.activeColor.color())
 
-            ccp.contentColor = configuration.theme.secondaryColor.color()
-            ccp.setFlagBorderColor(configuration.theme.secondaryColor.color())
-            ccp.ccpDialogShowTitle = false
-            ccp.enableDialogInitialScrollToSelection(true)
-            ccp.setDialogBackgroundColor(configuration.theme.primaryColorStart.color())
-            ccp.setDialogTextColor(configuration.theme.secondaryColor.color())
-            ccp.setDialogSearchEditTextTintColor(configuration.theme.secondaryColor.color())
-            ccp.setFastScrollerHandleColor(configuration.theme.secondaryColor.color())
-            ccp.setTextSize(15f.spToPx(requireContext()))
-            ccp.setDialogKeyboardAutoPopup(false)
-            ccp.registerCarrierNumberEditText(phone)
-            ccp.setNumberAutoFormattingEnabled(true)
+            viewBinding.root.setBackgroundColor(config.theme.activeColor.color())
 
-            ccp.setCcpClickable(false)
-            ccp.setCountryForNameCode(args.countryCode)
+            viewBinding.title.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.title.text = config.text.phoneVerification.codeTitle
 
-            phone_description.text =
-                configuration.text.phoneVerification.wrongNumber
-            phone_description.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.description.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.description.text = config.text.phoneVerification.codeBody
 
-            phone_validation.imageTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            phone_validation.setImageResource(imageConfiguration.entryValid())
+            viewBinding.ccp.contentColor = config.theme.secondaryColor.color()
+            viewBinding.ccp.setFlagBorderColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.ccpDialogShowTitle = false
+            viewBinding.ccp.enableDialogInitialScrollToSelection(true)
+            viewBinding.ccp.setDialogBackgroundColor(config.theme.primaryColorStart.color())
+            viewBinding.ccp.setDialogTextColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.setDialogSearchEditTextTintColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.setFastScrollerHandleColor(config.theme.secondaryColor.color())
+            viewBinding.ccp.setTextSize(15f.spToPx(requireContext()))
+            viewBinding.ccp.setDialogKeyboardAutoPopup(false)
+            viewBinding.ccp.registerCarrierNumberEditText(viewBinding.phone)
+            viewBinding.ccp.setNumberAutoFormattingEnabled(true)
 
-            phone.setTextColor(configuration.theme.secondaryColor.color())
-            phone.setHintTextColor(configuration.theme.secondaryColor.color())
-            phone.backgroundTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            phone.autoCloseKeyboard()
+            viewBinding.ccp.setCcpClickable(false)
+            viewBinding.ccp.setCountryForNameCode(args.countryCode)
 
-            phone.isEnabled = false
+            viewBinding.phoneDescription.text =
+                config.text.phoneVerification.wrongNumber
+            viewBinding.phoneDescription.setTextColor(config.theme.secondaryColor.color())
 
-            phone_line.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.phoneValidation.imageTintList =
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
+            viewBinding.phoneValidation.setImageResource(imageConfiguration.entryValid())
 
-            change_phone.setOnClickListenerAsync {
-                viewModel.back(authNavController(), rootNavController())
-            }
+            viewBinding.phone.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.phone.setHintTextColor(config.theme.secondaryColor.color())
+            viewBinding.phone.backgroundTintList =
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
+            viewBinding.phone.autoCloseKeyboard()
 
-            code_description.setTextColor(configuration.theme.secondaryColor.color())
-            code_description.text =
-                configuration.text.phoneVerification.codeDescription
+            viewBinding.phone.isEnabled = false
 
-            code_validation.setImageResource(
-                if (code.length() == 6) imageConfiguration.entryValid()
+            viewBinding.phoneLine.setBackgroundColor(config.theme.secondaryColor.color())
+
+            viewBinding.changePhone.setOnClickListener { back() }
+
+            viewBinding.codeDescription.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.codeDescription.text =
+                config.text.phoneVerification.codeDescription
+
+            viewBinding.codeValidation.setImageResource(
+                if (viewBinding.code.length() == 6) imageConfiguration.entryValid()
                 else imageConfiguration.entryWrong()
             )
 
-            code.setTextColor(configuration.theme.secondaryColor.color())
-            code.setHintTextColor(configuration.theme.secondaryColor.color())
-            code.backgroundTintList =
-                ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            code.autoCloseKeyboard()
-            code.addTextChangedListener { editable ->
+            viewBinding.code.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.code.setHintTextColor(config.theme.secondaryColor.color())
+            viewBinding.code.backgroundTintList =
+                ColorStateList.valueOf(config.theme.secondaryColor.color())
+            viewBinding.code.autoCloseKeyboard()
+            viewBinding.code.addTextChangedListener { editable ->
 
-                action_1.isEnabled = editable?.toString()?.length == 6
-
-                configuration { setWrongCodeErrorVisibility(it, false) }
+                binding?.action1?.isEnabled = editable?.toString()?.length == 6
+                setWrongCodeErrorVisibility(false)
 
             }
-            code.setOnFocusChangeListener { _, hasFocus ->
-
-                code_validation.setImageResource(
-                    when {
-                        hasFocus -> 0
-                        hasFocus.not() && code.length() == 6 -> imageConfiguration.entryValid()
-                        else -> imageConfiguration.entryWrong()
-                    }
-                )
+            viewBinding.code.setOnFocusChangeListener { _, hasFocus ->
+                binding?.let {
+                    it.codeValidation.setImageResource(
+                        when {
+                            hasFocus ->
+                                0
+                            hasFocus.not() && it.code.length() == 6 ->
+                                imageConfiguration.entryValid()
+                            else ->
+                                imageConfiguration.entryWrong()
+                        }
+                    )
+                }
             }
 
-            code_line.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.codeLine.setBackgroundColor(config.theme.secondaryColor.color())
 
-            resend.setTextColor(configuration.theme.secondaryColor.color())
-            resend.text =
+            viewBinding.resend.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.resend.text =
                 SpanDroid()
                     .append(
-                        configuration.text.phoneVerification.resendCode,
+                        config.text.phoneVerification.resendCode,
                         spanList(requireContext()) {
                             click {}
                             typeface(R.font.helvetica)
-                            custom(ForegroundColorSpan(configuration.theme.secondaryColor.color()))
+                            custom(ForegroundColorSpan(config.theme.secondaryColor.color()))
                             custom(UnderlineSpan())
                         }
                     )
                     .toSpannableString()
 
-            action_1.background =
+            viewBinding.action1.background =
                 button(resources, imageConfiguration.nextStep())
-            action_1.isEnabled = code.text?.toString()?.length == 6
+            viewBinding.action1.isEnabled = viewBinding.code.text?.toString()?.length == 6
 
-            wrong_code_error.text =
-                configuration.text.phoneVerification.error.errorWrongCode
-            wrong_code_error.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.wrongCodeError.text =
+                config.text.phoneVerification.error.errorWrongCode
+            viewBinding.wrongCodeError.setTextColor(config.theme.primaryTextColor.color())
+
         }
 
-    private suspend fun setWrongCodeErrorVisibility(
-        configuration: Configuration,
-        visible: Boolean
-    ): Unit =
-        evalOnMain {
+    }
 
-            code.setTextColor(
-                if (visible) configuration.theme.primaryTextColor.color()
-                else configuration.theme.secondaryColor.color()
+    private fun setWrongCodeErrorVisibility(visible: Boolean) {
+
+        val viewBinding = binding
+        val config = configuration
+
+        if (viewBinding != null && config != null) {
+
+            viewBinding.code.setTextColor(
+                if (visible) config.theme.primaryTextColor.color()
+                else config.theme.secondaryColor.color()
             )
 
-
             if (visible)
-                wrong_code_error
+                viewBinding.wrongCodeError
                     .animate()
                     .alpha(1f)
                     .setDuration(500L)
                     .start()
             else
-                wrong_code_error
+                viewBinding.wrongCodeError
                     .animate()
                     .alpha(0f)
                     .setDuration(500L)
                     .start()
 
         }
+
+    }
+
 }

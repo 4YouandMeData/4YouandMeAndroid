@@ -1,4 +1,4 @@
-package com.foryouandme.core.arch.navigation
+package com.foryouandme.core.arch.navigation.action
 
 import android.content.Context
 import android.content.Intent
@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import arrow.core.getOrElse
 import arrow.core.toOption
 import com.foryouandme.core.arch.error.ForYouAndMeError
+import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.ext.startCoroutineAsync
 
 typealias ActivityAction = (FragmentActivity) -> Unit

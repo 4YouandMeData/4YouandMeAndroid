@@ -3,10 +3,10 @@ package com.foryouandme.ui.main
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.foryouandme.core.activity.FYAMState
 import com.foryouandme.core.arch.livedata.toEvent
-import com.foryouandme.core.arch.navigation.ActivityAction
+import com.foryouandme.core.arch.navigation.action.ActivityAction
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.openApp
+import com.foryouandme.core.arch.navigation.action.openApp
 import com.foryouandme.entity.integration.IntegrationApp
 import io.mockk.*
 import kotlinx.coroutines.runBlocking

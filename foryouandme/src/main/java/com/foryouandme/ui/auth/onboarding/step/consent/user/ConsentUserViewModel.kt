@@ -18,7 +18,7 @@ import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.arch.navigation.toastAction
+import com.foryouandme.core.arch.navigation.action.toastAction
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider

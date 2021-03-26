@@ -14,6 +14,8 @@ import com.foryouandme.core.arch.deps.modules.nullToError
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.*
+import com.foryouandme.core.arch.navigation.action.alertAction
+import com.foryouandme.core.arch.navigation.action.toastAction
 import com.foryouandme.core.cases.optins.OptInsUseCase.getOptIns
 import com.foryouandme.core.cases.optins.OptInsUseCase.setPermission
 import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission

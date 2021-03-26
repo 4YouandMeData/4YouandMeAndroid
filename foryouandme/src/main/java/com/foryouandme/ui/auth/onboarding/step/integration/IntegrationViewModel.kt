@@ -15,8 +15,8 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.arch.navigation.openApp
-import com.foryouandme.core.arch.navigation.playStoreAction
+import com.foryouandme.core.arch.navigation.action.openApp
+import com.foryouandme.core.arch.navigation.action.playStoreAction
 import com.foryouandme.core.cases.CachePolicy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent

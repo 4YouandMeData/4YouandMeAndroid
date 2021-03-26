@@ -8,9 +8,22 @@ sealed class PhoneValidationCodeLoading {
 }
 
 sealed class PhoneValidationCodeError {
-    object Initialization : PhoneValidationCodeError()
     object Auth : PhoneValidationCodeError()
     object ResendCode : PhoneValidationCodeError()
+}
+
+sealed class PhoneValidationStateEvent {
+
+    data class Auth(
+        val phone: String,
+        val code: String,
+        val countryCode: String
+    ) : PhoneValidationStateEvent()
+
+    data class ResendCode(val phoneAndCode: String) : PhoneValidationStateEvent()
+
+    object LogScreenViewed : PhoneValidationStateEvent()
+
 }
 
 /* --- navigation --- */

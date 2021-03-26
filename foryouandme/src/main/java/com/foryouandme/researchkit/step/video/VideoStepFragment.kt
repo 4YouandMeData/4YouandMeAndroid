@@ -19,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.arch.navigation.permissionSettingsAction
+import com.foryouandme.core.arch.navigation.action.permissionSettingsAction
 import com.foryouandme.core.ext.*
 import com.foryouandme.databinding.StepVideoDiaryBinding
 import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase

@@ -6,7 +6,7 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.permissionSettingsDialogAction
+import com.foryouandme.core.arch.navigation.action.permissionSettingsDialogAction
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
