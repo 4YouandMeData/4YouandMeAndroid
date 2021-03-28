@@ -7,6 +7,5 @@ class SingleAnswerResult(
     startDate: ZonedDateTime,
     endDate: ZonedDateTime,
     val questionId: String,
-    val answer: String
-) :
-    StepResult(identifier, startDate, endDate)
+    val answer: AnswerResult
+) : StepResult(identifier, startDate, endDate)

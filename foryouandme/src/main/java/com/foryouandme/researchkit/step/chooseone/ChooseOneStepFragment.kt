@@ -12,6 +12,7 @@ import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepChooseOneBinding
 import com.foryouandme.entity.configuration.background.shadow
+import com.foryouandme.researchkit.result.AnswerResult
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.common.QuestionViewHolder
@@ -31,9 +32,15 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
             QuestionViewHolder.factory(),
-            ChooseOneAnswerViewHolder.factory {
-                chooseOneStepViewModel.execute(ChooseOneStepStateEvent.Answer(it.id))
-            })
+            ChooseOneAnswerViewHolder.factory(
+                { chooseOneStepViewModel.execute(ChooseOneStepStateEvent.Answer(it.id)) },
+                { item, text ->
+                    chooseOneStepViewModel.execute(
+                        ChooseOneStepStateEvent.AnswerTextChange(item.id, text)
+                    )
+                }
+            )
+        )
     }
 
     private val binding: StepChooseOneBinding?
@@ -101,7 +108,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
                         start,
                         ZonedDateTime.now(),
                         step.questionId,
-                        it.id,
+                        AnswerResult(it.id, it.otherText)
                     )
                 )
 

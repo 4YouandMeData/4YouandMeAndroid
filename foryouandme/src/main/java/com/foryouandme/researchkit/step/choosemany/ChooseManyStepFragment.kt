@@ -12,6 +12,7 @@ import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepChooseManyBinding
 import com.foryouandme.entity.configuration.background.shadow
+import com.foryouandme.researchkit.result.AnswerResult
 import com.foryouandme.researchkit.result.MultipleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.common.QuestionViewHolder
@@ -31,9 +32,14 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
     private val droidAdapter: DroidAdapter by lazy {
         DroidAdapter(
             QuestionViewHolder.factory(),
-            ChooseManyAnswerViewHolder.factory {
-                chooseManyStepViewModel.execute(ChooseManyStepStateEvent.Answer(it.id))
-            }
+            ChooseManyAnswerViewHolder.factory(
+                { chooseManyStepViewModel.execute(ChooseManyStepStateEvent.Answer(it.id)) },
+                { item, text ->
+                    chooseManyStepViewModel.execute(
+                        ChooseManyStepStateEvent.AnswerTextChange(item.id, text)
+                    )
+                }
+            )
         )
     }
 
@@ -104,7 +110,7 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
                         start,
                         ZonedDateTime.now(),
                         step.questionId,
-                        answers.map { it.id }
+                        answers.map { AnswerResult(it.id, it.otherText) }
                     )
                 )
 

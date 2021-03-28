@@ -151,7 +151,9 @@ fun buildSurvey(
                                             it.id,
                                             it.text,
                                             configuration.theme.primaryTextColor.color(),
-                                            configuration.theme.primaryColorEnd.color()
+                                            configuration.theme.primaryColorEnd.color(),
+                                            it.isOther,
+                                            configuration.text.survey.otherAnswerPlaceholder
                                         )
                                     },
                                     backgroundColor = configuration.theme.secondaryColor.color(),
@@ -196,7 +198,9 @@ fun buildSurvey(
                                             it.text,
                                             configuration.theme.primaryTextColor.color(),
                                             configuration.theme.primaryColorEnd.color(),
-                                            it.isNone
+                                            it.isNone,
+                                            it.isOther,
+                                            configuration.text.survey.otherAnswerPlaceholder
                                         )
                                     },
                                     backgroundColor = configuration.theme.secondaryColor.color(),

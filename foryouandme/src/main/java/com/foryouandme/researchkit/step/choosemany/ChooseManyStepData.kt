@@ -17,6 +17,7 @@ sealed class ChooseManyStepStateEvent {
     ) : ChooseManyStepStateEvent()
 
     data class Answer(val id: String) : ChooseManyStepStateEvent()
+    data class AnswerTextChange(val answerId: String, val text: String) : ChooseManyStepStateEvent()
 
 }
 

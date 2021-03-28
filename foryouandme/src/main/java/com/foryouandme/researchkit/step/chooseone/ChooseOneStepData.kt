@@ -17,6 +17,7 @@ sealed class ChooseOneStepStateEvent {
     ) : ChooseOneStepStateEvent()
 
     data class Answer(val answerId: String) : ChooseOneStepStateEvent()
+    data class AnswerTextChange(val answerId: String, val text: String) : ChooseOneStepStateEvent()
 
 }
 

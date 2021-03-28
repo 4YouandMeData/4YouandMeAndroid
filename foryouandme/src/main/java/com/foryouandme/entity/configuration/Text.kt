@@ -18,7 +18,8 @@ data class Text(
     val task: Task,
     val gaitActivity: GaitActivity,
     val fitnessActivity: FitnessActivity,
-    val camCogActivity: CamCogActivity
+    val camCogActivity: CamCogActivity,
+    val survey: Survey
 )
 
 data class Error(
@@ -239,4 +240,8 @@ data class FitnessActivity(
 data class CamCogActivity(
     val introTitle: String,
     val introBody: String,
+)
+
+data class Survey(
+    val otherAnswerPlaceholder: String
 )

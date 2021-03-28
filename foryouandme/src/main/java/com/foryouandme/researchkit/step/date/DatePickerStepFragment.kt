@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.databinding.StepDateBinding
 import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.researchkit.result.SingleAnswerResult
+import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,7 +51,7 @@ class DatePickerStepFragment : StepFragment(R.layout.step_date) {
 
             addResult(
 
-                SingleAnswerResult(
+                SingleStringAnswerResult(
                     step.identifier,
                     start,
                     ZonedDateTime.now(),

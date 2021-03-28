@@ -1,22 +1,24 @@
 package com.foryouandme.researchkit.step.choosemany
 
 import android.content.res.ColorStateList
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.databinding.ChooseManyAnswerBinding
+import com.foryouandme.researchkit.utils.DebounceTextListener
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.compare
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
-import com.giacomoparisi.recyclerdroid.core.compare
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.choose_many_answer.*
 
 data class ChooseManyAnswer(
     val id: String,
     val text: String,
     val textColor: Int,
     val buttonColor: Int,
-    val isNone: Boolean
+    val isNone: Boolean,
+    val isOther: Boolean,
+    val otherPlaceholder: String?
 )
 
 data class ChooseManyAnswerItem(
@@ -25,7 +27,9 @@ data class ChooseManyAnswerItem(
     val isSelected: Boolean,
     val textColor: Int,
     val buttonColor: Int,
-    val isNone: Boolean
+    val isNone: Boolean,
+    val otherText: String?,
+    val otherPlaceholder: String?
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
@@ -43,38 +47,53 @@ data class ChooseManyAnswerItem(
 
 class ChooseManyAnswerViewHolder(
     parent: ViewGroup,
-    private val onAnswerClicked: (ChooseManyAnswerItem) -> Unit
-) :
-    DroidViewHolder<ChooseManyAnswerItem, Unit>(parent, R.layout.choose_many_answer),
-    LayoutContainer {
+    private val onAnswerClicked: (ChooseManyAnswerItem) -> Unit,
+    private val onTextChanged: (ChooseManyAnswerItem, String) -> Unit
+) : DroidViewHolder<ChooseManyAnswerItem, Unit>(parent, R.layout.choose_many_answer) {
 
     override fun bind(item: ChooseManyAnswerItem, position: Int) {
 
-        answer_text.text = item.text
-        answer_text.setTextColor(item.textColor)
+        val binding = ChooseManyAnswerBinding.bind(itemView)
 
-        answer_button.isChecked = item.isSelected
-        answer_button.buttonTintList =
+        binding.answerText.text = item.text
+        binding.answerText.setTextColor(item.textColor)
+        binding.answerText.isVisible = item.otherText == null
+
+        binding.answerEditText.clearTextChangedListeners()
+        if (binding.answerEditText.text?.toString().orEmpty() != item.otherText)
+            binding.answerEditText.setText(item.otherText)
+        binding.answerEditText.hint = item.otherPlaceholder.orEmpty()
+        binding.answerEditText.setTextColor(item.textColor)
+        binding.answerEditText.isVisible = item.otherText != null
+        if (item.otherText != null) {
+            binding.answerEditText.addTextChangedListener(
+                DebounceTextListener { onTextChanged(item, it) }
+            )
+        }
+
+        binding.answerButton.isChecked = item.isSelected
+        binding.answerButton.buttonTintList =
             ColorStateList.valueOf(item.buttonColor)
 
-        answer_button.setOnClickListener {
+        binding.answerButton.setOnClickListener {
             onAnswerClicked(item)
         }
 
-        answer_text.setOnClickListener {
+        binding.answerText.setOnClickListener {
             onAnswerClicked(item)
         }
     }
-
-
-    override val containerView: View? = itemView
 
     companion object {
 
-        fun factory(onAnswerClicked: (ChooseManyAnswerItem) -> Unit): DroidViewHolderFactory =
+        fun factory(
+            onAnswerClicked: (ChooseManyAnswerItem) -> Unit,
+            onTextChanged: (ChooseManyAnswerItem, String) -> Unit
+        ): DroidViewHolderFactory =
             DroidViewHolderFactory(
-                { ChooseManyAnswerViewHolder(it, onAnswerClicked) },
+                { ChooseManyAnswerViewHolder(it, onAnswerClicked, onTextChanged) },
                 { _, droidItem -> droidItem is ChooseManyAnswerItem }
             )
     }
+
 }

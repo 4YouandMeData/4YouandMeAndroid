@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.databinding.StepNumberRangePickerBinding
 import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.researchkit.result.SingleAnswerResult
+import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.skip.isInOptionalRange
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
@@ -60,7 +60,7 @@ class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_pi
 
                 addResult(
 
-                    SingleAnswerResult(
+                    SingleStringAnswerResult(
                         step.identifier,
                         start,
                         ZonedDateTime.now(),

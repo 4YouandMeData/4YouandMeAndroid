@@ -8,7 +8,7 @@ import com.foryouandme.R
 import com.foryouandme.core.ext.hideKeyboard
 import com.foryouandme.databinding.StepTextInputBinding
 import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.researchkit.result.SingleAnswerResult
+import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.utils.applyImage
 import com.foryouandme.researchkit.utils.applyImageAsButton
@@ -58,7 +58,7 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
 
             addResult(
 
-                SingleAnswerResult(
+                SingleStringAnswerResult(
                     step.identifier,
                     start,
                     ZonedDateTime.now(),

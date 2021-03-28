@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.researchkit.step.chooseone.ChooseOneAnswerItem
 import com.foryouandme.researchkit.step.common.QuestionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -37,7 +38,9 @@ class ChooseManyViewModel @Inject constructor(
                             false,
                             it.textColor,
                             it.buttonColor,
-                            it.isNone
+                            it.isNone,
+                            if (it.isOther) "" else null,
+                            it.otherPlaceholder
                         )
 
 
@@ -85,6 +88,18 @@ class ChooseManyViewModel @Inject constructor(
 
     }
 
+    private suspend fun answerText(answerId: String, text: String) {
+
+        val items = state.items.map {
+            if (it is ChooseManyAnswerItem && it.id == answerId) it.copy(otherText = text)
+            else it
+        }
+
+        state = state.copy(items = items)
+        stateUpdateFlow.update(ChooseManyStepStateUpdate.Answer(items))
+
+    }
+
     fun getSelectedAnswers(): List<ChooseManyAnswerItem> =
         state.items
             .mapNotNull { it as? ChooseManyAnswerItem }
@@ -99,6 +114,8 @@ class ChooseManyViewModel @Inject constructor(
                 viewModelScope.launchSafe { answer(stateEvent.id) }
             is ChooseManyStepStateEvent.Initialize ->
                 viewModelScope.launchSafe { initialize(stateEvent.step, stateEvent.answers) }
+            is ChooseManyStepStateEvent.AnswerTextChange ->
+                viewModelScope.launchSafe { answerText(stateEvent.answerId, stateEvent.text) }
         }
 
     }

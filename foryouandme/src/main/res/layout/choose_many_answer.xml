@@ -1,8 +1,9 @@
 ***REMOVED***
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="20dp">
 
@@ -10,15 +11,34 @@
         android:id="@+id/answer_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/answer_text"
         style="@style/text_paragraph"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
         android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/answer_button"
+        app:layout_constraintTop_toTopOf="@id/answer_button"
         tools:text="Answer 1" />
 
-</LinearLayout>
+    <com.foryouandme.researchkit.utils.ExtendedEditText
+        android:id="@+id/answer_edit_text"
+        style="@style/text_paragraph"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/answer_button"
+        app:layout_constraintTop_toTopOf="@id/answer_button"
+        android:visibility="gone"
+        tools:text="Answer 1" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

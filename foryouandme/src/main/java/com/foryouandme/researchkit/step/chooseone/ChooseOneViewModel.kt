@@ -37,7 +37,9 @@ class ChooseOneViewModel @Inject constructor(
                             it.text,
                             false,
                             it.textColor,
-                            it.buttonColor
+                            it.buttonColor,
+                            if(it.isOther) "" else null,
+                            it.otherPlaceholder
                         )
                     }
                 )
@@ -53,6 +55,18 @@ class ChooseOneViewModel @Inject constructor(
 
         val items = state.items.map {
             if (it is ChooseOneAnswerItem) it.copy(isSelected = it.id == answerId)
+            else it
+        }
+
+        state = state.copy(items = items)
+        stateUpdateFlow.update(ChooseOneStepStateUpdate.Answer(items))
+
+    }
+
+    private suspend fun answerText(answerId: String, text: String) {
+
+        val items = state.items.map {
+            if (it is ChooseOneAnswerItem && it.id == answerId) it.copy(otherText = text)
             else it
         }
 
@@ -78,6 +92,8 @@ class ChooseOneViewModel @Inject constructor(
                 viewModelScope.launchSafe { initialize(stateEvent.step, stateEvent.answers) }
             is ChooseOneStepStateEvent.Answer ->
                 viewModelScope.launchSafe { answer(stateEvent.answerId) }
+            is ChooseOneStepStateEvent.AnswerTextChange ->
+                viewModelScope.launchSafe { answerText(stateEvent.answerId, stateEvent.text) }
         }
 
     }
