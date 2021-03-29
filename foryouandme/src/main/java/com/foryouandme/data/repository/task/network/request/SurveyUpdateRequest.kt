@@ -11,4 +11,9 @@ data class AnswerUpdateRequest(
     @Json(name = "answer") val answer: Any,
 )
 
+data class AnswerRequest(
+    @Json(name = "answer_id") val answerId: String,
+    @Json(name = "answer_text") val answerText: String?,
+)
+
 

@@ -10,6 +10,7 @@ import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
 import com.foryouandme.entity.task.result.reaction.ReactionTimeResult
 import com.foryouandme.entity.task.result.trailmaking.TrailMakingResult
+import com.foryouandme.researchkit.result.AnswerResult
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.toPagedList
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -222,7 +223,12 @@ class TaskRepositoryImpl @Inject constructor(
                         answers.map {
                             AnswerUpdateRequest(
                                 it.questionId,
-                                it.answer
+                                when (it.answer) {
+                                    is AnswerResult ->
+                                        AnswerRequest(it.answer.answerId, it.answer.answerText)
+                                    else ->
+                                        it.answer
+                                }
                             )
                         }
                     )
