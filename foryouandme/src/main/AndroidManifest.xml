@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.foryouandme">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -8,7 +9,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <application android:usesCleartextTraffic="true">
+    <application
+        android:allowBackup="false"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
 
         <activity
             android:name="com.foryouandme.core.activity.FYAMActivity"

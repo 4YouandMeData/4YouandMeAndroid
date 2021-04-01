@@ -57,7 +57,14 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
             .onEach {
 
                 when (it) {
-                    is VideoStateUpdate.RecordTime -> bindRecordingHeader()
+                    is VideoStateUpdate.RecordTime -> {
+                        bindRecordingHeader()
+                        if(videoViewModel.state.recordTimeSeconds >=
+                            videoViewModel.state.maxRecordTimeSeconds) {
+                            videoViewModel.execute(VideoStateEvent.Pause)
+                            review()
+                        }
+                    }
                     is VideoStateUpdate.Recording -> {
                         bindRecordingState(videoViewModel.state.recordingState)
                         bindRecordingHeader()
@@ -473,27 +480,29 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
     @UseExperimental(markerClass = ExperimentalVideo::class)
     private fun record(file: File) {
 
-        binding?.camera?.startRecording(
-            file,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : OnVideoSavedCallback {
+        if(videoViewModel.state.recordTimeSeconds < videoViewModel.state.maxRecordTimeSeconds) {
+            binding?.camera?.startRecording(
+                file,
+                ContextCompat.getMainExecutor(requireContext()),
+                object : OnVideoSavedCallback {
 
-                override fun onVideoSaved(outputFileResults: OutputFileResults) {
-                    videoViewModel.execute(VideoStateEvent.Pause)
+                    override fun onVideoSaved(outputFileResults: OutputFileResults) {
+                        videoViewModel.execute(VideoStateEvent.Pause)
+                    }
+
+                    override fun onError(
+                        videoCaptureError: Int,
+                        message: String,
+                        cause: Throwable?
+                    ) {
+
+                        videoViewModel.execute(VideoStateEvent.HandleRecordError)
+
+                    }
+
                 }
-
-                override fun onError(
-                    videoCaptureError: Int,
-                    message: String,
-                    cause: Throwable?
-                ) {
-
-                    videoViewModel.execute(VideoStateEvent.HandleRecordError)
-
-                }
-
-            }
-        )
+            )
+        }
 
     }
 
