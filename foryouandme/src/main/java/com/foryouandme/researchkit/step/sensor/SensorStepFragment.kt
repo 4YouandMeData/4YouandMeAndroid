@@ -13,7 +13,6 @@ import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.infoToast
 import com.foryouandme.core.ext.isTerminated
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepSensorBinding
 import com.foryouandme.researchkit.recorder.*
 import com.foryouandme.researchkit.step.StepFragment
@@ -51,12 +50,10 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                             when (state) {
                                 is RecorderStateUpdate.ResultCollected ->
                                     if (state.stepIdentifier == step.identifier)
-                                        startCoroutineAsync {
-                                            state.files.forEach { addResult(it) }
-                                        }
+                                        state.files.forEach { addResult(it) }
                                 is RecorderStateUpdate.Completed ->
                                     if (state.stepIdentifier == step.identifier)
-                                        startCoroutineAsync { next() }
+                                        next()
                                 else -> Unit
                             }
 
@@ -120,7 +117,7 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
 
         val viewBinding = binding
 
-        if(viewBinding != null) {
+        if (viewBinding != null) {
 
             viewBinding.root.setBackgroundColor(step.backgroundColor)
 

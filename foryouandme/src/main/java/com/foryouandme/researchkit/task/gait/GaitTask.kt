@@ -383,6 +383,7 @@ class GaitTask(
                         DeviceMotionRecorderConfig(moshi, 10.toDouble()),
                         AccelerometerRecorderConfig(moshi, 10.toDouble()),
                     ),
+                    timerSeconds = 20,
                     spokenInstruction = {
                         returnDescription ?: it.getString(
                             R.string.GAIT_stand

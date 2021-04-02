@@ -229,10 +229,6 @@ open class RecorderService : BaseService() {
         // await some time before sending the completed event
         delay(step.estimateTimeInMsToSpeakEndInstruction)
         stateUpdateFlow.update(RecorderStateUpdate.Completed(getStepIdentifier()))
-        // reset replay cache to avoid to send again the
-        // last value to new subscribers
-        stateUpdateFlow.resetReplayCache()
-        sensorFlow.resetReplayCache()
 
     }
 
