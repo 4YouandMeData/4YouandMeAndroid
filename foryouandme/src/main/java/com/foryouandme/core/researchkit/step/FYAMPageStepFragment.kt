@@ -2,9 +2,7 @@ package com.foryouandme.core.researchkit.step
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
-import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepFyamPageBinding
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,20 +40,17 @@ class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
                 { reschedule() }
             } else null
 
-        // TODO: remove coroutine for UI
-        lifecycleScope.launchSafe {
-            viewBinding?.page?.applyData(
-                configuration = step.configuration,
-                page = pageData,
-                pageType = step.pageType,
-                action1 = { next() },
-                action2 = null,
-                extraStringAction = null,
-                extraPageAction = null,
-                specialStringAction = specialAction
+        viewBinding?.page?.applyData(
+            configuration = step.configuration,
+            page = pageData,
+            pageType = step.pageType,
+            action1 = { next() },
+            action2 = null,
+            extraStringAction = null,
+            extraPageAction = null,
+            specialStringAction = specialAction
 
-            )
-        }
+        )
 
     }
 

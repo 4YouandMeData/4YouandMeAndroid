@@ -68,7 +68,7 @@ class ConsentInfoPageFragment : ConsentInfoSectionFragment(R.layout.consent_info
 
             consentInfo.pages.firstOrNull { it.id == args.id }
                 ?.let { data ->
-                    page.applyData(
+                    page.applyDataSuspend(
                         configuration = configuration,
                         page = data,
                         pageType = EPageType.INFO,

@@ -43,7 +43,7 @@ class ScreeningSuccessFragment : ScreeningSectionFragment(R.layout.screening_pag
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = screening.successPage,
                 pageType = EPageType.SUCCESS,

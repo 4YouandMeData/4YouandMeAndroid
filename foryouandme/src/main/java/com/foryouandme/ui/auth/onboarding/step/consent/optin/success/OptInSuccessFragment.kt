@@ -46,7 +46,7 @@ class OptInSuccessFragment : OptInSectionFragment(R.layout.opt_in_success) {
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = optIns.successPage,
                 pageType = EPageType.SUCCESS,

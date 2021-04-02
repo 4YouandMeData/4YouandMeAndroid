@@ -56,7 +56,7 @@ class ScreeningPageFragment : ScreeningSectionFragment(R.layout.screening_page) 
 
             screening.pages.firstOrNull { it.id == args.id }
                 ?.let { data ->
-                    page.applyData(
+                    page.applyDataSuspend(
                         configuration,
                         data,
                         EPageType.INFO,

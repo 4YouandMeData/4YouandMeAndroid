@@ -47,7 +47,7 @@ class ConsentInfoWelcomeFragment :
             consentInfoFragment()
                 .consent_info_root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = consentInfo.welcomePage,
                 pageType = EPageType.INFO,

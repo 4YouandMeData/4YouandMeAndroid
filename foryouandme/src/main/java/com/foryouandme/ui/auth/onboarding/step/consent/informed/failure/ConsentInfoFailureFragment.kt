@@ -31,7 +31,7 @@ class ConsentInfoFailureFragment : ConsentInfoSectionFragment(R.layout.consent_i
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = consentInfo.failurePage,
                 pageType = EPageType.FAILURE,

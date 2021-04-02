@@ -38,7 +38,7 @@ class ConsentUserSuccessFragment : ConsentUserSectionFragment(R.layout.consent_u
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = consentUser.successPage,
                 pageType = EPageType.SUCCESS,

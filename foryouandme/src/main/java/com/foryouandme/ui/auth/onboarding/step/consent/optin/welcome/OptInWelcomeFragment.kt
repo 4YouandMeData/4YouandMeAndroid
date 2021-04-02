@@ -41,7 +41,7 @@ class OptInWelcomeFragment : OptInSectionFragment(R.layout.opt_in_welcome) {
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = optIns.welcomePage,
                 pageType = EPageType.SUCCESS,

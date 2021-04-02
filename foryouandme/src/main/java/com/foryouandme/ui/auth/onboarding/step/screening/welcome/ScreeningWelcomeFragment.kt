@@ -40,7 +40,7 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             page.isVisible = true
-            page.applyData(
+            page.applyDataSuspend(
                 configuration = configuration,
                 page = screening.welcomePage,
                 pageType = EPageType.INFO,
