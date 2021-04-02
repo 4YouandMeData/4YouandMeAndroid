@@ -4,14 +4,14 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.VideoBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.*
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -20,56 +20,56 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.video.*
-import kotlinx.android.synthetic.main.video_controls.*
 
 @AndroidEntryPoint
-class VideoFragment : OnboardingStepFragmentOld<VideoViewModel>(R.layout.video) {
+class VideoFragment : OnboardingStepFragment(R.layout.video) {
 
     lateinit var player: SimpleExoPlayer
 
-    override val viewModel: VideoViewModel by lazy {
-
-        viewModelFactory(
-            this,
-            getFactory { VideoViewModel(navigator) }
-        )
-
-    }
+    private val binding: VideoBinding?
+        get() = view?.let { VideoBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync { setupVideo() }
+        setupVideo()
 
         if (requireActivity().requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
-        configuration { applyConfiguration(it) }
+        applyConfiguration()
 
     }
 
-    private suspend fun setupVideo(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
+    }
+
+    private fun setupVideo() {
+
+        val viewBinding = binding
+
+        if (viewBinding != null) {
 
             player = SimpleExoPlayer.Builder(requireContext()).build()
 
             val media = buildRawMediaSource()
 
-            media?.let {
+            media.let {
                 player.setMediaSource(it)
                 player.prepare()
                 player.playWhenReady = false
             }
 
-            video.player = player
+            viewBinding.video.player = player
 
-            fake_play.setOnClickListener {
+            viewBinding.fakePlay.setOnClickListener {
 
-                fake_play.isVisible = false
-                next.isVisible = false
-                video.useController = true
-                video.showController()
+                viewBinding.fakePlay.isVisible = false
+                viewBinding.next.isVisible = false
+                viewBinding.video.useController = true
+                viewBinding.video.showController()
                 player.play()
 
             }
@@ -93,30 +93,38 @@ class VideoFragment : OnboardingStepFragmentOld<VideoViewModel>(R.layout.video) 
             })
 
         }
+    }
 
-    private suspend fun applyConfiguration(config: Configuration): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
+
+        val config = configuration
+        val viewBinding = binding
+
+        if (config != null && viewBinding != null) {
 
             setStatusBar(Color.BLACK)
 
-            toolbar.showCloseSecondaryButton(imageConfiguration) {
-                startCoroutineAsync { next() }
-            }
+            viewBinding.toolbar.showCloseSecondaryButton(imageConfiguration) { next() }
 
-            fake_play.setImageResource(imageConfiguration.videoDiaryPlay())
+            viewBinding.fakePlay.setImageResource(imageConfiguration.videoDiaryPlay())
 
-            exo_play.setImageResource(imageConfiguration.videoDiaryPlay())
-            exo_pause.setImageResource(imageConfiguration.videoDiaryPause())
+            viewBinding.root.findViewById<ImageView>(R.id.exo_play)
+                .setImageResource(imageConfiguration.videoDiaryPlay())
 
-            next.text = config.text.onboarding.introVideoContinueButton
-            next.setTextColor(config.theme.secondaryColor.color())
-            next.background = button(config.theme.primaryColorEnd.color())
+            viewBinding.root.findViewById<ImageView>(R.id.exo_pause)
+                .setImageResource(imageConfiguration.videoDiaryPause())
 
-            next.setOnClickListenerAsync { next() }
+            viewBinding.next.text = config.text.onboarding.introVideoContinueButton
+            viewBinding.next.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.next.background = button(config.theme.primaryColorEnd.color())
+
+            viewBinding.next.setOnClickListener { next() }
 
         }
+    }
 
-    private fun buildRawMediaSource(): MediaSource? {
+    private fun buildRawMediaSource(): MediaSource {
+
         val rawDataSource = RawResourceDataSource(requireContext())
         // open the /raw resource file
         rawDataSource.open(
@@ -131,8 +139,8 @@ class VideoFragment : OnboardingStepFragmentOld<VideoViewModel>(R.layout.video) 
         val mediaItem = MediaItem.fromUri(rawDataSource.uri!!)
 
         // create a media source with the raw DataSource
-
         return ProgressiveMediaSource.Factory { rawDataSource }.createMediaSource(mediaItem)
+
     }
 
     override fun onPause() {
