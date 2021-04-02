@@ -201,9 +201,8 @@ dependencies {
     kapt(AndroidX.Room.Compiler.get())
 
     /* --- video compressor --- */
-    //implementation(Silicompressor.get())
-    implementation("com.github.AbedElazizShe:LightCompressor:0.8.1")
-
+    
+    implementation(AbedElazizShe.get())
 
     /* --- test --- */
 
