@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.video.*
 import kotlinx.android.synthetic.main.video_controls.*
 
 @AndroidEntryPoint
-class VideoFragment : OnboardingStepFragment<VideoViewModel>(R.layout.video) {
+class VideoFragment : OnboardingStepFragmentOld<VideoViewModel>(R.layout.video) {
 
     lateinit var player: SimpleExoPlayer
 

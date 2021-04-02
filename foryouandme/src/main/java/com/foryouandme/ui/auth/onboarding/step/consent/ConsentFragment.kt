@@ -8,12 +8,12 @@ import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.navigator
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ConsentFragment private constructor(
-) : OnboardingStepFragment<ConsentViewModel>(R.layout.consent) {
+) : OnboardingStepFragmentOld<ConsentViewModel>(R.layout.consent) {
 
     override val viewModel: ConsentViewModel by lazy {
 

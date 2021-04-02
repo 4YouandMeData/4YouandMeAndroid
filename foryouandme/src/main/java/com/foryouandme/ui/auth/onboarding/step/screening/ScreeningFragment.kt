@@ -10,12 +10,12 @@ import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.screening.*
 
 @AndroidEntryPoint
-class ScreeningFragment : OnboardingStepFragment<ScreeningViewModel>(R.layout.screening) {
+class ScreeningFragment : OnboardingStepFragmentOld<ScreeningViewModel>(R.layout.screening) {
 
     override val viewModel: ScreeningViewModel by lazy {
         viewModelFactory(

@@ -3,17 +3,16 @@ package com.foryouandme.ui.auth.onboarding.step
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.android.BaseFragmentOld
+import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.ext.find
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.OnboardingFragment
 import com.foryouandme.ui.auth.onboarding.OnboardingStateEvent
 import com.foryouandme.ui.auth.onboarding.OnboardingViewModel
 
-abstract class OnboardingStepFragment : BaseFragment {
-
-    constructor() : super()
-    constructor(contentLayoutId: Int) : super(contentLayoutId)
+abstract class OnboardingStepFragmentOld<T : BaseViewModel<*, *, *, *>>(contentLayoutId: Int) :
+    BaseFragmentOld<T>(contentLayoutId) {
 
     val onboardingViewModel: OnboardingViewModel
             by viewModels(ownerProducer = { onboardingFragment() })
@@ -38,7 +37,7 @@ abstract class OnboardingStepFragment : BaseFragment {
 
         private const val INDEX = "index"
 
-        fun <T : OnboardingStepFragment> buildWithParams(index: Int, fragment: T): T {
+        fun <T : OnboardingStepFragmentOld<*>> buildWithParams(index: Int, fragment: T): T {
 
             val bundle = fragment.arguments ?: Bundle()
             bundle.putInt(INDEX, index)

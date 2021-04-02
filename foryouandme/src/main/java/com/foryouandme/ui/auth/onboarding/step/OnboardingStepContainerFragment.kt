@@ -9,12 +9,8 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.OnboardingFragment
 import com.foryouandme.ui.auth.onboarding.OnboardingViewModel
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.mapNotNull
-import com.foryouandme.core.ext.navigator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +29,7 @@ class OnboardingStepContainerFragment : BaseFragment(
         val step = onboardingViewModel.getStepByIndex(args.index)
 
         val fragment =
-            step?.let { it.view() }?.let { OnboardingStepFragment.buildWithParams(args.index, it) }
+            step?.let { it.view() }?.let { OnboardingStepFragmentOld.buildWithParams(args.index, it) }
 
         mapNotNull(step, fragment)
             ?.let {

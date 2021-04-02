@@ -7,12 +7,12 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.screening.*
 
 @AndroidEntryPoint
-class IntegrationFragment : OnboardingStepFragment<IntegrationViewModel>(R.layout.integration) {
+class IntegrationFragment : OnboardingStepFragmentOld<IntegrationViewModel>(R.layout.integration) {
 
     override val viewModel: IntegrationViewModel by lazy {
         viewModelFactory(
