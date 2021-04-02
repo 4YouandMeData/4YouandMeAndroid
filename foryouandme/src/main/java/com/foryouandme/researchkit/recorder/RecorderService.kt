@@ -1,21 +1,15 @@
 package com.foryouandme.researchkit.recorder
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.*
 import android.speech.tts.TextToSpeech
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
-import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseService
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.arch.flow.UIError
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.mapNotNull
@@ -28,7 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import java.io.File
@@ -205,49 +198,6 @@ open class RecorderService : BaseService() {
 
     }
 
-    private fun showForegroundNotification(task: Task) {
-
-        //stopForeground(true)
-
-        val notificationManager =
-            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        // Starting with API 26, notifications must be contained in a channel
-        if (Build.VERSION.SDK_INT >= 26) {
-
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_TITLE,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-
-            channel.description = NOTIFICATION_CHANNEL_DESC
-            notificationManager.createNotificationChannel(channel)
-
-        }
-
-        // TODO: Resume step
-        val contentIntent = PendingIntent.getActivity(
-            applicationContext,
-            0,
-            Intent(),
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val notificationBuilder =
-            NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle("${task.type} Recording")
-                .setContentText("Recording")
-                .setContentIntent(contentIntent)
-
-        // TODO: set notification icon
-        notificationBuilder.setSmallIcon(R.drawable.error)
-
-        //startForeground(1, notificationBuilder.build())
-
-        notificationManager.notify(1, notificationBuilder.build())
-    }
-
     /**
      * This would never be called under normal operation while the recorders are running
      * It will only be called when the user chooses to end the task and discard the results
@@ -403,8 +353,6 @@ open class RecorderService : BaseService() {
             // clear old listeners
             recorderJob?.forEach { it.cancel() }
             recorderJob = null
-
-            showForegroundNotification(task)
 
             state =
                 RecorderState(
