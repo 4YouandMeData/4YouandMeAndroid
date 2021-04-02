@@ -44,11 +44,19 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = "1.8"
+        useIR = true
     }
 
     buildFeatures {
         viewBinding = true
+        // Enables Jetpack Compose for this module
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.0-beta03"
+        kotlinCompilerVersion = "1.4.31"
     }
 
 }
@@ -204,6 +212,13 @@ dependencies {
     
     implementation(AbedElazizShe.get())
 
+    /* --- compose --- */
+    implementation("androidx.compose.ui:ui:1.0.0-beta03")
+    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta03")
+    implementation("androidx.compose.material:material:1.0.0-beta03")
+    implementation("androidx.compose.foundation:foundation:1.0.0-beta03")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
+
     /* --- test --- */
 
     testImplementation(Kotlin.Test.JUnit.get())
@@ -214,6 +229,12 @@ dependencies {
     androidTestImplementation(AndroidX.Test.Ext.JunitKtx.get())
     androidTestImplementation(AndroidX.Test.Espresso.Core.get())
 
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 

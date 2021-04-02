@@ -1,5 +1,11 @@
 object AndroidX {
 
+    object Activity : DependencyGroup("androidx.activity", "1.3.0-alpha02") {
+
+        object Compose: Dependency(Activity.group, "activity-compose", Activity.version)
+
+    }
+
     object AppCompat : Dependency(
         "androidx.appcompat",
         "appcompat",
@@ -70,6 +76,13 @@ object AndroidX {
                 Lifecycle.version
             )
 
+        object ViewModelCompose :
+            Dependency(
+                Lifecycle.group,
+                "lifecycle-viewmodel-compose",
+                "1.0.0-alpha02"
+            )
+
         object LiveDataKtx :
             Dependency(Lifecycle.group, "lifecycle-livedata-ktx", Lifecycle.version)
 
@@ -132,6 +145,28 @@ object AndroidX {
         object Ktx : Dependency(Room.group, "room-ktx", Room.version)
 
         object Compiler : Dependency(Room.group, "room-compiler", Room.version)
+
+    }
+
+    object Compose {
+
+        object UI: Dependency("androidx.compose.ui", "ui", "1.0.0-beta01") {
+
+            object UITooling: Dependency(UI.group, "ui-tooling", UI.version)
+
+        }
+
+        object Foundation: Dependency(
+            "androidx.compose.foundation",
+            "foundation",
+            "1.0.0-beta01"
+        )
+
+        object Material: Dependency(
+            "androidx.compose.material",
+            "material",
+            "1.0.0-beta01"
+        )
 
     }
 

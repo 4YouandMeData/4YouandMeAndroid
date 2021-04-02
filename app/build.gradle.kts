@@ -37,6 +37,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+        useIR = true
+    }
+
+
 }
 
 dependencies {
@@ -73,4 +80,10 @@ dependencies {
     androidTestImplementation(AndroidX.Test.Ext.JunitKtx.get())
     androidTestImplementation(AndroidX.Test.Espresso.Core.get())
 
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

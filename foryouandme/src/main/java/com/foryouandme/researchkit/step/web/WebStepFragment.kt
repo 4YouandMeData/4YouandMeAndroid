@@ -106,7 +106,7 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
-                view?.loadUrl(request?.url?.toString())
+                view?.loadUrl(request?.url?.toString().orEmpty())
                 return true
             }
 

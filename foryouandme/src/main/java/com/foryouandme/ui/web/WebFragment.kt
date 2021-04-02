@@ -95,7 +95,7 @@ class WebFragment : BaseFragmentOld<WebViewModel>(R.layout.web) {
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
-                web_view?.loadUrl(request?.url?.toString())
+                web_view?.loadUrl(request?.url?.toString().orEmpty())
                 return true
             }
 

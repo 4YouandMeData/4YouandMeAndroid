@@ -56,7 +56,7 @@ private fun getWebClient(): WebViewClient =
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            view?.loadUrl(request?.url?.toString())
+            view?.loadUrl(request?.url?.toString().orEmpty())
             return true
         }
 
