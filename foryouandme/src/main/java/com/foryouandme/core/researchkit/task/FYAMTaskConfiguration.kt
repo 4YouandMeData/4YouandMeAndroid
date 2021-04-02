@@ -28,6 +28,7 @@ import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskIdentifiers
+import com.foryouandme.researchkit.task.nineholepeg.NineHolePegTask
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -65,7 +66,7 @@ class FYAMTaskConfiguration @Inject constructor(
         configuration: Configuration,
         task: TaskActivity
     ): Task? =
-        when (task.activityType) {
+        /*when (task.activityType) {
             TaskActivityType.VideoDiary ->
                 FYAMVideoDiaryTask(
                     id,
@@ -163,7 +164,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )
             }
             else -> null
-        }
+        }*/ NineHolePegTask(id)
 
     override suspend fun handleTaskResult(
         result: TaskResult,

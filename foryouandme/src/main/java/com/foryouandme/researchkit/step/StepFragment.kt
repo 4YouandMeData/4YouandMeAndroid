@@ -17,7 +17,10 @@ import com.foryouandme.ui.tasks.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
+open class StepFragment : BaseFragment {
+
+    constructor() : super()
+    constructor(contentLayoutId: Int) : super(contentLayoutId)
 
     val taskViewModel: TaskViewModel by viewModels({ taskFragment() })
 
