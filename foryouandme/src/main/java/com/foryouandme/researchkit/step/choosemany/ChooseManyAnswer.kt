@@ -57,14 +57,13 @@ class ChooseManyAnswerViewHolder(
 
         binding.answerText.text = item.text
         binding.answerText.setTextColor(item.textColor)
-        binding.answerText.isVisible = item.otherText == null
 
         binding.answerEditText.clearTextChangedListeners()
         if (binding.answerEditText.text?.toString().orEmpty() != item.otherText)
             binding.answerEditText.setText(item.otherText)
         binding.answerEditText.hint = item.otherPlaceholder.orEmpty()
         binding.answerEditText.setTextColor(item.textColor)
-        binding.answerEditText.isVisible = item.otherText != null
+        binding.answerEditText.isVisible = item.otherText != null && item.isSelected
         if (item.otherText != null) {
             binding.answerEditText.addTextChangedListener(
                 DebounceTextListener { onTextChanged(item, it) }
