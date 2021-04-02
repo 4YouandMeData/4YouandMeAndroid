@@ -60,21 +60,6 @@ class SensorStepFragment : StepFragment(R.layout.step_sensor) {
                         }
                         .observeIn(this)
 
-                    binder.error
-                        .unwrapEvent(name)
-                        .onEach {
-                            when (it.cause) {
-                                is RecorderError.Recording ->
-                                    if (it.cause.stepIdentifier == step.identifier)
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Fallito",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                            }
-                        }
-                        .observeIn(this)
-
                     binder.sensor
                         .unwrapEvent(name)
                         .onEach {
