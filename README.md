@@ -9,8 +9,8 @@ object ProjectConfig {
 
     ...
     
-    const val version_code = 39
-    const val version_name = "0.1.39"
+    const val version_code = your_version_code_here
+    const val version_name = "your_version_name_here"
 
     ...
 
