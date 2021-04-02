@@ -7,6 +7,9 @@ interface ImageConfiguration {
     /* --- common ---*/
 
     @DrawableRes
+    fun splashLogo(): Int
+
+    @DrawableRes
     fun pushSmallIcon(): Int
 
     @DrawableRes
