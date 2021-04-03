@@ -6,7 +6,7 @@ import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
-import com.foryouandme.core.data.api.integration.IntegrationApi
+import com.foryouandme.data.repository.auth.integration.network.IntegrationApi
 import com.foryouandme.core.data.api.optins.OptInsApi
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.data.datasource.Environment
@@ -99,25 +99,9 @@ interface Injector {
             analyticsModule()
         )
 
-    fun screeningModule(): ScreeningModule =
-        ScreeningModule(
-            screeningApi,
-            environment,
-            errorModule(),
-            authModule()
-        )
-
     fun optInModule(): OptInModule =
         OptInModule(
             optInsApi,
-            environment,
-            errorModule(),
-            authModule()
-        )
-
-    fun integrationModule(): IntegrationModule =
-        IntegrationModule(
-            integrationApi,
             environment,
             errorModule(),
             authModule()

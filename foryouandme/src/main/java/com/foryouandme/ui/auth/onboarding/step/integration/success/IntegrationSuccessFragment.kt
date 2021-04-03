@@ -3,59 +3,67 @@ package com.foryouandme.ui.auth.onboarding.step.integration.success
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showBackSecondaryButton
+import com.foryouandme.databinding.IntegrationPageBinding
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.integration.Integration
-import com.foryouandme.core.ext.*
-import kotlinx.android.synthetic.main.integration.*
-import kotlinx.android.synthetic.main.integration_page.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IntegrationSuccessFragment : IntegrationSectionFragment(R.layout.integration_page) {
+
+    private val binding: IntegrationPageBinding?
+        get() = view?.let { IntegrationPageBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        integrationAndConfiguration { config, state ->
-
-            setupView()
-            applyData(config, state.integration)
-
-        }
+        setupView()
+        applyData()
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            integrationFragment().toolbar.showBackSecondaryButton(imageConfiguration)
-            {
-                startCoroutineAsync {
-                    viewModel.back(
-                        integrationNavController(),
-                        onboardingStepNavController(),
-                        authNavController(),
-                        rootNavController()
-                    )
-                }
-            }
+    override fun onIntegrationUpdate() {
+        super.onIntegrationUpdate()
+        applyData()
+    }
 
-        }
+    private fun setupView() {
 
-    private suspend fun applyData(configuration: Configuration, integration: Integration): Unit =
-        evalOnMain {
+        integrationFragment()
+            .binding
+            ?.toolbar
+            ?.showBackSecondaryButton(imageConfiguration) { back() }
+
+    }
+
+    private fun applyData() {
+
+        val viewBinding = binding
+        val configuration = configuration
+        val integration = integration
+
+        if (viewBinding != null && configuration != null && integration != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            viewBinding.page.applyData(
                 configuration,
                 integration.successPage,
-                { startCoroutineAsync { integrationFragment().next() } },
+                { integrationFragment().next() },
                 { },
                 { _, _ -> }
             )
 
         }
+    }
 
 }

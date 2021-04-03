@@ -5,97 +5,94 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.web.setupWebViewWithCookies
-import kotlinx.android.synthetic.main.integration.*
-import kotlinx.android.synthetic.main.integration_login.*
+import com.foryouandme.databinding.IntegrationLoginBinding
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationStateEvent
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration_login) {
 
     private val args: IntegrationLoginFragmentArgs by navArgs()
 
+    private val binding: IntegrationLoginBinding?
+        get() = view?.let { IntegrationLoginBinding.bind(it) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        integrationAndConfiguration { config, state ->
-
-            setupToolbar()
-            applyConfiguration(config)
-            setupWebView(state.cookies)
-
-        }
+        setupToolbar()
+        applyConfiguration()
+        setupWebView()
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logScreenViewed() }
+        viewModel.execute(IntegrationStateEvent.ScreenViewed)
 
     }
 
-    private suspend fun setupToolbar(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
+    }
 
-            integrationFragment()
-                .toolbar
-                .showCloseButton(imageConfiguration) {
-                    startCoroutineAsync {
-                        viewModel.back(
-                            integrationNavController(),
-                            onboardingStepNavController(),
-                            authNavController(),
-                            rootNavController()
-                        )
-                    }
-                }
+    override fun onIntegrationUpdate() {
+        super.onIntegrationUpdate()
+        setupWebView()
+    }
 
-        }
+    private fun setupToolbar() {
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+        integrationFragment()
+            .binding
+            ?.toolbar
+            ?.showCloseButton(imageConfiguration) { back() }
+
+    }
+
+    private fun applyConfiguration() {
+
+        val viewBinding = binding
+        val configuration = configuration
+
+        if (viewBinding != null && configuration != null) {
+
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            progress_bar.progressTintList =
+            viewBinding.progressBar.progressTintList =
                 ColorStateList.valueOf(configuration.theme.primaryColorStart.color())
 
         }
 
-    private suspend fun setupWebView(cookies: Map<String, String>): Unit =
-        evalOnMain {
+    }
 
-            web_view.setupWebViewWithCookies(
-                progress_bar,
+    private fun setupWebView() {
+
+        val viewBinding = binding
+
+        viewBinding?.webView
+            ?.setupWebViewWithCookies(
+                viewBinding.progressBar,
                 args.url,
-                cookies,
-                {
-                    startCoroutineAsync {
-                        viewModel.handleLogin(integrationNavController(), args.nextPage)
-                    }
-                },
-                {
-                    startCoroutineAsync {
-                        viewModel.back(
-                            integrationNavController(),
-                            onboardingStepNavController(),
-                            authNavController(),
-                            rootNavController()
-                        )
-                    }
-                }
+                viewModel.state.cookies,
+                { handleLogin(args.nextPage) },
+                { back() }
             )
 
-        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        web_view.destroy()
+        binding?.webView?.destroy()
 
     }
 }

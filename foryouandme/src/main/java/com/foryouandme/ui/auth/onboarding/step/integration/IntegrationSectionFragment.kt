@@ -2,35 +2,24 @@ package com.foryouandme.ui.auth.onboarding.step.integration
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.action.openApp
+import com.foryouandme.core.arch.navigation.action.playStoreAction
+import com.foryouandme.core.ext.find
+import com.foryouandme.entity.page.PageRef
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.find
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import kotlinx.coroutines.flow.onEach
 
 abstract class IntegrationSectionFragment(
     contentLayoutId: Int
-) : BaseFragmentOld<IntegrationViewModel>(contentLayoutId) {
+) : BaseFragment(contentLayoutId) {
 
-    override val viewModel: IntegrationViewModel by lazy {
-        viewModelFactory(
-            integrationFragment(),
-            getFactory {
-                IntegrationViewModel(
-                    navigator,
-                    injector.authModule(),
-                    injector.integrationModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    val viewModel: IntegrationViewModel by viewModels(ownerProducer = { integrationFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,24 +29,31 @@ abstract class IntegrationSectionFragment(
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
-                    startCoroutineAsync {
-
-                        val back =
-                            viewModel.back(
-                                integrationNavController(),
-                                onboardingStepNavController(),
-                                authNavController(),
-                                rootNavController()
-                            )
-
-                        if (back.not()) requireActivity().finish()
-
-                    }
+                    if (back().not()) requireActivity().finish()
                 }
 
             }
         )
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    IntegrationStateUpdate.Integration -> onIntegrationUpdate()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
     }
+
+    open fun onIntegrationUpdate() {
+
+    }
+
+    val integration = viewModel.state.integration
+
+    /* --- navigation --- */
 
     fun authNavController(): AuthNavController = integrationFragment().authNavController()
 
@@ -69,17 +65,66 @@ abstract class IntegrationSectionFragment(
     fun onboardingStepNavController(): OnboardingStepNavController =
         integrationFragment().onboardingStepNavController()
 
-    fun integrationAndConfiguration(block: suspend (Configuration, IntegrationState) -> Unit) {
+    fun back(): Boolean =
+        if (navigator.back(integrationNavController()).not())
+            if (navigator.back(onboardingStepNavController()).not())
+                if (navigator.back(authNavController()).not())
+                    navigator.back(rootNavController())
+                else true
+            else true
+        else true
 
-        configuration { config ->
+    fun nextPage(
+        page: PageRef?,
+        fromWelcome: Boolean = false
+    ) {
 
+        if (page == null)
+            navigator.navigateTo(
+                integrationNavController(),
+                if (fromWelcome) IntegrationWelcomeToIntegrationSuccess
+                else IntegrationPageToIntegrationSuccess
+            )
+        else
+            navigator.navigateTo(
+                integrationNavController(),
+                if (fromWelcome) IntegrationWelcomeToIntegrationPage(page.id)
+                else IntegrationPageToIntegrationPage(page.id)
+            )
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController()).orNull()?.let { block(config, it) }
-            else
-                block(config, viewModel.state())
+    }
 
+    fun handleSpecialLink(specialLinkAction: SpecialLinkAction) {
+
+        when (specialLinkAction) {
+            is SpecialLinkAction.OpenApp ->
+                navigator.performAction(openApp(specialLinkAction.app.packageName))
+            is SpecialLinkAction.Download ->
+                navigator.performAction(playStoreAction(specialLinkAction.app.packageName))
         }
 
     }
+
+    fun pageToLogin(link: String, nextPage: PageRef?) {
+        navigator.navigateTo(
+            integrationNavController(),
+            IntegrationPageToIntegrationLogin(link, nextPage?.id)
+        )
+    }
+
+    fun handleLogin(nextPageId: String?) {
+
+        if (nextPageId == null)
+            navigator.navigateTo(
+                integrationNavController(),
+                IntegrationLoginToIntegrationSuccess
+            )
+        else
+            navigator.navigateTo(
+                integrationNavController(),
+                IntegrationLoginToIntegrationPage(nextPageId)
+            )
+
+    }
+
 }

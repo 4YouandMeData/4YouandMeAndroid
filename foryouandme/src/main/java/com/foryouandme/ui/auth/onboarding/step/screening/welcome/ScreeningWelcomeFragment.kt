@@ -9,14 +9,15 @@ import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.databinding.ScreeningPageBinding
+import com.foryouandme.databinding.ScreeningWelcomeBinding
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_welcome) {
 
-    private val binding: ScreeningPageBinding?
-        get() = view?.let { ScreeningPageBinding.bind(it) }
+    private val binding: ScreeningWelcomeBinding?
+        get() = view?.let { ScreeningWelcomeBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

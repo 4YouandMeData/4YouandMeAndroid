@@ -3,67 +3,69 @@ package com.foryouandme.ui.auth.onboarding.step.integration.welcome
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.integration.Integration
-import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.startCoroutineAsync
-import kotlinx.android.synthetic.main.integration_welcome.*
-import kotlinx.android.synthetic.main.opt_in.*
+import com.foryouandme.databinding.IntegrationWelcomeBinding
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationWelcomeToIntegrationLogin
+import dagger.hilt.android.AndroidEntryPoint
 
-class IntegrationWelcomeFragment :
-    IntegrationSectionFragment(R.layout.integration_welcome) {
+@AndroidEntryPoint
+class IntegrationWelcomeFragment : IntegrationSectionFragment(R.layout.integration_welcome) {
+
+    private val binding: IntegrationWelcomeBinding?
+        get() = view?.let { IntegrationWelcomeBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        integrationAndConfiguration { config, state ->
-
-            setupView()
-            applyData(config, state.integration)
-
-        }
+        setupView()
+        applyData()
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            integrationFragment().toolbar.removeBackButton()
-        }
+    override fun onIntegrationUpdate() {
+        super.onIntegrationUpdate()
+        applyData()
+    }
 
-    private suspend fun applyData(configuration: Configuration, integration: Integration): Unit =
-        evalOnMain {
+    private fun setupView() {
+
+        integrationFragment().binding?.toolbar?.removeBackButton()
+
+    }
+
+    private fun applyData() {
+
+        val viewBinding = binding
+        val configuration = configuration
+        val integration = integration
+
+        if (viewBinding != null && configuration != null && integration != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyData(
+            viewBinding.page.applyData(
                 configuration,
                 integration.welcomePage,
-                {
-                    startCoroutineAsync {
-                        viewModel.nextPage(
-                            integrationNavController(),
-                            it,
-                            true
-                        )
-                    }
-                },
-                { startCoroutineAsync { viewModel.handleSpecialLink(it) } },
+                { nextPage(it, true) },
+                { handleSpecialLink(it) },
                 { url, nextPage ->
-                    startCoroutineAsync {
-                        viewModel.welcomeToLogin(
-                            integrationNavController(),
-                            url,
-                            nextPage
-                        )
-                    }
+                    navigator.navigateTo(
+                        integrationNavController(),
+                        IntegrationWelcomeToIntegrationLogin(url, nextPage?.id)
+                    )
                 }
             )
 
         }
+    }
+
 }

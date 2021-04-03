@@ -6,27 +6,33 @@ import com.foryouandme.entity.integration.Integration
 import com.foryouandme.entity.integration.IntegrationApp
 
 data class IntegrationState(
-    val integration: Integration,
-    val cookies: Map<String, String>
+    val integration: Integration? = null,
+    val cookies: Map<String, String> = emptyMap()
 )
 
 sealed class IntegrationStateUpdate {
 
-    data class Initialization(val integration: Integration) : IntegrationStateUpdate()
-
-    data class Cookies(val cookies: Map<String, String>) : IntegrationStateUpdate()
+    object Integration : IntegrationStateUpdate()
+    object Cookies : IntegrationStateUpdate()
 
 }
 
 sealed class IntegrationLoading {
 
-    object Initialization : IntegrationLoading()
+    object Integration : IntegrationLoading()
 
 }
 
 sealed class IntegrationError {
 
-    object Initialization : IntegrationError()
+    object Integration : IntegrationError()
+
+}
+
+sealed class IntegrationStateEvent {
+
+    object GetIntegration : IntegrationStateEvent()
+    object ScreenViewed : IntegrationStateEvent()
 
 }
 

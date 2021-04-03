@@ -16,7 +16,7 @@ abstract class ScreeningSectionFragment(
     contentLayoutId: Int
 ) : BaseFragment(contentLayoutId) {
 
-    val viewModel: ScreeningViewModel by viewModels()
+    val viewModel: ScreeningViewModel by viewModels(ownerProducer = { screeningFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,7 +1,7 @@
-package com.foryouandme.core.data.api.integration
+package com.foryouandme.data.repository.auth.integration.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.integration.response.IntegrationResponse
+import com.foryouandme.data.repository.auth.integration.network.response.IntegrationResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.http.GET
 import retrofit2.http.Header

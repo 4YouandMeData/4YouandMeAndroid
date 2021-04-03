@@ -11,7 +11,7 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.web.getIntegrationCookies
-import com.foryouandme.core.ext.web.setupWebViewWithCookies
+import com.foryouandme.core.ext.web.setupWebViewWithCookiesSuspend
 import kotlinx.android.synthetic.main.about_you_integration_login.*
 
 class AboutYouIntegrationLoginFragment :
@@ -80,7 +80,7 @@ class AboutYouIntegrationLoginFragment :
     private suspend fun setupWebView(cookies: Map<String, String>): Unit =
         evalOnMain {
 
-            web_view.setupWebViewWithCookies(
+            web_view.setupWebViewWithCookiesSuspend(
                 progress_bar,
                 args.url,
                 cookies,
