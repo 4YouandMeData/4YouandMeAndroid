@@ -2,35 +2,21 @@ package com.foryouandme.ui.auth.onboarding.step.screening
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.find
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.find
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import kotlinx.coroutines.flow.onEach
 
 abstract class ScreeningSectionFragment(
     contentLayoutId: Int
-) : BaseFragmentOld<ScreeningViewModel>(contentLayoutId) {
+) : BaseFragment(contentLayoutId) {
 
-    override val viewModel: ScreeningViewModel by lazy {
-        viewModelFactory(
-            screeningFragment(),
-            getFactory {
-                ScreeningViewModel(
-                    navigator,
-                    injector.screeningModule(),
-                    injector.answerModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    val viewModel: ScreeningViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,24 +26,31 @@ abstract class ScreeningSectionFragment(
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
-                    startCoroutineAsync {
-
-                        val back =
-                            viewModel.back(
-                                screeningNavController(),
-                                onboardingStepNavController(),
-                                authNavController(),
-                                rootNavController()
-                            )
-
-                        if (back.not()) requireActivity().finish()
-
-                    }
+                    if (back().not()) requireActivity().finish()
                 }
 
             }
         )
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ScreeningStateUpdate.Screening -> onScreeningUpdate()
+                    ScreeningStateUpdate.Questions -> Unit
+                }
+            }
+            .observeIn(this)
+
     }
+
+    open fun onScreeningUpdate() {
+
+    }
+
+    val screening = viewModel.state.screening
+
+    /* --- navigation --- */
 
     fun screeningFragment(): ScreeningFragment = find()
 
@@ -69,18 +62,29 @@ abstract class ScreeningSectionFragment(
     fun screeningNavController(): ScreeningNavController =
         ScreeningNavController(findNavController())
 
-    fun screeningAndConfiguration(block: suspend (Configuration, ScreeningState) -> Unit) {
+    fun back(): Boolean =
+        if (navigator.back(screeningNavController()).not())
+            if (navigator.back(onboardingStepNavController()).not())
+                if (navigator.back(authNavController()).not())
+                    navigator.back(rootNavController())
+                else true
+            else true
+        else true
 
-        configuration { config ->
-
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), config).orNull()
-                    ?.let { block(config, it) }
-            else
-                block(config, viewModel.state())
-
-        }
-
+    fun questions(fromWelcome: Boolean) {
+        navigator.navigateTo(
+            screeningNavController(),
+            if (fromWelcome) ScreeningWelcomeToScreeningQuestions
+            else ScreeningPageToScreeningQuestions
+        )
     }
+
+    fun page(id: String, fromWelcome: Boolean) {
+        navigator.navigateTo(
+            screeningNavController(),
+            if (fromWelcome) ScreeningWelcomeToScreeningPage(id)
+            else ScreeningPageToScreeningPage(id)
+        )
+    }
+
 }

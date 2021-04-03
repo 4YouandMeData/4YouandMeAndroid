@@ -1,215 +1,160 @@
 package com.foryouandme.ui.auth.onboarding.step.screening
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import arrow.core.toT
-import arrow.fx.coroutines.parSequence
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.core.ext.countAndAccumulate
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.auth.answer.SendAuthAnswerUseCase
+import com.foryouandme.domain.usecase.auth.screening.GetScreeningUseCase
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.ScreeningQuestionItem
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.toItem
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.AnswerModule
-import com.foryouandme.core.arch.deps.modules.ScreeningModule
-import com.foryouandme.core.arch.deps.modules.nullToError
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.AnywhereToWelcome
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.common.AnswerUseCase.sendAnswer
-import com.foryouandme.core.cases.screening.ScreeningUseCase.getScreening
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.countAndAccumulate
-import com.foryouandme.core.ext.startCoroutineAsync
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
 
-class ScreeningViewModel(
-    navigator: Navigator,
-    private val screeningModule: ScreeningModule,
-    private val answerModule: AnswerModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        ScreeningState,
-        ScreeningStateUpdate,
-        ScreeningError,
-        ScreeningLoading>
-    (navigator = navigator) {
+@HiltViewModel
+class ScreeningViewModel @Inject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<ScreeningStateUpdate>,
+    private val loadingFlow: LoadingFlow<ScreeningLoading>,
+    private val errorFlow: ErrorFlow<ScreeningError>,
+    private val navigationFlow: NavigationFlow,
+    private val getScreeningUseCase: GetScreeningUseCase,
+    private val sendAuthAnswerUseCase: SendAuthAnswerUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
-    /* --- initialize --- */
+    /* --- state --- */
 
-    suspend fun initialize(
-        navController: RootNavController,
-        configuration: Configuration
-    ): Either<ForYouAndMeError, ScreeningState> {
+    var state = ScreeningState()
+        private set
 
-        showLoading(ScreeningLoading.Initialization)
+    /* --- flow --- */
 
-        val state =
-            screeningModule.getScreening()
-                .nullToError()
-                .handleAuthError(navController, navigator)
-                .fold(
-                    {
-                        setError(it, ScreeningError.Initialization)
-                        it.left()
-                    },
-                    { screening ->
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val error = errorFlow.error
+    val loading = loadingFlow.loading
+    val navigation = navigationFlow.navigation
 
-                        val state =
-                            ScreeningState(
-                                screening,
-                                screening.questions.map { it.toItem(configuration) }
-                            )
+    /* --- screening --- */
 
-                        setState(state)
-                        { ScreeningStateUpdate.Initialization(it.screening) }
+    private suspend fun getScreening(configuration: Configuration) {
 
-                        state.right()
+        loadingFlow.show(ScreeningLoading.Screening)
 
-                    }
-                )
+        val screening = getScreeningUseCase()!!
+        state = state.copy(
+            screening = screening,
+            questions = screening.questions.map { it.toItem(configuration) }
+        )
+        stateUpdateFlow.update(ScreeningStateUpdate.Screening)
 
-        hideLoading(ScreeningLoading.Initialization)
-
-        return state
+        loadingFlow.hide(ScreeningLoading.Screening)
 
     }
 
 
     /* --- validation --- */
 
-    suspend fun validate(
-        rootNavController: RootNavController,
-        screeningNavController: ScreeningNavController
-    ): Unit {
+    private suspend fun validate() {
+        coroutineScope {
 
-        val correctAnswers =
-            state().questions.map { item ->
-                val answer =
-                    when (item.answer) {
-                        item.question.answers1.id -> item.question.answers1
-                        item.question.answers2.id -> item.question.answers2
-                        else -> null
-                    }
+            val correctAnswers =
+                state.questions.map { item ->
+                    val answer =
+                        when (item.answer) {
+                            item.question.answers1.id -> item.question.answers1
+                            item.question.answers2.id -> item.question.answers2
+                            else -> null
+                        }
 
-                val request =
-                    suspend {
-                        answerModule.sendAnswer(
-                            item.question.id,
-                            answer?.text.orEmpty(),
-                            answer?.id.orEmpty()
-                        ).handleAuthError(rootNavController, navigator)
-                    }
+                    val request =
+                        async {
+                            sendAuthAnswerUseCase(
+                                item.question.id,
+                                answer?.text.orEmpty(),
+                                answer?.id.orEmpty()
+                            )
+                        }
 
-                (answer?.correct ?: false) toT request
+                    (answer?.correct ?: false) to request
 
-            }.countAndAccumulate()
+                }.countAndAccumulate()
 
-        //correctAnswers.b.parSequence()  // await execution
-        startCoroutineAsync { correctAnswers.b.parSequence() }
+            viewModelScope.launchSafe { correctAnswers.second.awaitAll() }
 
-        if (correctAnswers.a >= state().screening.minimumAnswer)
-            navigator.navigateToSuspend(
-                screeningNavController,
-                ScreeningQuestionsToScreeningSuccess
-            )
-        else
-            navigator.navigateToSuspend(
-                screeningNavController,
-                ScreeningQuestionsToScreeningFailure
-            )
+            if (correctAnswers.first >= state.screening?.minimumAnswer ?: 0)
+                navigationFlow.navigateTo(ScreeningQuestionsToScreeningSuccess)
+            else
+                navigationFlow.navigateTo(ScreeningQuestionsToScreeningFailure)
 
+        }
     }
 
 
-    /* --- state update --- */
+    /* --- answer --- */
 
-    suspend fun answer(item: ScreeningQuestionItem): Unit {
+    private suspend fun answer(item: ScreeningQuestionItem) {
 
         val questions =
-            state().questions.map { if (it.question.id == item.question.id) item else it }
+            state.questions.map { if (it.question.id == item.question.id) item else it }
 
-        setState(state().copy(questions = questions))
-        { ScreeningStateUpdate.Questions(questions) }
+        state = state.copy(questions = questions)
+        stateUpdateFlow.update(ScreeningStateUpdate.Questions)
 
     }
 
+    /* --- retry --- */
 
-    /* --- navigation --- */
-
-    suspend fun back(
-        screeningNavController: ScreeningNavController,
-        onboardingStepNavController: OnboardingStepNavController,
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Boolean =
-
-        if (navigator.backSuspend(screeningNavController).not())
-            if (navigator.backSuspend(onboardingStepNavController).not())
-                if (navigator.backSuspend(authNavController).not())
-                    navigator.backSuspend(rootNavController)
-                else true
-            else true
-        else true
-
-
-    suspend fun questions(
-        screeningNavController: ScreeningNavController,
-        fromWelcome: Boolean
-    ): Unit =
-        navigator.navigateToSuspend(
-            screeningNavController,
-            if (fromWelcome) ScreeningWelcomeToScreeningQuestions
-            else ScreeningPageToScreeningQuestions
-        )
-
-    suspend fun page(
-        screeningNavController: ScreeningNavController,
-        id: String,
-        fromWelcome: Boolean
-    ): Unit =
-        navigator.navigateToSuspend(
-            screeningNavController,
-            if (fromWelcome) ScreeningWelcomeToScreeningPage(id)
-            else ScreeningPageToScreeningPage(id)
-        )
-
-    suspend fun abort(authNavController: AuthNavController): Unit {
-        logAbortEvent()
-        navigator.navigateToSuspend(authNavController, AnywhereToWelcome)
-    }
-
-    suspend fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateToSuspend(navController, AnywhereToWeb(url))
-
-    suspend fun retryFromWelcome(screeningNavController: ScreeningNavController): Unit {
+    private suspend fun retryFromWelcome() {
 
         // reset old answers
-        val questions =
-            state().questions.map { it.copy(answer = null) }
+        val questions = state.questions.map { it.copy(answer = null) }
+        state = state.copy(questions = questions)
+        stateUpdateFlow.update(ScreeningStateUpdate.Questions)
 
-        setState(state().copy(questions = questions))
-        { ScreeningStateUpdate.Questions(questions) }
-
-        navigator.navigateToSuspend(
-            screeningNavController,
-            ScreeningFailureToScreeningWelcome
-        )
+        navigationFlow.navigateTo(ScreeningFailureToScreeningWelcome)
 
     }
 
     /* --- analytics --- */
 
-    private suspend fun logAbortEvent(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logAbortEvent() {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.CancelDuringScreeningQuestions,
             EAnalyticsProvider.ALL
         )
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: ScreeningStateEvent) {
+        when (stateEvent) {
+            is ScreeningStateEvent.GetScreening ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ScreeningError.Screening,
+                    loadingFlow,
+                    ScreeningLoading.Screening
+                ) { getScreening(stateEvent.configuration) }
+            ScreeningStateEvent.Abort ->
+                viewModelScope.launchSafe { logAbortEvent() }
+            ScreeningStateEvent.Retry ->
+                viewModelScope.launchSafe { retryFromWelcome() }
+            is ScreeningStateEvent.Answer ->
+                viewModelScope.launchSafe { answer(stateEvent.item) }
+            ScreeningStateEvent.Validate ->
+                viewModelScope.launchSafe { validate() }
+        }
+    }
 
 }

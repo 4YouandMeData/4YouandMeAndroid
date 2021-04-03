@@ -7,18 +7,18 @@ import com.foryouandme.core.arch.app.ForYouAndMeApp
 import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.data.api.common.AnswerApi
-import com.foryouandme.core.data.api.common.response.AnswerResponse
-import com.foryouandme.core.data.api.common.response.PageResponse
-import com.foryouandme.core.data.api.common.response.QuestionResponse
-import com.foryouandme.core.data.api.common.response.UnknownResourceResponse
-import com.foryouandme.core.data.api.common.response.activity.QuickActivityOptionResponse
-import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
-import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
-import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
-import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
-import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
-import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
+import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
+import com.foryouandme.data.repository.auth.answer.network.response.AnswerResponse
+import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
+import com.foryouandme.data.repository.auth.answer.network.response.QuestionResponse
+import com.foryouandme.data.repository.auth.answer.network.response.UnknownResourceResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.QuickActivityOptionResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.QuickActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.SurveyActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.TaskActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedAlertResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedEducationalResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedRewardResponse
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
@@ -28,8 +28,6 @@ import com.foryouandme.core.data.api.integration.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.OptInsApi
 import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
-import com.foryouandme.core.data.api.screening.ScreeningApi
-import com.foryouandme.core.data.api.screening.response.ScreeningResponse
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.datasource.network.getApiService
@@ -39,6 +37,8 @@ import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
 import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
 import com.foryouandme.data.repository.feed.network.FeedApi
 import com.foryouandme.data.repository.feed.network.response.FeedResponse
+import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
+import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.repository.survey.network.SurveyApi
@@ -205,7 +205,7 @@ class ForYouAndMeInjector(
     override val taskApi: TaskApi =
         getApiService(environment.getApiBaseUrl(), taskMoshi)
 
-    override val answerApi: AnswerApi =
+    override val answerApi: AuthAnswerApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val feedApi: FeedApi =

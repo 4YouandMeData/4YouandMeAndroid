@@ -5,116 +5,130 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.ScreeningQuestionsBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.entity.screening.Screening
-import com.foryouandme.core.ext.*
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateEvent
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.screening.*
 import kotlinx.android.synthetic.main.screening_questions.*
+import kotlinx.coroutines.flow.onEach
 
-
+@AndroidEntryPoint
 class ScreeningQuestionsFragment : ScreeningSectionFragment(
     R.layout.screening_questions
 ) {
 
+    private val binding: ScreeningQuestionsBinding?
+        get() = view?.let { ScreeningQuestionsBinding.bind(it) }
+
     private val adapter: StableDroidAdapter by lazy {
         StableDroidAdapter(
-            ScreeningQuestionViewHolder.factory { startCoroutineAsync { viewModel.answer(it) } }
+            ScreeningQuestionViewHolder.factory {
+                viewModel.execute(ScreeningStateEvent.Answer(it))
+            }
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) {
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
                 when (it) {
-                    is ScreeningStateUpdate.Questions ->
-                        startCoroutineAsync { applyQuestions(it.questions) }
+                    is ScreeningStateUpdate.Questions -> applyQuestions()
+                    ScreeningStateUpdate.Screening -> Unit
                 }
             }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        screeningAndConfiguration { config, state ->
-            setupView()
-            applyConfiguration(config)
-            showQuestions(config, state.screening)
-        }
+        setupView()
+        applyConfiguration()
+        if(adapter.itemCount <= 0) applyQuestions()
+
+
     }
 
-    private suspend fun showQuestions(configuration: Configuration, screening: Screening): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
+    }
 
-            if (adapter.itemCount <= 0)
-                applyQuestions(screening.questions.map { it.toItem(configuration) })
-        }
+    override fun onScreeningUpdate() {
+        super.onScreeningUpdate()
+        applyQuestions()
+    }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
+
+        val viewBinding = binding
+        val configuration = configuration
+
+        if (viewBinding != null && configuration != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            screeningFragment().showAbort(
-                configuration,
-                configuration.theme.primaryColorEnd.color()
-            )
+            screeningFragment().showAbort(configuration.theme.primaryColorEnd.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
-            footer.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.footer.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    }
 
-            screeningFragment().toolbar.showBackSecondaryButton(imageConfiguration)
-            {
-                startCoroutineAsync {
-                    viewModel.back(
-                        screeningNavController(),
-                        onboardingStepNavController(),
-                        authNavController(),
-                        rootNavController()
-                    )
-                }
-            }
+    private fun setupView() {
 
-            recycler_view.layoutManager =
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            screeningFragment()
+                .binding
+                ?.toolbar
+                ?.showBackSecondaryButton(imageConfiguration) { back() }
+
+            viewBinding.recyclerView.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            recycler_view.adapter = adapter
+            viewBinding.recyclerView.adapter = adapter
 
-            action_1.background =
+            viewBinding.action1.background =
                 button(
                     requireContext().resources,
                     requireContext().imageConfiguration.nextStepSecondary()
                 )
 
-            action_1.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.validate(
-                        rootNavController(),
-                        screeningNavController()
-                    )
-                }
+            viewBinding.action1.setOnClickListener {
+                viewModel.execute(ScreeningStateEvent.Validate)
             }
-        }
-
-    private suspend fun applyQuestions(questions: List<ScreeningQuestionItem>): Unit =
-        evalOnMain {
-
-            adapter.submitList(questions)
-
-            action_1.isEnabled =
-                questions.fold(
-                    true,
-                    { acc, item -> acc && item.answer != null }
-                )
 
         }
+    }
+
+    private fun applyQuestions() {
+
+        val questions = viewModel.state.questions
+
+        adapter.submitList(questions)
+
+        binding?.action1?.isEnabled =
+            questions.fold(
+                true,
+                { acc, item -> acc && item.answer != null }
+            )
+
+    }
+
 }

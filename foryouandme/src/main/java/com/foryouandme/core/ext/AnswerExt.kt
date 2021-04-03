@@ -1,18 +1,15 @@
 package com.foryouandme.core.ext
 
-import arrow.core.Either
-import arrow.core.Tuple2
-import arrow.core.toT
-import com.foryouandme.core.arch.error.ForYouAndMeError
+import kotlinx.coroutines.Deferred
 
-fun List<Tuple2<Boolean, (suspend () -> Either<ForYouAndMeError, Unit>)?>>.countAndAccumulate(
-): Tuple2<Int, MutableList<suspend () -> Either<ForYouAndMeError, Unit>>> =
+fun List<Pair<Boolean, Deferred<Unit>?>>.countAndAccumulate(
+): Pair<Int, MutableList<Deferred<Unit>>> =
     fold(
-        0 toT mutableListOf(),
+        0 to mutableListOf(),
         { acc,
           item ->
-            item.b?.let { acc.b.add(it) }
-            val count = acc.a + if (item.a) 1 else 0
-            count toT acc.b
+            item.second?.let { acc.second.add(it) }
+            val count = acc.first + if (item.first) 1 else 0
+            count to acc.second
         }
     )

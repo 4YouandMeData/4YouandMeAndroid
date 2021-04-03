@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.common.response.activity
+package com.foryouandme.data.repository.auth.answer.network.response.activity
 
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.Resource

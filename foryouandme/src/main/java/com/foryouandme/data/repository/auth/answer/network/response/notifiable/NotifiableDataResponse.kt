@@ -1,6 +1,6 @@
-package com.foryouandme.core.data.api.common.response.notifiable
+package com.foryouandme.data.repository.auth.answer.network.response.notifiable
 
-import com.foryouandme.core.data.api.common.response.meta.MetaResponse
+import com.foryouandme.data.repository.auth.answer.network.response.meta.MetaResponse
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.decodeBase64Image
 import com.foryouandme.core.ext.mapNotNull

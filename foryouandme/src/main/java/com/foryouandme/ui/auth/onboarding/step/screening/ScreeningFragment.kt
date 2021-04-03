@@ -4,119 +4,153 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.ext.*
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWelcome
+import com.foryouandme.core.ext.catchToNull
+import com.foryouandme.databinding.ScreeningBinding
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.screening.*
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class ScreeningFragment : OnboardingStepFragmentOld<ScreeningViewModel>(R.layout.screening) {
+class ScreeningFragment : OnboardingStepFragment(R.layout.screening) {
 
-    override val viewModel: ScreeningViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                ScreeningViewModel(
-                    navigator,
-                    injector.screeningModule(),
-                    injector.answerModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    private val viewModel: ScreeningViewModel by viewModels()
+
+    val binding: ScreeningBinding?
+        get() = view?.let { ScreeningBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { update ->
-                when (update) {
-                    is ScreeningStateUpdate.Initialization ->
-                        startCoroutineAsync { setupNavigation() }
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is ScreeningStateUpdate.Screening -> setupNavigation()
+                    else -> Unit
                 }
             }
+            .observeIn(this)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
-                    ScreeningLoading.Initialization ->
-                        loading.setVisibility(it.active, false)
+                    ScreeningLoading.Screening ->
+                        binding?.loading?.setVisibility(it.active, false)
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) { payload ->
-                when (payload.cause) {
-                    ScreeningError.Initialization ->
-                        error.setError(payload.error)
-                        {
-                            configuration { viewModel.initialize(rootNavController(), it) }
-                        }
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    ScreeningError.Screening ->
+                        binding?.error?.setError(it.error, configuration) { setUpView() }
                 }
             }
+            .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ScreeningFailureToScreeningWelcome,
+                    ScreeningQuestionsToScreeningSuccess,
+                    ScreeningQuestionsToScreeningFailure ->
+                        navigator.navigateTo(screeningNavController(), it)
+                }
+            }
+            .observeIn(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
+        setUpView()
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), it)
-
-        }
     }
 
-    private suspend fun setupNavigation(): Unit {
-        evalOnMain {
-            val navHostFragment =
-                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
 
-            val currentGraph = catchToNull { navHostFragment.navController.graph }
-            if (currentGraph == null) {
-                val inflater = navHostFragment.navController.navInflater
-                val graph = inflater.inflate(R.navigation.screening_navigation)
-                navHostFragment.navController.graph = graph
-            }
+        setUpView()
 
-        }
     }
 
-    suspend fun showAbort(configuration: Configuration, color: Int): Unit =
-        evalOnMain {
+    private fun setUpView() {
 
-            abort.text = configuration.text.onboarding.abortButton
-            abort.setTextColor(color)
-            abort.setOnClickListener { startCoroutineAsync { showAbortAlert(configuration) } }
-            abort.isVisible = true
+        val config = configuration
 
+        if (viewModel.state.screening == null && config != null)
+            viewModel.execute(ScreeningStateEvent.GetScreening(config))
+
+
+    }
+
+    private fun setupNavigation() {
+
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
+        val currentGraph = catchToNull { navHostFragment.navController.graph }
+        if (currentGraph == null) {
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.screening_navigation)
+            navHostFragment.navController.graph = graph
         }
 
-    suspend fun hideAbort(): Unit =
-        evalOnMain {
+    }
 
-            abort.isVisible = false
+    fun showAbort(color: Int) {
 
+        val viewBinding = binding
+        val config = configuration
+
+        if (viewBinding != null && config != null) {
+            viewBinding.abort.text = config.text.onboarding.abortButton
+            viewBinding.abort.setTextColor(color)
+            viewBinding.abort.setOnClickListener { showAbortAlert() }
+            viewBinding.abort.isVisible = true
         }
 
-    suspend fun showAbortAlert(configuration: Configuration): Unit =
-        evalOnMain {
+    }
+
+    fun hideAbort() {
+
+        binding?.abort?.isVisible = false
+
+    }
+
+    private fun showAbortAlert() {
+
+        val config = configuration
+
+        if (config != null) {
 
             AlertDialog.Builder(requireContext())
-                .setTitle(configuration.text.onboarding.abortTitle)
-                .setMessage(configuration.text.onboarding.abortMessage)
-                .setPositiveButton(configuration.text.onboarding.abortConfirm)
+                .setTitle(config.text.onboarding.abortTitle)
+                .setMessage(config.text.onboarding.abortMessage)
+                .setPositiveButton(config.text.onboarding.abortConfirm)
                 { _, _ ->
-                    startCoroutineAsync { viewModel.abort(authNavController()) }
+                    viewModel.execute(ScreeningStateEvent.Abort)
+                    navigator.navigateTo(rootNavController(), AnywhereToWelcome)
                 }
-                .setNegativeButton(configuration.text.onboarding.abortCancel, null)
+                .setNegativeButton(config.text.onboarding.abortCancel, null)
                 .show()
 
         }
+
+    }
+
+    private fun screeningNavController(): ScreeningNavController =
+        ScreeningNavController(childFragmentManager.fragments[0].findNavController())
+
 }

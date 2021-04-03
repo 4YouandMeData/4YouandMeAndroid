@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.common.response.meta
+package com.foryouandme.data.repository.auth.answer.network.response.meta
 
 import com.foryouandme.core.ext.catchToNull
 import com.squareup.moshi.Json

@@ -4,61 +4,71 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.screening.Screening
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
+import com.foryouandme.core.ext.hide
+import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.view.page.EPageType
-import kotlinx.android.synthetic.main.screening.*
-import kotlinx.android.synthetic.main.screening_welcome.*
+import com.foryouandme.databinding.ScreeningPageBinding
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_welcome) {
+
+    private val binding: ScreeningPageBinding?
+        get() = view?.let { ScreeningPageBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        screeningAndConfiguration { config, state ->
+        setupView()
+        applyData()
 
-            setupView()
-            applyData(config, state.screening)
+    }
+
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
+
+    override fun onScreeningUpdate() {
+        super.onScreeningUpdate()
+        applyData()
+    }
+
+    private fun setupView() {
+
+        screeningFragment().binding?.toolbar?.hide()
+
+    }
+
+    private fun applyData() {
+
+        val viewBinding = binding
+        val config = configuration
+        val screening = screening
+
+        if (viewBinding != null && config != null && screening != null) {
+
+            setStatusBar(config.theme.secondaryColor.color())
+
+            viewBinding.root.setBackgroundColor(config.theme.secondaryColor.color())
+
+            viewBinding.page.isVisible = true
+            viewBinding.page.applyData(
+                configuration = config,
+                page = screening.welcomePage,
+                pageType = EPageType.INFO,
+                action1 = {
+                    if (it == null) questions(true)
+                    else page(it.id, true)
+                },
+                extraStringAction = { navigator.navigateTo(rootNavController(), AnywhereToWeb(it)) }
+            )
+
+            screeningFragment().hideAbort()
 
         }
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
-
-            screeningFragment().toolbar.hide()
-
-        }
-
-    private suspend fun applyData(configuration: Configuration, screening: Screening): Unit =
-        evalOnMain {
-
-            setStatusBar(configuration.theme.secondaryColor.color())
-
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-            page.isVisible = true
-            page.applyDataSuspend(
-                configuration = configuration,
-                page = screening.welcomePage,
-                pageType = EPageType.INFO,
-                action1 = { option ->
-                    option.fold(
-                        {
-                            startCoroutineAsync {
-                                viewModel.questions(screeningNavController(), true)
-                            }
-                        },
-                        {
-                            startCoroutineAsync {
-                                viewModel.page(screeningNavController(), it.id, true)
-                            }
-                        })
-                },
-                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } })
-
-            screeningFragment().let { startCoroutineAsync { it.hideAbort() } }
-        }
 }

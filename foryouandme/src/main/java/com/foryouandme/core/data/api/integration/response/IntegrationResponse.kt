@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.integration.response
 
 import arrow.core.Either
-import com.foryouandme.core.data.api.common.response.PageResponse
+import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.entity.integration.Integration
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*

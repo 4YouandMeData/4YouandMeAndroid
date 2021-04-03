@@ -1,9 +1,9 @@
 package com.foryouandme.data.repository.task.network.response
 
-import com.foryouandme.core.data.api.common.response.activity.ActivityDataResponse
-import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
-import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
-import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.ActivityDataResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.QuickActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.SurveyActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.TaskActivityResponse
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.entity.task.Task
 import com.squareup.moshi.Json

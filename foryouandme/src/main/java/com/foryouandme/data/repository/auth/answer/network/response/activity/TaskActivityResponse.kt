@@ -1,6 +1,6 @@
-package com.foryouandme.core.data.api.common.response.activity
+package com.foryouandme.data.repository.auth.answer.network.response.activity
 
-import com.foryouandme.core.data.api.common.response.PageResponse
+import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.core.ext.decodeBase64Image
 import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.entity.activity.Reschedule
@@ -13,13 +13,16 @@ import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi
 
-@JsonApi(type = "survey")
-class SurveyActivityResponse(
+@JsonApi(type = "activity")
+class TaskActivityResponse(
     title: String? = null,
     description: String? = null,
+    repeatEvery: Int? = null,
     cardColor: String? = null,
     rescheduleIn: Int? = null,
     rescheduleTimes: Int? = null,
+    button: String? = null,
+    @field:Json(name = "activity_type") val activityType: String? = null,
     @field:Json(name = "image") val image: String? = null,
     @field:Json(name = "pages") val pages: HasMany<PageResponse>? = null,
     @field:Json(name = "welcome_page") val welcomePage: HasOne<PageResponse>? = null,
@@ -27,10 +30,11 @@ class SurveyActivityResponse(
 ) : ActivityDataResponse(
     title,
     description,
-    null,
+    repeatEvery,
     cardColor,
     rescheduleIn,
-    rescheduleTimes
+    rescheduleTimes,
+    button
 ) {
 
     fun toTaskActivity(
@@ -49,10 +53,10 @@ class SurveyActivityResponse(
                     id,
                     title,
                     description,
-                    null,
+                    button,
                     mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
                     image?.decodeBase64Image(),
-                    TaskActivityType.Survey,
+                    activityType?.let { TaskActivityType.fromType(it) },
                     welcomePage,
                     pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
                     successPage?.get(document)?.toPage(document),

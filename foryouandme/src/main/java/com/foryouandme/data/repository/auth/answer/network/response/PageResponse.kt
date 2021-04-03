@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.common.response
+package com.foryouandme.data.repository.auth.answer.network.response
 
 import com.foryouandme.core.ext.emptyOrBlankToNull
 import com.foryouandme.entity.page.Page

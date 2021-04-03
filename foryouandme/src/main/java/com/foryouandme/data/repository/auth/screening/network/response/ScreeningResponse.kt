@@ -1,16 +1,17 @@
-package com.foryouandme.core.data.api.consent.informed.response
+package com.foryouandme.data.repository.auth.screening.network.response
+
 
 import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.data.repository.auth.answer.network.response.QuestionResponse
-import com.foryouandme.entity.consent.informed.ConsentInfo
+import com.foryouandme.entity.screening.Screening
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.*
 
-@JsonApi(type = "informed_consent")
-data class ConsentInfoResponse(
+@JsonApi(type = "screening")
+data class ScreeningResponse(
     @field:Json(name = "minimum_required_correct_answers")
     val minimumAnswer: Int? = null,
-    @field:Json(name = "questions")
+    @field:Json(name = "screening_questions")
     val questions: HasMany<QuestionResponse>? = null,
     @field:Json(name = "pages")
     val pages: HasMany<PageResponse>? = null,
@@ -22,30 +23,26 @@ data class ConsentInfoResponse(
     val failurePage: HasOne<PageResponse>? = null
 ) : Resource() {
 
-    fun toConsentInfo(document: ObjectDocument<ConsentInfoResponse>): ConsentInfo? {
+    fun toScreening(document: ObjectDocument<ScreeningResponse>): Screening? {
 
-        val questionsList =
-            questions?.get(document)?.mapNotNull { it.toConsentQuestion(document) }
-
-        val pageList = pages?.get(document)?.mapNotNull { it.toPage(document) }
         val welcomePage = welcomePage?.get(document)?.toPage(document)
         val successPage = successPage?.get(document)?.toPage(document)
         val failurePage = failurePage?.get(document)?.toPage(document)
 
         return when (null) {
-
-            minimumAnswer, questionsList, pageList, welcomePage, successPage, failurePage -> null
+            minimumAnswer, welcomePage, successPage, failurePage -> null
             else ->
-                ConsentInfo(
-                    minimumAnswer = minimumAnswer,
-                    questions = questionsList,
-                    pages = pageList,
-                    welcomePage = welcomePage,
-                    successPage = successPage,
-                    failurePage = failurePage
+                Screening(
+                    minimumAnswer,
+                    questions?.get(document)
+                        ?.mapNotNull { it.toScreeningQuestion(document) } ?: emptyList(),
+                    pages?.get(document)
+                        ?.mapNotNull { it.toPage(document) } ?: emptyList(),
+                    welcomePage,
+                    successPage,
+                    failurePage
                 )
-
         }
+
     }
 }
-

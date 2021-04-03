@@ -1,13 +1,13 @@
 package com.foryouandme.data.repository.feed.network.response
 
-import com.foryouandme.core.data.api.common.response.activity.ActivityDataResponse
-import com.foryouandme.core.data.api.common.response.activity.QuickActivityResponse
-import com.foryouandme.core.data.api.common.response.activity.SurveyActivityResponse
-import com.foryouandme.core.data.api.common.response.activity.TaskActivityResponse
-import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
-import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
-import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
-import com.foryouandme.core.data.api.common.response.notifiable.NotifiableDataResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.ActivityDataResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.QuickActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.SurveyActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.activity.TaskActivityResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedAlertResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedEducationalResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedRewardResponse
+import com.foryouandme.data.repository.auth.answer.network.response.notifiable.NotifiableDataResponse
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.entity.feed.Feed
 import com.foryouandme.entity.feed.FeedType

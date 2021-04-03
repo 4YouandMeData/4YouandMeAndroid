@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.survey.network.response
 
-import com.foryouandme.core.data.api.common.response.PageResponse
+import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.squareup.moshi.Json

@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.common.response
+package com.foryouandme.data.repository.auth.answer.network.response
 
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource

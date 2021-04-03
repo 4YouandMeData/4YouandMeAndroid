@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import com.foryouandme.R
+import com.foryouandme.databinding.ScreeningQuestionBinding
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.EScreeningQuestionPayload.ANSWER
 import com.foryouandme.ui.auth.onboarding.step.screening.questions.EScreeningQuestionPayload.NONE
 import com.foryouandme.entity.configuration.Configuration
@@ -12,7 +13,6 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.screening_question.*
 
 enum class EScreeningQuestionPayload {
 
@@ -70,7 +70,7 @@ class ScreeningQuestionViewHolder(
             b
         )
     }
-), LayoutContainer {
+) {
 
     init {
 
@@ -87,19 +87,21 @@ class ScreeningQuestionViewHolder(
 
     override fun bind(item: ScreeningQuestionItem, position: Int) {
 
-        question.text = item.question.text
-        question.setTextColor(item.configuration.theme.primaryTextColor.color())
+        val binding = ScreeningQuestionBinding.bind(itemView)
 
-        answer_1_text.text = item.question.answers1.text
-        answer_1_text.setTextColor(item.configuration.theme.primaryTextColor.color())
+        binding.question.text = item.question.text
+        binding.question.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        answer_2_text.text = item.question.answers2.text
-        answer_2_text.setTextColor(item.configuration.theme.primaryTextColor.color())
+        binding.answer1Text.text = item.question.answers1.text
+        binding.answer1Text.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        answer_1_button.isChecked = item.question.answers1.id == item.answer.orEmpty()
-        answer_2_button.isChecked = item.question.answers2.id == item.answer.orEmpty()
+        binding.answer2Text.text = item.question.answers2.text
+        binding.answer2Text.setTextColor(item.configuration.theme.primaryTextColor.color())
 
-        divider.setBackgroundColor(item.configuration.theme.deactiveColor.color())
+        binding.answer1Button.isChecked = item.question.answers1.id == item.answer.orEmpty()
+        binding.answer2Button.isChecked = item.question.answers2.id == item.answer.orEmpty()
+
+        binding.divider.setBackgroundColor(item.configuration.theme.deactiveColor.color())
 
     }
 
@@ -109,20 +111,20 @@ class ScreeningQuestionViewHolder(
     ) {
         super.bind(item, position, payloads)
 
+        val binding = ScreeningQuestionBinding.bind(itemView)
+
         payloads.forEach {
             when (it) {
                 ANSWER -> {
-                    answer_1_button.isChecked =
+                    binding.answer1Button.isChecked =
                         item.question.answers1.id == item.answer.orEmpty()
-                    answer_2_button.isChecked =
+                    binding.answer2Button.isChecked =
                         item.question.answers2.id == item.answer.orEmpty()
                 }
                 NONE -> bind(item, position)
             }
         }
     }
-
-    override val containerView: View? = itemView
 
     companion object {
 

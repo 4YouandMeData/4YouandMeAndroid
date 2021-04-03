@@ -3,55 +3,71 @@ package com.foryouandme.ui.auth.onboarding.step.screening.failure
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.screening.Screening
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
-import kotlinx.android.synthetic.main.screening.*
-import kotlinx.android.synthetic.main.screening_page.*
+import com.foryouandme.databinding.ScreeningPageBinding
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateEvent
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ScreeningFailureFragment : ScreeningSectionFragment(R.layout.screening_page) {
+
+    private val binding: ScreeningPageBinding?
+        get() = view?.let { ScreeningPageBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        screeningAndConfiguration { config, state ->
-            setupView()
-            applyData(config, state.screening)
+        setupView()
+        applyData()
+
+    }
+
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
+
+    override fun onScreeningUpdate() {
+        super.onScreeningUpdate()
+        applyData()
+    }
+
+    private fun setupView() {
+
+        screeningFragment()
+            .apply {
+
+                binding?.toolbar?.removeBackButton()
+                hideAbort()
+
+            }
+
+    }
+
+    private fun applyData() {
+
+        val viewBinding = binding
+        val config = configuration
+        val screening = screening
+
+        if (viewBinding != null && config != null && screening != null) {
+
+            setStatusBar(config.theme.secondaryColor.color())
+
+            viewBinding.root.setBackgroundColor(config.theme.secondaryColor.color())
+
+            viewBinding.page.applyData(
+                configuration = config,
+                page = screening.failurePage,
+                pageType = EPageType.FAILURE,
+                action1 = { viewModel.execute(ScreeningStateEvent.Retry) },
+                extraStringAction = { navigator.navigateTo(rootNavController(), AnywhereToWeb(it)) }
+            )
         }
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
-
-            screeningFragment()
-                .apply {
-
-                    toolbar.removeBackButton()
-                    hideAbort()
-                }
-
-        }
-
-    private suspend fun applyData(configuration: Configuration, screening: Screening): Unit =
-        evalOnMain {
-
-            setStatusBar(configuration.theme.secondaryColor.color())
-
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-            page.applyDataSuspend(
-                configuration = configuration,
-                page = screening.failurePage,
-                pageType = EPageType.FAILURE,
-                action1 = {
-                    startCoroutineAsync { viewModel.retryFromWelcome(screeningNavController()) }
-                },
-                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
-            )
-        }
 }

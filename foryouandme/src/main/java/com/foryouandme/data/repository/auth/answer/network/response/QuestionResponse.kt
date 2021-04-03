@@ -1,7 +1,7 @@
-package com.foryouandme.core.data.api.common.response
+package com.foryouandme.data.repository.auth.answer.network.response
 
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
-import com.foryouandme.core.data.api.screening.response.ScreeningResponse
+import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.entity.consent.informed.ConsentInfoQuestion
 import com.foryouandme.entity.screening.ScreeningQuestion
 import com.squareup.moshi.Json

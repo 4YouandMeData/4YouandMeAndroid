@@ -3,18 +3,18 @@ package com.foryouandme.core.arch.deps
 import android.content.SharedPreferences
 import com.foryouandme.core.arch.deps.modules.*
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.data.api.common.AnswerApi
+import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
 import com.foryouandme.core.data.api.integration.IntegrationApi
 import com.foryouandme.core.data.api.optins.OptInsApi
-import com.foryouandme.core.data.api.screening.ScreeningApi
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.repository.auth.network.AuthApi
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
 import com.foryouandme.data.repository.feed.network.FeedApi
+import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
 import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.data.repository.task.network.TaskApi
@@ -63,7 +63,7 @@ interface Injector {
     val optInsApi: OptInsApi
     val integrationApi: IntegrationApi
     val taskApi: TaskApi
-    val answerApi: AnswerApi
+    val answerApi: AuthAnswerApi
     val feedApi: FeedApi
     val yourDataApi: YourDataApi
     val studyInfoApi: StudyInfoApi

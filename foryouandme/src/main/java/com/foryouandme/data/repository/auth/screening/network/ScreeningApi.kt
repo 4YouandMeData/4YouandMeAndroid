@@ -1,7 +1,7 @@
-package com.foryouandme.core.data.api.screening
+package com.foryouandme.data.repository.auth.screening.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.screening.response.ScreeningResponse
+import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.http.GET
 import retrofit2.http.Header
