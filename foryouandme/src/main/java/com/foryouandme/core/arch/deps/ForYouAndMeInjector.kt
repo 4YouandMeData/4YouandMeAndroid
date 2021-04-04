@@ -9,8 +9,6 @@ import com.foryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
-import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
-import com.foryouandme.core.data.api.consent.review.response.ConsentReviewResponse
 import com.foryouandme.core.data.api.optins.OptInsApi
 import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
@@ -35,6 +33,7 @@ import com.foryouandme.data.repository.auth.network.AuthApi
 import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
 import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
+import com.foryouandme.data.repository.auth.consent.network.response.ConsentReviewResponse
 import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
 import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
 import com.foryouandme.data.repository.feed.network.FeedApi

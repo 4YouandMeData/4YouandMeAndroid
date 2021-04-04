@@ -2,35 +2,21 @@ package com.foryouandme.ui.auth.onboarding.step.consent.review
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.find
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.find
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import kotlinx.coroutines.flow.onEach
 
-abstract class ConsentReviewSectionFragment(
-    contentLayoutId: Int
-) : BaseFragmentOld<ConsentReviewViewModel>(contentLayoutId) {
+abstract class ConsentReviewSectionFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
 
-    override val viewModel: ConsentReviewViewModel by lazy {
-        viewModelFactory(
-            consentReviewFragment(),
-            getFactory {
-                ConsentReviewViewModel(
-                    navigator,
-                    injector.consentReviewModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    val viewModel: ConsentReviewViewModel
+            by viewModels(ownerProducer = { consentReviewFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,26 +26,33 @@ abstract class ConsentReviewSectionFragment(
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
-                    startCoroutineAsync {
 
-                        val back =
-                            viewModel.back(
-                                consentReviewNavController(),
-                                consentNavController(),
-                                onboardingStepNavController(),
-                                authNavController(),
-                                rootNavController()
-                            )
+                    if (back().not()) requireActivity().finish()
 
-                        if (back.not()) requireActivity().finish()
-
-                    }
                 }
 
             }
         )
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when(it) {
+                    ConsentReviewStateUpdate.ConsentReview -> onConsentReviewUpdate()
+
+                }
+            }
+            .observeIn(this)
+
     }
 
+    open fun onConsentReviewUpdate() {
+
+    }
+
+    /* --- navigation --- *.
+
+     */
     fun consentReviewFragment(): ConsentReviewFragment = find()
 
     fun authNavController(): AuthNavController = consentReviewFragment().authNavController()
@@ -73,18 +66,14 @@ abstract class ConsentReviewSectionFragment(
     fun consentReviewNavController(): ConsentReviewNavController =
         ConsentReviewNavController(findNavController())
 
-    fun consentReviewAndConfiguration(block: suspend (Configuration, ConsentReviewState) -> Unit) {
-
-        configuration { config ->
-
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), config).orNull()
-                    ?.let { block(config, it) }
-            else
-                block(config, viewModel.state())
-
-        }
-
-    }
+    fun back(): Boolean =
+        if (navigator.back(consentReviewNavController()).not())
+            if (navigator.back(consentNavController()).not())
+                if (navigator.back(onboardingStepNavController()).not())
+                    if (navigator.back(authNavController()).not())
+                        navigator.back(rootNavController())
+                    else true
+                else true
+            else true
+        else true
 }

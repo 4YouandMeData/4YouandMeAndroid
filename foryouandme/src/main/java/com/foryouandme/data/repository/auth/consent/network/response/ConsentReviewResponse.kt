@@ -1,6 +1,5 @@
-package com.foryouandme.core.data.api.consent.review.response
+package com.foryouandme.data.repository.auth.consent.network.response
 
-import arrow.core.Either
 import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.entity.consent.review.ConsentReview
 import com.squareup.moshi.Json
@@ -19,20 +18,27 @@ data class ConsentReviewResponse(
 
 ) : Resource() {
 
-    suspend fun toConsentReview(document: ObjectDocument<ConsentReviewResponse>): ConsentReview? =
-        Either.catch {
+    fun toConsentReview(document: ObjectDocument<ConsentReviewResponse>): ConsentReview? {
 
-            ConsentReview(
-                title!!,
-                body!!,
-                pagesSubtitle!!,
-                disagreeModalBody!!,
-                disagreeModalButton!!,
-                pages?.get(document)
-                    ?.mapNotNull { it.toPage(document) }!!,
-                welcomePage?.get(document)?.toPage(document)!!
-            )
+        val pages = pages?.get(document)?.mapNotNull { it.toPage(document) }
+        val welcomePage = welcomePage?.get(document)?.toPage(document)
 
-        }.orNull()
+        return when (null) {
+            title, body, pagesSubtitle, disagreeModalBody,
+            disagreeModalButton, pages, welcomePage -> null
+            else ->
+                ConsentReview(
+                    title,
+                    body,
+                    pagesSubtitle,
+                    disagreeModalBody,
+                    disagreeModalButton,
+                    pages,
+                    welcomePage
+                )
+
+        }
+
+    }
 
 }

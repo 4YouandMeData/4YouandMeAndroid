@@ -1,139 +1,95 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.review
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.auth.consent.GetConsentReviewUseCase
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.review.info.toConsentReviewHeaderItem
 import com.foryouandme.ui.auth.onboarding.step.consent.review.info.toConsentReviewPageItem
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
-import com.foryouandme.core.arch.deps.modules.nullToError
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
-import com.foryouandme.entity.configuration.Configuration
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ConsentReviewViewModel(
-    navigator: Navigator,
-    private val consentReviewModule: ConsentReviewModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        ConsentReviewState,
-        ConsentReviewStateUpdate,
-        ConsentReviewError,
-        ConsentReviewLoading>
-    (navigator = navigator) {
+@HiltViewModel
+class ConsentReviewViewModel @Inject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<ConsentReviewStateUpdate>,
+    private val loadingFlow: LoadingFlow<ConsentReviewLoading>,
+    private val errorFlow: ErrorFlow<ConsentReviewError>,
+    private val getConsentReviewUseCase: GetConsentReviewUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
-    /* --- initialize --- */
+    /* --- state --- */
 
-    suspend fun initialize(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Either<ForYouAndMeError, ConsentReviewState> {
+    var state = ConsentReviewState()
+        private set
 
-        showLoading(ConsentReviewLoading.Initialization)
+    /* --- flow --- */
 
-        val state =
-            consentReviewModule.getConsent()
-                .nullToError()
-                .handleAuthError(rootNavController, navigator)
-                .fold(
-                    {
-                        setError(it, ConsentReviewError.Initialization)
-                        it.left()
-                    },
-                    { consentReview ->
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
 
-                        val items = mutableListOf<DroidItem<Any>>()
+    /* --- consent review --- */
 
-                        items.addAll(
-                            consentReview.welcomePage
-                                .asList(consentReview.pages)
-                                .map { it.toConsentReviewPageItem(configuration) }
-                        )
+    private suspend fun getConsentReview(configuration: Configuration) {
 
-                        items.add(0, consentReview.toConsentReviewHeaderItem(configuration))
+        loadingFlow.show(ConsentReviewLoading.ConsentReview)
 
-                        val state =
-                            ConsentReviewState(consentReview, items)
+        val consentReview = getConsentReviewUseCase()!!
+        val items = mutableListOf<DroidItem<Any>>()
 
-                        setState(state)
-                        { ConsentReviewStateUpdate.Initialization(it.consentReview, it.items) }
-
-                        state.right()
-
-                    }
-                )
-
-        hideLoading(ConsentReviewLoading.Initialization)
-
-        return state
-
-    }
-
-    /* --- navigation --- */
-
-    suspend fun disagree(consentReviewNavController: ConsentReviewNavController): Unit {
-
-        logDisagree()
-
-        navigator.navigateToSuspend(
-            consentReviewNavController,
-            ConsentReviewInfoToConsentReviewDisagree
+        items.addAll(
+            consentReview.welcomePage
+                .asList(consentReview.pages)
+                .map { it.toConsentReviewPageItem(configuration) }
         )
 
+        items.add(0, consentReview.toConsentReviewHeaderItem(configuration))
+
+        state = state.copy(consentReview = consentReview, items = items)
+        stateUpdateFlow.update(ConsentReviewStateUpdate.ConsentReview)
+
+        loadingFlow.hide(ConsentReviewLoading.ConsentReview)
+
     }
-
-    suspend fun exit(rootNavController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            rootNavController,
-            ConsentReviewDisagreeToAuth
-        )
-
-    suspend fun optIns(consentNavController: ConsentNavController): Unit {
-
-        logAgree()
-
-        navigator.navigateToSuspend(
-            consentNavController,
-            ConsentReviewToOptIns
-        )
-    }
-
-    suspend fun back(
-        consentReviewNavController: ConsentReviewNavController,
-        consentNavController: ConsentNavController,
-        onboardingStepNavController: OnboardingStepNavController,
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Boolean =
-        if (navigator.backSuspend(consentReviewNavController).not())
-            if (navigator.backSuspend(consentNavController).not())
-                if (navigator.backSuspend(onboardingStepNavController).not())
-                    if (navigator.backSuspend(authNavController).not())
-                        navigator.backSuspend(rootNavController)
-                    else true
-                else true
-            else true
-        else true
 
     /* --- analytics --- */
 
     private suspend fun logAgree(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ConsentAgreed, EAnalyticsProvider.ALL)
+        sendAnalyticsEventUseCase(AnalyticsEvent.ConsentAgreed, EAnalyticsProvider.ALL)
 
 
     private suspend fun logDisagree(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ConsentDisagreed, EAnalyticsProvider.ALL)
+        sendAnalyticsEventUseCase(AnalyticsEvent.ConsentDisagreed, EAnalyticsProvider.ALL)
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: ConsentReviewStateEvent) {
+        when (stateEvent) {
+            is ConsentReviewStateEvent.GetConsentReview ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ConsentReviewError.ConsentReview,
+                    loadingFlow,
+                    ConsentReviewLoading.ConsentReview
+                ) { getConsentReview(stateEvent.configuration) }
+            ConsentReviewStateEvent.Agree ->
+                viewModelScope.launchSafe { logAgree() }
+            ConsentReviewStateEvent.Disagree ->
+                viewModelScope.launchSafe { logDisagree() }
+        }
+    }
 
 }

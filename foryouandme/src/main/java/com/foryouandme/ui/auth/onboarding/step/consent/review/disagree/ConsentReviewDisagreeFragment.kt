@@ -7,17 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewSectionDialogFragment
+import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.databinding.ConsentReviewDisagreeBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.background.roundBackground
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.consent.review.ConsentReview
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.imageConfiguration
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
+import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewSectionDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.consent_review_disagree.*
 
+@AndroidEntryPoint
 class ConsentReviewDisagreeFragment : ConsentReviewSectionDialogFragment() {
+
+    private val binding: ConsentReviewDisagreeBinding?
+        get() = view?.let { ConsentReviewDisagreeBinding.bind(it) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,44 +35,50 @@ class ConsentReviewDisagreeFragment : ConsentReviewSectionDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentReviewAndConfiguration { config, state ->
+        setupView()
+        applyConfiguration()
 
-            setupView()
-            applyConfiguration(config, state.consentReview)
+    }
+
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
+    }
+
+    override fun onConsentReviewUpdate() {
+        super.onConsentReviewUpdate()
+        applyConfiguration()
+    }
+
+    private fun setupView() {
+
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            close_recording.setImageResource(imageConfiguration.close())
+            close_recording.setOnClickListener { back() }
+
+            disagree.setOnClickListener {
+                navigator.navigateTo(
+                    rootNavController(),
+                    ConsentReviewDisagreeToAuth
+                )
+            }
 
         }
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
 
-            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val viewBinding = binding
+        val configuration = configuration
+        val consentReview = viewModel.state.consentReview
 
-            close_recording.setImageResource(imageConfiguration.close())
-            close_recording.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.back(
-                        consentReviewNavController(),
-                        consentNavController(),
-                        onboardingStepNavController(),
-                        authNavController(),
-                        rootNavController()
-                    )
-                }
-            }
-
-            disagree.setOnClickListener {
-                startCoroutineAsync { viewModel.exit(rootNavController()) }
-            }
-
-        }
-
-    private suspend fun applyConfiguration(
-        configuration: Configuration,
-        consentReview: ConsentReview
-    ): Unit =
-        evalOnMain {
+        if (viewBinding != null && configuration != null && consentReview != null) {
 
             root.background =
                 roundBackground(configuration.theme.secondaryColor.color())
@@ -80,4 +92,7 @@ class ConsentReviewDisagreeFragment : ConsentReviewSectionDialogFragment() {
                 button(configuration.theme.primaryColorEnd.color())
 
         }
+
+    }
+
 }

@@ -18,7 +18,7 @@ import com.foryouandme.data.repository.auth.answer.network.response.notifiable.F
 import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedEducationalResponse
 import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedRewardResponse
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
-import com.foryouandme.core.data.api.consent.review.response.ConsentReviewResponse
+import com.foryouandme.data.repository.auth.consent.network.response.ConsentReviewResponse
 import com.foryouandme.data.repository.auth.integration.network.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse

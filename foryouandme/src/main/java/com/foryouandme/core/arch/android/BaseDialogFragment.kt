@@ -1,55 +1,114 @@
 package com.foryouandme.core.arch.android
 
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.foryouandme.core.activity.FYAMActivity
 import com.foryouandme.core.activity.FYAMState
+import com.foryouandme.core.activity.FYAMStateUpdate
 import com.foryouandme.core.activity.FYAMViewModel
+import com.foryouandme.core.arch.error.ErrorMessenger
+import com.foryouandme.core.arch.error.ErrorView
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.EventObserver
+import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.ext.catchToNull
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
 import com.foryouandme.core.ext.startCoroutineAsync
-import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-abstract class BaseDialogFragment<T : BaseViewModel<*, *, *, *>> : DialogFragment() {
+abstract class BaseDialogFragment : DialogFragment {
 
-    protected abstract val viewModel: T
+    @Inject
+    protected lateinit var errorMessenger: ErrorMessenger
 
-    protected val fyamViewModel: FYAMViewModel by viewModels()
+    private val fyamViewModel: FYAMViewModel by viewModels(ownerProducer = { requireActivity() })
+
+    @Inject
+    lateinit var navigator: Navigator
+
+    constructor() : super()
+    constructor(contentLayoutId: Int) : super(contentLayoutId)
+
+    val name: String
+        get() = javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.activityActions()
-            .observeEvent { it(requireActivity()) }
+        fyamViewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is FYAMStateUpdate.Config -> onConfigurationChange()
+                }
+            }
+            .observeIn(this)
+
     }
 
+    /* --- navigation --- */
+
     fun rootNavController(): RootNavController =
-        RootNavController(requireActivity().supportFragmentManager.fragments[0].findNavController())
+        RootNavController(
+            requireActivity().supportFragmentManager.fragments[0].findNavController()
+        )
 
-    fun <A> LiveData<Event<A>>.observeEvent(handle: (A) -> Unit): Unit =
-        observe(this@BaseDialogFragment, EventObserver { handle(it) })
 
-    fun name(): String = this.javaClass.simpleName
+    fun name(): String = javaClass.simpleName
 
-    fun fyamActivity(): FYAMActivity = requireActivity() as FYAMActivity
+    /* --- error --- */
 
-    fun configuration(block: suspend (Configuration) -> Unit): Unit =
-        startCoroutineAsync {
+    fun errorToast(throwable: Throwable, configuration: Configuration?) {
 
-            val configuration = fyamViewModel.state.configuration
+        val message = errorMessenger.getMessage(throwable, configuration)
 
-            block(configuration!!)
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+    }
+
+    protected fun ErrorView.setError(
+        throwable: Throwable,
+        configuration: Configuration?,
+        retry: () -> Unit = {}
+    ) {
+
+        lifecycleScope.launchSafe {
+
+            setError(
+                errorMessenger.getTitle(),
+                errorMessenger.getMessage(throwable, configuration),
+                retry
+            )
+
 
         }
 
-    fun fyamState(block: suspend (FYAMState) -> Unit): Unit =
-        startCoroutineAsync { block(fyamViewModel.state) }
+    }
+
+    /* --- service --- */
+
+    fun unbindService(serviceConnection: ServiceConnection) {
+        catchToNull { requireActivity().applicationContext.unbindService(serviceConnection) }
+    }
+
+    /* --- configuration --- */
+
+    val configuration
+        get() = fyamViewModel.state.configuration
+
+    open fun onConfigurationChange() {
+
+    }
 
 }
