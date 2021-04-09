@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.foryouandme.core.arch.app.ForYouAndMeApp
-import com.foryouandme.core.arch.deps.modules.DailySurveyTimeModule
 import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import com.foryouandme.core.arch.navigation.Navigator
@@ -50,6 +49,7 @@ import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.foryouandme.data.repository.user.network.UserResponse
+import com.foryouandme.data.repository.usersettings.network.UserSettingsApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -220,10 +220,11 @@ class ForYouAndMeInjector(
     override val surveyApi: SurveyApi =
         getApiService(environment.getApiBaseUrl(), surveyMoshi)
 
+    override val userSettingsApi: UserSettingsApi =
+        getApiService(environment.getApiBaseUrl(), moshi)
+
 
     /* --- modules --- */
 
     override fun permissionModule(): PermissionModule = PermissionModule(app, analyticsModule())
-
-    override fun dailySurveyTimeModule(): DailySurveyTimeModule = DailySurveyTimeModule(app, analyticsModule())
 }

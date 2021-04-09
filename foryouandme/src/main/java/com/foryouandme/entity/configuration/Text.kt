@@ -212,7 +212,8 @@ data class Profile(
     val permissionSettings: String,
     val edit: String,
     val submit: String,
-    val dailySurveyTimeDescription: String
+    val dailySurveyTimeDescription: String,
+    val dailySurveyTimingHidden: Int
 )
 
 data class YourData(

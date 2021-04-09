@@ -20,7 +20,7 @@ class AboutYouDailySurveyTimeFragment :
             getFactory {
                 AboutYouDailySurveyTimeViewModel(
                     navigator,
-                    injector.dailySurveyTimeModule(),
+                    injector.userSettingsModule(),
                     injector.analyticsModule()
                 )
             }
@@ -31,6 +31,14 @@ class AboutYouDailySurveyTimeFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel.stateLiveData()
+            .observeEvent(name()) { state ->
+                when (state) {
+                    is AboutYouDailySurveyTimeStateUpdate.Initialization -> {
+
+                    }
+                }
+            }
 
     }
 
@@ -73,7 +81,7 @@ class AboutYouDailySurveyTimeFragment :
             save_button.text = "Save"
             save_button.setTextColor(configuration.theme.secondaryTextColor.color())
             save_button.background = button(configuration.theme.primaryColorStart.color())
-            save_button.setOnClickListener { }
+            save_button.setOnClickListenerAsync { viewModel.sendTimeUpdate() }
         }
 
 

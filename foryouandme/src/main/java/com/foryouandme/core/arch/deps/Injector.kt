@@ -18,6 +18,7 @@ import com.foryouandme.data.repository.feed.network.FeedApi
 import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.data.repository.task.network.TaskApi
+import com.foryouandme.data.repository.usersettings.network.UserSettingsApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 
@@ -67,6 +68,7 @@ interface Injector {
     val yourDataApi: YourDataApi
     val studyInfoApi: StudyInfoApi
     val surveyApi: SurveyApi
+    val userSettingsApi: UserSettingsApi
 
 
     /* --- modules --- */
@@ -74,8 +76,6 @@ interface Injector {
     fun errorModule(): ErrorModule = ErrorModule(moshi)
 
     fun permissionModule(): PermissionModule
-
-    fun dailySurveyTimeModule(): DailySurveyTimeModule
 
     fun analyticsModule(): AnalyticsModule = AnalyticsModule(firebaseAnalytics)
 
@@ -195,5 +195,13 @@ interface Injector {
             environment,
             errorModule(),
             authModule()
+        )
+
+    fun userSettingsModule(): UserSettingsModule =
+        UserSettingsModule(
+            userSettingsApi,
+            errorModule(),
+            authModule(),
+            analyticsModule()
         )
 }

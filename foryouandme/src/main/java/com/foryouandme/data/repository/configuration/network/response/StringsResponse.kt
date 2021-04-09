@@ -159,6 +159,7 @@ data class StringsResponse(
     @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_TITLE") val aboutYouDailSurveyTime: String? = null,
     @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_DESCRIPTION") val dailySurveyTimeDescription: String? = null,
     @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
+    @Json(name = "DAILY_SURVEY_TIMING_HIDDEN") val dailySurveyTimingHidden: Int? = null,
 
     @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
     @Json(name = "YOUR_APPS_AND_DEVICES_DEAUTHORIZE") val yourAppsAndDevicesDeauthorize: String? = null,
@@ -555,7 +556,7 @@ data class StringsResponse(
             profileTitle, aboutYouYourPregnancy, aboutYouAppsAndDevices, aboutYouReviewConsent,
             aboutYouPermissions, aboutYouDailSurveyTime, aboutYouDisclaimer, yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
             permissionsAllowed, permissionDenied, permissionCancel, permissionMessage,
-            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit, dailySurveyTimeDescription -> null
+            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit, dailySurveyTimeDescription, dailySurveyTimingHidden -> null
             else ->
                 Profile(
                     profileTitle,
@@ -575,7 +576,8 @@ data class StringsResponse(
                     permissionSettings,
                     profileUserInfoButtonEdit,
                     profileUserInfoButtonSubmit,
-                    dailySurveyTimeDescription
+                    dailySurveyTimeDescription,
+                    dailySurveyTimingHidden
                 )
 
         }

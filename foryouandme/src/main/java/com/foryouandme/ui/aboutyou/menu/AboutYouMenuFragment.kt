@@ -144,7 +144,7 @@ class AboutYouMenuFragment :
                 }
             }
 
-            fifthItem.isVisible = true // TODO: set visibility toggle logic
+            fifthItem.isVisible = configuration.text.profile.dailySurveyTimingHidden == 0
 
             disclaimer.text = configuration.text.profile.disclaimer
         }

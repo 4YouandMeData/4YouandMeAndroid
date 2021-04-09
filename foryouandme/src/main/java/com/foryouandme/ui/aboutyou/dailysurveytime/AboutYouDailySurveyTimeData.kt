@@ -15,5 +15,10 @@ sealed class AboutYouDailySurveyTimeStateUpdate {
 sealed class AboutYouDailySurveyTimeLoading {
 
     object Initialization : AboutYouDailySurveyTimeLoading()
+    object Upload: AboutYouDailySurveyTimeLoading()
 
+}
+
+sealed class AboutYouDailySurveyTimeError {
+    object Initialization: AboutYouDailySurveyTimeError()
 }
