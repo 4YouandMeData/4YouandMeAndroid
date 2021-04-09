@@ -153,6 +153,9 @@ interface ImageConfiguration {
     @DrawableRes
     fun permissions(): Int
 
+    @DrawableRes
+    fun dailySurveyTime(): Int
+
     /*--- device item ---*/
 
     @DrawableRes

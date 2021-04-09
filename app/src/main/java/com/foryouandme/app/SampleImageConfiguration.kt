@@ -106,6 +106,8 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun permissions(): Int = R.drawable.permission
 
+    override fun dailySurveyTime(): Int = R.drawable.survey_timing
+
     override fun smartwatch(): Int = R.drawable.fitbit
 
     override fun oura(): Int = R.drawable.oura

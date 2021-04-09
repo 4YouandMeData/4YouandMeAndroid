@@ -175,6 +175,8 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
                 aboutYouMenuPageToPermissionsPage()
             is AboutYouMenuPageToUserInfoPage ->
                 aboutYouMenuPageToUserInfoPage()
+            is AboutYouMenuPageToDailySurveyTimePage ->
+                aboutYouMenuPageToDailySurveyTimePage()
 
             else -> {
                 {}

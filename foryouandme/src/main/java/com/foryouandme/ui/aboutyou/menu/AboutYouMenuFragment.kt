@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
-import com.foryouandme.core.ext.*
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
 import kotlinx.android.synthetic.main.about_you_menu.*
 
@@ -131,6 +131,20 @@ class AboutYouMenuFragment :
                     viewModel.toAboutYouPermissionsPage(aboutYouNavController())
                 }
             }
+
+            fifthItem.applyData(
+                configuration,
+                requireContext().imageConfiguration.dailySurveyTime(),
+                configuration.text.profile.fifthItem
+            )
+
+            fifthItem.setOnClickListener {
+                startCoroutineAsync {
+                    viewModel.toAboutYouDailySurveyTimePage(aboutYouNavController())
+                }
+            }
+
+            fifthItem.isVisible = true // TODO: set visibility toggle logic
 
             disclaimer.text = configuration.text.profile.disclaimer
         }

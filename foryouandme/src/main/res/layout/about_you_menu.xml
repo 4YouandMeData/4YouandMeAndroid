@@ -93,6 +93,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <com.foryouandme.core.view.menu.MenuItemView
+                    android:id="@+id/fifthItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/disclaimer"
                     style="@style/text_h3"

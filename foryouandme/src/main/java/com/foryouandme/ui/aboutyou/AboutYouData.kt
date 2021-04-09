@@ -38,3 +38,5 @@ data class AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(
 object AboutYouMenuPageToPermissionsPage : NavigationAction
 
 object AboutYouMenuPageToUserInfoPage : NavigationAction
+
+object AboutYouMenuPageToDailySurveyTimePage : NavigationAction

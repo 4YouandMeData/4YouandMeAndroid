@@ -200,6 +200,7 @@ data class Profile(
     val secondItem: String,
     val thirdItem: String,
     val fourthItem: String,
+    val fifthItem: String,
     val disclaimer: String,
     val connect: String,
     val deauthorize: String,
@@ -211,6 +212,7 @@ data class Profile(
     val permissionSettings: String,
     val edit: String,
     val submit: String,
+    val dailySurveyTimeDescription: String
 )
 
 data class YourData(

@@ -20,6 +20,7 @@ sealed class AnalyticsEvent(val eventName: String) {
         object ConsentName : ScreenViewed("ConsentName")
         object ConsentSignature : ScreenViewed("ConsentSignature")
         object Permissions : ScreenViewed("Permissions")
+        object DailySurveyTime: ScreenViewed("DailySurveyTime")
         object AppsAndDevices : ScreenViewed("AppsAndDevices")
         object EmailInsert : ScreenViewed("Email")
         object EmailVerification : ScreenViewed("EmailVerification")

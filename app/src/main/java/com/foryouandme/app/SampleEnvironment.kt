@@ -18,7 +18,7 @@ class SampleEnvironment(private val context: Context) : Environment() {
     override fun getOAuthBaseUrl(): String =
         context.getString(R.string.OAUTH_BASE_URL)
 
-    override fun useCustomData(): Boolean = true
+    override fun useCustomData(): Boolean = false
 
     override fun pinCodeSuffix(): String =
         context.getString(R.string.PIN_CODE_SUFFIX)

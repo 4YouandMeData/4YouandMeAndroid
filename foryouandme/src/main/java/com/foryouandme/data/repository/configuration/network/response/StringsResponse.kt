@@ -156,6 +156,8 @@ data class StringsResponse(
     @Json(name = "ABOUT_YOU_APPS_AND_DEVICES") val aboutYouAppsAndDevices: String? = null,
     @Json(name = "ABOUT_YOU_REVIEW_CONSENT") val aboutYouReviewConsent: String? = null,
     @Json(name = "ABOUT_YOU_PERMISSIONS") val aboutYouPermissions: String? = null,
+    @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_TITLE") val aboutYouDailSurveyTime: String? = null,
+    @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_DESCRIPTION") val dailySurveyTimeDescription: String? = null,
     @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
 
     @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
@@ -551,9 +553,9 @@ data class StringsResponse(
     private fun toProfile(): Profile? =
         when (null) {
             profileTitle, aboutYouYourPregnancy, aboutYouAppsAndDevices, aboutYouReviewConsent,
-            aboutYouPermissions, aboutYouDisclaimer, yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
+            aboutYouPermissions, aboutYouDailSurveyTime, aboutYouDisclaimer, yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
             permissionsAllowed, permissionDenied, permissionCancel, permissionMessage,
-            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit -> null
+            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit, dailySurveyTimeDescription -> null
             else ->
                 Profile(
                     profileTitle,
@@ -561,6 +563,7 @@ data class StringsResponse(
                     aboutYouAppsAndDevices,
                     aboutYouReviewConsent,
                     aboutYouPermissions,
+                    aboutYouDailSurveyTime,
                     aboutYouDisclaimer,
                     yourAppsAndDevicesConnect,
                     yourAppsAndDevicesDeauthorize,
@@ -571,7 +574,8 @@ data class StringsResponse(
                     permissionMessage,
                     permissionSettings,
                     profileUserInfoButtonEdit,
-                    profileUserInfoButtonSubmit
+                    profileUserInfoButtonSubmit,
+                    dailySurveyTimeDescription
                 )
 
         }

@@ -4,11 +4,10 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.foryouandme.core.arch.app.ForYouAndMeApp
+import com.foryouandme.core.arch.deps.modules.DailySurveyTimeModule
 import com.foryouandme.core.arch.deps.modules.PermissionModule
 import com.foryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.data.repository.auth.network.AuthApi
-import com.foryouandme.data.repository.user.network.UserResponse
 import com.foryouandme.core.data.api.common.AnswerApi
 import com.foryouandme.core.data.api.common.response.AnswerResponse
 import com.foryouandme.core.data.api.common.response.PageResponse
@@ -21,16 +20,10 @@ import com.foryouandme.core.data.api.common.response.activity.TaskActivityRespon
 import com.foryouandme.core.data.api.common.response.notifiable.FeedAlertResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedEducationalResponse
 import com.foryouandme.core.data.api.common.response.notifiable.FeedRewardResponse
-import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
 import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
 import com.foryouandme.core.data.api.consent.review.response.ConsentReviewResponse
-import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
-import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
-import com.foryouandme.data.repository.feed.network.FeedApi
-import com.foryouandme.data.repository.feed.network.response.FeedResponse
-import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.core.data.api.integration.IntegrationApi
 import com.foryouandme.core.data.api.integration.response.IntegrationResponse
 import com.foryouandme.core.data.api.optins.OptInsApi
@@ -38,6 +31,15 @@ import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
 import com.foryouandme.core.data.api.optins.response.OptInsResponse
 import com.foryouandme.core.data.api.screening.ScreeningApi
 import com.foryouandme.core.data.api.screening.response.ScreeningResponse
+import com.foryouandme.core.data.api.yourdata.YourDataApi
+import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.network.getApiService
+import com.foryouandme.data.repository.auth.network.AuthApi
+import com.foryouandme.data.repository.configuration.network.ConfigurationApi
+import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
+import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
+import com.foryouandme.data.repository.feed.network.FeedApi
+import com.foryouandme.data.repository.feed.network.response.FeedResponse
 import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.repository.survey.network.SurveyApi
@@ -47,8 +49,7 @@ import com.foryouandme.data.repository.survey.network.response.SurveyQuestionRes
 import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.data.repository.task.network.response.TaskResponse
-import com.foryouandme.core.data.api.yourdata.YourDataApi
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.repository.user.network.UserResponse
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -224,4 +225,5 @@ class ForYouAndMeInjector(
 
     override fun permissionModule(): PermissionModule = PermissionModule(app, analyticsModule())
 
+    override fun dailySurveyTimeModule(): DailySurveyTimeModule = DailySurveyTimeModule(app, analyticsModule())
 }
