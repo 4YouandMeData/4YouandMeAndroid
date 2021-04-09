@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 
 @Preview
 @Composable
-fun NineHolePeg() {
+fun NineHolePegPoint() {
 
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }

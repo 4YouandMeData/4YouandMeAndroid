@@ -16,7 +16,7 @@ class NineHolePegFragment : StepFragment() {
     ): View =
         ComposeView(requireContext()).apply {
             setContent {
-                NineHolePeg()
+                NineHolePegPoint()
             }
         }
 
