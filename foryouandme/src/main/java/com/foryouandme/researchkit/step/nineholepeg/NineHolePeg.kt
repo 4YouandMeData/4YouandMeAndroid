@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.R
 import com.foryouandme.researchkit.step.common.StepHeader
+import com.foryouandme.ui.compose.toColor
 
 @Preview
 @Composable
@@ -20,7 +21,7 @@ fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
 
     val state by viewModel.stateFlow.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().background() {
+    Column(modifier = Modifier.fillMaxSize().background(state.step?.backgroundColor.toColor())) {
         Spacer(modifier = Modifier.height(50.dp))
         StepHeader(
             title = getTitle(title = state.step?.title),

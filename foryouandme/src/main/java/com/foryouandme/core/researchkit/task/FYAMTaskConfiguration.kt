@@ -164,7 +164,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )
             }
             else -> null
-        }*/ NineHolePegTask(id)
+        }*/ FYAMNineHolePegTask(id, configuration)
 
     override suspend fun handleTaskResult(
         result: TaskResult,

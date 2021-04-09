@@ -6,12 +6,27 @@ import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskIdentifiers
 
 class NineHolePegTask(
-    id: String
+    id: String,
+    nineHolePegBackgroundColor: Int,
+    nineHolePegTitle: String?,
+    nineHolePegTitleColor: Int,
+    nineHolePegDescriptionShape: String?,
+    nineHolePegDescriptionGrab: String?,
+    nineHolePegDescriptionRelease: String?,
+    nineHolePegDescriptionColor: Int,
 ) : Task(TaskIdentifiers.NINE_HOLE_PEG, id) {
 
     override val steps: List<Step> by lazy {
 
-        getNineHolePegCoreSteps()
+        getNineHolePegCoreSteps(
+            nineHolePegBackgroundColor = nineHolePegBackgroundColor,
+            nineHolePegTitle = nineHolePegTitle,
+            nineHolePegTitleColor = nineHolePegTitleColor,
+            nineHolePegDescriptionShape = nineHolePegDescriptionShape,
+            nineHolePegDescriptionGrab = nineHolePegDescriptionGrab,
+            nineHolePegDescriptionRelease = nineHolePegDescriptionRelease,
+            nineHolePegDescriptionColor = nineHolePegDescriptionColor,
+        )
 
     }
 
@@ -20,11 +35,26 @@ class NineHolePegTask(
 
         const val NINE_HOLE_PEG: String = "nine_hole_peg"
 
-        fun getNineHolePegCoreSteps(): List<Step> =
+        fun getNineHolePegCoreSteps(
+            nineHolePegBackgroundColor: Int,
+            nineHolePegTitle: String?,
+            nineHolePegTitleColor: Int,
+            nineHolePegDescriptionShape: String?,
+            nineHolePegDescriptionGrab: String?,
+            nineHolePegDescriptionRelease: String?,
+            nineHolePegDescriptionColor: Int,
+        ): List<Step> =
 
             listOf(
                 NineHolePegStep(
-                    NINE_HOLE_PEG,
+                    identifier = NINE_HOLE_PEG,
+                    backgroundColor = nineHolePegBackgroundColor,
+                    title = nineHolePegTitle,
+                    titleColor = nineHolePegTitleColor,
+                    descriptionShape = nineHolePegDescriptionShape,
+                    descriptionGrab = nineHolePegDescriptionGrab,
+                    descriptionRelease = nineHolePegDescriptionRelease,
+                    descriptionColor = nineHolePegDescriptionColor
                 )
             )
 

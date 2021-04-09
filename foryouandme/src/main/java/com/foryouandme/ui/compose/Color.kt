@@ -1,3 +1,5 @@
 package com.foryouandme.ui.compose
 
-fun Int?.toColor()
+import androidx.compose.ui.graphics.Color
+
+fun Int?.toColor(): Color = this?.let { Color(it) } ?: Color.Transparent
