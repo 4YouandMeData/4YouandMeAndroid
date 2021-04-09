@@ -213,11 +213,12 @@ dependencies {
     implementation(AbedElazizShe.get())
 
     /* --- compose --- */
-    implementation("androidx.compose.ui:ui:1.0.0-beta03")
-    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta03")
-    implementation("androidx.compose.material:material:1.0.0-beta03")
-    implementation("androidx.compose.foundation:foundation:1.0.0-beta03")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
+    implementation(AndroidX.Compose.UI.get())
+    implementation(AndroidX.Compose.UI.UITooling.get())
+    implementation(AndroidX.Compose.Material.get())
+    implementation(AndroidX.Compose.Foundation.get())
+    implementation(AndroidX.Activity.Compose.get())
+    implementation(AndroidX.Lifecycle.ViewModelCompose.get())
 
     /* --- test --- */
 

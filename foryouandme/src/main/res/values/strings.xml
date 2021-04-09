@@ -74,4 +74,9 @@
     <string name="REACTION_TIM_end_description">Your data will be analyzed and you will be notified when your results are ready.</string>
     <string name="REACTION_TIME_button">Done</string>
 
+    <string name="NINE_HOLE_PEG_title">Nine Hole Peg</string>
+    <string name="NINE_HOLE_PEG_description_shape">Move the colored icon into the empty shape using your right hand.</string>
+    <string name="NINE_HOLE_PEG_grab">Grab the colored icon using two fingers.</string>
+    <string name="NINE_HOLE_PEG_release">Lift your fingers to release the colored icon.</string>
+
 ***REMOVED***
