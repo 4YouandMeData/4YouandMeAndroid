@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -15,7 +15,7 @@ import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoratio
 import kotlinx.android.synthetic.main.permissions.*
 
 class AboutYouPermissionsFragment :
-    AboutYouSectionFragment<AboutYouPermissionsViewModel>(R.layout.permissions) {
+    AboutYouSectionFragmentOld<AboutYouPermissionsViewModel>(R.layout.permissions) {
     override val viewModel: AboutYouPermissionsViewModel by lazy {
 
         viewModelFactory(

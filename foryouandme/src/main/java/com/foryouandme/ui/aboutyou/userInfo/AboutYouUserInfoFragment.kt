@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -17,7 +17,7 @@ import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoratio
 import kotlinx.android.synthetic.main.user_info.*
 
 class AboutYouUserInfoFragment :
-    AboutYouSectionFragment<AboutYouUserInfoViewModel>(R.layout.user_info) {
+    AboutYouSectionFragmentOld<AboutYouUserInfoViewModel>(R.layout.user_info) {
     override val viewModel: AboutYouUserInfoViewModel by lazy {
 
         viewModelFactory(

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.foryouandme.ui.auth.onboarding.step.consent.review.info.ConsentReviewHeaderViewHolder
 import com.foryouandme.ui.auth.onboarding.step.consent.review.info.ConsentReviewPageViewHolder
 import com.foryouandme.core.arch.android.getFactory
@@ -17,7 +17,7 @@ import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import kotlinx.android.synthetic.main.about_you_review_consent.*
 
 class AboutYouReviewConsentFragment :
-    AboutYouSectionFragment<AboutYouReviewConsentViewModel>(R.layout.about_you_review_consent) {
+    AboutYouSectionFragmentOld<AboutYouReviewConsentViewModel>(R.layout.about_you_review_consent) {
 
     override val viewModel: AboutYouReviewConsentViewModel by lazy {
         viewModelFactory(

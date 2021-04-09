@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
@@ -15,7 +15,7 @@ import com.foryouandme.core.ext.web.setupWebViewWithCookies
 import kotlinx.android.synthetic.main.about_you_integration_login.*
 
 class AboutYouIntegrationLoginFragment :
-    AboutYouSectionFragment<AboutYouIntegrationLoginViewModel>(
+    AboutYouSectionFragmentOld<AboutYouIntegrationLoginViewModel>(
         R.layout.about_you_integration_login
     ) {
 

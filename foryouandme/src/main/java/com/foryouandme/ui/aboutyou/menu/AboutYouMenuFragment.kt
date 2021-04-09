@@ -9,12 +9,12 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
 import kotlinx.android.synthetic.main.about_you_menu.*
 
 class AboutYouMenuFragment :
-    AboutYouSectionFragment<AboutYouMenuViewModel>(R.layout.about_you_menu) {
+    AboutYouSectionFragmentOld<AboutYouMenuViewModel>(R.layout.about_you_menu) {
     override val viewModel: AboutYouMenuViewModel by lazy {
         viewModelFactory(
             this,

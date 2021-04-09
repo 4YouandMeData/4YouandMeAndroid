@@ -8,11 +8,11 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import kotlinx.android.synthetic.main.daily_survey_time.*
 
 class AboutYouDailySurveyTimeFragment :
-    AboutYouSectionFragment<AboutYouDailySurveyTimeViewModel>(R.layout.daily_survey_time) {
+    AboutYouSectionFragmentOld<AboutYouDailySurveyTimeViewModel>(R.layout.daily_survey_time) {
     override val viewModel: AboutYouDailySurveyTimeViewModel by lazy {
 
         viewModelFactory(

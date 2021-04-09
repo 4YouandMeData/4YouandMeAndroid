@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.*
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp.*
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.apps_and_devices.*
 
 @AndroidEntryPoint
 class AboutYouAppsAndDevicesFragment :
-    AboutYouSectionFragment<AboutYouAppsAndDevicesViewModel>(R.layout.apps_and_devices) {
+    AboutYouSectionFragmentOld<AboutYouAppsAndDevicesViewModel>(R.layout.apps_and_devices) {
     override val viewModel: AboutYouAppsAndDevicesViewModel by lazy {
 
         viewModelFactory(
