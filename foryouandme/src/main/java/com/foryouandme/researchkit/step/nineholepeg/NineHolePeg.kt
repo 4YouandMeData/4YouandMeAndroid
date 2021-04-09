@@ -1,12 +1,15 @@
 package com.foryouandme.researchkit.step.nineholepeg
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.gestures.forEachGesture
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +31,8 @@ fun NineHolePeg() {
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
 
     ) {
@@ -37,7 +41,7 @@ fun NineHolePeg() {
             contentAlignment = Alignment.Center,
             modifier =
             Modifier
-                .size(150.dp, 150.dp)
+                .size(200.dp, 300.dp)
                 .background(Color.Cyan)
                 .pointerInput(Unit) {
                     detectGrabGestures { change, dragAmount ->
@@ -48,21 +52,12 @@ fun NineHolePeg() {
                 }
         ) {
             Box(
-                modifier = Modifier.size(50.dp).clip(CircleShape).background(Color.Black)
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
             )
-
         }
-
-        /*Text(text = "drag me", modifier = Modifier
-            .background(Color.Cyan)
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-            .pointerInput(Unit) {
-                detectGrabGestures { change, dragAmount ->
-                    change.consumeAllChanges()
-                    offsetX += dragAmount.x
-                    offsetY += dragAmount.y
-                }
-            })*/
 
     }
 
@@ -86,22 +81,17 @@ suspend fun PointerInputScope.detectGrabGestures(
                 val event = awaitPointerEvent()
                 val zoomChange = event.calculateZoom()
                 zoom *= zoomChange
-                Log.d("PAN", zoom.toString())
-                Log.d("CENTROID", event.calculateCentroidSize(useCurrent = true).toString())
-                Log.d("CENTROID_PREV", event.calculateCentroidSize(useCurrent = false).toString())
 
             } while (event.changes.firstOrNull { it.pressed } != null && zoom >= 1f)
 
-            Log.d("PAN", "END_GRAB: $zoom")
             if (zoom < 1f) {
-                Log.d("PAN", "START_GRAB")
                 do {
                     drag = awaitTouchSlopOrCancellation(down.id, onDrag)
                 } while (drag != null && !drag.positionChangeConsumed())
                 if (drag != null) {
                     onDragStart.invoke(drag.position)
                     if (
-                        !drag(drag.id) {
+                        !dragTwoFinger(drag.id) {
                             onDrag(it, it.positionChange())
                         }
                     ) {
@@ -114,3 +104,56 @@ suspend fun PointerInputScope.detectGrabGestures(
         }
     }
 }
+
+suspend fun AwaitPointerEventScope.dragTwoFinger(
+    pointerId: PointerId,
+    onDrag: (PointerInputChange) -> Unit
+): Boolean {
+    var pointer = pointerId
+    while (true) {
+        val change = awaitDragTwoFingerOrCancellation(pointer) ?: return false
+
+        if (change.changedToUpIgnoreConsumed()) {
+            return true
+        }
+
+        onDrag(change)
+        pointer = change.id
+    }
+}
+
+suspend fun AwaitPointerEventScope.awaitDragTwoFingerOrCancellation(
+    pointerId: PointerId,
+): PointerInputChange? {
+    if (currentEvent.arePointersUp(pointerId)) {
+        return null // The pointer has already been lifted, so the gesture is canceled
+    }
+    val change = awaitDragOrUp(pointerId) { it.positionChangedIgnoreConsumed() }
+    return if (change.positionChangeConsumed()) null else change
+}
+
+private suspend inline fun AwaitPointerEventScope.awaitDragOrUp(
+    pointerId: PointerId,
+    hasDragged: (PointerInputChange) -> Boolean
+): PointerInputChange {
+    var pointer = pointerId
+    while (true) {
+        val event = awaitPointerEvent()
+        val dragEvent = event.changes.firstOrNull { it.id == pointer }!!
+        if (dragEvent.changedToUpIgnoreConsumed()) {
+            val otherDown = event.changes.firstOrNull { it.pressed }
+            if (otherDown == null) {
+                // This is the last "up"
+                return dragEvent
+            } else {
+                pointer = otherDown.id
+            }
+        } else if (hasDragged(dragEvent)) {
+            return dragEvent
+        }
+    }
+}
+
+private fun PointerEvent.arePointersUp(pointerId: PointerId): Boolean =
+    changes.firstOrNull { it.id == pointerId }?.pressed != true ||
+            changes.filter { it.pressed }.size != 2
