@@ -24,7 +24,10 @@ import kotlin.math.roundToInt
 
 @Preview
 @Composable
-fun NineHolePegPoint() {
+fun NineHolePegPoint(
+    onDragStart: () -> Unit = { },
+    onDragEnd: () -> Unit = { },
+) {
 
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
@@ -44,7 +47,11 @@ fun NineHolePegPoint() {
                 .size(200.dp, 300.dp)
                 .background(Color.Cyan)
                 .pointerInput(Unit) {
-                    detectGrabGestures { change, dragAmount ->
+                    detectGrabGestures(
+                        { onDragStart() },
+                        onDragEnd,
+                        onDragEnd
+                    ) { change, dragAmount ->
                         change.consumeAllChanges()
                         offsetX += dragAmount.x
                         offsetY += dragAmount.y

@@ -20,12 +20,20 @@ class NineHolePegViewModel @Inject constructor() : ViewModel() {
         state.emit(state.value.copy(step = step))
     }
 
+    /* --- dragging --- */
+
+    private suspend fun setDragging(isDragging: Boolean) {
+        state.emit(state.value.copy(isDragging = isDragging))
+    }
+
     /* --- state event --- */
 
     fun execute(stateEvent: NineHolePegSateEvent) {
         when(stateEvent) {
             is NineHolePegSateEvent.SetStep ->
                 viewModelScope.launchSafe { setStep(stateEvent.step) }
+            is NineHolePegSateEvent.SetDragging ->
+                viewModelScope.launchSafe { setDragging(stateEvent.isDragging) }
         }
     }
 
