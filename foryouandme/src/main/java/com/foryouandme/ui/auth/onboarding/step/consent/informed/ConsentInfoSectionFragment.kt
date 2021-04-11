@@ -2,36 +2,22 @@ package com.foryouandme.ui.auth.onboarding.step.consent.informed
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
+import com.foryouandme.core.arch.navigation.RootNavController
+import com.foryouandme.core.ext.find
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
-import com.foryouandme.core.arch.android.BaseFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.find
-import com.foryouandme.core.ext.injector
-import com.foryouandme.core.ext.navigator
-import com.foryouandme.core.ext.startCoroutineAsync
+import kotlinx.coroutines.flow.onEach
 
-abstract class ConsentInfoSectionFragment(
-    contentLayoutId: Int
-) : BaseFragmentOld<ConsentInfoViewModel>(contentLayoutId) {
+abstract class ConsentInfoSectionFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
 
-    override val viewModel: ConsentInfoViewModel by lazy {
-        viewModelFactory(
-            consentInfoFragment(),
-            getFactory {
-                ConsentInfoViewModel(
-                    navigator,
-                    injector.consentInfoModule(),
-                    injector.answerModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    val viewModel: ConsentInfoViewModel by viewModels(ownerProducer = { consentInfoFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,25 +27,15 @@ abstract class ConsentInfoSectionFragment(
             object : OnBackPressedCallback(true) {
 
                 override fun handleOnBackPressed() {
-                    startCoroutineAsync {
-
-                        val back =
-                            viewModel.back(
-                                consentInfoNavController(),
-                                consentNavController(),
-                                onboardingStepNavController(),
-                                authNavController(),
-                                rootNavController()
-                            )
-
-                        if (back.not()) requireActivity().finish()
-
-                    }
+                    if (back().not()) requireActivity().finish()
                 }
 
             }
         )
+
     }
+
+    /* --- navigation --- */
 
     fun consentInfoFragment(): ConsentInfoFragment = find()
 
@@ -74,18 +50,38 @@ abstract class ConsentInfoSectionFragment(
     fun consentInfoNavController(): ConsentInfoNavController =
         ConsentInfoNavController(findNavController())
 
-    fun consentInfoAndConfiguration(block: suspend (Configuration, ConsentInfoState) -> Unit) {
+    fun back(): Boolean =
+        if (navigator.back(consentInfoNavController()).not())
+            if (navigator.back(consentNavController()).not())
+                if (navigator.back(onboardingStepNavController()).not())
+                    if (navigator.back(authNavController()).not())
+                        navigator.back(rootNavController())
+                    else true
+                else true
+            else true
+        else true
 
-        configuration { config ->
-
-
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), config).orNull()
-                    ?.let { block(config, it) }
-            else
-                block(config, viewModel.state())
-
-        }
-
+    fun question(fromWelcome: Boolean) {
+        when {
+            fromWelcome -> ConsentInfoWelcomeToConsentInfoQuestion(
+                0
+            )
+            else -> ConsentInfoPageToConsentInfoQuestion(
+                0
+            )
+        }.let { navigator.navigateTo(consentInfoNavController(), it) }
     }
+
+    fun page(id: String, fromWelcome: Boolean) {
+        navigator.navigateTo(
+            consentInfoNavController(),
+            if (fromWelcome) ConsentInfoWelcomeToConsentInfoPage(id)
+            else ConsentInfoPageToConsentInfoPage(id)
+        )
+    }
+
+    fun web(url: String) {
+        navigator.navigateTo(rootNavController(), AnywhereToWeb(url))
+    }
+
 }

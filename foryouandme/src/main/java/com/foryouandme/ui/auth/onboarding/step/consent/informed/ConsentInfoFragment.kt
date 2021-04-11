@@ -4,122 +4,140 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWelcome
 import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.ConsentInfoBinding
+import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.consent_info.*
+import kotlinx.coroutines.flow.onEach
 
-class ConsentInfoFragment : ConsentSectionFragment<ConsentInfoViewModel>(R.layout.consent_info) {
+@AndroidEntryPoint
+class ConsentInfoFragment : ConsentSectionFragment(R.layout.consent_info) {
 
-    override val viewModel: ConsentInfoViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                ConsentInfoViewModel(
-                    navigator,
-                    injector.consentInfoModule(),
-                    injector.answerModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    private val viewModel: ConsentInfoViewModel by viewModels()
+
+    val binding: ConsentInfoBinding?
+        get() = view?.let { ConsentInfoBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { update ->
-                when (update) {
-                    is ConsentInfoStateUpdate.Initialization ->
-                        startCoroutineAsync { setupNavigation() }
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is ConsentInfoStateUpdate.ConsentInfo -> setupNavigation()
+                    else -> Unit
                 }
             }
+            .observeIn(this)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
-                    ConsentInfoLoading.Initialization ->
+                    ConsentInfoLoading.ConsentInfo ->
                         loading.setVisibility(it.active, false)
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) { payload ->
-                when (payload.cause) {
-                    ConsentInfoError.Initialization ->
-                        error.setError(payload.error)
-                        {
-                            configuration { viewModel.initialize(rootNavController(), it) }
-                        }
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    ConsentInfoError.ConsentInfo ->
+                        binding?.error?.setError(it.error, configuration) { initialize() }
                 }
             }
+            .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach { navigator.navigateTo(consentNavController(), it) }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
+        initialize()
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController(), it)
-
-        }
     }
 
-    private suspend fun setupNavigation(): Unit {
-        evalOnMain {
-
-            val navHostFragment =
-                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-
-            val currentGraph = catchToNull { navHostFragment.navController.graph }
-            if (currentGraph == null) {
-                val inflater = navHostFragment.navController.navInflater
-                val graph = inflater.inflate(R.navigation.consent_info_navigation)
-                navHostFragment.navController.graph = graph
-            }
-
-        }
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        initialize()
     }
 
-    suspend fun showAbort(configuration: Configuration, color: Int, type: ConsentInfoAbort): Unit =
-        evalOnMain {
+    private fun initialize() {
+        val configuration = configuration
+        if (viewModel.state.consentInfo == null && configuration != null)
+            viewModel.execute(ConsentInfoStateEvent.GetConsentInfo(configuration))
+        else
+            setupNavigation()
+    }
 
-            abort.text = configuration.text.onboarding.abortButton
-            abort.setTextColor(color)
-            abort.setOnClickListenerAsync { showAbortAlert(configuration, type) }
-            abort.isVisible = true
+    private fun setupNavigation() {
+
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
+        val currentGraph = catchToNull { navHostFragment.navController.graph }
+        if (currentGraph == null) {
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.consent_info_navigation)
+            navHostFragment.navController.graph = graph
+        }
+
+    }
+
+    fun showAbort(color: Int, type: ConsentInfoAbort) {
+
+        val viewBinding = binding
+        val configuration = configuration
+
+        if (viewBinding != null && configuration != null) {
+
+            viewBinding.abort.text = configuration.text.onboarding.abortButton
+            viewBinding.abort.setTextColor(color)
+            viewBinding.abort.setOnClickListener { showAbortAlert(type) }
+            viewBinding.abort.isVisible = true
 
         }
 
-    suspend fun hideAbort(): Unit =
-        evalOnMain {
+    }
 
-            abort.isVisible = false
+    fun hideAbort() {
 
-        }
+        binding?.abort?.isVisible = false
 
-    private suspend fun showAbortAlert(
-        configuration: Configuration,
-        abort: ConsentInfoAbort
-    ): AlertDialog =
-        evalOnMain {
+    }
 
+    private fun showAbortAlert(abort: ConsentInfoAbort) {
+
+        val configuration = configuration
+
+        if (configuration != null) {
             AlertDialog.Builder(requireContext())
                 .setTitle(configuration.text.onboarding.abortTitle)
                 .setMessage(configuration.text.onboarding.abortMessage)
                 .setPositiveButton(configuration.text.onboarding.abortConfirm)
                 { _, _ ->
-                    startCoroutineAsync { viewModel.abort(authNavController(), abort) }
+                    viewModel.execute(ConsentInfoStateEvent.Abort(abort))
+                    navigator.navigateTo(authNavController(), AnywhereToWelcome)
                 }
                 .setNegativeButton(configuration.text.onboarding.abortCancel, null)
                 .show()
-
         }
+
+    }
 
 }

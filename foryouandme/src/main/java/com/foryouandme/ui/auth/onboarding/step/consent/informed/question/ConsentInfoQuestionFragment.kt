@@ -6,20 +6,25 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.html.setHtmlText
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.removeBackButton
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.databinding.ConsentInfoQuestionBinding
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.entity.consent.informed.ConsentInfo
-import com.foryouandme.core.ext.*
-import com.foryouandme.core.ext.html.setHtmlText
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateEvent
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
-import kotlinx.android.synthetic.main.consent_info.*
-import kotlinx.android.synthetic.main.consent_info_question.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentInfoQuestionFragment :
     ConsentInfoSectionFragment(R.layout.consent_info_question) {
 
@@ -28,71 +33,77 @@ class ConsentInfoQuestionFragment :
     private val adapter: StableDroidAdapter by lazy {
         StableDroidAdapter(
             ConsentAnswerViewHolder.factory {
-                startCoroutineAsync { viewModel.answer(args.index, it.answer.id) }
+                viewModel.execute(ConsentInfoStateEvent.Answer(args.index, it.answer.id))
             }
         )
     }
 
+    private val binding: ConsentInfoQuestionBinding?
+        get() = view?.let { ConsentInfoQuestionBinding.bind(it) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { update ->
-                when (update) {
-                    is ConsentInfoStateUpdate.Questions ->
-                        startCoroutineAsync {
-                            viewModel.getAnswers(args.index)?.let { applyAnswer(it) }
-                        }
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ConsentInfoStateUpdate.ConsentInfo -> applyData()
+                    is ConsentInfoStateUpdate.Questions -> applyAnswer()
                 }
             }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentInfoAndConfiguration { config, state ->
+        setUpView()
+        applyData()
+        if (adapter.itemCount <= 0) applyAnswer()
 
-            setupView()
-            applyData(config, state.consentInfo)
-            if (adapter.itemCount <= 0)
-                viewModel.getAnswers(args.index)?.let { applyAnswer(it) }
-
-        }
     }
 
-    suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            consentInfoFragment().toolbar.removeBackButton()
+    private fun setUpView() {
 
-            recycler_view.layoutManager =
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            consentInfoFragment().binding?.toolbar?.removeBackButton()
+
+            viewBinding.recyclerView.layoutManager =
                 LinearLayoutManager(
                     requireContext(),
                     RecyclerView.VERTICAL,
                     false
                 )
-            recycler_view.adapter = adapter
+            viewBinding.recyclerView.adapter = adapter
 
-            action_1.background = button(resources, imageConfiguration.nextStep())
-            action_1.setOnClickListener {
-
-                startCoroutineAsync {
-                    viewModel.nextQuestion(
-                        consentInfoNavController(),
-                        rootNavController(),
-                        args.index
-                    )
-                }
+            viewBinding.action1.background = button(resources, imageConfiguration.nextStep())
+            viewBinding.action1.setOnClickListener {
+                viewModel.execute(ConsentInfoStateEvent.NextQuestion(args.index))
             }
         }
+    }
 
-    private suspend fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit =
-        evalOnMain {
+    private fun applyData() {
+
+        val viewBinding = binding
+        val configuration = configuration
+        val consentInfo = viewModel.state.consentInfo
+
+        if (viewBinding != null && configuration != null && consentInfo != null) {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
 
-            root.background =
+            viewBinding.root.background =
                 HEXGradient.from(
                     configuration.theme.primaryColorStart,
                     configuration.theme.primaryColorEnd
@@ -100,18 +111,14 @@ class ConsentInfoQuestionFragment :
 
             consentInfoFragment()
                 .showAbort(
-                    configuration,
                     configuration.theme.secondaryColor.color(),
                     ConsentInfoAbort.FromQuestion(
-                        consentInfo.questions
-                            .getOrNull(args.index)
-                            ?.id
-                            .orEmpty()
+                        consentInfo.questions.getOrNull(args.index)?.id.orEmpty()
                     )
                 )
 
-            question.setTextColor(configuration.theme.secondaryColor.color())
-            question.setHtmlText(
+            viewBinding.question.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.question.setHtmlText(
                 consentInfo.questions
                     .getOrNull(args.index)
                     ?.text
@@ -119,24 +126,32 @@ class ConsentInfoQuestionFragment :
                 true
             )
 
-            shadow.background =
+            viewBinding.shadow.background =
                 HEXGradient.from(
                     HEXColor.transparent(),
                     configuration.theme.primaryColorEnd
                 ).drawable()
 
         }
+    }
 
-    private suspend fun applyAnswer(answers: List<ConsentAnswerItem>): Unit =
-        evalOnMain {
+    private fun applyAnswer() {
+
+        val answers = viewModel.getAnswers(args.index)
+        val viewBinding = binding
+
+        if (answers != null && viewBinding != null) {
 
             adapter.submitList(answers)
 
-            action_1.isEnabled =
+            viewBinding.action1.isEnabled =
                 answers.fold(
                     false,
                     { acc, answer -> acc || answer.isSelected }
                 )
+
         }
+
+    }
 
 }

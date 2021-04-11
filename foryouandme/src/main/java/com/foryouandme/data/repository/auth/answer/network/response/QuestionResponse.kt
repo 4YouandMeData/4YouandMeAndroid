@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.auth.answer.network.response
 
-import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
+import com.foryouandme.data.repository.auth.consent.network.response.ConsentInfoResponse
 import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.entity.consent.informed.ConsentInfoQuestion
 import com.foryouandme.entity.screening.ScreeningQuestion

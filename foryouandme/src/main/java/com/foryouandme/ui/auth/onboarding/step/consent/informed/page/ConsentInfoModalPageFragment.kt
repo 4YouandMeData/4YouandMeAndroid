@@ -3,76 +3,93 @@ package com.foryouandme.ui.auth.onboarding.step.consent.informed.page
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import arrow.core.extensions.list.foldable.firstOrNone
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.html.setHtmlText
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.show
+import com.foryouandme.core.ext.showCloseButton
+import com.foryouandme.databinding.ConsentInfoModalPageBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.consent.informed.ConsentInfo
-import com.foryouandme.core.ext.*
-import com.foryouandme.core.ext.html.setHtmlText
-import kotlinx.android.synthetic.main.consent_info.*
-import kotlinx.android.synthetic.main.consent_info_modal_page.*
-import kotlinx.android.synthetic.main.consent_info_page.root
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentInfoModalPageFragment : ConsentInfoSectionFragment(R.layout.consent_info_modal_page) {
 
     private val args: ConsentInfoPageFragmentArgs by navArgs()
 
+    private val binding: ConsentInfoModalPageBinding?
+        get() = view?.let { ConsentInfoModalPageBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ConsentInfoStateUpdate.ConsentInfo -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentInfoAndConfiguration { config, state ->
+        setUpView()
+        applyData()
 
-            setupView()
-            applyData(config, state.consentInfo)
+    }
+
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
+
+    private fun setUpView() {
+
+        consentInfoFragment().binding?.toolbar?.apply {
+
+            show()
+            showCloseButton(imageConfiguration) { back() }
 
         }
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun applyData() {
 
-            consentInfoFragment().toolbar.apply {
+        val viewBinding = binding
+        val configuration = configuration
+        val consentInfo = viewModel.state.consentInfo
 
-                show()
-
-                showCloseButton(imageConfiguration) {
-                    startCoroutineAsync {
-                        viewModel.back(
-                            consentInfoNavController(),
-                            consentNavController(),
-                            onboardingStepNavController(),
-                            authNavController(),
-                            rootNavController()
-                        )
-                    }
-                }
-
-            }
-
-        }
-
-    private suspend fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit =
-        evalOnMain {
+        if (viewBinding != null && configuration != null && consentInfo != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             consentInfoFragment()
                 .showAbort(
-                    configuration,
                     configuration.theme.primaryColorEnd.color(),
                     ConsentInfoAbort.FromPage(args.id)
                 )
 
-            consentInfo.pages.firstOrNone { it.id == args.id }
-                .map { data ->
-                    title.setHtmlText(data.title, true)
-                    description.setHtmlText(data.body, true)
+            consentInfo.pages.firstOrNull { it.id == args.id }
+                ?.let { data ->
+                    viewBinding.title.setHtmlText(data.title, true)
+                    viewBinding.description.setHtmlText(data.body, true)
                 }
 
         }
+    }
+
 }

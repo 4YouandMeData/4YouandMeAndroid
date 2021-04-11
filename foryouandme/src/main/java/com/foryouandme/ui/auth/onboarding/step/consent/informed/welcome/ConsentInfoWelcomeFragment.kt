@@ -3,70 +3,86 @@ package com.foryouandme.ui.auth.onboarding.step.consent.informed.welcome
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.consent.informed.ConsentInfo
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
-import kotlinx.android.synthetic.main.consent_info.*
-import kotlinx.android.synthetic.main.consent_info_welcome.*
+import com.foryouandme.databinding.ConsentInfoWelcomeBinding
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentInfoWelcomeFragment :
     ConsentInfoSectionFragment(R.layout.consent_info_welcome) {
+
+    private val binding: ConsentInfoWelcomeBinding?
+        get() = view?.let { ConsentInfoWelcomeBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ConsentInfoStateUpdate.ConsentInfo -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentInfoAndConfiguration { config, state ->
-
-            setupView()
-            applyData(config, state.consentInfo)
-
-        }
+        setUpView()
+        applyData()
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            consentInfoFragment().toolbar.hide()
+    private fun setUpView() {
 
-        }
+        consentInfoFragment().binding?.toolbar?.hide()
 
-    private suspend fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit =
-        evalOnMain {
+    }
+
+    private fun applyData() {
+
+        val viewBinding = binding
+        val configuration = configuration
+        val consentInfo = viewModel.state.consentInfo
+
+        if (viewBinding != null && configuration != null && consentInfo != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             consentInfoFragment().hideAbort()
             consentInfoFragment()
-                .consent_info_root.setBackgroundColor(configuration.theme.secondaryColor.color())
+                .binding
+                ?.consentInfoRoot
+                ?.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyDataSuspend(
+            viewBinding.page.applyData(
                 configuration = configuration,
                 page = consentInfo.welcomePage,
                 pageType = EPageType.INFO,
                 action1 = { page ->
-                    if (page == null) {
-                        startCoroutineAsync {
-                            viewModel.question(consentInfoNavController(), true)
-                        }
-                    } else {
-                        startCoroutineAsync {
-                            viewModel.page(
-                                consentInfoNavController(),
-                                page.id,
-                                true
-                            )
-                        }
-                    }
+                    if (page == null) question(true)
+                    else page(page.id, true)
                 },
-                extraStringAction = { startCoroutineAsync { viewModel.web(rootNavController(), it) } }
+                extraStringAction = { web(it) }
             )
         }
+    }
+
 }

@@ -1,104 +1,85 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.informed
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import arrow.core.toT
-import arrow.fx.coroutines.parSequence
-import arrow.syntax.function.pipe
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.core.arch.navigation.AnywhereToWelcome
+import com.foryouandme.core.ext.countAndAccumulate
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
+import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.auth.answer.SendAuthAnswerUseCase
+import com.foryouandme.domain.usecase.auth.consent.GetConsentInfoUseCase
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.ConsentAnswerItem
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.toItem
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.AnswerModule
-import com.foryouandme.core.arch.deps.modules.ConsentInfoModule
-import com.foryouandme.core.arch.deps.modules.nullToError
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.AnywhereToWelcome
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.common.AnswerUseCase.sendAnswer
-import com.foryouandme.core.cases.consent.informed.ConsentInfoUseCase.getConsent
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.countAndAccumulate
-import com.foryouandme.core.ext.startCoroutineAsync
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
 
-class ConsentInfoViewModel(
-    navigator: Navigator,
-    private val consentInfoModule: ConsentInfoModule,
-    private val answerModule: AnswerModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        ConsentInfoState,
-        ConsentInfoStateUpdate,
-        ConsentInfoError,
-        ConsentInfoLoading>
-    (navigator = navigator) {
+@HiltViewModel
+class ConsentInfoViewModel @Inject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<ConsentInfoStateUpdate>,
+    private val loadingFlow: LoadingFlow<ConsentInfoLoading>,
+    private val errorFlow: ErrorFlow<ConsentInfoError>,
+    private val navigationFlow: NavigationFlow,
+    private val getConsentInfoUseCase: GetConsentInfoUseCase,
+    private val sendAuthAnswerUseCase: SendAuthAnswerUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
-    /* --- data --- */
+    /* --- state --- */
 
-    suspend fun initialize(
-        navController: RootNavController,
-        configuration: Configuration
-    ): Either<ForYouAndMeError, ConsentInfoState> {
+    var state = ConsentInfoState()
+        private set
 
-        showLoading(ConsentInfoLoading.Initialization)
+    /* --- flow --- */
 
-        val state =
-            consentInfoModule.getConsent()
-                .nullToError()
-                .handleAuthError(navController, navigator)
-                .fold(
-                    {
-                        setError(it, ConsentInfoError.Initialization)
-                        it.left()
-                    },
-                    { consentInfo ->
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
 
-                        val questions =
-                            consentInfo.questions.associateWith { question ->
-                                question.answers.map { it.toItem(configuration) }
-                            }.mapKeys { it.key.id }
+    /* --- consent info --- */
 
-                        val state =
-                            ConsentInfoState(consentInfo, questions)
+    private suspend fun getConsentInfo(configuration: Configuration) {
 
-                        setState(state)
-                        { ConsentInfoStateUpdate.Initialization(it.questions, it.consentInfo) }
+        loadingFlow.show(ConsentInfoLoading.ConsentInfo)
 
-                        state.right()
+        val consentInfo = getConsentInfoUseCase()!!
+        val questions =
+            consentInfo.questions.associateWith { question ->
+                question.answers.map { it.toItem(configuration) }
+            }.mapKeys { it.key.id }
 
-                    }
-                )
+        state = state.copy(consentInfo = consentInfo, questions = questions)
+        stateUpdateFlow.update(ConsentInfoStateUpdate.ConsentInfo)
 
-        hideLoading(ConsentInfoLoading.Initialization)
-
-        return state
+        loadingFlow.hide(ConsentInfoLoading.ConsentInfo)
 
     }
 
     /* --- answer --- */
 
     fun getAnswers(index: Int): List<ConsentAnswerItem>? =
-        state().consentInfo.questions.getOrNull(index)?.id
-            ?.let { state().questions[it] }
+        state.consentInfo?.questions?.getOrNull(index)?.id?.let { state.questions[it] }
 
 
-    suspend fun answer(index: Int, answerId: String): Unit {
+    private suspend fun answer(index: Int, answerId: String) {
 
-        val questionId =
-            state().consentInfo.questions.getOrNull(index)?.id
+        val questionId = state.consentInfo?.questions?.getOrNull(index)?.id
 
         val questions =
-            state().questions.mapValues {
+            state.questions.mapValues {
                 if (it.key == questionId)
                     it.value.map { item ->
                         item.copy(isSelected = item.answer.id == answerId)
@@ -106,54 +87,45 @@ class ConsentInfoViewModel(
                 else it.value
             }
 
-        setState(state().copy(questions = questions))
-        { ConsentInfoStateUpdate.Questions(questions) }
+        state = state.copy(questions = questions)
+        stateUpdateFlow.update(ConsentInfoStateUpdate.Questions)
 
     }
 
     /* --- validation --- */
 
-    private suspend fun validate(
-        consentInfoNavController: ConsentInfoNavController,
-        rootNavController: RootNavController
-    ): Unit {
+    private suspend fun validate() {
 
         val correctAnswers =
-            state().questions
-                .mapValues { it.isCorrect() toT it.getRequest(rootNavController) }
+            state.questions
+                .mapValues { it.isCorrect() to it.getRequestAsync() }
                 .toList()
                 .map { it.second }
                 .countAndAccumulate()
 
-        startCoroutineAsync { correctAnswers.b.parSequence() }
+        viewModelScope.launchSafe { correctAnswers.second.awaitAll() }
 
-        if (correctAnswers.a >= state().consentInfo.minimumAnswer)
-            navigator.navigateToSuspend(
-                consentInfoNavController,
-                ConsentInfoQuestionToConsentInfoSuccess
-            )
+        if (correctAnswers.first >= state.consentInfo?.minimumAnswer ?: 0)
+            navigationFlow.navigateTo(ConsentInfoQuestionToConsentInfoSuccess)
         else
-            navigator.navigateToSuspend(
-                consentInfoNavController,
-                ConsentInfoQuestionToConsentInfoFailure
-            )
+            navigationFlow.navigateTo(ConsentInfoQuestionToConsentInfoFailure)
 
     }
 
-    private fun Map.Entry<String, List<ConsentAnswerItem>>.getRequest(
-        rootNavController: RootNavController
-    ): (suspend () -> Either<ForYouAndMeError, Unit>)? =
-
-        value.firstOrNull { item -> item.isSelected }
-            ?.let {
-                suspend {
-                    answerModule.sendAnswer(
-                        key, // question id
-                        it.answer.text,
-                        it.answer.id
-                    ).handleAuthError(rootNavController, navigator)
+    private suspend fun Map.Entry<String, List<ConsentAnswerItem>>.getRequestAsync(
+    ): Deferred<Unit>? =
+        coroutineScope {
+            value.firstOrNull { item -> item.isSelected }
+                ?.let {
+                    async {
+                        sendAuthAnswerUseCase(
+                            key, // question id
+                            it.answer.text,
+                            it.answer.id
+                        )
+                    }
                 }
-            }
+        }
 
     private fun Map.Entry<String, List<ConsentAnswerItem>>.isCorrect() =
         value.fold(
@@ -163,140 +135,101 @@ class ConsentInfoViewModel(
             }
         )
 
-    /* --- navigation --- */
+    /* --- reset --- */
 
-    suspend fun back(
-        consentInfoNavController: ConsentInfoNavController,
-        consentNavController: ConsentNavController,
-        onboardingStepNavController: OnboardingStepNavController,
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Boolean =
-        if (navigator.backSuspend(consentInfoNavController).not())
-            if (navigator.backSuspend(consentNavController).not())
-                if (navigator.backSuspend(onboardingStepNavController).not())
-                    if (navigator.backSuspend(authNavController).not())
-                        navigator.backSuspend(rootNavController)
-                    else true
-                else true
-            else true
-        else true
+    private suspend fun restartFromWelcome() {
 
-    suspend fun page(
-        consentInfoNavController: ConsentInfoNavController,
-        id: String,
-        fromWelcome: Boolean
-    ): Unit =
-        navigator.navigateToSuspend(
-            consentInfoNavController,
-            if (fromWelcome) ConsentInfoWelcomeToConsentInfoPage(id)
-            else ConsentInfoPageToConsentInfoPage(id)
-        )
+        // reset old answer
+        val questions =
+            state.questions.mapValues { entry ->
+                entry.value.map { it.copy(isSelected = false) }
+            }
 
-    suspend fun modalPage(consentInfoNavController: ConsentInfoNavController, id: String): Unit =
-        navigator.navigateToSuspend(
-            consentInfoNavController,
-            ConsentInfoPageToConsentInfoModalPage(id)
-        )
+        state = state.copy(questions = questions)
+        stateUpdateFlow.update(ConsentInfoStateUpdate.Questions)
 
-    suspend fun question(
-        consentInfoNavController: ConsentInfoNavController,
-        fromWelcome: Boolean
-    ): Unit =
-        when {
-            fromWelcome -> ConsentInfoWelcomeToConsentInfoQuestion(
-                0
-            )
-            else -> ConsentInfoPageToConsentInfoQuestion(
-                0
-            )
-        }.pipe { navigator.navigateToSuspend(consentInfoNavController, it) }
 
-    suspend fun nextQuestion(
-        consentInfoNavController: ConsentInfoNavController,
-        rootNavController: RootNavController,
-        currentIndex: Int
-    ): Unit {
+        navigationFlow.navigateTo(ConsentInfoFailureToConsentInfoWelcome)
 
-        if (currentIndex < (state().questions.keys.size - 1))
-            navigator.navigateToSuspend(
-                consentInfoNavController,
+    }
+
+    private suspend fun restartFromPage(id: String) {
+
+        // reset old answer
+        val questions =
+            state.questions.mapValues { entry ->
+                entry.value.map { it.copy(isSelected = false) }
+            }
+
+        state = state.copy(questions = questions)
+        stateUpdateFlow.update(ConsentInfoStateUpdate.Questions)
+
+        navigationFlow.navigateTo(ConsentInfoFailureToConsentInfoPage(id))
+
+    }
+
+    /* --- question --- */
+
+    suspend fun nextQuestion(currentIndex: Int) {
+
+        if (currentIndex < (state.questions.keys.size - 1))
+            navigationFlow.navigateTo(
                 ConsentInfoQuestionToConsentInfoQuestion(currentIndex + 1)
             )
-        else validate(consentInfoNavController, rootNavController)
+        else validate()
 
     }
 
-    suspend fun consentReview(consentNavController: ConsentNavController): Unit =
-        navigator.navigateToSuspend(consentNavController, ConsentInfoToConsentReview)
+    /* --- abort --- */
 
-    suspend fun restartFromWelcome(consentInfoNavController: ConsentInfoNavController): Unit {
-
-        // reset old answer
-        val questions =
-            state().questions.mapValues { entry ->
-                entry.value.map { it.copy(isSelected = false) }
-            }
-
-        setState(state().copy(questions = questions))
-        { ConsentInfoStateUpdate.Questions(questions) }
-
-
-        navigator.navigateToSuspend(
-            consentInfoNavController,
-            ConsentInfoFailureToConsentInfoWelcome
-        )
-
-    }
-
-    suspend fun restartFromPage(
-        consentInfoNavController: ConsentInfoNavController,
-        id: String
-    ): Unit {
-
-        // reset old answer
-        val questions =
-            state().questions.mapValues { entry ->
-                entry.value.map { it.copy(isSelected = false) }
-            }
-
-        setState(state().copy(questions = questions))
-        { ConsentInfoStateUpdate.Questions(questions) }
-
-
-        navigator.navigateToSuspend(
-            consentInfoNavController,
-            ConsentInfoFailureToConsentInfoPage(id)
-        )
-
-    }
-
-    suspend fun abort(authNavController: AuthNavController, abort: ConsentInfoAbort): Unit {
+    suspend fun abort(abort: ConsentInfoAbort) {
 
         when (abort) {
             is ConsentInfoAbort.FromPage -> logAbortFromPageEvent(abort.pageId)
             is ConsentInfoAbort.FromQuestion -> logAbortFromQuestionEvent(abort.questionId)
         }
 
-        navigator.navigateToSuspend(authNavController, AnywhereToWelcome)
     }
-
-    suspend fun web(rootNavController: RootNavController, url: String): Unit =
-        navigator.navigateToSuspend(rootNavController, AnywhereToWeb(url))
 
     /* --- analytics --- */
 
-    private suspend fun logAbortFromPageEvent(pageId: String): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logAbortFromPageEvent(pageId: String) {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.CancelDuringInformedConsent(pageId),
             EAnalyticsProvider.ALL
         )
+    }
 
-    private suspend fun logAbortFromQuestionEvent(questionId: String): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logAbortFromQuestionEvent(questionId: String) {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.CancelDuringComprehension(questionId),
             EAnalyticsProvider.ALL
         )
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: ConsentInfoStateEvent) {
+        when (stateEvent) {
+            is ConsentInfoStateEvent.GetConsentInfo ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ConsentInfoError.ConsentInfo,
+                    loadingFlow,
+                    ConsentInfoLoading.ConsentInfo
+                ) { getConsentInfo(stateEvent.configuration) }
+            is ConsentInfoStateEvent.Answer ->
+                viewModelScope.launchSafe { answer(stateEvent.index, stateEvent.answerId) }
+            is ConsentInfoStateEvent.RestartFromPage ->
+                viewModelScope.launchSafe { restartFromPage(stateEvent.id) }
+            ConsentInfoStateEvent.RestartFromWelcome ->
+                viewModelScope.launchSafe { restartFromWelcome() }
+            is ConsentInfoStateEvent.NextQuestion ->
+                viewModelScope.launchSafe { nextQuestion(stateEvent.currentIndex) }
+            is ConsentInfoStateEvent.Abort ->
+                viewModelScope.launchSafe { abort(stateEvent.consentInfoAbort) }
+        }
+    }
 
 }
 

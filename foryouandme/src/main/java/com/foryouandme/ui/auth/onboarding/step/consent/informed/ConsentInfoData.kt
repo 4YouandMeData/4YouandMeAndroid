@@ -1,44 +1,51 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.informed
 
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.ConsentAnswerItem
 import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.consent.informed.ConsentInfo
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.ConsentAnswerItem
 
 data class ConsentInfoState(
-    val consentInfo: ConsentInfo,
-    val questions: Map<String, List<ConsentAnswerItem>>
+    val consentInfo: ConsentInfo? = null,
+    val questions: Map<String, List<ConsentAnswerItem>> = emptyMap()
 )
 
 sealed class ConsentInfoStateUpdate {
 
-    data class Initialization(
-        val questions: Map<String, List<ConsentAnswerItem>>,
-        val consentInfo: ConsentInfo
-    ) : ConsentInfoStateUpdate()
+    object ConsentInfo : ConsentInfoStateUpdate()
 
-    data class Questions(
-        val questions: Map<String, List<ConsentAnswerItem>>
-    ) : ConsentInfoStateUpdate()
+    object Questions : ConsentInfoStateUpdate()
 
 }
 
 sealed class ConsentInfoLoading {
 
-    object Initialization : ConsentInfoLoading()
+    object ConsentInfo : ConsentInfoLoading()
 
 }
 
 sealed class ConsentInfoError {
 
-    object Initialization : ConsentInfoError()
+    object ConsentInfo : ConsentInfoError()
+
+}
+
+sealed class ConsentInfoStateEvent {
+
+    data class GetConsentInfo(val configuration: Configuration) : ConsentInfoStateEvent()
+    data class Answer(val index: Int, val answerId: String) : ConsentInfoStateEvent()
+    object RestartFromWelcome : ConsentInfoStateEvent()
+    data class RestartFromPage(val id: String) : ConsentInfoStateEvent()
+    data class NextQuestion(val currentIndex: Int): ConsentInfoStateEvent()
+    data class Abort(val consentInfoAbort: ConsentInfoAbort): ConsentInfoStateEvent()
 
 }
 
 sealed class ConsentInfoAbort {
 
-    data class FromPage(val pageId: String): ConsentInfoAbort()
+    data class FromPage(val pageId: String) : ConsentInfoAbort()
 
-    data class FromQuestion(val questionId: String): ConsentInfoAbort()
+    data class FromQuestion(val questionId: String) : ConsentInfoAbort()
 
 }
 

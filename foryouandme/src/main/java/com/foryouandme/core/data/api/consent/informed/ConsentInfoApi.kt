@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.consent.informed
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.consent.informed.response.ConsentInfoResponse
+import com.foryouandme.data.repository.auth.consent.network.response.ConsentInfoResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.http.GET
 import retrofit2.http.Header

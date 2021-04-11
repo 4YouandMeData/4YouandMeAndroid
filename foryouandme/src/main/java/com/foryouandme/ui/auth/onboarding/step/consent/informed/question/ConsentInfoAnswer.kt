@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import com.foryouandme.R
+import com.foryouandme.databinding.ConsentInfoAnswerBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.EConsentAnswerPayload.ANSWER
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.consent.informed.ConsentInfoAnswer
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.consent_info_answer.*
 
 enum class EConsentAnswerPayload {
 
@@ -68,7 +67,7 @@ class ConsentAnswerViewHolder(
             b
         )
     }
-), LayoutContainer {
+) {
 
     init {
 
@@ -81,25 +80,31 @@ class ConsentAnswerViewHolder(
 
     override fun bind(item: ConsentAnswerItem, position: Int) {
 
-        answer_text.text = item.answer.text
-        answer_text.setTextColor(item.configuration.theme.secondaryColor.color())
+        val binding = ConsentInfoAnswerBinding.bind(itemView)
 
-        answer_button.isChecked = item.isSelected
-        answer_button.buttonTintList =
+        binding.answerText.text = item.answer.text
+        binding.answerText.setTextColor(item.configuration.theme.secondaryColor.color())
+
+        binding.answerButton.isChecked = item.isSelected
+        binding.answerButton.buttonTintList =
             ColorStateList.valueOf(item.configuration.theme.secondaryColor.color())
 
     }
 
-    override fun bind(item: ConsentAnswerItem, position: Int, payloads: List<EConsentAnswerPayload>) {
+    override fun bind(
+        item: ConsentAnswerItem,
+        position: Int,
+        payloads: List<EConsentAnswerPayload>
+    ) {
+
+        val binding = ConsentInfoAnswerBinding.bind(itemView)
 
         payloads.forEach {
             when (it) {
-                ANSWER -> answer_button.isChecked = item.isSelected
+                ANSWER -> binding.answerButton.isChecked = item.isSelected
             }
         }
     }
-
-    override val containerView: View? = itemView
 
     companion object {
 
@@ -108,5 +113,6 @@ class ConsentAnswerViewHolder(
                 { ConsentAnswerViewHolder(it, onAnswer) },
                 { _, droidItem -> droidItem is ConsentAnswerItem }
             )
+
     }
 }

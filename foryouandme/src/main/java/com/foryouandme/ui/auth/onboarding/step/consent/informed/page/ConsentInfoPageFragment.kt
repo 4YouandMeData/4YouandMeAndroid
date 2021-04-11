@@ -4,107 +4,108 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
-import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.consent.informed.ConsentInfo
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.show
+import com.foryouandme.core.ext.showBackSecondaryButton
 import com.foryouandme.core.view.page.EPageType
-import kotlinx.android.synthetic.main.consent_info.*
-import kotlinx.android.synthetic.main.consent_info_page.*
+import com.foryouandme.databinding.ConsentInfoPageBinding
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoPageToConsentInfoModalPage
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentInfoPageFragment : ConsentInfoSectionFragment(R.layout.consent_info_page) {
 
     private val args: ConsentInfoPageFragmentArgs by navArgs()
 
+    private val binding: ConsentInfoPageBinding?
+        get() = view?.let { ConsentInfoPageBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ConsentInfoStateUpdate.ConsentInfo -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentInfoAndConfiguration { config, state ->
+        setUpView()
+        applyData()
 
-            setupView()
-            applyData(config, state.consentInfo)
+    }
+
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
+
+    private fun setUpView() {
+
+        consentInfoFragment().binding?.toolbar?.apply {
+
+            show()
+
+            showBackSecondaryButton(imageConfiguration) { back() }
 
         }
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun applyData() {
 
-            consentInfoFragment().toolbar.apply {
+        val viewBinding = binding
+        val configuration = configuration
+        val consentInfo = viewModel.state.consentInfo
 
-                show()
-
-                showBackSecondaryButton(imageConfiguration) {
-                    startCoroutineAsync {
-                        viewModel.back(
-                            consentInfoNavController(),
-                            consentNavController(),
-                            onboardingStepNavController(),
-                            authNavController(),
-                            rootNavController()
-                        )
-                    }
-                }
-
-            }
-
-        }
-
-    private suspend fun applyData(configuration: Configuration, consentInfo: ConsentInfo): Unit =
-        evalOnMain {
-
+        if (viewBinding != null && configuration != null && consentInfo != null) {
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
             consentInfoFragment()
                 .showAbort(
-                    configuration,
                     configuration.theme.primaryColorEnd.color(),
                     ConsentInfoAbort.FromPage(args.id)
                 )
 
             consentInfo.pages.firstOrNull { it.id == args.id }
                 ?.let { data ->
-                    page.applyDataSuspend(
+                    viewBinding.page.applyData(
                         configuration = configuration,
                         page = data,
                         pageType = EPageType.INFO,
-                        action1 = { option ->
-                            option.fold(
-                                {
-                                    startCoroutineAsync {
-                                        viewModel.question(
-                                            consentInfoNavController(),
-                                            false
-                                        )
-                                    }
-                                },
-                                {
-                                    startCoroutineAsync {
-                                        viewModel.page(
-                                            consentInfoNavController(),
-                                            it.id,
-                                            false
-                                        )
-                                    }
-                                })
+                        action1 = {
+                            if (it == null) question(false)
+                            else page(it.id, false)
                         },
-                        extraStringAction = {
-                            startCoroutineAsync { viewModel.web(rootNavController(), it) }
-                        },
-                        extraPageAction = {
-                            startCoroutineAsync {
-                                viewModel.modalPage(
-                                    consentInfoNavController(),
-                                    it.id
-                                )
-                            }
-                        }
+                        extraStringAction = { web(it) },
+                        extraPageAction = { modalPage(it.id) }
                     )
                 }
-
         }
+    }
+
+    private fun modalPage(id: String) {
+        navigator.navigateTo(
+            consentInfoNavController(),
+            ConsentInfoPageToConsentInfoModalPage(id)
+        )
+    }
+
 }
