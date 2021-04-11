@@ -1,219 +1,176 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.optin
 
-import arrow.core.Either
-import arrow.core.getOrElse
-import arrow.core.left
-import arrow.core.right
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.OptInModule
-import com.foryouandme.core.arch.deps.modules.PermissionModule
-import com.foryouandme.core.arch.deps.modules.nullToError
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.navigation.*
 import com.foryouandme.core.arch.navigation.action.alertAction
 import com.foryouandme.core.arch.navigation.action.toastAction
-import com.foryouandme.core.cases.optins.OptInsUseCase.getOptIns
-import com.foryouandme.core.cases.optins.OptInsUseCase.setPermission
-import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
-import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermissions
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.usecase.auth.consent.GetOptInsUseCase
+import com.foryouandme.domain.usecase.auth.consent.SetOptInPermissionUseCase
+import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
+import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.mapNotNull
+import com.foryouandme.ui.auth.AuthNavController
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
+import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
+@HiltViewModel
+class OptInViewModel @Inject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<OptInStateUpdate>,
+    private val loadingFlow: LoadingFlow<OptInLoading>,
+    private val errorFlow: ErrorFlow<OptInError>,
+    private val navigationFlow: NavigationFlow,
+    private val navigator: Navigator,
+    private val getOptInsUseCase: GetOptInsUseCase,
+    private val setOptInPermissionUseCase: SetOptInPermissionUseCase,
+    private val requestPermissionUseCase: RequestPermissionUseCase,
+    private val requestPermissionsUseCase: RequestPermissionsUseCase
+) : ViewModel() {
 
-class OptInViewModel(
-    navigator: Navigator,
-    private val optInModule: OptInModule,
-    private val permissionModule: PermissionModule
-) : BaseViewModel<
-        OptInState,
-        OptInStateUpdate,
-        OptInError,
-        OptInLoading>
-    (navigator = navigator) {
+    /* --- state --- */
 
-    /* --- data --- */
+    var state = OptInState()
+        private set
 
-    suspend fun initialize(
-        rootNavController: RootNavController
-    ): Either<ForYouAndMeError, OptInState> {
+    /* --- flow --- */
 
-        showLoading(OptInLoading.Initialization)
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
 
-        val state =
-            optInModule.getOptIns()
-                .nullToError()
-                .handleAuthError(rootNavController, navigator)
-                .fold(
-                    {
-                        setError(it, OptInError.Initialization)
-                        it.left()
-                    },
-                    { optIns ->
+    /* --- opt ins --- */
 
-                        val state = OptInState(optIns, emptyMap())
+    private suspend fun getOptIn() {
 
-                        setState(state) { OptInStateUpdate.Initialization(it.optIns) }
+        loadingFlow.show(OptInLoading.OptIn)
 
-                        state.right()
-                    }
-                )
+        val optIns = getOptInsUseCase()!!
 
-        hideLoading(OptInLoading.Initialization)
+        state = state.copy(optIns = optIns, permissions = emptyMap())
+        stateUpdateFlow.update(OptInStateUpdate.OptIn)
 
-        return state
+        loadingFlow.hide(OptInLoading.OptIn)
 
     }
 
     /* --- permission --- */
 
     private suspend fun setPermission(
-        rootNavController: RootNavController,
-        optInNavController: OptInNavController,
         index: Int,
         permissionId: String,
         agree: Boolean
-    ): Unit {
+    ) {
 
-        showLoading(OptInLoading.PermissionSet)
+        loadingFlow.show(OptInLoading.Permission)
 
-        optInModule.setPermission(permissionId, agree)
-            .handleAuthError(rootNavController, navigator).fold(
-                { setError(it, OptInError.PermissionSet) },
-                { nextPermission(optInNavController, index) }
-            )
+        setOptInPermissionUseCase(permissionId, agree)
+        nextPermission(index)
 
-        hideLoading(OptInLoading.PermissionSet)
+        loadingFlow.hide(OptInLoading.Permission)
 
     }
 
-    suspend fun requestPermissions(
-        configuration: Configuration,
-        rootNavController: RootNavController,
-        optInNavController: OptInNavController,
-        index: Int
-    ): Unit {
+    private suspend fun nextPermission(currentIndex: Int) {
 
-        mapNotNull(
-            state().permissions[index],
-            state().optIns.permissions.getOrNull(index)
-        )
-            ?.let { (agree, optIn) ->
-
-                if (agree) {
-
-                    when (optIn.systemPermissions.size) {
-                        0 ->
-                            setPermission(
-                                rootNavController,
-                                optInNavController,
-                                index,
-                                optIn.id,
-                                agree
-                            )
-                        1 -> {
-                            permissionModule.requestPermission(optIn.systemPermissions[0])
-                            setPermission(
-                                rootNavController,
-                                optInNavController,
-                                index,
-                                optIn.id,
-                                agree
-                            )
-                        }
-                        else -> {
-                            permissionModule.requestPermissions(optIn.systemPermissions)
-                            setPermission(
-                                rootNavController,
-                                optInNavController,
-                                index,
-                                optIn.id,
-                                agree
-                            )
-                        }
-                    }
-
-                } else {
-
-                    if (optIn.mandatory)
-                        alert(
-                            configuration.text.onboarding.optIn.mandatoryTitle,
-                            optIn.mandatoryDescription
-                                .getOrElse { configuration.text.onboarding.optIn.mandatoryDefault },
-                            configuration.text.onboarding.optIn.mandatoryClose
-                        )
-                    else nextPermission(optInNavController, index)
-                }
-            }
-
-    }
-
-    suspend fun setPermissionState(id: Int, agree: Boolean): Unit {
-
-        val map =
-            state().permissions.toMutableMap().also { it[id] = agree }
-
-        setState(state().copy(permissions = map))
-        { OptInStateUpdate.Permissions(map) }
-
-    }
-
-    /* --- navigation --- */
-
-    suspend fun back(
-        optInNavController: OptInNavController,
-        consentNavController: ConsentNavController,
-        onboardingStepNavController: OnboardingStepNavController,
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Boolean =
-        if (navigator.backSuspend(optInNavController).not())
-            if (navigator.backSuspend(consentNavController).not())
-                if (navigator.backSuspend(onboardingStepNavController).not())
-                    if (navigator.backSuspend(authNavController).not())
-                        navigator.backSuspend(rootNavController)
-                    else true
-                else true
-            else true
-        else true
-
-    suspend fun permission(optInNavController: OptInNavController): Unit {
-
-        if (state().optIns.permissions.firstOrNull() != null)
-            navigator.navigateToSuspend(optInNavController, OptInWelcomeToOptInPermission(0))
-
-    }
-
-    private suspend fun nextPermission(
-        optInNavController: OptInNavController,
-        currentIndex: Int
-    ): Unit {
-
-        if (state().optIns.permissions.size > (currentIndex + 1))
-            navigator.navigateToSuspend(
-                optInNavController,
+        if (state.optIns?.permissions?.size ?: 0 > (currentIndex + 1))
+            navigationFlow.navigateTo(
                 OptInPermissionToOptInPermission(currentIndex + 1)
             )
-        else success(optInNavController)
+        else navigationFlow.navigateTo(OptInPermissionToOptInSuccess)
 
     }
 
-    private suspend fun success(optInNavController: OptInNavController): Unit =
-        navigator.navigateToSuspend(optInNavController, OptInPermissionToOptInSuccess)
+    private suspend fun requestPermissions(configuration: Configuration, index: Int) {
 
-    suspend fun consentUser(consentNavController: ConsentNavController): Unit =
-        navigator.navigateToSuspend(consentNavController, OptInToConsentUser)
+        val agree = state.permissions[index]
+        val optIn = state.optIns?.permissions?.getOrNull(index)
 
-    suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performActionSuspend(toastAction(error))
+        if (agree != null && optIn != null) {
+            if (agree) {
 
-    private suspend fun alert(title: String, message: String, close: String): Unit =
-        navigator.performActionSuspend(alertAction(title, message, close))
+                when (optIn.systemPermissions.size) {
+                    0 ->
+                        setPermission(
+                            index,
+                            optIn.id,
+                            agree
+                        )
+                    1 -> {
+                        requestPermissionUseCase(optIn.systemPermissions[0])
+                        setPermission(
+                            index,
+                            optIn.id,
+                            agree
+                        )
+                    }
+                    else -> {
+                        requestPermissionsUseCase(optIn.systemPermissions)
+                        setPermission(
+                            index,
+                            optIn.id,
+                            agree
+                        )
+                    }
+                }
 
-    suspend fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateToSuspend(navController, AnywhereToWeb(url))
+            } else {
+
+                if (optIn.mandatory)
+                    alert(
+                        configuration.text.onboarding.optIn.mandatoryTitle,
+                        optIn.mandatoryDescription
+                            ?: configuration.text.onboarding.optIn.mandatoryDefault,
+                        configuration.text.onboarding.optIn.mandatoryClose
+                    )
+                else nextPermission(index)
+
+            }
+        }
+    }
+
+    private fun alert(title: String, message: String, close: String) {
+        navigator.performAction(alertAction(title, message, close))
+    }
+
+    private suspend fun setPermissionState(id: Int, agree: Boolean) {
+
+        val map = state.permissions.toMutableMap().also { it[id] = agree }
+
+        state = state.copy(permissions = map)
+        stateUpdateFlow.update(OptInStateUpdate.Permissions)
+
+    }
+
+    /* --- state event --- */
+
+    fun execute(stateEvent: OptInStateEvent) {
+        when(stateEvent) {
+            OptInStateEvent.GetOptIn ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    OptInError.OptIn,
+                    loadingFlow,
+                    OptInLoading.OptIn
+                ) { getOptIn() }
+            is OptInStateEvent.SetPermission ->
+                viewModelScope.launchSafe { setPermissionState(stateEvent.id, stateEvent.agree) }
+            is OptInStateEvent.RequestPermission ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    OptInError.Permission,
+                    loadingFlow,
+                    OptInLoading.Permission
+                ) { requestPermissions(stateEvent.configuration, stateEvent.index) }
+        }
+    }
 
 }

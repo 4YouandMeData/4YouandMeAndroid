@@ -1,32 +1,48 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.optin
 
 import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.optins.OptIns
 
 data class OptInState(
-    val optIns: OptIns,
-    val permissions: Map<Int, Boolean>
+    val optIns: OptIns? = null,
+    val permissions: Map<Int, Boolean> = emptyMap()
 )
 
 sealed class OptInStateUpdate {
 
-    data class Initialization(val optIns: OptIns) : OptInStateUpdate()
-
-    data class Permissions(val permissions: Map<Int, Boolean>) : OptInStateUpdate()
+    object OptIn : OptInStateUpdate()
+    object Permissions : OptInStateUpdate()
 
 }
 
 sealed class OptInLoading {
 
-    object Initialization : OptInLoading()
-    object PermissionSet : OptInLoading()
+    object OptIn : OptInLoading()
+    object Permission : OptInLoading()
 
 }
 
 sealed class OptInError {
 
-    object Initialization : OptInError()
-    object PermissionSet : OptInError()
+    object OptIn : OptInError()
+    object Permission : OptInError()
+
+}
+
+sealed class OptInStateEvent {
+
+    object GetOptIn : OptInStateEvent()
+
+    data class RequestPermission(
+        val configuration: Configuration,
+        val index: Int
+    ) : OptInStateEvent()
+
+    data class SetPermission(
+        val id: Int,
+        val agree: Boolean
+    ) : OptInStateEvent()
 
 }
 

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
@@ -13,6 +14,7 @@ import com.foryouandme.core.arch.navigation.AnywhereToWelcome
 import com.foryouandme.core.ext.*
 import com.foryouandme.databinding.ConsentInfoBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.consent_info.*
 import kotlinx.coroutines.flow.onEach
@@ -60,7 +62,7 @@ class ConsentInfoFragment : ConsentSectionFragment(R.layout.consent_info) {
 
         viewModel.navigation
             .unwrapEvent(name)
-            .onEach { navigator.navigateTo(consentNavController(), it) }
+            .onEach { navigator.navigateTo(consentInfoNavController(), it) }
             .observeIn(this)
 
     }
@@ -139,5 +141,8 @@ class ConsentInfoFragment : ConsentSectionFragment(R.layout.consent_info) {
         }
 
     }
+
+    private fun consentInfoNavController(): ConsentInfoNavController =
+        ConsentInfoNavController(childFragmentManager.fragments[0].findNavController())
 
 }

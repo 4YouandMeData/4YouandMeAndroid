@@ -1,9 +1,5 @@
-package com.foryouandme.core.data.api.optins.response
+package com.foryouandme.data.repository.auth.consent.network.response
 
-import arrow.core.Option
-import arrow.core.extensions.fx
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.entity.optins.OptInsPermission
 import com.squareup.moshi.Json
@@ -23,29 +19,28 @@ data class OptInsPermissionResponse(
     @field:Json(name = "mandatory_description") val mandatoryDescription: String? = null
 ) : Resource() {
 
-    fun toOptInsPermission(): Option<OptInsPermission> =
-        Option.fx {
-
-            OptInsPermission(
-                id,
-                image.toOption(),
-                !title.toOption(),
-                !body.toOption(),
-                !position.toOption(),
-                !agreeText.toOption(),
-                !disagreeText.toOption(),
-                systemPermissions.toOption()
-                    .getOrElse { emptyList() }
-                    .mapNotNull { mapPermission(it) },
-                mandatory.toOption().getOrElse { false },
-                mandatoryDescription.toOption()
-            )
+    fun toOptInsPermission(): OptInsPermission? =
+        when (null) {
+            title, body, position, agreeText, disagreeText -> null
+            else ->
+                OptInsPermission(
+                    id,
+                    image,
+                    title,
+                    body,
+                    position,
+                    agreeText,
+                    disagreeText,
+                    systemPermissions?.mapNotNull { mapPermission(it) } ?: emptyList(),
+                    mandatory ?: false,
+                    mandatoryDescription
+                )
 
         }
 }
 
 fun List<OptInsPermissionResponse>.toOptInsPermissions(): List<OptInsPermission> =
-    mapNotNull { it.toOptInsPermission().orNull() }
+    mapNotNull { it.toOptInsPermission() }
 
 private fun mapPermission(permission: String): Permission? =
     when (permission) {

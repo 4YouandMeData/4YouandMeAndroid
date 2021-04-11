@@ -3,52 +3,85 @@ package com.foryouandme.ui.auth.onboarding.step.consent.optin.welcome
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.optins.OptIns
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
-import kotlinx.android.synthetic.main.opt_in.*
-import kotlinx.android.synthetic.main.opt_in_welcome.*
+import com.foryouandme.databinding.OptInWelcomeBinding
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInStateUpdate
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInWelcomeToOptInPermission
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class OptInWelcomeFragment : OptInSectionFragment(R.layout.opt_in_welcome) {
+
+    private val binding: OptInWelcomeBinding?
+        get() = view?.let { OptInWelcomeBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    OptInStateUpdate.OptIn -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        optInAndConfiguration { config, state ->
+        setUpView()
+        applyData()
 
-            setupView()
-            applyConfiguration(config, state.optIns)
-
-        }
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            optInFragment().toolbar.hide()
+    private fun setUpView() {
 
-        }
+        optInFragment().binding?.toolbar?.hide()
 
-    private suspend fun applyConfiguration(configuration: Configuration, optIns: OptIns): Unit =
-        evalOnMain {
+    }
+
+    private fun applyData() {
+
+        val viewBinding = binding
+        val configuration = configuration
+        val optIns = viewModel.state.optIns
+
+        if (viewBinding != null && configuration != null && optIns != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyDataSuspend(
+            viewBinding.page.applyData(
                 configuration = configuration,
                 page = optIns.welcomePage,
                 pageType = EPageType.SUCCESS,
-                action1 = { startCoroutineAsync { viewModel.permission(optInNavController()) } },
+                action1 = {
+                    if (viewModel.state.optIns?.permissions?.firstOrNull() != null)
+                        navigator.navigateTo(
+                            optInNavController(),
+                            OptInWelcomeToOptInPermission(0)
+                        )
+                },
                 extraStringAction = {}
             )
 
         }
+
+    }
 
 }

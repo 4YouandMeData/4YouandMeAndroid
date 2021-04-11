@@ -1,11 +1,10 @@
 package com.foryouandme.entity.optins
 
-import arrow.core.Option
-import com.foryouandme.core.cases.permission.Permission
+import com.foryouandme.entity.permission.Permission
 
 data class OptInsPermission(
     val id: String,
-    val image: Option<String>,
+    val image: String?,
     val title: String,
     val body: String,
     val position: Int,
@@ -13,5 +12,5 @@ data class OptInsPermission(
     val disagreeText: String,
     val systemPermissions: List<Permission>,
     val mandatory: Boolean,
-    val mandatoryDescription: Option<String>
+    val mandatoryDescription: String?
 )

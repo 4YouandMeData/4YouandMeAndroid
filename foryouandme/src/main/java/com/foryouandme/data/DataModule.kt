@@ -20,8 +20,8 @@ import com.foryouandme.data.repository.auth.answer.network.response.notifiable.F
 import com.foryouandme.data.repository.auth.consent.network.response.ConsentInfoResponse
 import com.foryouandme.data.repository.auth.consent.network.response.ConsentReviewResponse
 import com.foryouandme.data.repository.auth.integration.network.response.IntegrationResponse
-import com.foryouandme.core.data.api.optins.response.OptInsPermissionResponse
-import com.foryouandme.core.data.api.optins.response.OptInsResponse
+import com.foryouandme.data.repository.auth.consent.network.response.OptInsPermissionResponse
+import com.foryouandme.data.repository.auth.consent.network.response.OptInsResponse
 import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.SerializeNulls

@@ -1,8 +1,8 @@
 package com.foryouandme.core.data.api.optins
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.optins.request.OptInPermissionRequest
-import com.foryouandme.core.data.api.optins.response.OptInsResponse
+import com.foryouandme.data.repository.auth.consent.network.request.OptInPermissionRequest
+import com.foryouandme.data.repository.auth.consent.network.response.OptInsResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.http.*
 
@@ -20,6 +20,6 @@ interface OptInsApi {
         @Header(Headers.AUTH) token: String,
         @Path("permission_id") permissionId: String,
         @Body request: OptInPermissionRequest
-    ): Unit
+    )
 
 }

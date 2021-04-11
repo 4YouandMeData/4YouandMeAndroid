@@ -3,70 +3,85 @@ package com.foryouandme.ui.auth.onboarding.step.consent.optin.success
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.optins.OptIns
+import com.foryouandme.databinding.OptInSuccessBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
-import kotlinx.android.synthetic.main.opt_in.*
-import kotlinx.android.synthetic.main.opt_in_success.*
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInStateUpdate
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInToConsentUser
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class OptInSuccessFragment : OptInSectionFragment(R.layout.opt_in_success) {
+
+    private val binding: OptInSuccessBinding?
+        get() = view?.let { OptInSuccessBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    OptInStateUpdate.OptIn -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        optInAndConfiguration { config, state ->
-
-            setupView()
-            applyData(config, state.optIns)
-
-        }
+        setUpView()
+        applyData()
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            optInFragment().apply {
+    private fun setUpView() {
 
-                toolbar.removeBackButton()
+        optInFragment().binding?.toolbar?.removeBackButton()
 
-            }
+    }
 
-        }
+    private fun applyData() {
 
-    private suspend fun applyData(configuration: Configuration, optIns: OptIns): Unit =
-        evalOnMain {
+        val viewBinding = binding
+        val configuration = configuration
+        val optIns = viewModel.state.optIns
+
+        if (viewBinding != null && configuration != null && optIns != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            page.applyDataSuspend(
+            viewBinding.page.applyData(
                 configuration = configuration,
                 page = optIns.successPage,
                 pageType = EPageType.SUCCESS,
                 action1 = {
-                    startCoroutineAsync {
-                        if (optInFragment().consentFragment().onlyOptInArg())
-                            optInFragment().consentFragment().next()
-                        else
-                            viewModel.consentUser(consentNavController())
-                    }
+                    if (optInFragment().consentFragment().onlyOptInArg())
+                        optInFragment().consentFragment().next()
+                    else
+                        navigator.navigateTo(consentNavController(), OptInToConsentUser)
                 },
                 extraStringAction = {
-                    startCoroutineAsync {
-                        viewModel.web(
-                            rootNavController(),
-                            it
-                        )
-                    }
+                    navigator.navigateTo(rootNavController(), AnywhereToWeb(it))
                 }
             )
-
         }
+    }
+
 }

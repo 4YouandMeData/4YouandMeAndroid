@@ -6,159 +6,172 @@ import android.util.Base64
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInError
-import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInLoading
-import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInState
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.html.setHtmlText
+import com.foryouandme.core.ext.removeBackButton
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.databinding.OptInPermissionBinding
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.configuration.checkbox.checkbox
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.html.setHtmlText
-import com.foryouandme.core.ext.removeBackButton
-import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.startCoroutineAsync
-import kotlinx.android.synthetic.main.opt_in.*
-import kotlinx.android.synthetic.main.opt_in_permission.*
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInError
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInLoading
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInStateEvent
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class OptInPermissionFragment : OptInSectionFragment(R.layout.opt_in_permission) {
 
     private val args: OptInPermissionFragmentArgs by navArgs()
 
+    private val binding: OptInPermissionBinding?
+        get() = view?.let { OptInPermissionBinding.bind(it) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
-                    OptInLoading.PermissionSet -> permission_loading.setVisibility(it.active)
+                    OptInLoading.Permission -> binding?.permissionLoading?.setVisibility(it.active)
+                    OptInLoading.OptIn -> applyData()
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) {
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
                 when (it.cause) {
-                    OptInError.PermissionSet ->
-                        startCoroutineAsync { viewModel.toastError(it.error) }
+                    OptInError.Permission -> errorToast(it.error, configuration)
+                    OptInError.OptIn -> Unit
                 }
             }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        optInAndConfiguration { config, state ->
-
-            setupView()
-            applyConfiguration(config, state)
-
-        }
+        setUpView()
+        applyData()
 
     }
 
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setUpView() {
 
-            optInFragment().toolbar.removeBackButton()
+        optInFragment().binding?.toolbar?.removeBackButton()
 
-        }
+    }
 
-    private suspend fun applyConfiguration(configuration: Configuration, state: OptInState): Unit =
-        evalOnMain {
+    private fun applyData() {
 
-            state.permissions[args.index]
+        val viewBinding = binding
+        val configuration = configuration
+
+        if (viewBinding != null && configuration != null) {
+
+            viewModel.state.permissions[args.index]
                 ?.let {
                     if (it) {
-                        agree.isChecked = true
-                        agree.jumpDrawablesToCurrentState()
+                        viewBinding.agree.isChecked = true
+                        viewBinding.agree.jumpDrawablesToCurrentState()
                     } else {
-                        disagree.isChecked = true
-                        disagree.jumpDrawablesToCurrentState()
+                        viewBinding.disagree.isChecked = true
+                        viewBinding.disagree.jumpDrawablesToCurrentState()
                     }
                 }
 
-            state.optIns.permissions.getOrNull(args.index)
+            viewModel.state.optIns?.permissions?.getOrNull(args.index)
                 ?.let { permission ->
 
                     setStatusBar(configuration.theme.secondaryColor.color())
 
-                    root.setBackgroundColor(configuration.theme.secondaryColor.color())
+                    viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
                     val decodedString =
-                        permission.image.map { Base64.decode(it, Base64.DEFAULT) }
+                        permission.image?.let { Base64.decode(it, Base64.DEFAULT) }
                     val decodedByte =
-                        decodedString.map { BitmapFactory.decodeByteArray(it, 0, it.size) }
+                        decodedString?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 
-                    decodedByte.map { icon.setImageBitmap(it) }
+                    decodedByte?.let { viewBinding.icon.setImageBitmap(it) }
 
-                    title.setHtmlText(permission.title, true)
-                    title.setTextColor(configuration.theme.primaryTextColor.color())
+                    viewBinding.title.setHtmlText(permission.title, true)
+                    viewBinding.title.setTextColor(configuration.theme.primaryTextColor.color())
 
-                    description.setHtmlText(permission.body, true)
-                    description.setTextColor(configuration.theme.primaryTextColor.color())
+                    viewBinding.description.setHtmlText(permission.body, true)
+                    viewBinding.description.setTextColor(configuration.theme.primaryTextColor.color())
 
-                    agree.buttonTintList =
+                    viewBinding.agree.buttonTintList =
                         checkbox(
                             configuration.theme.primaryColorEnd.color(),
                             configuration.theme.primaryColorEnd.color()
                         )
-                    agree.setOnCheckedChangeListener { _, isChecked ->
+                    viewBinding.agree.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
-                            disagree.isChecked = false
-                            startCoroutineAsync {
-                                viewModel.setPermissionState(args.index, true)
-                            }
-                            action_1.isEnabled = agree.isChecked || disagree.isChecked
+                            binding?.disagree?.isChecked = false
+                            viewModel.execute(OptInStateEvent.SetPermission(args.index, true))
+                            binding?.action1?.isEnabled =
+                                binding?.agree?.isChecked == true ||
+                                        binding?.disagree?.isChecked == true
                         }
                     }
 
 
-                    agree_text.text = permission.agreeText
-                    agree_text.setTextColor(configuration.theme.primaryTextColor.color())
+                    viewBinding.agreeText.text = permission.agreeText
+                    viewBinding.agreeText.setTextColor(configuration.theme.primaryTextColor.color())
 
-                    disagree.buttonTintList =
+                    viewBinding.disagree.buttonTintList =
                         checkbox(
                             configuration.theme.primaryColorEnd.color(),
                             configuration.theme.primaryColorEnd.color()
                         )
-                    disagree.setOnCheckedChangeListener { _, isChecked ->
+                    viewBinding.disagree.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
-                            agree.isChecked = false
-                            startCoroutineAsync {
-                                viewModel.setPermissionState(args.index, false)
-                            }
-                            action_1.isEnabled = agree.isChecked || disagree.isChecked
+                            binding?.agree?.isChecked = false
+                            viewModel.execute(OptInStateEvent.SetPermission(args.index, false))
                         }
+                        binding?.action1?.isEnabled =
+                            binding?.agree?.isChecked == true ||
+                                    binding?.disagree?.isChecked == true
                     }
 
-                    disagree_text.text = permission.disagreeText
-                    disagree_text.setTextColor(configuration.theme.primaryTextColor.color())
+                    viewBinding.disagreeText.text = permission.disagreeText
+                    viewBinding.disagreeText.setTextColor(configuration.theme.primaryTextColor.color())
 
-                    shadow.background =
+                    viewBinding.shadow.background =
                         HEXGradient.from(
                             HEXColor.transparent(),
                             configuration.theme.primaryTextColor
                         ).drawable(0.3f)
 
-                    action_1.text = configuration.text.onboarding.optIn.submitButton
-                    action_1.setTextColor(configuration.theme.secondaryColor.color())
-                    action_1.background = button(configuration.theme.primaryColorEnd.color())
-                    action_1.setOnClickListener {
-                        configuration {
-                            viewModel.requestPermissions(
-                                it,
-                                rootNavController(),
-                                optInNavController(),
+                    viewBinding.action1.text = configuration.text.onboarding.optIn.submitButton
+                    viewBinding.action1.setTextColor(configuration.theme.secondaryColor.color())
+                    viewBinding.action1.background =
+                        button(configuration.theme.primaryColorEnd.color())
+                    viewBinding.action1.setOnClickListener {
+                        viewModel.execute(
+                            OptInStateEvent.RequestPermission(
+                                configuration,
                                 args.index
                             )
-                        }
+                        )
                     }
-                    action_1.isEnabled = agree.isChecked || disagree.isChecked
+                    viewBinding.action1.isEnabled =
+                        viewBinding.agree.isChecked || viewBinding.disagree.isChecked
                 }
         }
+    }
 
 }
