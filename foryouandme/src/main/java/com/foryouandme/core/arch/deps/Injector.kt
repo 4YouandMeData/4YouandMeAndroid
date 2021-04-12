@@ -196,12 +196,4 @@ interface Injector {
             errorModule(),
             authModule()
         )
-
-    fun userSettingsModule(): UserSettingsModule =
-        UserSettingsModule(
-            userSettingsApi,
-            errorModule(),
-            authModule(),
-            analyticsModule()
-        )
 }

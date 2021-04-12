@@ -1,24 +1,23 @@
 package com.foryouandme.ui.aboutyou.dailysurveytime
 
+import com.foryouandme.entity.usersettings.UserSettings
+
 data class AboutYouDailySurveyTimeState(
-    val dailySurveyTime: String
+    val userSettings: UserSettings? = null
 )
 
 sealed class AboutYouDailySurveyTimeStateUpdate {
-
-    data class Initialization(
-        val dailySurveyTime: String
-    ) : AboutYouDailySurveyTimeStateUpdate()
-
+    object GetUserSettings : AboutYouDailySurveyTimeStateUpdate()
 }
 
 sealed class AboutYouDailySurveyTimeLoading {
-
-    object Initialization : AboutYouDailySurveyTimeLoading()
-    object Upload: AboutYouDailySurveyTimeLoading()
-
+    object GetUserSettings : AboutYouDailySurveyTimeLoading()
 }
 
 sealed class AboutYouDailySurveyTimeError {
-    object Initialization: AboutYouDailySurveyTimeError()
+    object GetUserSettings : AboutYouDailySurveyTimeError()
+}
+
+sealed class AboutYouDailySurveyTimeStateEvent {
+    object GetUserSettings : AboutYouDailySurveyTimeStateEvent()
 }

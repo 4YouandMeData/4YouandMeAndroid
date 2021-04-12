@@ -10,13 +10,11 @@ data class UserSettingsResponse(
     @field:Json(name = "daily_survey_time_seconds_since_midnight") val dailySurveyTimeSecondsSinceMidnight: Long? = null
 ) : Resource() {
 
-    fun toUserSettings(userSettings: UserSettingsResponse): UserSettings? {
-
-        val dailySurveyTime = userSettings?.dailySurveyTimeSecondsSinceMidnight
+    fun toUserSettings(): UserSettings? {
 
         return when (null) {
-            dailySurveyTime -> null
-            else -> UserSettings(dailySurveyTime)
+            dailySurveyTimeSecondsSinceMidnight -> null
+            else -> UserSettings(dailySurveyTimeSecondsSinceMidnight)
         }
 
     }

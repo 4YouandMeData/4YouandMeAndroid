@@ -2,87 +2,98 @@ package com.foryouandme.ui.aboutyou.dailysurveytime
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.ext.*
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showBackButton
+import com.foryouandme.databinding.DailySurveyTimeBinding
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
-import kotlinx.android.synthetic.main.daily_survey_time.*
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class AboutYouDailySurveyTimeFragment :
-    AboutYouSectionFragmentOld<AboutYouDailySurveyTimeViewModel>(R.layout.daily_survey_time) {
-    override val viewModel: AboutYouDailySurveyTimeViewModel by lazy {
+    AboutYouSectionFragment(R.layout.daily_survey_time) {
 
-        viewModelFactory(
-            this,
-            getFactory {
-                AboutYouDailySurveyTimeViewModel(
-                    navigator,
-                    injector.userSettingsModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
+    private val viewModel: AboutYouDailySurveyTimeViewModel by viewModels()
 
-    }
+    private val binding: DailySurveyTimeBinding?
+        get() = view?.let { DailySurveyTimeBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { state ->
-                when (state) {
-                    is AboutYouDailySurveyTimeStateUpdate.Initialization -> {
-
-                    }
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
+                when (it.task) {
+                    AboutYouDailySurveyTimeLoading.GetUserSettings ->
+                        binding?.loading?.setVisibility(it.active)
                 }
             }
+            .observeIn(this)
+
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    AboutYouDailySurveyTimeError.GetUserSettings ->
+                        binding?.error?.setError(it.error, configuration) {
+                            viewModel.execute(AboutYouDailySurveyTimeStateEvent.GetUserSettings)
+                        }
+                }
+            }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configuration {
-            applyConfiguration(it)
-        }
+        applyConfiguration()
+        if (viewModel.state.userSettings == null)
+            viewModel.execute(AboutYouDailySurveyTimeStateEvent.GetUserSettings)
 
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        startCoroutineAsync { viewModel.logScreenViewed() }
-
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
     }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
 
-            setStatusBar(configuration.theme.primaryColorStart.color())
+        val viewBinding = binding
+        val config = configuration
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+        if (viewBinding != null && config != null) {
 
-            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-            toolbar.showBackButtonSuspend(imageConfiguration) {
+            setStatusBar(config.theme.primaryColorStart.color())
+
+            viewBinding.root.setBackgroundColor(config.theme.secondaryColor.color())
+
+            viewBinding.toolbar.setBackgroundColor(config.theme.primaryColorStart.color())
+            viewBinding.toolbar.showBackButton(imageConfiguration) {
                 aboutYouViewModel.back(aboutYouNavController(), rootNavController())
             }
 
-            title.setTextColor(configuration.theme.secondaryColor.color())
-            title.text = configuration.text.profile.fifthItem
+            viewBinding.title.setTextColor(config.theme.secondaryColor.color())
+            viewBinding.title.text = config.text.profile.fifthItem
 
-            description.setTextColor(configuration.theme.primaryTextColor.color())
-            description.text = configuration.text.profile.dailySurveyTimeDescription
+            viewBinding.description.setTextColor(config.theme.primaryTextColor.color())
+            viewBinding.description.text = config.text.profile.dailySurveyTimeDescription
 
-            time_picker.setIs24HourView(false)
+            viewBinding.timePicker.setIs24HourView(false)
 
-            save_button.text = "Save"
-            save_button.setTextColor(configuration.theme.secondaryTextColor.color())
-            save_button.background = button(configuration.theme.primaryColorStart.color())
-            save_button.setOnClickListenerAsync { viewModel.sendTimeUpdate() }
+            viewBinding.saveButton.text = "Save"
+            viewBinding.saveButton.setTextColor(config.theme.secondaryTextColor.color())
+            viewBinding.saveButton.background = button(config.theme.primaryColorStart.color())
+            viewBinding.saveButton.setOnClickListener { //viewModel.sendTimeUpdate() }
+            }
         }
-
-
+    }
 }

@@ -66,6 +66,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
+    <com.foryouandme.core.arch.error.ErrorView
+        android:id="@+id/error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/save_button"
         android:layout_width="324dp"

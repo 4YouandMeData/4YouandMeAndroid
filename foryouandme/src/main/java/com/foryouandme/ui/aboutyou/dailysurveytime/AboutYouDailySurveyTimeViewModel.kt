@@ -1,55 +1,58 @@
 package com.foryouandme.ui.aboutyou.dailysurveytime
 
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.UserSettingsModule
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.core.cases.usersettings.UserSettingsUseCase.getUserSettings
-import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.entity.configuration.Configuration
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.domain.usecase.usersettings.GetUserSettingsUseCase
+import com.foryouandme.domain.usecase.usersettings.UpdateUserSettingsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AboutYouDailySurveyTimeViewModel(
-    navigator: Navigator,
-    private val userSettingsModule: UserSettingsModule,
-    private val analyticsModule: AnalyticsModule
-) :
-    BaseViewModel<
-            AboutYouDailySurveyTimeState,
-            AboutYouDailySurveyTimeStateUpdate,
-            AboutYouDailySurveyTimeError,
-            AboutYouDailySurveyTimeLoading>(navigator) {
+@HiltViewModel
+class AboutYouDailySurveyTimeViewModel @Inject constructor(
+    private val loadingFlow: LoadingFlow<AboutYouDailySurveyTimeLoading>,
+    private val errorFlow: ErrorFlow<AboutYouDailySurveyTimeError>,
+    private val stateUpdateFlow: StateUpdateFlow<AboutYouDailySurveyTimeStateUpdate>,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase,
+    private val updateUserSettingsUseCase: UpdateUserSettingsUseCase
+) : ViewModel() {
 
-    suspend fun initialize(configuration: Configuration) {
+    var state = AboutYouDailySurveyTimeState()
+        private set
 
-        showLoading(AboutYouDailySurveyTimeLoading.Initialization)
+    /* --- flow --- */
 
-        val userSettingsResponse =
-            suspend {
-                userSettingsModule.getUserSettings()
-            }
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val stateUpdate = stateUpdateFlow.stateUpdates
 
-        //setState(AboutYouDailySurveyTimeState())
-        //{ AboutYouDailySurveyTimeStateUpdate.Initialization(it.) }
+    /* --- user settings --- */
 
-        hideLoading(AboutYouDailySurveyTimeLoading.Initialization)
+    private suspend fun getUserSettings() {
+        loadingFlow.show(AboutYouDailySurveyTimeLoading.GetUserSettings)
 
+        val userSettings = getUserSettingsUseCase()
+        state = state.copy(userSettings = userSettings)
+
+        stateUpdateFlow.update(AboutYouDailySurveyTimeStateUpdate.GetUserSettings)
+        loadingFlow.hide(AboutYouDailySurveyTimeLoading.GetUserSettings)
     }
 
-    suspend fun sendTimeUpdate(): Unit {
+    /* --- state event --- */
 
-        showLoading(AboutYouDailySurveyTimeLoading.Upload)
-
-
-
-        hideLoading(AboutYouDailySurveyTimeLoading.Upload)
-
+    fun execute(stateEvent: AboutYouDailySurveyTimeStateEvent) {
+        when (stateEvent) {
+            AboutYouDailySurveyTimeStateEvent.GetUserSettings ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    AboutYouDailySurveyTimeError.GetUserSettings,
+                    loadingFlow,
+                    AboutYouDailySurveyTimeLoading.GetUserSettings
+                ) {
+                    getUserSettings()
+                }
+        }
     }
-
-    /* --- navigation --- */
-
-    suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.DailySurveyTime, EAnalyticsProvider.ALL)
-
 }
