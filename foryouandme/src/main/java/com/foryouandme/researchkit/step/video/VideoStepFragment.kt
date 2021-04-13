@@ -20,7 +20,10 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.action.permissionSettingsAction
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.ext.catchToNull
+import com.foryouandme.core.ext.hide
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepVideoDiaryBinding
 import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.entity.configuration.background.roundTopBackground
@@ -30,6 +33,7 @@ import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.permission.PermissionResult
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
 import java.io.File
 import javax.inject.Inject
@@ -62,7 +66,11 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                         if(videoViewModel.state.recordTimeSeconds >=
                             videoViewModel.state.maxRecordTimeSeconds) {
                             videoViewModel.execute(VideoStateEvent.Pause)
-                            review()
+                            lifecycleScope.launchSafe {
+                                pause()
+                                delay(1000) // oppure aumenta il delay
+                                review()
+                            }
                         }
                     }
                     is VideoStateUpdate.Recording -> {
