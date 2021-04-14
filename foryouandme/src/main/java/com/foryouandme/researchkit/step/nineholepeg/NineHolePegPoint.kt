@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.step.nineholepeg
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.calculateZoom
@@ -35,6 +36,12 @@ fun NineHolePegPoint(
         var startOffset by remember {
             mutableStateOf(getOffsetByPoint(startPoint, maxWidth, pointSize, pointPadding))
         }
+
+        var targetOffset by remember {
+            mutableStateOf(getOffsetByPoint(targetPoint, maxWidth, pointSize, pointPadding))
+        }
+
+        // Draggable Point
 
         Box(
             contentAlignment = Alignment.Center,
@@ -75,6 +82,24 @@ fun NineHolePegPoint(
             }
 
         }
+
+        // Target Point
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(targetOffset.x, targetOffset.y)
+
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(pointSize)
+                    .border(3.dp, Color.Black, CircleShape)
+                    .background(Color.Transparent)
+            )
+        }
+
     }
 
 }
