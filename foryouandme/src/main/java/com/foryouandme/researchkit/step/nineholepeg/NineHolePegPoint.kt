@@ -5,10 +5,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.forEachGesture
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,54 +15,66 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
 
 @Preview
 @Composable
 fun NineHolePegPoint(
+    startPoint: NineHolePegPointPosition = NineHolePegPointPosition.End,
+    targetPoint: NineHolePegPointPosition = NineHolePegPointPosition.Start,
+    pointSize: Dp = 100.dp,
+    pointPadding: Dp = 30.dp,
     onDragStart: () -> Unit = { },
     onDragEnd: () -> Unit = { },
 ) {
 
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-
-    ) {
+        var startOffset by remember {
+            mutableStateOf(getOffsetByPoint(startPoint, maxWidth, pointSize, pointPadding))
+        }
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier =
-            Modifier
-                .size(200.dp, 300.dp)
-                .background(Color.Cyan)
-                .pointerInput(Unit) {
-                    detectGrabGestures(
-                        { onDragStart() },
-                        onDragEnd,
-                        onDragEnd
-                    ) { change, dragAmount ->
-                        change.consumeAllChanges()
-                        offsetX += dragAmount.x
-                        offsetY += dragAmount.y
-                    }
-                }
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black)
-            )
-        }
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(startOffset.x, startOffset.y)
 
+        ) {
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                Modifier
+                    .size((pointSize + 100.dp), (pointSize + 200.dp))
+                    .background(Color.Cyan)
+                    .pointerInput(Unit) {
+                        detectGrabGestures(
+                            { onDragStart() },
+                            onDragEnd,
+                            onDragEnd
+                        ) { change, dragAmount ->
+                            change.consumeAllChanges()
+
+                            val offsetX = startOffset.x + dragAmount.x.toDp()
+                            val offsetY = startOffset.y + dragAmount.y.toDp()
+
+                            startOffset = DpOffset(offsetX, offsetY)
+
+                        }
+                    }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(pointSize)
+                        .clip(CircleShape)
+                        .background(Color.Black)
+                )
+            }
+
+        }
     }
 
 }
@@ -164,3 +173,21 @@ private suspend inline fun AwaitPointerEventScope.awaitDragOrUp(
 private fun PointerEvent.arePointersUp(pointerId: PointerId): Boolean =
     changes.firstOrNull { it.id == pointerId }?.pressed != true ||
             changes.filter { it.pressed }.size != 2
+
+private fun getOffsetByPoint(
+    point: NineHolePegPointPosition,
+    width: Dp,
+    pointSize: Dp,
+    padding: Dp
+): DpOffset {
+
+    val startX = (-width / 2) + (pointSize / 2) + padding
+    val endX = (width / 2) - (pointSize / 2) - padding
+
+    return when (point) {
+        NineHolePegPointPosition.Center -> DpOffset(0.dp, 0.dp)
+        NineHolePegPointPosition.End -> DpOffset(endX, 0.dp)
+        NineHolePegPointPosition.Start -> DpOffset(startX, 0.dp)
+    }
+
+}

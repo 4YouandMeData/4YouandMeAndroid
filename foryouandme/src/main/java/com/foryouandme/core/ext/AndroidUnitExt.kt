@@ -21,3 +21,13 @@ fun Int.dpToPx(): Int =
                 .toFloat()
                     / DisplayMetrics.DENSITY_DEFAULT))
         .roundToInt()
+
+fun Float.dpToPx(): Int =
+    (this * (
+            Resources.getSystem()
+                .displayMetrics
+                .densityDpi
+                .toFloat()
+                    / DisplayMetrics.DENSITY_DEFAULT))
+        .roundToInt()
+
