@@ -13,6 +13,9 @@ class FYAMNineHolePegTask(
 
     override val steps: List<Step> by lazy {
 
+        val primary =
+            configuration.theme.primaryColorEnd.color()
+
         val primaryText =
             configuration.theme.primaryTextColor.color()
 
@@ -26,7 +29,8 @@ class FYAMNineHolePegTask(
             nineHolePegDescriptionShape = null,
             nineHolePegDescriptionGrab = null,
             nineHolePegDescriptionRelease = null,
-            nineHolePegDescriptionColor = primaryText
+            nineHolePegDescriptionColor = primaryText,
+            holePegProgressColor = primary
         )
 
     }

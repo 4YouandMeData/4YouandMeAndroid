@@ -38,34 +38,47 @@ class NineHolePegViewModel @Inject constructor() : ViewModel() {
 
     private suspend fun endDragging(targetReached: Boolean) {
 
-        val attempt =
-            if (targetReached) {
-                // the target is reached, select the next attempt if available
-                val currentAttemptIndex =
-                    state.value
-                        .attempts
-                        .indexOfFirst { it.id == state.value.currentAttempt?.id }
+        val currentAttempt = state.value.currentAttempt
 
-                if (currentAttemptIndex >= 0)
-                    state.value.attempts.getOrNull(currentAttemptIndex + 1)
-                else
-                    null
+        if (currentAttempt != null) {
 
-            } else
-            // the target is not reached, increment the error count for this attempt
-                state.value.currentAttempt?.copy(
-                    errorCount = (state.value.currentAttempt?.errorCount ?: 0) + 1
+            val attempt =
+                if (targetReached) {
+
+                    // the target is reached
+
+                    if(currentAttempt.peg < currentAttempt.totalPegs)
+                        // go to next peg
+                        currentAttempt.copy(peg = currentAttempt.peg + 1)
+                    else {
+
+                        // select the next attempt if available
+                        val currentAttemptIndex =
+                            state.value
+                                .attempts
+                                .indexOfFirst { it.id == currentAttempt.id }
+
+                        if (currentAttemptIndex >= 0)
+                            state.value.attempts.getOrNull(currentAttemptIndex + 1)
+                        else
+                            null // no more attempts, end the step
+                    }
+
+                } else
+                    // the target is not reached, increment the error count for this attempt
+                    currentAttempt.copy(errorCount = currentAttempt.errorCount + 1)
+
+            val attempts = state.value.attempts.map { if (it.id == attempt?.id) attempt else it }
+
+            state.emit(
+                state.value.copy(
+                    isDragging = false,
+                    attempts = attempts,
+                    currentAttempt = attempt
                 )
-
-        val attempts = state.value.attempts.map { if (it.id == attempt?.id) attempt else it }
-
-        state.emit(
-            state.value.copy(
-                isDragging = false,
-                attempts = attempts,
-                currentAttempt = attempt
             )
-        )
+
+        }
 
     }
 

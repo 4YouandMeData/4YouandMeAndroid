@@ -12,5 +12,6 @@ class NineHolePegStep(
     val descriptionGrab: String? = null,
     val descriptionRelease: String? = null,
     val descriptionColor: Int,
+    val progressColor: Int,
     val subSteps: List<NineHolePegSubStep>
 ) : Step(identifier, null, null, { NineHolePegFragment() })

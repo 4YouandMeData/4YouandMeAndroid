@@ -37,12 +37,19 @@ fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp)
         )
-        if (attempt != null)
+        if (attempt != null) {
+            Spacer(modifier = Modifier.height(10.dp))
+            NineHoleAttemptPegProgress(
+                attempt = attempt,
+                color = state.step?.progressColor.toColor(),
+                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)
+            )
             NineHolePegPoint(
                 attempt = attempt,
                 onDragStart = { viewModel.execute(StartDragging) },
                 onDragEnd = { viewModel.execute(EndDragging(it)) }
             )
+        }
     }
 
 }

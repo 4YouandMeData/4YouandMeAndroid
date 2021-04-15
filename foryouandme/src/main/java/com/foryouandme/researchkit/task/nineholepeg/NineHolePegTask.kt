@@ -17,6 +17,7 @@ class NineHolePegTask(
     nineHolePegDescriptionGrab: String?,
     nineHolePegDescriptionRelease: String?,
     nineHolePegDescriptionColor: Int,
+    holePegProgressColor: Int
 ) : Task(TaskIdentifiers.NINE_HOLE_PEG, id) {
 
     override val steps: List<Step> by lazy {
@@ -29,6 +30,7 @@ class NineHolePegTask(
             nineHolePegDescriptionGrab = nineHolePegDescriptionGrab,
             nineHolePegDescriptionRelease = nineHolePegDescriptionRelease,
             nineHolePegDescriptionColor = nineHolePegDescriptionColor,
+            holePegProgressColor = holePegProgressColor
         )
 
     }
@@ -46,6 +48,7 @@ class NineHolePegTask(
             nineHolePegDescriptionGrab: String?,
             nineHolePegDescriptionRelease: String?,
             nineHolePegDescriptionColor: Int,
+            holePegProgressColor: Int,
             nineHolePegSubSteps: List<NineHolePegSubStep> = getNineHolePegDefaultSubSteps()
         ): List<Step> =
 
@@ -59,6 +62,7 @@ class NineHolePegTask(
                     descriptionGrab = nineHolePegDescriptionGrab,
                     descriptionRelease = nineHolePegDescriptionRelease,
                     descriptionColor = nineHolePegDescriptionColor,
+                    progressColor =holePegProgressColor,
                     subSteps = nineHolePegSubSteps,
                 )
             )
