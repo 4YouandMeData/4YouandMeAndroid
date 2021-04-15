@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -18,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
 
 @Preview
 @Composable
@@ -54,6 +56,8 @@ fun NineHolePegPoint(
             )
         }
 
+        var alpha by remember { mutableStateOf(1f) }
+
         // Draggable Point
         Box(
             contentAlignment = Alignment.Center,
@@ -71,9 +75,18 @@ fun NineHolePegPoint(
                     .background(Color.Cyan)
                     .pointerInput(Unit) {
                         detectGrabGestures(
-                            { onDragStart() },
-                            onDragEnd,
-                            onDragEnd
+                            {
+                                onDragStart()
+                                alpha = 0.5f
+                            },
+                            {
+                                onDragEnd()
+                                alpha = 1f
+                            },
+                            {
+                                onDragEnd()
+                                alpha = 1f
+                            }
                         ) { change, dragAmount ->
                             change.consumeAllChanges()
 
@@ -81,9 +94,19 @@ fun NineHolePegPoint(
                             val offsetY = startOffset.y + dragAmount.y.toDp()
 
                             startOffset = DpOffset(offsetX, offsetY)
-
+                            alpha =
+                                if (
+                                    isTargetReached(
+                                        startOffset,
+                                        targetOffset,
+                                        targetPoint,
+                                        pointSize
+                                    )
+                                ) 1f
+                                else 0.5f
                         }
                     }
+                    .alpha(alpha)
             ) {
                 Box(
                     modifier = Modifier
@@ -246,3 +269,21 @@ private fun getOffsetByTarget(
     }
 
 }
+
+private fun isTargetReached(
+    pointOffset: DpOffset,
+    targetOffset: DpOffset,
+    targetPoint: NineHolePegTargetPosition,
+    pointSize: Dp
+): Boolean =
+    when (targetPoint) {
+        NineHolePegTargetPosition.End -> (pointOffset.x - (pointSize / 2)) > targetOffset.x
+        NineHolePegTargetPosition.Start -> (pointOffset.x + (pointSize / 2)) < targetOffset.x
+        NineHolePegTargetPosition.EndCenter,
+        NineHolePegTargetPosition.StartCenter -> {
+
+            val offsetDiff = pointOffset - targetOffset
+            abs(offsetDiff.x.value) < 10 && abs(offsetDiff.y.value) < 10
+
+        }
+    }

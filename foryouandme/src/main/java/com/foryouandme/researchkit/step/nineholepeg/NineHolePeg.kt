@@ -36,8 +36,8 @@ fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
                 .padding(start = 20.dp, end = 20.dp)
         )
         NineHolePegPoint(
-            startPoint = NineHolePegPointPosition.End,
-            targetPoint = NineHolePegTargetPosition.Start,
+            startPoint = NineHolePegPointPosition.Start,
+            targetPoint = NineHolePegTargetPosition.End,
             onDragStart = { viewModel.execute(SetDragging(true)) },
             onDragEnd = { viewModel.execute(SetDragging(false)) }
         )
