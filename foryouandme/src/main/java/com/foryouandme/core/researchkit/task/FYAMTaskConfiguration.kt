@@ -1,8 +1,6 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.ext.web.CamCogInterface
-import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.policy.Policy
@@ -23,12 +21,10 @@ import com.foryouandme.researchkit.result.*
 import com.foryouandme.researchkit.result.fitness.toFitnessResult
 import com.foryouandme.researchkit.result.gait.toGaitResult
 import com.foryouandme.researchkit.step.Step
-import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
 import com.foryouandme.researchkit.task.TaskIdentifiers
-import com.foryouandme.researchkit.task.nineholepeg.NineHolePegTask
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -164,7 +160,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )
             }
             else -> null
-        }*/ FYAMNineHolePegTask(id, configuration)
+        }*/ FYAMHolePegTask(id, configuration)
 
     override suspend fun handleTaskResult(
         result: TaskResult,

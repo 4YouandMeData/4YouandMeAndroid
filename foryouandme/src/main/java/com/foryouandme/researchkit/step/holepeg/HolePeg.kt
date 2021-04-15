@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,13 +12,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.R
 import com.foryouandme.researchkit.step.common.StepHeader
-import com.foryouandme.researchkit.step.nineholepeg.NineHolePegSateEvent.EndDragging
-import com.foryouandme.researchkit.step.nineholepeg.NineHolePegSateEvent.StartDragging
+import com.foryouandme.researchkit.step.holepeg.HolePegSateEvent.EndDragging
+import com.foryouandme.researchkit.step.holepeg.HolePegSateEvent.StartDragging
 import com.foryouandme.ui.compose.toColor
 
 @Preview
 @Composable
-fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
+fun HolePeg(viewModel: HolePegViewModel = viewModel()) {
 
     val state by viewModel.stateFlow.collectAsState()
     val attempt = state.currentAttempt
@@ -39,12 +39,12 @@ fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
         )
         if (attempt != null) {
             Spacer(modifier = Modifier.height(10.dp))
-            NineHoleAttemptPegProgress(
+            HoleAttemptPegProgress(
                 attempt = attempt,
                 color = state.step?.progressColor.toColor(),
                 modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)
             )
-            NineHolePegPoint(
+            HolePegPoint(
                 attempt = attempt,
                 onDragStart = { viewModel.execute(StartDragging) },
                 onDragEnd = { viewModel.execute(EndDragging(it)) }
@@ -56,16 +56,16 @@ fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
 
 @Composable
 private fun getTitle(title: String?): String =
-    title ?: stringResource(id = R.string.NINE_HOLE_PEG_title)
+    title ?: stringResource(id = R.string.HOLE_PEG_title)
 
 @Composable
 private fun getDescription(description: String?, isDragging: Boolean): String {
 
     val stepDescription =
-        description ?: stringResource(id = R.string.NINE_HOLE_PEG_description_shape)
+        description ?: stringResource(id = R.string.HOLE_PEG_description_shape)
     val draggingText =
-        if (isDragging) stringResource(id = R.string.NINE_HOLE_PEG_release)
-        else stringResource(id = R.string.NINE_HOLE_PEG_grab)
+        if (isDragging) stringResource(id = R.string.HOLE_PEG_release)
+        else stringResource(id = R.string.HOLE_PEG_grab)
 
     return "$stepDescription\n$draggingText"
 

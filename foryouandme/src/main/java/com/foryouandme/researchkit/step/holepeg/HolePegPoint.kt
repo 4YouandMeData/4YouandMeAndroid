@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,14 +15,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.foryouandme.entity.task.nineholepeg.NineHolePegAttempt
-import com.foryouandme.entity.task.nineholepeg.NineHolePegPointPosition
-import com.foryouandme.entity.task.nineholepeg.NineHolePegSubStep
-import com.foryouandme.entity.task.nineholepeg.NineHolePegTargetPosition
+import com.foryouandme.entity.task.holepeg.HolePegAttempt
+import com.foryouandme.entity.task.holepeg.HolePegPointPosition
+import com.foryouandme.entity.task.holepeg.HolePegSubStep
+import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 
 @Composable
-fun NineHolePegPoint(
-    attempt: NineHolePegAttempt,
+fun HolePegPoint(
+    attempt: HolePegAttempt,
     pointSize: Dp = 100.dp,
     pointPadding: Dp = 30.dp,
     onDragStart: () -> Unit = { },
@@ -131,7 +131,7 @@ fun NineHolePegPoint(
         }
 
         // Target Point
-        NineHolePegTarget(attempt.step.target, targetOffset, pointSize)
+        HolePegTarget(attempt.step.target, targetOffset, pointSize)
 
     }
 
@@ -139,13 +139,13 @@ fun NineHolePegPoint(
 
 @Preview
 @Composable
-private fun NineHolePegPointPreview() {
-    NineHolePegPoint(
-        NineHolePegAttempt(
+private fun HolePegPointPreview() {
+    HolePegPoint(
+        HolePegAttempt(
             0,
-            NineHolePegSubStep(
-                NineHolePegPointPosition.End,
-                NineHolePegTargetPosition.StartCenter,
+            HolePegSubStep(
+                HolePegPointPosition.End,
+                HolePegTargetPosition.StartCenter,
             ),
             0
         )

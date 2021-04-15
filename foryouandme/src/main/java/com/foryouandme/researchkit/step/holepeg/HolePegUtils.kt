@@ -1,14 +1,14 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.foryouandme.entity.task.nineholepeg.NineHolePegPointPosition
-import com.foryouandme.entity.task.nineholepeg.NineHolePegTargetPosition
+import com.foryouandme.entity.task.holepeg.HolePegPointPosition
+import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 import kotlin.math.abs
 
 internal fun getOffsetByPoint(
-    point: NineHolePegPointPosition,
+    point: HolePegPointPosition,
     width: Dp,
     pointSize: Dp,
     padding: Dp
@@ -18,37 +18,37 @@ internal fun getOffsetByPoint(
     val endX = (width / 2) - (pointSize / 2) - padding
 
     return when (point) {
-        NineHolePegPointPosition.Center -> DpOffset(0.dp, 0.dp)
-        NineHolePegPointPosition.End -> DpOffset(endX, 0.dp)
-        NineHolePegPointPosition.Start -> DpOffset(startX, 0.dp)
+        HolePegPointPosition.Center -> DpOffset(0.dp, 0.dp)
+        HolePegPointPosition.End -> DpOffset(endX, 0.dp)
+        HolePegPointPosition.Start -> DpOffset(startX, 0.dp)
     }
 
 }
 
 internal fun getOffsetByTarget(
-    point: NineHolePegTargetPosition,
+    point: HolePegTargetPosition,
     width: Dp,
     pointSize: Dp,
     padding: Dp
 ): DpOffset {
 
     return when (point) {
-        NineHolePegTargetPosition.End ->
+        HolePegTargetPosition.End ->
             DpOffset(
                 (width / 2) - (pointSize) - (padding),
                 0.dp
             )
-        NineHolePegTargetPosition.EndCenter ->
+        HolePegTargetPosition.EndCenter ->
             DpOffset(
                 (width / 2) - (pointSize / 2) - padding,
                 0.dp
             )
-        NineHolePegTargetPosition.Start ->
+        HolePegTargetPosition.Start ->
             DpOffset(
                 (-width / 2) + (pointSize) + (padding),
                 0.dp
             )
-        NineHolePegTargetPosition.StartCenter ->
+        HolePegTargetPosition.StartCenter ->
             DpOffset(
                 (-width / 2) + (pointSize / 2) + padding,
                 0.dp
@@ -60,14 +60,14 @@ internal fun getOffsetByTarget(
 internal fun isTargetReached(
     pointOffset: DpOffset,
     targetOffset: DpOffset,
-    targetPoint: NineHolePegTargetPosition,
+    targetPoint: HolePegTargetPosition,
     pointSize: Dp
 ): Boolean =
     when (targetPoint) {
-        NineHolePegTargetPosition.End -> (pointOffset.x - (pointSize / 2)) > targetOffset.x
-        NineHolePegTargetPosition.Start -> (pointOffset.x + (pointSize / 2)) < targetOffset.x
-        NineHolePegTargetPosition.EndCenter,
-        NineHolePegTargetPosition.StartCenter -> {
+        HolePegTargetPosition.End -> (pointOffset.x - (pointSize / 2)) > targetOffset.x
+        HolePegTargetPosition.Start -> (pointOffset.x + (pointSize / 2)) < targetOffset.x
+        HolePegTargetPosition.EndCenter,
+        HolePegTargetPosition.StartCenter -> {
 
             val offsetDiff = pointOffset - targetOffset
             abs(offsetDiff.x.value) < 10 && abs(offsetDiff.y.value) < 10

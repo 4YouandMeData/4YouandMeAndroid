@@ -1,25 +1,25 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.entity.task.nineholepeg.toNineHolePegAttempts
+import com.foryouandme.entity.task.holepeg.toHolePegAttempts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class NineHolePegViewModel @Inject constructor() : ViewModel() {
+class HolePegViewModel @Inject constructor() : ViewModel() {
 
-    private val state = MutableStateFlow(NineHolePegState())
-    val stateFlow = state as StateFlow<NineHolePegState>
+    private val state = MutableStateFlow(HolePegState())
+    val stateFlow = state as StateFlow<HolePegState>
 
     /* --- step --- */
 
-    private suspend fun setStep(step: NineHolePegStep?) {
+    private suspend fun setStep(step: HolePegStep?) {
 
-        val attempts = step?.subSteps?.toNineHolePegAttempts() ?: emptyList()
+        val attempts = step?.subSteps?.toHolePegAttempts() ?: emptyList()
 
         state.emit(
             state.value.copy(
@@ -84,13 +84,13 @@ class NineHolePegViewModel @Inject constructor() : ViewModel() {
 
     /* --- state event --- */
 
-    fun execute(stateEvent: NineHolePegSateEvent) {
+    fun execute(stateEvent: HolePegSateEvent) {
         when (stateEvent) {
-            is NineHolePegSateEvent.SetStep ->
+            is HolePegSateEvent.SetStep ->
                 viewModelScope.launchSafe { setStep(stateEvent.step) }
-            is NineHolePegSateEvent.EndDragging ->
+            is HolePegSateEvent.EndDragging ->
                 viewModelScope.launchSafe { endDragging(stateEvent.targetReached) }
-            NineHolePegSateEvent.StartDragging ->
+            HolePegSateEvent.StartDragging ->
                 viewModelScope.launchSafe { startDragging() }
         }
     }

@@ -9,6 +9,6 @@ object TaskIdentifiers {
     const val SURVEY = "survey"
     const val TRAIL_MAKING = "trail_making"
     const val REACTION_TIME = "reaction_time"
-    const val NINE_HOLE_PEG = "nine_hole_peg"
+    const val HOLE_PEG = "hole_peg"
 
 }

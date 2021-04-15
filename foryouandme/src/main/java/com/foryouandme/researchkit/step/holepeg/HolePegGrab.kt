@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation

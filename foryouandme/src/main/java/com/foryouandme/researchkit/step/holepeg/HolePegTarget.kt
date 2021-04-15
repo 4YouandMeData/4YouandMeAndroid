@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -18,12 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.foryouandme.entity.task.nineholepeg.NineHolePegTargetPosition
+import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 
 @Preview
 @Composable
-fun NineHolePegTarget(
-    targetPosition: NineHolePegTargetPosition = NineHolePegTargetPosition.StartCenter,
+fun HolePegTarget(
+    targetPosition: HolePegTargetPosition = HolePegTargetPosition.StartCenter,
     targetOffset: DpOffset = DpOffset(0.dp, 0.dp),
     pointSize: Dp = 100.dp,
 ) {
@@ -36,12 +36,12 @@ fun NineHolePegTarget(
 
     ) {
         when (targetPosition) {
-            NineHolePegTargetPosition.End,
-            NineHolePegTargetPosition.Start ->
-                NineHolePegLineTarget()
-            NineHolePegTargetPosition.EndCenter,
-            NineHolePegTargetPosition.StartCenter ->
-                NineHolePegCircleTarget(pointSize)
+            HolePegTargetPosition.End,
+            HolePegTargetPosition.Start ->
+                HolePegLineTarget()
+            HolePegTargetPosition.EndCenter,
+            HolePegTargetPosition.StartCenter ->
+                HolePegCircleTarget(pointSize)
         }
     }
 
@@ -49,7 +49,7 @@ fun NineHolePegTarget(
 
 @Preview
 @Composable
-private fun NineHolePegCircleTarget(pointSize: Dp = 100.dp) {
+private fun HolePegCircleTarget(pointSize: Dp = 100.dp) {
     Box(
         modifier = Modifier
             .size(pointSize)
@@ -60,7 +60,7 @@ private fun NineHolePegCircleTarget(pointSize: Dp = 100.dp) {
 
 @Preview
 @Composable
-private fun NineHolePegLineTarget() {
+private fun HolePegLineTarget() {
     Canvas(modifier = Modifier.fillMaxSize()) {
         val canvasWidth = size.width
         val canvasHeight = size.height

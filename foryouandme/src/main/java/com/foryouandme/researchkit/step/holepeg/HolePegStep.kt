@@ -1,9 +1,9 @@
-package com.foryouandme.researchkit.step.nineholepeg
+package com.foryouandme.researchkit.step.holepeg
 
-import com.foryouandme.entity.task.nineholepeg.NineHolePegSubStep
+import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.researchkit.step.Step
 
-class NineHolePegStep(
+class HolePegStep(
     identifier: String,
     val backgroundColor: Int,
     val title: String? = null,
@@ -13,5 +13,5 @@ class NineHolePegStep(
     val descriptionRelease: String? = null,
     val descriptionColor: Int,
     val progressColor: Int,
-    val subSteps: List<NineHolePegSubStep>
-) : Step(identifier, null, null, { NineHolePegFragment() })
+    val subSteps: List<HolePegSubStep>
+) : Step(identifier, null, null, { HolePegFragment() })

@@ -4,12 +4,12 @@ import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskIdentifiers
-import com.foryouandme.researchkit.task.nineholepeg.NineHolePegTask
+import com.foryouandme.researchkit.task.holepeg.HolePegTask
 
-class FYAMNineHolePegTask(
+class FYAMHolePegTask(
     id: String,
     private val configuration: Configuration
-) : Task(TaskIdentifiers.NINE_HOLE_PEG, id) {
+) : Task(TaskIdentifiers.HOLE_PEG, id) {
 
     override val steps: List<Step> by lazy {
 
@@ -22,14 +22,14 @@ class FYAMNineHolePegTask(
         val secondary =
             configuration.theme.secondaryColor.color()
 
-        NineHolePegTask.getNineHolePegCoreSteps(
-            nineHolePegBackgroundColor = secondary,
-            nineHolePegTitle = null,
-            nineHolePegTitleColor = primaryText,
-            nineHolePegDescriptionShape = null,
-            nineHolePegDescriptionGrab = null,
-            nineHolePegDescriptionRelease = null,
-            nineHolePegDescriptionColor = primaryText,
+        HolePegTask.getHolePegCoreSteps(
+            holePegBackgroundColor = secondary,
+            holePegTitle = null,
+            holePegTitleColor = primaryText,
+            holePegDescriptionShape = null,
+            holePegDescriptionGrab = null,
+            holePegDescriptionRelease = null,
+            holePegDescriptionColor = primaryText,
             holePegProgressColor = primary
         )
 
