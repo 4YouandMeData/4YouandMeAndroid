@@ -1,8 +1,8 @@
 object AndroidX {
 
-    object Activity : DependencyGroup("androidx.activity", "1.3.0-alpha02") {
+    object Activity : DependencyGroup("androidx.activity", "1.3.0-alpha06") {
 
-        object Compose: Dependency(Activity.group, "activity-compose", Activity.version)
+        object Compose : Dependency(Activity.group, "activity-compose", Activity.version)
 
     }
 
@@ -49,13 +49,7 @@ object AndroidX {
         "2.0.4"
     )
 
-    object Paging : DependencyGroup("androidx.paging", "3.0.0-alpha09") {
-
-        object Runtime : Dependency(Paging.group, "paging-runtime", Paging.version)
-
-    }
-
-    object Navigation : DependencyGroup("androidx.navigation", "2.3.4") {
+    object Navigation : DependencyGroup("androidx.navigation", "2.3.5") {
 
         object FragmentKtx :
             Dependency(Navigation.group, "navigation-fragment-ktx", Navigation.version)
@@ -80,7 +74,7 @@ object AndroidX {
             Dependency(
                 Lifecycle.group,
                 "lifecycle-viewmodel-compose",
-                "1.0.0-alpha02"
+                "1.0.0-alpha04"
             )
 
         object LiveDataKtx :
@@ -150,22 +144,24 @@ object AndroidX {
 
     object Compose {
 
-        object UI: Dependency("androidx.compose.ui", "ui", "1.0.0-beta01") {
+        const val versions: String = "1.0.0-beta04"
 
-            object UITooling: Dependency(UI.group, "ui-tooling", UI.version)
+        object UI : Dependency("androidx.compose.ui", "ui", versions) {
+
+            object UITooling : Dependency(UI.group, "ui-tooling", version)
 
         }
 
-        object Foundation: Dependency(
+        object Foundation : Dependency(
             "androidx.compose.foundation",
             "foundation",
-            "1.0.0-beta01"
+            versions
         )
 
-        object Material: Dependency(
+        object Material : Dependency(
             "androidx.compose.material",
             "material",
-            "1.0.0-beta01"
+            versions
         )
 
     }
@@ -185,8 +181,6 @@ object AndroidX {
         }
 
         object Core : Dependency(Test.group, "core", "1.3.0")
-
-        object Rules : Dependency(Test.group, "rules", "1.1.0")
 
         object Runner : Dependency(Test.group, "runner", "1.1.0")
 

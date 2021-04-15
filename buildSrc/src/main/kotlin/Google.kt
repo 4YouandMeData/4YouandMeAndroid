@@ -17,7 +17,7 @@ object Google {
         object AnalyticsKtx : Dependency(
             Firebase.group,
             "firebase-analytics-ktx",
-            "18.0.2"
+            "18.0.3"
         )
 
         object MessagingKtx : Dependency(
@@ -38,7 +38,7 @@ object Google {
 
     object Dagger : DependencyIndependentGroup("com.google.dagger") {
 
-        object Hilt : DependencyGroup(Dagger.group, "2.33-beta") {
+        object Hilt : DependencyGroup(Dagger.group, "2.34.1-beta") {
 
             object Android : Dependency(Dagger.group, "hilt-android", Hilt.version)
 

@@ -22,7 +22,7 @@ object GradlePlugin {
         Dependency(
             "androidx.navigation",
             "navigation-safe-args-gradle-plugin",
-            "2.3.4"
+            AndroidX.Navigation.version
         )
 
     object FirebaseCrashlytics :

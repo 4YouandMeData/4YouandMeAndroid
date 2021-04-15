@@ -1,6 +1,6 @@
 object Squareup {
 
-    object Moshi : DependencyGroup("com.squareup.moshi", "1.11.0") {
+    object Moshi : DependencyGroup("com.squareup.moshi", "1.12.0") {
 
         object Kotlin : Dependency(Moshi.group, "moshi-kotlin", Moshi.version)
 

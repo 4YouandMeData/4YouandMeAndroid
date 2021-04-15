@@ -122,9 +122,9 @@ class VideoRepositoryImpl @Inject constructor() : VideoRepository {
             val outputFilePath = "$outputPath/compressed.mp4"
 
             VideoCompressor.start(
-                sourceFilePath,
-                outputFilePath,
-                object : CompressionListener {
+                srcPath = sourceFilePath,
+                destPath = outputFilePath,
+                listener = object : CompressionListener {
 
                     override fun onProgress(percent: Float) {
                         // Update UI with progress value
@@ -154,7 +154,7 @@ class VideoRepositoryImpl @Inject constructor() : VideoRepository {
                     }
 
                 },
-                quality,
+                quality = quality,
                 isMinBitRateEnabled = false,
                 keepOriginalResolution = false
             )
