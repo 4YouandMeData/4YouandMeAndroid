@@ -5,10 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.foryouandme.entity.task.holepeg.HolePegAttempt
-import com.foryouandme.entity.task.holepeg.HolePegPointPosition
-import com.foryouandme.entity.task.holepeg.HolePegSubStep
-import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
+import com.foryouandme.entity.task.holepeg.*
 
 @Composable
 fun HoleAttemptPegProgress(
@@ -26,7 +23,7 @@ fun HoleAttemptPegProgress(
 }
 
 private fun getProgress(attempt: HolePegAttempt) =
-    attempt.peg.toFloat() / (attempt.totalPegs.toFloat() + 1)
+    attempt.peg.size.toFloat() / (attempt.totalPegs.toFloat() + 1)
 
 @Preview
 @Composable
@@ -37,7 +34,7 @@ fun HoleAttemptPegProgressPreview() {
             0,
             HolePegSubStep(HolePegPointPosition.End, HolePegTargetPosition.Start),
             0,
-            5,
+            listOf(Peg(), Peg(), Peg()),
             9
         ),
         Color.Magenta,
