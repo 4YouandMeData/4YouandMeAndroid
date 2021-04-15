@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.foryouandme.entity.task.nineholepeg.NineHolePegTargetPosition
 
 @Preview
 @Composable
@@ -25,7 +26,6 @@ fun NineHolePegTarget(
     targetPosition: NineHolePegTargetPosition = NineHolePegTargetPosition.StartCenter,
     targetOffset: DpOffset = DpOffset(0.dp, 0.dp),
     pointSize: Dp = 100.dp,
-    pointPadding: Dp = 30.dp,
 ) {
 
     Box(

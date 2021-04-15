@@ -12,7 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.R
 import com.foryouandme.researchkit.step.common.StepHeader
-import com.foryouandme.researchkit.step.nineholepeg.NineHolePegSateEvent.SetDragging
+import com.foryouandme.researchkit.step.nineholepeg.NineHolePegSateEvent.EndDragging
+import com.foryouandme.researchkit.step.nineholepeg.NineHolePegSateEvent.StartDragging
 import com.foryouandme.ui.compose.toColor
 
 @Preview
@@ -20,6 +21,7 @@ import com.foryouandme.ui.compose.toColor
 fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
 
     val state by viewModel.stateFlow.collectAsState()
+    val attempt = state.currentAttempt
 
     Column(
         modifier = Modifier
@@ -35,12 +37,12 @@ fun NineHolePeg(viewModel: NineHolePegViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp)
         )
-        NineHolePegPoint(
-            startPoint = NineHolePegPointPosition.Start,
-            targetPoint = NineHolePegTargetPosition.End,
-            onDragStart = { viewModel.execute(SetDragging(true)) },
-            onDragEnd = { viewModel.execute(SetDragging(false)) }
-        )
+        if (attempt != null)
+            NineHolePegPoint(
+                attempt = attempt,
+                onDragStart = { viewModel.execute(StartDragging) },
+                onDragEnd = { viewModel.execute(EndDragging(it)) }
+            )
     }
 
 }

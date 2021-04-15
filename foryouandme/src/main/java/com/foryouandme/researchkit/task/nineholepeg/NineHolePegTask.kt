@@ -1,5 +1,8 @@
 package com.foryouandme.researchkit.task.nineholepeg
 
+import com.foryouandme.entity.task.nineholepeg.NineHolePegPointPosition
+import com.foryouandme.entity.task.nineholepeg.NineHolePegSubStep
+import com.foryouandme.entity.task.nineholepeg.NineHolePegTargetPosition
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.nineholepeg.NineHolePegStep
 import com.foryouandme.researchkit.task.Task
@@ -43,6 +46,7 @@ class NineHolePegTask(
             nineHolePegDescriptionGrab: String?,
             nineHolePegDescriptionRelease: String?,
             nineHolePegDescriptionColor: Int,
+            nineHolePegSubSteps: List<NineHolePegSubStep> = getNineHolePegDefaultSubSteps()
         ): List<Step> =
 
             listOf(
@@ -54,7 +58,20 @@ class NineHolePegTask(
                     descriptionShape = nineHolePegDescriptionShape,
                     descriptionGrab = nineHolePegDescriptionGrab,
                     descriptionRelease = nineHolePegDescriptionRelease,
-                    descriptionColor = nineHolePegDescriptionColor
+                    descriptionColor = nineHolePegDescriptionColor,
+                    subSteps = nineHolePegSubSteps,
+                )
+            )
+
+        private fun getNineHolePegDefaultSubSteps(): List<NineHolePegSubStep> =
+            listOf(
+                NineHolePegSubStep(
+                    NineHolePegPointPosition.End,
+                    NineHolePegTargetPosition.StartCenter
+                ),
+                NineHolePegSubStep(
+                    NineHolePegPointPosition.Start,
+                    NineHolePegTargetPosition.EndCenter
                 )
             )
 
