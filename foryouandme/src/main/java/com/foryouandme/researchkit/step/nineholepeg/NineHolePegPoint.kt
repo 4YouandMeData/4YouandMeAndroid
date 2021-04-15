@@ -33,13 +33,20 @@ fun NineHolePegPoint(
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
         var startOffset by remember(startPoint, maxWidth, pointSize, pointPadding) {
-            mutableStateOf(getOffsetByPoint(startPoint, maxWidth, pointSize, pointPadding))
-        }
-
-        var targetOffset by remember(startPoint, maxWidth, pointSize, pointPadding) {
             mutableStateOf(
                 getOffsetByPoint(
-                    targetPoint.toNineHolePegPointPosition(),
+                    startPoint,
+                    maxWidth,
+                    pointSize,
+                    pointPadding
+                )
+            )
+        }
+
+        val targetOffset by remember(startPoint, maxWidth, pointSize, pointPadding) {
+            mutableStateOf(
+                getOffsetByTarget(
+                    targetPoint,
                     maxWidth,
                     pointSize,
                     pointPadding
@@ -48,7 +55,6 @@ fun NineHolePegPoint(
         }
 
         // Draggable Point
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -90,7 +96,7 @@ fun NineHolePegPoint(
         }
 
         // Target Point
-        NineHolePegTarget(targetOffset, pointSize, pointPadding)
+        NineHolePegTarget(targetPoint, targetOffset, pointSize, pointPadding)
 
     }
 
@@ -209,10 +215,34 @@ private fun getOffsetByPoint(
 
 }
 
-private fun NineHolePegTargetPosition.toNineHolePegPointPosition(): NineHolePegPointPosition =
-    when (this) {
-        NineHolePegTargetPosition.End,
-        NineHolePegTargetPosition.EndCenter -> NineHolePegPointPosition.End
-        NineHolePegTargetPosition.Start,
-        NineHolePegTargetPosition.StartCenter -> NineHolePegPointPosition.Start
+private fun getOffsetByTarget(
+    point: NineHolePegTargetPosition,
+    width: Dp,
+    pointSize: Dp,
+    padding: Dp
+): DpOffset {
+
+    return when (point) {
+        NineHolePegTargetPosition.End ->
+            DpOffset(
+                (width / 2) - (pointSize) - (padding),
+                0.dp
+            )
+        NineHolePegTargetPosition.EndCenter ->
+            DpOffset(
+                (width / 2) - (pointSize / 2) - padding,
+                0.dp
+            )
+        NineHolePegTargetPosition.Start ->
+            DpOffset(
+                (-width / 2) + (pointSize) + (padding),
+                0.dp
+            )
+        NineHolePegTargetPosition.StartCenter ->
+            DpOffset(
+                (-width / 2) + (pointSize / 2) + padding,
+                0.dp
+            )
     }
+
+}
