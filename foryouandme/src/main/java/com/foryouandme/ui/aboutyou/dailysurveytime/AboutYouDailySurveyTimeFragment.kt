@@ -14,6 +14,7 @@ import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
+import org.threeten.bp.LocalTime
 
 @AndroidEntryPoint
 class AboutYouDailySurveyTimeFragment :
@@ -27,11 +28,23 @@ class AboutYouDailySurveyTimeFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when(it) {
+                    AboutYouDailySurveyTimeStateUpdate.GetUserSettings -> applyTime()
+                    AboutYouDailySurveyTimeStateUpdate.SaveUserSettings -> back()
+                }
+            }
+            .observeIn(this)
+
         viewModel.loading
             .unwrapEvent(name)
             .onEach {
                 when (it.task) {
                     AboutYouDailySurveyTimeLoading.GetUserSettings ->
+                        binding?.loading?.setVisibility(it.active, false)
+                    AboutYouDailySurveyTimeLoading.SaveUserSettings ->
                         binding?.loading?.setVisibility(it.active)
                 }
             }
@@ -45,6 +58,8 @@ class AboutYouDailySurveyTimeFragment :
                         binding?.error?.setError(it.error, configuration) {
                             viewModel.execute(AboutYouDailySurveyTimeStateEvent.GetUserSettings)
                         }
+                    AboutYouDailySurveyTimeError.SaveUserSettings ->
+                        binding?.error?.setError(it.error, configuration)
                 }
             }
             .observeIn(this)
@@ -57,6 +72,8 @@ class AboutYouDailySurveyTimeFragment :
         applyConfiguration()
         if (viewModel.state.userSettings == null)
             viewModel.execute(AboutYouDailySurveyTimeStateEvent.GetUserSettings)
+        else
+            applyTime()
 
     }
 
@@ -89,11 +106,35 @@ class AboutYouDailySurveyTimeFragment :
 
             viewBinding.timePicker.setIs24HourView(false)
 
+            // TODO: move to configuration
             viewBinding.saveButton.text = "Save"
             viewBinding.saveButton.setTextColor(config.theme.secondaryTextColor.color())
             viewBinding.saveButton.background = button(config.theme.primaryColorStart.color())
-            viewBinding.saveButton.setOnClickListener { //viewModel.sendTimeUpdate() }
+            viewBinding.saveButton.setOnClickListener {
+
+                val timePicker = binding?.timePicker
+
+                if (timePicker != null) {
+
+                    val localTime = LocalTime.of(timePicker.hour, timePicker.minute)
+                    viewModel.execute(AboutYouDailySurveyTimeStateEvent.SaveUserSettings(localTime))
+
+                }
+
             }
         }
     }
+
+    private fun applyTime() {
+
+        val time = viewModel.state.userSettings?.dailySurveyTime
+        val viewBinding = binding
+
+        if (viewBinding != null && time != null) {
+            viewBinding.timePicker.hour = time.hour
+            viewBinding.timePicker.minute = time.minute
+        }
+
+    }
+
 }

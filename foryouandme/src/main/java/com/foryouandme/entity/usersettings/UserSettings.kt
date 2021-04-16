@@ -1,5 +1,7 @@
 package com.foryouandme.entity.usersettings
 
+import org.threeten.bp.LocalTime
+
 data class UserSettings(
-    val dailySurvetTime: Long
+    val dailySurveyTime: LocalTime
 )

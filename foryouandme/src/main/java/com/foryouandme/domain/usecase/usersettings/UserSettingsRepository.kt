@@ -6,6 +6,9 @@ interface UserSettingsRepository {
 
     suspend fun getUserSettings(token: String): UserSettings?
 
-    //suspend fun updateUserSettings(token: String, userSettingsUpdateRequest: UserSettingsUpdateRequest)
+    suspend fun updateUserSettings(
+        token: String,
+        userSettings: UserSettings
+    )
 
 }

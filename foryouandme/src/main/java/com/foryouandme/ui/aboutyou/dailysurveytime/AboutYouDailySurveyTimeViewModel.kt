@@ -7,6 +7,7 @@ import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.domain.usecase.usersettings.GetUserSettingsUseCase
 import com.foryouandme.domain.usecase.usersettings.UpdateUserSettingsUseCase
+import com.foryouandme.entity.usersettings.UserSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -40,6 +41,15 @@ class AboutYouDailySurveyTimeViewModel @Inject constructor(
         loadingFlow.hide(AboutYouDailySurveyTimeLoading.GetUserSettings)
     }
 
+    private suspend fun saveUserSettings(userSettings: UserSettings) {
+        loadingFlow.show(AboutYouDailySurveyTimeLoading.SaveUserSettings)
+
+       updateUserSettingsUseCase(userSettings)
+
+        stateUpdateFlow.update(AboutYouDailySurveyTimeStateUpdate.SaveUserSettings)
+        loadingFlow.hide(AboutYouDailySurveyTimeLoading.SaveUserSettings)
+    }
+
     /* --- state event --- */
 
     fun execute(stateEvent: AboutYouDailySurveyTimeStateEvent) {
@@ -50,9 +60,14 @@ class AboutYouDailySurveyTimeViewModel @Inject constructor(
                     AboutYouDailySurveyTimeError.GetUserSettings,
                     loadingFlow,
                     AboutYouDailySurveyTimeLoading.GetUserSettings
-                ) {
-                    getUserSettings()
-                }
+                ) { getUserSettings() }
+            is AboutYouDailySurveyTimeStateEvent.SaveUserSettings ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    AboutYouDailySurveyTimeError.SaveUserSettings,
+                    loadingFlow,
+                    AboutYouDailySurveyTimeLoading.SaveUserSettings
+                ) { saveUserSettings(UserSettings(stateEvent.dailySurveyTime)) }
         }
     }
 }

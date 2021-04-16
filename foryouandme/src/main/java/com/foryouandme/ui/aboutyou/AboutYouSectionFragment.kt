@@ -13,4 +13,9 @@ abstract class AboutYouSectionFragment(contentLayoutId: Int) : BaseFragment(cont
 
     fun aboutYouNavController(): AboutYouNavController = AboutYouNavController(findNavController())
 
+    fun back() {
+        if(navigator.back(aboutYouNavController()).not())
+            navigator.back(rootNavController())
+    }
+
 }
