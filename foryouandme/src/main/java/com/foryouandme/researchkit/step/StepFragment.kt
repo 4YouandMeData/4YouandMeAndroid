@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.ext.find
+import com.foryouandme.core.ext.hideKeyboard
 import com.foryouandme.researchkit.result.StepResult
 import com.foryouandme.ui.tasks.TaskFragment
 import com.foryouandme.ui.tasks.TaskStateEvent
@@ -56,14 +57,17 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             ?.let { if (it == -1) null else it }!!
 
     protected open fun next() {
+        hideKeyboard()
         taskViewModel.execute(TaskStateEvent.NextStep(indexArg()))
     }
 
     protected open fun skipTo(stepId: String?) {
+        hideKeyboard()
         taskViewModel.execute(TaskStateEvent.SkipToStep(stepId, indexArg()))
     }
 
     protected open fun reschedule() {
+        hideKeyboard()
         taskViewModel.execute(TaskStateEvent.Reschedule)
     }
 
@@ -72,10 +76,12 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
     }
 
     protected open fun end() {
+        hideKeyboard()
         taskViewModel.execute(TaskStateEvent.End)
     }
 
     protected open fun close() {
+        hideKeyboard()
         navigator.back(rootNavController())
     }
 
@@ -103,6 +109,7 @@ open class StepFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
             setNavigationIcon(image)
             setNavigationOnClickListener {
 
+                hideKeyboard()
                 if (navigator.back(stepNavController()).not())
                     navigator.back(rootNavController())
 
