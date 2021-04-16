@@ -1,11 +1,15 @@
 package com.foryouandme.researchkit.step.holepeg
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 internal fun getOffsetByPoint(
     point: HolePegPointPosition,
@@ -74,3 +78,6 @@ internal fun isTargetReached(
 
         }
     }
+
+internal fun getDistance(offset: Offset): Float =
+    sqrt((offset.x).pow(2) + (offset.y).pow(2))

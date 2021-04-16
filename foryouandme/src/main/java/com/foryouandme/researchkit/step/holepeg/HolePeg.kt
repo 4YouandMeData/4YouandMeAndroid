@@ -16,8 +16,7 @@ import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 import com.foryouandme.researchkit.step.common.StepHeader
-import com.foryouandme.researchkit.step.holepeg.HolePegSateEvent.EndDragging
-import com.foryouandme.researchkit.step.holepeg.HolePegSateEvent.StartDragging
+import com.foryouandme.researchkit.step.holepeg.HolePegSateEvent.*
 import com.foryouandme.ui.compose.toColor
 
 @Composable
@@ -27,6 +26,7 @@ fun HolePeg(viewModel: HolePegViewModel = viewModel()) {
     HolePeg(
         state = state,
         onDragStart = { viewModel.execute(StartDragging) },
+        onDrag = { viewModel.execute(OnDrag(it)) },
         onDragEnd = { viewModel.execute(EndDragging(it)) }
     )
 
@@ -36,6 +36,7 @@ fun HolePeg(viewModel: HolePegViewModel = viewModel()) {
 private fun HolePeg(
     state: HolePegState,
     onDragStart: () -> Unit = {},
+    onDrag: (Float) -> Unit = {},
     onDragEnd: (Boolean) -> Unit = {}
 ) {
 
@@ -67,6 +68,7 @@ private fun HolePeg(
             HolePegPoint(
                 attempt = attempt,
                 onDragStart = onDragStart,
+                onDrag = onDrag,
                 onDragEnd = onDragEnd
             )
         }

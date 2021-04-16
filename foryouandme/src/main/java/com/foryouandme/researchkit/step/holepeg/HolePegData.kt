@@ -14,6 +14,7 @@ sealed class HolePegSateEvent {
 
     data class SetStep(val step: HolePegStep?) : HolePegSateEvent()
     object StartDragging : HolePegSateEvent()
+    data class OnDrag(val distance: Float): HolePegSateEvent()
     data class EndDragging(val targetReached: Boolean) : HolePegSateEvent()
 
 }

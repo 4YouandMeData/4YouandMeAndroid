@@ -46,7 +46,7 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
 
             if (targetReached)
             // the target is reached
-                if (currentAttempt.peg.size < currentAttempt.totalPegs) nextPeg(currentAttempt)
+                if (currentAttempt.pegs.size < currentAttempt.totalPegs) nextPeg(currentAttempt)
                 else nextAttempt(currentAttempt)
             else
             // the target is not reached, increment the error count for this attempt
@@ -64,9 +64,9 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
         */
         val attempt =
             currentAttempt.copy(
-                peg =
-                currentAttempt.peg.mapIndexed { index, holePeg ->
-                    if (index == currentAttempt.peg.lastIndex)
+                pegs =
+                currentAttempt.pegs.mapIndexed { index, holePeg ->
+                    if (index == currentAttempt.pegs.lastIndex)
                         holePeg.copy(endTime = System.currentTimeMillis())
                     else
                         holePeg
@@ -133,6 +133,34 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
 
     }
 
+    private suspend fun addDistance(distance: Float) {
+
+        val currentAttempt = state.value.currentAttempt
+
+        if (currentAttempt != null) {
+
+            val pegs = currentAttempt.pegs.mapIndexed { index, peg ->
+                if (index == currentAttempt.pegs.lastIndex)
+                    peg.copy(distance = peg.distance + distance)
+                else
+                    peg
+            }
+            val attempt = currentAttempt.copy(pegs = pegs)
+
+            val attempts = state.value.attempts.map { if (it.id == attempt.id) attempt else it }
+
+            state.emit(
+                state.value.copy(
+                    isDragging = false,
+                    attempts = attempts,
+                    currentAttempt = attempt
+                )
+            )
+
+        }
+
+    }
+
     /* --- state event --- */
 
     fun execute(stateEvent: HolePegSateEvent) {
@@ -143,6 +171,8 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
                 viewModelScope.launchSafe { endDragging(stateEvent.targetReached) }
             HolePegSateEvent.StartDragging ->
                 viewModelScope.launchSafe { startDragging() }
+            is HolePegSateEvent.OnDrag ->
+                viewModelScope.launchSafe { addDistance(stateEvent.distance) }
         }
     }
 

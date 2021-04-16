@@ -23,7 +23,7 @@ fun HoleAttemptPegProgress(
 }
 
 private fun getProgress(attempt: HolePegAttempt) =
-    attempt.peg.size.toFloat() / (attempt.totalPegs.toFloat() + 1)
+    attempt.pegs.size.toFloat() / (attempt.totalPegs.toFloat() + 1)
 
 @Preview
 @Composable

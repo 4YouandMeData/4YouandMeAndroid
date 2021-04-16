@@ -1,5 +1,6 @@
 package com.foryouandme.researchkit.step.holepeg
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +20,8 @@ import com.foryouandme.entity.task.holepeg.HolePegAttempt
 import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
+import java.util.*
+import androidx.compose.runtime.getValue
 
 @Composable
 fun HolePegPoint(
@@ -26,12 +29,24 @@ fun HolePegPoint(
     pointSize: Dp = 100.dp,
     pointPadding: Dp = 30.dp,
     onDragStart: () -> Unit = { },
-    onDragEnd: (Boolean) -> Unit = { },
+    onDrag: (Float) -> Unit = { }, // the distance of the drag in pixels
+    onDragEnd: (Boolean) -> Unit = { }, // user has reach the target
 ) {
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        var startOffset by remember(attempt) {
+        val rememberKey = remember(
+            attempt.id,
+            attempt.step.start,
+            attempt.step.target,
+            attempt.errorCount,
+            attempt.pegs.size,
+            maxWidth,
+            pointSize,
+            pointPadding
+        ) { UUID.randomUUID().toString() }
+
+        var startOffset by remember(rememberKey) {
             mutableStateOf(
                 getOffsetByPoint(
                     attempt.step.start,
@@ -42,7 +57,7 @@ fun HolePegPoint(
             )
         }
 
-        val targetOffset by remember(attempt) {
+        val targetOffset by remember(rememberKey) {
             mutableStateOf(
                 getOffsetByTarget(
                     attempt.step.target,
@@ -70,7 +85,7 @@ fun HolePegPoint(
                 Modifier
                     .size((pointSize + 100.dp), (pointSize + 200.dp))
                     .background(Color.Cyan)
-                    .pointerInput(attempt) {
+                    .pointerInput(rememberKey) {
                         detectGrabGestures(
                             {
                                 onDragStart()
@@ -103,6 +118,9 @@ fun HolePegPoint(
 
                             val offsetX = startOffset.x + dragAmount.x.toDp()
                             val offsetY = startOffset.y + dragAmount.y.toDp()
+
+                            val distance  = getDistance(dragAmount)
+                            onDrag(distance)
 
                             startOffset = DpOffset(offsetX, offsetY)
 
