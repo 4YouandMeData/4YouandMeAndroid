@@ -61,6 +61,13 @@ interface TaskApi {
     )
 
     @PATCH("api/v1/tasks/{id}")
+    suspend fun updateHolePegTask(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String,
+        @Body request: TaskResultRequest<HolePegUpdateRequest>
+    )
+
+    @PATCH("api/v1/tasks/{id}")
     suspend fun updateQuickActivity(
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,

@@ -8,6 +8,9 @@ import com.foryouandme.domain.usecase.task.TaskRepository
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
+import com.foryouandme.entity.task.holepeg.HolePegPointPosition
+import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
+import com.foryouandme.entity.task.result.holepeg.HolePegResult
 import com.foryouandme.entity.task.result.reaction.ReactionTimeResult
 import com.foryouandme.entity.task.result.trailmaking.TrailMakingResult
 import com.foryouandme.researchkit.result.AnswerResult
@@ -186,6 +189,53 @@ class TaskRepositoryImpl @Inject constructor(
                             TrailMakingTapUpdateRequest(it.index, it.timestamp, it.incorrect)
                         },
                         result.endDate.toInstant().toEpochMilli()
+                    )
+                )
+            )
+
+        }
+    }
+
+    override suspend fun updateHolePegTask(
+        token: String,
+        taskId: String,
+        result: HolePegResult
+    ) {
+        authErrorInterceptor.execute {
+
+            api.updateHolePegTask(
+                token = token,
+                taskId = taskId,
+                request = TaskResultRequest(
+                    HolePegUpdateRequest(
+                        steps = result.steps.map { attempt ->
+                            HolePegStepUpdateRequest(
+                                pegs = attempt.pegs.map {
+                                    PegUpdateRequest(
+                                        startTime = it.startDate.toInstant().toEpochMilli(),
+                                        endTime = it.endDate.toInstant().toEpochMilli(),
+                                        distance = it.distance
+                                    )
+                                },
+                                startTime = attempt.startDate.toInstant().toEpochMilli(),
+                                endTime = attempt.endDate.toInstant().toEpochMilli(),
+                                startPoint = when (attempt.step.start) {
+                                    HolePegPointPosition.Center -> "center"
+                                    HolePegPointPosition.End -> "right"
+                                    HolePegPointPosition.Start -> "left"
+                                },
+                                targetPoint = when (attempt.step.target) {
+                                    HolePegTargetPosition.End -> "right"
+                                    HolePegTargetPosition.EndCenter -> "right_center"
+                                    HolePegTargetPosition.Start -> "start"
+                                    HolePegTargetPosition.StartCenter -> "start_center"
+                                },
+                                numberOfErrors = attempt.errorCount,
+                                numberOfPegs = attempt.totalPegs
+                            )
+                        },
+                        startTime = result.startDate.toInstant().toEpochMilli(),
+                        endTime = result.endDate.toInstant().toEpochMilli()
                     )
                 )
             )

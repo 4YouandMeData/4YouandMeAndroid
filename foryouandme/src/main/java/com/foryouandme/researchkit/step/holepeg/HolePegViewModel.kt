@@ -7,8 +7,11 @@ import com.foryouandme.entity.task.holepeg.HolePegAttempt
 import com.foryouandme.entity.task.holepeg.Peg
 import com.foryouandme.entity.task.holepeg.toHolePegAttempts
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,6 +19,9 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
 
     private val state = MutableStateFlow(HolePegState())
     val stateFlow = state as StateFlow<HolePegState>
+
+    private val eventChannel = Channel<HolePegEvent>(Channel.BUFFERED)
+    val events = eventChannel.receiveAsFlow()
 
     /* --- step --- */
 
@@ -67,7 +73,7 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
                 pegs =
                 currentAttempt.pegs.mapIndexed { index, holePeg ->
                     if (index == currentAttempt.pegs.lastIndex)
-                        holePeg.copy(endTime = System.currentTimeMillis())
+                        holePeg.copy(endDate = ZonedDateTime.now())
                     else
                         holePeg
                 }.plus(Peg())
@@ -96,13 +102,16 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
         val attempt =
             if (currentAttemptIndex >= 0)
                 state.value.attempts.getOrNull(currentAttemptIndex + 1)
-            else
-                null // no more attempts, end the step
+            else {
+                // no more attempts, end the step
+                eventChannel.send(HolePegEvent.Completed)
+                return
+            }
 
         val attempts = state.value.attempts.map {
             when (it.id) {
                 attempt?.id -> attempt
-                currentAttempt.id -> it.copy(endTime = System.currentTimeMillis())
+                currentAttempt.id -> it.copy(endDate = ZonedDateTime.now())
                 else -> it
             }
         }
@@ -163,16 +172,16 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
 
     /* --- state event --- */
 
-    fun execute(stateEvent: HolePegSateEvent) {
-        when (stateEvent) {
-            is HolePegSateEvent.SetStep ->
-                viewModelScope.launchSafe { setStep(stateEvent.step) }
-            is HolePegSateEvent.EndDragging ->
-                viewModelScope.launchSafe { endDragging(stateEvent.targetReached) }
-            HolePegSateEvent.StartDragging ->
+    fun execute(action: HolePegAction) {
+        when (action) {
+            is HolePegAction.SetStep ->
+                viewModelScope.launchSafe { setStep(action.step) }
+            is HolePegAction.EndDragging ->
+                viewModelScope.launchSafe { endDragging(action.targetReached) }
+            HolePegAction.StartDragging ->
                 viewModelScope.launchSafe { startDragging() }
-            is HolePegSateEvent.OnDrag ->
-                viewModelScope.launchSafe { addDistance(stateEvent.distance) }
+            is HolePegAction.OnDrag ->
+                viewModelScope.launchSafe { addDistance(action.distance) }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.foryouandme.researchkit.step.holepeg
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,7 +20,6 @@ import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 import java.util.*
-import androidx.compose.runtime.getValue
 
 @Composable
 fun HolePegPoint(
@@ -119,7 +117,7 @@ fun HolePegPoint(
                             val offsetX = startOffset.x + dragAmount.x.toDp()
                             val offsetY = startOffset.y + dragAmount.y.toDp()
 
-                            val distance  = getDistance(dragAmount)
+                            val distance = getDistance(dragAmount)
                             onDrag(distance)
 
                             startOffset = DpOffset(offsetX, offsetY)

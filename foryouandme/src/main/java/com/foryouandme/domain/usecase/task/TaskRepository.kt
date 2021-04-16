@@ -3,6 +3,7 @@ package com.foryouandme.domain.usecase.task
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
 import com.foryouandme.entity.task.Task
+import com.foryouandme.entity.task.result.holepeg.HolePegResult
 import com.foryouandme.entity.task.result.reaction.ReactionTimeResult
 import com.foryouandme.entity.task.result.trailmaking.TrailMakingResult
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
@@ -54,6 +55,12 @@ interface TaskRepository {
         token: String,
         taskId: String,
         result: TrailMakingResult
+    )
+
+    suspend fun updateHolePegTask(
+        token: String,
+        taskId: String,
+        result: HolePegResult
     )
 
     suspend fun updateQuickActivity(token: String, taskId: String, answerId: Int)

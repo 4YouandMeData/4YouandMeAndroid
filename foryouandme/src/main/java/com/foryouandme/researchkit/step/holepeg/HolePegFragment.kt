@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import com.foryouandme.entity.task.result.holepeg.HolePegResult
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
+import org.threeten.bp.ZonedDateTime
 
 @AndroidEntryPoint
 class HolePegFragment : StepFragment() {
@@ -21,7 +23,7 @@ class HolePegFragment : StepFragment() {
     ): View =
         ComposeView(requireContext()).apply {
             setContent {
-                HolePeg()
+                HolePeg { complete(it) }
             }
         }
 
@@ -29,9 +31,25 @@ class HolePegFragment : StepFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val step = taskViewModel.getStepByIndexAs<HolePegStep>(indexArg())
-        viewModel.execute(HolePegSateEvent.SetStep(step))
+        viewModel.execute(HolePegAction.SetStep(step))
 
     }
 
+    private fun complete(state: HolePegState) {
+
+        val step = taskViewModel.getStepByIndexAs<HolePegStep>(indexArg())
+        if (step != null) {
+            addResult(
+                HolePegResult(
+                    step.identifier,
+                    state.start,
+                    ZonedDateTime.now(),
+                    state.attempts
+                )
+            )
+        }
+        next()
+
+    }
 
 }
