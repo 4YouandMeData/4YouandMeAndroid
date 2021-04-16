@@ -110,7 +110,12 @@ class FYAMViewModel @Inject constructor(
 
         when (stateEvent) {
             is FYAMStateEvent.Initialize ->
-                errorFlow.launchCatch(viewModelScope, FYAMError.Config)
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    FYAMError.Config,
+                    loadingFlow,
+                    listOf(FYAMLoading.Config, FYAMLoading.Splash)
+                )
                 {
                     initialize(
                         stateEvent.taskId,

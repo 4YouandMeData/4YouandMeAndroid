@@ -32,14 +32,22 @@ class ErrorFlow<T> @Inject constructor() {
         loadingFlow: LoadingFlow<L>,
         loading: L,
         block: suspend () -> A): Job =
-            scope.launch(
-                    CoroutineExceptionHandler { _, throwable ->
-                        scope.launch {
-                            loadingFlow.hide(loading)
-                            error(cause, throwable)
-                        }
-                    }
-            ) { block() }
+            launchCatch(scope, cause, loadingFlow, listOf(loading), block)
+
+    fun <A, L> launchCatch(
+        scope: CoroutineScope,
+        cause: T,
+        loadingFlow: LoadingFlow<L>,
+        loading: List<L>,
+        block: suspend () -> A): Job =
+        scope.launch(
+            CoroutineExceptionHandler { _, throwable ->
+                scope.launch {
+                    loading.forEach { loadingFlow.hide(it) }
+                    error(cause, throwable)
+                }
+            }
+        ) { block() }
 
     suspend fun error(cause: T, throwable: Throwable) {
 
