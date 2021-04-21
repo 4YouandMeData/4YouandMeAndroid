@@ -75,7 +75,10 @@
     <string name="REACTION_TIME_button">Done</string>
 
     <string name="HOLE_PEG_title">Hole Peg</string>
-    <string name="HOLE_PEG_description_shape">Move the colored icon into the empty shape using your right hand.</string>
+    <string name="HOLE_PEG_description_start_center">Move the colored icon into the empty shape using your right hand.</string>
+    <string name="HOLE_PEG_description_end_center">Move the colored icon into the empty shape using your left hand.</string>
+    <string name="HOLE_PEG_description_start">Move the colored icon behind the line using your right hand.</string>
+    <string name="HOLE_PEG_description_end">Move the colored icon behind the line using your left hand.</string>
     <string name="HOLE_PEG_grab">Grab the colored icon using two fingers.</string>
     <string name="HOLE_PEG_release">Lift your fingers to release the colored icon.</string>
 

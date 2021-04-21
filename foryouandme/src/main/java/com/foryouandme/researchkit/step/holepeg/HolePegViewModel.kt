@@ -160,7 +160,6 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
 
             state.emit(
                 state.value.copy(
-                    isDragging = false,
                     attempts = attempts,
                     currentAttempt = attempt
                 )

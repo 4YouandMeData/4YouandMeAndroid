@@ -69,15 +69,15 @@ private fun HolePeg(
             .background(state.step?.backgroundColor.toColor())
     ) {
         Spacer(modifier = Modifier.height(50.dp))
-        StepHeader(
-            title = getTitle(title = state.step?.title),
-            description = getDescription(state.step?.descriptionShape, state.isDragging),
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp)
-        )
         if (attempt != null) {
+            StepHeader(
+                title = getTitle(title = state.step?.title),
+                description = getDescription(state.step, attempt.step.target, state.isDragging),
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+            )
             Spacer(modifier = Modifier.height(10.dp))
             HoleAttemptPegProgress(
                 attempt = attempt,
@@ -104,13 +104,30 @@ private fun getTitle(title: String?): String =
     title ?: stringResource(id = R.string.HOLE_PEG_title)
 
 @Composable
-private fun getDescription(description: String?, isDragging: Boolean): String {
+private fun getDescription(
+    step: HolePegStep?,
+    targetPosition: HolePegTargetPosition,
+    isDragging: Boolean
+): String {
 
     val stepDescription =
-        description ?: stringResource(id = R.string.HOLE_PEG_description_shape)
+        when (targetPosition) {
+            HolePegTargetPosition.End ->
+                step?.descriptionEnd
+                    ?: stringResource(id = R.string.HOLE_PEG_description_end)
+            HolePegTargetPosition.EndCenter ->
+                step?.descriptionEndCenter
+                    ?: stringResource(id = R.string.HOLE_PEG_description_end_center)
+            HolePegTargetPosition.Start ->
+                step?.descriptionStart
+                    ?: stringResource(id = R.string.HOLE_PEG_description_start)
+            HolePegTargetPosition.StartCenter ->
+                step?.descriptionStartCenter
+                    ?: stringResource(id = R.string.HOLE_PEG_description_start_center)
+        }
     val draggingText =
-        if (isDragging) stringResource(id = R.string.HOLE_PEG_release)
-        else stringResource(id = R.string.HOLE_PEG_grab)
+        if (isDragging) step?.descriptionRelease ?: stringResource(id = R.string.HOLE_PEG_release)
+        else step?.descriptionGrab ?: stringResource(id = R.string.HOLE_PEG_grab)
 
     return "$stepDescription\n$draggingText"
 
