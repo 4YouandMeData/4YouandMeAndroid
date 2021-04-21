@@ -26,7 +26,7 @@ fun HolePegPoint(
     attempt: HolePegAttempt,
     pointColor: Color = Color.Black,
     targetColor: Color = Color.Black,
-    pointSize: Dp = 100.dp,
+    pointSize: Dp = 90.dp,
     pointPadding: Dp = 30.dp,
     onDragStart: () -> Unit = { },
     onDrag: (Float) -> Unit = { }, // the distance of the drag in pixels
