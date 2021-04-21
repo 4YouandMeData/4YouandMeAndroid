@@ -17,7 +17,9 @@ class HolePegTask(
     holePegDescriptionGrab: String?,
     holePegDescriptionRelease: String?,
     holePegDescriptionColor: Int,
-    holePegProgressColor: Int
+    holePegProgressColor: Int,
+    holePegPointColor: Int,
+    holePegTargetColor: Int,
 ) : Task(TaskIdentifiers.HOLE_PEG, id) {
 
     override val steps: List<Step> by lazy {
@@ -30,7 +32,9 @@ class HolePegTask(
             holePegDescriptionGrab = holePegDescriptionGrab,
             holePegDescriptionRelease = holePegDescriptionRelease,
             holePegDescriptionColor = holePegDescriptionColor,
-            holePegProgressColor = holePegProgressColor
+            holePegProgressColor = holePegProgressColor,
+            holePegPointColor = holePegPointColor,
+            holePegTargetColor = holePegTargetColor
         )
 
     }
@@ -49,6 +53,8 @@ class HolePegTask(
             holePegDescriptionRelease: String?,
             holePegDescriptionColor: Int,
             holePegProgressColor: Int,
+            holePegPointColor: Int,
+            holePegTargetColor: Int,
             holePegSubSteps: List<HolePegSubStep> = getHolePegDefaultSubSteps()
         ): List<Step> =
 
@@ -63,6 +69,8 @@ class HolePegTask(
                     descriptionRelease = holePegDescriptionRelease,
                     descriptionColor = holePegDescriptionColor,
                     progressColor = holePegProgressColor,
+                    pointColor = holePegPointColor,
+                    targetColor = holePegTargetColor,
                     subSteps = holePegSubSteps,
                 )
             )

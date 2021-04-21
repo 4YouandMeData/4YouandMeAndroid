@@ -24,6 +24,7 @@ import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 @Composable
 fun HolePegTarget(
     targetPosition: HolePegTargetPosition = HolePegTargetPosition.StartCenter,
+    targetColor: Color = Color.Black,
     targetOffset: DpOffset = DpOffset(0.dp, 0.dp),
     pointSize: Dp = 100.dp,
 ) {
@@ -38,10 +39,10 @@ fun HolePegTarget(
         when (targetPosition) {
             HolePegTargetPosition.End,
             HolePegTargetPosition.Start ->
-                HolePegLineTarget()
+                HolePegLineTarget(targetColor)
             HolePegTargetPosition.EndCenter,
             HolePegTargetPosition.StartCenter ->
-                HolePegCircleTarget(pointSize)
+                HolePegCircleTarget(targetColor, pointSize)
         }
     }
 
@@ -49,18 +50,18 @@ fun HolePegTarget(
 
 @Preview
 @Composable
-private fun HolePegCircleTarget(pointSize: Dp = 100.dp) {
+private fun HolePegCircleTarget(targetColor: Color = Color.Black, pointSize: Dp = 100.dp) {
     Box(
         modifier = Modifier
             .size(pointSize)
-            .border(3.dp, Color.Black, CircleShape)
+            .border(3.dp, targetColor, CircleShape)
             .background(Color.Transparent)
     )
 }
 
 @Preview
 @Composable
-private fun HolePegLineTarget() {
+private fun HolePegLineTarget(targetColor: Color = Color.Black) {
     Canvas(modifier = Modifier.fillMaxSize()) {
         val canvasWidth = size.width
         val canvasHeight = size.height
@@ -68,7 +69,7 @@ private fun HolePegLineTarget() {
         drawLine(
             start = Offset(x = canvasWidth / 2, y = 0f),
             end = Offset(x = canvasWidth / 2, y = canvasHeight),
-            color = Color.Blue,
+            color = targetColor,
             strokeWidth = 5F,
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
         )

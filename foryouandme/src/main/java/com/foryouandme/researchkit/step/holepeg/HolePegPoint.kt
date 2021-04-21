@@ -24,6 +24,8 @@ import java.util.*
 @Composable
 fun HolePegPoint(
     attempt: HolePegAttempt,
+    pointColor: Color = Color.Black,
+    targetColor: Color = Color.Black,
     pointSize: Dp = 100.dp,
     pointPadding: Dp = 30.dp,
     onDragStart: () -> Unit = { },
@@ -82,7 +84,6 @@ fun HolePegPoint(
                 modifier =
                 Modifier
                     .size((pointSize + 100.dp), (pointSize + 200.dp))
-                    .background(Color.Cyan)
                     .pointerInput(rememberKey) {
                         detectGrabGestures(
                             {
@@ -141,13 +142,13 @@ fun HolePegPoint(
                     modifier = Modifier
                         .size(pointSize)
                         .clip(CircleShape)
-                        .background(Color.Black)
+                        .background(pointColor)
                 )
             }
         }
 
         // Target Point
-        HolePegTarget(attempt.step.target, targetOffset, pointSize)
+        HolePegTarget(attempt.step.target, targetColor, targetOffset, pointSize)
 
     }
 
@@ -157,6 +158,7 @@ fun HolePegPoint(
 @Composable
 private fun HolePegPointPreview() {
     HolePegPoint(
+        attempt =
         HolePegAttempt(
             0,
             HolePegSubStep(

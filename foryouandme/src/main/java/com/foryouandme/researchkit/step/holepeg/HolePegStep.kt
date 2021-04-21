@@ -13,5 +13,7 @@ class HolePegStep(
     val descriptionRelease: String? = null,
     val descriptionColor: Int,
     val progressColor: Int,
+    val pointColor: Int,
+    val targetColor: Int,
     val subSteps: List<HolePegSubStep>
 ) : Step(identifier, null, null, { HolePegFragment() })

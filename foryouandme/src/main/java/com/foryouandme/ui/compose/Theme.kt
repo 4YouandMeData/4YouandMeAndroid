@@ -7,14 +7,8 @@ import androidx.compose.runtime.Composable
 fun ForYouAndMeTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         content = content,
-        typography = ForYouAndMeTheme.typography
+        typography = ForYouAndMeTypography
     )
-}
-
-object ForYouAndMeTheme {
-
-    val typography = ForYouAndMeTypography
-
 }
 
 

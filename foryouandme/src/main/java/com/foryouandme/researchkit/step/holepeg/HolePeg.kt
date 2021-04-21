@@ -18,6 +18,7 @@ import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 import com.foryouandme.researchkit.step.common.StepHeader
 import com.foryouandme.researchkit.step.holepeg.HolePegAction.*
+import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.toColor
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -28,23 +29,27 @@ fun HolePeg(
     onComplete: (HolePegState) -> Unit = {}
 ) {
 
-    LaunchedEffect("hole_peg") {
-        viewModel.events
-            .onEach {
-                when (it) {
-                    HolePegEvent.Completed -> onComplete(viewModel.stateFlow.value)
-                }
-            }
-            .collect()
-    }
+    ForYouAndMeTheme {
 
-    val state by viewModel.stateFlow.collectAsState()
-    HolePeg(
-        state = state,
-        onDragStart = { viewModel.execute(StartDragging) },
-        onDrag = { viewModel.execute(OnDrag(it)) },
-        onDragEnd = { viewModel.execute(EndDragging(it)) }
-    )
+        LaunchedEffect("hole_peg") {
+            viewModel.events
+                .onEach {
+                    when (it) {
+                        HolePegEvent.Completed -> onComplete(viewModel.stateFlow.value)
+                    }
+                }
+                .collect()
+        }
+
+        val state by viewModel.stateFlow.collectAsState()
+        HolePeg(
+            state = state,
+            onDragStart = { viewModel.execute(StartDragging) },
+            onDrag = { viewModel.execute(OnDrag(it)) },
+            onDragEnd = { viewModel.execute(EndDragging(it)) }
+        )
+
+    }
 
 }
 
@@ -83,6 +88,8 @@ private fun HolePeg(
             )
             HolePegPoint(
                 attempt = attempt,
+                pointColor = state.step?.pointColor.toColor(),
+                targetColor = state.step?.targetColor.toColor(),
                 onDragStart = onDragStart,
                 onDrag = onDrag,
                 onDragEnd = onDragEnd
@@ -121,6 +128,8 @@ private fun HolePegPreview() {
                 titleColor = Color.BLACK,
                 descriptionColor = Color.BLACK,
                 progressColor = Color.MAGENTA,
+                pointColor = Color.MAGENTA,
+                targetColor = Color.MAGENTA,
                 subSteps =
                 listOf(
                     HolePegSubStep(

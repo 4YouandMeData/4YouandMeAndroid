@@ -30,7 +30,9 @@ class FYAMHolePegTask(
             holePegDescriptionGrab = null,
             holePegDescriptionRelease = null,
             holePegDescriptionColor = primaryText,
-            holePegProgressColor = primary
+            holePegProgressColor = primary,
+            holePegPointColor = primary,
+            holePegTargetColor = primary
         )
 
     }
