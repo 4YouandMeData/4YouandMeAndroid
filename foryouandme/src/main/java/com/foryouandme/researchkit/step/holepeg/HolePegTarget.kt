@@ -3,10 +3,7 @@ package com.foryouandme.researchkit.step.holepeg
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -62,7 +59,7 @@ private fun HolePegCircleTarget(targetColor: Color = Color.Black, pointSize: Dp 
 @Preview
 @Composable
 private fun HolePegLineTarget(targetColor: Color = Color.Black) {
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    Canvas(modifier = Modifier.fillMaxSize().padding(top = 20.dp, bottom = 20.dp)) {
         val canvasWidth = size.width
         val canvasHeight = size.height
 
