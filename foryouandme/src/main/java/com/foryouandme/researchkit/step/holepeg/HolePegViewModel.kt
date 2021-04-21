@@ -99,30 +99,31 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
                 .attempts
                 .indexOfFirst { it.id == currentAttempt.id }
 
-        val attempt =
-            if (currentAttemptIndex >= 0)
-                state.value.attempts.getOrNull(currentAttemptIndex + 1)
-            else {
-                // no more attempts, end the step
-                eventChannel.send(HolePegEvent.Completed)
-                return
+        val attempt = state.value.attempts.getOrNull(currentAttemptIndex + 1)
+
+
+        if(attempt != null) {
+
+            val attempts = state.value.attempts.map {
+                when (it.id) {
+                    attempt?.id -> attempt
+                    currentAttempt.id -> it.copy(endDate = ZonedDateTime.now())
+                    else -> it
+                }
             }
 
-        val attempts = state.value.attempts.map {
-            when (it.id) {
-                attempt?.id -> attempt
-                currentAttempt.id -> it.copy(endDate = ZonedDateTime.now())
-                else -> it
-            }
-        }
-
-        state.emit(
-            state.value.copy(
-                isDragging = false,
-                attempts = attempts,
-                currentAttempt = attempt
+            state.emit(
+                state.value.copy(
+                    isDragging = false,
+                    attempts = attempts,
+                    currentAttempt = attempt
+                )
             )
-        )
+
+        } else {
+            // no more attempts, end the step
+            eventChannel.send(HolePegEvent.Completed)
+        }
 
     }
 

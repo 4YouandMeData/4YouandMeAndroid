@@ -15,6 +15,7 @@ import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.activity.TaskActivityType
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.survey.SurveyAnswerUpdate
+import com.foryouandme.entity.task.result.holepeg.toHolePegResult
 import com.foryouandme.entity.task.result.reaction.toReactionTimeResult
 import com.foryouandme.entity.task.result.trailmaking.toTrailMakingResult
 import com.foryouandme.researchkit.result.*
@@ -40,6 +41,7 @@ class FYAMTaskConfiguration @Inject constructor(
     private val sendFitnessTaskUseCase: SendFitnessTaskUseCase,
     private val sendReactionTimeUseCase: SendReactionTimeUseCase,
     private val sendTrailMakingUseCase: SendTrailMakingUseCase,
+    private val sendHolePegUseCase: SendHolePegUseCase,
     private val sendSurveyTaskUseCase: SendSurveyTaskUseCase,
     private val rescheduleTaskUseCase: RescheduleTaskUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
@@ -212,6 +214,11 @@ class FYAMTaskConfiguration @Inject constructor(
                 val trailMakingResult = result.toTrailMakingResult()
                 if (trailMakingResult != null)
                     sendTrailMakingUseCase(taskId = id, trailMakingResult = trailMakingResult)
+            }
+            TaskIdentifiers.HOLE_PEG -> {
+                val holePegResult = result.toHolePegResult()
+                if (holePegResult != null)
+                    sendHolePegUseCase(taskId = id, holePegResult = holePegResult)
             }
             TaskActivityType.Survey.typeId -> {
 
