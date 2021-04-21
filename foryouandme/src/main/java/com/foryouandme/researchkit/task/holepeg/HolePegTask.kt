@@ -95,8 +95,16 @@ class HolePegTask(
                 ),
                 HolePegSubStep(
                     HolePegPointPosition.Start,
+                    HolePegTargetPosition.End
+                ),
+                HolePegSubStep(
+                    HolePegPointPosition.Start,
                     HolePegTargetPosition.EndCenter
-                )
+                ),
+                HolePegSubStep(
+                    HolePegPointPosition.End,
+                    HolePegTargetPosition.Start
+                ),
             )
 
     }
