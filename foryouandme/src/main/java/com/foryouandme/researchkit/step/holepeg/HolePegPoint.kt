@@ -86,11 +86,12 @@ fun HolePegPoint(
                     .size((pointSize + 100.dp), (pointSize + 200.dp))
                     .pointerInput(rememberKey) {
                         detectGrabGestures(
-                            {
+                            maxDistanceBetweenFinger = pointSize * 3f,
+                            onDragStart = {
                                 onDragStart()
                                 alpha = 0.5f
                             },
-                            {
+                            onDragEnd = {
                                 onDragEnd(
                                     isTargetReached(
                                         startOffset,
@@ -101,7 +102,7 @@ fun HolePegPoint(
                                 )
                                 alpha = 1f
                             },
-                            {
+                            onDragCancel = {
                                 onDragEnd(
                                     isTargetReached(
                                         startOffset,

@@ -6,8 +6,13 @@ import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.*
+import androidx.compose.ui.unit.Dp
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 suspend fun PointerInputScope.detectGrabGestures(
+    maxDistanceBetweenFinger: Dp,
     onDragStart: (Offset) -> Unit = { },
     onDragEnd: () -> Unit = { },
     onDragCancel: () -> Unit = { },
@@ -35,7 +40,7 @@ suspend fun PointerInputScope.detectGrabGestures(
                 if (drag != null) {
                     onDragStart.invoke(drag.position)
                     if (
-                        !dragTwoFinger(drag.id) {
+                        !dragTwoFinger(maxDistanceBetweenFinger, drag.id) {
                             onDrag(it, it.positionChange())
                         }
                     ) {
@@ -50,6 +55,7 @@ suspend fun PointerInputScope.detectGrabGestures(
 }
 
 suspend fun AwaitPointerEventScope.dragTwoFinger(
+    maxDistanceBetweenFinger: Dp,
     pointerId: PointerId,
     onDrag: (PointerInputChange) -> Unit
 ): Boolean {
@@ -61,7 +67,11 @@ suspend fun AwaitPointerEventScope.dragTwoFinger(
             return true
         }
 
-        onDrag(change)
+        val distance = currentEvent.pointersDistance()
+
+        if(distance < maxDistanceBetweenFinger.toPx()) {
+            onDrag(change)
+        }
         pointer = change.id
     }
 }
@@ -101,3 +111,19 @@ private suspend inline fun AwaitPointerEventScope.awaitDragOrUp(
 private fun PointerEvent.arePointersUp(pointerId: PointerId): Boolean =
     changes.firstOrNull { it.id == pointerId }?.pressed != true ||
             changes.filter { it.pressed }.size != 2
+
+private fun PointerEvent.pointersDistance(): Float {
+    val pointers = changes.filter { it.pressed }
+    return if (pointers.size < 2) 0f
+    else {
+
+        val pointerOne = pointers[0]
+        val pointerTwo = pointers[1]
+
+        getDistance(pointerOne.position, pointerTwo.position)
+
+    }
+}
+
+private fun getDistance(pointOne: Offset, pointTwo: Offset): Float =
+    abs(sqrt((pointTwo.x - pointOne.x).pow(2) + (pointTwo.y - pointOne.y).pow(2)))
