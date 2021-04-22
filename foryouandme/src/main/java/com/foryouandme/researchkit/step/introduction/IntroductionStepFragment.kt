@@ -1,34 +1,45 @@
 package com.foryouandme.researchkit.step.introduction
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
-import com.foryouandme.R
-import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.startCoroutineAsync
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_introduction.*
-import kotlin.math.roundToInt
+import com.foryouandme.researchkit.step.holepeg.HolePeg
+import com.foryouandme.researchkit.step.introduction.compose.Introduction
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
+class IntroductionStepFragment : StepFragment() {
 
-class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
+    private val viewModel: IntroductionViewModel by viewModels()
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                Introduction()
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val step =
-            taskViewModel.getStepByIndexAs<IntroductionStep>(indexArg())
+        val step = taskViewModel.getStepByIndexAs<IntroductionStep>(indexArg())
+        viewModel.execute(IntroductionAction.SetStep(step))
 
-        step?.let { applyData(it) }
     }
 
     private fun applyData(
         step: IntroductionStep
     ) {
 
-        root.setBackgroundColor(step.backgroundColor)
+        /*root.setBackgroundColor(step.backgroundColor)
 
         val lp = image.layoutParams
         val displayMetrics = DisplayMetrics()
@@ -52,7 +63,7 @@ class IntroductionStepFragment : StepFragment(R.layout.step_introduction) {
         action_1.background = button(step.buttonColor)
         action_1.text = step.button(requireContext())
         action_1.setTextColor(step.buttonTextColor)
-        action_1.setOnClickListener { startCoroutineAsync { next() } }
+        action_1.setOnClickListener { startCoroutineAsync { next() } }*/
 
     }
 

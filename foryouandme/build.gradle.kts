@@ -219,6 +219,9 @@ dependencies {
     implementation(AndroidX.Activity.Compose.get())
     implementation(AndroidX.Lifecycle.ViewModelCompose.get())
 
+    /* --- coil --- */
+    implementation(Google.Accompanist.Coil.get())
+
     /* --- test --- */
 
     testImplementation(Kotlin.Test.JUnit.get())

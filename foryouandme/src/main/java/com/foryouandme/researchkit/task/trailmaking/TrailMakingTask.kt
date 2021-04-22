@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.task.trailmaking
 
 import com.foryouandme.R
+import com.foryouandme.core.ext.toTextResource
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.beforestart.WelcomeStep
@@ -273,18 +274,15 @@ class TrailMakingTask(
                                 identifier = TRAIL_MAKING_START,
                                 back = Back(startBackImage),
                                 backgroundColor = startBackgroundColor,
-                                title = {
-                                    startTitle ?: it.getString(R.string.TRAIL_MAKING_welcome_title)
-                                },
+                                title = startTitle.toTextResource(R.string.TRAIL_MAKING_welcome_title),
                                 titleColor = startTitleColor,
-                                description = {
-                                    startDescription ?: it.getString(
+                                description =
+                                    startDescription.toTextResource(
                                             R.string.TRAIL_MAKING_welcome_description
-                                    )
-                                },
+                                    ),
                                 descriptionColor = startDescriptionColor,
                                 image = startImage,
-                                button = { startButton ?: it.getString(R.string.TASK_next) },
+                                button = startButton.toTextResource(R.string.TASK_next),
                                 buttonColor = startButtonColor,
                                 buttonTextColor = startButtonTextColor,
                         ),
@@ -292,18 +290,16 @@ class TrailMakingTask(
                                 identifier = TRAIL_MAKING_INTRO,
                                 back = Back(introBackImage),
                                 backgroundColor = introBackgroundColor,
-                                title = {
-                                    introTitle ?: it.getString(R.string.TRAIL_MAKING_welcome_title)
-                                },
+                                title =
+                                    introTitle.toTextResource(R.string.TRAIL_MAKING_welcome_title),
                                 titleColor = introTitleColor,
-                                description = {
-                                    introDescription ?: it.getString(
+                                description =
+                                    introDescription.toTextResource(
                                             R.string.TRAIL_MAKING_intro
-                                    )
-                                },
+                                    ),
                                 descriptionColor = introDescriptionColor,
                                 image = introImage,
-                                button = { introButton ?: it.getString(R.string.TASK_next) },
+                                button = introButton.toTextResource(R.string.TASK_next),
                                 buttonColor = introButtonColor,
                                 buttonTextColor = introButtonTextColor,
                         ),
@@ -311,18 +307,15 @@ class TrailMakingTask(
                                 identifier = TRAIL_MAKING_SECONDARY_INTRO,
                                 back = Back(secondaryIntroBackImage),
                                 backgroundColor = secondaryIntroBackgroundColor,
-                                title = {
-                                    secondaryIntroTitle ?: it.getString(R.string.TRAIL_MAKING_welcome_title)
-                                },
+                                title = secondaryIntroTitle.toTextResource(R.string.TRAIL_MAKING_welcome_title),
                                 titleColor = secondaryIntroTitleColor,
-                                description = {
-                                    secondaryIntroDescription ?: it.getString(
+                                description =
+                                    secondaryIntroDescription.toTextResource(
                                             R.string.TRAIL_MAKING_secondary_intro
-                                    )
-                                },
+                                    ),
                                 descriptionColor = secondaryIntroDescriptionColor,
                                 image = secondaryIntroImage,
-                                button = { secondaryIntroButton ?: it.getString(R.string.TASK_get_started) },
+                                button = secondaryIntroButton.toTextResource(R.string.TASK_get_started),
                                 buttonColor = secondaryIntroButtonColor,
                                 buttonTextColor = secondaryIntroButtonTextColor,
                         ),

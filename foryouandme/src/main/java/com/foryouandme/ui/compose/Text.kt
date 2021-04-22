@@ -56,6 +56,13 @@ val ForYouAndMeTypography =
             fontSize = 16.sp,
             lineHeight = 21.sp
         ),
+        button =
+        TextStyle(
+            fontFamily = Helvetica,
+            fontWeight = FontWeight.Normal,
+            fontSize = 20.sp,
+            lineHeight = 29.4.sp
+        )
     )
 
 @Preview(device = Devices.PIXEL_4_XL, showSystemUi = true)

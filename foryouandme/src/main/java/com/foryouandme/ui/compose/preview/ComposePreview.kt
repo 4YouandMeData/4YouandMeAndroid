@@ -2,7 +2,9 @@ package com.foryouandme.ui.compose.preview
 
 object ComposePreview {
 
-    val body: String =
+    const val title: String = "Title Title Title Title Title Title"
+
+    const val body: String =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In efficitur risus " +
                 "accumsan, pulvinar sem sed, dignissim ipsum. Fusce rutrum purus elit, " +
                 "nec lacinia elit bibendum vel. Suspendisse volutpat gravida urna, at " +
@@ -11,7 +13,7 @@ object ComposePreview {
                 "cursus. Donec sed tellus non justo venenatis fringilla vel vitae odio. " +
                 "Donec in pulvinar leo, nec aliquet purus."
 
-    val bodyBig: String =
+    const val bodyBig: String =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In efficitur risus " +
                 "accumsan, pulvinar sem sed, dignissim ipsum. Fusce rutrum purus elit, " +
                 "nec lacinia elit bibendum vel. Suspendisse volutpat gravida urna, at " +
@@ -28,8 +30,8 @@ object ComposePreview {
                 "dignissim pharetra, lectus est dictum erat, quis pretium libero arcu id " +
                 "nisi. Suspendisse eget lorem at tortor suscipit dapibus convallis id urna."
 
-    val name: String = "Name"
+    const val name: String = "Name"
 
-    val title: String = "Title Title Title Title Title Title"
+    const val button = "Button Button Button"
 
 }

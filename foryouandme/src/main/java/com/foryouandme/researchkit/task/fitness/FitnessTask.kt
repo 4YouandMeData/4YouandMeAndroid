@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.task.fitness
 
 import com.foryouandme.R
+import com.foryouandme.core.ext.toTextResource
 import com.foryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import com.foryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
 import com.foryouandme.researchkit.recorder.config.PedometerRecorderConfig
@@ -256,17 +257,16 @@ class FitnessTask(
                     identifier = FITNESS_START,
                     back = Back(startBackImage),
                     backgroundColor = startBackgroundColor,
-                    title = { startTitle ?: it.getString(R.string.FITNESS_title) },
+                    title = startTitle.toTextResource(R.string.FITNESS_title),
                     titleColor = startTitleColor,
-                    description = {
-                        startDescription ?: it.getString(
-                            R.string.FITNESS_start,
-                            "two minutes"
-                        )
-                    },
+                    description =
+                    startDescription.toTextResource(
+                        R.string.FITNESS_start,
+                        "two minutes"
+                    ),
                     descriptionColor = startDescriptionColor,
                     image = startImage,
-                    button = { startButton ?: it.getString(R.string.TASK_next) },
+                    button = startButton.toTextResource(R.string.TASK_next),
                     buttonColor = startButtonColor,
                     buttonTextColor = startButtonTextColor,
                 ),
@@ -274,18 +274,17 @@ class FitnessTask(
                     identifier = FITNESS_INTRO,
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
-                    title = { introTitle ?: it.getString(R.string.FITNESS_title) },
+                    title = introTitle.toTextResource(R.string.FITNESS_title),
                     titleColor = introTitleColor,
-                    description = {
-                        introDescription ?: it.getString(
+                    description =
+                        introDescription.toTextResource(
                             R.string.FITNESS_intro,
                             "two minutes",
                             "thirty seconds"
-                        )
-                    },
+                        ),
                     descriptionColor = introDescriptionColor,
                     image = introImage,
-                    button = { introButton ?: it.getString(R.string.TASK_get_started) },
+                    button = introButton.toTextResource(R.string.TASK_get_started),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor,
                 ),
