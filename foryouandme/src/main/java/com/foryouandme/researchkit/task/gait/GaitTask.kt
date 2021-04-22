@@ -305,7 +305,7 @@ class GaitTask(
                     titleColor = introTitleColor,
                     description = introDescription.toTextResource(R.string.GAIT_intro),
                     descriptionColor = introDescriptionColor,
-                    image = introImage,
+                    image = listOf(introImage),
                     button = introButton.toTextResource(R.string.TASK_next),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor

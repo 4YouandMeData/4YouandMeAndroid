@@ -2,7 +2,7 @@ package com.foryouandme.researchkit.step.introduction
 
 data class IntroductionState(
     val step: IntroductionStep? = null,
-    val currentImage: Int? = step?.image
+    val currentImageIndex: Int = 0
 )
 
 sealed class IntroductionAction {

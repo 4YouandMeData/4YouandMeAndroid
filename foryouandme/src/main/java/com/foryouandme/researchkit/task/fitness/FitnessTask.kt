@@ -265,7 +265,7 @@ class FitnessTask(
                         "two minutes"
                     ),
                     descriptionColor = startDescriptionColor,
-                    image = startImage,
+                    image = listOf(startImage),
                     button = startButton.toTextResource(R.string.TASK_next),
                     buttonColor = startButtonColor,
                     buttonTextColor = startButtonTextColor,
@@ -283,7 +283,7 @@ class FitnessTask(
                             "thirty seconds"
                         ),
                     descriptionColor = introDescriptionColor,
-                    image = introImage,
+                    image = listOf(introImage),
                     button = introButton.toTextResource(R.string.TASK_get_started),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor,

@@ -9,8 +9,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,10 +65,12 @@ private fun Introduction(state: IntroductionState, onNext:() -> Unit = {}) {
                         .background(Color(0xffE3E3E3))
                         .padding(50.dp)
                 ) {
-                    if (state.currentImage != null) {
+                    val image = state.step.image.getOrNull(state.currentImageIndex)
+                    if (image!= null) {
                         CoilImage(
-                            data = state.currentImage,
+                            data = image,
                             contentDescription = "",
+                            contentScale = ContentScale.Inside,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -118,7 +122,7 @@ private fun IntroductionPreview() {
                     titleColor = android.graphics.Color.BLACK,
                     description = TextResource.Text(ComposePreview.body),
                     descriptionColor = android.graphics.Color.BLACK,
-                    image = 0,
+                    image = listOf(0),
                     button = TextResource.Text(ComposePreview.button),
                     buttonColor = android.graphics.Color.WHITE,
                     buttonTextColor = android.graphics.Color.WHITE,

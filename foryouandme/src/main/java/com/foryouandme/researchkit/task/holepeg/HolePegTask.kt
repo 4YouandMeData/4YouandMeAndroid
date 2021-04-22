@@ -11,7 +11,6 @@ import com.foryouandme.researchkit.step.holepeg.HolePegStep
 import com.foryouandme.researchkit.step.introduction.IntroductionStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskIdentifiers
-import com.foryouandme.researchkit.task.fitness.FitnessTask
 
 class HolePegTask(
     id: String,
@@ -150,7 +149,7 @@ class HolePegTask(
                         holePegNumberOfPegs.toString()
                     ),
                     descriptionColor = introDescriptionColor,
-                    image = introImage ?: R.drawable.hole_peg_intro,
+                    image = listOf(introImage ?: R.drawable.hole_peg_intro),
                     button = introButton.toTextResource(R.string.TASK_next),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor,
@@ -167,7 +166,16 @@ class HolePegTask(
                         holePegNumberOfPegs.toString()
                     ),
                     descriptionColor = tutorialDescriptionColor,
-                    image = tutorialImage ?: R.drawable.hole_peg_tutorial_1,
+                    image =
+                    if (tutorialImage != null) listOf(tutorialImage)
+                    else listOf(
+                        R.drawable.hole_peg_tutorial_1,
+                        R.drawable.hole_peg_tutorial_2,
+                        R.drawable.hole_peg_tutorial_3,
+                        R.drawable.hole_peg_tutorial_4,
+                        R.drawable.hole_peg_tutorial_5,
+                        R.drawable.hole_peg_tutorial_6
+                    ),
                     button = tutorialButton.toTextResource(R.string.TASK_next),
                     buttonColor = tutorialButtonColor,
                     buttonTextColor = tutorialButtonTextColor,

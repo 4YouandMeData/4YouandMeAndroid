@@ -106,7 +106,7 @@ class HolePegViewModel @Inject constructor() : ViewModel() {
 
             val attempts = state.value.attempts.map {
                 when (it.id) {
-                    attempt?.id -> attempt
+                    attempt.id -> attempt
                     currentAttempt.id -> it.copy(endDate = ZonedDateTime.now())
                     else -> it
                 }

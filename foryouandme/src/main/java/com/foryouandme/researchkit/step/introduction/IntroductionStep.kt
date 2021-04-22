@@ -12,7 +12,7 @@ class IntroductionStep(
     val titleColor: Int,
     val description: TextResource,
     val descriptionColor: Int,
-    val image: Int,
+    val image: List<Int>,
     val button: TextResource,
     val buttonColor: Int,
     val buttonTextColor: Int,

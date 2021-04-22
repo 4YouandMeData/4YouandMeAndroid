@@ -281,7 +281,7 @@ class TrailMakingTask(
                                             R.string.TRAIL_MAKING_welcome_description
                                     ),
                                 descriptionColor = startDescriptionColor,
-                                image = startImage,
+                                image = listOf(startImage),
                                 button = startButton.toTextResource(R.string.TASK_next),
                                 buttonColor = startButtonColor,
                                 buttonTextColor = startButtonTextColor,
@@ -298,7 +298,7 @@ class TrailMakingTask(
                                             R.string.TRAIL_MAKING_intro
                                     ),
                                 descriptionColor = introDescriptionColor,
-                                image = introImage,
+                                image = listOf(introImage),
                                 button = introButton.toTextResource(R.string.TASK_next),
                                 buttonColor = introButtonColor,
                                 buttonTextColor = introButtonTextColor,
@@ -314,7 +314,7 @@ class TrailMakingTask(
                                             R.string.TRAIL_MAKING_secondary_intro
                                     ),
                                 descriptionColor = secondaryIntroDescriptionColor,
-                                image = secondaryIntroImage,
+                                image = listOf(secondaryIntroImage),
                                 button = secondaryIntroButton.toTextResource(R.string.TASK_get_started),
                                 buttonColor = secondaryIntroButtonColor,
                                 buttonTextColor = secondaryIntroButtonTextColor,
