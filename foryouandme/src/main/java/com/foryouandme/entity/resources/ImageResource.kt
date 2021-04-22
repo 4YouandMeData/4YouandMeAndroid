@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.utils
+package com.foryouandme.entity.resources
 
 import android.graphics.drawable.BitmapDrawable
 import android.widget.Button

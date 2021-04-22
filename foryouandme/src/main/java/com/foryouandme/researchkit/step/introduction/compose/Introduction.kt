@@ -2,6 +2,8 @@ package com.foryouandme.researchkit.step.introduction.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -9,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,57 +41,67 @@ fun Introduction(introductionViewModel: IntroductionViewModel = viewModel()) {
 private fun Introduction(state: IntroductionState) {
 
     if (state.step != null) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(state.step.backgroundColor.toColor())) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.4f)
-                    .background(Color(0xffE3E3E3))
-            ) {
-                if (state.currentImage != null) {
-                    CoilImage(
-                        data = state.currentImage,
-                        contentDescription = "",
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
+
+        BoxWithConstraints(
+            modifier =
+            Modifier.fillMaxSize()
+        ) {
+
+            val screenHeight = maxHeight
+
             Column(
                 modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .padding(start = 25.dp, end = 25.dp, top = 20.dp, bottom = 25.dp)
+                    .fillMaxSize()
+                    .background(state.step.backgroundColor.toColor())
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = state.step.title.getText(),
-                    style = MaterialTheme.typography.h1,
-                    color = state.step.titleColor.toColor(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = state.step.description.getText(),
-                    style = MaterialTheme.typography.body1,
-                    color = state.step.descriptionColor.toColor(),
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(screenHeight * 0.4f)
+                        .background(Color(0xffE3E3E3))
+                        .padding(50.dp)
+                ) {
+                    if (state.currentImage != null) {
+                        CoilImage(
+                            data = state.currentImage,
+                            contentDescription = "",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+                Column(
                     modifier =
                     Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                ForYouAndMeButton(
-                    text = state.step.button.getText(),
-                    backgroundColor = state.step.buttonColor.toColor(),
-                    textColor = state.step.buttonTextColor.toColor(),
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
-                )
+                        .padding(start = 25.dp, end = 25.dp, top = 20.dp, bottom = 25.dp)
+                ) {
+                    Text(
+                        text = state.step.title.getText(),
+                        style = MaterialTheme.typography.h1,
+                        color = state.step.titleColor.toColor(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = state.step.description.getText(),
+                        style = MaterialTheme.typography.body1,
+                        color = state.step.descriptionColor.toColor(),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ForYouAndMeButton(
+                        text = state.step.button.getText(),
+                        backgroundColor = state.step.buttonColor.toColor(),
+                        textColor = state.step.buttonTextColor.toColor(),
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {}
+                    )
+                }
             }
         }
     }
-
 }
 
 @Preview

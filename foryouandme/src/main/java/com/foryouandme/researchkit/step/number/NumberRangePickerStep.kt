@@ -5,7 +5,7 @@ import com.foryouandme.researchkit.skip.SurveySkip
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Skip
 import com.foryouandme.researchkit.step.Step
-import com.foryouandme.researchkit.utils.ImageResource
+import com.foryouandme.entity.resources.ImageResource
 
 class NumberRangePickerStep(
     identifier: String,

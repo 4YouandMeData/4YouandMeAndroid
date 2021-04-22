@@ -162,7 +162,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )
             }
             else -> null
-        }*/ FYAMHolePegTask(id, configuration)
+        }*/ FYAMHolePegTask(id, configuration, imageConfiguration)
 
     override suspend fun handleTaskResult(
         result: TaskResult,

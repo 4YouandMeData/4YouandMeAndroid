@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.researchkit.utils.ImageResource
-import com.foryouandme.researchkit.utils.applyImage
+import com.foryouandme.entity.resources.ImageResource
+import com.foryouandme.entity.resources.applyImage
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory

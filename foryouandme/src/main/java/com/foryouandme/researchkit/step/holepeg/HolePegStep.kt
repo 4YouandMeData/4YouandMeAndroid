@@ -18,5 +18,6 @@ class HolePegStep(
     val progressColor: Int,
     val pointColor: Int,
     val targetColor: Int,
-    val subSteps: List<HolePegSubStep>
+    val subSteps: List<HolePegSubStep>,
+    val numberOfPegs: Int = 9
 ) : Step(identifier, null, null, { HolePegFragment() })

@@ -38,7 +38,7 @@ fun ForYouAndMeButton(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(50.dp)
                 .background(backgroundColor, RoundedCornerShape(22.dp))
                 .clickable { onClick() },
         ) {

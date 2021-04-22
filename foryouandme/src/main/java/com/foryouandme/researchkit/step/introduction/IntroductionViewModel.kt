@@ -16,7 +16,7 @@ class IntroductionViewModel @Inject constructor() : ViewModel() {
 
     private suspend fun setStep(step: IntroductionStep?) {
 
-        state.emit(state.value.copy(step = step))
+        state.emit(state.value.copy(step = step, currentImage = step?.image))
 
     }
 

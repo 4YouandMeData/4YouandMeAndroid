@@ -7,6 +7,8 @@ import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.page.Page
+import com.foryouandme.entity.resources.ImageResource
+import com.foryouandme.entity.resources.ImageResource.AndroidResource.Companion.toAndroidResource
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.foryouandme.entity.survey.SurveyQuestion
@@ -24,8 +26,6 @@ import com.foryouandme.researchkit.step.range.RangeStep
 import com.foryouandme.researchkit.step.scale.ScaleStep
 import com.foryouandme.researchkit.step.textinput.TextInputStep
 import com.foryouandme.researchkit.task.Task
-import com.foryouandme.researchkit.utils.ImageResource
-import com.foryouandme.researchkit.utils.ImageResource.AndroidResource.Companion.toAndroidResource
 import org.threeten.bp.ZoneOffset
 
 fun buildSurvey(

@@ -8,7 +8,7 @@ import com.foryouandme.databinding.StepDateBinding
 import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.researchkit.utils.applyImage
+import com.foryouandme.entity.resources.applyImage
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime

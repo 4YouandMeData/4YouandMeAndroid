@@ -4,7 +4,7 @@ import android.content.Context
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Skip
 import com.foryouandme.researchkit.step.Step
-import com.foryouandme.researchkit.utils.ImageResource
+import com.foryouandme.entity.resources.ImageResource
 
 class DatePickerStep(
     identifier: String,
