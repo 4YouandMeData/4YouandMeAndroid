@@ -23,7 +23,7 @@ class IntroductionStepFragment : StepFragment() {
     ): View =
         ComposeView(requireContext()).apply {
             setContent {
-                Introduction()
+                Introduction { next() }
             }
         }
 

@@ -25,6 +25,16 @@ class HolePegTask(
     introButton: String?,
     introButtonColor: Int,
     introButtonTextColor: Int,
+    tutorialBackImage: Int,
+    tutorialBackgroundColor: Int,
+    tutorialTitle: String?,
+    tutorialTitleColor: Int,
+    tutorialDescription: String?,
+    tutorialDescriptionColor: Int,
+    tutorialImage: Int,
+    tutorialButton: String?,
+    tutorialButtonColor: Int,
+    tutorialButtonTextColor: Int,
     holePegBackgroundColor: Int,
     holePegTitle: String?,
     holePegTitleColor: Int,
@@ -53,6 +63,16 @@ class HolePegTask(
             introButton = introButton,
             introButtonColor = introButtonColor,
             introButtonTextColor = introButtonTextColor,
+            tutorialBackImage = tutorialBackImage,
+            tutorialBackgroundColor = tutorialBackgroundColor,
+            tutorialTitle = tutorialTitle,
+            tutorialTitleColor = tutorialTitleColor,
+            tutorialDescription = tutorialDescription,
+            tutorialDescriptionColor = tutorialDescriptionColor,
+            tutorialImage = tutorialImage,
+            tutorialButton = tutorialButton,
+            tutorialButtonColor = tutorialButtonColor,
+            tutorialButtonTextColor = tutorialButtonTextColor,
             holePegBackgroundColor = holePegBackgroundColor,
             holePegTitle = holePegTitle,
             holePegTitleColor = holePegTitleColor,
@@ -75,6 +95,8 @@ class HolePegTask(
 
         const val HOLE_PEG_INTRO: String = "hole_peg_intro"
 
+        const val HOLE_PEG_TUTORIAL: String = "hole_peg_tutorial"
+
         const val HOLE_PEG: String = "hole_peg"
 
         fun getHolePegCoreSteps(
@@ -88,6 +110,16 @@ class HolePegTask(
             introButton: String?,
             introButtonColor: Int,
             introButtonTextColor: Int,
+            tutorialBackImage: Int,
+            tutorialBackgroundColor: Int,
+            tutorialTitle: String?,
+            tutorialTitleColor: Int,
+            tutorialDescription: String?,
+            tutorialDescriptionColor: Int,
+            tutorialImage: Int?,
+            tutorialButton: String?,
+            tutorialButtonColor: Int,
+            tutorialButtonTextColor: Int,
             holePegBackgroundColor: Int,
             holePegTitle: String?,
             holePegTitleColor: Int,
@@ -122,6 +154,23 @@ class HolePegTask(
                     button = introButton.toTextResource(R.string.TASK_next),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor,
+                ),
+                IntroductionStep(
+                    identifier = HOLE_PEG_TUTORIAL,
+                    back = Back(tutorialBackImage),
+                    backgroundColor = tutorialBackgroundColor,
+                    title = tutorialTitle.toTextResource(R.string.HOLE_PEG_title),
+                    titleColor = tutorialTitleColor,
+                    description =
+                    tutorialDescription.toTextResource(
+                        R.string.HOLE_PEG_tutorial_description,
+                        holePegNumberOfPegs.toString()
+                    ),
+                    descriptionColor = tutorialDescriptionColor,
+                    image = tutorialImage ?: R.drawable.hole_peg_tutorial_1,
+                    button = tutorialButton.toTextResource(R.string.TASK_next),
+                    buttonColor = tutorialButtonColor,
+                    buttonTextColor = tutorialButtonTextColor,
                 ),
                 HolePegStep(
                     identifier = HOLE_PEG,

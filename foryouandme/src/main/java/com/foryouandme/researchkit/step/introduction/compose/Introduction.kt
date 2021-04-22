@@ -28,17 +28,17 @@ import com.foryouandme.ui.compose.toColor
 import com.google.accompanist.coil.CoilImage
 
 @Composable
-fun Introduction(introductionViewModel: IntroductionViewModel = viewModel()) {
+fun Introduction(introductionViewModel: IntroductionViewModel = viewModel(),  onNext:() -> Unit) {
 
     val state by introductionViewModel.stateFlow.collectAsState()
     ForYouAndMeTheme {
-        Introduction(state = state)
+        Introduction(state = state, onNext)
     }
 
 }
 
 @Composable
-private fun Introduction(state: IntroductionState) {
+private fun Introduction(state: IntroductionState, onNext:() -> Unit = {}) {
 
     if (state.step != null) {
 
@@ -96,7 +96,7 @@ private fun Introduction(state: IntroductionState) {
                         backgroundColor = state.step.buttonColor.toColor(),
                         textColor = state.step.buttonTextColor.toColor(),
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {}
+                        onClick = { onNext() }
                     )
                 }
             }
