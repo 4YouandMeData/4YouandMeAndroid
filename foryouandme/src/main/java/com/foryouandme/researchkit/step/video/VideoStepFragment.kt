@@ -28,7 +28,7 @@ import com.foryouandme.entity.configuration.progressbar.progressDrawable
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.permission.PermissionResult
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.researchkit.step.video.compose.VideoStep
+import com.foryouandme.researchkit.step.video.compose.VideoStepPage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import javax.inject.Inject
@@ -42,6 +42,8 @@ class VideoStepFragment : StepFragment() {
     private val mediaController: MediaController by lazy { MediaController(requireContext()) }
 
     private val videoViewModelOld: VideoViewModelOld by viewModels()
+
+    private val viewModel: VideoStepViewModel by viewModels()
 
     private val binding: StepVideoDiaryBinding?
         get() = view?.let { StepVideoDiaryBinding.bind(it) }
@@ -115,15 +117,16 @@ class VideoStepFragment : StepFragment() {
         savedInstanceState: Bundle?
     ): View =
         ComposeView(requireContext()).apply {
-           setContent { VideoStep() }
+           setContent { VideoStepPage() }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        taskViewModel.getStepByIndexAs<VideoStep>(indexArg())?.let {
+        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
+        viewModel.execute(VideoStepAction.SetStep(step))
             //lifecycleScope.launchSafe { setupCamera(it) }
-        }
+
 
     }
 

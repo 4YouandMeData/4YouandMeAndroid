@@ -3,6 +3,7 @@ package com.foryouandme.researchkit.step.video.compose
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -13,15 +14,22 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 
 @Composable
-fun Camera(modifier: Modifier = Modifier) {
+fun Camera(
+    isBackCameraToggled: Boolean,
+    isFlashEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    val cameraController = remember { LifecycleCameraController(context) }
 
     AndroidView(
         factory = { ctx ->
             val previewView = PreviewView(ctx)
+            previewView.controller = cameraController
+            cameraController.bindToLifecycle(lifecycleOwner)
             val executor = ContextCompat.getMainExecutor(ctx)
             cameraProviderFuture.addListener(
                 {
@@ -33,7 +41,10 @@ fun Camera(modifier: Modifier = Modifier) {
 
                     val cameraSelector =
                         CameraSelector.Builder()
-                            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                            .requireLensFacing(
+                                if (isBackCameraToggled) CameraSelector.LENS_FACING_BACK
+                                else CameraSelector.LENS_FACING_FRONT
+                            )
                             .build()
 
                     cameraProvider.unbindAll()
@@ -49,4 +60,11 @@ fun Camera(modifier: Modifier = Modifier) {
         },
         modifier = modifier,
     )
+
+    cameraController.cameraSelector =
+        if (isBackCameraToggled) CameraSelector.DEFAULT_BACK_CAMERA
+        else CameraSelector.DEFAULT_FRONT_CAMERA
+
+    cameraController.enableTorch(isFlashEnabled)
+
 }

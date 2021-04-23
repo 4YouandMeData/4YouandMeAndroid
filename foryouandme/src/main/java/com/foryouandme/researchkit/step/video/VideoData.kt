@@ -3,6 +3,7 @@ package com.foryouandme.researchkit.step.video
 import java.io.File
 
 data class VideoState(
+    val step: VideoStep? = null,
     val startRecordTimeSeconds: Long = 0,
     val recordTimeSeconds: Long = 0,
     val maxRecordTimeSeconds: Long = 120,
@@ -67,5 +68,14 @@ sealed class VideoStateEvent {
     data class Record(val filePath: String): VideoStateEvent()
     object ReviewPlay: VideoStateEvent()
     object ReviewPause: VideoStateEvent()
+
+}
+
+sealed class VideoStepAction {
+
+    data class SetStep(val step: VideoStep?): VideoStepAction()
+
+    object ToggleCamera : VideoStepAction()
+    object ToggleFlash : VideoStepAction()
 
 }
