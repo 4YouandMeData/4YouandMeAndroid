@@ -132,7 +132,7 @@ object AndroidX {
 
     }
 
-    object Room : DependencyGroup("androidx.room", "2.2.6") {
+    object Room : DependencyGroup("androidx.room", "2.3.0") {
 
         object Runtime : Dependency(Room.group, "room-runtime", Room.version)
 
