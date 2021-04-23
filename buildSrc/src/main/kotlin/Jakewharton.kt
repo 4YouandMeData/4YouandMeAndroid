@@ -9,7 +9,7 @@ object Jakewharton : DependencyIndependentGroup("com.jakewharton") {
     object ThreeTenAbp : Dependency(
         "${Jakewharton.group}.threetenabp",
         "threetenabp",
-        "1.3.0"
+        "1.3.1"
     )
 
 }
