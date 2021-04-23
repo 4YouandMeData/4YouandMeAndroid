@@ -106,11 +106,11 @@ object AndroidX {
 
     object Camera : DependencyIndependentGroup("androidx.camera") {
 
-        object Core : Dependency(Camera.group, "camera-core", "1.0.0-rc04")
+        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha04")
 
-        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.0.0-rc04")
+        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha04")
 
-        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha23")
+        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha24")
 
     }
 
