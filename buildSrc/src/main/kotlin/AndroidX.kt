@@ -110,6 +110,8 @@ object AndroidX {
 
         object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha04")
 
+        object Lifecycle: Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha04")
+
         object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha24")
 
     }

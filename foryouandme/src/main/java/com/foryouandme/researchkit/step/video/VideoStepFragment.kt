@@ -3,27 +3,23 @@ package com.foryouandme.researchkit.step.video
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.MediaController
-import androidx.annotation.experimental.UseExperimental
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.CameraView
-import androidx.camera.view.video.ExperimentalVideo
 import androidx.camera.view.video.OnVideoSavedCallback
 import androidx.camera.view.video.OutputFileResults
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.foryouandme.R
-import com.foryouandme.core.arch.flow.observeIn
-import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.action.permissionSettingsAction
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.imageConfiguration
-import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.databinding.StepVideoDiaryBinding
 import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.entity.configuration.background.roundTopBackground
@@ -32,21 +28,20 @@ import com.foryouandme.entity.configuration.progressbar.progressDrawable
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.permission.PermissionResult
 import com.foryouandme.researchkit.step.StepFragment
+import com.foryouandme.researchkit.step.video.compose.VideoStep
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
+class VideoStepFragment : StepFragment() {
 
     @Inject
     lateinit var requestPermissionsUseCase: RequestPermissionsUseCase
 
     private val mediaController: MediaController by lazy { MediaController(requireContext()) }
 
-    private val videoViewModel: VideoViewModel by viewModels()
+    private val videoViewModelOld: VideoViewModelOld by viewModels()
 
     private val binding: StepVideoDiaryBinding?
         get() = view?.let { StepVideoDiaryBinding.bind(it) }
@@ -56,7 +51,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
         getVideoDirectory().deleteRecursively()
 
-        videoViewModel.stateUpdate
+        /*videoViewModel.stateUpdate
             .unwrapEvent(name)
             .onEach {
 
@@ -110,20 +105,28 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     VideoLoading.Upload -> binding?.loading?.setVisibility(it.active)
                 }
             }
-            .observeIn(this)
+            .observeIn(this)*/
 
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+           setContent { VideoStep() }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         taskViewModel.getStepByIndexAs<VideoStep>(indexArg())?.let {
-            lifecycleScope.launchSafe { setupCamera(it) }
+            //lifecycleScope.launchSafe { setupCamera(it) }
         }
 
     }
 
-    @UseExperimental(markerClass = ExperimentalVideo::class)
     @SuppressLint("MissingPermission")
     private suspend fun setupCamera(step: VideoStep) {
 
@@ -193,7 +196,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
     override fun onResume() {
         super.onResume()
 
-        setupUI()
+        //setupUI()
 
     }
 
@@ -209,11 +212,11 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
             viewBinding.cameraToggle.setImageResource(imageConfiguration.videoDiaryToggleCamera())
             viewBinding.cameraToggle.setOnClickListener {
-                videoViewModel.execute(VideoStateEvent.ToggleCamera)
+                videoViewModelOld.execute(VideoStateEvent.ToggleCamera)
             }
 
             viewBinding.flashToggle.setOnClickListener {
-                videoViewModel.execute(VideoStateEvent.ToggleFlash)
+                videoViewModelOld.execute(VideoStateEvent.ToggleFlash)
             }
 
             viewBinding.recordInfo.background =
@@ -252,14 +255,14 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
             viewBinding.submit.background = button(step.buttonColor)
             viewBinding.submit.setTextColor(step.buttonTextColor)
             viewBinding.submit.setOnClickListener {
-                videoViewModel.execute(VideoStateEvent.Submit(task.id, getVideoMergeFile()))
+                videoViewModelOld.execute(VideoStateEvent.Submit(task.id, getVideoMergeFile()))
             }
             viewBinding.submit.text = step.submitButton
 
-            bindRecordingState(videoViewModel.state.recordingState)
+            bindRecordingState(videoViewModelOld.stateOld.recordingState)
             bindRecordingHeader()
-            bindFlash(videoViewModel.state.isFlashEnabled)
-            bindCamera(videoViewModel.state.isBackCameraToggled)
+            bindFlash(videoViewModelOld.stateOld.isFlashEnabled)
+            bindCamera(videoViewModelOld.stateOld.isBackCameraToggled)
 
             taskFragment().binding?.toolbar?.hide()
 
@@ -282,14 +285,14 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
                     viewBinding.videoView.isVisible = false
 
-                    viewBinding.flashToggle.isVisible = videoViewModel.state.isBackCameraToggled
+                    viewBinding.flashToggle.isVisible = videoViewModelOld.stateOld.isBackCameraToggled
                     viewBinding.cameraToggle.isVisible = false
 
                     viewBinding.recordingPause.setImageResource(step.pauseImage)
 
                     viewBinding.recordingPause.setOnClickListener {
 
-                        videoViewModel.execute(VideoStateEvent.Pause)
+                        videoViewModelOld.execute(VideoStateEvent.Pause)
                         pause()
 
                     }
@@ -305,7 +308,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
                     viewBinding.videoView.isVisible = false
 
-                    viewBinding.flashToggle.isVisible = videoViewModel.state.isBackCameraToggled
+                    viewBinding.flashToggle.isVisible = videoViewModelOld.stateOld.isBackCameraToggled
                     viewBinding.cameraToggle.isVisible = true
 
                     viewBinding.recordingPause.setImageResource(step.recordImage)
@@ -313,9 +316,9 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.recordingTitle.text = step.startRecordingDescription
 
                     val currentRecordTime =
-                        DateUtils.formatElapsedTime(videoViewModel.state.recordTimeSeconds)
+                        DateUtils.formatElapsedTime(videoViewModelOld.stateOld.recordTimeSeconds)
                     val maxRecordTime =
-                        DateUtils.formatElapsedTime(videoViewModel.state.maxRecordTimeSeconds)
+                        DateUtils.formatElapsedTime(videoViewModelOld.stateOld.maxRecordTimeSeconds)
 
                     val recordTimeLabel =
                         "$currentRecordTime/$maxRecordTime"
@@ -323,19 +326,19 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.recordingTime.text = recordTimeLabel
 
                     viewBinding.recordingProgress.max =
-                        videoViewModel.state.maxRecordTimeSeconds.toInt()
+                        videoViewModelOld.stateOld.maxRecordTimeSeconds.toInt()
                     viewBinding.recordingProgress.progress =
-                        videoViewModel.state.recordTimeSeconds.toInt()
+                        videoViewModelOld.stateOld.recordTimeSeconds.toInt()
 
                     viewBinding.recordingPause.setOnClickListener {
 
                         val file = createVideoFile()
-                        videoViewModel.execute(VideoStateEvent.Record(file.absolutePath))
+                        videoViewModelOld.execute(VideoStateEvent.Record(file.absolutePath))
                         record(file)
 
                     }
 
-                    viewBinding.review.isEnabled = videoViewModel.state.recordTimeSeconds > 0
+                    viewBinding.review.isEnabled = videoViewModelOld.stateOld.recordTimeSeconds > 0
 
                     viewBinding.recordInfo.isVisible = true
                     viewBinding.reviewInfo.isVisible = false
@@ -358,7 +361,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.videoView.setOnPreparedListener {
                         binding?.reviewLoading?.setVisibility(isVisible = false, opaque = false)
                         it.isLooping = true
-                        videoViewModel.execute(VideoStateEvent.ReviewPause)
+                        videoViewModelOld.execute(VideoStateEvent.ReviewPause)
 
                     }
                 }
@@ -374,9 +377,9 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.recordingTitle.text = step.startRecordingDescription
 
                     val currentRecordTime =
-                        DateUtils.formatElapsedTime(videoViewModel.state.recordTimeSeconds)
+                        DateUtils.formatElapsedTime(videoViewModelOld.stateOld.recordTimeSeconds)
                     val maxRecordTime =
-                        DateUtils.formatElapsedTime(videoViewModel.state.maxRecordTimeSeconds)
+                        DateUtils.formatElapsedTime(videoViewModelOld.stateOld.maxRecordTimeSeconds)
                     viewBinding.recordingTitle.text = step.startRecordingDescription
 
                     val recordTimeLabel =
@@ -391,7 +394,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.reviewPause.setImageResource(step.playImage)
                     viewBinding.reviewPause.setOnClickListener {
                         binding?.videoView?.start()
-                        videoViewModel.execute(VideoStateEvent.ReviewPlay)
+                        videoViewModelOld.execute(VideoStateEvent.ReviewPlay)
                     }
 
                     viewBinding.recordInfo.isVisible = false
@@ -415,7 +418,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                     viewBinding.reviewPause.setImageResource(step.pauseImage)
                     viewBinding.reviewPause.setOnClickListener {
                         binding?.videoView?.pause()
-                        videoViewModel.execute(VideoStateEvent.ReviewPause)
+                        videoViewModelOld.execute(VideoStateEvent.ReviewPause)
                     }
 
                     viewBinding.recordInfo.isVisible = false
@@ -431,13 +434,13 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
         val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
 
-        when (videoViewModel.state.recordingState) {
+        when (videoViewModelOld.stateOld.recordingState) {
             RecordingState.Recording -> {
 
                 val currentRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state.recordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModelOld.stateOld.recordTimeSeconds)
                 val maxRecordTime =
-                    DateUtils.formatElapsedTime(videoViewModel.state.maxRecordTimeSeconds)
+                    DateUtils.formatElapsedTime(videoViewModelOld.stateOld.maxRecordTimeSeconds)
 
                 val recordTimeLabel =
                     "$currentRecordTime/$maxRecordTime"
@@ -485,17 +488,16 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
-    @UseExperimental(markerClass = ExperimentalVideo::class)
     private fun record(file: File) {
 
-        if(videoViewModel.state.recordTimeSeconds < videoViewModel.state.maxRecordTimeSeconds) {
+        if(videoViewModelOld.stateOld.recordTimeSeconds < videoViewModelOld.stateOld.maxRecordTimeSeconds) {
             binding?.camera?.startRecording(
                 file,
                 ContextCompat.getMainExecutor(requireContext()),
                 object : OnVideoSavedCallback {
 
                     override fun onVideoSaved(outputFileResults: OutputFileResults) {
-                        videoViewModel.execute(VideoStateEvent.Pause)
+                        videoViewModelOld.execute(VideoStateEvent.Pause)
                     }
 
                     override fun onError(
@@ -504,7 +506,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
                         cause: Throwable?
                     ) {
 
-                        videoViewModel.execute(VideoStateEvent.HandleRecordError)
+                        videoViewModelOld.execute(VideoStateEvent.HandleRecordError)
 
                     }
 
@@ -514,7 +516,6 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
 
     }
 
-    @UseExperimental(markerClass = ExperimentalVideo::class)
     private fun pause() {
 
         binding?.camera?.stopRecording()
@@ -528,7 +529,7 @@ class VideoStepFragment : StepFragment(R.layout.step_video_diary) {
         if (mergeDirectory.exists().not())
             mergeDirectory.mkdir()
 
-        videoViewModel.execute(
+        videoViewModelOld.execute(
             VideoStateEvent.Merge(
                 getVideoDirectoryPath(),
                 mergeDirectory.absolutePath,

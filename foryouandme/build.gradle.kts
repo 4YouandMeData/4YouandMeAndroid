@@ -158,6 +158,7 @@ dependencies {
 
     api(AndroidX.Camera.Core.get())
     api(AndroidX.Camera.Camera2.get())
+    api(AndroidX.Camera.Lifecycle.get())
     api(AndroidX.Camera.View.get())
 
     /* --- mp4 parser --- */

@@ -2,8 +2,6 @@ package com.foryouandme.researchkit.step.video
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
@@ -13,26 +11,16 @@ import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.task.AttachVideoUseCase
 import com.foryouandme.domain.usecase.video.MergeVideosUseCase
-import com.googlecode.mp4parser.BasicContainer
-import com.googlecode.mp4parser.authoring.Movie
-import com.googlecode.mp4parser.authoring.Track
-import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder
-import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator
-import com.googlecode.mp4parser.authoring.tracks.AppendTrack
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import org.threeten.bp.Instant
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.io.File
-import java.io.RandomAccessFile
-import java.nio.channels.FileChannel
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class VideoViewModel @Inject constructor(
+class VideoViewModelOld @Inject constructor(
     private val stateUpdateFlow: StateUpdateFlow<VideoStateUpdate>,
     private val loadingFlow: LoadingFlow<VideoLoading>,
     private val errorFlow: ErrorFlow<VideoError>,
@@ -43,8 +31,11 @@ class VideoViewModel @Inject constructor(
 
     /* --- state --- */
 
-    var state: VideoState = VideoState()
+    var stateOld: VideoState = VideoState()
         private set
+
+    val state = MutableStateFlow(VideoState())
+    val stateFlow = state as StateFlow<VideoState>
 
     /* --- flow --- */
 
@@ -60,14 +51,14 @@ class VideoViewModel @Inject constructor(
 
     private suspend fun record(filePath: String) {
 
-        if (state.lastRecordedFilePath == null) logStartRecording() else logResumeRecording()
+        if (stateOld.lastRecordedFilePath == null) logStartRecording() else logResumeRecording()
 
         timer?.cancel()
         timer = viewModelScope.launchSafe { resumeTimer() }
-        state =
-            state.copy(
+        stateOld =
+            stateOld.copy(
                 recordingState = RecordingState.Recording,
-                startRecordTimeSeconds = state.recordTimeSeconds,
+                startRecordTimeSeconds = stateOld.recordTimeSeconds,
                 lastRecordedFilePath = filePath
             )
         stateUpdateFlow.update(VideoStateUpdate.Recording)
@@ -79,7 +70,7 @@ class VideoViewModel @Inject constructor(
         logPauseRecording()
 
         timer?.cancel()
-        state = state.copy(recordingState = RecordingState.RecordingPause)
+        stateOld = stateOld.copy(recordingState = RecordingState.RecordingPause)
         stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
@@ -93,14 +84,14 @@ class VideoViewModel @Inject constructor(
     }
 
     private suspend fun incrementRecordTime() {
-        state = state.copy(recordTimeSeconds = state.recordTimeSeconds + 1)
-        stateUpdateFlow.update(VideoStateUpdate.RecordTime(state.recordTimeSeconds))
+        stateOld = stateOld.copy(recordTimeSeconds = stateOld.recordTimeSeconds + 1)
+        stateUpdateFlow.update(VideoStateUpdate.RecordTime(stateOld.recordTimeSeconds))
     }
 
     private suspend fun handleRecordError() {
 
         // delete the last file if exist
-        state.lastRecordedFilePath?.let {
+        stateOld.lastRecordedFilePath?.let {
 
             val file = File(it)
 
@@ -109,9 +100,9 @@ class VideoViewModel @Inject constructor(
         }
 
         // reset the time and the remove the deleted file path
-        state =
-            state.copy(
-                recordTimeSeconds = state.startRecordTimeSeconds,
+        stateOld =
+            stateOld.copy(
+                recordTimeSeconds = stateOld.startRecordTimeSeconds,
                 lastRecordedFilePath = null
             )
 
@@ -121,16 +112,16 @@ class VideoViewModel @Inject constructor(
 
     private suspend fun setCamera(isBackCameraToggled: Boolean) {
 
-        state = state.copy(isBackCameraToggled = isBackCameraToggled)
+        stateOld = stateOld.copy(isBackCameraToggled = isBackCameraToggled)
         stateUpdateFlow.update(VideoStateUpdate.Camera)
 
         // disable the flash when the front camera is toggled
-        if (state.isBackCameraToggled) setFlash(false)
+        if (stateOld.isBackCameraToggled) setFlash(false)
 
     }
 
     private suspend fun setFlash(flash: Boolean) {
-        state = state.copy(isFlashEnabled = flash)
+        stateOld = stateOld.copy(isFlashEnabled = flash)
         stateUpdateFlow.update(VideoStateUpdate.Flash)
     }
 
@@ -139,11 +130,11 @@ class VideoViewModel @Inject constructor(
         loadingFlow.show(VideoLoading.Merge)
 
         // disable the flash when the user start the review flow
-        if (state.isBackCameraToggled) setFlash(false)
+        if (stateOld.isBackCameraToggled) setFlash(false)
 
         mergeVideosUseCase(videosPath, outputPath, outputFileName)
 
-        state = state.copy(recordingState = RecordingState.Merged)
+        stateOld = stateOld.copy(recordingState = RecordingState.Merged)
         stateUpdateFlow.update(VideoStateUpdate.Recording)
 
         loadingFlow.hide(VideoLoading.Merge)
@@ -152,14 +143,14 @@ class VideoViewModel @Inject constructor(
 
     private suspend fun reviewPause() {
 
-        state = state.copy(recordingState = RecordingState.ReviewPause)
+        stateOld = stateOld.copy(recordingState = RecordingState.ReviewPause)
         stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
 
     private suspend fun reviewPlay() {
 
-        state = state.copy(recordingState = RecordingState.Review)
+        stateOld = stateOld.copy(recordingState = RecordingState.Review)
         stateUpdateFlow.update(VideoStateUpdate.Recording)
 
     }
@@ -172,7 +163,7 @@ class VideoViewModel @Inject constructor(
 
         attachVideoUseCase(taskId, file)
 
-        state = state.copy(recordingState = RecordingState.Uploaded)
+        stateOld = stateOld.copy(recordingState = RecordingState.Uploaded)
         stateUpdateFlow.update(VideoStateUpdate.Recording)
 
         loadingFlow.hide(VideoLoading.Upload)
@@ -208,9 +199,9 @@ class VideoViewModel @Inject constructor(
 
         when (stateEvent) {
             VideoStateEvent.ToggleCamera ->
-                viewModelScope.launchSafe { setCamera(state.isBackCameraToggled.not()) }
+                viewModelScope.launchSafe { setCamera(stateOld.isBackCameraToggled.not()) }
             VideoStateEvent.ToggleFlash ->
-                viewModelScope.launchSafe { setFlash(state.isFlashEnabled.not()) }
+                viewModelScope.launchSafe { setFlash(stateOld.isFlashEnabled.not()) }
             is VideoStateEvent.Submit ->
                 errorFlow.launchCatch(viewModelScope, VideoError.Upload)
                 { submit(stateEvent.taskId, stateEvent.file) }
