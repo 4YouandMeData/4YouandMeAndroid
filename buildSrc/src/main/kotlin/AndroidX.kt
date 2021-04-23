@@ -21,7 +21,7 @@ object AndroidX {
     object FragmentKtx : Dependency(
         "androidx.fragment",
         "fragment-ktx",
-        "1.3.2"
+        "1.3.3"
     )
 
     object ViewPager2 : Dependency(
