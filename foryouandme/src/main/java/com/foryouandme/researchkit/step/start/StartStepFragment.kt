@@ -6,7 +6,7 @@ import com.foryouandme.R
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_introduction.*
+import kotlinx.android.synthetic.main.step_start.*
 
 
 class StartStepFragment : StepFragment(R.layout.step_start) {
