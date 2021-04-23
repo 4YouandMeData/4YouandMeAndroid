@@ -1,6 +1,8 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.ext.web.CamCogInterface
+import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.policy.Policy
@@ -22,6 +24,7 @@ import com.foryouandme.researchkit.result.*
 import com.foryouandme.researchkit.result.fitness.toFitnessResult
 import com.foryouandme.researchkit.result.gait.toGaitResult
 import com.foryouandme.researchkit.step.Step
+import com.foryouandme.researchkit.step.trailmaking.ETrailMakingType
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.researchkit.task.TaskConfiguration
@@ -64,7 +67,7 @@ class FYAMTaskConfiguration @Inject constructor(
         configuration: Configuration,
         task: TaskActivity
     ): Task? =
-        /*when (task.activityType) {
+        when (task.activityType) {
             TaskActivityType.VideoDiary ->
                 FYAMVideoDiaryTask(
                     id,
@@ -162,7 +165,7 @@ class FYAMTaskConfiguration @Inject constructor(
                 )
             }
             else -> null
-        }*/ FYAMHolePegTask(id, configuration, imageConfiguration)
+        }
 
     override suspend fun handleTaskResult(
         result: TaskResult,

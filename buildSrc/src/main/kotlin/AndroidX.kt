@@ -1,6 +1,6 @@
 object AndroidX {
 
-    object Activity : DependencyGroup("androidx.activity", "1.3.0-alpha06") {
+    object Activity : DependencyGroup("androidx.activity", "1.3.0-alpha07") {
 
         object Compose : Dependency(Activity.group, "activity-compose", Activity.version)
 
@@ -144,7 +144,7 @@ object AndroidX {
 
     object Compose {
 
-        const val versions: String = "1.0.0-beta04"
+        const val versions: String = "1.0.0-beta05"
 
         object UI : Dependency("androidx.compose.ui", "ui", versions) {
 
