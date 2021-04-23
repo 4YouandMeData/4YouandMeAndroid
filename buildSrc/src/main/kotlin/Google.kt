@@ -38,7 +38,7 @@ object Google {
 
     object Dagger : DependencyIndependentGroup("com.google.dagger") {
 
-        object Hilt : DependencyGroup(Dagger.group, "2.34.1-beta") {
+        object Hilt : DependencyGroup(Dagger.group, "2.35") {
 
             object Android : Dependency(Dagger.group, "hilt-android", Hilt.version)
 
