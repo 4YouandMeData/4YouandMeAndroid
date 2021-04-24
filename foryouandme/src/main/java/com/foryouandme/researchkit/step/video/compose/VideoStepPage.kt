@@ -1,22 +1,24 @@
 package com.foryouandme.researchkit.step.video.compose
 
 import android.graphics.Color
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.researchkit.step.video.VideoState
 import com.foryouandme.researchkit.step.video.VideoStep
-import com.foryouandme.researchkit.step.video.VideoStepAction.ToggleCamera
-import com.foryouandme.researchkit.step.video.VideoStepAction.ToggleFlash
+import com.foryouandme.researchkit.step.video.VideoStepAction.*
 import com.foryouandme.researchkit.step.video.VideoStepViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.preview.ComposePreview
 import com.foryouandme.ui.compose.toColor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun VideoStepPage(videoStepViewModel: VideoStepViewModel = viewModel()) {
@@ -25,8 +27,10 @@ fun VideoStepPage(videoStepViewModel: VideoStepViewModel = viewModel()) {
     ForYouAndMeTheme {
         VideoStepPage(
             state = state,
+            cameraEvents = videoStepViewModel.cameraEvents,
             onFlashClicked = { videoStepViewModel.execute(ToggleFlash) },
-            onCameraClicked = { videoStepViewModel.execute(ToggleCamera) }
+            onCameraClicked = { videoStepViewModel.execute(ToggleCamera) },
+            onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) }
         )
     }
 
@@ -35,31 +39,45 @@ fun VideoStepPage(videoStepViewModel: VideoStepViewModel = viewModel()) {
 @Composable
 private fun VideoStepPage(
     state: VideoState,
+    cameraEvents: Flow<CameraEvent>,
     onFlashClicked: () -> Unit = {},
-    onCameraClicked: () -> Unit = {}
+    onCameraClicked: () -> Unit = {},
+    onMediaButtonClicked: () -> Unit = {}
 ) {
 
     if (state.step != null) {
         Box(modifier = Modifier.fillMaxSize()) {
             Camera(
-                isFlashEnabled = state.isFlashEnabled,
-                isBackCameraToggled = state.isBackCameraToggled,
+                cameraFlash = state.cameraFlash,
+                cameraLens = state.cameraLens,
+                cameraEvents = cameraEvents,
                 modifier = Modifier.fillMaxSize()
             )
-            VideoStepHeader(
-                title = state.step.title,
-                recordingState = state.recordingState,
-                recordTimeSeconds = state.recordTimeSeconds,
-                maxRecordTimeSeconds = state.maxRecordTimeSeconds,
-                color = state.step.titleColor.toColor(),
-                flashOn = state.step.flashOnImage,
-                flashOff = state.step.flashOffImage,
-                isFlashEnabled = state.isFlashEnabled,
-                onFlashClicked = { onFlashClicked() },
-                cameraToggle = state.step.cameraToggleImage,
-                isBackCameraToggled = state.isBackCameraToggled,
-                onCameraClicked = { onCameraClicked() }
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.height(20.dp))
+                VideoStepHeader(
+                    title = state.step.title,
+                    recordingState = state.recordingState,
+                    recordTimeSeconds = state.recordTimeSeconds,
+                    maxRecordTimeSeconds = state.maxRecordTimeSeconds,
+                    color = state.step.titleColor.toColor(),
+                    flashOn = state.step.flashOnImage,
+                    flashOff = state.step.flashOffImage,
+                    cameraFlash = state.cameraFlash,
+                    onFlashClicked = { onFlashClicked() },
+                    cameraToggle = state.step.cameraToggleImage,
+                    cameraLens = state.cameraLens,
+                    onCameraClicked = { onCameraClicked() }
+                )
+                MediaButton(
+                    recordingState = state.recordingState,
+                    pause = state.step.pauseImage,
+                    play = state.step.playImage,
+                    record = state.step.recordImage,
+                    onMediaButtonClicked = { onMediaButtonClicked() },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -107,8 +125,8 @@ private fun VideoStepPagePreview() {
                     cancel = ComposePreview.button
 
                 )
-            )
-
+            ),
+            cameraEvents = flow {  }
         )
     }
 }

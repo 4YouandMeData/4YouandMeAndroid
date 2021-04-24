@@ -205,7 +205,7 @@ class VideoStepFragment : StepFragment() {
 
     private fun setupUI() {
 
-        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
+        /*val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
         val task = taskViewModel.state.task
         val viewBinding = binding
 
@@ -269,13 +269,13 @@ class VideoStepFragment : StepFragment() {
 
             taskFragment().binding?.toolbar?.hide()
 
-        }
+        }*/
 
     }
 
     private fun bindRecordingState(state: RecordingState) {
 
-        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
+        /*val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
         val viewBinding = binding
 
         if (viewBinding != null && step != null) {
@@ -430,12 +430,12 @@ class VideoStepFragment : StepFragment() {
                 }
                 RecordingState.Uploaded -> next()
             }
-        }
+        }*/
     }
 
     private fun bindRecordingHeader() {
 
-        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
+        /*val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
 
         when (videoViewModelOld.stateOld.recordingState) {
             RecordingState.Recording -> {
@@ -455,13 +455,13 @@ class VideoStepFragment : StepFragment() {
                 binding?.title?.text = step?.title.orEmpty()
             RecordingState.Review ->
                 binding?.title?.text = step?.title.orEmpty()
-        }
+        }*/
     }
 
     // TODO: check if flash is available
     private fun bindFlash(isFlashEnabled: Boolean) {
 
-        val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
+        /*val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
         val viewBinding = binding
 
         if (viewBinding != null && step != null) {
@@ -471,14 +471,14 @@ class VideoStepFragment : StepFragment() {
                 if (isFlashEnabled) step.flashOnImage
                 else step.flashOffImage
             )
-        }
+        }*/
 
     }
 
     // TODO: check if camera lens is available
     private fun bindCamera(isBackCameraToggled: Boolean) {
 
-        val viewBinding = binding
+        /*val viewBinding = binding
 
         catchToNull {
             viewBinding?.camera?.cameraLensFacing =
@@ -487,13 +487,13 @@ class VideoStepFragment : StepFragment() {
         }
 
         // enable flash button only for back camera
-        viewBinding?.flashToggle?.isVisible = isBackCameraToggled
+        viewBinding?.flashToggle?.isVisible = isBackCameraToggled*/
 
     }
 
     private fun record(file: File) {
 
-        if(videoViewModelOld.stateOld.recordTimeSeconds < videoViewModelOld.stateOld.maxRecordTimeSeconds) {
+        /*if(videoViewModelOld.stateOld.recordTimeSeconds < videoViewModelOld.stateOld.maxRecordTimeSeconds) {
             binding?.camera?.startRecording(
                 file,
                 ContextCompat.getMainExecutor(requireContext()),
@@ -515,19 +515,19 @@ class VideoStepFragment : StepFragment() {
 
                 }
             )
-        }
+        }*/
 
     }
 
     private fun pause() {
 
-        binding?.camera?.stopRecording()
+        //binding?.camera?.stopRecording()
 
     }
 
     private fun review() {
 
-        val mergeDirectory = File(getVideoMergeDirectoryPath())
+        /*val mergeDirectory = File(getVideoMergeDirectoryPath())
 
         if (mergeDirectory.exists().not())
             mergeDirectory.mkdir()
@@ -538,7 +538,7 @@ class VideoStepFragment : StepFragment() {
                 mergeDirectory.absolutePath,
                 getVideoMergeFileName()
             )
-        )
+        )*/
     }
 
     private fun createVideoFile(): File {

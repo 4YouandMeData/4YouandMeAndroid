@@ -112,17 +112,12 @@ class VideoViewModelOld @Inject constructor(
 
     private suspend fun setCamera(isBackCameraToggled: Boolean) {
 
-        stateOld = stateOld.copy(isBackCameraToggled = isBackCameraToggled)
-        stateUpdateFlow.update(VideoStateUpdate.Camera)
 
-        // disable the flash when the front camera is toggled
-        if (stateOld.isBackCameraToggled) setFlash(false)
 
     }
 
     private suspend fun setFlash(flash: Boolean) {
-        stateOld = stateOld.copy(isFlashEnabled = flash)
-        stateUpdateFlow.update(VideoStateUpdate.Flash)
+
     }
 
     private suspend fun merge(videosPath: String, outputPath: String, outputFileName: String) {
@@ -130,7 +125,7 @@ class VideoViewModelOld @Inject constructor(
         loadingFlow.show(VideoLoading.Merge)
 
         // disable the flash when the user start the review flow
-        if (stateOld.isBackCameraToggled) setFlash(false)
+        //if (stateOld.isBackCameraToggled) setFlash(false)
 
         mergeVideosUseCase(videosPath, outputPath, outputFileName)
 
@@ -199,9 +194,9 @@ class VideoViewModelOld @Inject constructor(
 
         when (stateEvent) {
             VideoStateEvent.ToggleCamera ->
-                viewModelScope.launchSafe { setCamera(stateOld.isBackCameraToggled.not()) }
+                viewModelScope.launchSafe {  }
             VideoStateEvent.ToggleFlash ->
-                viewModelScope.launchSafe { setFlash(stateOld.isFlashEnabled.not()) }
+                viewModelScope.launchSafe {  }
             is VideoStateEvent.Submit ->
                 errorFlow.launchCatch(viewModelScope, VideoError.Upload)
                 { submit(stateEvent.taskId, stateEvent.file) }

@@ -1,5 +1,7 @@
 package com.foryouandme.researchkit.step.video
 
+import com.foryouandme.entity.camera.CameraFlash
+import com.foryouandme.entity.camera.CameraLens
 import java.io.File
 
 data class VideoState(
@@ -9,8 +11,8 @@ data class VideoState(
     val maxRecordTimeSeconds: Long = 120,
     val lastRecordedFilePath: String? = null,
     val recordingState: RecordingState = RecordingState.RecordingPause,
-    val isFlashEnabled: Boolean = false,
-    val isBackCameraToggled: Boolean = true,
+    val cameraFlash: CameraFlash = CameraFlash.Off,
+    val cameraLens: CameraLens = CameraLens.Back,
 )
 
 sealed class VideoStateUpdate {
@@ -77,5 +79,7 @@ sealed class VideoStepAction {
 
     object ToggleCamera : VideoStepAction()
     object ToggleFlash : VideoStepAction()
+
+    object PlayPause: VideoStepAction()
 
 }

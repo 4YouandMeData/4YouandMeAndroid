@@ -1,22 +1,33 @@
 package com.foryouandme.researchkit.step.video.compose
 
+import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
+import androidx.camera.core.VideoCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.foryouandme.entity.camera.CameraEvent
+import com.foryouandme.entity.camera.CameraFlash
+import com.foryouandme.entity.camera.CameraLens
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
+@SuppressLint("UnsafeOptInUsageError", "MissingPermission", "RestrictedApi")
 @Composable
 fun Camera(
-    isBackCameraToggled: Boolean,
-    isFlashEnabled: Boolean,
+    cameraLens: CameraLens,
+    cameraFlash: CameraFlash,
+    cameraEvents: Flow<CameraEvent>,
     modifier: Modifier = Modifier
 ) {
 
@@ -24,6 +35,7 @@ fun Camera(
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val cameraController = remember { LifecycleCameraController(context) }
+    val videoCapture = remember { VideoCapture.Builder().build() }
 
     AndroidView(
         factory = { ctx ->
@@ -42,8 +54,10 @@ fun Camera(
                     val cameraSelector =
                         CameraSelector.Builder()
                             .requireLensFacing(
-                                if (isBackCameraToggled) CameraSelector.LENS_FACING_BACK
-                                else CameraSelector.LENS_FACING_FRONT
+                                when (cameraLens) {
+                                    CameraLens.Back -> CameraSelector.LENS_FACING_BACK
+                                    CameraLens.Front -> CameraSelector.LENS_FACING_FRONT
+                                }
                             )
                             .build()
 
@@ -51,7 +65,8 @@ fun Camera(
                     cameraProvider.bindToLifecycle(
                         lifecycleOwner,
                         cameraSelector,
-                        preview
+                        preview,
+                        videoCapture
                     )
                 },
                 executor
@@ -61,10 +76,50 @@ fun Camera(
         modifier = modifier,
     )
 
-    cameraController.cameraSelector =
-        if (isBackCameraToggled) CameraSelector.DEFAULT_BACK_CAMERA
-        else CameraSelector.DEFAULT_FRONT_CAMERA
+    LaunchedEffect(cameraLens) {
+        cameraController.cameraSelector =
+            when (cameraLens) {
+                CameraLens.Back -> CameraSelector.DEFAULT_BACK_CAMERA
+                CameraLens.Front -> CameraSelector.DEFAULT_FRONT_CAMERA
+            }
+    }
 
-    cameraController.enableTorch(isFlashEnabled)
+    LaunchedEffect(cameraFlash) {
+        cameraController.enableTorch(cameraFlash is CameraFlash.On)
+    }
+
+    LaunchedEffect(key1 = "camera") {
+        cameraEvents.onEach {
+            when (it) {
+                CameraEvent.Pause ->
+                    videoCapture.stopRecording()
+                is CameraEvent.Record -> {
+
+                    videoCapture.startRecording(
+                        VideoCapture.OutputFileOptions.Builder(it.file).build(),
+                        ContextCompat.getMainExecutor(context),
+                        object : VideoCapture.OnVideoSavedCallback {
+
+                            override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
+                                //videoViewModelOld.execute(VideoStateEvent.Pause)
+                                val i = 0
+                            }
+
+                            override fun onError(
+                                videoCaptureError: Int,
+                                message: String,
+                                cause: Throwable?
+                            ) {
+
+                                //videoViewModelOld.execute(VideoStateEvent.HandleRecordError)
+
+                            }
+
+                        }
+                    )
+                }
+            }
+        }.collect()
+    }
 
 }

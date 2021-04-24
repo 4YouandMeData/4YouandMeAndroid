@@ -14,6 +14,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.foryouandme.entity.camera.CameraFlash
+import com.foryouandme.entity.camera.CameraFlash.*
+import com.foryouandme.entity.camera.CameraLens
+import com.foryouandme.entity.camera.CameraLens.*
 import com.foryouandme.researchkit.step.video.RecordingState
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.preview.ComposePreview
@@ -28,10 +32,10 @@ fun VideoStepHeader(
     color: Color,
     flashOn: Int,
     flashOff: Int,
-    isFlashEnabled: Boolean,
+    cameraFlash: CameraFlash,
     onFlashClicked: () -> Unit = {},
     cameraToggle: Int,
-    isBackCameraToggled: Boolean,
+    cameraLens: CameraLens,
     onCameraClicked: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -40,8 +44,8 @@ fun VideoStepHeader(
         getTitle(title, recordingState, recordTimeSeconds, maxRecordTimeSeconds)
     }
 
-    val canShowFlashButton = remember(recordingState, isBackCameraToggled) {
-        canShowFlashToggle(recordingState, isBackCameraToggled)
+    val canShowFlashButton = remember(recordingState, cameraLens) {
+        canShowFlashToggle(recordingState, cameraLens)
     }
 
     val canShowCameraButton = remember(recordingState) {
@@ -56,7 +60,7 @@ fun VideoStepHeader(
         Box(modifier = Modifier.size(30.dp, 30.dp)) {
             if (canShowFlashButton)
                 CoilImage(
-                    data = if (isFlashEnabled) flashOn else flashOff,
+                    data = if (cameraFlash is On) flashOn else flashOff,
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxSize()
@@ -116,11 +120,11 @@ private fun getTitle(
 
 private fun canShowFlashToggle(
     recordingState: RecordingState,
-    isBackCameraToggled: Boolean
+    cameraLens: CameraLens
 ): Boolean =
     when (recordingState) {
         RecordingState.Recording,
-        RecordingState.RecordingPause -> isBackCameraToggled
+        RecordingState.RecordingPause -> cameraLens is Back
         else -> false
     }
 
@@ -145,9 +149,9 @@ private fun VideoStepHeaderPreviewPause() {
             color = Color.White,
             flashOn = 0,
             flashOff = 0,
-            isFlashEnabled = true,
+            cameraFlash = On,
             cameraToggle = 0,
-            isBackCameraToggled = true
+            cameraLens = Back
         )
 
     }
@@ -166,9 +170,9 @@ private fun VideoStepHeaderPreviewRecording() {
             color = Color.White,
             flashOn = 0,
             flashOff = 0,
-            isFlashEnabled = true,
+            cameraFlash = On,
             cameraToggle = 0,
-            isBackCameraToggled = true
+            cameraLens = Back
         )
     }
 }
