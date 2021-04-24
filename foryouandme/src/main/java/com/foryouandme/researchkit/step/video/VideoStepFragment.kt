@@ -117,7 +117,7 @@ class VideoStepFragment : StepFragment() {
         savedInstanceState: Bundle?
     ): View =
         ComposeView(requireContext()).apply {
-           setContent { VideoStepPage() }
+           setContent { VideoStepPage{ showCancelDialog() } }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

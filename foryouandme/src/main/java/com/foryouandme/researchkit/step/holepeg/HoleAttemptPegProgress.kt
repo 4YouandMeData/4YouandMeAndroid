@@ -22,7 +22,7 @@ fun HoleAttemptPegProgress(
 
 }
 
-private fun getProgress(attempt: HolePegAttempt) =
+private fun getProgress(attempt: HolePegAttempt): Float =
     attempt.pegs.size.toFloat() / (attempt.totalPegs.toFloat() + 1)
 
 @Preview

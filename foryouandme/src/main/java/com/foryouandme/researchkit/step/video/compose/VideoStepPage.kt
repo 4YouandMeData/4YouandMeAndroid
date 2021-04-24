@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.entity.camera.CameraEvent
+import com.foryouandme.researchkit.step.video.RecordingState
 import com.foryouandme.researchkit.step.video.VideoState
 import com.foryouandme.researchkit.step.video.VideoStep
 import com.foryouandme.researchkit.step.video.VideoStepAction.*
@@ -21,7 +22,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 @Composable
-fun VideoStepPage(videoStepViewModel: VideoStepViewModel = viewModel()) {
+fun VideoStepPage(
+    videoStepViewModel: VideoStepViewModel = viewModel(),
+    onCloseClicked: () -> Unit
+) {
 
     val state by videoStepViewModel.stateFlow.collectAsState()
     ForYouAndMeTheme {
@@ -31,7 +35,8 @@ fun VideoStepPage(videoStepViewModel: VideoStepViewModel = viewModel()) {
             onFlashClicked = { videoStepViewModel.execute(ToggleFlash) },
             onCameraClicked = { videoStepViewModel.execute(ToggleCamera) },
             onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) },
-            onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) }
+            onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) },
+            onCloseClicked = { onCloseClicked() }
         )
     }
 
@@ -44,7 +49,8 @@ private fun VideoStepPage(
     onFlashClicked: () -> Unit = {},
     onCameraClicked: () -> Unit = {},
     onMediaButtonClicked: () -> Unit = {},
-    onRecordError: () -> Unit = {}
+    onRecordError: () -> Unit = {},
+    onCloseClicked: () -> Unit = {}
 ) {
 
     if (state.step != null) {
@@ -78,8 +84,32 @@ private fun VideoStepPage(
                     play = state.step.playImage,
                     record = state.step.recordImage,
                     onMediaButtonClicked = { onMediaButtonClicked() },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 )
+                if (state.recordingState is RecordingState.RecordingPause)
+                    VideoStepRecordingInfo(
+                        backgroundColor = state.step.infoBackgroundColor.toColor(),
+                        title = state.step.startRecordingDescription,
+                        titleColor = state.step.startRecordingDescriptionColor.toColor(),
+                        closeImage = state.step.closeImage,
+                        timeImage = state.step.timeImage,
+                        recordTimeSeconds = state.recordTimeSeconds,
+                        maxRecordTimeSeconds = state.maxRecordTimeSeconds,
+                        timeColor = state.step.timeColor.toColor(),
+                        progressColor = state.step.timeProgressColor.toColor(),
+                        progressBackgroundColor = state.step.timeProgressBackgroundColor.toColor(),
+                        infoTitle = state.step.infoTitle,
+                        infoTitleColor = state.step.infoTitleColor.toColor(),
+                        infoBody = state.step.infoBody,
+                        infoBodyColor = state.step.infoBodyColor.toColor(),
+                        reviewButton = state.step.reviewButton,
+                        reviewButtonColor =state.step.buttonColor.toColor(),
+                        reviewButtonTextColor = state.step.buttonTextColor.toColor(),
+                        onCloseClicked = { onCloseClicked() },
+                        onReviewClicked = {  }
+                    )
             }
         }
     }

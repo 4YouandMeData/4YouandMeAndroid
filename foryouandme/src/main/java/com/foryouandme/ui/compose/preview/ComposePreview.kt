@@ -34,4 +34,6 @@ object ComposePreview {
 
     const val button = "Button Button Button"
 
+    const val time: String = "09:30"
+
 }
