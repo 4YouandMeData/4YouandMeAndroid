@@ -82,4 +82,6 @@ sealed class VideoStepAction {
 
     object PlayPause: VideoStepAction()
 
+    object HandleVideoRecordError: VideoStepAction()
+
 }

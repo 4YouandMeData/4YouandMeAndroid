@@ -30,7 +30,8 @@ fun VideoStepPage(videoStepViewModel: VideoStepViewModel = viewModel()) {
             cameraEvents = videoStepViewModel.cameraEvents,
             onFlashClicked = { videoStepViewModel.execute(ToggleFlash) },
             onCameraClicked = { videoStepViewModel.execute(ToggleCamera) },
-            onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) }
+            onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) },
+            onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) }
         )
     }
 
@@ -42,7 +43,8 @@ private fun VideoStepPage(
     cameraEvents: Flow<CameraEvent>,
     onFlashClicked: () -> Unit = {},
     onCameraClicked: () -> Unit = {},
-    onMediaButtonClicked: () -> Unit = {}
+    onMediaButtonClicked: () -> Unit = {},
+    onRecordError: () -> Unit = {}
 ) {
 
     if (state.step != null) {
@@ -51,6 +53,7 @@ private fun VideoStepPage(
                 cameraFlash = state.cameraFlash,
                 cameraLens = state.cameraLens,
                 cameraEvents = cameraEvents,
+                onRecordError = { onRecordError() },
                 modifier = Modifier.fillMaxSize()
             )
             Column(modifier = Modifier.fillMaxSize()) {
@@ -126,7 +129,7 @@ private fun VideoStepPagePreview() {
 
                 )
             ),
-            cameraEvents = flow {  }
+            cameraEvents = flow { }
         )
     }
 }

@@ -92,10 +92,7 @@ class VideoStepViewModel @Inject constructor(
     private suspend fun playPause() {
 
         when (state.value.recordingState) {
-            RecordingState.Recording -> {
-                state.emit(state.value.copy(recordingState = RecordingState.RecordingPause))
-                cameraEventChannel.send(CameraEvent.Pause)
-            }
+            RecordingState.Recording -> pause()
             RecordingState.RecordingPause -> record()
             RecordingState.Review ->
                 state.emit(state.value.copy(recordingState = RecordingState.ReviewPause))
@@ -111,7 +108,7 @@ class VideoStepViewModel @Inject constructor(
 
     private suspend fun record() {
 
-        if(state.value.recordTimeSeconds < state.value.maxRecordTimeSeconds) {
+        if (state.value.recordTimeSeconds < state.value.maxRecordTimeSeconds) {
 
             val file = createVideoFile()
 
@@ -131,6 +128,42 @@ class VideoStepViewModel @Inject constructor(
 
         }
 
+    }
+
+    private suspend fun handleRecordError() {
+
+        // delete the last file if exist
+        val lastRecordedFilePath = state.value.lastRecordedFilePath
+
+        if (lastRecordedFilePath != null) {
+
+            val file = File(lastRecordedFilePath)
+
+            if (file.exists()) file.delete()
+
+        }
+
+        // reset the time and the remove the deleted file path
+        state.emit(
+            state.value.copy(
+                recordTimeSeconds = state.value.startRecordTimeSeconds,
+                lastRecordedFilePath = null
+            )
+        )
+
+        pause()
+
+    }
+
+    /* --- pause --- */
+
+    private suspend fun pause() {
+
+        logPauseRecording()
+
+        timer?.cancel()
+        state.emit(state.value.copy(recordingState = RecordingState.RecordingPause))
+        cameraEventChannel.send(CameraEvent.Pause)
     }
 
     /* --- directory --- */
@@ -212,6 +245,8 @@ class VideoStepViewModel @Inject constructor(
                 }
             VideoStepAction.PlayPause ->
                 viewModelScope.launchSafe { playPause() }
+            VideoStepAction.HandleVideoRecordError ->
+                viewModelScope.launchSafe { handleRecordError() }
         }
     }
 

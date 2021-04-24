@@ -28,7 +28,8 @@ fun Camera(
     cameraLens: CameraLens,
     cameraFlash: CameraFlash,
     cameraEvents: Flow<CameraEvent>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRecordError: () -> Unit = {}
 ) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -101,8 +102,7 @@ fun Camera(
                         object : VideoCapture.OnVideoSavedCallback {
 
                             override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
-                                //videoViewModelOld.execute(VideoStateEvent.Pause)
-                                val i = 0
+
                             }
 
                             override fun onError(
@@ -110,9 +110,7 @@ fun Camera(
                                 message: String,
                                 cause: Throwable?
                             ) {
-
-                                //videoViewModelOld.execute(VideoStateEvent.HandleRecordError)
-
+                                onRecordError()
                             }
 
                         }
