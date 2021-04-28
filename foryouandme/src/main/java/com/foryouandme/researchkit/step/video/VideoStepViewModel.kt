@@ -209,7 +209,7 @@ class VideoStepViewModel @Inject constructor(
                     outputFileName = getVideoMergeFileName()
                 )
 
-                state.emit(state.value.copy(merge = LazyData.unit()))
+                state.emit(state.value.copy(recordingState = RecordingState.Merged, merge = LazyData.unit()))
             },
             {
                 state.emit(state.value.copy(merge = it.toError()))

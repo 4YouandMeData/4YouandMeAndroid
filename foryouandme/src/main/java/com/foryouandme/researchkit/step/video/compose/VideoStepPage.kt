@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.ext.errorToast
 import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.researchkit.step.video.*
@@ -130,7 +131,7 @@ private fun VideoStepPage(
             }
             Loading(
                 backgroundColor = state.step.infoBackgroundColor.toColor(),
-                isVisible = true,
+                isVisible = state.merge is LazyData.Loading,
                 modifier = Modifier.fillMaxSize()
             )
         }

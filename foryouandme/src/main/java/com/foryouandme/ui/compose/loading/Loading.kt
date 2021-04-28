@@ -23,7 +23,7 @@ fun Loading(
     modifier: Modifier = Modifier
 ) {
     Loading(
-        backgroundColor = backgroundColor,
+        backgroundColor = backgroundColor.copy(alpha = 0.49f),
         loadingImage = LocalContext.current.imageConfiguration.loading(),
         isVisible = isVisible,
         modifier = modifier
