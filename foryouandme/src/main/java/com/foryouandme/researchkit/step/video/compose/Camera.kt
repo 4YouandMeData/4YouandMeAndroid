@@ -32,8 +32,8 @@ fun Camera(
     onRecordError: () -> Unit = {}
 ) {
 
-    val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val cameraController = remember { LifecycleCameraController(context) }
     val videoCapture = remember { VideoCapture.Builder().build() }

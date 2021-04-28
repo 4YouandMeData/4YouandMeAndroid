@@ -1,9 +1,6 @@
 package com.foryouandme.core.ext
 
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 fun <T> CoroutineScope.launchSafe(block: suspend () -> T): Job =
@@ -14,3 +11,24 @@ fun <T> CoroutineScope.launchSafe(block: suspend () -> T): Job =
         block()
 
     }
+
+
+data class Action(
+    val block: suspend () -> Unit,
+    val error: suspend (Throwable) -> Unit
+)
+
+fun action(
+    block: suspend () -> Unit,
+    error: suspend (Throwable) -> Unit
+) = Action(block, error)
+
+fun CoroutineScope.launchAction(action: Action): Job =
+    launch(CoroutineExceptionHandler { _, _ -> }) {
+
+        catchSuspend({ action.block() }, { action.error(it) })
+
+    }
+
+fun Throwable.isCoroutineException() =
+    this is CancellationException || this is TimeoutCancellationException

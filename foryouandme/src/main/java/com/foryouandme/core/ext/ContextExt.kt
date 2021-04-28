@@ -11,6 +11,9 @@ import com.foryouandme.core.arch.deps.Injector
 import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.Navigator
+import com.foryouandme.domain.error.ForYouAndMeException
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.compose.error.getMessage
 import es.dmoral.toasty.Toasty
 
 /* --- resources --- */
@@ -34,11 +37,22 @@ val Context.videoConfiguration: VideoConfiguration
 
 /* --- toast --- */
 
-fun Context.errorToast(message: String): Unit =
+fun Context.errorToast(message: String) {
     Toasty.error(this, message, Toast.LENGTH_LONG).show()
+}
 
-fun Context.errorToast(error: ForYouAndMeError): Unit =
+fun Context.errorToast(error: ForYouAndMeError) {
     Toasty.error(this, error.message(this), Toast.LENGTH_LONG).show()
+}
 
-fun Context.infoToast(message: String): Unit =
+fun Context.errorToast(error: ForYouAndMeException, configuration: Configuration? = null) {
+    Toasty.error(
+        this,
+        error.getMessage(configuration).getText(this),
+        Toast.LENGTH_LONG
+    ).show()
+}
+
+fun Context.infoToast(message: String) {
     Toasty.info(this, message, Toast.LENGTH_LONG).show()
+}

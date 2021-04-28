@@ -1,5 +1,7 @@
 package com.foryouandme.researchkit.step.video
 
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.camera.CameraFlash
 import com.foryouandme.entity.camera.CameraLens
 import java.io.File
@@ -13,6 +15,7 @@ data class VideoState(
     val recordingState: RecordingState = RecordingState.RecordingPause,
     val cameraFlash: CameraFlash = CameraFlash.Off,
     val cameraLens: CameraLens = CameraLens.Back,
+    val merge: LazyData<Unit> = LazyData.Empty
 )
 
 sealed class VideoStateUpdate {
@@ -83,5 +86,13 @@ sealed class VideoStepAction {
     object PlayPause: VideoStepAction()
 
     object HandleVideoRecordError: VideoStepAction()
+
+    object Merge: VideoStepAction()
+
+}
+
+sealed class VideoStepEvent {
+
+    data class MergeError(val error: ForYouAndMeException): VideoStepEvent()
 
 }

@@ -4,13 +4,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.toError
+import com.foryouandme.core.ext.Action
+import com.foryouandme.core.ext.action
+import com.foryouandme.core.ext.launchAction
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.video.MergeVideosUseCase
 import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.entity.camera.CameraFlash
 import com.foryouandme.entity.camera.CameraLens
+import com.foryouandme.ui.compose.error.toForYouAndMeException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -25,6 +32,7 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
 class VideoStepViewModel @Inject constructor(
+    private val mergeVideosUseCase: MergeVideosUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
     @ApplicationContext private val application: Context
 ) : ViewModel() {
@@ -33,6 +41,9 @@ class VideoStepViewModel @Inject constructor(
 
     val state = MutableStateFlow(VideoState())
     val stateFlow = state as StateFlow<VideoState>
+
+    private val videoEventChannel = Channel<VideoStepEvent>(Channel.BUFFERED)
+    val videoEvents = videoEventChannel.receiveAsFlow()
 
     init {
 
@@ -79,9 +90,19 @@ class VideoStepViewModel @Inject constructor(
     }
 
     private suspend fun incrementRecordTime() {
+
+        val nextTime = state.value.recordTimeSeconds + 1
+
         state.emit(
-            state.value.copy(recordTimeSeconds = state.value.recordTimeSeconds + 1)
+            state.value.copy(recordTimeSeconds = nextTime)
         )
+
+        if(nextTime >= state.value.maxRecordTimeSeconds) {
+            pause()
+            delay(1000)
+            execute(VideoStepAction.Merge)
+        }
+
     }
 
     /* --- media --- */
@@ -166,6 +187,36 @@ class VideoStepViewModel @Inject constructor(
         cameraEventChannel.send(CameraEvent.Pause)
     }
 
+    /* --- merge --- */
+
+    private fun merge(): Action =
+        action(
+            {
+
+                state.emit(state.value.copy(merge = LazyData.Loading))
+
+                // disable the flash when the user start the review flow
+                if (state.value.cameraLens is CameraLens.Back) setFlash(CameraFlash.Off)
+
+                val mergeDirectory = File(getVideoMergeDirectoryPath())
+
+                if (mergeDirectory.exists().not())
+                    mergeDirectory.mkdir()
+
+                mergeVideosUseCase(
+                    videosPath = getVideoDirectoryPath(),
+                    outputPath = mergeDirectory.absolutePath,
+                    outputFileName = getVideoMergeFileName()
+                )
+
+                state.emit(state.value.copy(merge = LazyData.unit()))
+            },
+            {
+                state.emit(state.value.copy(merge = it.toError()))
+                videoEventChannel.send(VideoStepEvent.MergeError(it.toForYouAndMeException()))
+            }
+        )
+
     /* --- directory --- */
 
     private fun createVideoFile(): File {
@@ -196,7 +247,7 @@ class VideoStepViewModel @Inject constructor(
 
     private fun getVideoMergeFile(): File = File(getVideoMergeFilePath())
 
-    /* --- analytics --- */
+/* --- analytics --- */
 
     private suspend fun logPauseRecording() {
         sendAnalyticsEventUseCase(
@@ -247,6 +298,8 @@ class VideoStepViewModel @Inject constructor(
                 viewModelScope.launchSafe { playPause() }
             VideoStepAction.HandleVideoRecordError ->
                 viewModelScope.launchSafe { handleRecordError() }
+            VideoStepAction.Merge ->
+                viewModelScope.launchAction(merge())
         }
     }
 

@@ -55,7 +55,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = AndroidX.Compose.versions
+        kotlinCompilerExtensionVersion = AndroidX.Compose.version
     }
 
 }
@@ -217,6 +217,7 @@ dependencies {
     implementation(AndroidX.Compose.UI.UITooling.get())
     implementation(AndroidX.Compose.Material.get())
     implementation(AndroidX.Compose.Foundation.get())
+    implementation(AndroidX.Compose.Animation.get())
     implementation(AndroidX.Activity.Compose.get())
     implementation(AndroidX.Lifecycle.ViewModelCompose.get())
 

@@ -3,23 +3,26 @@ package com.foryouandme.researchkit.step.video.compose
 import android.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.foryouandme.core.ext.errorToast
 import com.foryouandme.entity.camera.CameraEvent
-import com.foryouandme.researchkit.step.video.RecordingState
-import com.foryouandme.researchkit.step.video.VideoState
-import com.foryouandme.researchkit.step.video.VideoStep
+import com.foryouandme.researchkit.step.video.*
 import com.foryouandme.researchkit.step.video.VideoStepAction.*
-import com.foryouandme.researchkit.step.video.VideoStepViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.preview.ComposePreview
 import com.foryouandme.ui.compose.toColor
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun VideoStepPage(
@@ -28,6 +31,18 @@ fun VideoStepPage(
 ) {
 
     val state by videoStepViewModel.stateFlow.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = videoStepViewModel) {
+        videoStepViewModel.videoEvents
+            .onEach {
+                when (it) {
+                    is VideoStepEvent.MergeError -> context.errorToast(it.error)
+                }
+            }
+            .collect()
+    }
+
     ForYouAndMeTheme {
         VideoStepPage(
             state = state,
@@ -36,7 +51,8 @@ fun VideoStepPage(
             onCameraClicked = { videoStepViewModel.execute(ToggleCamera) },
             onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) },
             onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) },
-            onCloseClicked = { onCloseClicked() }
+            onCloseClicked = { onCloseClicked() },
+            onReviewClicked = { videoStepViewModel.execute(Merge) }
         )
     }
 
@@ -50,7 +66,8 @@ private fun VideoStepPage(
     onCameraClicked: () -> Unit = {},
     onMediaButtonClicked: () -> Unit = {},
     onRecordError: () -> Unit = {},
-    onCloseClicked: () -> Unit = {}
+    onCloseClicked: () -> Unit = {},
+    onReviewClicked: () -> Unit = {}
 ) {
 
     if (state.step != null) {
@@ -59,7 +76,7 @@ private fun VideoStepPage(
                 cameraFlash = state.cameraFlash,
                 cameraLens = state.cameraLens,
                 cameraEvents = cameraEvents,
-                onRecordError = { onRecordError() },
+                onRecordError = onRecordError,
                 modifier = Modifier.fillMaxSize()
             )
             Column(modifier = Modifier.fillMaxSize()) {
@@ -73,17 +90,17 @@ private fun VideoStepPage(
                     flashOn = state.step.flashOnImage,
                     flashOff = state.step.flashOffImage,
                     cameraFlash = state.cameraFlash,
-                    onFlashClicked = { onFlashClicked() },
+                    onFlashClicked = onFlashClicked,
                     cameraToggle = state.step.cameraToggleImage,
                     cameraLens = state.cameraLens,
-                    onCameraClicked = { onCameraClicked() }
+                    onCameraClicked = onCameraClicked
                 )
                 MediaButton(
                     recordingState = state.recordingState,
                     pause = state.step.pauseImage,
                     play = state.step.playImage,
                     record = state.step.recordImage,
-                    onMediaButtonClicked = { onMediaButtonClicked() },
+                    onMediaButtonClicked = onMediaButtonClicked,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -105,12 +122,17 @@ private fun VideoStepPage(
                         infoBody = state.step.infoBody,
                         infoBodyColor = state.step.infoBodyColor.toColor(),
                         reviewButton = state.step.reviewButton,
-                        reviewButtonColor =state.step.buttonColor.toColor(),
+                        reviewButtonColor = state.step.buttonColor.toColor(),
                         reviewButtonTextColor = state.step.buttonTextColor.toColor(),
-                        onCloseClicked = { onCloseClicked() },
-                        onReviewClicked = {  }
+                        onCloseClicked = onCloseClicked,
+                        onReviewClicked = onReviewClicked
                     )
             }
+            Loading(
+                backgroundColor = state.step.infoBackgroundColor.toColor(),
+                isVisible = true,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

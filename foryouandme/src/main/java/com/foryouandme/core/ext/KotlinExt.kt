@@ -35,7 +35,7 @@ fun <T> catchToNull(block: () -> T): T? =
     try {
         block()
     } catch (e: Throwable) {
-        if (e is CancellationException) throw e
+        if (e.isCoroutineException()) throw e
         null
     }
 
@@ -51,7 +51,7 @@ suspend fun <T> catchToNullSuspend(block: suspend () -> T): T? =
     try {
         block()
     } catch (e: Throwable) {
-        if (e is CancellationException) throw e
+        if (e.isCoroutineException()) throw e
         null
     }
 
@@ -59,6 +59,6 @@ suspend fun catchSuspend(block: suspend () -> Unit, error: suspend (Throwable) -
     try {
         block()
     } catch (e: Throwable) {
-        if (e is CancellationException) throw e
+        if (e.isCoroutineException()) throw e
         error(e)
     }

@@ -110,7 +110,7 @@ object AndroidX {
 
         object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha04")
 
-        object Lifecycle: Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha04")
+        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha04")
 
         object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha24")
 
@@ -146,9 +146,9 @@ object AndroidX {
 
     object Compose {
 
-        const val versions: String = "1.0.0-beta05"
+        const val version: String = "1.0.0-beta05"
 
-        object UI : Dependency("androidx.compose.ui", "ui", versions) {
+        object UI : Dependency("androidx.compose.ui", "ui", version) {
 
             object UITooling : Dependency(UI.group, "ui-tooling", version)
 
@@ -157,13 +157,19 @@ object AndroidX {
         object Foundation : Dependency(
             "androidx.compose.foundation",
             "foundation",
-            versions
+            version
         )
 
         object Material : Dependency(
             "androidx.compose.material",
             "material",
-            versions
+            version
+        )
+
+        object Animation : Dependency(
+            "androidx.compose.animation",
+            "animation",
+            version
         )
 
     }
