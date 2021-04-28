@@ -6,7 +6,7 @@ import com.foryouandme.entity.camera.CameraFlash
 import com.foryouandme.entity.camera.CameraLens
 import java.io.File
 
-data class VideoState(
+data class VideoStepState(
     val step: VideoStep? = null,
     val startRecordTimeSeconds: Long = 0,
     val recordTimeSeconds: Long = 0,
@@ -15,7 +15,8 @@ data class VideoState(
     val recordingState: RecordingState = RecordingState.RecordingPause,
     val cameraFlash: CameraFlash = CameraFlash.Off,
     val cameraLens: CameraLens = CameraLens.Back,
-    val mergedVideoPath: LazyData<String> = LazyData.Empty
+    val mergedVideoPath: LazyData<String> = LazyData.Empty,
+    val submit: LazyData<Unit> = LazyData.Empty
 )
 
 sealed class VideoStateUpdate {
@@ -89,10 +90,14 @@ sealed class VideoStepAction {
 
     object Merge: VideoStepAction()
 
+    data class Submit(val taskId: String): VideoStepAction()
+
 }
 
 sealed class VideoStepEvent {
 
     data class MergeError(val error: ForYouAndMeException): VideoStepEvent()
+    data class SubmitError(val error: ForYouAndMeException): VideoStepEvent()
+    object Submitted: VideoStepEvent()
 
 }

@@ -31,11 +31,11 @@ class VideoViewModelOld @Inject constructor(
 
     /* --- state --- */
 
-    var stateOld: VideoState = VideoState()
+    var stateOld: VideoStepState = VideoStepState()
         private set
 
-    val state = MutableStateFlow(VideoState())
-    val stateFlow = state as StateFlow<VideoState>
+    val state = MutableStateFlow(VideoStepState())
+    val stateFlow = state as StateFlow<VideoStepState>
 
     /* --- flow --- */
 

@@ -14,6 +14,7 @@ import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.task.AttachVideoUseCase
 import com.foryouandme.domain.usecase.video.MergeVideosUseCase
 import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.entity.camera.CameraFlash
@@ -35,14 +36,15 @@ import javax.inject.Inject
 @HiltViewModel
 class VideoStepViewModel @Inject constructor(
     private val mergeVideosUseCase: MergeVideosUseCase,
+    private val attachVideoUseCase: AttachVideoUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
     @ApplicationContext private val application: Context
 ) : ViewModel() {
 
     /* --- state --- */
 
-    val state = MutableStateFlow(VideoState())
-    val stateFlow = state as StateFlow<VideoState>
+    val state = MutableStateFlow(VideoStepState())
+    val stateFlow = state as StateFlow<VideoStepState>
 
     private val videoEventChannel = Channel<VideoStepEvent>(Channel.BUFFERED)
     val videoEvents = videoEventChannel.receiveAsFlow()
@@ -229,6 +231,25 @@ class VideoStepViewModel @Inject constructor(
             }
         )
 
+    /* --- submit --- */
+
+    private fun submit(taskId: String): Action =
+        action(
+            {
+                state.emit(state.value.copy(submit = LazyData.Loading))
+
+                attachVideoUseCase(taskId, getVideoMergeFile())
+
+                state.emit(state.value.copy(submit = LazyData.unit()))
+                videoEventChannel.send(VideoStepEvent.Submitted)
+
+            },
+            {
+                state.emit(state.value.copy(submit = it.toError()))
+                videoEventChannel.send(VideoStepEvent.SubmitError(it.toForYouAndMeException()))
+            }
+        )
+
     /* --- directory --- */
 
     private fun createVideoFile(): File {
@@ -312,6 +333,8 @@ class VideoStepViewModel @Inject constructor(
                 viewModelScope.launchSafe { handleRecordError() }
             VideoStepAction.Merge ->
                 viewModelScope.launchAction(merge())
+            is VideoStepAction.Submit ->
+                viewModelScope.launchAction(submit(action.taskId))
         }
     }
 

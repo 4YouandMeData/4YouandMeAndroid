@@ -1,7 +1,6 @@
 package com.foryouandme.researchkit.step.video.compose
 
 import android.graphics.Color
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +30,8 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun VideoStepPage(
     videoStepViewModel: VideoStepViewModel = viewModel(),
-    onCloseClicked: () -> Unit
+    onCloseClicked: () -> Unit,
+    onVideoSubmitted: () -> Unit
 ) {
 
     val state by videoStepViewModel.stateFlow.collectAsState()
@@ -42,6 +42,8 @@ fun VideoStepPage(
             .onEach {
                 when (it) {
                     is VideoStepEvent.MergeError -> context.errorToast(it.error)
+                    is VideoStepEvent.SubmitError -> context.errorToast(it.error)
+                    VideoStepEvent.Submitted -> onVideoSubmitted()
                 }
             }
             .collect()
@@ -65,7 +67,7 @@ fun VideoStepPage(
 
 @Composable
 private fun VideoStepPage(
-    state: VideoState,
+    state: VideoStepState,
     cameraEvents: Flow<CameraEvent>,
     videoPlayerEvents: Flow<VideoPlayerEvent>,
     onFlashClicked: () -> Unit = {},
@@ -147,7 +149,9 @@ private fun VideoStepPage(
             }
             Loading(
                 backgroundColor = state.step.infoBackgroundColor.toColor(),
-                isVisible = state.mergedVideoPath is LazyData.Loading,
+                isVisible =
+                state.mergedVideoPath is LazyData.Loading ||
+                        state.submit is LazyData.Loading,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -160,7 +164,7 @@ private fun VideoStepPagePreview() {
     ForYouAndMeTheme {
 
         VideoStepPage(
-            state = VideoState(
+            state = VideoStepState(
                 step =
                 VideoStep(
                     identifier = "",
