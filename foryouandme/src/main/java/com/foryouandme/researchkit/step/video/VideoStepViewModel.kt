@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
 import com.foryouandme.core.ext.Action
 import com.foryouandme.core.ext.action
@@ -18,6 +19,7 @@ import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.entity.camera.CameraFlash
 import com.foryouandme.entity.camera.CameraLens
 import com.foryouandme.ui.compose.error.toForYouAndMeException
+import com.foryouandme.ui.compose.video.VideoPlayerEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -97,8 +99,8 @@ class VideoStepViewModel @Inject constructor(
             state.value.copy(recordTimeSeconds = nextTime)
         )
 
-        if(nextTime >= state.value.maxRecordTimeSeconds) {
-            pause()
+        if (nextTime >= state.value.maxRecordTimeSeconds) {
+            pauseRecording()
             delay(1000)
             execute(VideoStepAction.Merge)
         }
@@ -110,15 +112,22 @@ class VideoStepViewModel @Inject constructor(
     private val cameraEventChannel = Channel<CameraEvent>(Channel.BUFFERED)
     val cameraEvents = cameraEventChannel.receiveAsFlow()
 
+    private val videoPlayerEventChannel = Channel<VideoPlayerEvent>(Channel.BUFFERED)
+    val videoPlayerEvents = videoPlayerEventChannel.receiveAsFlow()
+
     private suspend fun playPause() {
 
         when (state.value.recordingState) {
-            RecordingState.Recording -> pause()
+            RecordingState.Recording -> pauseRecording()
             RecordingState.RecordingPause -> record()
-            RecordingState.Review ->
+            RecordingState.Review -> {
                 state.emit(state.value.copy(recordingState = RecordingState.ReviewPause))
-            RecordingState.ReviewPause ->
+                videoPlayerEventChannel.send(VideoPlayerEvent.Pause)
+            }
+            RecordingState.ReviewPause -> {
                 state.emit(state.value.copy(recordingState = RecordingState.Review))
+                videoPlayerEventChannel.send(VideoPlayerEvent.Play)
+            }
             else -> {
             }
         }
@@ -172,13 +181,11 @@ class VideoStepViewModel @Inject constructor(
             )
         )
 
-        pause()
+        pauseRecording()
 
     }
 
-    /* --- pause --- */
-
-    private suspend fun pause() {
+    private suspend fun pauseRecording() {
 
         logPauseRecording()
 
@@ -193,7 +200,7 @@ class VideoStepViewModel @Inject constructor(
         action(
             {
 
-                state.emit(state.value.copy(merge = LazyData.Loading))
+                state.emit(state.value.copy(mergedVideoPath = LazyData.Loading))
 
                 // disable the flash when the user start the review flow
                 if (state.value.cameraLens is CameraLens.Back) setFlash(CameraFlash.Off)
@@ -209,10 +216,15 @@ class VideoStepViewModel @Inject constructor(
                     outputFileName = getVideoMergeFileName()
                 )
 
-                state.emit(state.value.copy(recordingState = RecordingState.Merged, merge = LazyData.unit()))
+                state.emit(
+                    state.value.copy(
+                        recordingState = RecordingState.ReviewPause,
+                        mergedVideoPath = getVideoMergeFilePath().toData()
+                    )
+                )
             },
             {
-                state.emit(state.value.copy(merge = it.toError()))
+                state.emit(state.value.copy(mergedVideoPath = it.toError()))
                 videoEventChannel.send(VideoStepEvent.MergeError(it.toForYouAndMeException()))
             }
         )

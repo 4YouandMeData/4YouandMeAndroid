@@ -89,7 +89,7 @@ fun Camera(
         cameraController.enableTorch(cameraFlash is CameraFlash.On)
     }
 
-    LaunchedEffect(key1 = "camera") {
+    LaunchedEffect(key1 = cameraEvents) {
         cameraEvents.onEach {
             when (it) {
                 CameraEvent.Pause ->

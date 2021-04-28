@@ -15,7 +15,7 @@ data class VideoState(
     val recordingState: RecordingState = RecordingState.RecordingPause,
     val cameraFlash: CameraFlash = CameraFlash.Off,
     val cameraLens: CameraLens = CameraLens.Back,
-    val merge: LazyData<Unit> = LazyData.Empty
+    val mergedVideoPath: LazyData<String> = LazyData.Empty
 )
 
 sealed class VideoStateUpdate {

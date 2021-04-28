@@ -112,10 +112,9 @@ private fun getTitle(
 
         }
         RecordingState.RecordingPause,
-        RecordingState.Review -> title
-        RecordingState.Merged,
-        RecordingState.ReviewPause,
-        RecordingState.Uploaded -> ""
+        RecordingState.Review,
+        RecordingState.ReviewPause -> title
+        else -> ""
     }
 
 private fun canShowFlashToggle(

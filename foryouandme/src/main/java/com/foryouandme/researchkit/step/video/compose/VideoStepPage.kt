@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.step.video.compose
 
 import android.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +21,8 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.preview.ComposePreview
 import com.foryouandme.ui.compose.toColor
+import com.foryouandme.ui.compose.video.VideoPlayer
+import com.foryouandme.ui.compose.video.VideoPlayerEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -48,6 +51,7 @@ fun VideoStepPage(
         VideoStepPage(
             state = state,
             cameraEvents = videoStepViewModel.cameraEvents,
+            videoPlayerEvents = videoStepViewModel.videoPlayerEvents,
             onFlashClicked = { videoStepViewModel.execute(ToggleFlash) },
             onCameraClicked = { videoStepViewModel.execute(ToggleCamera) },
             onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) },
@@ -63,6 +67,7 @@ fun VideoStepPage(
 private fun VideoStepPage(
     state: VideoState,
     cameraEvents: Flow<CameraEvent>,
+    videoPlayerEvents: Flow<VideoPlayerEvent>,
     onFlashClicked: () -> Unit = {},
     onCameraClicked: () -> Unit = {},
     onMediaButtonClicked: () -> Unit = {},
@@ -73,13 +78,23 @@ private fun VideoStepPage(
 
     if (state.step != null) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Camera(
-                cameraFlash = state.cameraFlash,
-                cameraLens = state.cameraLens,
-                cameraEvents = cameraEvents,
-                onRecordError = onRecordError,
-                modifier = Modifier.fillMaxSize()
+            if (
+                state.recordingState is RecordingState.RecordingPause ||
+                state.recordingState is RecordingState.Recording
             )
+                Camera(
+                    cameraFlash = state.cameraFlash,
+                    cameraLens = state.cameraLens,
+                    cameraEvents = cameraEvents,
+                    onRecordError = onRecordError,
+                    modifier = Modifier.fillMaxSize()
+                )
+            else if (state.mergedVideoPath is LazyData.Data)
+                VideoPlayer(
+                    sourceUrl = state.mergedVideoPath.data,
+                    videoPlayerEvents = videoPlayerEvents,
+                    modifier = Modifier.fillMaxSize()
+                )
             Column(modifier = Modifier.fillMaxSize()) {
                 Spacer(modifier = Modifier.height(20.dp))
                 VideoStepHeader(
@@ -106,32 +121,33 @@ private fun VideoStepPage(
                         .fillMaxWidth()
                         .weight(1f)
                 )
-                if (state.recordingState is RecordingState.RecordingPause)
-                    VideoStepRecordingInfo(
-                        backgroundColor = state.step.infoBackgroundColor.toColor(),
-                        title = state.step.startRecordingDescription,
-                        titleColor = state.step.startRecordingDescriptionColor.toColor(),
-                        closeImage = state.step.closeImage,
-                        timeImage = state.step.timeImage,
-                        recordTimeSeconds = state.recordTimeSeconds,
-                        maxRecordTimeSeconds = state.maxRecordTimeSeconds,
-                        timeColor = state.step.timeColor.toColor(),
-                        progressColor = state.step.timeProgressColor.toColor(),
-                        progressBackgroundColor = state.step.timeProgressBackgroundColor.toColor(),
-                        infoTitle = state.step.infoTitle,
-                        infoTitleColor = state.step.infoTitleColor.toColor(),
-                        infoBody = state.step.infoBody,
-                        infoBodyColor = state.step.infoBodyColor.toColor(),
-                        reviewButton = state.step.reviewButton,
-                        reviewButtonColor = state.step.buttonColor.toColor(),
-                        reviewButtonTextColor = state.step.buttonTextColor.toColor(),
-                        onCloseClicked = onCloseClicked,
-                        onReviewClicked = onReviewClicked
-                    )
+                VideoStepInfo(
+                    recordingState = state.recordingState,
+                    backgroundColor = state.step.infoBackgroundColor.toColor(),
+                    title = state.step.startRecordingDescription,
+                    titleColor = state.step.startRecordingDescriptionColor.toColor(),
+                    closeImage = state.step.closeImage,
+                    timeImage = state.step.timeImage,
+                    recordTimeSeconds = state.recordTimeSeconds,
+                    maxRecordTimeSeconds = state.maxRecordTimeSeconds,
+                    timeColor = state.step.timeColor.toColor(),
+                    progressColor = state.step.timeProgressColor.toColor(),
+                    progressBackgroundColor = state.step.timeProgressBackgroundColor.toColor(),
+                    infoTitle = state.step.infoTitle,
+                    infoTitleColor = state.step.infoTitleColor.toColor(),
+                    infoBody = state.step.infoBody,
+                    infoBodyColor = state.step.infoBodyColor.toColor(),
+                    reviewButton = state.step.reviewButton,
+                    submitButton = state.step.submitButton,
+                    buttonColor = state.step.buttonColor.toColor(),
+                    buttonTextColor = state.step.buttonTextColor.toColor(),
+                    onCloseClicked = onCloseClicked,
+                    onReviewClicked = onReviewClicked
+                )
             }
             Loading(
                 backgroundColor = state.step.infoBackgroundColor.toColor(),
-                isVisible = state.merge is LazyData.Loading,
+                isVisible = state.mergedVideoPath is LazyData.Loading,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -182,7 +198,8 @@ private fun VideoStepPagePreview() {
 
                 )
             ),
-            cameraEvents = flow { }
+            cameraEvents = flow { },
+            videoPlayerEvents = flow {  }
         )
     }
 }
