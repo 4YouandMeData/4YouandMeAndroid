@@ -13,7 +13,7 @@ import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.ext.startCoroutineAsync
 
-typealias ActivityAction = (FragmentActivity) -> Unit
+typealias ActivityAction = (Context) -> Unit
 
 fun toastAction(error: ForYouAndMeError): ActivityAction = {
     showToast(it, error.message(it))

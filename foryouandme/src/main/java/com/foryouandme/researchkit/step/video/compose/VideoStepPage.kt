@@ -1,6 +1,8 @@
 package com.foryouandme.researchkit.step.video.compose
 
+import android.content.Context
 import android.graphics.Color
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,8 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.navigation.action.permissionSettingsAction
 import com.foryouandme.core.ext.errorToast
 import com.foryouandme.entity.camera.CameraEvent
+import com.foryouandme.entity.permission.Permission
 import com.foryouandme.researchkit.step.video.*
 import com.foryouandme.researchkit.step.video.VideoStepAction.*
 import com.foryouandme.ui.compose.ForYouAndMeTheme
@@ -31,7 +35,8 @@ import kotlinx.coroutines.flow.onEach
 fun VideoStepPage(
     videoStepViewModel: VideoStepViewModel = viewModel(),
     onCloseClicked: () -> Unit,
-    onVideoSubmitted: () -> Unit
+    onVideoSubmitted: () -> Unit,
+    close: () -> Unit
 ) {
 
     val state by videoStepViewModel.stateFlow.collectAsState()
@@ -44,6 +49,29 @@ fun VideoStepPage(
                     is VideoStepEvent.MergeError -> context.errorToast(it.error)
                     is VideoStepEvent.SubmitError -> context.errorToast(it.error)
                     VideoStepEvent.Submitted -> onVideoSubmitted()
+                    is VideoStepEvent.MissingPermission -> {
+                        when (it.permission) {
+                            Permission.Camera ->
+                                showPermissionError(
+                                    context,
+                                    state.step?.missingPermissionCamera.orEmpty(),
+                                    state.step?.missingPermissionCameraBody.orEmpty(),
+                                    state.step?.settings.orEmpty(),
+                                    state.step?.cancel.orEmpty(),
+                                    close
+                                )
+                            Permission.RecordAudio ->
+                                showPermissionError(
+                                    context,
+                                    state.step?.missingPermissionMic.orEmpty(),
+                                    state.step?.missingPermissionMicBody.orEmpty(),
+                                    state.step?.settings.orEmpty(),
+                                    state.step?.cancel.orEmpty(),
+                                    close
+                                )
+                            else -> Unit
+                        }
+                    }
                 }
             }
             .collect()
@@ -54,6 +82,7 @@ fun VideoStepPage(
             state = state,
             cameraEvents = videoStepViewModel.cameraEvents,
             videoPlayerEvents = videoStepViewModel.videoPlayerEvents,
+            requestPermissions = { videoStepViewModel.execute(RequestPermissions) },
             onFlashClicked = { videoStepViewModel.execute(ToggleFlash) },
             onCameraClicked = { videoStepViewModel.execute(ToggleCamera) },
             onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) },
@@ -70,6 +99,7 @@ private fun VideoStepPage(
     state: VideoStepState,
     cameraEvents: Flow<CameraEvent>,
     videoPlayerEvents: Flow<VideoPlayerEvent>,
+    requestPermissions: () -> Unit = {},
     onFlashClicked: () -> Unit = {},
     onCameraClicked: () -> Unit = {},
     onMediaButtonClicked: () -> Unit = {},
@@ -80,7 +110,9 @@ private fun VideoStepPage(
 
     if (state.step != null) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if (
+            if(state.permissionsGranted.not())
+                requestPermissions()
+            else if (
                 state.recordingState is RecordingState.RecordingPause ||
                 state.recordingState is RecordingState.Recording
             )
@@ -156,6 +188,27 @@ private fun VideoStepPage(
             )
         }
     }
+}
+
+private fun showPermissionError(
+    context: Context,
+    title: String,
+    description: String,
+    settings: String,
+    cancel: String,
+    close: () -> Unit
+) {
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(description)
+        .setPositiveButton(settings) { _, _ ->
+            permissionSettingsAction().invoke(context)
+            close()
+        }
+        .setNegativeButton(cancel) { _, _ -> close() }
+        .setCancelable(false)
+        .show()
+
 }
 
 @Preview

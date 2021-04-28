@@ -1,5 +1,6 @@
 package com.foryouandme.core.arch.android
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
@@ -80,6 +81,6 @@ open class BaseViewModel<S, SU, E, A>(
 
     /* ============= NAVIGATION ============= */
 
-    fun activityActions(): LiveData<Event<(FragmentActivity) -> Unit>> = navigator.activityAction()
+    fun activityActions() = navigator.activityAction()
 
 }

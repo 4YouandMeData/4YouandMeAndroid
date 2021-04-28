@@ -7,18 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
-import com.foryouandme.core.ext.Action
-import com.foryouandme.core.ext.action
-import com.foryouandme.core.ext.launchAction
-import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.core.ext.*
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.domain.usecase.task.AttachVideoUseCase
 import com.foryouandme.domain.usecase.video.MergeVideosUseCase
 import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.entity.camera.CameraFlash
 import com.foryouandme.entity.camera.CameraLens
+import com.foryouandme.entity.permission.Permission
+import com.foryouandme.entity.permission.PermissionResult
 import com.foryouandme.ui.compose.error.toForYouAndMeException
 import com.foryouandme.ui.compose.video.VideoPlayerEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +38,7 @@ class VideoStepViewModel @Inject constructor(
     private val mergeVideosUseCase: MergeVideosUseCase,
     private val attachVideoUseCase: AttachVideoUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    private val requestPermissionsUseCase: RequestPermissionsUseCase,
     @ApplicationContext private val application: Context
 ) : ViewModel() {
 
@@ -59,6 +60,30 @@ class VideoStepViewModel @Inject constructor(
 
     private suspend fun setStep(step: VideoStep?) {
         state.emit(state.value.copy(step = step))
+    }
+
+    /* --- permissions --- */
+
+    private var permissionJob: Job? = null
+
+    private suspend fun requestPermissions() {
+
+        val permissions =
+            requestPermissionsUseCase(
+                listOf(
+                    Permission.Camera,
+                    Permission.RecordAudio
+                )
+            )
+
+        val deniedPermission =
+            permissions.firstOrNull { it is PermissionResult.Denied }?.permission
+
+        if (deniedPermission != null)
+            videoEventChannel.send(VideoStepEvent.MissingPermission(deniedPermission))
+        else
+            state.emit(state.value.copy(permissionsGranted = true))
+
     }
 
     /* --- flash --- */
@@ -119,20 +144,21 @@ class VideoStepViewModel @Inject constructor(
 
     private suspend fun playPause() {
 
-        when (state.value.recordingState) {
-            RecordingState.Recording -> pauseRecording()
-            RecordingState.RecordingPause -> record()
-            RecordingState.Review -> {
-                state.emit(state.value.copy(recordingState = RecordingState.ReviewPause))
-                videoPlayerEventChannel.send(VideoPlayerEvent.Pause)
+        if (state.value.permissionsGranted)
+            when (state.value.recordingState) {
+                RecordingState.Recording -> pauseRecording()
+                RecordingState.RecordingPause -> record()
+                RecordingState.Review -> {
+                    state.emit(state.value.copy(recordingState = RecordingState.ReviewPause))
+                    videoPlayerEventChannel.send(VideoPlayerEvent.Pause)
+                }
+                RecordingState.ReviewPause -> {
+                    state.emit(state.value.copy(recordingState = RecordingState.Review))
+                    videoPlayerEventChannel.send(VideoPlayerEvent.Play)
+                }
+                else -> {
+                }
             }
-            RecordingState.ReviewPause -> {
-                state.emit(state.value.copy(recordingState = RecordingState.Review))
-                videoPlayerEventChannel.send(VideoPlayerEvent.Play)
-            }
-            else -> {
-            }
-        }
 
     }
 
@@ -309,6 +335,10 @@ class VideoStepViewModel @Inject constructor(
         when (action) {
             is VideoStepAction.SetStep ->
                 viewModelScope.launchSafe { setStep(action.step) }
+            VideoStepAction.RequestPermissions -> {
+                if (permissionJob.isTerminated)
+                    permissionJob = viewModelScope.launchSafe { requestPermissions() }
+            }
             VideoStepAction.ToggleCamera ->
                 viewModelScope.launchSafe {
                     setCameraLens(

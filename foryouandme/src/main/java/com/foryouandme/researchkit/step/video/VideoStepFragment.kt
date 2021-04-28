@@ -121,6 +121,7 @@ class VideoStepFragment : StepFragment() {
                VideoStepPage(
                    onCloseClicked = { showCancelDialog() },
                    onVideoSubmitted = { next() },
+                   close = { close() }
                )
            }
         }
