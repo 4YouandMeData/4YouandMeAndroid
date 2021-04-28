@@ -2,20 +2,21 @@ package com.foryouandme.researchkit.step.video.compose
 
 import android.content.Context
 import android.graphics.Color
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.navigation.action.permissionSettingsAction
 import com.foryouandme.core.ext.errorToast
+import com.foryouandme.core.ext.findWindow
 import com.foryouandme.entity.camera.CameraEvent
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.researchkit.step.video.*
@@ -75,6 +76,20 @@ fun VideoStepPage(
                 }
             }
             .collect()
+    }
+
+
+    DisposableEffect(videoStepViewModel) {
+
+        val window = context.findWindow()
+
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // When the effect leaves the Composition, remove the flags
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
     }
 
     ForYouAndMeTheme {

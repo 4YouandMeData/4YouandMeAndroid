@@ -1,6 +1,9 @@
 package com.foryouandme.core.ext
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
+import android.view.Window
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -55,4 +58,15 @@ fun Context.errorToast(error: ForYouAndMeException, configuration: Configuration
 
 fun Context.infoToast(message: String) {
     Toasty.info(this, message, Toast.LENGTH_LONG).show()
+}
+
+/* --- window --- */
+
+fun Context.findWindow(): Window? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context.window
+        context = context.baseContext
+    }
+    return null
 }
