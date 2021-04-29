@@ -27,6 +27,7 @@ import com.foryouandme.ui.compose.preview.ComposePreview
 import com.foryouandme.ui.compose.toColor
 import com.foryouandme.ui.compose.video.VideoPlayer
 import com.foryouandme.ui.compose.video.VideoPlayerEvent
+import com.foryouandme.ui.compose.window.KeepScreenOn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -78,19 +79,7 @@ fun VideoStepPage(
             .collect()
     }
 
-
-    DisposableEffect(videoStepViewModel) {
-
-        val window = context.findWindow()
-
-        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        // When the effect leaves the Composition, remove the flags
-        onDispose {
-            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-
-    }
+    KeepScreenOn(key = videoStepViewModel)
 
     ForYouAndMeTheme {
         VideoStepPage(

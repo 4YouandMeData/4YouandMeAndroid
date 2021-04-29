@@ -2,7 +2,10 @@ package com.foryouandme.ui.compose.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -26,6 +29,9 @@ fun ForYouAndMeButton(
     backgroundColor: Color,
     textColor: Color,
     modifier: Modifier = Modifier,
+    disabledTextColor: Color = textColor,
+    disabledBackgroundColor: Color = backgroundColor.copy(alpha = 0.5f),
+    isEnabled: Boolean = true,
     style: TextStyle = MaterialTheme.typography.button,
     onClick: () -> Unit = { },
 ) {
@@ -39,8 +45,12 @@ fun ForYouAndMeButton(
             Modifier
                 .fillMaxWidth()
                 .height(50.dp)
-                .background(backgroundColor, RoundedCornerShape(22.dp))
-                .clickable { onClick() },
+                .background(
+                    if (isEnabled) backgroundColor
+                    else disabledBackgroundColor,
+                    RoundedCornerShape(22.dp)
+                )
+                .let { if (isEnabled) it.clickable { onClick() } else it },
         ) {
             Text(
                 text = text,
@@ -48,7 +58,7 @@ fun ForYouAndMeButton(
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = textColor,
+                color = if (isEnabled) textColor else disabledTextColor,
                 modifier = Modifier.padding(ButtonDefaults.ContentPadding)
             )
         }
@@ -57,12 +67,27 @@ fun ForYouAndMeButton(
 
 @Preview
 @Composable
-private fun FourBooksButtonPreview() {
+private fun ForYouAndMeButtonPreview() {
     ForYouAndMeTheme {
         ForYouAndMeButton(
             text = ComposePreview.button,
             backgroundColor = Color.Red,
-            textColor = Color.White
+            disabledBackgroundColor = Color.Gray,
+            textColor = Color.White,
+            disabledTextColor = Color.White,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ForYouAndMeButtonDisabledPreview() {
+    ForYouAndMeTheme {
+        ForYouAndMeButton(
+            text = ComposePreview.button,
+            backgroundColor = Color.Red,
+            textColor = Color.White,
+            isEnabled = false
         )
     }
 }

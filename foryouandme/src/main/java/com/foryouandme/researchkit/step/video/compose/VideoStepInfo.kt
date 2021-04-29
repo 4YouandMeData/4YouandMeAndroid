@@ -158,6 +158,11 @@ fun VideoStepInfo(
                         }
                     }
                 },
+                isEnabled =
+                when(recordingState) {
+                    RecordingPause -> recordTimeSeconds > 0
+                    else -> true
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }
