@@ -83,6 +83,7 @@ fun VideoPlayer(
     DisposableEffect(key1 = "video_player") {
 
         onDispose {
+            catchToNull { exoPlayer.stop() }
             catchToNull { exoPlayer.release() }
         }
 
