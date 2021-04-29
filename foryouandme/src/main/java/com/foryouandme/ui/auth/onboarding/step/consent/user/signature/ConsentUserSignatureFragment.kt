@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserError
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserLoading
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
@@ -12,111 +14,122 @@ import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.ConsentUserEmailBinding
+import com.foryouandme.databinding.ConsentUserSignatureBinding
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserAction
 import com.github.gcacace.signaturepad.views.SignaturePad
-import kotlinx.android.synthetic.main.consent_user.*
-import kotlinx.android.synthetic.main.consent_user_signature.*
+import kotlinx.coroutines.flow.onEach
 
 class ConsentUserSignatureFragment : ConsentUserSectionFragment(
     R.layout.consent_user_signature
 ) {
 
+    private val binding: ConsentUserSignatureBinding?
+        get() = view?.let { ConsentUserSignatureBinding.bind(it) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
                     is ConsentUserLoading.UpdateUser ->
-                        consent_user_signature_loading.setVisibility(it.active)
+                        binding?.consentUserSignatureLoading?.setVisibility(it.active)
+                    else -> Unit
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) {
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
                 when (it.cause) {
-                    is ConsentUserError.UpdateUser ->
-                        startCoroutineAsync { viewModel.toastError(it.error) }
+                    is ConsentUserError.UpdateUser -> errorToast(it.error, configuration)
+                    else -> Unit
                 }
             }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentUserAndConfiguration { config, _ ->
-
             setupView()
-            applyConfiguration(config)
+            applyConfiguration()
 
-        }
+    }
 
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logConsentSignatureScreenViewed() }
+        viewModel.execute(ConsentUserAction.ConsentUserSignatureViewed)
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
+
+        val viewBinding = binding
+
+        if (viewBinding != null) {
 
             consentUserFragment()
-                .toolbar
-                .showBackSecondaryButton(imageConfiguration) {
-                    startCoroutineAsync {
-                        viewModel.back(
-                            consentUserNavController(),
-                            consentNavController(),
-                            onboardingStepNavController(),
-                            authNavController(),
-                            rootNavController()
-                        )
-                    }
-                }
+                .binding
+                ?.toolbar
+                ?.showBackSecondaryButton(imageConfiguration) { back() }
 
-            action_1.setOnClickListener {
+            viewBinding.action1.setOnClickListener {
 
-                startCoroutineAsync {
-                    viewModel.updateUser(
-                        rootNavController(),
-                        consentUserNavController(),
-                        signature_pad.transparentSignatureBitmap
-                    )
-                }
+                val signature = viewBinding.signaturePad.transparentSignatureBitmap
+                if(signature != null)
+                    viewModel.execute(ConsentUserAction.UpdateUser(signature))
 
             }
 
         }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    }
+
+    private fun applyConfiguration() {
+
+        val configuration = configuration
+        val viewBinding = binding
+
+        if (configuration != null && viewBinding != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            title.text = configuration.text.onboarding.user.signatureTitle
-            title.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.title.text = configuration.text.onboarding.user.signatureTitle
+            viewBinding.title.setTextColor(configuration.theme.primaryTextColor.color())
 
-            description.text = configuration.text.onboarding.user.signatureBody
-            description.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.description.text = configuration.text.onboarding.user.signatureBody
+            viewBinding.description.setTextColor(configuration.theme.primaryTextColor.color())
 
-            signature_placeholder.isVisible = signature_pad.isEmpty
-            signature_placeholder.text = configuration.text.onboarding.user.signaturePlaceholder
-            signature_placeholder.setTextColor(configuration.theme.fourthTextColor.color())
+            viewBinding.signaturePlaceholder.isVisible = viewBinding.signaturePad.isEmpty
+            viewBinding.signaturePlaceholder.text =
+                configuration.text.onboarding.user.signaturePlaceholder
+            viewBinding.signaturePlaceholder.setTextColor(
+                configuration.theme.fourthTextColor.color()
+            )
 
-            signature_pad.setOnSignedListener(object : SignaturePad.OnSignedListener {
+            viewBinding.signaturePad.setOnSignedListener(object : SignaturePad.OnSignedListener {
 
                 override fun onStartSigning() {
-                    signature_placeholder.isVisible = false
-                    action_1.isEnabled = true
+                    binding?.signaturePlaceholder?.isVisible = false
+                    binding?.action1?.isEnabled = true
                 }
 
                 override fun onClear() {
-                    signature_placeholder.isVisible = true
-                    action_1.isEnabled = false
+                    binding?.signaturePlaceholder?.isVisible = true
+                    binding?.action1?.isEnabled = false
                 }
 
                 override fun onSigned() {
@@ -124,29 +137,31 @@ class ConsentUserSignatureFragment : ConsentUserSectionFragment(
 
             })
 
-            signature_line.setBackgroundColor(configuration.theme.primaryTextColor.color())
+            viewBinding.signatureLine.setBackgroundColor(
+                configuration.theme.primaryTextColor.color()
+            )
 
-            clear.setImageResource(imageConfiguration.clear())
-            clear.setOnClickListener { signature_pad.clear() }
+            viewBinding.clear.setImageResource(imageConfiguration.clear())
+            viewBinding.clear.setOnClickListener { binding?.signaturePad?.clear() }
 
-            clear_text.text = configuration.text.onboarding.user.signatureClear
-            clear_text.setTextColor(configuration.theme.primaryTextColor.color())
-            clear_text.setOnClickListener { signature_pad.clear() }
+            viewBinding.clearText.text = configuration.text.onboarding.user.signatureClear
+            viewBinding.clearText.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.clearText.setOnClickListener { binding?.signaturePad?.clear() }
 
-            shadow.background =
+            viewBinding.shadow.background =
                 HEXGradient.from(
                     HEXColor.transparent(),
                     configuration.theme.primaryTextColor
                 ).drawable(0.3f)
 
-            action_1.isEnabled = !signature_pad.isEnabled
-            action_1.background =
+            viewBinding.action1.isEnabled = !viewBinding.signaturePad.isEnabled
+            viewBinding.action1.background =
                 button(
                     resources,
                     imageConfiguration.nextStepSecondary()
-
                 )
 
         }
+    }
 
 }

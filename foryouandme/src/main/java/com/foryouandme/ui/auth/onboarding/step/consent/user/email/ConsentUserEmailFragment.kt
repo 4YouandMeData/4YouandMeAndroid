@@ -6,130 +6,135 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserError
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserLoading
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.*
-import kotlinx.android.synthetic.main.consent_user.*
-import kotlinx.android.synthetic.main.consent_user_email.*
+import com.foryouandme.databinding.ConsentUserEmailBinding
+import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.ui.auth.onboarding.step.consent.user.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_user_email) {
+
+    private val binding: ConsentUserEmailBinding?
+        get() = view?.let { ConsentUserEmailBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) {
-
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
                 when (it) {
-                    is ConsentUserStateUpdate.Email ->
-                        startCoroutineAsync { bindNext() }
+                    is ConsentUserStateUpdate.Email -> bindNext()
+                    else -> Unit
                 }
-
             }
+            .observeIn(this)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
 
                 when (it.task) {
                     ConsentUserLoading.CreateUser ->
-                        consent_user_email_loading.setVisibility(it.active)
+                        binding?.consentUserEmailLoading?.setVisibility(it.active)
+                    else ->
+                        Unit
                 }
 
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) {
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
                 when (it.cause) {
-                    ConsentUserError.CreateUser ->
-                        startCoroutineAsync { viewModel.toastError(it.error) }
+                    ConsentUserError.CreateUser -> errorToast(it.error, configuration)
+                    else -> Unit
                 }
             }
+            .observeIn(this)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentUserAndConfiguration { config, _ ->
+        setupView()
+        applyConfiguration()
 
-            setupView()
-            applyConfiguration(config)
 
-        }
+    }
 
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logConsentEmailScreenViewed() }
+        viewModel.execute(ConsentUserAction.ConsentEmailViewed)
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            logo.setImageResource(imageConfiguration.logoStudySecondary())
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+
+            viewBinding.logo.setImageResource(imageConfiguration.logoStudySecondary())
 
             consentUserFragment()
-                .toolbar
-                .showBackSecondaryButton(imageConfiguration) {
-                    startCoroutineAsync {
-                        viewModel.back(
-                            consentUserNavController(),
-                            consentNavController(),
-                            onboardingStepNavController(),
-                            authNavController(),
-                            rootNavController()
-                        )
-                    }
-                }
+                .binding
+                ?.toolbar
+                ?.showBackSecondaryButton(imageConfiguration) { back() }
 
 
-            action_1.background =
+            viewBinding.action1.background =
                 button(resources, imageConfiguration.nextStepSecondary())
 
-            action_1.setOnClickListenerAsync {
+            viewBinding.action1.setOnClickListener {
 
-                hideKeyboardSuspend()
-                viewModel.createUser(
-                    rootNavController(),
-                    consentUserNavController()
-                )
+                hideKeyboard()
+                viewModel.execute(ConsentUserAction.CreateUser)
 
             }
 
             bindNext()
 
         }
+    }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    private fun applyConfiguration() {
+
+        val configuration = configuration
+        val viewBinding = binding
+
+        if (configuration != null && viewBinding != null) {
 
             setStatusBar(configuration.theme.secondaryColor.color())
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            email.text = configuration.text.onboarding.user.emailDescription
-            email.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.email.text = configuration.text.onboarding.user.emailDescription
+            viewBinding.email.setTextColor(configuration.theme.primaryTextColor.color())
 
-            email_entry.setBackgroundColor(color(android.R.color.transparent))
-            email_entry.setTextColor(configuration.theme.primaryTextColor.color())
-            email_entry.addTextChangedListener {
-                startCoroutineAsync { viewModel.setEmail(it.toString().trim()) }
+            viewBinding.emailEntry.setBackgroundColor(color(android.R.color.transparent))
+            viewBinding.emailEntry.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.emailEntry.addTextChangedListener {
+                viewModel.execute(ConsentUserAction.SetEmail(it.toString().trim()))
             }
-            email_entry.setOnFocusChangeListener { _, hasFocus ->
+            viewBinding.emailEntry.setOnFocusChangeListener { _, hasFocus ->
 
-                email_validation.setImageResource(
+                binding?.emailValidation?.setImageResource(
                     when {
                         hasFocus -> 0
-                        hasFocus.not() && !viewModel.isValidEmail(
-                            email_entry.text.toString().trim()
-                        ) ->
+                        hasFocus.not() && viewModel.state.isValidEmail.not() ->
                             imageConfiguration.entryWrong()
                         else ->
                             imageConfiguration.entryValid()
@@ -137,29 +142,30 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
                 )
             }
 
-            email_validation.imageTintList =
+            viewBinding.emailValidation.imageTintList =
                 ColorStateList.valueOf(configuration.theme.primaryTextColor.color())
-            email_validation.setImageResource(
-                if (viewModel.isValidEmail(email_entry.text.toString().trim()))
+            viewBinding.emailValidation.setImageResource(
+                if (viewModel.state.isValidEmail)
                     imageConfiguration.entryValid()
                 else
                     imageConfiguration.entryWrong()
             )
 
-            email_line.setBackgroundColor(configuration.theme.primaryTextColor.color())
+            viewBinding.emailLine.setBackgroundColor(configuration.theme.primaryTextColor.color())
 
-            email_info.text = configuration.text.onboarding.user.emailInfo
-            email_info.setTextColor(configuration.theme.fourthTextColor.color())
+            viewBinding.emailInfo.text = configuration.text.onboarding.user.emailInfo
+            viewBinding.emailInfo.setTextColor(configuration.theme.fourthTextColor.color())
         }
+    }
 
-    private suspend fun bindNext(): Unit =
-        evalOnMain {
+    private fun bindNext() {
 
-            action_1.isEnabled =
-                viewModel.isValidEmail(viewModel.state().email)
+        val viewBinding = binding
 
-            email_info.isVisible =
-                viewModel.isValidEmail(viewModel.state().email)
+        if (viewBinding != null) {
+            viewBinding.action1.isEnabled = viewModel.state.isValidEmail
 
+            viewBinding.emailInfo.isVisible = viewModel.state.isValidEmail
         }
+    }
 }

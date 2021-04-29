@@ -29,7 +29,7 @@ class OnboardingStepContainerFragment : BaseFragment(
         val step = onboardingViewModel.getStepByIndex(args.index)
 
         val fragment =
-            step?.let { it.view() }?.let { OnboardingStepFragmentOld.buildWithParams(args.index, it) }
+            step?.let { it.view() }?.let { OnboardingStepFragment.buildWithParams(args.index, it) }
 
         mapNotNull(step, fragment)
             ?.let {

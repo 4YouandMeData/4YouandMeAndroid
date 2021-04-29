@@ -1,4 +1,4 @@
-package com.foryouandme.data.repository.auth.consent.network.request
+package com.foryouandme.data.repository.consent.user.network.request
 
 import com.squareup.moshi.Json
 import org.threeten.bp.ZoneOffset

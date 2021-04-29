@@ -2,7 +2,7 @@ package com.foryouandme.data.repository.consent.user.network
 
 import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.data.repository.consent.user.network.request.*
-import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
+import com.foryouandme.data.repository.auth.consent.network.response.ConsentUserResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.Response
 import retrofit2.http.*

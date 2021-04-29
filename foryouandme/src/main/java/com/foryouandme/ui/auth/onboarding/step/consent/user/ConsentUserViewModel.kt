@@ -3,156 +3,93 @@ package com.foryouandme.ui.auth.onboarding.step.consent.user
 import android.graphics.Bitmap
 import android.util.Base64
 import android.util.Patterns
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.ConsentUserModule
-import com.foryouandme.core.arch.deps.modules.nullToError
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
+import com.foryouandme.core.arch.flow.ErrorFlow
+import com.foryouandme.core.arch.flow.LoadingFlow
+import com.foryouandme.core.arch.flow.NavigationFlow
+import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.action.toastAction
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.confirmEmail
-import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.createUserConsent
-import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.getConsent
-import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.resendConfirmationEmail
-import com.foryouandme.core.cases.consent.user.ConsentUserUseCase.updateUserConsent
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.auth.consent.*
+import com.foryouandme.ui.auth.AuthNavController
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
+import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 
+@HiltViewModel
+class ConsentUserViewModel @Inject constructor(
+    private val stateUpdateFlow: StateUpdateFlow<ConsentUserStateUpdate>,
+    private val loadingFlow: LoadingFlow<ConsentUserLoading>,
+    private val errorFlow: ErrorFlow<ConsentUserError>,
+    private val navigationFlow: NavigationFlow,
+    private val navigator: Navigator,
+    private val getConsentUserUseCase: GetConsentUserUseCase,
+    private val createConsentUserUseCase: CreateConsentUserUseCase,
+    private val updateConsentUserUseCase: UpdateConsentUserUseCase,
+    private val resendConfirmationEmailUseCase: ResendConfirmationEmailUseCase,
+    private val confirmEmailUseCase: ConfirmEmailUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+) : ViewModel() {
 
-class ConsentUserViewModel(
-    navigator: Navigator,
-    private val consentUserModule: ConsentUserModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        ConsentUserState,
-        ConsentUserStateUpdate,
-        ConsentUserError,
-        ConsentUserLoading>
-    (navigator = navigator) {
+    /* --- state --- */
 
-    /* --- initialization --- */
+    var state = ConsentUserState()
+        private set
 
-    suspend fun initialize(rootNavController: RootNavController): Either<ForYouAndMeError, ConsentUserState> {
+    /* --- flow --- */
 
-        showLoading(ConsentUserLoading.Initialization)
+    val stateUpdate = stateUpdateFlow.stateUpdates
+    val loading = loadingFlow.loading
+    val error = errorFlow.error
+    val navigation = navigationFlow.navigation
 
+    /* --- consent user --- */
 
-        val state =
-            consentUserModule.getConsent()
-                .nullToError()
-                .handleAuthError(rootNavController, navigator)
-                .fold(
-                    {
-                        setError(it, ConsentUserError.Initialization)
-                        it.left()
-                    },
-                    {
+    private suspend fun getConsentUser() {
 
-                        val state =
-                            ConsentUserState(consent = it)
+        loadingFlow.show(ConsentUserLoading.GetConsentUser)
 
-                        setState(state)
-                        { ConsentUserStateUpdate.Initialization(state.consent) }
+        val consentUser = getConsentUserUseCase()!!
+        state = state.copy(consent = consentUser)
+        stateUpdateFlow.update(ConsentUserStateUpdate.GetConsentUser)
 
-                        state.right()
-
-                    }
-                )
-
-        hideLoading(ConsentUserLoading.Initialization)
-
-        return state
+        loadingFlow.hide(ConsentUserLoading.GetConsentUser)
 
     }
 
     /* --- user --- */
 
-    suspend fun createUser(
-        rootNavController: RootNavController,
-        consentUserNavController: ConsentUserNavController
-    ): Unit {
+    private suspend fun createUser() {
 
-        showLoading(ConsentUserLoading.CreateUser)
+        loadingFlow.show(ConsentUserLoading.CreateUser)
 
-        consentUserModule.createUserConsent(state().email)
-            .handleAuthError(rootNavController, navigator).fold(
-                { setError(it, ConsentUserError.CreateUser) },
-                { emailVerification(consentUserNavController) }
-            )
+        createConsentUserUseCase(state.email)
+        navigationFlow.navigateTo(ConsentUserEmailToConsentUserEmailValidationCode)
 
-        hideLoading(ConsentUserLoading.CreateUser)
+        loadingFlow.hide(ConsentUserLoading.CreateUser)
 
     }
 
-    suspend fun resendEmail(rootNavController: RootNavController): Unit {
+    private suspend fun updateUser(signature: Bitmap) {
 
-        showLoading(ConsentUserLoading.ResendConfirmationEmail)
-
-        consentUserModule.resendConfirmationEmail()
-            .handleAuthError(rootNavController, navigator)
-            .fold(
-                { setError(it, ConsentUserError.ResendConfirmationEmail) },
-                // TODO: remove hardcoded string
-                { navigator.performActionSuspend(toastAction("Email sent successfully")) }
-            )
-
-        hideLoading(ConsentUserLoading.ResendConfirmationEmail)
-
-    }
-
-    suspend fun confirmEmail(
-        rootNavController: RootNavController,
-        consentUserNavController: ConsentUserNavController,
-        code: String
-    ): Unit {
-
-        showLoading(ConsentUserLoading.ConfirmEmail)
-
-
-        consentUserModule.confirmEmail(code)
-            .handleAuthError(rootNavController, navigator)
-            .fold(
-                { setError(it, ConsentUserError.ConfirmEmail) },
-                { signature(consentUserNavController) }
-            )
-
-        hideLoading(ConsentUserLoading.ConfirmEmail)
-
-    }
-
-    suspend fun updateUser(
-        rootNavController: RootNavController,
-        consentUserNavController: ConsentUserNavController,
-        signature: Bitmap
-    ): Unit {
-
-        showLoading(ConsentUserLoading.UpdateUser)
+        loadingFlow.show(ConsentUserLoading.UpdateUser)
 
         val signatureBase64 = signature.toBase64()
 
-        consentUserModule.updateUserConsent(
-            state().firstName,
-            state().lastName,
-            signatureBase64
-        )
-            .handleAuthError(rootNavController, navigator)
-            .fold(
-                { setError(it, ConsentUserError.UpdateUser) },
-                { success(consentUserNavController) }
-            )
+        updateConsentUserUseCase(state.firstName, state.lastName, signatureBase64)
+        navigationFlow.navigateTo(ConsentUserSignatureToConsentUserSuccess)
 
-        hideLoading(ConsentUserLoading.UpdateUser)
+        loadingFlow.hide(ConsentUserLoading.UpdateUser)
 
     }
 
@@ -165,95 +102,127 @@ class ConsentUserViewModel(
 
     }
 
-    /* --- validation --- */
+    /* --- email --- */
 
-    fun isValidEmail(email: String): Boolean =
+    private suspend fun resendEmail() {
+
+        loadingFlow.show(ConsentUserLoading.ResendConfirmationEmail)
+
+        resendConfirmationEmailUseCase()
+        // TODO: remove hardcoded string
+        navigator.performAction(toastAction("Email sent successfully"))
+
+        loadingFlow.hide(ConsentUserLoading.ResendConfirmationEmail)
+
+    }
+
+    private suspend fun confirmEmail(code: String) {
+
+        loadingFlow.show(ConsentUserLoading.ConfirmEmail)
+
+        confirmEmailUseCase(code)
+        navigationFlow.navigateTo(ConsentUserEmailValidationCodeToConsentUserSignature)
+
+        loadingFlow.hide(ConsentUserLoading.ConfirmEmail)
+
+    }
+
+    private suspend fun setEmail(email: String) {
+        state = state.copy(email = email, isValidEmail = isValidEmail(email))
+        stateUpdateFlow.update(ConsentUserStateUpdate.Email)
+    }
+
+    private fun isValidEmail(email: String): Boolean =
         email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
-    /* --- state --- */
+    /* --- name --- */
 
-    suspend fun setFirstName(firstName: String): Unit =
-        setState(state().copy(firstName = firstName))
-        { ConsentUserStateUpdate.FirstName(firstName) }
+    private suspend fun setFirstName(firstName: String) {
+        state = state.copy(firstName = firstName)
+        stateUpdateFlow.update(ConsentUserStateUpdate.FirstName)
+    }
 
-    suspend fun setLastName(lastName: String): Unit =
-        setState(state().copy(lastName = lastName))
-        { ConsentUserStateUpdate.FirstName(lastName) }
-
-    suspend fun setEmail(email: String): Unit =
-        setState(state().copy(email = email))
-        { ConsentUserStateUpdate.Email(email) }
-
-    /* --- navigation --- */
-
-    suspend fun back(
-        consentUserNavController: ConsentUserNavController,
-        consentNavController: ConsentNavController,
-        onboardingStepNavController: OnboardingStepNavController,
-        authNavController: AuthNavController,
-        rootNavController: RootNavController
-    ): Boolean =
-        if (navigator.backSuspend(consentUserNavController).not())
-            if (navigator.backSuspend(consentNavController).not())
-                if (navigator.backSuspend(onboardingStepNavController).not())
-                    if (navigator.backSuspend(authNavController).not())
-                        navigator.backSuspend(rootNavController)
-                    else true
-                else true
-            else true
-        else true
-
-    suspend fun email(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateToSuspend(
-            consentUserNavController,
-            ConsentUserNameToConsentUserEmail
-        )
-
-    private suspend fun emailVerification(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateToSuspend(
-            consentUserNavController,
-            ConsentUserEmailToConsentUserEmailValidationCode
-        )
-
-    private suspend fun signature(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateToSuspend(
-            consentUserNavController,
-            ConsentUserEmailValidationCodeToConsentUserSignature
-        )
-
-    private suspend fun success(consentUserNavController: ConsentUserNavController): Unit =
-        navigator.navigateToSuspend(
-            consentUserNavController,
-            ConsentUserSignatureToConsentUserSuccess
-        )
-
-    suspend fun toastError(error: ForYouAndMeError): Unit =
-        navigator.performActionSuspend(toastAction(error))
-
-    suspend fun web(navController: RootNavController, url: String): Unit =
-        navigator.navigateToSuspend(navController, AnywhereToWeb(url))
+    private suspend fun setLastName(lastName: String) {
+        state = state.copy(lastName = lastName)
+        stateUpdateFlow.update(ConsentUserStateUpdate.LastName)
+    }
 
     /* --- analytics --- */
 
-    suspend fun logConsentUserNameScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.ConsentName, EAnalyticsProvider.ALL)
+    private suspend fun logConsentUserNameScreenViewed() {
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.ConsentName,
+            EAnalyticsProvider.ALL
+        )
+    }
 
-    suspend fun logConsentSignatureScreenViewed(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logConsentSignatureScreenViewed() {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.ScreenViewed.ConsentSignature,
             EAnalyticsProvider.ALL
         )
+    }
 
-    suspend fun logConsentEmailScreenViewed(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logConsentEmailScreenViewed() {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.ScreenViewed.EmailInsert,
             EAnalyticsProvider.ALL
         )
+    }
 
-    suspend fun logConsentEmailValidationScreenViewed(): Unit =
-        analyticsModule.logEvent(
+    private suspend fun logConsentEmailValidationScreenViewed(): Unit =
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.ScreenViewed.EmailVerification,
             EAnalyticsProvider.ALL
         )
+
+    fun execute(action: ConsentUserAction) {
+        when(action) {
+            ConsentUserAction.GetConsentUser ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ConsentUserError.GetConsentUser,
+                    loadingFlow,
+                    ConsentUserLoading.GetConsentUser
+                ) { getConsentUser() }
+            ConsentUserAction.CreateUser ->
+                viewModelScope.launchSafe { createUser() }
+            is ConsentUserAction.SetEmail ->
+                viewModelScope.launchSafe { setEmail(action.email) }
+            is ConsentUserAction.ConfirmEmail ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ConsentUserError.ConfirmEmail,
+                    loadingFlow,
+                    ConsentUserLoading.ConfirmEmail
+                ) { confirmEmail(action.code)}
+            ConsentUserAction.ResendEmail ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ConsentUserError.ResendConfirmationEmail,
+                    loadingFlow,
+                    ConsentUserLoading.ResendConfirmationEmail
+                ) { resendEmail() }
+            is ConsentUserAction.SetFirstName ->
+                viewModelScope.launchSafe { setFirstName(action.firstName) }
+            is ConsentUserAction.SetLastName ->
+                viewModelScope.launchSafe { setLastName(action.lastName) }
+            is ConsentUserAction.UpdateUser ->
+                errorFlow.launchCatch(
+                    viewModelScope,
+                    ConsentUserError.UpdateUser,
+                    loadingFlow,
+                    ConsentUserLoading.UpdateUser
+                ) { updateUser(action.signature) }
+            ConsentUserAction.ConsentEmailViewed ->
+                viewModelScope.launchSafe { logConsentEmailScreenViewed() }
+            ConsentUserAction.ConsentUserNameViewed ->
+                viewModelScope.launchSafe { logConsentUserNameScreenViewed() }
+            ConsentUserAction.ConsentUserSignatureViewed ->
+                viewModelScope.launchSafe { logConsentSignatureScreenViewed() }
+            ConsentUserAction.ConsentEmailValidationViewed ->
+                viewModelScope.launchSafe { logConsentEmailValidationScreenViewed() }
+        }
+    }
 
 }

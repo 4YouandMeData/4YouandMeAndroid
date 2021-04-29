@@ -5,115 +5,141 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.*
+import com.foryouandme.databinding.ConsentUserNameBinding
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.*
-import kotlinx.android.synthetic.main.consent_user.*
-import kotlinx.android.synthetic.main.consent_user_name.*
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserAction
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserNameToConsentUserEmail
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user_name) {
+
+    private val binding: ConsentUserNameBinding?
+        get() = view?.let { ConsentUserNameBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent {
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
                 when (it) {
-                    is ConsentUserStateUpdate.FirstName ->
-                        startCoroutineAsync { bindNext() }
-                    is ConsentUserStateUpdate.LastName ->
-                        startCoroutineAsync { bindNext() }
+                    is ConsentUserStateUpdate.FirstName -> bindNext()
+                    is ConsentUserStateUpdate.LastName -> bindNext()
+                    else -> Unit
                 }
             }
+            .observeIn(this)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentUserAndConfiguration { config, _ ->
+        setupView()
+        applyConfiguration()
 
-            setupView()
-            applyConfiguration(config)
+    }
 
-        }
-
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyConfiguration()
     }
 
     override fun onResume() {
         super.onResume()
 
-        startCoroutineAsync { viewModel.logConsentUserNameScreenViewed() }
+        viewModel.execute(ConsentUserAction.ConsentUserNameViewed)
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
+        val viewBinding = binding
+
+        if (viewBinding != null) {
             bindNext()
-            action_1.background = button(resources, imageConfiguration.nextStep())
-            action_1.setOnClickListenerAsync {
+            viewBinding.action1.background = button(resources, imageConfiguration.nextStep())
+            viewBinding.action1.setOnClickListener {
 
-                hideKeyboardSuspend()
-                viewModel.email(consentUserNavController())
+                hideKeyboard()
+                navigator.navigateTo(
+                    consentUserNavController(),
+                    ConsentUserNameToConsentUserEmail
+                )
 
             }
 
-            consentUserFragment().toolbar.removeBackButton()
+            consentUserFragment().binding?.toolbar?.removeBackButton()
 
         }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
-        evalOnMain {
+    }
+
+    private fun applyConfiguration() {
+
+        val configuration = configuration
+        val viewBinding = binding
+
+        if (configuration != null && viewBinding != null) {
 
             setStatusBar(configuration.theme.primaryColorEnd.color())
 
-            root.background =
+            viewBinding.root.background =
                 HEXGradient.from(
                     configuration.theme.primaryColorStart,
                     configuration.theme.primaryColorEnd
                 ).drawable()
 
 
-            title.text = configuration.text.onboarding.user.nameTitle
-            title.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.title.text = configuration.text.onboarding.user.nameTitle
+            viewBinding.title.setTextColor(configuration.theme.secondaryColor.color())
 
-            body.text = configuration.text.onboarding.user.nameBody
-            body.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.body.text = configuration.text.onboarding.user.nameBody
+            viewBinding.body.setTextColor(configuration.theme.secondaryColor.color())
 
-            first_name.text = configuration.text.onboarding.user.nameFirstNameDescription
-            first_name.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.firstName.text = configuration.text.onboarding.user.nameFirstNameDescription
+            viewBinding.firstName.setTextColor(configuration.theme.secondaryColor.color())
 
-            last_name.text = configuration.text.onboarding.user.nameLastNameDescription
-            last_name.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.lastName.text = configuration.text.onboarding.user.nameLastNameDescription
+            viewBinding.lastName.setTextColor(configuration.theme.secondaryColor.color())
 
-            first_name_validation.imageTintList =
+            viewBinding.firstNameValidation.imageTintList =
                 ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            first_name_validation.setImageResource(
-                if (first_name_entry.text.toString().isNotEmpty()) imageConfiguration.entryValid()
-                else imageConfiguration.entryWrong()
+            viewBinding.firstNameValidation.setImageResource(
+                if (viewBinding.firstNameEntry.text.toString().isNotEmpty())
+                    imageConfiguration.entryValid()
+                else
+                    imageConfiguration.entryWrong()
             )
 
-            last_name_validation.imageTintList =
+            viewBinding.lastNameValidation.imageTintList =
                 ColorStateList.valueOf(configuration.theme.secondaryColor.color())
-            last_name_validation.setImageResource(
-                if (first_name_entry.text.toString().isNotEmpty()) imageConfiguration.entryValid()
-                else imageConfiguration.entryWrong()
+            viewBinding.lastNameValidation.setImageResource(
+                if (viewBinding.lastNameEntry.text.toString().isNotEmpty())
+                    imageConfiguration.entryValid()
+                else
+                    imageConfiguration.entryWrong()
             )
 
-            first_name_entry.setBackgroundColor(color(android.R.color.transparent))
-            first_name_entry.autoCloseKeyboard()
-            first_name_entry.setTextColor(configuration.theme.secondaryColor.color())
-            first_name_entry.addTextChangedListener {
-                startCoroutineAsync { viewModel.setFirstName(it.toString()) }
+            viewBinding.firstNameEntry.setBackgroundColor(color(android.R.color.transparent))
+            viewBinding.firstNameEntry.autoCloseKeyboard()
+            viewBinding.firstNameEntry.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.firstNameEntry.addTextChangedListener {
+                viewModel.execute(ConsentUserAction.SetFirstName(it.toString()))
             }
-            first_name_entry.setOnFocusChangeListener { _, hasFocus ->
-                first_name_validation.setImageResource(
+            viewBinding.firstNameEntry.setOnFocusChangeListener { _, hasFocus ->
+                binding?.firstNameValidation?.setImageResource(
                     when {
                         hasFocus -> 0
-                        hasFocus.not() && first_name_entry.text.toString().isEmpty() ->
+                        hasFocus.not() && binding?.firstNameEntry?.text.toString().isEmpty() ->
                             imageConfiguration.entryWrong()
                         else ->
                             imageConfiguration.entryValid()
@@ -121,17 +147,17 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
                 )
             }
 
-            last_name_entry.setBackgroundColor(color(android.R.color.transparent))
-            last_name_entry.autoCloseKeyboard()
-            last_name_entry.setTextColor(configuration.theme.secondaryColor.color())
-            last_name_entry.addTextChangedListener {
-                startCoroutineAsync { viewModel.setLastName(it.toString()) }
+            viewBinding.lastNameEntry.setBackgroundColor(color(android.R.color.transparent))
+            viewBinding.lastNameEntry.autoCloseKeyboard()
+            viewBinding.lastNameEntry.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.lastNameEntry.addTextChangedListener {
+                viewModel.execute(ConsentUserAction.SetLastName(it.toString()))
             }
-            last_name_entry.setOnFocusChangeListener { _, hasFocus ->
-                last_name_validation.setImageResource(
+            viewBinding.lastNameEntry.setOnFocusChangeListener { _, hasFocus ->
+                binding?.lastNameValidation?.setImageResource(
                     when {
                         hasFocus -> 0
-                        hasFocus.not() && last_name_entry.text.toString().isEmpty() ->
+                        hasFocus.not() && binding?.lastNameEntry?.text.toString().isEmpty() ->
                             imageConfiguration.entryWrong()
                         else ->
                             imageConfiguration.entryValid()
@@ -139,16 +165,17 @@ class ConsentUserNameFragment : ConsentUserSectionFragment(R.layout.consent_user
                 )
             }
 
-            first_name_line.setBackgroundColor(configuration.theme.secondaryColor.color())
-            last_name_line.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.firstNameLine.setBackgroundColor(configuration.theme.secondaryColor.color())
+            viewBinding.lastNameLine.setBackgroundColor(configuration.theme.secondaryColor.color())
 
         }
+    }
 
-    private suspend fun bindNext(): Unit =
-        evalOnMain {
+    private fun bindNext() {
 
-            action_1.isEnabled =
-                viewModel.state().firstName.isNotEmpty() && viewModel.state().lastName.isNotEmpty()
+        binding?.action1?.isEnabled =
+            viewModel.state.firstName.isNotEmpty() &&
+                    viewModel.state.lastName.isNotEmpty()
 
-        }
+    }
 }

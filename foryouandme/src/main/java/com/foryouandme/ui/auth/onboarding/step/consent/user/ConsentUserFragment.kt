@@ -2,84 +2,82 @@ package com.foryouandme.ui.auth.onboarding.step.consent.user
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.ext.catchToNull
+import com.foryouandme.databinding.ConsentUserBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
-import kotlinx.android.synthetic.main.screening.*
+import kotlinx.coroutines.flow.onEach
 
-class ConsentUserFragment : ConsentSectionFragment<ConsentUserViewModel>(R.layout.consent_user) {
+class ConsentUserFragment : ConsentSectionFragment(R.layout.consent_user) {
 
-    override val viewModel: ConsentUserViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                ConsentUserViewModel(
-                    navigator,
-                    injector.consentUserModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-    }
+    val viewModel: ConsentUserViewModel by viewModels()
+
+    val binding: ConsentUserBinding?
+        get() = view?.let { ConsentUserBinding.bind(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
-            .observeEvent(name()) { update ->
-                when (update) {
-                    is ConsentUserStateUpdate.Initialization ->
-                        startCoroutineAsync { setupNavigation() }
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is ConsentUserStateUpdate.GetConsentUser -> setupNavigation()
+                    else -> Unit
                 }
             }
+            .observeIn(this)
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
+        viewModel.loading
+            .unwrapEvent(name)
+            .onEach {
                 when (it.task) {
-                    ConsentUserLoading.Initialization ->
-                        loading.setVisibility(it.active, false)
+                    ConsentUserLoading.GetConsentUser ->
+                        binding?.loading?.setVisibility(it.active, false)
+                    else -> Unit
                 }
             }
+            .observeIn(this)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) { payload ->
-                when (payload.cause) {
-                    ConsentUserError.Initialization ->
-                        error.setError(payload.error)
-                        {
-                            startCoroutineAsync { viewModel.initialize(rootNavController()) }
-                        }
+        viewModel.error
+            .unwrapEvent(name)
+            .onEach {
+                when (it.cause) {
+                    ConsentUserError.GetConsentUser ->
+                        binding?.error?.setError(it.error, configuration)
+                        { viewModel.execute(ConsentUserAction.GetConsentUser) }
+                    else -> Unit
                 }
             }
+            .observeIn(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startCoroutineAsync {
+        if (viewModel.state.consent == null)
+            viewModel.execute(ConsentUserAction.GetConsentUser)
+        else
+            setupNavigation()
 
-            if (viewModel.isInitialized().not())
-                viewModel.initialize(rootNavController())
-
-        }
     }
 
-    private suspend fun setupNavigation(): Unit {
-        evalOnMain {
-            val navHostFragment =
-                childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+    private fun setupNavigation() {
 
-            val currentGraph = catchToNull { navHostFragment.navController.graph }
-            if (currentGraph == null) {
-                val inflater = navHostFragment.navController.navInflater
-                val graph = inflater.inflate(R.navigation.consent_user_navigation)
-                navHostFragment.navController.graph = graph
-            }
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
+        val currentGraph = catchToNull { navHostFragment.navController.graph }
+        if (currentGraph == null) {
+            val inflater = navHostFragment.navController.navInflater
+            val graph = inflater.inflate(R.navigation.consent_user_navigation)
+            navHostFragment.navController.graph = graph
         }
+
     }
 
 }

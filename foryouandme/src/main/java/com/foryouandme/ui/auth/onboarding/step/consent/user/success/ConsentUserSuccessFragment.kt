@@ -3,52 +3,82 @@ package com.foryouandme.ui.auth.onboarding.step.consent.user.success
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
-import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.consent.user.ConsentUser
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
-import kotlinx.android.synthetic.main.consent_user.*
-import kotlinx.android.synthetic.main.consent_user_page.*
+import com.foryouandme.databinding.ConsentUserPageBinding
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.consent.user.ConsentUser
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentUserSuccessFragment : ConsentUserSectionFragment(R.layout.consent_user_page) {
+
+    private val binding: ConsentUserPageBinding?
+        get() = view?.let { ConsentUserPageBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is ConsentUserStateUpdate.GetConsentUser -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        consentUserAndConfiguration { config, state ->
+        setupView()
+        applyData()
 
-            setupView()
-            applyData(config, state.consent)
-
-        }
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    override fun onConfigurationChange() {
+        super.onConfigurationChange()
+        applyData()
+    }
 
-            consentUserFragment().toolbar.removeBackButton()
+    private fun setupView() {
+
+            consentUserFragment().binding?.toolbar?.removeBackButton()
 
         }
 
-    private suspend fun applyData(configuration: Configuration, consentUser: ConsentUser): Unit =
-        evalOnMain {
+    private  fun applyData() {
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
+        val configuration = configuration
+        val consentUser = viewModel.state.consent
+        val viewBinding = binding
 
-            page.applyDataSuspend(
+        if (viewBinding != null && configuration != null && consentUser != null) {
+
+            binding?.root?.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+            binding?.page?.applyData(
                 configuration = configuration,
                 page = consentUser.successPage,
                 pageType = EPageType.SUCCESS,
-                action1 = {
-                    startCoroutineAsync { consentUserFragment().consentFragment().next() }
-                },
+                action1 = { consentUserFragment().consentFragment().next() },
                 extraStringAction = {
-                    startCoroutineAsync { viewModel.web(rootNavController(), it) }
+                    navigator.navigateTo(rootNavController(), AnywhereToWeb(it))
                 }
             )
 
         }
+    }
+
 }

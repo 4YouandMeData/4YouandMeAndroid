@@ -5,8 +5,8 @@ import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.modules.OptInModule
 import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.data.repository.auth.consent.network.request.OptInPermissionRequest
-import com.foryouandme.data.repository.auth.consent.network.request.OptInUserPermissionRequest
+import com.foryouandme.data.repository.consent.user.network.request.OptInPermissionRequest
+import com.foryouandme.data.repository.consent.user.network.request.OptInUserPermissionRequest
 import com.foryouandme.entity.optins.OptIns
 
 object OptInsRepository {

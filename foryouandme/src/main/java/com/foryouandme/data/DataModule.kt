@@ -25,7 +25,7 @@ import com.foryouandme.data.repository.auth.consent.network.response.OptInsRespo
 import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
 import com.foryouandme.data.datasource.network.SerializeNulls
-import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
+import com.foryouandme.data.repository.auth.consent.network.response.ConsentUserResponse
 import com.foryouandme.data.repository.feed.network.response.FeedResponse
 import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyAnswerResponse

@@ -1,30 +1,32 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.user
 
+import android.graphics.Bitmap
 import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.entity.consent.user.ConsentUser
 
 data class ConsentUserState(
-    val consent: ConsentUser,
+    val consent: ConsentUser? = null,
     val firstName: String = "",
     val lastName: String = "",
-    val email: String = ""
+    val email: String = "",
+    val isValidEmail: Boolean = false
 )
 
 sealed class ConsentUserStateUpdate {
 
-    data class Initialization(val consent: ConsentUser) : ConsentUserStateUpdate()
+    object GetConsentUser : ConsentUserStateUpdate()
 
-    data class FirstName(val firstName: String) : ConsentUserStateUpdate()
+    object FirstName : ConsentUserStateUpdate()
 
-    data class LastName(val lastName: String) : ConsentUserStateUpdate()
+    object LastName : ConsentUserStateUpdate()
 
-    data class Email(val email: String) : ConsentUserStateUpdate()
+    object Email : ConsentUserStateUpdate()
 
 }
 
 sealed class ConsentUserLoading {
 
-    object Initialization : ConsentUserLoading()
+    object GetConsentUser : ConsentUserLoading()
     object CreateUser : ConsentUserLoading()
     object ConfirmEmail : ConsentUserLoading()
     object ResendConfirmationEmail : ConsentUserLoading()
@@ -34,11 +36,29 @@ sealed class ConsentUserLoading {
 
 sealed class ConsentUserError {
 
-    object Initialization : ConsentUserError()
+    object GetConsentUser : ConsentUserError()
     object CreateUser : ConsentUserError()
     object ConfirmEmail : ConsentUserError()
     object ResendConfirmationEmail : ConsentUserError()
     object UpdateUser : ConsentUserError()
+
+}
+
+sealed class ConsentUserAction {
+
+    object GetConsentUser: ConsentUserAction()
+    object CreateUser: ConsentUserAction()
+    data class SetEmail(val email: String): ConsentUserAction()
+    data class ConfirmEmail(val code: String): ConsentUserAction()
+    object ResendEmail: ConsentUserAction()
+    data class SetFirstName(val firstName: String): ConsentUserAction()
+    data class SetLastName(val lastName: String): ConsentUserAction()
+    data class UpdateUser(val signature: Bitmap): ConsentUserAction()
+
+    object ConsentEmailViewed: ConsentUserAction()
+    object ConsentEmailValidationViewed: ConsentUserAction()
+    object ConsentUserNameViewed: ConsentUserAction()
+    object ConsentUserSignatureViewed: ConsentUserAction()
 
 }
 

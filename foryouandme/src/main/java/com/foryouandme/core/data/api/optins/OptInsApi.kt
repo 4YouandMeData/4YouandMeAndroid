@@ -1,7 +1,7 @@
 package com.foryouandme.core.data.api.optins
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.data.repository.auth.consent.network.request.OptInPermissionRequest
+import com.foryouandme.data.repository.consent.user.network.request.OptInPermissionRequest
 import com.foryouandme.data.repository.auth.consent.network.response.OptInsResponse
 import moe.banana.jsonapi2.ObjectDocument
 import retrofit2.http.*

@@ -1,7 +1,7 @@
 package com.foryouandme.data.repository.auth.consent.network.response
 
-import com.foryouandme.core.cases.permission.Permission
 import com.foryouandme.entity.optins.OptInsPermission
+import com.foryouandme.entity.permission.Permission
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
