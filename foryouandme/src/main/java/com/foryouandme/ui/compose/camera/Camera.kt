@@ -2,20 +2,19 @@ package com.foryouandme.ui.compose.camera
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Rational
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.core.VideoCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -24,6 +23,7 @@ import com.foryouandme.core.ext.catchToNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlin.math.roundToInt
 
 @SuppressLint("UnsafeOptInUsageError", "MissingPermission", "RestrictedApi")
 @Composable
@@ -42,33 +42,55 @@ fun Camera(
     var currentLens by remember { mutableStateOf(cameraLens) }
     var currentFlash by remember { mutableStateOf(cameraFlash) }
 
-    AndroidView(
-        factory = { ctx ->
-            val previewView = PreviewView(ctx)
-            startCamera(context, lifecycleOwner, previewView, videoCapture, cameraLens)
-            {
-                camera = it
-                currentLens = cameraLens
-            }
-            previewView
-        },
-        modifier = modifier,
-        update = { view ->
+    BoxWithConstraints(modifier = modifier) {
 
-            if (cameraLens != currentLens)
-                startCamera(context, lifecycleOwner, view, videoCapture, cameraLens)
+        val widthPixel = LocalDensity.current.run { maxWidth.toPx() }
+        val heightPixel = LocalDensity.current.run { maxHeight.toPx() }
+
+        AndroidView(
+            factory = { ctx ->
+                val previewView = PreviewView(ctx)
+                startCamera(
+                    context,
+                    lifecycleOwner,
+                    previewView,
+                    videoCapture,
+                    cameraLens,
+                    widthPixel,
+                    heightPixel
+                )
                 {
                     camera = it
                     currentLens = cameraLens
                 }
+                previewView
+            },
+            modifier = Modifier.fillMaxSize(),
+            update = { view ->
 
-            if (cameraFlash != currentFlash) {
-                camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)
-                currentFlash = cameraFlash
+                if (cameraLens != currentLens)
+                    startCamera(
+                        context,
+                        lifecycleOwner,
+                        view,
+                        videoCapture,
+                        cameraLens,
+                        widthPixel,
+                        heightPixel
+                    )
+                    {
+                        camera = it
+                        currentLens = cameraLens
+                    }
+
+                if (cameraFlash != currentFlash) {
+                    camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)
+                    currentFlash = cameraFlash
+                }
+
             }
-
-        }
-    )
+        )
+    }
 
     LaunchedEffect(key1 = cameraEvents) {
         cameraEvents.onEach {
@@ -111,15 +133,19 @@ fun startCamera(
     previewView: PreviewView,
     videoCapture: VideoCapture,
     lens: CameraLens,
+    width: Float,
+    height: Float,
     onCameraReady: (Camera) -> Unit
 ) {
     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
     val executor = ContextCompat.getMainExecutor(context)
+    val aspectRatio = Rational(width.roundToInt(), height.roundToInt())
     cameraProviderFuture.addListener(
         {
             val cameraProvider = cameraProviderFuture.get()
             val preview =
                 Preview.Builder()
+                    .setTargetAspectRatio(aspectRatio.toInt())
                     .build()
                     .also { it.setSurfaceProvider(previewView.surfaceProvider) }
 
