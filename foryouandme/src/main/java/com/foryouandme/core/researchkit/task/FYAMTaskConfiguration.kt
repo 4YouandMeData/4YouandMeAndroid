@@ -164,6 +164,16 @@ class FYAMTaskConfiguration @Inject constructor(
                     task.reschedule
                 )
             }
+            TaskActivityType.HolePeg ->
+                FYAMHolePegTask(
+                    id,
+                    configuration,
+                    imageConfiguration,
+                    task.pages,
+                    task.welcomePage,
+                    task.successPage,
+                    task.reschedule
+                )
             else -> null
         }
 

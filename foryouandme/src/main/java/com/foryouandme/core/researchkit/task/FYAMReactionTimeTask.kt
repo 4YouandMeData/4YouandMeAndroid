@@ -83,7 +83,7 @@ class FYAMReactionTimeTask(
                         reactionTimeMinimumStimulusIntervalSeconds = reactionTimeMinimumStimulusIntervalSeconds,
                         reactionTimeNumberOfAttempts = reactionTimeNumberOfAttempts,
                         reactionTimeTimeoutSeconds = reactionTimeTimeoutSeconds
-                ).pipe { list ->
+                ).let { list ->
 
                     successPage?.let {
 
