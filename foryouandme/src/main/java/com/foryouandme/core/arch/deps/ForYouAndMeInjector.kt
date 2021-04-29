@@ -28,14 +28,11 @@ import com.foryouandme.data.repository.auth.consent.network.response.ConsentInfo
 import com.foryouandme.data.repository.auth.consent.network.response.ConsentReviewResponse
 import com.foryouandme.data.repository.auth.consent.network.response.OptInsPermissionResponse
 import com.foryouandme.data.repository.auth.consent.network.response.OptInsResponse
-import com.foryouandme.data.repository.auth.integration.network.IntegrationApi
-import com.foryouandme.data.repository.auth.integration.network.response.IntegrationResponse
 import com.foryouandme.data.repository.auth.network.AuthApi
 import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
 import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
-import com.foryouandme.data.repository.consent.user.network.response.ConsentUserResponse
 import com.foryouandme.data.repository.feed.network.FeedApi
 import com.foryouandme.data.repository.feed.network.response.FeedResponse
 import com.foryouandme.data.repository.study.network.StudyInfoApi
@@ -49,6 +46,10 @@ import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.data.repository.task.network.response.TaskResponse
 import com.foryouandme.data.repository.user.network.UserResponse
 import com.foryouandme.data.repository.usersettings.network.UserSettingsApi
+import com.foryouandme.data.repository.auth.consent.network.ConsentApi
+import com.foryouandme.data.repository.auth.consent.network.response.*
+import com.foryouandme.data.repository.auth.integration.network.IntegrationApi
+import com.foryouandme.data.repository.auth.integration.network.response.IntegrationResponse
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -189,7 +190,7 @@ class ForYouAndMeInjector(
     override val consentInfoApi: ConsentInfoApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
-    override val consentReviewApi: ConsentReviewApi =
+    override val consentApi: ConsentApi =
         getApiService(environment.getApiBaseUrl(), moshi)
 
     override val consentUserApi: ConsentUserApi =

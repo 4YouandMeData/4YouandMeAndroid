@@ -1,10 +1,13 @@
 package com.foryouandme.ui.aboutyou.review
 
 import com.foryouandme.core.arch.android.BaseViewModel
+import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
+import com.foryouandme.core.arch.error.handleAuthError
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.auth.onboarding.step.consent.review.info.toConsentReviewPageItem
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 
 class AboutYouReviewConsentViewModel(

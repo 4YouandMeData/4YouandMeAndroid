@@ -3,22 +3,22 @@ package com.foryouandme.core.arch.deps
 import android.content.SharedPreferences
 import com.foryouandme.core.arch.deps.modules.*
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
+import com.foryouandme.data.repository.usersettings.network.UserSettingsApi
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
-import com.foryouandme.core.data.api.consent.review.ConsentReviewApi
-import com.foryouandme.data.repository.auth.integration.network.IntegrationApi
 import com.foryouandme.core.data.api.optins.OptInsApi
 import com.foryouandme.core.data.api.yourdata.YourDataApi
 import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
+import com.foryouandme.data.repository.auth.consent.network.ConsentApi
+import com.foryouandme.data.repository.auth.integration.network.IntegrationApi
 import com.foryouandme.data.repository.auth.network.AuthApi
+import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.data.repository.consent.user.network.ConsentUserApi
 import com.foryouandme.data.repository.feed.network.FeedApi
-import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
 import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.data.repository.task.network.TaskApi
-import com.foryouandme.data.repository.usersettings.network.UserSettingsApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.squareup.moshi.Moshi
 
@@ -58,7 +58,7 @@ interface Injector {
     val authApi: AuthApi
     val screeningApi: ScreeningApi
     val consentInfoApi: ConsentInfoApi
-    val consentReviewApi: ConsentReviewApi
+    val consentApi: ConsentApi
     val consentUserApi: ConsentUserApi
     val optInsApi: OptInsApi
     val integrationApi: IntegrationApi
@@ -142,7 +142,7 @@ interface Injector {
 
     fun consentReviewModule(): ConsentReviewModule =
         ConsentReviewModule(
-            consentReviewApi,
+            consentApi,
             errorModule(),
             authModule(),
             environment
