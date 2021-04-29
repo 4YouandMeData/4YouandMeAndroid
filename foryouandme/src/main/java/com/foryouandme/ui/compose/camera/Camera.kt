@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.foryouandme.core.ext.catchToNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -39,6 +40,7 @@ fun Camera(
         factory = { ctx ->
             val previewView = PreviewView(ctx)
             previewView.controller = cameraController
+            catchToNull { cameraController.unbind() }
             cameraController.bindToLifecycle(lifecycleOwner)
             val executor = ContextCompat.getMainExecutor(ctx)
             cameraProviderFuture.addListener(
@@ -59,13 +61,14 @@ fun Camera(
                             )
                             .build()
 
-                    cameraProvider.unbindAll()
+                    catchToNull { cameraProvider.unbindAll() }
                     cameraProvider.bindToLifecycle(
                         lifecycleOwner,
                         cameraSelector,
                         preview,
                         videoCapture
                     )
+
                 },
                 executor
             )
@@ -98,7 +101,9 @@ fun Camera(
                         ContextCompat.getMainExecutor(context),
                         object : VideoCapture.OnVideoSavedCallback {
 
-                            override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
+                            override fun onVideoSaved(
+                                outputFileResults: VideoCapture.OutputFileResults
+                            ) {
 
                             }
 
