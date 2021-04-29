@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -51,6 +52,7 @@ fun VideoPlayer(
                 .createMediaSource(MediaItem.fromUri(Uri.parse(sourceUrl)))
 
         exoPlayer.setMediaSource(source)
+        exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
         exoPlayer.prepare()
 
     }
