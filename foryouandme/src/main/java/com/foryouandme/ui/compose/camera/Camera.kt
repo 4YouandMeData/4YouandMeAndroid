@@ -1,20 +1,25 @@
 package com.foryouandme.ui.compose.camera
 
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.core.VideoCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.foryouandme.core.ext.catchToNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -32,62 +37,38 @@ fun Camera(
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-    val cameraController = remember { LifecycleCameraController(context) }
     val videoCapture = remember { VideoCapture.Builder().build() }
+    var camera: Camera? by remember { mutableStateOf(null) }
+    var currentLens by remember { mutableStateOf(cameraLens) }
+    var currentFlash by remember { mutableStateOf(cameraFlash) }
 
     AndroidView(
         factory = { ctx ->
             val previewView = PreviewView(ctx)
-            previewView.controller = cameraController
-            catchToNull { cameraController.unbind() }
-            cameraController.bindToLifecycle(lifecycleOwner)
-            val executor = ContextCompat.getMainExecutor(ctx)
-            cameraProviderFuture.addListener(
-                {
-                    val cameraProvider = cameraProviderFuture.get()
-                    val preview =
-                        Preview.Builder()
-                            .build()
-                            .also { it.setSurfaceProvider(previewView.surfaceProvider) }
-
-                    val cameraSelector =
-                        CameraSelector.Builder()
-                            .requireLensFacing(
-                                when (cameraLens) {
-                                    CameraLens.Back -> CameraSelector.LENS_FACING_BACK
-                                    CameraLens.Front -> CameraSelector.LENS_FACING_FRONT
-                                }
-                            )
-                            .build()
-
-                    catchToNull { cameraProvider.unbindAll() }
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        videoCapture
-                    )
-
-                },
-                executor
-            )
+            startCamera(context, lifecycleOwner, previewView, videoCapture, cameraLens)
+            {
+                camera = it
+                currentLens = cameraLens
+            }
             previewView
         },
         modifier = modifier,
-    )
+        update = { view ->
 
-    LaunchedEffect(cameraLens) {
-        cameraController.cameraSelector =
-            when (cameraLens) {
-                CameraLens.Back -> CameraSelector.DEFAULT_BACK_CAMERA
-                CameraLens.Front -> CameraSelector.DEFAULT_FRONT_CAMERA
+            if (cameraLens != currentLens)
+                startCamera(context, lifecycleOwner, view, videoCapture, cameraLens)
+                {
+                    camera = it
+                    currentLens = cameraLens
+                }
+
+            if (cameraFlash != currentFlash) {
+                camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)
+                currentFlash = cameraFlash
             }
-    }
 
-    LaunchedEffect(cameraFlash) {
-        cameraController.enableTorch(cameraFlash is CameraFlash.On)
-    }
+        }
+    )
 
     LaunchedEffect(key1 = cameraEvents) {
         cameraEvents.onEach {
@@ -122,4 +103,48 @@ fun Camera(
         }.collect()
     }
 
+}
+
+fun startCamera(
+    context: Context,
+    lifecycleOwner: LifecycleOwner,
+    previewView: PreviewView,
+    videoCapture: VideoCapture,
+    lens: CameraLens,
+    onCameraReady: (Camera) -> Unit
+) {
+    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+    val executor = ContextCompat.getMainExecutor(context)
+    cameraProviderFuture.addListener(
+        {
+            val cameraProvider = cameraProviderFuture.get()
+            val preview =
+                Preview.Builder()
+                    .build()
+                    .also { it.setSurfaceProvider(previewView.surfaceProvider) }
+
+            val cameraSelector =
+                CameraSelector.Builder()
+                    .requireLensFacing(
+                        when (lens) {
+                            CameraLens.Back -> CameraSelector.LENS_FACING_BACK
+                            CameraLens.Front -> CameraSelector.LENS_FACING_FRONT
+                        }
+                    )
+                    .build()
+
+            catchToNull { cameraProvider.unbindAll() }
+            val camera =
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    videoCapture
+                )
+
+            onCameraReady(camera)
+
+        },
+        executor
+    )
 }
