@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.step.video.compose
+package com.foryouandme.ui.compose.camera
 
 import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector
@@ -15,9 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.foryouandme.entity.camera.CameraEvent
-import com.foryouandme.entity.camera.CameraFlash
-import com.foryouandme.entity.camera.CameraLens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach

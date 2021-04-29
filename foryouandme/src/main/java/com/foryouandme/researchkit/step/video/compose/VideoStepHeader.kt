@@ -14,12 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.foryouandme.entity.camera.CameraFlash
-import com.foryouandme.entity.camera.CameraFlash.*
-import com.foryouandme.entity.camera.CameraLens
-import com.foryouandme.entity.camera.CameraLens.*
 import com.foryouandme.researchkit.step.video.RecordingState
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.compose.camera.CameraFlash
+import com.foryouandme.ui.compose.camera.CameraFlash.*
+import com.foryouandme.ui.compose.camera.CameraLens
+import com.foryouandme.ui.compose.camera.CameraLens.*
 import com.foryouandme.ui.compose.preview.ComposePreview
 import com.google.accompanist.coil.CoilImage
 
@@ -33,11 +33,11 @@ fun VideoStepHeader(
     flashOn: Int,
     flashOff: Int,
     cameraFlash: CameraFlash,
-    onFlashClicked: () -> Unit = {},
     cameraToggle: Int,
     cameraLens: CameraLens,
-    onCameraClicked: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onFlashClicked: () -> Unit = {},
+    onCameraClicked: () -> Unit = {}
 ) {
 
     val headerLabel = remember(title, recordingState, recordTimeSeconds, maxRecordTimeSeconds) {

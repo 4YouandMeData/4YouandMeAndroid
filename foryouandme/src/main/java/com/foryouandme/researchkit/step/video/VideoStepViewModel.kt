@@ -14,11 +14,11 @@ import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.domain.usecase.task.AttachVideoUseCase
 import com.foryouandme.domain.usecase.video.MergeVideosUseCase
-import com.foryouandme.entity.camera.CameraEvent
-import com.foryouandme.entity.camera.CameraFlash
-import com.foryouandme.entity.camera.CameraLens
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.permission.PermissionResult
+import com.foryouandme.ui.compose.camera.CameraEvent
+import com.foryouandme.ui.compose.camera.CameraFlash
+import com.foryouandme.ui.compose.camera.CameraLens
 import com.foryouandme.ui.compose.error.toForYouAndMeException
 import com.foryouandme.ui.compose.video.VideoPlayerEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
