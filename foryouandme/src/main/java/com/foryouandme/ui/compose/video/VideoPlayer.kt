@@ -3,12 +3,14 @@ package com.foryouandme.ui.compose.video
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import com.foryouandme.core.ext.catchToNull
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -76,6 +78,14 @@ fun VideoPlayer(
                 VideoPlayerEvent.Play -> exoPlayer.play()
             }
         }.collect()
+    }
+
+    DisposableEffect(key1 = "video_player") {
+
+        onDispose {
+            catchToNull { exoPlayer.release() }
+        }
+
     }
 
 }
