@@ -18,8 +18,10 @@ import com.foryouandme.databinding.ConsentUserEmailBinding
 import com.foryouandme.databinding.ConsentUserSignatureBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserAction
 import com.github.gcacace.signaturepad.views.SignaturePad
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentUserSignatureFragment : ConsentUserSectionFragment(
     R.layout.consent_user_signature
 ) {

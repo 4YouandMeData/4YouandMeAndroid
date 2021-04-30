@@ -33,21 +33,6 @@ abstract class ConsentReviewSectionFragment(contentLayoutId: Int) : BaseFragment
 
             }
         )
-
-        viewModel.stateUpdate
-            .unwrapEvent(name)
-            .onEach {
-                when(it) {
-                    ConsentReviewStateUpdate.ConsentReview -> onConsentReviewUpdate()
-
-                }
-            }
-            .observeIn(this)
-
-    }
-
-    open fun onConsentReviewUpdate() {
-
     }
 
     /* --- navigation --- *.

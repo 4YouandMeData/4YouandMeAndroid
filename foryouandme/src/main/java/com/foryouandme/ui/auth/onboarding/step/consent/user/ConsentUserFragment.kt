@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.ConsentUserBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentUserFragment : ConsentSectionFragment(R.layout.consent_user) {
 
     val viewModel: ConsentUserViewModel by viewModels()
@@ -54,6 +58,11 @@ class ConsentUserFragment : ConsentSectionFragment(R.layout.consent_user) {
                 }
             }
             .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach { navigator.navigateTo(consentUserNavController(), it) }
+            .observeIn(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,5 +88,8 @@ class ConsentUserFragment : ConsentSectionFragment(R.layout.consent_user) {
         }
 
     }
+
+    private fun consentUserNavController(): ConsentUserNavController =
+        ConsentUserNavController(childFragmentManager.fragments[0].findNavController())
 
 }

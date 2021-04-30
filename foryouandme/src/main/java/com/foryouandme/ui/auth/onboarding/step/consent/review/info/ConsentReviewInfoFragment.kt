@@ -5,17 +5,17 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.databinding.ConsentReviewInfoBinding
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewInfoToConsentReviewDisagree
-import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewStateEvent
-import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewToOptIns
+import com.foryouandme.ui.auth.onboarding.step.consent.review.*
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class ConsentReviewInfoFragment : ConsentReviewSectionFragment(R.layout.consent_review_info) {
@@ -30,6 +30,20 @@ class ConsentReviewInfoFragment : ConsentReviewSectionFragment(R.layout.consent_
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when(it) {
+                    ConsentReviewStateUpdate.ConsentReview -> applyItems()
+                }
+            }
+            .observeIn(this)
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,11 +56,6 @@ class ConsentReviewInfoFragment : ConsentReviewSectionFragment(R.layout.consent_
     override fun onConfigurationChange() {
         super.onConfigurationChange()
         applyConfiguration()
-    }
-
-    override fun onConsentReviewUpdate() {
-        super.onConsentReviewUpdate()
-        applyItems()
     }
 
     private fun setupView() {

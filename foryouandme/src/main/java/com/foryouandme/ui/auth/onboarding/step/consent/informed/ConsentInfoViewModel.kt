@@ -170,7 +170,7 @@ class ConsentInfoViewModel @Inject constructor(
 
     /* --- question --- */
 
-    suspend fun nextQuestion(currentIndex: Int) {
+    private suspend fun nextQuestion(currentIndex: Int) {
 
         if (currentIndex < (state.questions.keys.size - 1))
             navigationFlow.navigateTo(
@@ -182,7 +182,7 @@ class ConsentInfoViewModel @Inject constructor(
 
     /* --- abort --- */
 
-    suspend fun abort(abort: ConsentInfoAbort) {
+    private suspend fun abort(abort: ConsentInfoAbort) {
 
         when (abort) {
             is ConsentInfoAbort.FromPage -> logAbortFromPageEvent(abort.pageId)

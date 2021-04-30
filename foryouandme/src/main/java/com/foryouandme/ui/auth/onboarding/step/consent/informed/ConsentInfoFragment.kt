@@ -11,12 +11,10 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToWelcome
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.ConsentInfoBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.consent_info.*
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
@@ -45,7 +43,7 @@ class ConsentInfoFragment : ConsentSectionFragment(R.layout.consent_info) {
             .onEach {
                 when (it.task) {
                     ConsentInfoLoading.ConsentInfo ->
-                        loading.setVisibility(it.active, false)
+                        binding?.loading?.setVisibility(it.active, false)
                 }
             }
             .observeIn(this)
@@ -62,7 +60,9 @@ class ConsentInfoFragment : ConsentSectionFragment(R.layout.consent_info) {
 
         viewModel.navigation
             .unwrapEvent(name)
-            .onEach { navigator.navigateTo(consentInfoNavController(), it) }
+            .onEach {
+                navigator.navigateTo(consentInfoNavController(), it)
+            }
             .observeIn(this)
 
     }

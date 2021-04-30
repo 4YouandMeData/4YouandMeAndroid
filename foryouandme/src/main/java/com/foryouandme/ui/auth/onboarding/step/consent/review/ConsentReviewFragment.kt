@@ -10,9 +10,10 @@ import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.ConsentReviewBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentSectionFragment
-import kotlinx.android.synthetic.main.screening.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class ConsentReviewFragment : ConsentSectionFragment(
     R.layout.consent_review
 ) {
@@ -49,7 +50,7 @@ class ConsentReviewFragment : ConsentSectionFragment(
             .onEach {
                 when (it.cause) {
                     ConsentReviewError.ConsentReview ->
-                        error.setError(it.error, configuration) { getConsentReview() }
+                        binding?.error?.setError(it.error, configuration) { getConsentReview() }
                 }
             }
             .observeIn(this)

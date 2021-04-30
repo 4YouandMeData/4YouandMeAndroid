@@ -96,7 +96,7 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
             viewBinding.action1.setOnClickListener {
                 viewModel.execute(
                     ConsentUserAction.ConfirmEmail(
-                        binding?.code?.text.toString().trim()
+                        binding?.codeEntry?.text.toString().trim()
                     )
                 )
             }

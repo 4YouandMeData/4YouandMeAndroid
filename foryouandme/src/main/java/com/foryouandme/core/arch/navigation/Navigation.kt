@@ -7,6 +7,7 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.livedata.Event
 import com.foryouandme.core.arch.livedata.toEvent
 import com.foryouandme.core.arch.navigation.action.ActivityAction
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.evalOnMain
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,7 +30,7 @@ class Navigator @Inject constructor(
             val navigation =
                 navigationProvider.getNavigation(navigationAction)
 
-            navigation(controller.navController)
+            catchToNull { navigation(controller.navController) }
 
         }
 
@@ -39,8 +40,7 @@ class Navigator @Inject constructor(
     ) {
 
         val navigation = navigationProvider.getNavigation(navigationAction)
-        navigation(controller.navController)
-
+        catchToNull { navigation(controller.navController) }
     }
 
     suspend fun backSuspend(navController: FYAMNavController): Boolean =
