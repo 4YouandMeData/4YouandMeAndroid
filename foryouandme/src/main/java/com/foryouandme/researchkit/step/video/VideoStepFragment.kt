@@ -25,7 +25,8 @@ class VideoStepFragment : StepFragment() {
                 VideoStepPage(
                     onCloseClicked = { showCancelDialog() },
                     onVideoSubmitted = { next() },
-                    close = { close() }
+                    close = { close() },
+                    taskId = taskViewModel.state.task?.id.orEmpty()
                 )
             }
         }
