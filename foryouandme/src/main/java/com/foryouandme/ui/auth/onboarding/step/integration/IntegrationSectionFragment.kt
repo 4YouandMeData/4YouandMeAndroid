@@ -35,23 +35,7 @@ abstract class IntegrationSectionFragment(
             }
         )
 
-        viewModel.stateUpdate
-            .unwrapEvent(name)
-            .onEach {
-                when (it) {
-                    IntegrationStateUpdate.Integration -> onIntegrationUpdate()
-                    else -> Unit
-                }
-            }
-            .observeIn(this)
-
     }
-
-    open fun onIntegrationUpdate() {
-
-    }
-
-    val integration = viewModel.state.integration
 
     /* --- navigation --- */
 
@@ -98,9 +82,9 @@ abstract class IntegrationSectionFragment(
 
         when (specialLinkAction) {
             is SpecialLinkAction.OpenApp ->
-                navigator.performAction(openApp(specialLinkAction.app.packageName))
+                openApp(specialLinkAction.app.packageName).invoke(requireContext())
             is SpecialLinkAction.Download ->
-                navigator.performAction(playStoreAction(specialLinkAction.app.packageName))
+                playStoreAction(specialLinkAction.app.packageName).invoke(requireContext())
         }
 
     }

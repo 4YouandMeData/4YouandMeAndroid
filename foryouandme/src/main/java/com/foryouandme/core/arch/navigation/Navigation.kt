@@ -62,7 +62,6 @@ class Navigator @Inject constructor(
         activityActionLiveData.value = action.toEvent()
     }
 
-
     fun activityAction(): LiveData<Event<ActivityAction>> = activityActionLiveData
 }
 

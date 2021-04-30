@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.web.setupWebViewWithCookies
 import com.foryouandme.databinding.IntegrationLoginBinding
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationStateEvent
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationStateUpdate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration_login) {
@@ -19,6 +23,21 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
 
     private val binding: IntegrationLoginBinding?
         get() = view?.let { IntegrationLoginBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    IntegrationStateUpdate.Integration -> setupWebView()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,11 +58,6 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
     override fun onConfigurationChange() {
         super.onConfigurationChange()
         applyConfiguration()
-    }
-
-    override fun onIntegrationUpdate() {
-        super.onIntegrationUpdate()
-        setupWebView()
     }
 
     private fun setupToolbar() {

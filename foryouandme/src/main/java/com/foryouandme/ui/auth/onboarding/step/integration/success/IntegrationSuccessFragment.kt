@@ -3,18 +3,37 @@ package com.foryouandme.ui.auth.onboarding.step.integration.success
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.ext.showBackSecondaryButton
 import com.foryouandme.databinding.IntegrationPageBinding
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationStateUpdate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class IntegrationSuccessFragment : IntegrationSectionFragment(R.layout.integration_page) {
 
     private val binding: IntegrationPageBinding?
         get() = view?.let { IntegrationPageBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    IntegrationStateUpdate.Integration -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,11 +45,6 @@ class IntegrationSuccessFragment : IntegrationSectionFragment(R.layout.integrati
 
     override fun onConfigurationChange() {
         super.onConfigurationChange()
-        applyData()
-    }
-
-    override fun onIntegrationUpdate() {
-        super.onIntegrationUpdate()
         applyData()
     }
 
@@ -47,7 +61,7 @@ class IntegrationSuccessFragment : IntegrationSectionFragment(R.layout.integrati
 
         val viewBinding = binding
         val configuration = configuration
-        val integration = integration
+        val integration = viewModel.state.integration
 
         if (viewBinding != null && configuration != null && integration != null) {
 
