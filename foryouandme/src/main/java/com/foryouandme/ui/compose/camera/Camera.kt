@@ -50,6 +50,8 @@ fun Camera(
         AndroidView(
             factory = { ctx ->
                 val previewView = PreviewView(ctx)
+                previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
+                previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 startCamera(
                     context,
                     lifecycleOwner,
