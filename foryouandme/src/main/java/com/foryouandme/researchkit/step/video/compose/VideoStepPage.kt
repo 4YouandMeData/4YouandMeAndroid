@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun VideoStepPage(
     videoStepViewModel: VideoStepViewModel = viewModel(),
+    taskId: String,
     onCloseClicked: () -> Unit,
     onVideoSubmitted: () -> Unit,
     close: () -> Unit
@@ -89,7 +90,8 @@ fun VideoStepPage(
             onMediaButtonClicked = { videoStepViewModel.execute(PlayPause) },
             onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) },
             onCloseClicked = { onCloseClicked() },
-            onReviewClicked = { videoStepViewModel.execute(Merge) }
+            onReviewClicked = { videoStepViewModel.execute(Merge) },
+            onSubmitClicked = { videoStepViewModel.execute(Submit(taskId)) }
         )
     }
 
@@ -106,7 +108,8 @@ private fun VideoStepPage(
     onMediaButtonClicked: () -> Unit = {},
     onRecordError: () -> Unit = {},
     onCloseClicked: () -> Unit = {},
-    onReviewClicked: () -> Unit = {}
+    onReviewClicked: () -> Unit = {},
+    onSubmitClicked: () -> Unit = {}
 ) {
 
     if (state.step != null) {
@@ -177,7 +180,8 @@ private fun VideoStepPage(
                     buttonColor = state.step.buttonColor.toColor(),
                     buttonTextColor = state.step.buttonTextColor.toColor(),
                     onCloseClicked = onCloseClicked,
-                    onReviewClicked = onReviewClicked
+                    onReviewClicked = onReviewClicked,
+                    onSubmitClicked = onSubmitClicked
                 )
             }
             Loading(
