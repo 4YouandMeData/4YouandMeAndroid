@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.core.arch.flow.observeIn
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar
@@ -11,13 +13,28 @@ import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.databinding.ScreeningPageBinding
 import com.foryouandme.databinding.ScreeningWelcomeBinding
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_welcome) {
 
     private val binding: ScreeningWelcomeBinding?
         get() = view?.let { ScreeningWelcomeBinding.bind(it) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.stateUpdate
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    is ScreeningStateUpdate.Screening -> applyData()
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,11 +49,6 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
         applyData()
     }
 
-    override fun onScreeningUpdate() {
-        super.onScreeningUpdate()
-        applyData()
-    }
-
     private fun setupView() {
 
         screeningFragment().binding?.toolbar?.hide()
@@ -47,7 +59,7 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
 
         val viewBinding = binding
         val config = configuration
-        val screening = screening
+        val screening = viewModel.state.screening
 
         if (viewBinding != null && config != null && screening != null) {
 

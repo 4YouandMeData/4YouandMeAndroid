@@ -2,15 +2,10 @@ package com.foryouandme.ui.auth.onboarding.step.consent
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.navigator
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -11,9 +11,7 @@ import com.foryouandme.core.ext.*
 import com.foryouandme.databinding.ScreeningQuestionsBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateEvent
-import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
+import com.foryouandme.ui.auth.onboarding.step.screening.*
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.screening.*
@@ -43,8 +41,20 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
             .unwrapEvent(name)
             .onEach {
                 when (it) {
+                    is ScreeningStateUpdate.Screening -> applyQuestions()
                     is ScreeningStateUpdate.Questions -> applyQuestions()
-                    ScreeningStateUpdate.Screening -> Unit
+                    else -> Unit
+                }
+            }
+            .observeIn(this)
+
+        viewModel.navigation
+            .unwrapEvent(name)
+            .onEach {
+                when (it) {
+                    ScreeningQuestionsToScreeningSuccess,
+                    ScreeningQuestionsToScreeningFailure ->
+                        navigator.navigateTo(screeningNavController(), it)
                 }
             }
             .observeIn(this)
@@ -64,11 +74,6 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
     override fun onConfigurationChange() {
         super.onConfigurationChange()
         applyConfiguration()
-    }
-
-    override fun onScreeningUpdate() {
-        super.onScreeningUpdate()
-        applyQuestions()
     }
 
     private fun applyConfiguration() {

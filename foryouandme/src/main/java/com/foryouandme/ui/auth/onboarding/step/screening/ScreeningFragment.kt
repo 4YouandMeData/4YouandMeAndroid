@@ -58,17 +58,6 @@ class ScreeningFragment : OnboardingStepFragment(R.layout.screening) {
             }
             .observeIn(this)
 
-        viewModel.navigation
-            .unwrapEvent(name)
-            .onEach {
-                when (it) {
-                    ScreeningFailureToScreeningWelcome,
-                    ScreeningQuestionsToScreeningSuccess,
-                    ScreeningQuestionsToScreeningFailure ->
-                        navigator.navigateTo(screeningNavController(), it)
-                }
-            }
-            .observeIn(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,7 +80,6 @@ class ScreeningFragment : OnboardingStepFragment(R.layout.screening) {
 
         if (viewModel.state.screening == null && config != null)
             viewModel.execute(ScreeningStateEvent.GetScreening(config))
-
 
     }
 

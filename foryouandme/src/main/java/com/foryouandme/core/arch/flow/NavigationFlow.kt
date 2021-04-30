@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class NavigationFlow @Inject constructor() {
 
-    private val navigationFlow: MutableSharedFlow<UIEvent<NavigationAction>> = MutableSharedFlow()
+    private val navigationFlow: MutableSharedFlow<UIEvent<NavigationAction>> = MutableSharedFlow(replay = 1)
     val navigation: SharedFlow<UIEvent<NavigationAction>>
         get() = navigationFlow
 

@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.databinding.OnboardingBinding
 import com.foryouandme.ui.auth.AuthSectionFragment
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragmentOld
+import com.foryouandme.ui.auth.onboarding.step.OnboardingStepFragment
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
@@ -103,7 +103,7 @@ class OnboardingFragment : AuthSectionFragment(R.layout.onboarding) {
             .childFragmentManager.fragments[0]
             .childFragmentManager.fragments[0]
 
-        return (stepFragment as OnboardingStepFragmentOld<*>).onboardingStepNavController()
+        return (stepFragment as OnboardingStepFragment).onboardingStepNavController()
 
     }
 

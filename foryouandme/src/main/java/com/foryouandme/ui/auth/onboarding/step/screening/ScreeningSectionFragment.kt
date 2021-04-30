@@ -32,23 +32,7 @@ abstract class ScreeningSectionFragment(
             }
         )
 
-        viewModel.stateUpdate
-            .unwrapEvent(name)
-            .onEach {
-                when (it) {
-                    ScreeningStateUpdate.Screening -> onScreeningUpdate()
-                    ScreeningStateUpdate.Questions -> Unit
-                }
-            }
-            .observeIn(this)
-
     }
-
-    open fun onScreeningUpdate() {
-
-    }
-
-    val screening = viewModel.state.screening
 
     /* --- navigation --- */
 
