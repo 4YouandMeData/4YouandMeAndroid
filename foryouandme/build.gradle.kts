@@ -17,13 +17,11 @@ androidExtensions { isExperimental = true }
 
 android {
 
-    compileSdkVersion(ProjectConfig.compile_sdk)
+    compileSdk = ProjectConfig.compile_sdk
 
     defaultConfig {
-        minSdkVersion(ProjectConfig.min_sdk)
-        targetSdkVersion(ProjectConfig.target_sdk)
-        versionCode = ProjectConfig.version_code
-        versionName = ProjectConfig.version_name
+        minSdk = ProjectConfig.min_sdk
+        targetSdk = ProjectConfig.target_sdk
         testInstrumentationRunner = ProjectConfig.test_instrumentation_runner
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -255,7 +253,7 @@ tasks {
 
     register("androidSourcesJar", Jar::class) {
         archiveClassifier.set("sources")
-        from(project.android.sourceSets.getByName("main").java.srcDirs)
+        from(project.android.sourceSets.getByName("main").java.srcDirs())
     }
 
 }
