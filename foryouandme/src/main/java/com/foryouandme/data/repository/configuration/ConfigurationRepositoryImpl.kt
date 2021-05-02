@@ -3,27 +3,30 @@ package com.foryouandme.data.repository.configuration
 import android.content.SharedPreferences
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.data.datasource.Environment
-import com.foryouandme.data.datasource.cache.Memory
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.domain.usecase.configuration.ConfigurationRepository
 import com.foryouandme.entity.configuration.Configuration
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ConfigurationRepositoryImpl @Inject constructor(
     private val api: ConfigurationApi,
     private val environment: Environment,
     private val prefs: SharedPreferences,
     private val moshi: Moshi,
-    private val memory: Memory
 ) : ConfigurationRepository {
+
+    // local cache
+    var config: Configuration? = null
 
     override suspend fun fetchConfiguration(): Configuration =
         api.getConfiguration(environment.studyId()).toConfiguration()!!
 
     override suspend fun loadConfiguration(): Configuration? =
 
-        if (memory.configuration != null) memory.configuration
+        if (config != null) config
         else {
 
             val configurationJson =
@@ -34,7 +37,7 @@ class ConfigurationRepositoryImpl @Inject constructor(
                     catchToNull { moshi.adapter(Configuration::class.java).fromJson(it) }
                 }
 
-            memory.configuration = configuration
+            config = configuration
 
             configuration
 

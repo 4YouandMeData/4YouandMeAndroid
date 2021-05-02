@@ -1,152 +1,138 @@
 package com.foryouandme.ui.aboutyou.menu
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
-import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.ext.*
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.user.User
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
-import kotlinx.android.synthetic.main.about_you_menu.*
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.menu.compose.AboutYouMenuPage
+import dagger.hilt.android.AndroidEntryPoint
 
-class AboutYouMenuFragment :
-    AboutYouSectionFragmentOld<AboutYouMenuViewModel>(R.layout.about_you_menu) {
-    override val viewModel: AboutYouMenuViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                AboutYouMenuViewModel(
-                    navigator,
-                    injector.analyticsModule()
-                )
+@AndroidEntryPoint
+class AboutYouMenuFragment : AboutYouSectionFragment() {
+
+    private val viewModel: AboutYouMenuViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                AboutYouMenuPage(viewModel) { back() }
             }
-        )
-    }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userAndConfiguration { config, user ->
-            setupView()
-            applyConfiguration(config, user)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        startCoroutineAsync { viewModel.logScreenViewed() }
+        //setupView()
+        //applyConfiguration()
 
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            toolbar
-                .apply {
+        /*binding?.toolbar?.apply {
 
-                    show()
+            show()
 
-                    showCloseSecondaryButton(imageConfiguration)
-                    {
-                        startCoroutineAsync {
-                            evalOnMain {
-                                aboutYouViewModel.back(aboutYouNavController(), rootNavController())
-                            }
-                        }
-                    }
-                }
+            showCloseSecondaryButton(imageConfiguration)
+            {
+                if (navigator.back(aboutYouNavController()).not())
+                    navigator.back(rootNavController())
 
+            }
+        }*/
+
+    }
+
+    private fun applyConfiguration() {
+
+        /*setStatusBar(configuration.theme.primaryColorStart.color())
+
+        root.setBackgroundColor(configuration.theme.secondaryColor.color())
+
+        toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
+
+        imageView.setImageResource(imageConfiguration.logoStudySecondary())
+
+        frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
+
+        textView.text = configuration.text.profile.title
+        textView.setTextColor(configuration.theme.secondaryColor.color())
+
+        firstItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.pregnancy(),
+            configuration.text.profile.firstItem
+        )
+
+        firstItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouUserInfoPage(aboutYouNavController())
+            }
         }
 
-    private suspend fun applyConfiguration(configuration: Configuration, user: User): Unit =
-        evalOnMain {
+        firstItem.isVisible = user.customData.isNotEmpty()
 
-            setStatusBar(configuration.theme.primaryColorStart.color())
+        secondItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.devices(),
+            configuration.text.profile.secondItem
+        )
 
-            root.setBackgroundColor(configuration.theme.secondaryColor.color())
-
-            toolbar.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-            imageView.setImageResource(imageConfiguration.logoStudySecondary())
-
-            frameLayout.setBackgroundColor(configuration.theme.primaryColorStart.color())
-
-            textView.text = configuration.text.profile.title
-            textView.setTextColor(configuration.theme.secondaryColor.color())
-
-            firstItem.applyData(
-                configuration,
-                requireContext().imageConfiguration.pregnancy(),
-                configuration.text.profile.firstItem
-            )
-
-            firstItem.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.toAboutYouUserInfoPage(aboutYouNavController())
-                }
+        secondItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouAppsAndDevicesPage(aboutYouNavController())
             }
-
-            firstItem.isVisible = user.customData.isNotEmpty()
-
-            secondItem.applyData(
-                configuration,
-                requireContext().imageConfiguration.devices(),
-                configuration.text.profile.secondItem
-            )
-
-            secondItem.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.toAboutYouAppsAndDevicesPage(aboutYouNavController())
-                }
-            }
-
-            thirdItem.applyData(
-                configuration,
-                requireContext().imageConfiguration.reviewConsent(),
-                configuration.text.profile.thirdItem
-            )
-
-            thirdItem.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.toAboutYouReviewConsentPage(aboutYouNavController())
-                }
-            }
-
-            thirdItem.isVisible =
-                configuration.text.onboarding.sections.contains(ConsentStep.identifier)
-
-            fourthItem.applyData(
-                configuration,
-                requireContext().imageConfiguration.permissions(),
-                configuration.text.profile.fourthItem
-            )
-
-            fourthItem.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.toAboutYouPermissionsPage(aboutYouNavController())
-                }
-            }
-
-            fifthItem.applyData(
-                configuration,
-                requireContext().imageConfiguration.dailySurveyTime(),
-                configuration.text.profile.fifthItem
-            )
-
-            fifthItem.setOnClickListener {
-                startCoroutineAsync {
-                    viewModel.toAboutYouDailySurveyTimePage(aboutYouNavController())
-                }
-            }
-
-            fifthItem.isVisible = configuration.text.profile.dailySurveyTimingHidden == 0
-
-            disclaimer.text = configuration.text.profile.disclaimer
         }
+
+        thirdItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.reviewConsent(),
+            configuration.text.profile.thirdItem
+        )
+
+        thirdItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouReviewConsentPage(aboutYouNavController())
+            }
+        }
+
+        thirdItem.isVisible =
+            configuration.text.onboarding.sections.contains(ConsentStep.identifier)
+
+        fourthItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.permissions(),
+            configuration.text.profile.fourthItem
+        )
+
+        fourthItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouPermissionsPage(aboutYouNavController())
+            }
+        }
+
+        fifthItem.applyData(
+            configuration,
+            requireContext().imageConfiguration.dailySurveyTime(),
+            configuration.text.profile.fifthItem
+        )
+
+        fifthItem.setOnClickListener {
+            startCoroutineAsync {
+                viewModel.toAboutYouDailySurveyTimePage(aboutYouNavController())
+            }
+        }
+
+        fifthItem.isVisible = configuration.text.profile.dailySurveyTimingHidden == 0
+
+        disclaimer.text = configuration.text.profile.disclaimer*/
+    }
 
 }

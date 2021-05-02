@@ -12,6 +12,8 @@ interface UserRepository {
 
     suspend fun getUser(token: String): User?
 
+    suspend fun loadUser(): User?
+
     suspend fun saveUser(user: User)
 
     suspend fun clearUser()

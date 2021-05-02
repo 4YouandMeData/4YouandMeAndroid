@@ -12,6 +12,9 @@ data class HEXColor(val hex: String) {
     @ColorInt
     fun color(): Int = Color.parseColor(hex)
 
+    val value: androidx.compose.ui.graphics.Color
+    get() = androidx.compose.ui.graphics.Color(color())
+
     companion object {
 
         fun transparent(): HEXColor = HEXColor("#00FFFFFF")

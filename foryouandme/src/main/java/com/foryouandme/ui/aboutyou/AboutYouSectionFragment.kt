@@ -5,7 +5,10 @@ import androidx.navigation.fragment.findNavController
 import com.foryouandme.core.arch.android.*
 import com.foryouandme.core.ext.find
 
-abstract class AboutYouSectionFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
+abstract class AboutYouSectionFragment : BaseFragment {
+
+    constructor() : super()
+    constructor(contentLayoutId: Int) : super(contentLayoutId)
 
     val aboutYouViewModel: AboutYouViewModel by viewModels(ownerProducer = { aboutYouFragment() })
 

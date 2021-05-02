@@ -1,6 +1,7 @@
 package com.foryouandme.domain.usecase.user
 
 import com.foryouandme.data.datasource.Environment
+import com.foryouandme.domain.policy.Policy
 import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
@@ -14,21 +15,22 @@ class GetUserUseCase @Inject constructor(
     private val updateUserCustomDataUseCase: UpdateUserCustomDataUseCase
 ) {
 
-    suspend operator fun invoke(): User {
+    suspend operator fun invoke(policy: Policy = Policy.Network): User =
+        when(policy) {
+            Policy.LocalFirst -> repository.loadUser() ?: invoke(Policy.Network)
+            Policy.Network -> {
+                val token = getTokenUseCase()
+                val user = repository.getUser(token)!!
 
-        val token = getTokenUseCase()
-        val user = repository.getUser(token)!!
+                // if user has empty custom data update it with default configuration
+                if (environment.useCustomData() && user.customData.isEmpty()) {
 
-        // if user has empty custom data update it with default configuration
-        return if (environment.useCustomData() && user.customData.isEmpty()) {
+                    updateUserCustomDataUseCase(defaultUserCustomData())
+                    repository.getUser(token)!!
 
-            updateUserCustomDataUseCase(defaultUserCustomData())
-            repository.getUser(token)!!
-
-        } else user
-
-    }
-
+                } else user
+            }
+        }
 
     // TODO: remove this and handle default configuration from server
     private fun defaultUserCustomData(): List<UserCustomData> =

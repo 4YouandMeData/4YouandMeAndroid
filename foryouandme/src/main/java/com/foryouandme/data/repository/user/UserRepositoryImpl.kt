@@ -13,12 +13,17 @@ import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserRepositoryImpl @Inject constructor(
     private val api: UserApi,
     private val authErrorInterceptor: AuthErrorInterceptor,
     private val prefs: SharedPreferences
 ) : UserRepository {
+
+    // session cache
+    private var user: User? = null
 
     override suspend fun getToken(): String =
         authErrorInterceptor.execute {
@@ -29,7 +34,12 @@ class UserRepositoryImpl @Inject constructor(
         prefs.getString(USER_TOKEN, null)
 
     override suspend fun getUser(token: String): User? =
-        authErrorInterceptor.execute { api.getUser(token) }.toUser(token)
+        authErrorInterceptor
+            .execute { api.getUser(token) }
+            .toUser(token)
+            .also { user = it }
+
+    override suspend fun loadUser(): User? = user
 
     override suspend fun saveUser(user: User) {
         prefs.edit().putString(USER_TOKEN, user.token).apply()

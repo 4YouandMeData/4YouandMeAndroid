@@ -21,6 +21,14 @@ sealed class LazyData<out T> {
             Loading -> Loading
         }
 
+    fun orNull(): T? =
+        when (this) {
+            is Data -> data
+            else -> null
+        }
+
+    fun isLoading(): Boolean = this is Loading
+
     companion object {
 
         fun unit(): LazyData.Data<Unit> = Unit.toData()

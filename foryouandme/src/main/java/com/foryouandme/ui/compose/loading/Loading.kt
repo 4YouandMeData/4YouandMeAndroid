@@ -14,13 +14,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.entity.configuration.Configuration
 import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun Loading(
+    configuration: Configuration?,
+    modifier: Modifier = Modifier,
+    isVisible: Boolean = true
+) {
+    Loading(
+        backgroundColor = configuration?.theme?.secondaryColor?.value ?: Color.White,
+        isVisible = isVisible,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun Loading(
     backgroundColor: Color,
-    isVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isVisible: Boolean = true
 ) {
     Loading(
         backgroundColor = backgroundColor.copy(alpha = 0.49f),
@@ -34,8 +48,8 @@ fun Loading(
 fun Loading(
     backgroundColor: Color,
     loadingImage: Int,
-    isVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isVisible: Boolean = true
 ) {
 
     val infiniteTransition = rememberInfiniteTransition()
