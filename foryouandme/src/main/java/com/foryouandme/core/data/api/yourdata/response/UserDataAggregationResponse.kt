@@ -17,7 +17,7 @@ data class UserDataAggregationResponse(
                     type = it.type!!,
                     title = it.attributes?.title!!,
                     color = it.attributes.color,
-                    data = it.attributes.data?.data!!,
+                    data = it.attributes.data?.data?.map { if(it != null) it -1 else it }!!,
                     xLabels = it.attributes.data.xLabels!!,
                     yLabels = it.attributes.data.yLabels!!
                 )
