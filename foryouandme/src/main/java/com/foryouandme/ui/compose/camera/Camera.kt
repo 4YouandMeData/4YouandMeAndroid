@@ -3,6 +3,7 @@ package com.foryouandme.ui.compose.camera
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Rational
+import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
@@ -32,12 +33,13 @@ fun Camera(
     cameraFlash: CameraFlash,
     cameraEvents: Flow<CameraEvent>,
     modifier: Modifier = Modifier,
-    onRecordError: () -> Unit = {}
+    onRecordError: () -> Unit = {},
+    videoSettings: VideoSettings = VideoSettings()
 ) {
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val videoCapture = remember { VideoCapture.Builder().build() }
+    val videoCapture = remember { builtVideoCapture(videoSettings) }
     var camera: Camera? by remember { mutableStateOf(null) }
     var currentLens by remember { mutableStateOf(cameraLens) }
     var currentFlash by remember { mutableStateOf(cameraFlash) }
@@ -175,4 +177,25 @@ fun startCamera(
         },
         executor
     )
+}
+
+@SuppressLint("RestrictedApi")
+private fun builtVideoCapture(settings: VideoSettings): VideoCapture {
+
+    val builder = VideoCapture.Builder()
+
+    if (settings.frameRate != null) builder.setVideoFrameRate(settings.frameRate)
+    if (settings.targetResolution != null) {
+
+        val size = Size(settings.targetResolution.width, settings.targetResolution.height)
+        builder.setTargetResolution(size)
+        builder.setDefaultResolution(size)
+        builder.setMaxResolution(size)
+
+    }
+
+    if (settings.bitrate != null) builder.setBitRate(settings.bitrate)
+
+    return builder.build()
+
 }

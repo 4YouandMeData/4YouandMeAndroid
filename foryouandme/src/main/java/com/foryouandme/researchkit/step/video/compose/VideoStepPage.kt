@@ -19,6 +19,8 @@ import com.foryouandme.researchkit.step.video.VideoStepAction.*
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.camera.Camera
 import com.foryouandme.ui.compose.camera.CameraEvent
+import com.foryouandme.ui.compose.camera.Resolution
+import com.foryouandme.ui.compose.camera.VideoSettings
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.preview.ComposePreview
 import com.foryouandme.ui.compose.toColor
@@ -124,6 +126,12 @@ private fun VideoStepPage(
                     cameraFlash = state.cameraFlash,
                     cameraLens = state.cameraLens,
                     cameraEvents = cameraEvents,
+                    videoSettings =
+                    VideoSettings(
+                        frameRate = 30,
+                        bitrate = 2000000,
+                        targetResolution = Resolution(width = 500, height = 899)
+                    ),
                     onRecordError = onRecordError,
                     modifier = Modifier.fillMaxSize()
                 )

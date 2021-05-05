@@ -13,3 +13,11 @@ sealed class CameraFlash {
     object Off : CameraFlash()
 
 }
+
+data class VideoSettings(
+    val targetResolution: Resolution? = null,
+    val bitrate: Int? = null,
+    val frameRate: Int? = null
+)
+
+data class Resolution(val width: Int, val height: Int)
