@@ -23,7 +23,7 @@ import com.foryouandme.ui.aboutyou.menu.AboutYouMenuState
 import com.foryouandme.ui.aboutyou.menu.AboutYouMenuViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 import org.threeten.bp.ZoneId
 
 @Composable
@@ -166,7 +166,7 @@ fun AboutYouMenuPage(
 @Preview
 @Composable
 private fun AboutYouMenuPagePreview() {
-    ForYouAndMeTheme(configuration = ComposePreview.configuration) {
+    ForYouAndMeTheme(configuration = Configuration.mock().toData()) {
         AboutYouMenuPage(
             state =
             AboutYouMenuState(
@@ -184,10 +184,10 @@ private fun AboutYouMenuPagePreview() {
                     points = 0
                 ).toData(),
                 configuration =
-                ComposePreview.configuration
+                Configuration.mock().toData()
             ),
-            configuration = ComposePreview.configuration.value,
-            imageConfiguration = ComposePreview.imageConfiguration
+            configuration = Configuration.mock(),
+            imageConfiguration = ImageConfiguration.mock()
         )
     }
 }

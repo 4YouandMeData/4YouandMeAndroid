@@ -77,29 +77,3 @@ fun permissionSettingsAction(): ActivityAction = {
 
 }
 
-fun permissionSettingsDialogAction(
-    navigator: Navigator,
-    title: String,
-    description: String,
-    settings: String,
-    cancel: String,
-    isCancelable: Boolean,
-    onSettings: suspend () -> Unit,
-    onCancel: suspend () -> Unit
-): ActivityAction = {
-    AlertDialog.Builder(it)
-        .setTitle(title)
-        .setMessage(description)
-        .setPositiveButton(settings) { _, _ ->
-            startCoroutineAsync {
-                navigator.performActionSuspend(permissionSettingsAction())
-                onSettings()
-            }
-        }
-        .setNegativeButton(cancel) { _, _ ->
-            startCoroutineAsync { onCancel() }
-        }
-        .setCancelable(isCancelable)
-        .show()
-}
-

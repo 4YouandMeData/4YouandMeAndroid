@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.ui.compose.ForYouAndMeTheme
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 
 @Composable
 fun ForYouAndMeButton(
@@ -70,7 +70,7 @@ fun ForYouAndMeButton(
 private fun ForYouAndMeButtonPreview() {
     ForYouAndMeTheme {
         ForYouAndMeButton(
-            text = ComposePreview.button,
+            text = Mock.button,
             backgroundColor = Color.Red,
             disabledBackgroundColor = Color.Gray,
             textColor = Color.White,
@@ -84,7 +84,7 @@ private fun ForYouAndMeButtonPreview() {
 private fun ForYouAndMeButtonDisabledPreview() {
     ForYouAndMeTheme {
         ForYouAndMeButton(
-            text = ComposePreview.button,
+            text = Mock.button,
             backgroundColor = Color.Red,
             textColor = Color.White,
             isEnabled = false

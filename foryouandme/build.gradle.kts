@@ -219,8 +219,10 @@ dependencies {
     implementation(AndroidX.Activity.Compose.get())
     implementation(AndroidX.Lifecycle.ViewModelCompose.get())
 
-    /* --- coil --- */
+    /* --- accompanist --- */
     implementation(Google.Accompanist.Coil.get())
+    implementation(Google.Accompanist.Insets.get())
+    implementation(Google.Accompanist.SystemUIController.get())
 
     /* --- test --- */
 

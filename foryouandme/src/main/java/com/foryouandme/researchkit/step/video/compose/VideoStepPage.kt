@@ -22,7 +22,7 @@ import com.foryouandme.ui.compose.camera.CameraEvent
 import com.foryouandme.ui.compose.camera.Resolution
 import com.foryouandme.ui.compose.camera.VideoSettings
 import com.foryouandme.ui.compose.loading.Loading
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.toColor
 import com.foryouandme.ui.compose.video.VideoPlayer
 import com.foryouandme.ui.compose.video.VideoPlayerEvent
@@ -234,7 +234,7 @@ private fun VideoStepPagePreview() {
                 step =
                 VideoStep(
                     identifier = "",
-                    title = ComposePreview.title,
+                    title = Mock.title,
                     titleColor = Color.WHITE,
                     recordImage = 0,
                     pauseImage = 0,
@@ -242,29 +242,29 @@ private fun VideoStepPagePreview() {
                     flashOffImage = 0,
                     flashOnImage = 0,
                     cameraToggleImage = 0,
-                    startRecordingDescription = ComposePreview.body,
+                    startRecordingDescription = Mock.body,
                     startRecordingDescriptionColor = Color.WHITE,
                     timeImage = 0,
                     timeColor = Color.WHITE,
                     timeProgressBackgroundColor = Color.WHITE,
                     timeProgressColor = Color.WHITE,
-                    infoTitle = ComposePreview.title,
+                    infoTitle = Mock.title,
                     infoTitleColor = Color.WHITE,
-                    infoBody = ComposePreview.body,
+                    infoBody = Mock.body,
                     infoBodyColor = Color.WHITE,
                     reviewTimeColor = Color.WHITE,
-                    reviewButton = ComposePreview.button,
-                    submitButton = ComposePreview.button,
+                    reviewButton = Mock.button,
+                    submitButton = Mock.button,
                     buttonColor = Color.WHITE,
                     buttonTextColor = Color.WHITE,
                     infoBackgroundColor = Color.WHITE,
                     closeImage = 0,
-                    missingPermissionCamera = ComposePreview.title,
-                    missingPermissionCameraBody = ComposePreview.body,
-                    missingPermissionMic = ComposePreview.title,
-                    missingPermissionMicBody = ComposePreview.body,
-                    settings = ComposePreview.button,
-                    cancel = ComposePreview.button
+                    missingPermissionCamera = Mock.title,
+                    missingPermissionCameraBody = Mock.body,
+                    missingPermissionMic = Mock.title,
+                    missingPermissionMicBody = Mock.body,
+                    settings = Mock.button,
+                    cancel = Mock.button
 
                 )
             ),

@@ -16,6 +16,11 @@ import com.foryouandme.databinding.MainBinding
 import com.foryouandme.entity.configuration.Configuration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
+import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment(R.layout.main) {
@@ -81,6 +86,11 @@ class MainFragment : BaseFragment(R.layout.main) {
         val configuration = viewModel.state.configuration
 
         if (configuration == null) viewModel.execute(MainStateEvent.GetConfig)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            (v.layoutParams as MarginLayoutParams).bottomMargin = insets.systemWindowInsetBottom
+            insets.consumeSystemWindowInsets()
+        }
 
     }
 

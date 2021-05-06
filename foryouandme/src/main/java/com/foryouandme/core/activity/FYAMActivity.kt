@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
@@ -18,7 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class FYAMActivity : BaseActivity() {
+class
+FYAMActivity : BaseActivity() {
 
     private val viewModel: FYAMViewModel by viewModels()
 
@@ -27,6 +29,8 @@ class FYAMActivity : BaseActivity() {
 
         val binding = FyamBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         binding.logo.setImageResource(imageConfiguration.splashLogo())
 

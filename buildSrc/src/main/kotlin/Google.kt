@@ -70,6 +70,18 @@ object Google {
             Accompanist.version
         )
 
+        object SystemUIController: Dependency(
+            Accompanist.group,
+            "accompanist-systemuicontroller",
+            Accompanist.version
+        )
+
+        object Insets: Dependency(
+            Accompanist.group,
+            "accompanist-insets",
+            Accompanist.version
+        )
+
     }
 
     object Test {

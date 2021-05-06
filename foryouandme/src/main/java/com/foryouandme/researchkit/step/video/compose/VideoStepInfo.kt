@@ -20,7 +20,7 @@ import com.foryouandme.researchkit.step.video.RecordingState
 import com.foryouandme.researchkit.step.video.RecordingState.*
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 import com.google.accompanist.coil.CoilImage
 
 @Composable
@@ -193,7 +193,7 @@ private fun VideoStepRecordingInfoPreview() {
         VideoStepInfo(
             recordingState = RecordingPause,
             backgroundColor = Color.White,
-            title = ComposePreview.title,
+            title = Mock.title,
             titleColor = Color.Black,
             closeImage = 0,
             timeImage = 0,
@@ -202,12 +202,12 @@ private fun VideoStepRecordingInfoPreview() {
             timeColor = Color.Black,
             progressColor = Color.Red,
             progressBackgroundColor = Color.Yellow,
-            infoTitle = ComposePreview.time,
+            infoTitle = Mock.time,
             infoTitleColor = Color.Black,
-            infoBody = ComposePreview.body,
+            infoBody = Mock.body,
             infoBodyColor = Color.Black,
-            reviewButton = ComposePreview.button,
-            submitButton = ComposePreview.button,
+            reviewButton = Mock.button,
+            submitButton = Mock.button,
             buttonColor = Color.Red,
             buttonTextColor = Color.White
         )

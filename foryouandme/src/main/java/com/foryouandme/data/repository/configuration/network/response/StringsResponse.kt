@@ -170,6 +170,7 @@ data class StringsResponse(
     @Json(name = "PERMISSION_CANCEL") val permissionCancel: String? = null,
     @Json(name = "PERMISSION_MESSAGE") val permissionMessage: String? = null,
     @Json(name = "PERMISSION_SETTINGS") val permissionSettings: String? = null,
+    @Json(name = "PERMISSION_LOCATION") val permissionLocation: String? = null,
 
     @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
     @Json(name = "PROFILE_USER_INFO_BUTTON_SUBMIT") val profileUserInfoButtonSubmit: String? = null,
@@ -554,9 +555,11 @@ data class StringsResponse(
     private fun toProfile(): Profile? =
         when (null) {
             profileTitle, aboutYouYourPregnancy, aboutYouAppsAndDevices, aboutYouReviewConsent,
-            aboutYouPermissions, aboutYouDailSurveyTime, aboutYouDisclaimer, yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
+            aboutYouPermissions, aboutYouDailSurveyTime, aboutYouDisclaimer,
+            yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
             permissionsAllowed, permissionDenied, permissionCancel, permissionMessage,
-            permissionSettings, profileUserInfoButtonEdit, profileUserInfoButtonSubmit, dailySurveyTimeDescription, dailySurveyTimingHidden -> null
+            permissionSettings, permissionLocation, profileUserInfoButtonEdit,
+            profileUserInfoButtonSubmit, dailySurveyTimeDescription, dailySurveyTimingHidden -> null
             else ->
                 Profile(
                     profileTitle,
@@ -574,6 +577,7 @@ data class StringsResponse(
                     permissionCancel,
                     permissionMessage,
                     permissionSettings,
+                    permissionLocation,
                     profileUserInfoButtonEdit,
                     profileUserInfoButtonSubmit,
                     dailySurveyTimeDescription,

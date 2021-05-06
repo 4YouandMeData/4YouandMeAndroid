@@ -14,7 +14,7 @@ import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.permission_item.*
 
-data class PermissionsItem(
+data class PermissionsItemOld(
     val configuration: Configuration,
     val id: String,
     val permission: Permission,
@@ -24,20 +24,20 @@ data class PermissionsItem(
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
-        other.compare<PermissionsItem> {
+        other.compare<PermissionsItemOld> {
             it.id == id
         }
 
     override fun getPayload(other: DroidItem<Any>): List<Unit> = emptyList()
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
-        other.compare<PermissionsItem> {
+        other.compare<PermissionsItemOld> {
             it == this
         }
 }
 
-class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) -> Unit) :
-    DroidViewHolder<PermissionsItem, Unit>(parent, R.layout.permission_item), LayoutContainer {
+class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItemOld) -> Unit) :
+    DroidViewHolder<PermissionsItemOld, Unit>(parent, R.layout.permission_item), LayoutContainer {
 
     init {
         itemView.setOnClickListener {
@@ -45,7 +45,7 @@ class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) 
         }
     }
 
-    override fun bind(item: PermissionsItem, position: Int) {
+    override fun bind(item: PermissionsItemOld, position: Int) {
         root.setCardBackgroundColor(item.configuration.theme.primaryColorStart.color())
 
         icon.setImageResource(item.image)
@@ -67,12 +67,12 @@ class PermissionsViewHolder(parent: ViewGroup, onItemClicked: (PermissionsItem) 
     override val containerView: View? = itemView
 
     companion object {
-        fun factory(onItemClicked: (PermissionsItem) -> Unit): DroidViewHolderFactory =
+        fun factory(onItemClicked: (PermissionsItemOld) -> Unit): DroidViewHolderFactory =
             DroidViewHolderFactory({
                 PermissionsViewHolder(it, onItemClicked)
             },
                 { _, item ->
-                    item is PermissionsItem
+                    item is PermissionsItemOld
                 })
     }
 }

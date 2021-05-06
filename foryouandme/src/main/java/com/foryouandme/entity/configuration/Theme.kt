@@ -79,4 +79,28 @@ data class Theme(
     val activeColor: HEXColor,
     val deactiveColor: HEXColor,
     val fourthColor: HEXColor
-)
+) {
+
+    companion object {
+
+        fun  mock(): Theme =
+            Theme(
+                primaryColorStart = HEXColor("#eb4034"),
+                primaryColorEnd = HEXColor("#ed281a"),
+                secondaryColor = HEXColor("#FFFFFF"),
+                tertiaryColorStart = HEXColor("#FFFFFF"),
+                tertiaryColorEnd = HEXColor("#FFFFFF"),
+                primaryTextColor = HEXColor("#000000"),
+                secondaryTextColor = HEXColor("#FFFFFF"),
+                tertiaryTextColor = HEXColor("#FFFFFF"),
+                fourthTextColor = HEXColor("#696666"),
+                primaryMenuColor = HEXColor("#FFFFFF"),
+                secondaryMenuColor = HEXColor("#FFFFFF"),
+                activeColor = HEXColor("#FFFFFF"),
+                deactiveColor = HEXColor("#FFFFFF"),
+                fourthColor = HEXColor("#FFFFFF")
+            )
+
+    }
+
+}

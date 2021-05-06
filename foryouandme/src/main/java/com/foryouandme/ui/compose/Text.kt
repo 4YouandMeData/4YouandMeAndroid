@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.foryouandme.R
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 
 val Helvetica = FontFamily(
     Font(R.font.helvetica, FontWeight.Light),
@@ -77,23 +77,23 @@ private fun TypographyPreview() {
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = ComposePreview.body,
+                text = Mock.body,
                 style = MaterialTheme.typography.h1
             )
             Spacer(modifier = Modifier.height(30.dp))
             Text(
-                text = ComposePreview.body,
+                text = Mock.body,
                 style = MaterialTheme.typography.h2
             )
             Spacer(modifier = Modifier.height(30.dp))
             Text(
-                text = ComposePreview.body,
+                text = Mock.body,
                 style = MaterialTheme.typography.h3
             )
 
             Spacer(modifier = Modifier.height(30.dp))
             Text(
-                text = ComposePreview.body,
+                text = Mock.body,
                 style = MaterialTheme.typography.body1
             )
         }

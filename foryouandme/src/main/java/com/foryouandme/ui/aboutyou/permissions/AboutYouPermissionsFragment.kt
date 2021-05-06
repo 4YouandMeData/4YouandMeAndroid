@@ -1,46 +1,54 @@
 package com.foryouandme.ui.aboutyou.permissions
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
 import com.foryouandme.core.arch.android.getFactory
 import com.foryouandme.core.arch.android.viewModelFactory
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.core.ext.*
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.permissions.compose.AboutYouPermissionsPage
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.permissions.*
 
-class AboutYouPermissionsFragment :
-    AboutYouSectionFragmentOld<AboutYouPermissionsViewModel>(R.layout.permissions) {
-    override val viewModel: AboutYouPermissionsViewModel by lazy {
+@AndroidEntryPoint
+class AboutYouPermissionsFragment : AboutYouSectionFragment() {
 
-        viewModelFactory(
-            this,
-            getFactory {
-                AboutYouPermissionsViewModel(
-                    navigator,
-                    injector.permissionModule(),
-                    injector.analyticsModule()
-                )
-            }
-        )
-
-    }
+    private val viewModel: AboutYouPermissionsViewModel by viewModels()
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(PermissionsViewHolder.factory { item ->
 
-            if (item.isAllowed.not())
-                configuration { viewModel.requestPermission(item, it, imageConfiguration) }
+            /*if (item.isAllowed.not())
+                configuration { viewModel.requestPermission(item, it, imageConfiguration) }*/
 
         })
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                AboutYouPermissionsPage(
+                    aboutYouPermissionsViewModel = viewModel,
+                    onBack = { back() }
+                )
+            }
+        }
+
+    /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateLiveData()
@@ -58,9 +66,9 @@ class AboutYouPermissionsFragment :
                         loading.setVisibility(it.active, true)
                 }
             }
-    }
+    }*/
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         configuration {
@@ -73,14 +81,14 @@ class AboutYouPermissionsFragment :
                 applyPermissions(viewModel.state().permissions)
 
         }
-    }
+    }*/
 
-    override fun onResume() {
+    /*override fun onResume() {
         super.onResume()
 
         startCoroutineAsync { viewModel.logScreenViewed() }
 
-    }
+    }*/
 
     private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
@@ -124,7 +132,7 @@ class AboutYouPermissionsFragment :
 
         }
 
-    private suspend fun applyPermissions(permissions: List<PermissionsItem>): Unit =
+    private suspend fun applyPermissions(permissions: List<PermissionsItemOld>): Unit =
         evalOnMain {
 
             adapter.submitList(permissions)

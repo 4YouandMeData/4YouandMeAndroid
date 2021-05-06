@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.ui.compose.ForYouAndMeTheme
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 
 @Composable
 fun StepHeader(title: String, description: String, modifier: Modifier = Modifier) {
@@ -25,6 +25,6 @@ fun StepHeader(title: String, description: String, modifier: Modifier = Modifier
 @Composable
 private fun StepHeaderPreview() {
     ForYouAndMeTheme {
-        StepHeader(title = ComposePreview.title, description = ComposePreview.body)
+        StepHeader(title = Mock.title, description = Mock.body)
     }
 }

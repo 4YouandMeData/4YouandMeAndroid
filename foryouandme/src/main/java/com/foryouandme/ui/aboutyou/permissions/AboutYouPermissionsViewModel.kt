@@ -1,84 +1,143 @@
 package com.foryouandme.ui.aboutyou.permissions
 
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.android.Empty
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.PermissionModule
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.action.permissionSettingsDialogAction
+import com.foryouandme.core.arch.toData
+import com.foryouandme.core.arch.toError
+import com.foryouandme.core.ext.Action
+import com.foryouandme.core.ext.action
+import com.foryouandme.core.ext.launchAction
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.permission.Permission
-import com.foryouandme.core.cases.permission.PermissionResult
-import com.foryouandme.core.cases.permission.PermissionUseCase.isPermissionGranted
-import com.foryouandme.core.cases.permission.PermissionUseCase.requestPermission
-import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.permission.IsPermissionGrantedUseCase
+import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
+import com.foryouandme.entity.permission.Permission
+import com.foryouandme.entity.permission.PermissionResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import javax.inject.Inject
 
-class AboutYouPermissionsViewModel(
-    navigator: Navigator,
-    private val permissionModule: PermissionModule,
-    private val analyticsModule: AnalyticsModule
-) :
-    BaseViewModel<
-            AboutYouPermissionsState,
-            AboutYouPermissionsStateUpdate,
-            Empty,
-            AboutYouPermissionsLoading>(navigator) {
+@HiltViewModel
+class AboutYouPermissionsViewModel @Inject constructor(
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
+    private val requestPermissionUseCase: RequestPermissionUseCase,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    val imageConfiguration: ImageConfiguration
+) : ViewModel() {
 
-    suspend fun initialize(configuration: Configuration, imageConfiguration: ImageConfiguration) {
+    /* --- state --- */
 
-        showLoading(AboutYouPermissionsLoading.Initialization)
+    private val state = MutableStateFlow(AboutYouPermissionsState())
+    val stateFlow = state as StateFlow<AboutYouPermissionsState>
 
-        val permissions =
-            listOf(
-                PermissionsItem(
-                    configuration,
-                    "1",
-                    Permission.Location,
-                    "The BUMP app needs access to your phone's location",
-                    imageConfiguration.location(),
-                    permissionModule.isPermissionGranted(Permission.Location)
-                )
-            )
+    private val eventChannel = Channel<AboutYouPermissionsEvent>(Channel.BUFFERED)
+    val events = eventChannel.receiveAsFlow()
 
-        setState(AboutYouPermissionsState(permissions))
-        { AboutYouPermissionsStateUpdate.Initialization(it.permissions) }
+    init {
+        execute(AboutYouPermissionsAction.Initialize)
+        execute(AboutYouPermissionsAction.ScreenViewed)
+    }
 
-        hideLoading(AboutYouPermissionsLoading.Initialization)
+    /* --- initialize --- */
+
+    private fun initialize(): Action =
+        action(
+            {
+                coroutineScope {
+
+                    state.emit(state.value.copy(data = LazyData.Loading))
+
+                    val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
+                    val isLocationGranted =
+                        async { isPermissionGrantedUseCase(Permission.Location) }
+
+                    val permissions =
+                        listOf(
+                            PermissionsItem(
+                                configuration.await(),
+                                "1",
+                                Permission.Location,
+                                configuration.await().text.profile.permissionLocation,
+                                imageConfiguration.location(),
+                                isLocationGranted.await()
+                            )
+                        )
+
+                    state.emit(
+                        state.value.copy(
+                            data = AboutYouPermissionsData(
+                                permissions = permissions,
+                                configuration = configuration.await()
+                            ).toData()
+                        )
+                    )
+
+                }
+
+            },
+            { state.emit(state.value.copy(data = it.toError())) }
+        )
+
+
+    /* --- permissions ---- */
+
+    private suspend fun requestPermission(permission: Permission) {
+
+        val permissionRequest = requestPermissionUseCase(permission)
+
+        if (
+            permissionRequest is PermissionResult.Denied &&
+            permissionRequest.isPermanentlyDenied
+        )
+            eventChannel.send(AboutYouPermissionsEvent.PermissionPermanentlyDenied)
+        else {
+            val data =
+                state.value.data.map { data ->
+                    data.copy(permissions = data.permissions.map {
+                        if (it.permission == permission)
+                            it.copy(isAllowed = permissionRequest is PermissionResult.Granted)
+                        else
+                            it
+                    })
+                }
+
+            state.emit(state.value.copy(data = data))
+        }
 
     }
 
-    suspend fun requestPermission(
-        permissionsItem: PermissionsItem,
-        configuration: Configuration,
-        imageConfiguration: ImageConfiguration
-    ): Unit {
+    /* --- analytics --- */
 
-        val permissionRequest = permissionModule.requestPermission(permissionsItem.permission)
-
-        if(permissionRequest is PermissionResult.Denied && permissionRequest.isPermanentlyDenied)
-            navigator.performActionSuspend(
-                permissionSettingsDialogAction(
-                    navigator,
-                    configuration.text.profile.permissionDenied,
-                    configuration.text.profile.permissionMessage,
-                    configuration.text.profile.permissionSettings,
-                    configuration.text.profile.permissionCancel,
-                    true,
-                    {},
-                    {}
-                )
-            )
-
-        initialize(configuration, imageConfiguration)
-
+    private suspend fun logScreenViewed() {
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.Permissions,
+            EAnalyticsProvider.ALL
+        )
     }
 
-    /* --- navigation --- */
+    /* --- actions --- */
 
-    suspend fun logScreenViewed(): Unit =
-        analyticsModule.logEvent(AnalyticsEvent.ScreenViewed.Permissions, EAnalyticsProvider.ALL)
+    fun execute(action: AboutYouPermissionsAction) {
+        when (action) {
+            AboutYouPermissionsAction.Initialize ->
+                viewModelScope.launchAction(initialize())
+            is AboutYouPermissionsAction.RequestPermissions ->
+                viewModelScope.launchSafe { requestPermission(action.permission) }
+            AboutYouPermissionsAction.ScreenViewed ->
+                viewModelScope.launchSafe { logScreenViewed() }
+        }
+    }
 
 }

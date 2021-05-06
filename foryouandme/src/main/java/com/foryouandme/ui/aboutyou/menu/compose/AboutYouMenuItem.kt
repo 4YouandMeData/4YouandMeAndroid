@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.foryouandme.R
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 
 @Composable
 fun AboutYouMenuItem(
@@ -62,9 +62,9 @@ fun AboutYouMenuItem(
 @Composable
 private fun AboutYouMenuItemPreview() {
     AboutYouMenuItem(
-        text = ComposePreview.title,
-        icon = R.drawable.error,
-        configuration = ComposePreview.configuration.value,
-        imageConfiguration = ComposePreview.imageConfiguration
+        text = Mock.title,
+        icon = R.drawable.placeholder,
+        configuration = Configuration.mock(),
+        imageConfiguration = ImageConfiguration.mock()
     )
 }

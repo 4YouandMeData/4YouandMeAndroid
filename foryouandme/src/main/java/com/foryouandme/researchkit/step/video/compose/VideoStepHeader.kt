@@ -20,7 +20,7 @@ import com.foryouandme.ui.compose.camera.CameraFlash
 import com.foryouandme.ui.compose.camera.CameraFlash.*
 import com.foryouandme.ui.compose.camera.CameraLens
 import com.foryouandme.ui.compose.camera.CameraLens.*
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 import com.google.accompanist.coil.CoilImage
 
 @Composable
@@ -141,7 +141,7 @@ private fun VideoStepHeaderPreviewPause() {
     ForYouAndMeTheme {
 
         VideoStepHeader(
-            title = ComposePreview.title,
+            title = Mock.title,
             recordingState = RecordingState.RecordingPause,
             recordTimeSeconds = 50,
             maxRecordTimeSeconds = 120,
@@ -162,7 +162,7 @@ private fun VideoStepHeaderPreviewRecording() {
     ForYouAndMeTheme {
 
         VideoStepHeader(
-            title = ComposePreview.title,
+            title = Mock.title,
             recordingState = RecordingState.Recording,
             recordTimeSeconds = 50,
             maxRecordTimeSeconds = 120,

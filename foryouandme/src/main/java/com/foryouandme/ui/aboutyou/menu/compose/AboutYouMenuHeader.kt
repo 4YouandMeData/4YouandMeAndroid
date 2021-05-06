@@ -12,9 +12,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.toData
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 
@@ -51,10 +52,10 @@ fun AboutYouMenuHeader(
 @Preview
 @Composable
 private fun AboutYouMenuHeaderPreview() {
-    ForYouAndMeTheme(ComposePreview.configuration) {
+    ForYouAndMeTheme(Configuration.mock().toData()) {
         AboutYouMenuHeader(
             it,
-            ComposePreview.imageConfiguration,
+            ImageConfiguration.mock(),
             Modifier.fillMaxWidth().height(200.dp)
         )
     }

@@ -23,7 +23,7 @@ import com.foryouandme.researchkit.step.introduction.IntroductionStep
 import com.foryouandme.researchkit.step.introduction.IntroductionViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
-import com.foryouandme.ui.compose.preview.ComposePreview
+import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.toColor
 import com.google.accompanist.coil.CoilImage
 
@@ -116,12 +116,12 @@ private fun IntroductionPreview() {
                     identifier = "id",
                     back = Back(R.drawable.notification_bg),
                     backgroundColor = android.graphics.Color.WHITE,
-                    title = TextSource.Text(ComposePreview.title),
+                    title = TextSource.Text(Mock.title),
                     titleColor = android.graphics.Color.BLACK,
-                    description = TextSource.Text(ComposePreview.body),
+                    description = TextSource.Text(Mock.body),
                     descriptionColor = android.graphics.Color.BLACK,
                     image = listOf(0),
-                    button = TextSource.Text(ComposePreview.button),
+                    button = TextSource.Text(Mock.button),
                     buttonColor = android.graphics.Color.WHITE,
                     buttonTextColor = android.graphics.Color.WHITE,
                 )

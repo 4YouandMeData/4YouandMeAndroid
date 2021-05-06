@@ -13,4 +13,18 @@ data class Configuration(
     val integrations: List<IntegrationApp>
         get() = integrationsIdentifiers.mapNotNull { IntegrationApp.fromIdentifier(it) }
 
+
+    companion object {
+
+        fun mock(): Configuration =
+            Configuration(
+                theme = Theme.mock(),
+                text = Text.mock(),
+                countryCodes = emptyList(),
+                integrationsIdentifiers = emptyList(),
+                pinCodeLogin = false
+            )
+
+    }
+
 }

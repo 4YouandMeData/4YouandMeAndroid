@@ -14,6 +14,8 @@ import com.foryouandme.core.arch.deps.Injector
 import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.Navigator
+import com.foryouandme.core.arch.navigation.action.ActivityAction
+import com.foryouandme.core.arch.navigation.action.ContextAction
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.error.getMessage
@@ -69,4 +71,10 @@ fun Context.findWindow(): Window? {
         context = context.baseContext
     }
     return null
+}
+
+/* --- action --- */
+
+fun Context.execute(action: ContextAction) {
+    action.block(this)
 }

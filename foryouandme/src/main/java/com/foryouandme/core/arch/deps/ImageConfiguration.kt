@@ -1,6 +1,7 @@
 package com.foryouandme.core.arch.deps
 
 import androidx.annotation.DrawableRes
+import com.foryouandme.R
 
 interface ImageConfiguration {
 
@@ -193,5 +194,73 @@ interface ImageConfiguration {
 
     @DrawableRes
     fun pencil(): Int
+
+    /* --- mock --- */
+
+    companion object {
+
+        fun mock(): ImageConfiguration =
+            object: ImageConfiguration {
+                override fun splashLogo(): Int = R.drawable.placeholder
+                override fun pushSmallIcon(): Int = R.drawable.placeholder
+                override fun loading(): Int = R.drawable.placeholder
+                override fun back(): Int = R.drawable.placeholder
+                override fun backSecondary(): Int = R.drawable.placeholder
+                override fun close(): Int = R.drawable.placeholder
+                override fun closeSecondary(): Int = R.drawable.placeholder
+                override fun clear(): Int = R.drawable.placeholder
+                override fun logo(): Int = R.drawable.placeholder
+                override fun logoStudy(): Int = R.drawable.placeholder
+                override fun logoStudySecondary(): Int = R.drawable.placeholder
+                override fun nextStep(): Int = R.drawable.placeholder
+                override fun nextStepSecondary(): Int = R.drawable.placeholder
+                override fun previousStepSecondary(): Int = R.drawable.placeholder
+                override fun entryWrong(): Int = R.drawable.placeholder
+                override fun entryValid(): Int = R.drawable.placeholder
+                override fun tabFeed(): Int = R.drawable.placeholder
+                override fun tabTask(): Int = R.drawable.placeholder
+                override fun tabUserData(): Int = R.drawable.placeholder
+                override fun tabStudyInfo(): Int = R.drawable.placeholder
+                override fun timer(): Int = R.drawable.placeholder
+                override fun pocket(): Int = R.drawable.placeholder
+                override fun videoDiaryIntro(): Int = R.drawable.placeholder
+                override fun videoDiaryTime(): Int = R.drawable.placeholder
+                override fun videoDiaryClose(): Int = R.drawable.placeholder
+                override fun videoDiaryRecord(): Int = R.drawable.placeholder
+                override fun videoDiaryPause(): Int = R.drawable.placeholder
+                override fun videoDiaryPlay(): Int = R.drawable.placeholder
+                override fun videoDiaryFlashOn(): Int = R.drawable.placeholder
+                override fun videoDiaryFlashOff(): Int = R.drawable.placeholder
+                override fun videoDiaryToggleCamera(): Int = R.drawable.placeholder
+                override fun heartBeat(): Int = R.drawable.placeholder
+                override fun sittingMan(): Int = R.drawable.placeholder
+                override fun walkingMan(): Int = R.drawable.placeholder
+                override fun phoneShake(): Int = R.drawable.placeholder
+                override fun phoneShakeCircle(): Int = R.drawable.placeholder
+                override fun trailMaking(): Int = R.drawable.placeholder
+                override fun aboutYou(): Int = R.drawable.placeholder
+                override fun contactInfo(): Int = R.drawable.placeholder
+                override fun rewards(): Int = R.drawable.placeholder
+                override fun faq(): Int = R.drawable.placeholder
+                override fun arrow(): Int = R.drawable.placeholder
+                override fun pregnancy(): Int = R.drawable.placeholder
+                override fun devices(): Int = R.drawable.placeholder
+                override fun reviewConsent(): Int = R.drawable.placeholder
+                override fun permissions(): Int = R.drawable.placeholder
+                override fun dailySurveyTime(): Int = R.drawable.placeholder
+                override fun smartwatch(): Int = R.drawable.placeholder
+                override fun oura(): Int = R.drawable.placeholder
+                override fun instagram(): Int = R.drawable.placeholder
+                override fun rescuetime(): Int = R.drawable.placeholder
+                override fun twitter(): Int = R.drawable.placeholder
+                override fun garmin(): Int = R.drawable.placeholder
+                override fun deactivatedButton(): Int = R.drawable.placeholder
+                override fun location(): Int = R.drawable.placeholder
+                override fun pushNotification(): Int = R.drawable.placeholder
+                override fun editContainer(): Int = R.drawable.placeholder
+                override fun pencil(): Int = R.drawable.placeholder
+            }
+
+    }
 
 }
