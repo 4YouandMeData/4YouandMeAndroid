@@ -137,7 +137,7 @@ private fun VideoStepPage(
                 )
             else if (state.mergedVideoPath is LazyData.Data)
                 VideoPlayer(
-                    sourceUrl = state.mergedVideoPath.data,
+                    sourceUrl = state.mergedVideoPath.value,
                     videoPlayerEvents = videoPlayerEvents,
                     modifier = Modifier.fillMaxSize()
                 )

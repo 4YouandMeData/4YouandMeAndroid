@@ -22,8 +22,8 @@ fun ForYouAndMeTheme(content: @Composable () -> Unit) {
 @Composable
 fun ForYouAndMeTheme(
     configuration: LazyData<Configuration>,
-    onConfigurationError: () -> Unit,
-    content: @Composable (Configuration) -> Unit
+    onConfigurationError: () -> Unit = {},
+    content: @Composable (Configuration) -> Unit = {}
 ) {
 
     MaterialTheme(
@@ -43,7 +43,7 @@ fun ConfigurationContent(
 
         when (configuration) {
             is LazyData.Data ->
-                content(configuration.data)
+                content(configuration.value)
             is LazyData.Error ->
                 Error(
                     error = configuration.error,

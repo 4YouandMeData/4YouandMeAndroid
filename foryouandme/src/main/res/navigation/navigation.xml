@@ -100,8 +100,7 @@
     <fragment
         android:id="@+id/about_you"
         android:name="com.foryouandme.ui.aboutyou.AboutYouFragment"
-        android:label="AboutYouFragment"
-        tools:layout="@layout/about_you_menu" />
+        android:label="AboutYouFragment" />
 
     <fragment
         android:id="@+id/html_details"

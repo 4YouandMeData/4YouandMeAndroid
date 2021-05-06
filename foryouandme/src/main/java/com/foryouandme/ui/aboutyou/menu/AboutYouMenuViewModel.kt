@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.android.BaseViewModel
 import com.foryouandme.core.arch.android.Empty
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.modules.AnalyticsModule
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.toData
@@ -34,7 +35,8 @@ import javax.inject.Inject
 class AboutYouMenuViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
-    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    val imageConfiguration: ImageConfiguration
 ) : ViewModel() {
 
     /* --- state --- */
@@ -43,6 +45,7 @@ class AboutYouMenuViewModel @Inject constructor(
     val stateFlow = state as StateFlow<AboutYouMenuState>
 
     init {
+        execute(AboutYouMenuAction.ScreenViewed)
         execute(AboutYouMenuAction.GetConfiguration)
         execute(AboutYouMenuAction.GetUser)
     }
@@ -70,38 +73,6 @@ class AboutYouMenuViewModel @Inject constructor(
             },
             { state.emit(state.value.copy(user = it.toError())) }
         )
-
-    /* --- navigation --- */
-
-    /*suspend fun toAboutYouReviewConsentPage(navController: AboutYouNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            AboutYouMenuPageToAboutYouReviewConsentPage
-        )
-
-    suspend fun toAboutYouAppsAndDevicesPage(navController: AboutYouNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            AboutYouMenuPageToAppsAndDevicesPage
-        )
-
-    suspend fun toAboutYouPermissionsPage(navController: AboutYouNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            AboutYouMenuPageToPermissionsPage
-        )
-
-    suspend fun toAboutYouUserInfoPage(navController: AboutYouNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            AboutYouMenuPageToUserInfoPage
-        )
-
-    suspend fun toAboutYouDailySurveyTimePage(navController: AboutYouNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            AboutYouMenuPageToDailySurveyTimePage
-        )*/
 
     /* --- analytics --- */
 

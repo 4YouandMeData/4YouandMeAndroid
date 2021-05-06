@@ -7,7 +7,7 @@ sealed class LazyData<out T> {
 
     object Empty : LazyData<Nothing>()
 
-    data class Data<out T>(val data: T) : LazyData<T>()
+    data class Data<out T>(val value: T) : LazyData<T>()
 
     object Loading : LazyData<Nothing>()
 
@@ -15,7 +15,7 @@ sealed class LazyData<out T> {
 
     fun <A> map(mapper: (T) -> A): LazyData<A> =
         when (this) {
-            is Data -> mapper(data).toData()
+            is Data -> mapper(value).toData()
             Empty -> Empty
             is Error -> this
             Loading -> Loading
@@ -23,7 +23,7 @@ sealed class LazyData<out T> {
 
     fun orNull(): T? =
         when (this) {
-            is Data -> data
+            is Data -> value
             else -> null
         }
 
@@ -31,7 +31,7 @@ sealed class LazyData<out T> {
 
     companion object {
 
-        fun unit(): LazyData.Data<Unit> = Unit.toData()
+        fun unit(): Data<Unit> = Unit.toData()
 
     }
 

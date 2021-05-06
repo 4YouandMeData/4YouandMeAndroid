@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.entity.configuration.Configuration
 import com.google.accompanist.coil.CoilImage
 
@@ -64,7 +65,7 @@ fun Loading(
 
     if (isVisible)
         Box(
-            modifier = modifier.background(backgroundColor),
+            modifier = modifier.background(backgroundColor).noIndicationClickable {  },
             contentAlignment = Alignment.Center
         ) {
             CoilImage(

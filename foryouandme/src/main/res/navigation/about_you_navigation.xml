@@ -8,8 +8,7 @@
     <fragment
         android:id="@+id/about_you_menu"
         android:name="com.foryouandme.ui.aboutyou.menu.AboutYouMenuFragment"
-        android:label="about_you_menu"
-        tools:layout="@layout/about_you_menu">
+        android:label="about_you_menu" >
 
         <action
             android:id="@+id/action_about_you_menu_to_about_you_review_consent"

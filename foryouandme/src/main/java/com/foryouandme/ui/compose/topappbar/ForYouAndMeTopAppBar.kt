@@ -1,6 +1,8 @@
 package com.foryouandme.ui.compose.topappbar
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TopAppBar
@@ -10,11 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.compose.preview.ComposePreview
 
 @Composable
 fun ForYouAndMeTopAppBar(
+    imageConfiguration: ImageConfiguration,
     icon: TopAppBarIcon,
     onBack: () -> Unit = {}
 ) {
@@ -23,7 +27,7 @@ fun ForYouAndMeTopAppBar(
         title = {},
         navigationIcon = {
             IconButton(onClick = onBack) {
-                Icon(
+                Image(
                     painter =
                     painterResource(
                         id =
@@ -34,7 +38,8 @@ fun ForYouAndMeTopAppBar(
                             TopAppBarIcon.CloseSecondary -> imageConfiguration.closeSecondary()
                         }
                     ),
-                    contentDescription = "",
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         },
@@ -56,6 +61,9 @@ sealed class TopAppBarIcon {
 @Composable
 private fun FourBooksTopAppBarPreview() {
     ForYouAndMeTheme {
-        ForYouAndMeTopAppBar(icon = TopAppBarIcon.Back)
+        ForYouAndMeTopAppBar(
+            icon = TopAppBarIcon.Back,
+            imageConfiguration = ComposePreview.imageConfiguration
+        )
     }
 }

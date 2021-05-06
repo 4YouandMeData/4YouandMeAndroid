@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.R
 import com.foryouandme.core.ext.getText
+import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
@@ -27,7 +28,7 @@ fun Error(
     retry: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier.padding(25.dp),
+        modifier = modifier.padding(25.dp).noIndicationClickable {  },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
