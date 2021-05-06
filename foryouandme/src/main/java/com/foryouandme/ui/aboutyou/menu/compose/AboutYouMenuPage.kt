@@ -23,7 +23,8 @@ import com.foryouandme.ui.aboutyou.menu.AboutYouMenuState
 import com.foryouandme.ui.aboutyou.menu.AboutYouMenuViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
-import com.foryouandme.entity.mock.Mock
+import com.foryouandme.ui.compose.statusbar.StatusBarSpacer
+import com.foryouandme.ui.compose.statusbar.TransparentStatusBar
 import org.threeten.bp.ZoneId
 
 @Composable
@@ -72,91 +73,101 @@ fun AboutYouMenuPage(
     onPermissionsClicked: () -> Unit = {},
     onDailySurveyTimeClicked: () -> Unit = {}
 ) {
-    LoadingError(
-        data = state.user,
-        configuration = configuration,
-        onRetryClicked = onUserError
-    ) {
-        Column(
-            modifier =
-            Modifier
-                .fillMaxSize()
-                .background(configuration.theme.secondaryColor.value)
+    TransparentStatusBar(backgroundColor = configuration.theme.primaryColorStart.value) {
+        LoadingError(
+            data = state.user,
+            configuration = configuration,
+            onRetryClicked = onUserError
         ) {
-            AboutYouMenuHeader(
-                configuration = configuration,
-                imageConfiguration = imageConfiguration,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.35f),
-                onBack = onBack
-            )
             Column(
                 modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState())
+                    .background(configuration.theme.secondaryColor.value)
             ) {
-                Spacer(modifier = Modifier.height(30.dp))
-                if (it.customData.isNotEmpty())
-                    AboutYouMenuItem(
-                        text = configuration.text.profile.firstItem,
-                        icon = imageConfiguration.pregnancy(),
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        onClick = onPregnancyClicked
-                    )
-                AboutYouMenuItem(
-                    text = configuration.text.profile.secondItem,
-                    icon = imageConfiguration.devices(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onDevicesClicked
-                )
-                Box(
+                Column(
                     modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp)
+                        .background(configuration.theme.primaryColorEnd.value)
                 ) {
-                    Spacer(
+                    StatusBarSpacer()
+                    AboutYouMenuHeader(
+                        configuration = configuration,
+                        imageConfiguration = imageConfiguration,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.35f),
+                        onBack = onBack
+                    )
+                }
+                Column(
+                    modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Spacer(modifier = Modifier.height(30.dp))
+                    if (it.customData.isNotEmpty())
+                        AboutYouMenuItem(
+                            text = configuration.text.profile.firstItem,
+                            icon = imageConfiguration.pregnancy(),
+                            configuration = configuration,
+                            imageConfiguration = imageConfiguration,
+                            onClick = onPregnancyClicked
+                        )
+                    AboutYouMenuItem(
+                        text = configuration.text.profile.secondItem,
+                        icon = imageConfiguration.devices(),
+                        configuration = configuration,
+                        imageConfiguration = imageConfiguration,
+                        onClick = onDevicesClicked
+                    )
+                    Box(
                         modifier =
                         Modifier
                             .fillMaxWidth()
-                            .height(1.dp)
-                            .background(configuration.theme.fourthTextColor.value)
-                    )
-                }
-                AboutYouMenuItem(
-                    text = configuration.text.profile.thirdItem,
-                    icon = imageConfiguration.reviewConsent(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onReviewConsentClicked
-                )
-                AboutYouMenuItem(
-                    text = configuration.text.profile.fourthItem,
-                    icon = imageConfiguration.permissions(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onPermissionsClicked
-                )
-                if (configuration.text.profile.dailySurveyTimingHidden == 0)
+                            .padding(vertical = 10.dp)
+                    ) {
+                        Spacer(
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(configuration.theme.fourthTextColor.value)
+                        )
+                    }
                     AboutYouMenuItem(
-                        text = configuration.text.profile.fifthItem,
-                        icon = imageConfiguration.dailySurveyTime(),
+                        text = configuration.text.profile.thirdItem,
+                        icon = imageConfiguration.reviewConsent(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
-                        onClick = onDailySurveyTimeClicked
+                        onClick = onReviewConsentClicked
                     )
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
-                    text = configuration.text.profile.disclaimer,
-                    style = MaterialTheme.typography.h3,
-                    color = configuration.theme.fourthTextColor.value,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    AboutYouMenuItem(
+                        text = configuration.text.profile.fourthItem,
+                        icon = imageConfiguration.permissions(),
+                        configuration = configuration,
+                        imageConfiguration = imageConfiguration,
+                        onClick = onPermissionsClicked
+                    )
+                    if (configuration.text.profile.dailySurveyTimingHidden == 0)
+                        AboutYouMenuItem(
+                            text = configuration.text.profile.fifthItem,
+                            icon = imageConfiguration.dailySurveyTime(),
+                            configuration = configuration,
+                            imageConfiguration = imageConfiguration,
+                            onClick = onDailySurveyTimeClicked
+                        )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = configuration.text.profile.disclaimer,
+                        style = MaterialTheme.typography.h3,
+                        color = configuration.theme.fourthTextColor.value,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }

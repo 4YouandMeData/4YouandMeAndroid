@@ -28,7 +28,7 @@ fun AboutYouMenuHeader(
 ) {
 
     Box(
-        modifier = modifier.background(configuration.theme.primaryColorEnd.value)
+        modifier = modifier
     ) {
         ForYouAndMeTopAppBar(
             icon = TopAppBarIcon.CloseSecondary,
