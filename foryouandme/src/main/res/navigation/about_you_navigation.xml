@@ -96,8 +96,7 @@
     <fragment
         android:id="@+id/about_you_permissions"
         android:name="com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsFragment"
-        android:label="about_you_permissions"
-        tools:layout="@layout/permissions" />
+        android:label="about_you_permissions" />
 
     <fragment
         android:id="@+id/about_you_user_info"

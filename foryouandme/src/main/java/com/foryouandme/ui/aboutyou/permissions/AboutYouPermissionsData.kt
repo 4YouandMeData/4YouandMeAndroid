@@ -23,20 +23,6 @@ data class PermissionsItem(
     val isAllowed: Boolean
 )
 
-sealed class AboutYouPermissionsStateUpdate {
-
-    data class Initialization(
-        val permissions: List<PermissionsItemOld>
-    ) : AboutYouPermissionsStateUpdate()
-
-}
-
-sealed class AboutYouPermissionsLoading {
-
-    object Initialization : AboutYouPermissionsLoading()
-
-}
-
 sealed class AboutYouPermissionsAction {
 
     object Initialize: AboutYouPermissionsAction()
