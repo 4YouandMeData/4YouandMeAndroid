@@ -30,8 +30,6 @@ FYAMActivity : BaseActivity() {
         val binding = FyamBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
         binding.logo.setImageResource(imageConfiguration.splashLogo())
 
         viewModel.loading

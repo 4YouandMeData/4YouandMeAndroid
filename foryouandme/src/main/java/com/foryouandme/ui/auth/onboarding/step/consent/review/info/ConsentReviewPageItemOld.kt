@@ -1,6 +1,5 @@
 package com.foryouandme.ui.auth.onboarding.step.consent.review.info
 
-import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
 import com.foryouandme.entity.configuration.Configuration
@@ -12,7 +11,7 @@ import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 
-data class ConsentReviewPageItem(
+data class ConsentReviewPageItemOld(
     val id: String,
     val configuration: Configuration,
     val title: String,
@@ -21,13 +20,13 @@ data class ConsentReviewPageItem(
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =
         when (other) {
-            is ConsentReviewPageItem -> id == other.id
+            is ConsentReviewPageItemOld -> id == other.id
             else -> false
         }
 
     override fun haveTheSameContent(other: DroidItem<Any>): Boolean =
         when (other) {
-            is ConsentReviewPageItem ->
+            is ConsentReviewPageItemOld ->
                 id == other.id &&
                         title == other.title &&
                         body == other.body
@@ -38,7 +37,7 @@ data class ConsentReviewPageItem(
 }
 
 fun Page.toConsentReviewPageItem(configuration: Configuration) =
-    ConsentReviewPageItem(
+    ConsentReviewPageItemOld(
         id,
         configuration,
         title,
@@ -47,7 +46,7 @@ fun Page.toConsentReviewPageItem(configuration: Configuration) =
 
 class ConsentReviewPageViewHolder(
     parent: ViewGroup
-) : DroidViewHolder<ConsentReviewPageItem, Unit>(
+) : DroidViewHolder<ConsentReviewPageItemOld, Unit>(
     parent,
     { layoutInflater, viewGroup, b ->
         layoutInflater.inflate(
@@ -58,7 +57,7 @@ class ConsentReviewPageViewHolder(
     }
 ) {
 
-    override fun bind(item: ConsentReviewPageItem, position: Int) {
+    override fun bind(item: ConsentReviewPageItemOld, position: Int) {
 
         val binding  = ConsentReviewPageBinding.bind(itemView)
 
@@ -78,7 +77,7 @@ class ConsentReviewPageViewHolder(
         fun factory(): DroidViewHolderFactory =
             DroidViewHolderFactory(
                 { ConsentReviewPageViewHolder(it) },
-                { _, item -> item is ConsentReviewPageItem }
+                { _, item -> item is ConsentReviewPageItemOld }
             )
 
     }

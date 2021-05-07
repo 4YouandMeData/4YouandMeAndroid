@@ -2,6 +2,7 @@ package com.foryouandme.ui.compose.statusbar
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
@@ -12,15 +13,22 @@ import com.google.accompanist.systemuicontroller.rememberAndroidSystemUiControll
 
 @Composable
 fun TransparentStatusBar(
-    backgroundColor: Color,
+    content: @Composable () -> Unit
+) {
+    StatusBar(color = Color.Transparent, content = content)
+}
+
+@Composable
+fun StatusBar(
+    color: Color,
     content: @Composable () -> Unit
 ) {
     ProvideWindowInsets {
         val systemUiController = rememberAndroidSystemUiController()
         SideEffect {
-            systemUiController.setSystemBarsColor(
-                Color.Transparent,
-                darkIcons = isDark(backgroundColor).not()
+            systemUiController.setStatusBarColor(
+                color,
+                darkIcons = isDark(color).not()
             )
         }
         content()

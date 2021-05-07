@@ -23,8 +23,7 @@ import com.foryouandme.ui.aboutyou.menu.AboutYouMenuState
 import com.foryouandme.ui.aboutyou.menu.AboutYouMenuViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
-import com.foryouandme.ui.compose.statusbar.StatusBarSpacer
-import com.foryouandme.ui.compose.statusbar.TransparentStatusBar
+import com.foryouandme.ui.compose.statusbar.StatusBar
 import org.threeten.bp.ZoneId
 
 @Composable
@@ -73,7 +72,7 @@ fun AboutYouMenuPage(
     onPermissionsClicked: () -> Unit = {},
     onDailySurveyTimeClicked: () -> Unit = {}
 ) {
-    TransparentStatusBar(backgroundColor = configuration.theme.primaryColorStart.value) {
+    StatusBar(color = configuration.theme.primaryColorStart.value) {
         LoadingError(
             data = state.user,
             configuration = configuration,
@@ -85,22 +84,15 @@ fun AboutYouMenuPage(
                     .fillMaxSize()
                     .background(configuration.theme.secondaryColor.value)
             ) {
-                Column(
-                    modifier =
-                    Modifier
+                AboutYouMenuHeader(
+                    configuration = configuration,
+                    imageConfiguration = imageConfiguration,
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .background(configuration.theme.primaryColorEnd.value)
-                ) {
-                    StatusBarSpacer()
-                    AboutYouMenuHeader(
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.35f),
-                        onBack = onBack
-                    )
-                }
+                        .fillMaxHeight(0.35f)
+                        .background(configuration.theme.primaryColorStart.value),
+                    onBack = onBack
+                )
                 Column(
                     modifier =
                     Modifier

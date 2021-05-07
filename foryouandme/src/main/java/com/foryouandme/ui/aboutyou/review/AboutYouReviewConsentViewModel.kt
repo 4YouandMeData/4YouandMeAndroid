@@ -1,61 +1,91 @@
 package com.foryouandme.ui.aboutyou.review
 
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.ConsentReviewModule
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.cases.consent.review.ConsentReviewUseCase.getConsent
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.auth.onboarding.step.consent.review.info.toConsentReviewPageItem
-import com.giacomoparisi.recyclerdroid.core.DroidItem
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.toData
+import com.foryouandme.core.arch.toError
+import com.foryouandme.core.ext.Action
+import com.foryouandme.core.ext.action
+import com.foryouandme.core.ext.launchAction
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.auth.consent.GetConsentReviewUseCase
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.ui.compose.items.consent.ConsentReviewPageItem
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class AboutYouReviewConsentViewModel(
-    navigator: Navigator,
-    private val consentReviewModule: ConsentReviewModule,
-) : BaseViewModel<
-        AboutYouReviewConsentState,
-        AboutYouReviewConsentStateUpdate,
-        AboutYouReviewConsentError,
-        AboutYouReviewConsentLoading>
-    (navigator) {
+@HiltViewModel
+class AboutYouReviewConsentViewModel @Inject constructor(
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getConsentReviewUseCase: GetConsentReviewUseCase,
+    val imageConfiguration: ImageConfiguration
+) : ViewModel() {
 
-    /* --- data --- */
+    /* --- state --- */
 
-    suspend fun initialize(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit {
+    private val state = MutableStateFlow(AboutYouReviewConsentState())
+    val stateFlow = state as StateFlow<AboutYouReviewConsentState>
 
-        showLoading(AboutYouReviewConsentLoading.Initialization)
+    init {
+        execute(AboutYouReviewConsentAction.GetConfiguration)
+    }
 
-        consentReviewModule.getConsent()
-            .handleAuthError(rootNavController, navigator)
-            .fold(
-                { setError(it, AboutYouReviewConsentError.Initialization) },
-                { consent ->
+    /* --- configuration --- */
 
-                    val items = mutableListOf<DroidItem<Any>>()
+    private fun getConfiguration(): Action =
+        action(
+            {
+                state.emit(state.value.copy(configuration = LazyData.Loading))
+                val configuration = getConfigurationUseCase(Policy.LocalFirst)
+                state.emit(state.value.copy(configuration = configuration.toData()))
+                execute(AboutYouReviewConsentAction.GetReviewConsent)
+            },
+            {
+                state.emit(state.value.copy(configuration = it.toError()))
+            }
+        )
 
-                    items.addAll(
-                        consent.welcomePage
-                            .asList(consent.pages)
-                            .map { it.toConsentReviewPageItem(configuration) }
-                    )
+    /* --- review consent --- */
 
-                    setState(
-                        AboutYouReviewConsentState(consentReview = consent, items = items)
-                    ) {
-                        AboutYouReviewConsentStateUpdate.Initialization(
-                            consent,
-                            items
+    private fun getReviewConsent(): Action =
+        action(
+            {
+                val configuration = state.value.configuration.orNull()
+
+                if (configuration != null) {
+                    state.emit(state.value.copy(consentReview = LazyData.Loading))
+                    val consentReview = getConsentReviewUseCase()!!
+                    val items = consentReview
+                        .welcomePage
+                        .asList(consentReview.pages)
+                        .map { ConsentReviewPageItem.fromPage(it, configuration) }
+                    state.emit(
+                        state.value.copy(
+                            consentReview = consentReview.toData(),
+                            items = items
                         )
-                    }
+                    )
                 }
-            )
 
-        hideLoading(AboutYouReviewConsentLoading.Initialization)
+            },
+            {
+                state.emit(state.value.copy(consentReview = it.toError()))
+            }
+        )
 
+    /* --- action --- */
+
+    fun execute(action: AboutYouReviewConsentAction) {
+        when (action) {
+            AboutYouReviewConsentAction.GetConfiguration ->
+                viewModelScope.launchAction(getConfiguration())
+            AboutYouReviewConsentAction.GetReviewConsent ->
+                viewModelScope.launchAction(getReviewConsent())
+        }
     }
 
 }

@@ -26,8 +26,7 @@ import com.foryouandme.ui.aboutyou.permissions.*
 import com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsAction.Initialize
 import com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsAction.RequestPermissions
 import com.foryouandme.ui.compose.ForYouAndMeTheme
-import com.foryouandme.ui.compose.statusbar.StatusBarSpacer
-import com.foryouandme.ui.compose.statusbar.TransparentStatusBar
+import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 import com.foryouandme.ui.compose.verticalGradient
@@ -92,24 +91,19 @@ fun AboutYouPermissionsPage(
     onBack: () -> Unit = {},
     onPermissionClicked: (PermissionsItem) -> Unit = {}
 ) {
-    TransparentStatusBar(backgroundColor = configuration.theme.primaryColorStart.value) {
+    StatusBar(color = configuration.theme.primaryColorStart.value) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Column(
+            ForYouAndMeTopAppBar(
+                imageConfiguration = imageConfiguration,
+                icon = TopAppBarIcon.Back,
+                title = configuration.text.profile.fourthItem,
+                titleColor = configuration.theme.secondaryColor.value,
                 modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .background(configuration.theme.verticalGradient)
-            ) {
-                StatusBarSpacer()
-                ForYouAndMeTopAppBar(
-                    imageConfiguration = imageConfiguration,
-                    icon = TopAppBarIcon.Back,
-                    modifier = Modifier.height(110.dp),
-                    title = configuration.text.profile.fourthItem,
-                    titleColor = configuration.theme.secondaryColor.value,
-                    onBack = onBack
-                )
-            }
+                    .height(110.dp)
+                    .background(configuration.theme.verticalGradient),
+                onBack = onBack
+            )
             if (state.data is LazyData.Data)
                 LazyColumn(
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 50.dp),

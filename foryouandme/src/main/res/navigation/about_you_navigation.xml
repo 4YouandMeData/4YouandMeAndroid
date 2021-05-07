@@ -55,8 +55,7 @@
     <fragment
         android:id="@+id/about_you_review_consent"
         android:name="com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentFragment"
-        android:label="AboutYouReviewConsentFragment"
-        tools:layout="@layout/about_you_review_consent" />
+        android:label="AboutYouReviewConsentFragment" />
 
     <fragment
         android:id="@+id/about_you_apps_and_devices"
