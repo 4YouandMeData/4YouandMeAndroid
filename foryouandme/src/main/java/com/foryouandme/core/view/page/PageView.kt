@@ -2,7 +2,6 @@ package com.foryouandme.core.view.page
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.text.style.UnderlineSpan
 import android.util.AttributeSet
 import android.util.Base64
 import android.view.Gravity
@@ -22,8 +21,8 @@ import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.page.Page
 import com.foryouandme.entity.page.PageRef
+import com.giacomoparisi.spandroid.Span
 import com.giacomoparisi.spandroid.SpanDroid
-import com.giacomoparisi.spandroid.spanList
 
 class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -219,10 +218,10 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
         binding.action1TextSecondary.text =
             page.link1Label ?: configuration.text.onboarding.integration.nextDefault
         binding.action2Text.text =
-            SpanDroid()
+            SpanDroid.span()
                 .append(
                     page.link2Label.orEmpty(),
-                    spanList(context) { custom(UnderlineSpan()) }
+                    Span.Underline
                 )
                 .toSpannableString()
 

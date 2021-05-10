@@ -3,18 +3,17 @@ package com.foryouandme.ui.auth.onboarding.step.consent.user.email.code
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
-import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import com.foryouandme.R
+import com.foryouandme.core.ext.*
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserError
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserLoading
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.*
+import com.giacomoparisi.spandroid.Span
 import com.giacomoparisi.spandroid.SpanDroid
-import com.giacomoparisi.spandroid.spanList
 import kotlinx.android.synthetic.main.consent_user.*
 import kotlinx.android.synthetic.main.consent_user_email_validation_code.*
 
@@ -171,15 +170,17 @@ class ConsentUserEmailValidationCodeFragment : ConsentUserSectionFragment(
 
             code_line.setBackgroundColor(configuration.theme.secondaryColor.color())
 
-            resend.text = SpanDroid().append(
-                configuration.text.onboarding.user.emailVerificationResend,
-                spanList(requireContext()) {
-                    click {}
-                    typeface(R.font.helvetica)
-                    custom(ForegroundColorSpan(configuration.theme.secondaryColor.color()))
-                    custom(UnderlineSpan())
-                }
-            ).toSpannableString()
+            resend.text =
+                SpanDroid.span()
+                    .append(
+                        configuration.text.onboarding.user.emailVerificationResend,
+                        Span.Click {},
+                        Span.Typeface(R.font.helvetica, requireContext()),
+                        Span.Custom(
+                            ForegroundColorSpan(configuration.theme.secondaryColor.color())
+                        ),
+                        Span.Underline
+                    ).toSpannableString()
 
             action_1.isEnabled = code_entry.text.toString().trim().length == 6
 

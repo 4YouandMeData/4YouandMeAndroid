@@ -1,6 +1,6 @@
 object GiacomoParisi {
 
-    object SpanDroid : DependencyGroup("com.giacomoparisi.spandroid", "0.1") {
+    object SpanDroid : DependencyGroup("com.github.giacomoParisi", "4271a0ec1b") {
 
         object Span : Dependency(
             SpanDroid.group,
@@ -11,13 +11,13 @@ object GiacomoParisi {
     }
 
     object RecyclerDroid : DependencyGroup(
-        "com.giacomoparisi.recyclerdroid",
-        "1.8.0-beta13"
+        "com.github.giacomoParisi",
+        "f0ba0306bc"
     ) {
 
         object Core : Dependency(
             RecyclerDroid.group,
-            "recycler-droid-core",
+            "recycler-droid",
             RecyclerDroid.version
         )
 

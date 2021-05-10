@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
-import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -22,8 +21,8 @@ import com.foryouandme.entity.configuration.Url
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.configuration.checkbox.checkbox
 import com.foryouandme.ui.auth.AuthSectionFragment
+import com.giacomoparisi.spandroid.Span
 import com.giacomoparisi.spandroid.SpanDroid
-import com.giacomoparisi.spandroid.spanList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -218,58 +217,55 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
         val split = privacySplit.flatMap { it.split(text.legalTermsOfService) }
 
         viewBinding.checkboxText.text =
-            SpanDroid()
+            SpanDroid
+                .span()
                 .append(
                     split.getOrElse(0) { "" },
-                    spanList(requireContext()) { typeface(R.font.helvetica) }
+                    Span.Typeface(R.font.helvetica, requireContext()),
                 )
                 .append(
                     if (privacyIndex > termsIndex) text.legalPrivacyPolicy
                     else text.legalTermsOfService,
-                    spanList(requireContext()) {
-                        click {
+                    Span.Click {
 
-                            viewModel.execute(PinCodeStateEvent.LogPrivacyPolicy)
-                            navigator.navigateTo(
-                                rootNavController(),
-                                AnywhereToWeb(
-                                    if (privacyIndex > termsIndex) url.privacy
-                                    else url.terms
-                                )
+                        viewModel.execute(PinCodeStateEvent.LogPrivacyPolicy)
+                        navigator.navigateTo(
+                            rootNavController(),
+                            AnywhereToWeb(
+                                if (privacyIndex > termsIndex) url.privacy
+                                else url.terms
                             )
+                        )
 
-                        }
-                        typeface(R.font.helvetica_bold)
-                        custom(ForegroundColorSpan(theme.secondaryColor.color()))
-                        custom(UnderlineSpan())
-                    }
+                    },
+                    Span.Typeface(R.font.helvetica, requireContext()),
+                    Span.Custom(ForegroundColorSpan(theme.secondaryColor.color())),
+                    Span.Underline
                 )
                 .append(
                     split.getOrElse(1) { "" },
-                    spanList(requireContext()) { typeface(R.font.helvetica) }
+                    Span.Typeface(R.font.helvetica, requireContext())
                 )
                 .append(
                     if (privacyIndex > termsIndex) text.legalTermsOfService
                     else text.legalPrivacyPolicy,
-                    spanList(requireContext()) {
-                        click {
-                            viewModel.execute(PinCodeStateEvent.LogTermsOfService)
-                            navigator.navigateTo(
-                                rootNavController(),
-                                AnywhereToWeb(
-                                    if (privacyIndex > termsIndex) url.terms
-                                    else url.privacy
-                                )
+                    Span.Click {
+                        viewModel.execute(PinCodeStateEvent.LogTermsOfService)
+                        navigator.navigateTo(
+                            rootNavController(),
+                            AnywhereToWeb(
+                                if (privacyIndex > termsIndex) url.terms
+                                else url.privacy
                             )
-                        }
-                        typeface(R.font.helvetica_bold)
-                        custom(ForegroundColorSpan(theme.secondaryColor.color()))
-                        custom(UnderlineSpan())
-                    }
+                        )
+                    },
+                    Span.Typeface(R.font.helvetica, requireContext()),
+                    Span.Custom(ForegroundColorSpan(theme.secondaryColor.color())),
+                    Span.Underline
                 )
                 .append(
                     split.getOrElse(2) { "" },
-                    spanList(requireContext()) { typeface(R.font.helvetica) }
+                    Span.Typeface(R.font.helvetica, requireContext())
                 )
                 .toSpannableString()
     }

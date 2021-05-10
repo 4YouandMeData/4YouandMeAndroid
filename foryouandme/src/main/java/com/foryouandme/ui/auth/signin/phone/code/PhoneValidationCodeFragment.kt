@@ -3,7 +3,6 @@ package com.foryouandme.ui.auth.signin.phone.code
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
-import android.text.style.UnderlineSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -16,8 +15,8 @@ import com.foryouandme.databinding.PhoneValidationCodeBinding
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.auth.AuthSectionFragment
+import com.giacomoparisi.spandroid.Span
 import com.giacomoparisi.spandroid.SpanDroid
-import com.giacomoparisi.spandroid.spanList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -227,15 +226,14 @@ class PhoneValidationCodeFragment : AuthSectionFragment(R.layout.phone_validatio
 
             viewBinding.resend.setTextColor(config.theme.secondaryColor.color())
             viewBinding.resend.text =
-                SpanDroid()
+                SpanDroid
+                    .span()
                     .append(
                         config.text.phoneVerification.resendCode,
-                        spanList(requireContext()) {
-                            click {}
-                            typeface(R.font.helvetica)
-                            custom(ForegroundColorSpan(config.theme.secondaryColor.color()))
-                            custom(UnderlineSpan())
-                        }
+                        Span.Click {},
+                        Span.Typeface(R.font.helvetica, requireContext()),
+                        Span.Custom(ForegroundColorSpan(config.theme.secondaryColor.color())),
+                        Span.Underline
                     )
                     .toSpannableString()
 
