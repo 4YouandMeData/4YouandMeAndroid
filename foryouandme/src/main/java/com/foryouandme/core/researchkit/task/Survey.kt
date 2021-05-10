@@ -126,6 +126,7 @@ fun buildSurvey(
                                             getSkipSurveyQuestionStepId(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
+                                                successPage,
                                                 it.questionId
                                             )
                                         )
@@ -173,6 +174,7 @@ fun buildSurvey(
                                             getSkipSurveyQuestionStepId(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
+                                                successPage,
                                                 it.questionId
                                             )
                                         )
@@ -220,6 +222,7 @@ fun buildSurvey(
                                             getSkipSurveyQuestionStepId(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
+                                                successPage,
                                                 it.questionId
                                             )
                                         )
@@ -288,6 +291,7 @@ fun buildSurvey(
                                             getSkipSurveyQuestionStepId(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
+                                                successPage,
                                                 it.questionId
                                             )
                                         )
@@ -333,6 +337,7 @@ fun buildSurvey(
                                             getSkipSurveyQuestionStepId(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
+                                                successPage,
                                                 it.questionId
                                             )
                                         )
@@ -419,6 +424,7 @@ private fun getSurveyQuestionStepId(blockId: String, questionId: String): String
 private fun getSkipSurveyQuestionStepId(
     surveyBlocks: List<SurveyBlock>,
     block: SurveyBlock,
+    success: Page?,
     questionId: String
 ): String? =
     if (questionId == "exit") {
@@ -460,8 +466,10 @@ private fun getSkipSurveyQuestionStepId(
 
                 }
 
-            } else null
+            } else
+                if (success != null) getSurveySuccessStepId(success.id)
+                else "end"
 
         }
 
-    } else getSurveyQuestionStepId(block.id, questionId)
+    } else null

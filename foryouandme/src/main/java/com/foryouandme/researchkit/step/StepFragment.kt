@@ -66,7 +66,9 @@ open class StepFragment : BaseFragment {
 
     protected open fun skipTo(stepId: String?) {
         hideKeyboard()
-        taskViewModel.execute(TaskStateEvent.SkipToStep(stepId, indexArg()))
+        if (stepId == "end") end()
+        else
+            taskViewModel.execute(TaskStateEvent.SkipToStep(stepId, indexArg()))
     }
 
     protected open fun reschedule() {
