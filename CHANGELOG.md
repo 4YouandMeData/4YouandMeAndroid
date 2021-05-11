@@ -1,4 +1,14 @@
 
+## Release 0.1.45
+- Bintray dependencies fixed
+
+- CHANGELOG added
+
+- Your data graph fixed
+
+- Video settings for camera added
+
+
 ## Release 0.1.44
 
 -Video submit issue fixed
