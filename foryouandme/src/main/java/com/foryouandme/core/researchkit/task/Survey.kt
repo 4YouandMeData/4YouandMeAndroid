@@ -12,6 +12,7 @@ import com.foryouandme.entity.resources.ImageResource.AndroidResource.Companion.
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.foryouandme.entity.survey.SurveyQuestion
+import com.foryouandme.researchkit.skip.SkipTarget
 import com.foryouandme.researchkit.skip.SurveySkip
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Skip
@@ -61,7 +62,7 @@ fun buildSurvey(
                     } ?: emptyList()
 
                 val questions =
-                    surveyBlock.questions.mapIndexed { index, question ->
+                    surveyBlock.questions.map { question ->
 
                         when (question) {
                             is SurveyQuestion.Date ->
@@ -119,17 +120,20 @@ fun buildSurvey(
                                     buttonImage = imageConfiguration.nextStepSecondary()
                                         .toAndroidResource(),
                                     skips =
-                                    question.targets.map {
-                                        SurveySkip.Range(
-                                            it.min,
-                                            it.max,
-                                            getSkipSurveyQuestionStepId(
+                                    question.targets.mapNotNull {
+
+                                        val target =
+                                            getSkipTarget(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
                                                 successPage,
                                                 it.questionId
                                             )
-                                        )
+
+                                        if (target != null)
+                                            SurveySkip.Range(it.min, it.max, target)
+                                        else
+                                            null
                                     }
                                 )
 
@@ -168,16 +172,20 @@ fun buildSurvey(
                                         .nextStepSecondary()
                                         .toAndroidResource(),
                                     skips =
-                                    question.targets.map {
-                                        SurveySkip.Answer(
-                                            it.answerId,
-                                            getSkipSurveyQuestionStepId(
+                                    question.targets.mapNotNull {
+
+                                        val target =
+                                            getSkipTarget(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
                                                 successPage,
                                                 it.questionId
                                             )
-                                        )
+
+                                        if (target != null)
+                                            SurveySkip.Answer(it.answerId, target)
+                                        else
+                                            null
                                     }
                                 )
 
@@ -216,16 +224,20 @@ fun buildSurvey(
                                         .nextStepSecondary()
                                         .toAndroidResource(),
                                     skips =
-                                    question.targets.map {
-                                        SurveySkip.Answer(
-                                            it.answerId,
-                                            getSkipSurveyQuestionStepId(
+                                    question.targets.mapNotNull {
+
+                                        val target =
+                                            getSkipTarget(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
                                                 successPage,
                                                 it.questionId
                                             )
-                                        )
+
+                                        if (target != null)
+                                            SurveySkip.Answer(it.answerId, target)
+                                        else
+                                            null
                                     }
                                 )
 
@@ -284,17 +296,21 @@ fun buildSurvey(
                                         .nextStepSecondary()
                                         .toAndroidResource(),
                                     skips =
-                                    question.targets.map {
-                                        SurveySkip.Range(
-                                            it.min,
-                                            it.max,
-                                            getSkipSurveyQuestionStepId(
+                                    question.targets.mapNotNull {
+
+                                        val target =
+                                            getSkipTarget(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
                                                 successPage,
                                                 it.questionId
                                             )
-                                        )
+
+                                        if (target != null)
+                                            SurveySkip.Range(it.min, it.max, target)
+                                        else
+                                            null
+
                                     }
                                 )
 
@@ -330,17 +346,21 @@ fun buildSurvey(
                                         .nextStepSecondary()
                                         .toAndroidResource(),
                                     skips =
-                                    question.targets.map {
-                                        SurveySkip.Range(
-                                            it.min,
-                                            it.max,
-                                            getSkipSurveyQuestionStepId(
+                                    question.targets.mapNotNull {
+
+                                        val target =
+                                            getSkipTarget(
                                                 survey.surveyBlocks,
                                                 surveyBlock,
                                                 successPage,
                                                 it.questionId
                                             )
-                                        )
+
+                                        if (target != null)
+                                            SurveySkip.Range(it.min, it.max, target)
+                                        else
+                                            null
+
                                     }
                                 )
                         }
@@ -421,19 +441,19 @@ private fun getSurveyBlockSuccessStepId(blockId: String, successId: String): Str
 private fun getSurveyQuestionStepId(blockId: String, questionId: String): String =
     "survey_block_${blockId}_question_${questionId}"
 
-private fun getSkipSurveyQuestionStepId(
+private fun getSkipTarget(
     surveyBlocks: List<SurveyBlock>,
     block: SurveyBlock,
     success: Page?,
     questionId: String
-): String? =
+): SkipTarget? =
     if (questionId == "exit") {
 
         // try to skip to the success of the block if exist or to the next block
 
         val successId = block.successPage?.let { getSurveyBlockSuccessStepId(block.id, it.id) }
 
-        if (successId != null) successId
+        if (successId != null) SkipTarget.StepId(successId)
         else {
 
             val blockIndex = surveyBlocks.indexOfFirst { block.id == it.id }
@@ -447,7 +467,7 @@ private fun getSkipSurveyQuestionStepId(
                 val nextIntroPage = nextBlock.introPage
 
                 if (nextIntroPage != null)
-                    getSurveyBlockIntroStepId(nextBlock.id, nextIntroPage.id)
+                    SkipTarget.StepId(getSurveyBlockIntroStepId(nextBlock.id, nextIntroPage.id))
                 else {
 
                     val nextQuestionId =
@@ -462,14 +482,16 @@ private fun getSkipSurveyQuestionStepId(
                             null -> null
                         }
 
-                    nextQuestionId?.let { getSurveyQuestionStepId(nextBlock.id, it) }
+                    nextQuestionId?.let {
+                        SkipTarget.StepId(getSurveyQuestionStepId(nextBlock.id, it))
+                    }
 
                 }
 
             } else
-                if (success != null) getSurveySuccessStepId(success.id)
-                else "end"
+                if (success != null) SkipTarget.StepId(getSurveySuccessStepId(success.id))
+                else SkipTarget.End
 
         }
 
-    } else null
+    } else SkipTarget.StepId(getSurveyQuestionStepId(block.id, questionId))

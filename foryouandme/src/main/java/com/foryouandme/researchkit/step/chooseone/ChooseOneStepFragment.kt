@@ -156,7 +156,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
 
         val skip = step.skips.firstOrNull { it.answerId == answerItem.id }
 
-        if (skip != null) skipTo(skip.stepId)
+        if (skip != null) skipTo(skip.target)
         else next()
 
     }

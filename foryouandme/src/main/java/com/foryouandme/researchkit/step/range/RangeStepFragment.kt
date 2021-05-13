@@ -106,7 +106,7 @@ class RangeStepFragment : StepFragment(R.layout.step_range) {
             skip != null &&
             value != null &&
             isInOptionalRange(value, skip.min, skip.max)
-        ) skipTo(skip.stepId)
+        ) skipTo(skip.target)
         else next()
 
     }

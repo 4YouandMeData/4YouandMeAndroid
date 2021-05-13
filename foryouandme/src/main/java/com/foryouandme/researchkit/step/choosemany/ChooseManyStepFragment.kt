@@ -165,10 +165,9 @@ class ChooseManyStepFragment : StepFragment(R.layout.step_choose_many) {
 
         val answersId = answers.map { it.id }
 
-        val skip =
-            step.skips.firstOrNull { answersId.contains(it.answerId) }
+        val skip = step.skips.firstOrNull { answersId.contains(it.answerId) }
 
-        if (skip != null) skipTo(skip.stepId)
+        if (skip != null) skipTo(skip.target)
         else next()
 
     }

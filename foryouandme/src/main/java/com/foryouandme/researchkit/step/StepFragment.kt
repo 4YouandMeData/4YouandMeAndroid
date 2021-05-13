@@ -11,6 +11,7 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.ext.find
 import com.foryouandme.core.ext.hideKeyboard
 import com.foryouandme.researchkit.result.StepResult
+import com.foryouandme.researchkit.skip.SkipTarget
 import com.foryouandme.ui.tasks.TaskFragment
 import com.foryouandme.ui.tasks.TaskStateEvent
 import com.foryouandme.ui.tasks.TaskViewModel
@@ -64,11 +65,13 @@ open class StepFragment : BaseFragment {
         taskViewModel.execute(TaskStateEvent.NextStep(indexArg()))
     }
 
-    protected open fun skipTo(stepId: String?) {
+    protected open fun skipTo(target: SkipTarget) {
         hideKeyboard()
-        if (stepId == "end") end()
-        else
-            taskViewModel.execute(TaskStateEvent.SkipToStep(stepId, indexArg()))
+        when(target) {
+            SkipTarget.End -> end()
+            is SkipTarget.StepId ->
+                taskViewModel.execute(TaskStateEvent.SkipToStep(target.id, indexArg()))
+        }
     }
 
     protected open fun reschedule() {

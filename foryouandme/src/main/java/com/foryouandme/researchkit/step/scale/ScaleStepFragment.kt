@@ -102,7 +102,7 @@ class ScaleStepFragment : StepFragment(R.layout.step_scale) {
             skip != null &&
             value != null &&
             isInOptionalRange(value, skip.min, skip.max)
-        ) skipTo(skip.stepId)
+        ) skipTo(skip.target)
         else next()
 
     }

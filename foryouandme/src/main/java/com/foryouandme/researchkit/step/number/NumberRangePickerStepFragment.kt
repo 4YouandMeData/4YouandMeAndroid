@@ -109,7 +109,7 @@ class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_pi
             numericValue != null &&
             isInOptionalRange(numericValue, skip.min, skip.max)
         )
-            skipTo(skip.stepId)
+            skipTo(skip.target)
         else
             next()
 
