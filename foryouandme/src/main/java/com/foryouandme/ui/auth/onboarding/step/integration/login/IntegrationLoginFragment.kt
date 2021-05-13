@@ -92,14 +92,14 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
 
         val viewBinding = binding
 
-        viewBinding?.webView
+        /*viewBinding?.webView
             ?.setupWebViewWithCookies(
                 viewBinding.progressBar,
                 args.url,
                 viewModel.state.cookies,
                 { handleLogin(args.nextPage) },
                 { back() }
-            )
+            )*/
 
     }
 

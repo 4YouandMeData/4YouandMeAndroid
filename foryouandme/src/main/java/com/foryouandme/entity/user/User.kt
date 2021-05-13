@@ -19,6 +19,24 @@ data class User(
     fun getCustomDataByIdentifier(identifier: String): UserCustomData? =
         customData.firstOrNull { it.identifier == identifier }
 
+    companion object {
+
+        fun mock(): User =
+            User(
+                id = "id",
+                email = "email@email.com",
+                phoneNumber = "phone_number",
+                daysInStudy = 30,
+                identities = listOf(IntegrationApp.Oura, IntegrationApp.Fitbit),
+                onBoardingCompleted = true,
+                token = "token",
+                customData = emptyList(),
+                timeZone = ZoneId.of("Europe/Paris"),
+                points = 30
+            )
+
+    }
+
 }
 
 data class UserCustomData(

@@ -81,7 +81,7 @@
 
     <fragment
         android:id="@+id/about_you_integration_login"
-        android:name="com.foryouandme.ui.aboutyou.integration.AboutYouIntegrationLoginFragment"
+        android:name="com.foryouandme.ui.aboutyou.integration.IntegrationLoginFragment"
         android:label="about_you_integration_login"
         tools:layout="@layout/about_you_integration_login">
 

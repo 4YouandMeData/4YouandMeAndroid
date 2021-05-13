@@ -81,22 +81,22 @@ fun AppsAndDevicesPage(
                         .background(configuration.theme.verticalGradient),
                     onBack = onBack
                 )
-            }
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 50.dp),
-                verticalArrangement = Arrangement.spacedBy(30.dp),
-                modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(configuration.theme.secondaryColor.value)
-            ) {
-                items(it) {
-                    AppsAndDeviceItem(
-                        item = it,
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        onItemClicked = onAppsAndDeviceItemClicked
-                    )
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 50.dp),
+                    verticalArrangement = Arrangement.spacedBy(30.dp),
+                    modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(configuration.theme.secondaryColor.value)
+                ) {
+                    items(it) {
+                        AppsAndDeviceItem(
+                            item = it,
+                            configuration = configuration,
+                            imageConfiguration = imageConfiguration,
+                            onItemClicked = onAppsAndDeviceItemClicked
+                        )
+                    }
                 }
             }
         }

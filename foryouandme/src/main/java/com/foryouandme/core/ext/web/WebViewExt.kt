@@ -11,26 +11,10 @@ import com.foryouandme.entity.user.User
 import timber.log.Timber
 import java.net.URL
 
-
-@SuppressLint("SetJavaScriptEnabled")
-suspend fun WebView.setupWebViewWithCookiesSuspend(
-    progressBar: ProgressBar,
-    url: String,
-    cookies: Map<String, String>,
-    success: () -> Unit,
-    failure: () -> Unit
-) {
-
-    evalOnMain {
-        setupWebViewWithCookies(progressBar, url, cookies, success, failure)
-    }
-
-}
-
 @SuppressLint("SetJavaScriptEnabled")
 fun WebView.setupWebViewWithCookies(
-    progressBar: ProgressBar,
     url: String,
+    onProgressChanged: (Int) -> Unit,
     cookies: Map<String, String>,
     success: () -> Unit,
     failure: () -> Unit
@@ -49,7 +33,7 @@ fun WebView.setupWebViewWithCookies(
     settings.domStorageEnabled = true
     settings.javaScriptEnabled = true
     webViewClient = getWebClient()
-    webChromeClient = getWebChromeClient(progressBar)
+    webChromeClient = getWebChromeClient(onProgressChanged)
 
     addJavascriptInterface(
         IntegrationLoginInterface(
@@ -103,20 +87,16 @@ private fun getWebClient(): WebViewClient =
 
     }
 
-private fun getWebChromeClient(progressBar: ProgressBar): WebChromeClient =
+private fun getWebChromeClient(onProgressChanged: (Int) -> Unit): WebChromeClient =
     object : WebChromeClient() {
 
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
 
-            progressBar.progress = newProgress
-            progressBar.isVisible = newProgress < 100
+            onProgressChanged(newProgress)
 
         }
     }
 
 fun String.asIntegrationCookies(): Map<String, String> = mapOf("token" to this)
-
-fun User.getIntegrationCookies(): Map<String, String> = token.asIntegrationCookies()
-
 
