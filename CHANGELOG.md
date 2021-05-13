@@ -1,4 +1,10 @@
 
+## Release 0.1.46
+
+- Step skip logic updated
+
+- Survey skip logic fixed
+
 ## Release 0.1.45
 - Bintray dependencies fixed
 
