@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class AboutYouReviewConsentViewModel @Inject constructor(
+class ReviewConsentViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getConsentReviewUseCase: GetConsentReviewUseCase,
     val imageConfiguration: ImageConfiguration
@@ -27,11 +27,11 @@ class AboutYouReviewConsentViewModel @Inject constructor(
 
     /* --- state --- */
 
-    private val state = MutableStateFlow(AboutYouReviewConsentState())
-    val stateFlow = state as StateFlow<AboutYouReviewConsentState>
+    private val state = MutableStateFlow(ReviewConsentState())
+    val stateFlow = state as StateFlow<ReviewConsentState>
 
     init {
-        execute(AboutYouReviewConsentAction.GetConfiguration)
+        execute(ReviewConsentAction.GetConfiguration)
     }
 
     /* --- configuration --- */
@@ -42,7 +42,7 @@ class AboutYouReviewConsentViewModel @Inject constructor(
                 state.emit(state.value.copy(configuration = LazyData.Loading))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
-                execute(AboutYouReviewConsentAction.GetReviewConsent)
+                execute(ReviewConsentAction.GetReviewConsent)
             },
             {
                 state.emit(state.value.copy(configuration = it.toError()))
@@ -79,11 +79,11 @@ class AboutYouReviewConsentViewModel @Inject constructor(
 
     /* --- action --- */
 
-    fun execute(action: AboutYouReviewConsentAction) {
+    fun execute(action: ReviewConsentAction) {
         when (action) {
-            AboutYouReviewConsentAction.GetConfiguration ->
+            ReviewConsentAction.GetConfiguration ->
                 viewModelScope.launchAction(getConfiguration())
-            AboutYouReviewConsentAction.GetReviewConsent ->
+            ReviewConsentAction.GetReviewConsent ->
                 viewModelScope.launchAction(getReviewConsent())
         }
     }

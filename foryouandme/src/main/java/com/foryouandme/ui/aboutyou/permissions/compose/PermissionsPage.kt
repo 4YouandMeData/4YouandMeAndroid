@@ -23,8 +23,8 @@ import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.ui.aboutyou.permissions.*
-import com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsAction.Initialize
-import com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsAction.RequestPermissions
+import com.foryouandme.ui.aboutyou.permissions.PermissionsAction.Initialize
+import com.foryouandme.ui.aboutyou.permissions.PermissionsAction.RequestPermissions
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
@@ -34,19 +34,19 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun AboutYouPermissionsPage(
-    aboutYouPermissionsViewModel: AboutYouPermissionsViewModel = viewModel(),
+fun PermissionsPage(
+    permissionsViewModel: PermissionsViewModel = viewModel(),
     onBack: () -> Unit = {}
 ) {
 
-    val state by aboutYouPermissionsViewModel.stateFlow.collectAsState()
+    val state by permissionsViewModel.stateFlow.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = aboutYouPermissionsViewModel) {
-        aboutYouPermissionsViewModel.events
+    LaunchedEffect(key1 = permissionsViewModel) {
+        permissionsViewModel.events
             .onEach {
                 when (it) {
-                    AboutYouPermissionsEvent.PermissionPermanentlyDenied -> {
+                    PermissionsEvent.PermissionPermanentlyDenied -> {
 
                         val configuration = state.data.orNull()?.configuration
                         if (configuration != null)
@@ -67,16 +67,16 @@ fun AboutYouPermissionsPage(
 
     ForYouAndMeTheme(
         configuration = state.data.map { it.configuration },
-        onConfigurationError = { aboutYouPermissionsViewModel.execute(Initialize) }
+        onConfigurationError = { permissionsViewModel.execute(Initialize) }
     ) { configuration ->
-        AboutYouPermissionsPage(
+        PermissionsPage(
             state = state,
             configuration = configuration,
-            imageConfiguration = aboutYouPermissionsViewModel.imageConfiguration,
+            imageConfiguration = permissionsViewModel.imageConfiguration,
             onBack = onBack,
             onPermissionClicked = {
                 if (it.isAllowed.not())
-                    aboutYouPermissionsViewModel.execute(RequestPermissions(it.permission))
+                    permissionsViewModel.execute(RequestPermissions(it.permission))
             }
         )
     }
@@ -84,8 +84,8 @@ fun AboutYouPermissionsPage(
 }
 
 @Composable
-fun AboutYouPermissionsPage(
-    state: AboutYouPermissionsState,
+fun PermissionsPage(
+    state: PermissionsState,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     onBack: () -> Unit = {},
@@ -114,7 +114,7 @@ fun AboutYouPermissionsPage(
                         .background(configuration.theme.secondaryColor.value)
                 ) {
                     items(state.data.value.permissions) {
-                        AboutYouPermission(
+                        PermissionItem(
                             item = it,
                             configuration = configuration,
                             onItemClicked = onPermissionClicked
@@ -127,13 +127,13 @@ fun AboutYouPermissionsPage(
 
 @Preview
 @Composable
-fun AboutYouPermissionsPagePreview() {
+fun PermissionsPagePreview() {
     ForYouAndMeTheme {
-        AboutYouPermissionsPage(
+        PermissionsPage(
             state =
-            AboutYouPermissionsState(
+            PermissionsState(
                 data =
-                AboutYouPermissionsData(
+                PermissionsData(
                     permissions = listOf(
                         PermissionsItem(
                             configuration = Configuration.mock(),

@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentAction.GetConfiguration
-import com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentAction.GetReviewConsent
-import com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentState
-import com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentViewModel
+import com.foryouandme.ui.aboutyou.review.ReviewConsentAction.GetConfiguration
+import com.foryouandme.ui.aboutyou.review.ReviewConsentAction.GetReviewConsent
+import com.foryouandme.ui.aboutyou.review.ReviewConsentState
+import com.foryouandme.ui.aboutyou.review.ReviewConsentViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.items.consent.ConsentReviewPageItem
 import com.foryouandme.ui.compose.lazydata.LoadingError
@@ -27,31 +27,31 @@ import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 import com.foryouandme.ui.compose.verticalGradient
 
 @Composable
-fun AboutYouReviewConsentPage(
-    aboutYouReviewConsentViewModel: AboutYouReviewConsentViewModel = viewModel(),
+fun ReviewConsentPage(
+    reviewConsentViewModel: ReviewConsentViewModel = viewModel(),
     onBack: () -> Unit = {},
 ) {
 
-    val state by aboutYouReviewConsentViewModel.stateFlow.collectAsState()
+    val state by reviewConsentViewModel.stateFlow.collectAsState()
 
     ForYouAndMeTheme(
         configuration = state.configuration,
-        onConfigurationError = { aboutYouReviewConsentViewModel.execute(GetConfiguration) }
+        onConfigurationError = { reviewConsentViewModel.execute(GetConfiguration) }
     ) {
-        AboutYouReviewConsentPage(
+        ReviewConsentPage(
             state = state,
             configuration = it,
-            imageConfiguration = aboutYouReviewConsentViewModel.imageConfiguration,
+            imageConfiguration = reviewConsentViewModel.imageConfiguration,
             onBack = onBack,
-            onConsentReviewError = { aboutYouReviewConsentViewModel.execute(GetReviewConsent) }
+            onConsentReviewError = { reviewConsentViewModel.execute(GetReviewConsent) }
         )
     }
 
 }
 
 @Composable
-fun AboutYouReviewConsentPage(
-    state: AboutYouReviewConsentState,
+fun ReviewConsentPage(
+    state: ReviewConsentState,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     onBack: () -> Unit = {},

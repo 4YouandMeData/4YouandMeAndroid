@@ -11,8 +11,8 @@
         android:label="about_you_menu" >
 
         <action
-            android:id="@+id/action_about_you_menu_to_about_you_review_consent"
-            app:destination="@id/about_you_review_consent"
+            android:id="@+id/action_about_you_menu_review_consent"
+            app:destination="@id/review_consent"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -27,8 +27,8 @@
             app:popExitAnim="@anim/slide_to_right" />
 
         <action
-            android:id="@+id/action_about_you_menu_to_about_you_permissions"
-            app:destination="@id/about_you_permissions"
+            android:id="@+id/action_about_you_menu_to_permissions"
+            app:destination="@id/permissions"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -53,8 +53,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/about_you_review_consent"
-        android:name="com.foryouandme.ui.aboutyou.review.AboutYouReviewConsentFragment"
+        android:id="@+id/review_consent"
+        android:name="com.foryouandme.ui.aboutyou.review.ReviewConsentFragment"
         android:label="AboutYouReviewConsentFragment" />
 
     <fragment
@@ -64,7 +64,7 @@
 
         <action
             android:id="@+id/action_apps_and_devices_to_integration_login"
-            app:destination="@id/about_you_integration_login"
+            app:destination="@id/integration_login"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -80,10 +80,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/about_you_integration_login"
+        android:id="@+id/integration_login"
         android:name="com.foryouandme.ui.aboutyou.integration.IntegrationLoginFragment"
-        android:label="about_you_integration_login"
-        tools:layout="@layout/about_you_integration_login">
+        android:label="integration_login">
 
         <argument
             android:name="url"
@@ -92,9 +91,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/about_you_permissions"
-        android:name="com.foryouandme.ui.aboutyou.permissions.AboutYouPermissionsFragment"
-        android:label="about_you_permissions" />
+        android:id="@+id/permissions"
+        android:name="com.foryouandme.ui.aboutyou.permissions.PermissionsFragment"
+        android:label="permissions" />
 
     <fragment
         android:id="@+id/about_you_user_info"

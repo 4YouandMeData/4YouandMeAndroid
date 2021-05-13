@@ -165,14 +165,14 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
             is MainToTask ->
                 mainToTask(action.id)
 
-            is AboutYouMenuPageToAboutYouReviewConsentPage ->
-                aboutYouMenuPageToAboutYouReviewConsentPage()
+            is AboutYouMenuToReviewConsent ->
+                aboutYouMenuToReviewConsent()
             is AboutYouMenuToAppsAndDevices ->
                 aboutYouMenuToAppsAndDevices()
             is AppsAndDevicesToIntegrationLogin ->
                 appsAndDevicesToIntegrationLogin(action.url)
-            is AboutYouMenuPageToPermissionsPage ->
-                aboutYouMenuPageToPermissionsPage()
+            is AboutYouMenuToPermissions ->
+                aboutYouMenuToPermissions()
             is AboutYouMenuPageToUserInfoPage ->
                 aboutYouMenuPageToUserInfoPage()
             is AboutYouMenuPageToDailySurveyTimePage ->

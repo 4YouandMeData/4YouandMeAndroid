@@ -40,13 +40,13 @@ class AboutYouMenuFragment : AboutYouSectionFragment() {
                     onReviewConsentClicked = {
                         navigator.navigateTo(
                             aboutYouNavController(),
-                            AboutYouMenuPageToAboutYouReviewConsentPage
+                            AboutYouMenuToReviewConsent
                         )
                     },
                     onPermissionsClicked = {
                         navigator.navigateTo(
                             aboutYouNavController(),
-                            AboutYouMenuPageToPermissionsPage
+                            AboutYouMenuToPermissions
                         )
                     },
                     onDailySurveyTimeClicked = {

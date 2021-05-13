@@ -19,6 +19,7 @@ import com.foryouandme.domain.usecase.permission.IsPermissionGrantedUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.permission.PermissionResult
+import com.foryouandme.ui.aboutyou.permissions.compose.PermissionsItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -29,7 +30,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class AboutYouPermissionsViewModel @Inject constructor(
+class PermissionsViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
@@ -39,15 +40,15 @@ class AboutYouPermissionsViewModel @Inject constructor(
 
     /* --- state --- */
 
-    private val state = MutableStateFlow(AboutYouPermissionsState())
-    val stateFlow = state as StateFlow<AboutYouPermissionsState>
+    private val state = MutableStateFlow(PermissionsState())
+    val stateFlow = state as StateFlow<PermissionsState>
 
-    private val eventChannel = Channel<AboutYouPermissionsEvent>(Channel.BUFFERED)
+    private val eventChannel = Channel<PermissionsEvent>(Channel.BUFFERED)
     val events = eventChannel.receiveAsFlow()
 
     init {
-        execute(AboutYouPermissionsAction.Initialize)
-        execute(AboutYouPermissionsAction.ScreenViewed)
+        execute(PermissionsAction.Initialize)
+        execute(PermissionsAction.ScreenViewed)
     }
 
     /* --- initialize --- */
@@ -77,7 +78,7 @@ class AboutYouPermissionsViewModel @Inject constructor(
 
                     state.emit(
                         state.value.copy(
-                            data = AboutYouPermissionsData(
+                            data = PermissionsData(
                                 permissions = permissions,
                                 configuration = configuration.await()
                             ).toData()
@@ -101,7 +102,7 @@ class AboutYouPermissionsViewModel @Inject constructor(
             permissionRequest is PermissionResult.Denied &&
             permissionRequest.isPermanentlyDenied
         )
-            eventChannel.send(AboutYouPermissionsEvent.PermissionPermanentlyDenied)
+            eventChannel.send(PermissionsEvent.PermissionPermanentlyDenied)
         else {
             val data =
                 state.value.data.map { data ->
@@ -129,13 +130,13 @@ class AboutYouPermissionsViewModel @Inject constructor(
 
     /* --- actions --- */
 
-    fun execute(action: AboutYouPermissionsAction) {
+    fun execute(action: PermissionsAction) {
         when (action) {
-            AboutYouPermissionsAction.Initialize ->
+            PermissionsAction.Initialize ->
                 viewModelScope.launchAction(initialize())
-            is AboutYouPermissionsAction.RequestPermissions ->
+            is PermissionsAction.RequestPermissions ->
                 viewModelScope.launchSafe { requestPermission(action.permission) }
-            AboutYouPermissionsAction.ScreenViewed ->
+            PermissionsAction.ScreenViewed ->
                 viewModelScope.launchSafe { logScreenViewed() }
         }
     }

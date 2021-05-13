@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
-import com.foryouandme.ui.aboutyou.permissions.compose.AboutYouPermissionsPage
+import com.foryouandme.ui.aboutyou.permissions.compose.PermissionsPage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AboutYouPermissionsFragment : AboutYouSectionFragment() {
+class PermissionsFragment : AboutYouSectionFragment() {
 
-    private val viewModel: AboutYouPermissionsViewModel by viewModels()
+    private val viewModel: PermissionsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,8 +22,8 @@ class AboutYouPermissionsFragment : AboutYouSectionFragment() {
     ): View =
         ComposeView(requireContext()).apply {
             setContent {
-                AboutYouPermissionsPage(
-                    aboutYouPermissionsViewModel = viewModel,
+                PermissionsPage(
+                    permissionsViewModel = viewModel,
                     onBack = { back() }
                 )
             }

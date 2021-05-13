@@ -4,9 +4,9 @@ import com.foryouandme.core.arch.navigation.NavigationExecution
 import com.foryouandme.ui.aboutyou.appsanddevices.AppsAndDevicesFragmentDirections
 import com.foryouandme.ui.aboutyou.menu.AboutYouMenuFragmentDirections
 
-fun aboutYouMenuPageToAboutYouReviewConsentPage(): NavigationExecution =
+fun aboutYouMenuToReviewConsent(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouReviewConsent())
+        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuReviewConsent())
     }
 
 fun aboutYouMenuToAppsAndDevices(): NavigationExecution =
@@ -21,9 +21,9 @@ fun appsAndDevicesToIntegrationLogin(url: String): NavigationExecution =
         )
     }
 
-fun aboutYouMenuPageToPermissionsPage(): NavigationExecution =
+fun aboutYouMenuToPermissions(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouPermissions())
+        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToPermissions())
     }
 
 fun aboutYouMenuPageToUserInfoPage(): NavigationExecution =

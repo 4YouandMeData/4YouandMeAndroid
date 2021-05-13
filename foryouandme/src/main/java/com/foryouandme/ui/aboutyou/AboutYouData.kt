@@ -27,7 +27,7 @@ sealed class AboutYouError {
 
 /* --- navigation --- */
 
-object AboutYouMenuPageToAboutYouReviewConsentPage : NavigationAction
+object AboutYouMenuToReviewConsent : NavigationAction
 
 object AboutYouMenuToAppsAndDevices : NavigationAction
 
@@ -35,7 +35,7 @@ data class AppsAndDevicesToIntegrationLogin(
     val url: String
 ) : NavigationAction
 
-object AboutYouMenuPageToPermissionsPage : NavigationAction
+object AboutYouMenuToPermissions : NavigationAction
 
 object AboutYouMenuPageToUserInfoPage : NavigationAction
 
