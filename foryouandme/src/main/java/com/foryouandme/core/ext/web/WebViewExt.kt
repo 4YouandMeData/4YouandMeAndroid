@@ -22,7 +22,7 @@ suspend fun WebView.setupWebViewWithCookiesSuspend(
 ) {
 
     evalOnMain {
-        setupWebViewWithCookiesSuspend(progressBar, url, cookies, success, failure)
+        setupWebViewWithCookies(progressBar, url, cookies, success, failure)
     }
 
 }

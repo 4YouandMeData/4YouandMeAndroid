@@ -167,10 +167,10 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
 
             is AboutYouMenuPageToAboutYouReviewConsentPage ->
                 aboutYouMenuPageToAboutYouReviewConsentPage()
-            is AboutYouMenuPageToAppsAndDevicesPage ->
-                aboutYouMenuPageToAboutYouAppsAndDevicesPage()
-            is AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin ->
-                aboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(action.url)
+            is AboutYouMenuToAppsAndDevices ->
+                aboutYouMenuToAppsAndDevices()
+            is AppsAndDevicesToIntegrationLogin ->
+                appsAndDevicesToIntegrationLogin(action.url)
             is AboutYouMenuPageToPermissionsPage ->
                 aboutYouMenuPageToPermissionsPage()
             is AboutYouMenuPageToUserInfoPage ->

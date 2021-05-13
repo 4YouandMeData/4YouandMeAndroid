@@ -29,9 +29,9 @@ sealed class AboutYouError {
 
 object AboutYouMenuPageToAboutYouReviewConsentPage : NavigationAction
 
-object AboutYouMenuPageToAppsAndDevicesPage : NavigationAction
+object AboutYouMenuToAppsAndDevices : NavigationAction
 
-data class AboutYouDataAppsAndDevicesToAboutYouIntegrationLogin(
+data class AppsAndDevicesToIntegrationLogin(
     val url: String
 ) : NavigationAction
 

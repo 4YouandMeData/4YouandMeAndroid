@@ -19,8 +19,8 @@
             app:popExitAnim="@anim/slide_to_right" />
 
         <action
-            android:id="@+id/action_about_you_menu_to_about_you_apps_and_devices"
-            app:destination="@id/about_you_apps_and_devices"
+            android:id="@+id/action_about_you_menu_to_apps_and_devices"
+            app:destination="@id/apps_and_devices"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -58,13 +58,12 @@
         android:label="AboutYouReviewConsentFragment" />
 
     <fragment
-        android:id="@+id/about_you_apps_and_devices"
-        android:name="com.foryouandme.ui.aboutyou.appsanddevices.AboutYouAppsAndDevicesFragment"
-        android:label="AboutYouAppsAndDevicesFragment"
-        tools:layout="@layout/apps_and_devices">
+        android:id="@+id/apps_and_devices"
+        android:name="com.foryouandme.ui.aboutyou.appsanddevices.AppsAndDevicesFragment"
+        android:label="apps_and_devices" >
 
         <action
-            android:id="@+id/action_about_you_apps_and_devices_to_about_you_integration_login"
+            android:id="@+id/action_apps_and_devices_to_integration_login"
             app:destination="@id/about_you_integration_login"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"

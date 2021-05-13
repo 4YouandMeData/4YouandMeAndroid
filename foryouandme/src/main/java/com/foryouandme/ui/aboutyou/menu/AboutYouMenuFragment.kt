@@ -34,7 +34,7 @@ class AboutYouMenuFragment : AboutYouSectionFragment() {
                     onDevicesClicked = {
                         navigator.navigateTo(
                             aboutYouNavController(),
-                            AboutYouMenuPageToAppsAndDevicesPage
+                            AboutYouMenuToAppsAndDevices
                         )
                     },
                     onReviewConsentClicked = {
