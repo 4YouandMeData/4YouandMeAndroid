@@ -144,6 +144,10 @@ class MainFragment : BaseFragment(R.layout.main) {
                 configuration.theme.secondaryMenuColor.color()
             )
 
+        viewBinding?.bottomNavigation?.setBackgroundColor(
+            configuration.theme.secondaryColor.color()
+        )
+
         val navGraphIds = viewModel.getPagedIds()
 
         viewBinding?.bottomNavigation?.selectedItemId = viewModel.state.restorePage

@@ -118,8 +118,6 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun pushNotification(): Int = R.drawable.push_notifications
 
-    override fun editContainer(): Int = R.drawable.edit_container
-
     override fun pencil(): Int = R.drawable.pencil
 
     override fun instagram(): Int = R.drawable.instagram

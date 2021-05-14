@@ -54,7 +54,10 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUserCustomData(token: String, data: List<UserCustomData>) {
-        authErrorInterceptor.execute { api.updateUserCustomData(token, data.asRequest()) }
+        authErrorInterceptor.execute {
+            api.updateUserCustomData(token, data.asRequest())
+            user = user?.copy(customData = data)
+        }
     }
 
     override suspend fun updateUserFirebaseToken(token: String, firebaseToken: String) {

@@ -97,7 +97,7 @@
 
     <fragment
         android:id="@+id/about_you_user_info"
-        android:name="com.foryouandme.ui.aboutyou.userInfo.AboutYouUserInfoFragment"
+        android:name="com.foryouandme.ui.aboutyou.userInfo.UserInfoFragment"
         android:label="about_you_user_info"
         tools:layout="@layout/user_info" />
 

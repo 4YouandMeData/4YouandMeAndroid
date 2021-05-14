@@ -187,10 +187,7 @@ interface ImageConfiguration {
     @DrawableRes
     fun pushNotification(): Int
 
-    /*--- your pregnancy ---*/
-
-    @DrawableRes
-    fun editContainer(): Int
+    /*--- user info ---*/
 
     @DrawableRes
     fun pencil(): Int
@@ -257,7 +254,6 @@ interface ImageConfiguration {
                 override fun deactivatedButton(): Int = R.drawable.placeholder
                 override fun location(): Int = R.drawable.placeholder
                 override fun pushNotification(): Int = R.drawable.placeholder
-                override fun editContainer(): Int = R.drawable.placeholder
                 override fun pencil(): Int = R.drawable.placeholder
             }
 

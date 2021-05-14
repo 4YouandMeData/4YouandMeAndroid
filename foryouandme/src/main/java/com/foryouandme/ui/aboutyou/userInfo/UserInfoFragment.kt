@@ -1,87 +1,87 @@
 package com.foryouandme.ui.aboutyou.userInfo
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.foryouandme.R
-import com.foryouandme.ui.aboutyou.AboutYouSectionFragmentOld
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
+import com.foryouandme.core.ext.dpToPx
+import com.foryouandme.core.ext.evalOnMain
+import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.*
+import com.foryouandme.ui.aboutyou.AboutYouSectionFragment
+import com.foryouandme.ui.aboutyou.userInfo.compose.UserInfoPage
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.user_info.*
 
-class AboutYouUserInfoFragment :
-    AboutYouSectionFragmentOld<AboutYouUserInfoViewModel>(R.layout.user_info) {
-    override val viewModel: AboutYouUserInfoViewModel by lazy {
+@AndroidEntryPoint
+class UserInfoFragment : AboutYouSectionFragment() {
 
-        viewModelFactory(
-            this,
-            getFactory {
-                AboutYouUserInfoViewModel(
-                    navigator,
-                    injector.authModule()
-                )
-            }
-        )
-
-    }
+    private val viewModel: UserInfoViewModel by viewModels()
 
     private val adapter: DroidAdapter by lazy {
 
         DroidAdapter(
-            EntryStringViewHolder.factory { item, text ->
-                startCoroutineAsync { viewModel.updateTextItem(item.id, text) }
-            },
-            EntryDateViewHolder.factory { item, date ->
-                startCoroutineAsync { viewModel.updateDateItem(item.id, date) }
-            },
-            EntryPickerViewHolder.factory { item, value ->
-                startCoroutineAsync { viewModel.updatePickerItem(item.id, value) }
-            }
+
         )
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.stateLiveData()
-            .observeEvent(name()) { update ->
-                when (update) {
-                    is AboutYouUserInfoStateUpdate.EditMode ->
-                        configuration {
-                            bindEditMode(it, update.isEditing)
-                            applyItems(update.items)
-                        }
-                    is AboutYouUserInfoStateUpdate.Items ->
-                        startCoroutineAsync { applyItems(update.items) }
-                }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                UserInfoPage(
+                    userInfoViewModel = viewModel,
+                    onBack = { back() }
+                )
             }
+        }
 
-        viewModel.loadingLiveData()
-            .observeEvent(name()) {
-                when (it.task) {
-                    AboutYouUserInfoLoading.Upload ->
-                        loading.setVisibility(it.active, true)
-                }
-            }
+    /* override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
 
-        viewModel.errorLiveData()
-            .observeEvent(name()) {
-                when (it.cause) {
-                    AboutYouUserInfoError.Upload -> errorToast(it.error)
-                }
-            }
+         viewModel.stateLiveData()
+             .observeEvent(name()) { update ->
+                 when (update) {
+                     is AboutYouUserInfoStateUpdate.EditMode ->
+                         configuration {
+                             bindEditMode(it, update.isEditing)
+                             applyItems(update.items)
+                         }
+                     is AboutYouUserInfoStateUpdate.Items ->
+                         startCoroutineAsync { applyItems(update.items) }
+                 }
+             }
 
-    }
+         viewModel.loadingLiveData()
+             .observeEvent(name()) {
+                 when (it.task) {
+                     AboutYouUserInfoLoading.Upload ->
+                         loading.setVisibility(it.active, true)
+                 }
+             }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+         viewModel.errorLiveData()
+             .observeEvent(name()) {
+                 when (it.cause) {
+                     AboutYouUserInfoError.Upload -> errorToast(it.error)
+                 }
+             }
+
+     }*/
+
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         refreshUserAndConfiguration { config, user ->
@@ -96,12 +96,12 @@ class AboutYouUserInfoFragment :
             bindEditMode(config, viewModel.state().isEditing)
 
         }
-    }
+    }*/
 
     private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
 
-            setStatusBar(configuration.theme.primaryColorStart.color())
+            /*setStatusBar(configuration.theme.primaryColorStart.color())
 
             root.setBackgroundColor(configuration.theme.secondaryColor.color())
 
@@ -127,7 +127,7 @@ class AboutYouUserInfoFragment :
 
             pencil.setImageResource(imageConfiguration.pencil())
 
-            edit_save_text.setTextColor(configuration.theme.secondaryTextColor.color())
+            edit_save_text.setTextColor(configuration.theme.secondaryTextColor.color())*/
 
         }
 
