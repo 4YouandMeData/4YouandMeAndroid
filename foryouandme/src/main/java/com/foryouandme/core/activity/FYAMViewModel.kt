@@ -51,6 +51,8 @@ class FYAMViewModel @Inject constructor(
             if (splashLoading) getConfigurationWithSplash()
             else getConfiguration()
 
+        // try to refresh configuration in background
+        viewModelScope.launchSafe { getConfigurationUseCase(Policy.Network) }
 
         val initializedState =
             FYAMState(
