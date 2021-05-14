@@ -23,6 +23,7 @@ import com.foryouandme.ui.aboutyou.AboutYouState
 import com.foryouandme.ui.aboutyou.AboutYouViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
+import com.foryouandme.ui.compose.menu.MenuItem
 import com.foryouandme.ui.compose.statusbar.StatusBar
 import org.threeten.bp.ZoneId
 
@@ -102,14 +103,14 @@ fun AboutYouPage(
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
                     if (it.customData.isNotEmpty())
-                        AboutYouItem(
+                        MenuItem(
                             text = configuration.text.profile.firstItem,
                             icon = imageConfiguration.pregnancy(),
                             configuration = configuration,
                             imageConfiguration = imageConfiguration,
                             onClick = onPregnancyClicked
                         )
-                    AboutYouItem(
+                    MenuItem(
                         text = configuration.text.profile.secondItem,
                         icon = imageConfiguration.devices(),
                         configuration = configuration,
@@ -130,14 +131,14 @@ fun AboutYouPage(
                                 .background(configuration.theme.fourthTextColor.value)
                         )
                     }
-                    AboutYouItem(
+                    MenuItem(
                         text = configuration.text.profile.thirdItem,
                         icon = imageConfiguration.reviewConsent(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
                         onClick = onReviewConsentClicked
                     )
-                    AboutYouItem(
+                    MenuItem(
                         text = configuration.text.profile.fourthItem,
                         icon = imageConfiguration.permissions(),
                         configuration = configuration,
@@ -145,7 +146,7 @@ fun AboutYouPage(
                         onClick = onPermissionsClicked
                     )
                     if (configuration.text.profile.dailySurveyTimingHidden == 0)
-                        AboutYouItem(
+                        MenuItem(
                             text = configuration.text.profile.fifthItem,
                             icon = imageConfiguration.dailySurveyTime(),
                             configuration = configuration,

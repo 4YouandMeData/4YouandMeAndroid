@@ -43,12 +43,12 @@ sealed class MainStateEvent {
 
 /* --- navigation --- */
 
-object MainPageToAboutYouPage : NavigationAction
+object MainToAboutYou : NavigationAction
 
-object MainPageToInformation : NavigationAction
+object MainToInformation : NavigationAction
 
-object MainPageToReward : NavigationAction
+object MainToReward : NavigationAction
 
-object MainPageToFaq : NavigationAction
+object MaiToFAQ : NavigationAction
 
 data class MainToTask(val id: String) : NavigationAction

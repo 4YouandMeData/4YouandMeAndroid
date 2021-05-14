@@ -1,4 +1,4 @@
-package com.foryouandme.ui.aboutyou.compose
+package com.foryouandme.ui.compose.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
 
 @Composable
-fun AboutYouItem(
+fun MenuItem(
     text: String,
     icon: Int,
     configuration: Configuration,
@@ -59,8 +59,8 @@ fun AboutYouItem(
 
 @Preview
 @Composable
-private fun AboutYouItemPreview() {
-    AboutYouItem(
+private fun MenuItemPreview() {
+    MenuItem(
         text = Mock.title,
         icon = R.drawable.placeholder,
         configuration = Configuration.mock(),

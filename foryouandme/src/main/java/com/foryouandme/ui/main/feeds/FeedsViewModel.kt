@@ -39,10 +39,10 @@ import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
 import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
-import com.foryouandme.ui.main.MainPageToAboutYouPage
-import com.foryouandme.ui.main.MainPageToFaq
-import com.foryouandme.ui.main.MainPageToInformation
-import com.foryouandme.ui.main.MainPageToReward
+import com.foryouandme.ui.main.MainToAboutYou
+import com.foryouandme.ui.main.MaiToFAQ
+import com.foryouandme.ui.main.MainToInformation
+import com.foryouandme.ui.main.MainToReward
 import com.foryouandme.ui.main.items.*
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
@@ -481,7 +481,7 @@ class FeedsViewModel(
     suspend fun aboutYouPage(rootNavController: RootNavController): Unit =
         navigator.navigateToSuspend(
             rootNavController,
-            MainPageToAboutYouPage
+            MainToAboutYou
         )
 
     suspend fun web(rootNavController: RootNavController, url: String): Unit =
@@ -496,19 +496,19 @@ class FeedsViewModel(
     suspend fun info(navController: RootNavController): Unit =
         navigator.navigateToSuspend(
             navController,
-            MainPageToInformation
+            MainToInformation
         )
 
     suspend fun reward(navController: RootNavController): Unit =
         navigator.navigateToSuspend(
             navController,
-            MainPageToReward
+            MainToReward
         )
 
     suspend fun faq(navController: RootNavController): Unit =
         navigator.navigateToSuspend(
             navController,
-            MainPageToFaq
+            MaiToFAQ
         )
 
     /* --- analytics --- */

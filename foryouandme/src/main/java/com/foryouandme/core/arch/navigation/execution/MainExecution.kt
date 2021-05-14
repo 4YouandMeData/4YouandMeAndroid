@@ -6,22 +6,22 @@ import com.foryouandme.ui.htmldetails.EHtmlDetails
 import com.foryouandme.ui.main.MainFragmentDirections
 import com.foryouandme.ui.tasks.TaskFragment
 
-fun mainPageToAboutYouPage(): NavigationExecution =
+fun mainToAboutYouPage(): NavigationExecution =
     {
         it.navigate(MainFragmentDirections.actionMainToAboutYou())
     }
 
-fun mainPageToInformation(): NavigationExecution =
+fun mainToInformation(): NavigationExecution =
     {
         it.navigate(MainFragmentDirections.actionMainToHtmlDetails(EHtmlDetails.INFO))
     }
 
-fun mainPageToReward(): NavigationExecution =
+fun mainToReward(): NavigationExecution =
     {
         it.navigate(MainFragmentDirections.actionMainToHtmlDetails(EHtmlDetails.REWARD))
     }
 
-fun mainPageToFaq(): NavigationExecution =
+fun mainToFaq(): NavigationExecution =
     {
         it.navigate(MainFragmentDirections.actionMainToHtmlDetails(EHtmlDetails.FAQ))
     }
