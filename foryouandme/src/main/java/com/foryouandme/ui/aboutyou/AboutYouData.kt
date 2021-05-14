@@ -1,42 +1,29 @@
 package com.foryouandme.ui.aboutyou
 
+import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.navigation.NavigationAction
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
 
-data class AboutYouState(val user: User)
+data class AboutYouState(
+    val user: LazyData<User> = LazyData.Empty,
+    val configuration: LazyData<Configuration> = LazyData.Empty
+)
 
-sealed class AboutYouStateUpdate {
-
-    data class Initialization(val user: User) : AboutYouStateUpdate()
-    data class Refresh(val user: User) : AboutYouStateUpdate()
-
-}
-
-sealed class AboutYouLoading {
-
-    object Initialization : AboutYouLoading()
-    object Refresh : AboutYouLoading()
-
-}
-
-sealed class AboutYouError {
-
-    object Initialization : AboutYouError()
-    object Refresh : AboutYouError()
+sealed class AboutYouAction {
+    object GetUser: AboutYouAction()
+    object GetConfiguration: AboutYouAction()
+    object ScreenViewed: AboutYouAction()
 }
 
 /* --- navigation --- */
 
-object AboutYouMenuToReviewConsent : NavigationAction
+object AboutYouToReviewConsent : NavigationAction
 
-object AboutYouMenuToAppsAndDevices : NavigationAction
+object AboutYouToAppsAndDevices : NavigationAction
 
-data class AppsAndDevicesToIntegrationLogin(
-    val url: String
-) : NavigationAction
+object AboutYouToPermissions : NavigationAction
 
-object AboutYouMenuToPermissions : NavigationAction
+object AboutYouToUserInfo : NavigationAction
 
-object AboutYouMenuPageToUserInfoPage : NavigationAction
-
-object AboutYouMenuPageToDailySurveyTimePage : NavigationAction
+object AboutYouToDailySurveyTime : NavigationAction

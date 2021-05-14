@@ -1,17 +1,17 @@
 package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.core.arch.navigation.NavigationExecution
-import com.foryouandme.ui.aboutyou.appsanddevices.AppsAndDevicesFragmentDirections
-import com.foryouandme.ui.aboutyou.menu.AboutYouMenuFragmentDirections
+import com.foryouandme.ui.aboutyou.AboutYouFragmentDirections
+import com.foryouandme.ui.appsanddevices.AppsAndDevicesFragmentDirections
 
-fun aboutYouMenuToReviewConsent(): NavigationExecution =
+fun aboutYouToReviewConsent(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuReviewConsent())
+        it.navigate(AboutYouFragmentDirections.actionAboutYouToReviewConsent())
     }
 
-fun aboutYouMenuToAppsAndDevices(): NavigationExecution =
+fun aboutYouToAppsAndDevices(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAppsAndDevices())
+        it.navigate(AboutYouFragmentDirections.actionAboutYouToAppsAndDevices())
     }
 
 fun appsAndDevicesToIntegrationLogin(url: String): NavigationExecution =
@@ -21,17 +21,17 @@ fun appsAndDevicesToIntegrationLogin(url: String): NavigationExecution =
         )
     }
 
-fun aboutYouMenuToPermissions(): NavigationExecution =
+fun aboutYouToPermissions(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToPermissions())
+        it.navigate(AboutYouFragmentDirections.actionAboutYouToPermissions())
     }
 
-fun aboutYouMenuPageToUserInfoPage(): NavigationExecution =
+fun aboutYouToUserInfo(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouUserInfo())
+        it.navigate(AboutYouFragmentDirections.actionAboutYouToUserInfo())
     }
 
-fun aboutYouMenuPageToDailySurveyTimePage(): NavigationExecution =
+fun aboutYouToDailySurveyTime(): NavigationExecution =
     {
-        it.navigate(AboutYouMenuFragmentDirections.actionAboutYouMenuToAboutYouDailySurveyTime())
+        it.navigate(AboutYouFragmentDirections.actionMenuToDailySurveyTime())
     }

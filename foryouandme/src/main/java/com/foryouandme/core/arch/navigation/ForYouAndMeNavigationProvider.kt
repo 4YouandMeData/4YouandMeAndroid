@@ -2,6 +2,7 @@ package com.foryouandme.core.arch.navigation
 
 import com.foryouandme.core.arch.navigation.execution.*
 import com.foryouandme.ui.aboutyou.*
+import com.foryouandme.ui.appsanddevices.AppsAndDevicesToIntegrationLogin
 import com.foryouandme.ui.auth.onboarding.OnboardingStepToOnboardingStep
 import com.foryouandme.ui.auth.onboarding.OnboardingToMain
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.*
@@ -165,18 +166,18 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
             is MainToTask ->
                 mainToTask(action.id)
 
-            is AboutYouMenuToReviewConsent ->
-                aboutYouMenuToReviewConsent()
-            is AboutYouMenuToAppsAndDevices ->
-                aboutYouMenuToAppsAndDevices()
+            is AboutYouToReviewConsent ->
+                aboutYouToReviewConsent()
+            is AboutYouToAppsAndDevices ->
+                aboutYouToAppsAndDevices()
             is AppsAndDevicesToIntegrationLogin ->
                 appsAndDevicesToIntegrationLogin(action.url)
-            is AboutYouMenuToPermissions ->
-                aboutYouMenuToPermissions()
-            is AboutYouMenuPageToUserInfoPage ->
-                aboutYouMenuPageToUserInfoPage()
-            is AboutYouMenuPageToDailySurveyTimePage ->
-                aboutYouMenuPageToDailySurveyTimePage()
+            is AboutYouToPermissions ->
+                aboutYouToPermissions()
+            is AboutYouToUserInfo ->
+                aboutYouToUserInfo()
+            is AboutYouToDailySurveyTime ->
+                aboutYouToDailySurveyTime()
 
             else -> {
                 {}

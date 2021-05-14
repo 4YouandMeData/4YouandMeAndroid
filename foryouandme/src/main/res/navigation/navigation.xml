@@ -73,20 +73,20 @@
             app:popExitAnim="@anim/slide_to_right" />
 
         <action
-            android:id="@+id/action_main_to_about_you"
-            app:destination="@id/about_you"
-            app:enterAnim="@anim/slide_from_top"
-            app:exitAnim="@anim/idle"
-            app:popEnterAnim="@anim/idle"
-            app:popExitAnim="@anim/slide_to_top" />
-
-        <action
             android:id="@+id/action_main_to_html_details"
             app:destination="@id/html_details"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_main_to_about_you"
+            app:destination="@id/about_you"
+            app:enterAnim="@anim/slide_from_top"
+            app:exitAnim="@anim/idle"
+            app:popEnterAnim="@anim/idle"
+            app:popExitAnim="@anim/slide_to_top"  />
 
 
     </fragment>
@@ -100,7 +100,103 @@
     <fragment
         android:id="@+id/about_you"
         android:name="com.foryouandme.ui.aboutyou.AboutYouFragment"
-        android:label="AboutYouFragment" />
+        android:label="about_you" >
+
+        <action
+            android:id="@+id/action_about_you_to_review_consent"
+            app:destination="@id/review_consent"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_about_you_to_apps_and_devices"
+            app:destination="@id/apps_and_devices"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_about_you_to_permissions"
+            app:destination="@id/permissions"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_about_you_to_user_info"
+            app:destination="@id/user_info"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+        <action
+            android:id="@+id/action_menu_to_daily_survey_time"
+            app:destination="@id/daily_survey_time"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/review_consent"
+        android:name="com.foryouandme.ui.review.ReviewConsentFragment"
+        android:label="AboutYouReviewConsentFragment" />
+
+    <fragment
+        android:id="@+id/apps_and_devices"
+        android:name="com.foryouandme.ui.appsanddevices.AppsAndDevicesFragment"
+        android:label="apps_and_devices" >
+
+        <action
+            android:id="@+id/action_apps_and_devices_to_integration_login"
+            app:destination="@id/integration_login"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right">
+
+            <argument
+                android:name="url"
+                app:argType="string" />
+
+        </action>
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/integration_login"
+        android:name="com.foryouandme.ui.integration.IntegrationLoginFragment"
+        android:label="integration_login">
+
+        <argument
+            android:name="url"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/permissions"
+        android:name="com.foryouandme.ui.permissions.PermissionsFragment"
+        android:label="permissions" />
+
+    <fragment
+        android:id="@+id/user_info"
+        android:name="com.foryouandme.ui.userInfo.UserInfoFragment"
+        android:label="user_info" />
+
+    <fragment
+        android:id="@+id/daily_survey_time"
+        android:name="com.foryouandme.ui.dailysurveytime.DailySurveyTimeFragment"
+        android:label="daily_survey_time"
+        tools:layout="@layout/daily_survey_time" />
 
     <fragment
         android:id="@+id/html_details"

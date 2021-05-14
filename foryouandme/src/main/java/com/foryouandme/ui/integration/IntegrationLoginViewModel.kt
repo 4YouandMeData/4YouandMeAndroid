@@ -1,4 +1,4 @@
-package com.foryouandme.ui.aboutyou
+package com.foryouandme.ui.integration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,22 +22,21 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class AboutYouViewModel @Inject constructor(
-    private val getUserUseCase: GetUserUseCase,
+class IntegrationLoginViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
     val imageConfiguration: ImageConfiguration
 ) : ViewModel() {
 
     /* --- state --- */
 
-    private val state = MutableStateFlow(AboutYouState())
-    val stateFlow = state as StateFlow<AboutYouState>
+    private val state = MutableStateFlow(IntegrationLoginState())
+    val stateFlow = state as StateFlow<IntegrationLoginState>
 
     init {
-        execute(AboutYouAction.ScreenViewed)
-        execute(AboutYouAction.GetConfiguration)
-        execute(AboutYouAction.GetUser)
+        execute(IntegrationLoginAction.GetConfiguration)
+        execute(IntegrationLoginAction.ScreenViewed)
     }
 
     /* --- configuration --- */
@@ -48,6 +47,7 @@ class AboutYouViewModel @Inject constructor(
                 state.emit(state.value.copy(configuration = LazyData.Loading))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
+                execute(IntegrationLoginAction.GetUser)
             },
             { state.emit(state.value.copy(configuration = it.toError())) }
         )
@@ -67,22 +67,19 @@ class AboutYouViewModel @Inject constructor(
     /* --- analytics --- */
 
     private suspend fun logScreenViewed() {
-        sendAnalyticsEventUseCase(
-            AnalyticsEvent.ScreenViewed.AboutYou,
-            EAnalyticsProvider.ALL
-        )
+        sendAnalyticsEventUseCase(AnalyticsEvent.ScreenViewed.OAuth, EAnalyticsProvider.ALL)
     }
 
     /* --- action --- */
 
-    fun execute(action: AboutYouAction) {
+    fun execute(action: IntegrationLoginAction) {
         when (action) {
-            AboutYouAction.ScreenViewed ->
-                viewModelScope.launchSafe { logScreenViewed() }
-            AboutYouAction.GetConfiguration ->
+            IntegrationLoginAction.GetConfiguration ->
                 viewModelScope.launchAction(getConfiguration())
-            AboutYouAction.GetUser ->
+            IntegrationLoginAction.GetUser ->
                 viewModelScope.launchAction(getUser())
+            IntegrationLoginAction.ScreenViewed ->
+                viewModelScope.launchSafe { logScreenViewed() }
         }
     }
 
