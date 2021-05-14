@@ -47,6 +47,8 @@ class ConfigurationRepositoryImpl @Inject constructor(
 
         prefs.edit().putString(CONFIGURATION, configurationJson).apply()
 
+        memory.configuration = configuration
+
     }
 
     companion object {
