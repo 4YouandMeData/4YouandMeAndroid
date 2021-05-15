@@ -32,8 +32,7 @@
     <fragment
         android:id="@+id/web"
         android:name="com.foryouandme.ui.web.WebFragment"
-        android:label="web"
-        tools:layout="@layout/web">
+        android:label="web">
 
         <argument
             android:name="url"

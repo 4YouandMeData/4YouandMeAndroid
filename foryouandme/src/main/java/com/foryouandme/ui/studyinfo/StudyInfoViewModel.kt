@@ -27,7 +27,7 @@ class StudyInfoViewModel @Inject constructor(
 
     /* --- state --- */
 
-    var state = MutableStateFlow(StudyInfoState())
+    private var state = MutableStateFlow(StudyInfoState())
     val stateFlow = state as StateFlow<StudyInfoState>
 
     init {
@@ -46,7 +46,7 @@ class StudyInfoViewModel @Inject constructor(
             { state.emit(state.value.copy(configuration = it.toError())) }
         )
 
-    /* --- state events --- */
+    /* --- action --- */
 
     fun execute(action: StudyInfoAction) {
         when(action) {
