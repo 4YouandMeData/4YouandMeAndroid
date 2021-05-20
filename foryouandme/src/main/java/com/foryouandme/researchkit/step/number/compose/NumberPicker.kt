@@ -185,7 +185,7 @@ private suspend fun Animatable<Float, AnimationVector1D>.fling(
 
 @Preview
 @Composable
-fun PreviewNumberPicker() {
+private fun PreviewNumberPicker() {
         NumberPicker(
             value = 9,
             values = (0..10).map { it.toString() },

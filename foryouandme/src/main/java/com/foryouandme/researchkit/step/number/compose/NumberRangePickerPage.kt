@@ -111,6 +111,7 @@ fun NumberRangePickerPage(
             StepFooter(
                 color = state.step.backgroundColor.toColor(),
                 button = state.step.buttonImage,
+                shadowColor = state.step.shadowColor.toColor(),
                 onClick = onNext
             )
         }
