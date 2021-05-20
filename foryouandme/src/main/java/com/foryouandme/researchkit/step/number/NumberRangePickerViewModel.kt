@@ -2,11 +2,17 @@ package com.foryouandme.researchkit.step.number
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.flow.UIEvent
+import com.foryouandme.core.arch.flow.toUIEvent
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.skip.isInOptionalRange
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,6 +22,11 @@ class NumberRangePickerViewModel @Inject constructor(): ViewModel() {
 
     private val state = MutableStateFlow(NumberPickerState())
     val stateFlow = state as StateFlow<NumberPickerState>
+
+    /* --- events --- */
+
+    private val event = MutableSharedFlow<UIEvent<NumberPickerEvents>>(replay = 1)
+    val eventFlow = event as SharedFlow<UIEvent<NumberPickerEvents>>
 
     /* --- step --- */
 
@@ -62,20 +73,39 @@ class NumberRangePickerViewModel @Inject constructor(): ViewModel() {
 
     /* --- skip --- */
 
-    private fun checkSkip(step: NumberRangePickerStep) {
+    private suspend fun checkSkip() {
 
-        val skip = step.skips.firstOrNull()
+        val skip = state.value.step?.skips?.firstOrNull()
 
         val numericValue = getNumericalValue()
 
-        /*if (
+        if (
             skip != null &&
             numericValue != null &&
             isInOptionalRange(numericValue, skip.min, skip.max)
         )
-            //skipTo(skip.target)
+            event.emit(NumberPickerEvents.Skip(getResult(), skip.target).toUIEvent())
         else
-            //next()*/
+            event.emit(NumberPickerEvents.Next(getResult()).toUIEvent())
+
+    }
+
+    /* --- result --- */
+
+    private fun getResult(): SingleStringAnswerResult? {
+
+        val step = state.value.step
+        val answer = state.value.values.getOrNull(state.value.selectedIndex)
+
+        return if(step != null && answer != null)
+            SingleStringAnswerResult(
+                    step.identifier,
+                    state.value.start,
+                    ZonedDateTime.now(),
+                    step.questionId,
+                    answer
+                )
+        else null
 
     }
 
@@ -87,6 +117,8 @@ class NumberRangePickerViewModel @Inject constructor(): ViewModel() {
                 viewModelScope.launchSafe { setStep(action.step) }
             is NumberPickerAction.SelectValue ->
                 viewModelScope.launchSafe { selectValue(action.valueIndex) }
+            NumberPickerAction.Next ->
+                viewModelScope.launchSafe { checkSkip() }
         }
     }
 
