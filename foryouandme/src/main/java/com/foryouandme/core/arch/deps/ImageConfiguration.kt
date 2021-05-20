@@ -1,7 +1,6 @@
 package com.foryouandme.core.arch.deps
 
 import androidx.annotation.DrawableRes
-import com.foryouandme.entity.resources.ImageResource
 
 interface ImageConfiguration {
 

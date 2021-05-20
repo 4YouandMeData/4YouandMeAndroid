@@ -4,25 +4,28 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.foryouandme.entity.resources.TextResource
+import com.foryouandme.entity.source.TextSource
 
 /* --- text resource --- */
 
-fun String?.toTextResource(@StringRes or: Int, vararg args: Any): TextResource =
-    if(this != null) TextResource.Text(this) else TextResource.AndroidRes(or, args.toList())
+fun String.toTextResource(): TextSource =
+    TextSource.Text(this)
 
-fun Int.toTextResource(vararg args: Any): TextResource =
-    TextResource.AndroidRes(this, args.toList())
+fun String?.toTextResource(@StringRes or: Int, vararg args: Any): TextSource =
+    if(this != null) TextSource.Text(this) else TextSource.AndroidRes(or, args.toList())
+
+fun Int.toTextResource(vararg args: Any): TextSource =
+    TextSource.AndroidRes(this, args.toList())
 
 @Composable
-fun TextResource.getText(): String =
+fun TextSource.getText(): String =
     when (this) {
-        is TextResource.AndroidRes -> stringResource(id = resId, *args.toTypedArray())
-        is TextResource.Text -> string
+        is TextSource.AndroidRes -> stringResource(id = resId, *args.toTypedArray())
+        is TextSource.Text -> string
     }
 
-fun TextResource.getText(context: Context): String =
+fun TextSource.getText(context: Context): String =
     when (this) {
-        is TextResource.AndroidRes -> context.getString(resId, *args.toTypedArray())
-        is TextResource.Text -> string
+        is TextSource.AndroidRes -> context.getString(resId, *args.toTypedArray())
+        is TextSource.Text -> string
     }

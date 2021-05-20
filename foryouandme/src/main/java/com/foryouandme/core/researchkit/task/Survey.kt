@@ -1,14 +1,15 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.ext.toTextResource
 import com.foryouandme.core.researchkit.step.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.page.Page
-import com.foryouandme.entity.resources.ImageResource
-import com.foryouandme.entity.resources.ImageResource.AndroidResource.Companion.toAndroidResource
+import com.foryouandme.entity.source.ImageSource
+import com.foryouandme.entity.source.ImageSource.AndroidResource.Companion.toAndroidResource
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.foryouandme.entity.survey.SurveyQuestion
@@ -79,7 +80,7 @@ fun buildSurvey(
                                         configuration.theme.primaryColorEnd.color()
                                     ),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
@@ -112,11 +113,12 @@ fun buildSurvey(
                                     minDisplayValue = question.minDisplayValue,
                                     maxDisplayValue = question.maxDisplayValue,
                                     backgroundColor = configuration.theme.secondaryColor.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
+                                    question = question.text.toTextResource(),
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
+                                    arrowColor = configuration.theme.primaryColorStart.color(),
                                     buttonImage = imageConfiguration.nextStepSecondary()
                                         .toAndroidResource(),
                                     skips =
@@ -162,7 +164,7 @@ fun buildSurvey(
                                         )
                                     },
                                     backgroundColor = configuration.theme.secondaryColor.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
@@ -214,7 +216,7 @@ fun buildSurvey(
                                         )
                                     },
                                     backgroundColor = configuration.theme.secondaryColor.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
@@ -255,7 +257,7 @@ fun buildSurvey(
                                         configuration.theme.primaryColorEnd.color()
                                     ),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
@@ -286,7 +288,7 @@ fun buildSurvey(
                                     interval = question.interval ?: 1,
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     progressColor = configuration.theme.primaryColorEnd.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),
@@ -336,7 +338,7 @@ fun buildSurvey(
                                     maxDisplayColor = configuration.theme.primaryTextColor.color(),
                                     progressColor = configuration.theme.primaryColorEnd.color(),
                                     backgroundColor = configuration.theme.secondaryColor.color(),
-                                    image = question.image?.let { ImageResource.Base64(it) },
+                                    image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = { question.text },
                                     questionColor = configuration.theme.primaryTextColor.color(),

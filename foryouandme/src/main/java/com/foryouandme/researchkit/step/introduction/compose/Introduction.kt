@@ -9,16 +9,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.ext.getText
-import com.foryouandme.entity.resources.TextResource
+import com.foryouandme.entity.source.TextSource
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.introduction.IntroductionState
 import com.foryouandme.researchkit.step.introduction.IntroductionStep
@@ -118,12 +116,12 @@ private fun IntroductionPreview() {
                     identifier = "id",
                     back = Back(R.drawable.notification_bg),
                     backgroundColor = android.graphics.Color.WHITE,
-                    title = TextResource.Text(ComposePreview.title),
+                    title = TextSource.Text(ComposePreview.title),
                     titleColor = android.graphics.Color.BLACK,
-                    description = TextResource.Text(ComposePreview.body),
+                    description = TextSource.Text(ComposePreview.body),
                     descriptionColor = android.graphics.Color.BLACK,
                     image = listOf(0),
-                    button = TextResource.Text(ComposePreview.button),
+                    button = TextSource.Text(ComposePreview.button),
                     buttonColor = android.graphics.Color.WHITE,
                     buttonTextColor = android.graphics.Color.WHITE,
                 )

@@ -10,8 +10,8 @@ import com.foryouandme.databinding.StepTextInputBinding
 import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.entity.resources.applyImage
-import com.foryouandme.entity.resources.applyImageAsButton
+import com.foryouandme.entity.source.applyImage
+import com.foryouandme.entity.source.applyImageAsButton
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 

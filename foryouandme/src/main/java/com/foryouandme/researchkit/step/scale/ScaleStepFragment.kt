@@ -11,7 +11,7 @@ import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.SingleIntAnswerResult
 import com.foryouandme.researchkit.skip.isInOptionalRange
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.entity.resources.applyImage
+import com.foryouandme.entity.source.applyImage
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 import kotlin.math.absoluteValue

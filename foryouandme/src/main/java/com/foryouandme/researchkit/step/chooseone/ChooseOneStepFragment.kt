@@ -16,7 +16,7 @@ import com.foryouandme.researchkit.result.AnswerResult
 import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.common.QuestionViewHolder
-import com.foryouandme.entity.resources.applyImageAsButton
+import com.foryouandme.entity.source.applyImageAsButton
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
 import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration

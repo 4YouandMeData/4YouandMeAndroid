@@ -1,28 +1,55 @@
 package com.foryouandme.researchkit.step.number
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isVisible
-import com.foryouandme.R
+import androidx.fragment.app.viewModels
 import com.foryouandme.databinding.StepNumberRangePickerBinding
 import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.skip.isInOptionalRange
 import com.foryouandme.researchkit.step.StepFragment
-import com.foryouandme.entity.resources.applyImage
+import com.foryouandme.entity.source.applyImage
+import com.foryouandme.researchkit.step.number.compose.NumberRangePickerPage
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 
 @AndroidEntryPoint
-class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_picker) {
+class NumberRangePickerStepFragment : StepFragment() {
+
+    private val viewModel: NumberRangePickerViewModel by viewModels()
 
     private val binding: StepNumberRangePickerBinding?
         get() = view?.let { StepNumberRangePickerBinding.bind(it) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val step = taskViewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())
+        if(step != null) viewModel.execute(NumberPickerAction.SetStep(step))
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                NumberRangePickerPage(
+                    numberRangePickerViewModel = viewModel
+                )
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        taskViewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())?.let { applyData(it) }
+        //taskViewModel.getStepByIndexAs<NumberRangePickerStep>(indexArg())?.let { applyData(it) }
     }
 
     private fun applyData(step: NumberRangePickerStep) {
@@ -36,7 +63,7 @@ class NumberRangePickerStepFragment : StepFragment(R.layout.step_number_range_pi
         step.image?.let { viewBinding?.icon?.applyImage(it) }
         viewBinding?.icon?.isVisible = step.image != null
 
-        viewBinding?.question?.text = step.question(requireContext())
+        //viewBinding?.question?.text = step.question(requireContext())
         viewBinding?.question?.setTextColor(step.questionColor)
 
         val values = getValues(step)

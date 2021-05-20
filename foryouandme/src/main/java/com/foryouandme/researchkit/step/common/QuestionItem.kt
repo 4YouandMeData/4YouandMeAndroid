@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.entity.resources.ImageResource
-import com.foryouandme.entity.resources.applyImage
+import com.foryouandme.entity.source.ImageSource
+import com.foryouandme.entity.source.applyImage
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
@@ -18,7 +18,7 @@ data class QuestionItem(
     val id: String,
     val question: (Context) -> String,
     val questionColor: Int,
-    val image: ImageResource?
+    val image: ImageSource?
 ) : DroidItem<Unit> {
 
     override fun areTheSame(other: DroidItem<Any>): Boolean =

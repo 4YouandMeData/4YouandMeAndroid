@@ -4,7 +4,7 @@ import com.foryouandme.R
 import com.foryouandme.core.ext.toTextResource
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.resources.TextResource
+import com.foryouandme.entity.source.TextSource
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -24,7 +24,7 @@ fun Throwable.toForYouAndMeException(): ForYouAndMeException =
             ForYouAndMeException.Unknown
     }
 
-fun ForYouAndMeException.getMessage(configuration: Configuration?): TextResource =
+fun ForYouAndMeException.getMessage(configuration: Configuration?): TextSource =
     when (this) {
         is ForYouAndMeException.NetworkErrorUnknownHost ->
             R.string.ERROR_network_connection.toTextResource()
