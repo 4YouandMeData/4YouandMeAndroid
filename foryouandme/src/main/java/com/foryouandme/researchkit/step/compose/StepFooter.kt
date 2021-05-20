@@ -27,10 +27,10 @@ fun StepFooter(
         contentAlignment = Alignment.Center,
         modifier =
         Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .height(135.dp)
-            .background(color)
             .drawColoredShadow(shadowColor)
+            .background(color)
             .then(modifier)
     ) {
         MultiSourceImage(
