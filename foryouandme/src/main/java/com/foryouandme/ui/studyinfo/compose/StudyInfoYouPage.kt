@@ -122,14 +122,17 @@ fun StudyInfoPage(
                 onClick = onFAQClicked
             )
             Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = getAppVersion(),
                 style = MaterialTheme.typography.h3,
                 color = configuration.theme.fourthTextColor.value,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(end = 10.dp)
+                modifier =
+                Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 10.dp)
             )
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
