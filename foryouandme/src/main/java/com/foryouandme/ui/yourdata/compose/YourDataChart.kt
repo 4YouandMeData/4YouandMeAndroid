@@ -57,18 +57,18 @@ fun YourDataChart(
                 .fillMaxWidth()
                 .height(280.dp)
         ) {
-            AndroidView(
-                { ctx ->
-                    val chart = LineChart(ctx)
-                    setupChart(chart, configuration, userData, period)
-                    chart
-                },
-                update = { setupChart(it, configuration, userData, period) },
-                modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(20.dp)
-            )
+            Box(modifier = Modifier.fillMaxSize().padding(10.dp)) {
+                AndroidView(
+                    { ctx ->
+                        val chart = LineChart(ctx)
+                        setupChart(chart, configuration, userData, period)
+                        chart
+                    },
+                    update = { setupChart(it, configuration, userData, period) },
+                    modifier =
+                    Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -169,15 +169,28 @@ private fun configureXAxis(
 
     chart.xAxis.apply {
 
+        removeAllLimitLines()
         position = XAxis.XAxisPosition.BOTTOM
         setDrawGridLines(false)
+        setDrawLimitLinesBehindData(true)
         axisLineColor = data.color?.let { HEXColor(it).color() }
             ?: configuration.theme.primaryColorEnd.color()
         textColor = configuration.theme.primaryTextColor.color()
         yOffset = 10f
+        xOffset = 100f
         valueFormatter = IndexAxisValueFormatter(getFormattedXAxisLabels(data, period))
 
-        if (period == YourDataPeriod.Year) labelCount = data.xLabels.size
+        when (period) {
+            YourDataPeriod.Week ->
+                labelCount = min(data.xLabels.size - 1, 7)
+            YourDataPeriod.Month ->
+                if (data.xLabels.size < 6)
+                    labelCount = data.xLabels.size
+            YourDataPeriod.Year ->
+                if (data.xLabels.size < 6)
+                    labelCount = data.xLabels.size
+        }
+
     }
 }
 
@@ -196,7 +209,8 @@ private fun configureYAxis(
 
     chart.axisRight.apply {
 
-        //removeAllLimitLines()
+        removeAllLimitLines()
+        setCenterAxisLabels(true)
         axisLineColor = configuration.theme.primaryTextColor.color()
         textColor = configuration.theme.primaryTextColor.color()
         setDrawGridLines(false)
@@ -274,13 +288,9 @@ private fun getFormattedXAxisLabelsYear(
     formatter: DateTimeFormatter
 ): List<String> =
     data.xLabels.map {
-        try {
-            LocalDate.parse("01-$it", formatter)
-                .month.getDisplayName(
-                    TextStyle.SHORT,
-                    Locale.getDefault()
-                )
-        } catch (e: Exception) {
-            e.printStackTrace().toString()
-        }
+        catchToNull {
+            LocalDate
+                .parse("01-$it", formatter)
+                .format(DateTimeFormatter.ofPattern("MMM"))
+        }.orEmpty()
     }
