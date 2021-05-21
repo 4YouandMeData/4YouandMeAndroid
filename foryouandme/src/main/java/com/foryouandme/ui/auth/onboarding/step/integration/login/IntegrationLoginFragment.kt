@@ -7,7 +7,9 @@ import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.ext.imageConfiguration
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showCloseButton
 import com.foryouandme.core.ext.web.setupWebViewWithCookies
 import com.foryouandme.databinding.IntegrationLoginBinding
 import com.foryouandme.ui.auth.onboarding.step.integration.IntegrationSectionFragment
@@ -90,16 +92,14 @@ class IntegrationLoginFragment : IntegrationSectionFragment(R.layout.integration
 
     private fun setupWebView() {
 
-        val viewBinding = binding
-
-        /*viewBinding?.webView
+        binding?.webView
             ?.setupWebViewWithCookies(
-                viewBinding.progressBar,
                 args.url,
+                { binding?.progressBar?.progress = it },
                 viewModel.state.cookies,
                 { handleLogin(args.nextPage) },
                 { back() }
-            )*/
+            )
 
     }
 
