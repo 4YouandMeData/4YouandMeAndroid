@@ -52,25 +52,24 @@ fun YourDataPage(
     onYourDataError: () -> Unit = {},
     onUserAggregationsError: () -> Unit = {}
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(configuration.theme.fourthColor.value)
-        ) {
-            ForYouAndMeTopAppBar(
-                title = configuration.text.tab.userDataTitle,
-                titleColor = configuration.theme.secondaryColor.value,
-                modifier = Modifier.background(configuration.theme.verticalGradient)
-            )
-            YourDataList(
-                state = state,
-                configuration = configuration,
-                onPeriodSelected = onPeriodSelected,
-                onYourDataError = onYourDataError,
-                onUserAggregationsError = onUserAggregationsError
-            )
-        }
+    StatusBar(color = configuration.theme.primaryColorStart.value)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(configuration.theme.fourthColor.value)
+    ) {
+        ForYouAndMeTopAppBar(
+            title = configuration.text.tab.userDataTitle,
+            titleColor = configuration.theme.secondaryColor.value,
+            modifier = Modifier.background(configuration.theme.verticalGradient)
+        )
+        YourDataList(
+            state = state,
+            configuration = configuration,
+            onPeriodSelected = onPeriodSelected,
+            onYourDataError = onYourDataError,
+            onUserAggregationsError = onUserAggregationsError
+        )
     }
 }
 

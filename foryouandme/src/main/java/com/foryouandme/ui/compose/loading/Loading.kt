@@ -1,6 +1,7 @@
 package com.foryouandme.ui.compose.loading
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.entity.configuration.Configuration
-import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun Loading(
@@ -68,8 +69,8 @@ fun Loading(
             modifier = modifier.background(backgroundColor).noIndicationClickable {  },
             contentAlignment = Alignment.Center
         ) {
-            CoilImage(
-                data = loadingImage,
+            Image(
+                painter = painterResource(id = loadingImage),
                 contentDescription = null,
                 modifier =
                 Modifier

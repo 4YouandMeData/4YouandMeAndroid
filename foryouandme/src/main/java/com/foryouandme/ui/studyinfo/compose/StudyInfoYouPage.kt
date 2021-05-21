@@ -68,67 +68,68 @@ fun StudyInfoPage(
     onRewardsClicked: () -> Unit = {},
     onFAQClicked: () -> Unit = {},
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
+    StatusBar(color = configuration.theme.primaryColorStart.value)
 
+    Column(
+        modifier =
+        Modifier
+            .fillMaxSize()
+            .background(configuration.theme.secondaryColor.value)
+    ) {
+        StudyInfoHeader(
+            configuration = configuration,
+            imageConfiguration = imageConfiguration,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .background(configuration.theme.primaryColorStart.value),
+        )
         Column(
             modifier =
             Modifier
                 .fillMaxSize()
-                .background(configuration.theme.secondaryColor.value)
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            StudyInfoHeader(
+            Spacer(modifier = Modifier.height(30.dp))
+            MenuItem(
+                text = configuration.text.studyInfo.aboutYou,
+                icon = imageConfiguration.aboutYou(),
                 configuration = configuration,
                 imageConfiguration = imageConfiguration,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.45f)
-                    .background(configuration.theme.primaryColorStart.value),
+                onClick = onAboutYouClicked
             )
-            Column(
-                modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Spacer(modifier = Modifier.height(30.dp))
-                MenuItem(
-                    text = configuration.text.studyInfo.aboutYou,
-                    icon = imageConfiguration.aboutYou(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onAboutYouClicked
-                )
-                Divider(color = configuration.theme.fourthTextColor.value)
-                MenuItem(
-                    text = configuration.text.studyInfo.contactInfo,
-                    icon = imageConfiguration.contactInfo(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onContactClicked
-                )
-                MenuItem(
-                    text = configuration.text.studyInfo.rewards,
-                    icon = imageConfiguration.rewards(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onRewardsClicked
-                )
-                MenuItem(
-                    text = configuration.text.studyInfo.faq,
-                    icon = imageConfiguration.faq(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onFAQClicked
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
-                    text = getAppVersion(),
-                    style = MaterialTheme.typography.h3,
-                    color = configuration.theme.fourthTextColor.value,
-                    modifier = Modifier.align(Alignment.End).padding(end = 10.dp)
-                )
-            }
+            Divider(color = configuration.theme.fourthTextColor.value)
+            MenuItem(
+                text = configuration.text.studyInfo.contactInfo,
+                icon = imageConfiguration.contactInfo(),
+                configuration = configuration,
+                imageConfiguration = imageConfiguration,
+                onClick = onContactClicked
+            )
+            MenuItem(
+                text = configuration.text.studyInfo.rewards,
+                icon = imageConfiguration.rewards(),
+                configuration = configuration,
+                imageConfiguration = imageConfiguration,
+                onClick = onRewardsClicked
+            )
+            MenuItem(
+                text = configuration.text.studyInfo.faq,
+                icon = imageConfiguration.faq(),
+                configuration = configuration,
+                imageConfiguration = imageConfiguration,
+                onClick = onFAQClicked
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text = getAppVersion(),
+                style = MaterialTheme.typography.h3,
+                color = configuration.theme.fourthTextColor.value,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 10.dp)
+            )
         }
     }
 }

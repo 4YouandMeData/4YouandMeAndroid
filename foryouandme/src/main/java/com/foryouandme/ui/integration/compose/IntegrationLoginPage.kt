@@ -12,9 +12,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.web.asIntegrationCookies
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.integration.IntegrationLoginAction.*
-import com.foryouandme.ui.integration.IntegrationLoginState
-import com.foryouandme.ui.integration.IntegrationLoginViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
 import com.foryouandme.ui.compose.statusbar.StatusBar
@@ -22,6 +19,9 @@ import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 import com.foryouandme.ui.compose.verticalGradient
 import com.foryouandme.ui.compose.web.Web
+import com.foryouandme.ui.integration.IntegrationLoginAction.GetUser
+import com.foryouandme.ui.integration.IntegrationLoginState
+import com.foryouandme.ui.integration.IntegrationLoginViewModel
 
 @Composable
 fun IntegrationLoginPage(
@@ -54,33 +54,32 @@ fun IntegrationLoginPage(
     onBack: () -> Unit = {},
     onRetryUser: () -> Unit = {}
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
-        LoadingError(
-            data = state.user,
-            configuration = configuration,
-            onRetryClicked = onRetryUser
+    StatusBar(color = configuration.theme.primaryColorStart.value)
+    LoadingError(
+        data = state.user,
+        configuration = configuration,
+        onRetryClicked = onRetryUser
+    ) {
+        Column(
+            modifier =
+            Modifier
+                .fillMaxSize()
+                .background(configuration.theme.secondaryColor.value)
         ) {
-            Column(
+            ForYouAndMeTopAppBar(
+                imageConfiguration = imageConfiguration,
+                icon = TopAppBarIcon.Back,
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(configuration.theme.secondaryColor.value)
-            ) {
-                ForYouAndMeTopAppBar(
-                    imageConfiguration = imageConfiguration,
-                    icon = TopAppBarIcon.Back,
-                    modifier =
-                    Modifier.background(configuration.theme.verticalGradient),
-                    onBack = onBack
-                )
-                Web(
-                    url = url,
-                    configuration = configuration,
-                    showProgress = true,
-                    cookies = it.token.asIntegrationCookies(),
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+                Modifier.background(configuration.theme.verticalGradient),
+                onBack = onBack
+            )
+            Web(
+                url = url,
+                configuration = configuration,
+                showProgress = true,
+                cookies = it.token.asIntegrationCookies(),
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

@@ -4,22 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.systemuicontroller.rememberAndroidSystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun StatusBar(
-    color: Color,
-    content: @Composable () -> Unit
-) {
+fun StatusBar(color: Color) {
     ProvideWindowInsets {
-        val systemUiController = rememberAndroidSystemUiController()
+        val systemUiController = rememberSystemUiController()
         SideEffect {
             systemUiController.setStatusBarColor(
                 color,
                 darkIcons = isDark(color).not()
             )
         }
-        content()
     }
 }
 

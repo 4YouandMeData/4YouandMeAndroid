@@ -22,14 +22,17 @@ import com.foryouandme.core.ext.execute
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
 import com.foryouandme.entity.permission.Permission
-import com.foryouandme.ui.permissions.*
-import com.foryouandme.ui.permissions.PermissionsAction.Initialize
-import com.foryouandme.ui.permissions.PermissionsAction.RequestPermissions
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 import com.foryouandme.ui.compose.verticalGradient
+import com.foryouandme.ui.permissions.PermissionsAction.Initialize
+import com.foryouandme.ui.permissions.PermissionsAction.RequestPermissions
+import com.foryouandme.ui.permissions.PermissionsData
+import com.foryouandme.ui.permissions.PermissionsEvent
+import com.foryouandme.ui.permissions.PermissionsState
+import com.foryouandme.ui.permissions.PermissionsViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
@@ -91,37 +94,36 @@ fun PermissionsPage(
     onBack: () -> Unit = {},
     onPermissionClicked: (PermissionsItem) -> Unit = {}
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            ForYouAndMeTopAppBar(
-                imageConfiguration = imageConfiguration,
-                icon = TopAppBarIcon.Back,
-                title = configuration.text.profile.fourthItem,
-                titleColor = configuration.theme.secondaryColor.value,
+    StatusBar(color = configuration.theme.primaryColorStart.value)
+    Column(modifier = Modifier.fillMaxSize()) {
+        ForYouAndMeTopAppBar(
+            imageConfiguration = imageConfiguration,
+            icon = TopAppBarIcon.Back,
+            title = configuration.text.profile.fourthItem,
+            titleColor = configuration.theme.secondaryColor.value,
+            modifier =
+            Modifier
+                .height(110.dp)
+                .background(configuration.theme.verticalGradient),
+            onBack = onBack
+        )
+        if (state.data is LazyData.Data)
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 50.dp),
+                verticalArrangement = Arrangement.spacedBy(30.dp),
                 modifier =
                 Modifier
-                    .height(110.dp)
-                    .background(configuration.theme.verticalGradient),
-                onBack = onBack
-            )
-            if (state.data is LazyData.Data)
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 50.dp),
-                    verticalArrangement = Arrangement.spacedBy(30.dp),
-                    modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(configuration.theme.secondaryColor.value)
-                ) {
-                    items(state.data.value.permissions) {
-                        PermissionItem(
-                            item = it,
-                            configuration = configuration,
-                            onItemClicked = onPermissionClicked
-                        )
-                    }
+                    .fillMaxSize()
+                    .background(configuration.theme.secondaryColor.value)
+            ) {
+                items(state.data.value.permissions) {
+                    PermissionItem(
+                        item = it,
+                        configuration = configuration,
+                        onItemClicked = onPermissionClicked
+                    )
                 }
-        }
+            }
     }
 }
 

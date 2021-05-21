@@ -15,14 +15,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.errorToast
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.userInfo.UserInfoAction.*
-import com.foryouandme.ui.userInfo.UserInfoEvent
-import com.foryouandme.ui.userInfo.UserInfoState
-import com.foryouandme.ui.userInfo.UserInfoViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.statusbar.StatusBar
+import com.foryouandme.ui.userInfo.UserInfoAction.*
+import com.foryouandme.ui.userInfo.UserInfoEvent
+import com.foryouandme.ui.userInfo.UserInfoState
+import com.foryouandme.ui.userInfo.UserInfoViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import org.threeten.bp.LocalDate
@@ -39,7 +39,7 @@ fun UserInfoPage(
     LaunchedEffect(key1 = userInfoViewModel) {
         userInfoViewModel.events
             .onEach {
-                when(it) {
+                when (it) {
                     UserInfoEvent.UploadCompleted ->
                         onBack()
                     is UserInfoEvent.UploadError ->
@@ -80,73 +80,72 @@ fun UserInfoPage(
     onDateChanged: (EntryItem.Date, LocalDate) -> Unit = { _, _ -> },
     onValueSelected: (EntryItem.Picker, EntryItem.Picker.Value) -> Unit = { _, _ -> }
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
-        LoadingError(
-            data = state.user,
-            configuration = configuration,
-            onRetryClicked = onUserError
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(configuration.theme.secondaryColor.value)
-                ) {
-                    UserInfoHeader(
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        isEditing = state.isEditing,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.35f)
-                            .background(configuration.theme.primaryColorStart.value),
-                        onBack = onBack,
-                        onEditSaveClicked = onEditSaveClicked
-                    )
-                    LazyColumn(
-                        contentPadding = PaddingValues(20.dp),
-                        verticalArrangement = Arrangement.spacedBy(30.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-
-                        items(state.entries) {
-                            when (it) {
-                                is EntryItem.Text ->
-                                    EntryTextItem(
-                                        item = it,
-                                        isEditable = state.isEditing,
-                                        configuration = configuration,
-                                        imageConfiguration = imageConfiguration,
-                                        onTextChanged = onTextChanged
-                                    )
-                                is EntryItem.Date ->
-                                    EntryDateItem(
-                                        item = it,
-                                        isEditable = state.isEditing,
-                                        configuration = configuration,
-                                        imageConfiguration = imageConfiguration,
-                                        onDateSelected = onDateChanged
-                                    )
-                                is EntryItem.Picker ->
-                                    EntryPickerItem(
-                                        item = it,
-                                        isEditable = state.isEditing,
-                                        configuration = configuration,
-                                        imageConfiguration = imageConfiguration,
-                                        onValueSelected = onValueSelected
-                                    )
-                            }
-                        }
-
-                    }
-                }
-                Loading(
+    StatusBar(color = configuration.theme.primaryColorStart.value)
+    LoadingError(
+        data = state.user,
+        configuration = configuration,
+        onRetryClicked = onUserError
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(configuration.theme.secondaryColor.value)
+            ) {
+                UserInfoHeader(
                     configuration = configuration,
-                    isVisible = state.upload.isLoading(),
-                    modifier = Modifier.fillMaxSize()
+                    imageConfiguration = imageConfiguration,
+                    isEditing = state.isEditing,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.35f)
+                        .background(configuration.theme.primaryColorStart.value),
+                    onBack = onBack,
+                    onEditSaveClicked = onEditSaveClicked
                 )
+                LazyColumn(
+                    contentPadding = PaddingValues(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(30.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+
+                    items(state.entries) {
+                        when (it) {
+                            is EntryItem.Text ->
+                                EntryTextItem(
+                                    item = it,
+                                    isEditable = state.isEditing,
+                                    configuration = configuration,
+                                    imageConfiguration = imageConfiguration,
+                                    onTextChanged = onTextChanged
+                                )
+                            is EntryItem.Date ->
+                                EntryDateItem(
+                                    item = it,
+                                    isEditable = state.isEditing,
+                                    configuration = configuration,
+                                    imageConfiguration = imageConfiguration,
+                                    onDateSelected = onDateChanged
+                                )
+                            is EntryItem.Picker ->
+                                EntryPickerItem(
+                                    item = it,
+                                    isEditable = state.isEditing,
+                                    configuration = configuration,
+                                    imageConfiguration = imageConfiguration,
+                                    onValueSelected = onValueSelected
+                                )
+                        }
+                    }
+
+                }
             }
+            Loading(
+                configuration = configuration,
+                isVisible = state.upload.isLoading(),
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

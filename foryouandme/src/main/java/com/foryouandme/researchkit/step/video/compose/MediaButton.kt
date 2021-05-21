@@ -1,5 +1,6 @@
 package com.foryouandme.researchkit.step.video.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,10 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.researchkit.step.video.RecordingState
-import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun MediaButton(
@@ -29,8 +30,8 @@ fun MediaButton(
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         if (mediaImage != null)
-            CoilImage(
-                data = mediaImage,
+            Image(
+                painterResource(id = mediaImage),
                 contentDescription = "",
                 modifier =
                 Modifier

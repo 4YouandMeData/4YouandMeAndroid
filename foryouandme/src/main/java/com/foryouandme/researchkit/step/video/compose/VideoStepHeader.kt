@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.step.video.compose
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -10,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,7 +23,6 @@ import com.foryouandme.ui.compose.camera.CameraFlash.*
 import com.foryouandme.ui.compose.camera.CameraLens
 import com.foryouandme.ui.compose.camera.CameraLens.*
 import com.foryouandme.entity.mock.Mock
-import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun VideoStepHeader(
@@ -53,14 +54,16 @@ fun VideoStepHeader(
     }
 
     Row(
-        modifier = Modifier.fillMaxWidth().then(modifier),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(20.dp))
         Box(modifier = Modifier.size(30.dp, 30.dp)) {
             if (canShowFlashButton)
-                CoilImage(
-                    data = if (cameraFlash is On) flashOn else flashOff,
+                Image(
+                    painter = painterResource(id = if (cameraFlash is On) flashOn else flashOff),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxSize()
@@ -80,8 +83,8 @@ fun VideoStepHeader(
         )
         Box(modifier = Modifier.size(30.dp, 30.dp)) {
             if (canShowCameraButton)
-                CoilImage(
-                    data = cameraToggle,
+                Image(
+                    painter = painterResource(id = cameraToggle),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxSize()

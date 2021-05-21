@@ -15,7 +15,7 @@ object GradlePlugin {
     object GoogleServices : Dependency(
         "com.google.gms",
         "google-services",
-        "4.3.5"
+        "4.3.8"
     )
 
     object NavigationSafeArgs :
@@ -29,7 +29,7 @@ object GradlePlugin {
         Dependency(
             "com.google.firebase",
             "firebase-crashlytics-gradle",
-            "2.5.2"
+            "2.6.1"
         )
 
     object Bintray : Dependency(

@@ -58,7 +58,7 @@ fun AppsAndDevicesPage(
     onAppsAndDeviceItemClicked: (AppsAndDeviceItem) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
+    StatusBar(color = configuration.theme.primaryColorStart.value)
         LoadingError(
             data = state.appsAndDevices,
             configuration = configuration,
@@ -101,7 +101,6 @@ fun AppsAndDevicesPage(
             }
         }
     }
-}
 
 @Preview
 @Composable

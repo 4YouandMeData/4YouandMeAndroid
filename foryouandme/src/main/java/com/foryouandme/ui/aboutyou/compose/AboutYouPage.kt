@@ -73,94 +73,93 @@ fun AboutYouPage(
     onPermissionsClicked: () -> Unit = {},
     onDailySurveyTimeClicked: () -> Unit = {}
 ) {
-    StatusBar(color = configuration.theme.primaryColorStart.value) {
-        LoadingError(
-            data = state.user,
-            configuration = configuration,
-            onRetryClicked = onUserError
+    StatusBar(color = configuration.theme.primaryColorStart.value)
+    LoadingError(
+        data = state.user,
+        configuration = configuration,
+        onRetryClicked = onUserError
+    ) {
+        Column(
+            modifier =
+            Modifier
+                .fillMaxSize()
+                .background(configuration.theme.secondaryColor.value)
         ) {
+            AboutYouHeader(
+                configuration = configuration,
+                imageConfiguration = imageConfiguration,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.35f)
+                    .background(configuration.theme.primaryColorStart.value),
+                onBack = onBack
+            )
             Column(
                 modifier =
                 Modifier
                     .fillMaxSize()
-                    .background(configuration.theme.secondaryColor.value)
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                AboutYouHeader(
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.35f)
-                        .background(configuration.theme.primaryColorStart.value),
-                    onBack = onBack
-                )
-                Column(
-                    modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Spacer(modifier = Modifier.height(30.dp))
-                    if (it.customData.isNotEmpty())
-                        MenuItem(
-                            text = configuration.text.profile.firstItem,
-                            icon = imageConfiguration.pregnancy(),
-                            configuration = configuration,
-                            imageConfiguration = imageConfiguration,
-                            onClick = onPregnancyClicked
-                        )
+                Spacer(modifier = Modifier.height(30.dp))
+                if (it.customData.isNotEmpty())
                     MenuItem(
-                        text = configuration.text.profile.secondItem,
-                        icon = imageConfiguration.devices(),
+                        text = configuration.text.profile.firstItem,
+                        icon = imageConfiguration.pregnancy(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
-                        onClick = onDevicesClicked
+                        onClick = onPregnancyClicked
                     )
-                    Box(
+                MenuItem(
+                    text = configuration.text.profile.secondItem,
+                    icon = imageConfiguration.devices(),
+                    configuration = configuration,
+                    imageConfiguration = imageConfiguration,
+                    onClick = onDevicesClicked
+                )
+                Box(
+                    modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp)
+                ) {
+                    Spacer(
                         modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp)
-                    ) {
-                        Spacer(
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .background(configuration.theme.fourthTextColor.value)
-                        )
-                    }
-                    MenuItem(
-                        text = configuration.text.profile.thirdItem,
-                        icon = imageConfiguration.reviewConsent(),
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        onClick = onReviewConsentClicked
-                    )
-                    MenuItem(
-                        text = configuration.text.profile.fourthItem,
-                        icon = imageConfiguration.permissions(),
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        onClick = onPermissionsClicked
-                    )
-                    if (configuration.text.profile.dailySurveyTimingHidden == 0)
-                        MenuItem(
-                            text = configuration.text.profile.fifthItem,
-                            icon = imageConfiguration.dailySurveyTime(),
-                            configuration = configuration,
-                            imageConfiguration = imageConfiguration,
-                            onClick = onDailySurveyTimeClicked
-                        )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = configuration.text.profile.disclaimer,
-                        style = MaterialTheme.typography.h3,
-                        color = configuration.theme.fourthTextColor.value,
-                        modifier = Modifier.fillMaxWidth()
+                            .height(1.dp)
+                            .background(configuration.theme.fourthTextColor.value)
                     )
                 }
+                MenuItem(
+                    text = configuration.text.profile.thirdItem,
+                    icon = imageConfiguration.reviewConsent(),
+                    configuration = configuration,
+                    imageConfiguration = imageConfiguration,
+                    onClick = onReviewConsentClicked
+                )
+                MenuItem(
+                    text = configuration.text.profile.fourthItem,
+                    icon = imageConfiguration.permissions(),
+                    configuration = configuration,
+                    imageConfiguration = imageConfiguration,
+                    onClick = onPermissionsClicked
+                )
+                if (configuration.text.profile.dailySurveyTimingHidden == 0)
+                    MenuItem(
+                        text = configuration.text.profile.fifthItem,
+                        icon = imageConfiguration.dailySurveyTime(),
+                        configuration = configuration,
+                        imageConfiguration = imageConfiguration,
+                        onClick = onDailySurveyTimeClicked
+                    )
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(
+                    text = configuration.text.profile.disclaimer,
+                    style = MaterialTheme.typography.h3,
+                    color = configuration.theme.fourthTextColor.value,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

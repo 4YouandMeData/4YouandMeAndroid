@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.step.video.compose
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,15 +14,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.foryouandme.entity.mock.Mock
 import com.foryouandme.researchkit.step.video.RecordingState
-import com.foryouandme.researchkit.step.video.RecordingState.*
+import com.foryouandme.researchkit.step.video.RecordingState.RecordingPause
+import com.foryouandme.researchkit.step.video.RecordingState.ReviewPause
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
-import com.foryouandme.entity.mock.Mock
-import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun VideoStepInfo(
@@ -76,8 +78,8 @@ fun VideoStepInfo(
                         .weight(1f)
                         .padding(end = 15.dp)
                 )
-                CoilImage(
-                    data = closeImage,
+                Image(
+                    painter = painterResource(id = closeImage),
                     contentDescription = null,
                     modifier =
                     Modifier
@@ -91,8 +93,8 @@ fun VideoStepInfo(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CoilImage(
-                        data = timeImage,
+                    Image(
+                        painter = painterResource(id = timeImage),
                         contentDescription = null,
                         modifier =
                         Modifier
@@ -159,7 +161,7 @@ fun VideoStepInfo(
                     }
                 },
                 isEnabled =
-                when(recordingState) {
+                when (recordingState) {
                     RecordingPause -> recordTimeSeconds > 0
                     else -> true
                 },

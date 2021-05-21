@@ -1,5 +1,6 @@
 package com.foryouandme.researchkit.step.introduction.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,10 +13,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.ext.getText
+import com.foryouandme.entity.mock.Mock
 import com.foryouandme.entity.source.TextSource
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.introduction.IntroductionState
@@ -23,12 +26,10 @@ import com.foryouandme.researchkit.step.introduction.IntroductionStep
 import com.foryouandme.researchkit.step.introduction.IntroductionViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
-import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.toColor
-import com.google.accompanist.coil.CoilImage
 
 @Composable
-fun Introduction(introductionViewModel: IntroductionViewModel = viewModel(),  onNext:() -> Unit) {
+fun Introduction(introductionViewModel: IntroductionViewModel = viewModel(), onNext: () -> Unit) {
 
     val state by introductionViewModel.stateFlow.collectAsState()
     ForYouAndMeTheme {
@@ -38,7 +39,7 @@ fun Introduction(introductionViewModel: IntroductionViewModel = viewModel(),  on
 }
 
 @Composable
-private fun Introduction(state: IntroductionState, onNext:() -> Unit = {}) {
+private fun Introduction(state: IntroductionState, onNext: () -> Unit = {}) {
 
     if (state.step != null) {
 
@@ -64,9 +65,9 @@ private fun Introduction(state: IntroductionState, onNext:() -> Unit = {}) {
                         .padding(50.dp)
                 ) {
                     val image = state.step.image.getOrNull(state.currentImageIndex)
-                    if (image!= null) {
-                        CoilImage(
-                            data = image,
+                    if (image != null) {
+                        Image(
+                            painter = painterResource(id = image),
                             contentDescription = "",
                             contentScale = ContentScale.Inside,
                             modifier = Modifier.fillMaxSize()
@@ -110,7 +111,7 @@ private fun Introduction(state: IntroductionState, onNext:() -> Unit = {}) {
 @Composable
 private fun IntroductionPreview() {
     ForYouAndMeTheme {
-          Introduction(
+        Introduction(
             IntroductionState(
                 IntroductionStep(
                     identifier = "id",
