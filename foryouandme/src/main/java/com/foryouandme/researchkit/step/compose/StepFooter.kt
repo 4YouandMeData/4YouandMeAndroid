@@ -32,6 +32,7 @@ fun StepFooter(
             .drawColoredShadow(shadowColor)
             .background(color)
             .then(modifier)
+
     ) {
         MultiSourceImage(
             source = button,

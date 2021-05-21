@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/yourDataFragment"
         android:name="com.foryouandme.ui.yourdata.YourDataFragment"
-        android:label="YourDataFragment"
-        tools:layout="@layout/your_data" />
+        android:label="YourDataFragment" />
 
 </navigation>

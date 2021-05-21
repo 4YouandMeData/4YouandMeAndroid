@@ -1,11 +1,11 @@
-package com.foryouandme.core.data.api.yourdata.response
+package com.foryouandme.data.repository.yourdata.network.response
 
 import com.foryouandme.entity.yourdata.YourData
 import com.squareup.moshi.Json
 
 data class YourDataResponse(@Json(name = "data") val data: YourDataInfoResponse? = null) {
 
-    suspend fun toYourData(): YourData? =
+    fun toYourData(): YourData? =
         data?.id?.let {
             YourData(
                 it,

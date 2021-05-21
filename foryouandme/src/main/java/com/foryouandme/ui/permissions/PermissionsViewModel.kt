@@ -58,7 +58,7 @@ class PermissionsViewModel @Inject constructor(
             {
                 coroutineScope {
 
-                    state.emit(state.value.copy(data = LazyData.Loading))
+                    state.emit(state.value.copy(data = state.value.data.toLoading()))
 
                     val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
                     val isLocationGranted =

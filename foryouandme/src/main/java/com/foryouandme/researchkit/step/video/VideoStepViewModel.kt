@@ -228,7 +228,12 @@ class VideoStepViewModel @Inject constructor(
         action(
             {
 
-                state.emit(state.value.copy(mergedVideoPath = LazyData.Loading))
+                state.emit(
+                    state.value.copy(
+                        mergedVideoPath =
+                        state.value.mergedVideoPath.toLoading()
+                    )
+                )
 
                 // disable the flash when the user start the review flow
                 if (state.value.cameraLens is CameraLens.Back) setFlash(CameraFlash.Off)
@@ -262,7 +267,7 @@ class VideoStepViewModel @Inject constructor(
     private fun submit(taskId: String): Action =
         action(
             {
-                state.emit(state.value.copy(submit = LazyData.Loading))
+                state.emit(state.value.copy(submit = state.value.submit.toLoading()))
 
                 attachVideoUseCase(taskId, getVideoMergeFile())
 

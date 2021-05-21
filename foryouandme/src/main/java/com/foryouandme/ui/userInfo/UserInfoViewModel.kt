@@ -51,7 +51,7 @@ class UserInfoViewModel @Inject constructor(
     private fun getConfiguration(): Action =
         action(
             {
-                state.emit(state.value.copy(configuration = LazyData.Loading))
+                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
                 execute(UserInfoAction.GetUser)
@@ -67,7 +67,7 @@ class UserInfoViewModel @Inject constructor(
                 val configuration = state.value.configuration.orNull()
 
                 if (configuration != null) {
-                    state.emit(state.value.copy(user = LazyData.Loading))
+                    state.emit(state.value.copy(user = state.value.user.toLoading()))
                     val user = getUserUseCase(Policy.LocalFirst)
                     val entries = getEntryItems(user)
                     state.emit(state.value.copy(user = user.toData(), entries = entries))
@@ -163,7 +163,7 @@ class UserInfoViewModel @Inject constructor(
     private fun upload(): Action =
         action(
             {
-                state.emit(state.value.copy(upload = LazyData.Loading))
+                state.emit(state.value.copy(upload = state.value.upload.toLoading()))
                 val data =
                     state.value.entries.map { item ->
                         when (item) {

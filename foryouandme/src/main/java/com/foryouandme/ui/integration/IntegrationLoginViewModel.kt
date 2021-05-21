@@ -44,7 +44,7 @@ class IntegrationLoginViewModel @Inject constructor(
     private fun getConfiguration(): Action =
         action(
             {
-                state.emit(state.value.copy(configuration = LazyData.Loading))
+                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
                 execute(IntegrationLoginAction.GetUser)
@@ -57,7 +57,7 @@ class IntegrationLoginViewModel @Inject constructor(
     private fun getUser(): Action =
         action(
             {
-                state.emit(state.value.copy(user = LazyData.Loading))
+                state.emit(state.value.copy(user = state.value.user.toLoading()))
                 val user = getUserUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(user = user.toData()))
             },

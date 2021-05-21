@@ -51,7 +51,7 @@ fun ConfigurationContent(
                     modifier = Modifier.fillMaxSize(),
                     retry = onConfigurationError
                 )
-            LazyData.Loading ->
+            is LazyData.Loading ->
                 Loading(
                     configuration = null,
                     isVisible = true,

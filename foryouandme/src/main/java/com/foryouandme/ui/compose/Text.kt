@@ -32,8 +32,8 @@ val ForYouAndMeTypography =
         TextStyle(
             fontFamily = Helvetica,
             fontWeight = FontWeight.Normal,
-            fontSize = 24.sp,
-            lineHeight = 30.sp
+            fontSize = 22.sp,
+            lineHeight = 28.sp
         ),
         h2 =
         TextStyle(
@@ -53,8 +53,8 @@ val ForYouAndMeTypography =
         TextStyle(
             fontFamily = Helvetica,
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            lineHeight = 21.sp
+            fontSize = 14.sp,
+            lineHeight = 19.sp
         ),
         button =
         TextStyle(

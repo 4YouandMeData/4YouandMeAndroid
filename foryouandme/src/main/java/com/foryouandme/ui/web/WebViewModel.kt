@@ -44,7 +44,7 @@ class WebViewModel @Inject constructor(
     private fun getConfiguration(): Action =
         action(
             {
-                state.emit(state.value.copy(configuration = LazyData.Loading))
+                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
             },

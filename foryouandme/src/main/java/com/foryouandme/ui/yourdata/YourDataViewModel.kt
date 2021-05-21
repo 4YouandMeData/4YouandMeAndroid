@@ -1,202 +1,120 @@
 package com.foryouandme.ui.yourdata
 
-import arrow.core.Either
-import arrow.core.toT
-import arrow.fx.coroutines.parMapN
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.YourDataModule
-import com.foryouandme.core.arch.deps.modules.nullToError
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
-import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.yourdata.YourDataPeriod
-import com.foryouandme.core.cases.yourdata.YourDataUseCase.getUserDataAggregation
-import com.foryouandme.core.cases.yourdata.YourDataUseCase.getYourData
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.yourdata.UserDataAggregation
-import com.foryouandme.ui.yourdata.items.YourDataButtonsItem
-import com.foryouandme.ui.yourdata.items.YourDataGraphErrorItem
-import com.foryouandme.ui.yourdata.items.YourDataGraphItem
-import com.foryouandme.ui.yourdata.items.toYourDataHeaderItem
-import com.giacomoparisi.recyclerdroid.core.DroidItem
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.toData
+import com.foryouandme.core.arch.toError
+import com.foryouandme.core.ext.Action
+import com.foryouandme.core.ext.action
+import com.foryouandme.core.ext.launchAction
+import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.yourdata.GetUserAggregationsUseCase
+import com.foryouandme.domain.usecase.yourdata.GetYourDataUseCase
+import com.foryouandme.entity.yourdata.YourDataPeriod
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class YourDataViewModel(
-    navigator: Navigator,
-    private val yourDataModule: YourDataModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        YourDataState,
-        YourDataStateUpdate,
-        YourDataError,
-        YourDataLoading>
-    (
-    navigator = navigator,
-) {
+@HiltViewModel
+class YourDataViewModel @Inject constructor(
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getYourDataUseCase: GetYourDataUseCase,
+    private val getUserAggregationsUseCase: GetUserAggregationsUseCase,
+    val imageConfiguration: ImageConfiguration
+) : ViewModel() {
 
-    /* --- data --- */
+    /* --- state --- */
 
-    suspend fun initialize(
-        rootNavController: RootNavController,
-        configuration: Configuration,
-    ): Unit {
+    private var state = MutableStateFlow(YourDataState())
+    val stateFlow = state as StateFlow<YourDataState>
 
-        showLoading(YourDataLoading.Initialization)
+    init {
+        execute(YourDataAction.GetConfiguration)
+    }
 
-        val defaultPeriod = YourDataPeriod.Week
+    /* --- configuration --- */
 
-        val yourDataRequest =
-            suspend {
-                yourDataModule.getYourData()
-                    .nullToError()
-                    .handleAuthError(rootNavController, navigator)
-            }
+    private fun getConfiguration(): Action =
+        action(
+            {
+                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
+                val configuration = getConfigurationUseCase(Policy.LocalFirst)
+                state.emit(state.value.copy(configuration = configuration.toData()))
+                execute(YourDataAction.GetYourData)
+                execute(YourDataAction.GetUserAggregations)
+            },
+            { state.emit(state.value.copy(configuration = it.toError())) }
+        )
 
+    /* --- your data --- */
 
-        val userAggregationRequest =
-            suspend {
-                yourDataModule.getUserDataAggregation(defaultPeriod)
-                    .nullToError()
-                    .handleAuthError(rootNavController, navigator)
-            }
+    private fun getYourData(): Action =
+        action(
+            {
+                state.emit(state.value.copy(yourData = state.value.yourData.toLoading()))
+                val yourData = getYourDataUseCase()!!
+                state.emit(state.value.copy(yourData = yourData.toData()))
+            },
+            { state.emit(state.value.copy(yourData = it.toError())) }
+        )
 
+    /* --- user aggregations --- */
 
-        val (yourData, userAggregation) =
-            parMapN(
-                Dispatchers.IO,
-                yourDataRequest,
-                userAggregationRequest,
-                { yourData,
-                  userDataAggregation ->
-                    yourData toT userDataAggregation
-                }
-            )
+    private fun getUserAggregations(): Action =
+        action(
+            {
+                coroutineScope {
 
-        yourData.fold(
-            { setError(it, YourDataError.Initialization) },
-            { data ->
-                setState(
-                    YourDataState(
-                        listOf(data.toYourDataHeaderItem(configuration))
-                            .addButtons(configuration, defaultPeriod)
-                            .addGraph(
-                                userAggregation,
-                                configuration,
-                                defaultPeriod
-                            ),
-                        defaultPeriod
+                    state.emit(
+                        state.value.copy(
+                            userDataAggregations = state.value.userDataAggregations.toLoading()
+                        )
                     )
-                ) { YourDataStateUpdate.Initialization(it.items) }
-            }
-        )
 
-        hideLoading(YourDataLoading.Initialization)
-    }
+                    val userDataAggregations = getUserAggregationsUseCase(state.value.period)
 
-    private fun List<DroidItem<Any>>.addButtons(
-        configuration: Configuration,
-        defaultPeriod: YourDataPeriod
-    ): List<DroidItem<Any>> =
-        plus(YourDataButtonsItem(configuration, "your_data_buttons", defaultPeriod))
-
-    private fun List<DroidItem<Any>>.addGraph(
-        data: Either<ForYouAndMeError, List<UserDataAggregation>>,
-        configuration: Configuration,
-        period: YourDataPeriod
-    ): List<DroidItem<Any>> =
-        data.fold(
-            { plus(YourDataGraphErrorItem(configuration, "your_data_graph_error", it)) },
-            { list ->
-                plus(list.map { YourDataGraphItem(configuration, it, period) })
-            }
-        )
-
-    /* --- state update --- */
-
-    suspend fun selectPeriod(
-        rootNavController: RootNavController,
-        configuration: Configuration,
-        period: YourDataPeriod
-    ): Unit {
-
-        if (state().period != period) {
-
-            showLoading(YourDataLoading.Period)
-
-            logPeriodSelected(period)
-
-            val items =
-                state().items.mapNotNull {
-                    when (it) {
-                        is YourDataButtonsItem -> it.copy(selectedPeriod = period)
-                        is YourDataGraphErrorItem -> null
-                        is YourDataGraphItem -> null
-                        else -> it
-                    }
+                    state.emit(
+                        state.value.copy(
+                            userDataAggregations = userDataAggregations.toData(),
+                            periodTmp = state.value.period
+                        )
+                    )
                 }
-
-            val userAggregationRequest =
-                yourDataModule.getUserDataAggregation(period)
-                    .nullToError()
-                    .handleAuthError(rootNavController, navigator)
-
-            setState(
-                state().copy(
-                    items = items.addGraph(userAggregationRequest, configuration, period),
-                    period = period
+            },
+            {
+                state.emit(
+                    state.value.copy(
+                        userDataAggregations = it.toError()
+                    )
                 )
-            )
-            { YourDataStateUpdate.Period(it.items) }
-
-            hideLoading(YourDataLoading.Period)
-
-        }
-
-    }
-
-    suspend fun updateGraphs(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit {
-
-        showLoading(YourDataLoading.Period)
-
-        val items =
-            state().items.mapNotNull {
-                when (it) {
-                    is YourDataGraphErrorItem -> null
-                    is YourDataGraphItem -> null
-                    else -> it
-                }
             }
-
-        val userAggregationRequest =
-            yourDataModule.getUserDataAggregation(state().period)
-                .nullToError()
-                .handleAuthError(rootNavController, navigator)
-
-        setState(
-            state().copy(
-                items = items.addGraph(userAggregationRequest, configuration, state().period),
-            )
         )
-        { YourDataStateUpdate.Period(it.items) }
 
-        hideLoading(YourDataLoading.Period)
+    /* --- period --- */
 
+    private suspend fun selectPeriod(period: YourDataPeriod) {
+        state.emit(state.value.copy(period = period))
+        execute(YourDataAction.GetUserAggregations)
     }
 
-    /* --- analytics --- */
+    /* --- action --- */
 
-    private suspend fun logPeriodSelected(period: YourDataPeriod): Unit =
-        analyticsModule.logEvent(
-            AnalyticsEvent.YourDataSelectDataPeriod(period),
-            EAnalyticsProvider.ALL
-        )
+    fun execute(action: YourDataAction) {
+        when (action) {
+            YourDataAction.GetConfiguration ->
+                viewModelScope.launchAction(getConfiguration())
+            YourDataAction.GetYourData ->
+                viewModelScope.launchAction(getYourData())
+            YourDataAction.GetUserAggregations ->
+                viewModelScope.launchAction(getUserAggregations())
+            is YourDataAction.SelectPeriod ->
+                viewModelScope.launchSafe { selectPeriod(action.period) }
+        }
+    }
 
 }

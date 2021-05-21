@@ -1,8 +1,8 @@
-package com.foryouandme.core.data.api.yourdata
+package com.foryouandme.data.repository.yourdata.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.yourdata.response.UserDataAggregationResponse
-import com.foryouandme.core.data.api.yourdata.response.YourDataResponse
+import com.foryouandme.data.repository.yourdata.network.response.UserDataAggregationResponse
+import com.foryouandme.data.repository.yourdata.network.response.YourDataResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path

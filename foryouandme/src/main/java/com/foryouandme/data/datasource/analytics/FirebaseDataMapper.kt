@@ -2,8 +2,8 @@ package com.foryouandme.data.datasource.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
-import com.foryouandme.core.cases.yourdata.YourDataPeriod
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
+import com.foryouandme.entity.yourdata.YourDataPeriod
 import javax.inject.Inject
 
 class FirebaseDataMapper @Inject constructor() {

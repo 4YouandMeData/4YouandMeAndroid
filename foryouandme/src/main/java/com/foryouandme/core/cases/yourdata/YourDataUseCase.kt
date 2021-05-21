@@ -10,6 +10,7 @@ import com.foryouandme.core.cases.yourdata.YourDataRepository.fetchUserDataAttri
 import com.foryouandme.core.cases.yourdata.YourDataRepository.fetchYourData
 import com.foryouandme.entity.yourdata.UserDataAggregation
 import com.foryouandme.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.YourDataPeriod
 
 object YourDataUseCase {
 

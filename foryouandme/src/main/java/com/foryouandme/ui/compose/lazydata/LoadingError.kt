@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.foryouandme.core.arch.LazyData
-import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.loading.Loading
@@ -29,11 +28,14 @@ fun <T> LoadingError(
                     modifier = Modifier.fillMaxSize(),
                     retry = onRetryClicked
                 )
-            LazyData.Loading ->
+            is LazyData.Loading -> {
+                if (data.value != null)
+                    composable(data.value)
                 Loading(
                     configuration = configuration,
                     modifier = Modifier.fillMaxSize()
                 )
+            }
             else -> {
 
             }

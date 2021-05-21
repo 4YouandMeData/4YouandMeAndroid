@@ -5,17 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import com.foryouandme.databinding.StepNumberRangePickerBinding
-import com.foryouandme.entity.configuration.background.shadow
-import com.foryouandme.entity.source.applyImage
-import com.foryouandme.researchkit.result.SingleStringAnswerResult
-import com.foryouandme.researchkit.skip.isInOptionalRange
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.number.compose.NumberRangePickerPage
 import dagger.hilt.android.AndroidEntryPoint
-import org.threeten.bp.ZonedDateTime
 
 @AndroidEntryPoint
 class NumberRangePickerStepFragment : StepFragment() {

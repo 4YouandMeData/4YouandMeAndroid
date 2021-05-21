@@ -6,6 +6,7 @@ import com.foryouandme.core.arch.deps.modules.unwrapToEither
 import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.entity.yourdata.UserDataAggregation
 import com.foryouandme.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.YourDataPeriod
 
 object YourDataRepository {
 
@@ -23,13 +24,5 @@ object YourDataRepository {
     ): Either<ForYouAndMeError, List<UserDataAggregation>?> =
         errorModule.unwrapToEither { api.getUserDataAggregation(token, studyId, period.value) }
             .map { it.toUserAggregations() }
-
-}
-
-sealed class YourDataPeriod(val value: String) {
-
-    object Week : YourDataPeriod("last_week")
-    object Month : YourDataPeriod("last_month")
-    object Year : YourDataPeriod("last_year")
 
 }

@@ -2,7 +2,6 @@ package com.foryouandme.ui.review
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
@@ -39,7 +38,7 @@ class ReviewConsentViewModel @Inject constructor(
     private fun getConfiguration(): Action =
         action(
             {
-                state.emit(state.value.copy(configuration = LazyData.Loading))
+                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
                 execute(ReviewConsentAction.GetReviewConsent)
@@ -57,7 +56,11 @@ class ReviewConsentViewModel @Inject constructor(
                 val configuration = state.value.configuration.orNull()
 
                 if (configuration != null) {
-                    state.emit(state.value.copy(consentReview = LazyData.Loading))
+                    state.emit(
+                        state.value.copy(
+                            consentReview = state.value.consentReview.toLoading()
+                        )
+                    )
                     val consentReview = getConsentReviewUseCase()!!
                     val items = consentReview
                         .welcomePage

@@ -2,7 +2,6 @@ package com.foryouandme.ui.appsanddevices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
@@ -48,7 +47,7 @@ class AppsAndDevicesViewModel @Inject constructor(
     private fun getConfiguration(): Action =
         action(
             {
-                state.emit(state.value.copy(configuration = LazyData.Loading))
+                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
                 execute(AppsAndDevicesAction.GetIntegrations)
@@ -64,9 +63,13 @@ class AppsAndDevicesViewModel @Inject constructor(
             {
                 val configuration = state.value.configuration.orNull()
 
-                if(configuration != null) {
+                if (configuration != null) {
 
-                    state.emit(state.value.copy(appsAndDevices = LazyData.Loading))
+                    state.emit(
+                        state.value.copy(
+                            appsAndDevices = state.value.appsAndDevices.toLoading()
+                        )
+                    )
 
                     val user = getUserUseCase(Policy.Network)
 

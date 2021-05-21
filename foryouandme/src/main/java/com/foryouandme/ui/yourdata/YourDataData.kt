@@ -1,27 +1,43 @@
 package com.foryouandme.ui.yourdata
 
-import arrow.optics.optics
-import com.foryouandme.core.cases.yourdata.YourDataPeriod
-import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.toData
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.yourdata.UserDataAggregation
+import com.foryouandme.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.YourDataPeriod
 
-@optics
 data class YourDataState(
-    val items: List<DroidItem<Any>>,
-    val period: YourDataPeriod
+    val configuration: LazyData<Configuration> = LazyData.Empty,
+    val yourData: LazyData<YourData> = LazyData.Empty,
+    val userDataAggregations: LazyData<List<UserDataAggregation>> = LazyData.Empty,
+    val period: YourDataPeriod = YourDataPeriod.Week,
+    val periodTmp: YourDataPeriod = YourDataPeriod.Week
 ) {
-    companion object
+
+    companion object {
+
+        fun mock(): YourDataState =
+            YourDataState(
+                configuration = Configuration.mock().toData(),
+                yourData = YourData.mock().toData(),
+                userDataAggregations =
+                listOf(
+                    UserDataAggregation.mock(),
+                    UserDataAggregation.mock(),
+                    UserDataAggregation.mock()
+                ).toData()
+            )
+
+    }
+
 }
 
-sealed class YourDataStateUpdate {
-    data class Initialization(val items: List<DroidItem<Any>>) : YourDataStateUpdate()
-    data class Period(val items: List<DroidItem<Any>>) : YourDataStateUpdate()
-}
+sealed class YourDataAction {
 
-sealed class YourDataLoading {
-    object Initialization : YourDataLoading()
-    object Period : YourDataLoading()
-}
+    object GetConfiguration : YourDataAction()
+    object GetYourData : YourDataAction()
+    object GetUserAggregations : YourDataAction()
+    data class SelectPeriod(val period: YourDataPeriod) : YourDataAction()
 
-sealed class YourDataError {
-    object Initialization : YourDataError()
 }

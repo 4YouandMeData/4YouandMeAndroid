@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.analytics
 
-import com.foryouandme.core.cases.yourdata.YourDataPeriod
+import com.foryouandme.entity.yourdata.YourDataPeriod
 
 sealed class AnalyticsEvent(val eventName: String) {
 

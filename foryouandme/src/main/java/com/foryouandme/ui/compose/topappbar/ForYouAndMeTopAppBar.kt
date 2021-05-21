@@ -19,9 +19,56 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 
 @Composable
 fun ForYouAndMeTopAppBar(
+    modifier: Modifier = Modifier,
     imageConfiguration: ImageConfiguration,
+    icon: TopAppBarIcon?,
+    onBack: () -> Unit = {}
+) {
+    TopAppBar(
+        modifier = modifier,
+        imageConfiguration = imageConfiguration,
+        icon = icon,
+        onBack = onBack
+    )
+}
+
+@Composable
+fun ForYouAndMeTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String,
+    titleColor: Color,
+) {
+    TopAppBar(
+        modifier = modifier,
+        title = title,
+        titleColor = titleColor
+    )
+}
+
+@Composable
+fun ForYouAndMeTopAppBar(
+    modifier: Modifier = Modifier,
+    imageConfiguration: ImageConfiguration,
+    title: String,
+    titleColor: Color,
     icon: TopAppBarIcon,
-    modifier: Modifier =Modifier,
+    onBack: () -> Unit = {}
+) {
+    TopAppBar(
+        modifier = modifier,
+        imageConfiguration = imageConfiguration,
+        icon = icon,
+        title = title,
+        titleColor = titleColor,
+        onBack = onBack
+    )
+}
+
+@Composable
+private fun TopAppBar(
+    modifier: Modifier = Modifier,
+    imageConfiguration: ImageConfiguration? = null,
+    icon: TopAppBarIcon? = null,
     title: String? = null,
     titleColor: Color? = null,
     onBack: () -> Unit = {}
@@ -34,21 +81,27 @@ fun ForYouAndMeTopAppBar(
             backgroundColor = Color.Transparent,
             title = {},
             navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Image(
-                        painter =
-                        painterResource(
-                            id =
-                            when (icon) {
-                                TopAppBarIcon.Back -> imageConfiguration.back()
-                                TopAppBarIcon.BackSecondary -> imageConfiguration.backSecondary()
-                                TopAppBarIcon.Close -> imageConfiguration.close()
-                                TopAppBarIcon.CloseSecondary -> imageConfiguration.closeSecondary()
-                            }
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
+                if(imageConfiguration != null && icon != null) {
+                    IconButton(onClick = onBack) {
+                        Image(
+                            painter =
+                            painterResource(
+                                id =
+                                when (icon) {
+                                    TopAppBarIcon.Back ->
+                                        imageConfiguration.back()
+                                    TopAppBarIcon.BackSecondary ->
+                                        imageConfiguration.backSecondary()
+                                    TopAppBarIcon.Close ->
+                                        imageConfiguration.close()
+                                    TopAppBarIcon.CloseSecondary ->
+                                        imageConfiguration.closeSecondary()
+                                }
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             },
             elevation = 0.dp,

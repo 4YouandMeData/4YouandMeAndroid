@@ -96,7 +96,7 @@ data class Theme(
                 fourthTextColor = HEXColor("#696666"),
                 primaryMenuColor = HEXColor("#FFFFFF"),
                 secondaryMenuColor = HEXColor("#FFFFFF"),
-                activeColor = HEXColor("#FFFFFF"),
+                activeColor = HEXColor("#42f59e"),
                 deactiveColor = HEXColor("#FFFFFF"),
                 fourthColor = HEXColor("#FFFFFF")
             )

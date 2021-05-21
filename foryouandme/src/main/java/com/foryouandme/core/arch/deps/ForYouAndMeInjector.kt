@@ -9,7 +9,7 @@ import com.foryouandme.core.arch.navigation.ForYouAndMeNavigationProvider
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.data.api.consent.informed.ConsentInfoApi
 import com.foryouandme.core.data.api.optins.OptInsApi
-import com.foryouandme.core.data.api.yourdata.YourDataApi
+import com.foryouandme.data.repository.yourdata.network.YourDataApi
 import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
