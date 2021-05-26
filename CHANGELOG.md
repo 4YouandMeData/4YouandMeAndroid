@@ -1,4 +1,76 @@
 
+## Release 0.1.50
+
+- Clear text flag removed
+
+- App version position added
+
+- Dependencies updated
+
+- Integrations login fixed
+
+- Chart labels fixed
+
+- Your data refactoring
+
+- Web page refactoring
+
+- Study info refactoring
+
+- About you nested section removed
+
+- User info refactoring
+
+- User consent and permission naming refactoring
+
+- Integration login refactoring
+
+- Your apps and devices refactoring
+
+- Unused status bar composable removed
+
+- Old permissions files deleted
+
+- About you menu status bar fixed
+
+- About you permission refactoring
+
+- About you menu refactoring
+
+- Old auth viewmodel removed
+
+- Old consent review api fixed
+
+- User consent section refactoring
+
+- Opt in section refactoring
+
+- Consent info section refactoring
+
+- Consent review section refactoring
+
+- Integrations section refactoring
+
+- Screening questions refactoring
+
+- Video fragment refactoring
+
+- Old onboarding fragment deprecated
+
+## Release 0.1.49
+
+- Step footer shadow added
+
+- Number range picker step refactoring
+
+## Release 0.1.48
+
+- Partial number range picker step refactoring
+
+## Release 0.1.47
+
+- background configuration refresh added
+
 ## Release 0.1.46
 
 - Step skip logic updated
@@ -6,6 +78,7 @@
 - Survey skip logic fixed
 
 ## Release 0.1.45
+
 - Bintray dependencies fixed
 
 - CHANGELOG added
