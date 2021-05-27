@@ -26,7 +26,8 @@ fun Loading(
     isVisible: Boolean = true
 ) {
     Loading(
-        backgroundColor = configuration?.theme?.secondaryColor?.value ?: Color.White,
+        backgroundColor =
+        (configuration?.theme?.secondaryColor?.value ?: Color.White).copy(alpha = 0.49f),
         isVisible = isVisible,
         modifier = modifier
     )
@@ -39,7 +40,7 @@ fun Loading(
     isVisible: Boolean = true
 ) {
     Loading(
-        backgroundColor = backgroundColor.copy(alpha = 0.49f),
+        backgroundColor = backgroundColor,
         loadingImage = LocalContext.current.imageConfiguration.loading(),
         isVisible = isVisible,
         modifier = modifier

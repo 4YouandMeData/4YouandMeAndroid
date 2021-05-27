@@ -61,7 +61,7 @@ class AppsAndDevicesViewModel @Inject constructor(
     private fun getIntegrations(): Action =
         action(
             {
-                val configuration = state.value.configuration.orNull()
+                val configuration = state.value.configuration.dataOrNull()
 
                 if (configuration != null) {
 

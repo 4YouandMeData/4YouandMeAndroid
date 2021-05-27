@@ -5,9 +5,10 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.ext.find
 
 
-abstract class MainSectionFragment(
-    contentLayoutId: Int
-) : BaseFragment(contentLayoutId) {
+abstract class MainSectionFragment : BaseFragment {
+
+    constructor() : super()
+    constructor(contentLayoutId: Int) : super(contentLayoutId)
 
     protected val mainViewModel: MainViewModel by viewModels({ mainFragment() })
 

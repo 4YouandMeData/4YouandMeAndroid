@@ -1,4 +1,4 @@
-object KotlinX : DependencyGroup("org.jetbrains.kotlinx", "1.4.2") {
+object KotlinX : DependencyGroup("org.jetbrains.kotlinx", "1.5.0") {
 
     object Coroutines {
 

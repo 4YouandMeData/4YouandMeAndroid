@@ -3,6 +3,7 @@ package com.foryouandme.entity.configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import androidx.annotation.ColorInt
+import androidx.compose.ui.graphics.Brush
 import arrow.core.getOrElse
 import arrow.core.toOption
 import com.foryouandme.core.ext.adjustAlpha
@@ -13,7 +14,7 @@ data class HEXColor(val hex: String) {
     fun color(): Int = Color.parseColor(hex)
 
     val value: androidx.compose.ui.graphics.Color
-    get() = androidx.compose.ui.graphics.Color(color())
+        get() = androidx.compose.ui.graphics.Color(color())
 
     companion object {
 
@@ -53,6 +54,14 @@ data class HEXGradient(val primaryHex: String, val secondaryHex: String) {
         return gd
     }
 
+    val brush =
+        Brush.verticalGradient(
+            listOf(
+                HEXColor(primaryHex).value,
+                HEXColor(secondaryHex).value
+            )
+        )
+
     companion object {
 
         fun from(start: HEXColor, end: HEXColor): HEXGradient =
@@ -83,7 +92,7 @@ data class Theme(
 
     companion object {
 
-        fun  mock(): Theme =
+        fun mock(): Theme =
             Theme(
                 primaryColorStart = HEXColor("#eb4034"),
                 primaryColorEnd = HEXColor("#ed281a"),

@@ -8,6 +8,7 @@ buildscript {
         jcenter()
         mavenCentral()
         maven("https://jitpack.io")
+        maven("https://androidx.dev/snapshots/builds/7393783/artifacts/repository")
     }
 
     dependencies {
@@ -32,6 +33,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven("https://jitpack.io")
+        maven("https://androidx.dev/snapshots/builds/7393783/artifacts/repository")
     }
 }
 

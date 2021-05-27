@@ -1,5 +1,10 @@
 package com.foryouandme.entity.mock
 
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
+
 object Mock {
 
     const val title: String = "Title Title Title Title Title Title"
@@ -35,5 +40,24 @@ object Mock {
     const val button = "Button Button Button"
 
     const val time: String = "09:30"
+
+    val zoneDateTime: ZonedDateTime =
+        ZonedDateTime.of(
+            2021,
+            6,
+            20,
+            12,
+            0,
+            0,
+            0,
+            ZoneOffset.UTC
+        )
+
+    val date: LocalDate =
+        LocalDate.of(
+            2021,
+            6,
+            20
+        )
 
 }

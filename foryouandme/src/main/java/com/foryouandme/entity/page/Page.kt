@@ -1,5 +1,7 @@
 package com.foryouandme.entity.page
 
+import com.foryouandme.entity.mock.Mock
+
 data class Page(
     val id: String,
     val title: String,
@@ -31,6 +33,28 @@ data class Page(
         }
 
         return items
+
+    }
+
+    companion object {
+
+        fun mock(): Page =
+            Page(
+                id = "id",
+                title = Mock.title,
+                body = Mock.body,
+                image = null,
+                link1 = null,
+                link1Label = null,
+                link2 = null,
+                link2Label = null,
+                externalLinkLabel = null,
+                externalLinkUrl = null,
+                specialLinkLabel = null,
+                specialLinkValue = null,
+                linkModalLabel = null,
+                linkModalValue = null
+            )
 
     }
 

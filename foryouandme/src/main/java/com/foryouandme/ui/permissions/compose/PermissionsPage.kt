@@ -51,7 +51,7 @@ fun PermissionsPage(
                 when (it) {
                     PermissionsEvent.PermissionPermanentlyDenied -> {
 
-                        val configuration = state.data.orNull()?.configuration
+                        val configuration = state.data.dataOrNull()?.configuration
                         if (configuration != null)
                             context.execute(
                                 ContextAction.PermissionSettingsDialogAction(

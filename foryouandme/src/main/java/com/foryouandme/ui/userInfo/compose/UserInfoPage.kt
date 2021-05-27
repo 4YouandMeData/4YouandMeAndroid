@@ -43,7 +43,7 @@ fun UserInfoPage(
                     UserInfoEvent.UploadCompleted ->
                         onBack()
                     is UserInfoEvent.UploadError ->
-                        context.errorToast(it.error, state.configuration.orNull())
+                        context.errorToast(it.error, state.configuration.dataOrNull())
                 }
             }
             .collect()

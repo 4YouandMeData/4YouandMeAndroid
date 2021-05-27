@@ -64,7 +64,7 @@ class UserInfoViewModel @Inject constructor(
     private fun getUser(): Action =
         action(
             {
-                val configuration = state.value.configuration.orNull()
+                val configuration = state.value.configuration.dataOrNull()
 
                 if (configuration != null) {
                     state.emit(state.value.copy(user = state.value.user.toLoading()))

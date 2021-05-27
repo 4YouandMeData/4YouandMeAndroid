@@ -1,7 +1,9 @@
 package com.foryouandme.entity.activity
 
 import android.graphics.Bitmap
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXGradient
+import com.foryouandme.entity.mock.Mock
 import com.foryouandme.entity.page.Page
 import com.foryouandme.researchkit.task.TaskIdentifiers
 
@@ -19,14 +21,53 @@ data class QuickActivity(
     val answer4: QuickActivityAnswer?,
     val answer5: QuickActivityAnswer?,
     val answer6: QuickActivityAnswer?
-) : StudyActivity()
+) : StudyActivity() {
+
+    companion object {
+
+        fun mock(): QuickActivity =
+            QuickActivity(
+                id = "id",
+                title = Mock.title,
+                description = Mock.body,
+                button = Mock.button,
+                gradient =
+                HEXGradient(
+                    Configuration.mock().theme.primaryColorStart.hex,
+                    Configuration.mock().theme.primaryColorEnd.hex
+                ),
+                answer1 = QuickActivityAnswer.mock(),
+                answer2 = QuickActivityAnswer.mock(),
+                answer3 = QuickActivityAnswer.mock(),
+                answer4 = QuickActivityAnswer.mock(),
+                answer5 = QuickActivityAnswer.mock(),
+                answer6 = QuickActivityAnswer.mock()
+            )
+
+    }
+
+}
 
 data class QuickActivityAnswer(
     val id: String,
     val text: String?,
     val image: Bitmap?,
     val selectedImage: Bitmap?
-)
+) {
+
+    companion object {
+
+        fun mock(): QuickActivityAnswer =
+            QuickActivityAnswer(
+                id = "id",
+                text = Mock.name,
+                image = null,
+                selectedImage = null
+            )
+
+    }
+
+}
 
 data class TaskActivity(
     val taskId: String,
@@ -41,7 +82,33 @@ data class TaskActivity(
     val pages: List<Page>,
     val successPage: Page?,
     val reschedule: Reschedule?
-) : StudyActivity()
+) : StudyActivity() {
+
+    companion object {
+
+        fun mock(): TaskActivity =
+            TaskActivity(
+                taskId = "task_id",
+                activityId = "activity_id",
+                title = Mock.title,
+                description = Mock.body,
+                button = Mock.button,
+                gradient =
+                HEXGradient(
+                    Configuration.mock().theme.primaryColorStart.hex,
+                    Configuration.mock().theme.primaryColorEnd.hex
+                ),
+                image = null,
+                activityType = TaskActivityType.Survey,
+                welcomePage = Page.mock(),
+                pages = listOf(Page.mock(), Page.mock()),
+                successPage = Page.mock(),
+                reschedule = null
+            )
+
+    }
+
+}
 
 sealed class TaskActivityType(val typeId: String, val type: String) {
 

@@ -21,7 +21,7 @@ sealed class LazyData<out T> {
             is Loading -> Loading(value?.let { mapper(it) })
         }
 
-    fun orNull(): T? =
+    fun dataOrNull(): T? =
         when (this) {
             is Data -> value
             else -> null
@@ -49,6 +49,16 @@ sealed class LazyData<out T> {
             Empty -> Error(error = error.toForYouAndMeException(), value = null)
             is Error -> Error(error = error.toForYouAndMeException(), value = value)
             is Loading -> Error(error = error.toForYouAndMeException(), value = value)
+        }
+
+    fun toDataOrError(): LazyData<T> =
+        when (this) {
+            is Data -> Data(value = value)
+            Empty -> Error(error = ForYouAndMeException.Unknown, value = null)
+            is Error -> if (value != null) Data(value = value) else this
+            is Loading ->
+                if (value != null) Data(value = value)
+                else Error(error = ForYouAndMeException.Unknown, value = null)
         }
 
     fun isLoading(): Boolean = this is Loading

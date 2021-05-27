@@ -53,7 +53,7 @@ class ReviewConsentViewModel @Inject constructor(
     private fun getReviewConsent(): Action =
         action(
             {
-                val configuration = state.value.configuration.orNull()
+                val configuration = state.value.configuration.dataOrNull()
 
                 if (configuration != null) {
                     state.emit(

@@ -1,6 +1,7 @@
 package com.foryouandme.ui.compose.error
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -28,7 +29,11 @@ fun Error(
     retry: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier.padding(25.dp).noIndicationClickable {  },
+        modifier =
+        modifier
+            .background(Color.White)
+            .padding(25.dp)
+            .noIndicationClickable { },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
