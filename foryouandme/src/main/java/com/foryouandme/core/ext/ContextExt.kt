@@ -8,13 +8,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import com.foryouandme.core.arch.android.AppInjector
-import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.Injector
-import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.action.ActivityAction
 import com.foryouandme.core.arch.navigation.action.ContextAction
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration

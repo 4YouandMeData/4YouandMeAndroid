@@ -6,12 +6,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.foryouandme.core.arch.android.AppInjector
-import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.Injector
-import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.navigation.Navigator
 
 
 /* --- resources --- */
