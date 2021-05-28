@@ -14,9 +14,6 @@ interface ImageConfiguration {
     fun pushSmallIcon(): Int
 
     @DrawableRes
-    fun loading(): Int
-
-    @DrawableRes
     fun back(): Int
 
     @DrawableRes
@@ -200,7 +197,6 @@ interface ImageConfiguration {
             object: ImageConfiguration {
                 override fun splashLogo(): Int = R.drawable.placeholder
                 override fun pushSmallIcon(): Int = R.drawable.placeholder
-                override fun loading(): Int = R.drawable.placeholder
                 override fun back(): Int = R.drawable.placeholder
                 override fun backSecondary(): Int = R.drawable.placeholder
                 override fun close(): Int = R.drawable.placeholder

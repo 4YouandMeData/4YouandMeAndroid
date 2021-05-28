@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
 import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.databinding.ConsentReviewDisagreeBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.background.roundBackground

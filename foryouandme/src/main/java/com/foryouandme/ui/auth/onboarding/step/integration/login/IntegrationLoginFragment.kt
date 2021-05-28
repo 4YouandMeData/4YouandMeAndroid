@@ -7,7 +7,6 @@ import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.ext.showCloseButton
 import com.foryouandme.core.ext.web.setupWebViewWithCookies

@@ -17,7 +17,7 @@ fun <T> LoadingError(
     onRetryClicked: () -> Unit,
     composable: @Composable (T) -> Unit
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier, ) {
         when (data) {
             is LazyData.Data ->
                 composable(data.value)

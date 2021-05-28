@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.core.ext.*
 import com.foryouandme.databinding.VideoBinding
 import com.foryouandme.entity.configuration.Configuration
@@ -20,9 +21,13 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class VideoFragment : OnboardingStepFragment(R.layout.video) {
+
+    @Inject
+    lateinit var videoConfiguration: VideoConfiguration
 
     lateinit var player: SimpleExoPlayer
 

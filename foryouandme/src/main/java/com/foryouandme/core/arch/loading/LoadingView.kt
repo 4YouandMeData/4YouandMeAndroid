@@ -86,7 +86,7 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
         GlobalScope.launchSafe {
 
             withContext(Dispatchers.Main) {
-                loader.setImageResource(loaderImage ?: imageConfiguration.loading())
+                loader.setImageResource(loaderImage ?: R.drawable.loading)
 
                 val configuration =
                     catchToNullSuspend { getConfigurationUseCase(Policy.LocalFirst) }

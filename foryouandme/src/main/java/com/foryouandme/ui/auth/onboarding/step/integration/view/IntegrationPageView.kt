@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.html.setHtmlText
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.databinding.IntegrationPageViewBinding
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXColor
@@ -16,9 +16,14 @@ import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.page.Page
 import com.foryouandme.entity.page.PageRef
 import com.foryouandme.ui.auth.onboarding.step.integration.SpecialLinkAction
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 // TODO: Remove use standard page
+@AndroidEntryPoint
 class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+
+    @Inject lateinit var imageConfiguration: ImageConfiguration
 
     val binding =
         IntegrationPageViewBinding.inflate(
@@ -97,7 +102,7 @@ class IntegrationPageView(context: Context, attrs: AttributeSet?) : FrameLayout(
         }
 
         binding.action1.background =
-            button(context.resources, context.imageConfiguration.nextStepSecondary())
+            button(context.resources, imageConfiguration.nextStepSecondary())
 
         binding.specialAction.background = button(configuration.theme.primaryColorEnd.color())
         binding.specialAction.setTextColor(configuration.theme.secondaryColor.color())

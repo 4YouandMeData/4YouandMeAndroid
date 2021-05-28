@@ -10,8 +10,6 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun pushSmallIcon(): Int = R.drawable.logo_study_secondary
 
-    override fun loading(): Int = R.drawable.loading
-
     override fun back(): Int = R.drawable.back
 
     override fun backSecondary(): Int = R.drawable.back_secondary

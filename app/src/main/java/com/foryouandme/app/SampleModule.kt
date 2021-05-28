@@ -2,6 +2,7 @@ package com.foryouandme.app
 
 import android.content.Context
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.VideoConfiguration
 import com.foryouandme.data.datasource.Environment
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
@@ -24,6 +25,11 @@ object SampleModule {
     @Singleton
     fun provideImageConfiguration(): ImageConfiguration =
         SampleImageConfiguration()
+
+    @Provides
+    @Singleton
+    fun provideVideoConfiguration(): VideoConfiguration =
+        SampleVideoConfiguration()
 
     @Provides
     @Singleton

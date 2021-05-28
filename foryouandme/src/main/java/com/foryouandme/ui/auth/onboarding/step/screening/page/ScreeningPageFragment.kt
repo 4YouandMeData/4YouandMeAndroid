@@ -7,7 +7,6 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.ext.showBackSecondaryButton
 import com.foryouandme.core.view.page.EPageType

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.viewModels
 import com.foryouandme.R
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.databinding.WelcomeBinding
 import com.foryouandme.entity.configuration.HEXGradient

@@ -19,20 +19,6 @@ import com.foryouandme.core.arch.navigation.Navigator
 @ColorInt
 fun Fragment.color(@ColorRes res: Int): Int = ContextCompat.getColor(requireContext(), res)
 
-/* --- injector --- */
-
-val Fragment.injector: Injector
-    get() = (requireActivity().applicationContext as AppInjector).injector
-
-val Fragment.navigator: Navigator
-    get() = injector.navigator
-
-val Fragment.imageConfiguration: ImageConfiguration
-    get() = injector.imageConfiguration
-
-val Fragment.videoConfiguration: VideoConfiguration
-    get() = injector.videoConfiguration
-
 /* --- status bar --- */
 
 fun Fragment.setStatusBar(backgroundColor: Int): Unit {

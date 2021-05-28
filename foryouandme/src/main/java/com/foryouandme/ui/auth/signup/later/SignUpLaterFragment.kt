@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.core.ext.html.setHtmlText
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.databinding.SignUpLaterBinding
 import com.foryouandme.entity.configuration.HEXGradient

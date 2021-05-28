@@ -9,7 +9,6 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.html.setHtmlText
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.databinding.ConsentInfoQuestionBinding

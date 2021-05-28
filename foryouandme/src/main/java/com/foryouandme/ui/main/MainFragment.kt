@@ -10,7 +10,6 @@ import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.setupWithNavController
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.core.ext.selectedUnselectedColor
 import com.foryouandme.databinding.MainBinding
 import com.foryouandme.entity.configuration.Configuration

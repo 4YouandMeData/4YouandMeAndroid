@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.loading.Loading
@@ -27,7 +28,13 @@ fun ForYouAndMeTheme(
 ) {
 
     MaterialTheme(
-        content = { ConfigurationContent(configuration, onConfigurationError, content) },
+        content = {
+            ConfigurationContent(
+                configuration,
+                onConfigurationError,
+                content
+            )
+        },
         typography = ForYouAndMeTypography
     )
 

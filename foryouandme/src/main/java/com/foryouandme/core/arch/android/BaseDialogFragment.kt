@@ -12,6 +12,7 @@ import com.foryouandme.core.activity.FYAMActivity
 import com.foryouandme.core.activity.FYAMState
 import com.foryouandme.core.activity.FYAMStateUpdate
 import com.foryouandme.core.activity.FYAMViewModel
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
 import com.foryouandme.core.arch.flow.observeIn
@@ -36,6 +37,9 @@ abstract class BaseDialogFragment : DialogFragment {
 
     @Inject
     lateinit var navigator: Navigator
+
+    @Inject
+    lateinit var imageConfiguration: ImageConfiguration
 
     constructor() : super()
     constructor(contentLayoutId: Int) : super(contentLayoutId)
