@@ -1,57 +1,55 @@
 package com.foryouandme.ui.main.feeds
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.foryouandme.R
-import com.foryouandme.core.arch.android.getFactory
-import com.foryouandme.core.arch.android.viewModelFactory
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.configuration.HEXGradient
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
+import com.foryouandme.core.arch.navigation.action.ContextAction
+import com.foryouandme.core.arch.navigation.action.openApp
+import com.foryouandme.core.ext.execute
 import com.foryouandme.entity.notifiable.FeedAction
-import com.foryouandme.entity.user.User
-import com.foryouandme.core.ext.*
-import com.foryouandme.core.items.PagedRequestErrorItem
-import com.foryouandme.core.items.PagedRequestErrorViewHolder
-import com.foryouandme.core.items.PagedRequestLoadingItem
-import com.foryouandme.core.items.PagedRequestLoadingViewHolder
-import com.foryouandme.ui.main.MainSectionOldFragment
-import com.foryouandme.ui.main.MainStateEvent
-import com.foryouandme.ui.main.items.*
-import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.foryouandme.ui.main.*
+import com.foryouandme.ui.main.feeds.compose.FeedPage
 import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
-import com.giacomoparisi.recyclerdroid.core.decoration.LinearMarginItemDecoration
-import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.feeds.*
-import kotlinx.coroutines.launch
-import java.text.MessageFormat
 
 @AndroidEntryPoint
-class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
+class FeedsFragment : MainSectionFragment() {
 
-    override val viewModel: FeedsViewModel by lazy {
-        viewModelFactory(
-            this,
-            getFactory {
-                FeedsViewModel(
-                    navigator,
-                    injector.feedModule(),
-                    injector.taskModule(),
-                    injector.authModule(),
-                    injector.analyticsModule()
+    private val viewModel: FeedsViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                FeedPage(
+                    feedsViewModel = viewModel,
+                    onTaskActivityClicked = {
+                        navigator.navigateTo(
+                            rootNavController(),
+                            FeedsToTask(it.data.taskId)
+                        )
+                    },
+                    onFeedActionClicked = { feedNavigation(it) },
+                    onLogoClicked = {
+                        navigator.navigateTo(
+                            rootNavController(),
+                            MainToAboutYou
+                        )
+                    }
                 )
             }
-        )
-    }
+        }
 
     private val adapter: DroidAdapter by lazy {
         DroidAdapter(
-            TaskActivityViewHolder.factory {
+            /*TaskActivityViewHolder.factory {
                 startCoroutineAsync { viewModel.executeTasks(rootNavController(), it) }
             },
             FeedRewardViewHolder.factory { item -> item.data.action?.let { feedNavigation(it) } },
@@ -69,14 +67,14 @@ class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
                     viewModel.nextPage(rootNavController(), it)
                 }
 
-            }
+            }*/
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.stateLiveData()
+        /*viewModel.stateLiveData()
             .observeEvent(name()) { state ->
                 when (state) {
                     is FeedsStateUpdate.Initialization -> {
@@ -120,29 +118,29 @@ class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
                             applyPageError(errorPayload.error, it)
                         }
                 }
-            }
+            }*/
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupList()
+        //setupList()
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        configuration {
+        /*configuration {
 
             applyConfiguration(it)
             viewModel.initialize(rootNavController(), it)
 
-        }
+        }*/
     }
 
-    private suspend fun applyConfiguration(configuration: Configuration): Unit =
+    /*private suspend fun applyConfiguration(configuration: Configuration): Unit =
         evalOnMain {
 
             setStatusBar(configuration.theme.primaryColorStart.color())
@@ -263,25 +261,31 @@ class FeedsFragment : MainSectionOldFragment<FeedsViewModel>(R.layout.feeds) {
             configuration { viewModel.nextPage(rootNavController(), it) }
         }
 
-    }
+    }*/
 
-    private fun feedNavigation(feedAction: FeedAction): Unit {
-        lifecycleScope.launch {
+    private fun feedNavigation(feedAction: FeedAction) {
 
-            when (feedAction) {
-                FeedAction.Feed -> {
-                }
-                FeedAction.Tasks -> mainViewModel.execute(MainStateEvent.SelectTasks)
-                FeedAction.YourData -> mainViewModel.execute(MainStateEvent.SelectYourData)
-                FeedAction.StudyInfo -> mainViewModel.execute(MainStateEvent.SelectStudyInfo)
-                FeedAction.AboutYou -> viewModel.aboutYouPage(rootNavController())
-                FeedAction.Faq -> viewModel.faq(rootNavController())
-                FeedAction.Rewards -> viewModel.reward(rootNavController())
-                FeedAction.Contacts -> viewModel.info(rootNavController())
-                is FeedAction.Integration -> viewModel.openIntegrationApp(feedAction.app)
-                is FeedAction.Web -> viewModel.web(rootNavController(), feedAction.url)
+        when (feedAction) {
+            FeedAction.Feed -> {
             }
-
+            FeedAction.Tasks ->
+                mainViewModel.execute(MainStateEvent.SelectTasks)
+            FeedAction.YourData ->
+                mainViewModel.execute(MainStateEvent.SelectYourData)
+            FeedAction.StudyInfo ->
+                mainViewModel.execute(MainStateEvent.SelectStudyInfo)
+            FeedAction.AboutYou ->
+                navigator.navigateTo(rootNavController(), MainToAboutYou)
+            FeedAction.Faq ->
+                navigator.navigateTo(rootNavController(), MaiToFAQ)
+            FeedAction.Rewards ->
+                navigator.navigateTo(rootNavController(), MainToReward)
+            FeedAction.Contacts ->
+                navigator.navigateTo(rootNavController(), MainToInformation)
+            is FeedAction.Integration ->
+                requireContext().execute(ContextAction.OpenApp(feedAction.app.packageName))
+            is FeedAction.Web ->
+                navigator.navigateTo(rootNavController(), AnywhereToWeb(feedAction.url))
         }
 
     }

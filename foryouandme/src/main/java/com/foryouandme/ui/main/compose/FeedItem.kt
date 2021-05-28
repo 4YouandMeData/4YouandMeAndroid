@@ -2,7 +2,11 @@ package com.foryouandme.ui.main.compose
 
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.feed.FeedType
 import com.foryouandme.entity.mock.Mock
+import com.foryouandme.entity.notifiable.FeedAlert
+import com.foryouandme.entity.notifiable.FeedEducational
+import com.foryouandme.entity.notifiable.FeedReward
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime
 
@@ -67,6 +71,63 @@ sealed class FeedItem {
 
             fun mock(): DateItem =
                 DateItem(date = Mock.date)
+
+        }
+
+    }
+
+    data class FeedRewardItem(
+        val data: FeedReward,
+        val from: ZonedDateTime,
+        val to: ZonedDateTime
+    ) : FeedItem() {
+
+        companion object {
+
+            fun mock(): FeedRewardItem =
+                FeedRewardItem(
+                    data = FeedReward.mock(),
+                    from = Mock.zoneDateTime,
+                    to = Mock.zoneDateTime
+                )
+
+        }
+
+    }
+
+    data class FeedAlertItem(
+        val data: FeedAlert,
+        val from: ZonedDateTime,
+        val to: ZonedDateTime
+    ) : FeedItem() {
+
+        companion object {
+
+            fun mock(): FeedAlertItem =
+                FeedAlertItem(
+                    data = FeedAlert.mock(),
+                    from = Mock.zoneDateTime,
+                    to = Mock.zoneDateTime
+                )
+
+        }
+
+    }
+
+    data class FeedEducationalItem(
+        val data: FeedEducational,
+        val from: ZonedDateTime,
+        val to: ZonedDateTime
+    ) : FeedItem() {
+
+        companion object {
+
+            fun mock(): FeedEducationalItem =
+                FeedEducationalItem(
+                    data = FeedEducational.mock(),
+                    from = Mock.zoneDateTime,
+                    to = Mock.zoneDateTime
+                )
 
         }
 

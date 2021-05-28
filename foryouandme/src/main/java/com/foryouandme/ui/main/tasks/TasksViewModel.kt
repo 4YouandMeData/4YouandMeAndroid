@@ -223,14 +223,15 @@ class TasksViewModel @Inject constructor(
     private suspend fun logQuickActivityOptionSelected(
         activityId: String,
         optionId: String
-    ): Unit =
+    ) {
         sendAnalyticsEventUseCase(
             AnalyticsEvent.QuickActivityOptionClicked(activityId, optionId),
             EAnalyticsProvider.ALL
         )
+    }
 
 
-    /* --- state event --- */
+    /* --- actions --- */
 
     fun execute(action: TasksAction) {
 

@@ -1,8 +1,10 @@
 package com.foryouandme.entity.notifiable
 
 import android.graphics.Bitmap
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.integration.IntegrationApp
+import com.foryouandme.entity.mock.Mock
 
 sealed class StudyNotifiable
 
@@ -14,7 +16,28 @@ data class FeedReward(
     val image: Bitmap?,
     val action: FeedAction?,
     val taskActionButtonLabel: String?
-) : StudyNotifiable()
+) : StudyNotifiable() {
+
+    companion object {
+
+        fun mock(): FeedReward =
+            FeedReward(
+                id ="id",
+                title = Mock.title,
+                description = Mock.body,
+                gradient =
+                HEXGradient(
+                    Configuration.mock().theme.primaryColorStart.hex,
+                    Configuration.mock().theme.primaryColorEnd.hex
+                ),
+                image = null,
+                action = FeedAction.Faq,
+                taskActionButtonLabel = Mock.button
+            )
+
+    }
+
+}
 
 data class FeedAlert(
     val id: String,
@@ -24,7 +47,28 @@ data class FeedAlert(
     val image: Bitmap?,
     val action: FeedAction?,
     val taskActionButtonLabel: String?
-) : StudyNotifiable()
+) : StudyNotifiable() {
+
+    companion object {
+
+        fun mock(): FeedAlert =
+            FeedAlert(
+                id ="id",
+                title = Mock.title,
+                description = Mock.body,
+                gradient =
+                HEXGradient(
+                    Configuration.mock().theme.primaryColorStart.hex,
+                    Configuration.mock().theme.primaryColorEnd.hex
+                ),
+                image = null,
+                action = FeedAction.Faq,
+                taskActionButtonLabel = Mock.button
+            )
+
+    }
+
+}
 
 data class FeedEducational(
     val id: String,
@@ -34,7 +78,28 @@ data class FeedEducational(
     val image: Bitmap?,
     val action: FeedAction?,
     val taskActionButtonLabel: String?
-) : StudyNotifiable()
+) : StudyNotifiable() {
+
+    companion object {
+
+        fun mock(): FeedEducational =
+            FeedEducational(
+                id ="id",
+                title = Mock.title,
+                description = Mock.body,
+                gradient =
+                HEXGradient(
+                    Configuration.mock().theme.primaryColorStart.hex,
+                    Configuration.mock().theme.primaryColorEnd.hex
+                ),
+                image = null,
+                action = FeedAction.Faq,
+                taskActionButtonLabel = Mock.button
+            )
+
+    }
+
+}
 
 
 sealed class FeedAction {

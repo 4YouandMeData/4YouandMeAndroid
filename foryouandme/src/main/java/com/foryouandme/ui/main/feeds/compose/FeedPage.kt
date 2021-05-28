@@ -1,4 +1,4 @@
-package com.foryouandme.ui.main.tasks.compose
+package com.foryouandme.ui.main.feeds.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,63 +12,68 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.notifiable.FeedAction
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.statusbar.StatusBar
-import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
-import com.foryouandme.ui.compose.verticalGradient
 import com.foryouandme.ui.main.compose.FeedItem
-import com.foryouandme.ui.main.tasks.TasksAction.*
-import com.foryouandme.ui.main.tasks.TasksState
-import com.foryouandme.ui.main.tasks.TasksViewModel
+import com.foryouandme.ui.main.feeds.FeedsAction.*
+import com.foryouandme.ui.main.feeds.FeedsState
+import com.foryouandme.ui.main.feeds.FeedsViewModel
 
 @Composable
-fun TasksPage(
-    tasksViewModel: TasksViewModel = viewModel(),
-    onFeedButtonClicked: () -> Unit = {},
-    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+fun FeedPage(
+    feedsViewModel: FeedsViewModel = viewModel(),
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {},
+    onFeedActionClicked: (FeedAction) -> Unit = {},
+    onLogoClicked: () -> Unit = {}
 ) {
 
-    val state by tasksViewModel.stateFlow.collectAsState()
+    val state by feedsViewModel.stateFlow.collectAsState()
 
     ForYouAndMeTheme(configuration = state.configuration) { configuration ->
 
         LaunchedEffect(key1 = "tasks") {
-            tasksViewModel.execute(GetTasksFirstPage)
+            feedsViewModel.execute(GetFeedsFirstPage)
         }
 
-        TasksPage(
+        FeedPage(
             state = state,
             configuration = configuration,
-            onFirstPageRetry = { tasksViewModel.execute(GetTasksFirstPage) },
-            onNextPageRetry = { tasksViewModel.execute(GetTasksNextPage) },
-            onSubmitRetry = { tasksViewModel.execute(RetrySubmit) },
-            onFeedScrollPositionChange = { tasksViewModel.execute(SetScrollPosition(it)) },
-            onFeedButtonClicked = onFeedButtonClicked,
+            imageConfiguration = feedsViewModel.imageConfiguration,
+            onFirstPageRetry = { feedsViewModel.execute(GetFeedsFirstPage) },
+            onNextPageRetry = { feedsViewModel.execute(GetFeedsNextPage) },
+            onSubmitRetry = { feedsViewModel.execute(RetrySubmit) },
+            onFeedScrollPositionChange = { feedsViewModel.execute(SetScrollPosition(it)) },
             onAnswerSelected =
-            { item, answer -> tasksViewModel.execute(SelectQuickActivityAnswer(item, answer)) },
-            onSubmit = { tasksViewModel.execute(SubmitQuickActivityAnswer(it)) },
-            onStartClicked = onStartClicked
+            { item, answer -> feedsViewModel.execute(SelectQuickActivityAnswer(item, answer)) },
+            onSubmit = { feedsViewModel.execute(SubmitQuickActivityAnswer(it)) },
+            onTaskActivityClicked = onTaskActivityClicked,
+            onFeedActionClicked = onFeedActionClicked,
+            onLogoClicked = onLogoClicked
         )
     }
 
 }
 
 @Composable
-private fun TasksPage(
-    state: TasksState,
+private fun FeedPage(
+    state: FeedsState,
     configuration: Configuration,
+    imageConfiguration: ImageConfiguration,
     onFirstPageRetry: () -> Unit = {},
     onNextPageRetry: () -> Unit = {},
     onSubmitRetry: () -> Unit = {},
     onFeedScrollPositionChange: (Int) -> Unit = {},
-    onFeedButtonClicked: () -> Unit = {},
     onAnswerSelected: (FeedItem.QuickActivityItem, QuickActivityAnswer) -> Unit = { _, _ -> },
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
-    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {},
+    onFeedActionClicked: (FeedAction) -> Unit = {},
+    onLogoClicked: () -> Unit = {}
 ) {
 
     StatusBar(color = configuration.theme.primaryColorStart.value)
@@ -78,19 +83,20 @@ private fun TasksPage(
             .fillMaxSize()
             .background(configuration.theme.secondaryColor.value)
     ) {
-        ForYouAndMeTopAppBar(
-            title = configuration.text.tab.tasksTitle,
-            titleColor = configuration.theme.secondaryColor.value,
-            modifier = Modifier.background(configuration.theme.verticalGradient)
+        FeedTopAppBar(
+            configuration = configuration,
+            imageConfiguration = imageConfiguration,
+            user = state.user,
+            onLogoClicked = onLogoClicked
         )
         Box(modifier = Modifier.fillMaxSize()) {
             if (
                 state.firstPage.isLoading().not() &&
-                state.feeds.dataOrNull()?.isEmpty() == true
+                state.items.dataOrNull()?.isEmpty() == true
             )
-                TaskEmpty(configuration = configuration, onFeedButtonClicked = onFeedButtonClicked)
+                FeedEmpty(configuration = configuration)
             else
-                TaskList(
+                FeedList(
                     state = state,
                     configuration = configuration,
                     onFirstPageRetry = onFirstPageRetry,
@@ -98,7 +104,8 @@ private fun TasksPage(
                     onFeedScrollPositionChange = onFeedScrollPositionChange,
                     onAnswerSelected = onAnswerSelected,
                     onSubmit = onSubmit,
-                    onStartClicked = onStartClicked
+                    onTaskActivityClicked = onTaskActivityClicked,
+                    onFeedActionClicked = onFeedActionClicked
                 )
             when (state.submit) {
                 is LazyData.Error ->
@@ -123,11 +130,12 @@ private fun TasksPage(
 
 @Preview
 @Composable
-private fun TasksPagePreview() {
+private fun FeedPagePreview() {
     ForYouAndMeTheme {
-        TasksPage(
-            state = TasksState.mock(),
-            configuration = Configuration.mock()
+        FeedPage(
+            state = FeedsState.mock(),
+            configuration = Configuration.mock(),
+            imageConfiguration = ImageConfiguration.mock()
         )
     }
 }

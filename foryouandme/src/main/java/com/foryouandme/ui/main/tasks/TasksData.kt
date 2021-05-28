@@ -7,7 +7,6 @@ import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.task.Task
 import com.foryouandme.ui.main.compose.FeedItem
-import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 
 data class TasksState(
@@ -34,16 +33,6 @@ data class TasksState(
             )
 
     }
-
-}
-
-sealed class TasksStateUpdate {
-
-    data class Tasks(
-        val tasks: PagedList<DroidItem<Any>>,
-    ) : TasksStateUpdate()
-
-    data class Config(val configuration: Configuration) : TasksStateUpdate()
 
 }
 

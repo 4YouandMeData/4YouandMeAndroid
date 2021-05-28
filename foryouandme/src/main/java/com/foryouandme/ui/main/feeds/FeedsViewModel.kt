@@ -1,36 +1,28 @@
 package com.foryouandme.ui.main.feeds
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import arrow.core.toT
-import arrow.fx.coroutines.Disposable
-import arrow.fx.coroutines.cancelBoundary
-import arrow.fx.coroutines.parMapN
-import com.foryouandme.core.arch.android.BaseViewModel
-import com.foryouandme.core.arch.deps.modules.AnalyticsModule
-import com.foryouandme.core.arch.deps.modules.AuthModule
-import com.foryouandme.core.arch.deps.modules.FeedModule
-import com.foryouandme.core.arch.deps.modules.TaskModule
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.error.handleAuthError
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.action.openApp
-import com.foryouandme.core.cases.CachePolicy
+import com.foryouandme.core.arch.toData
+import com.foryouandme.core.arch.toError
+import com.foryouandme.core.ext.*
+import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
-import com.foryouandme.core.cases.auth.AuthUseCase.getUser
-import com.foryouandme.core.cases.feed.FeedUseCase.getFeeds
-import com.foryouandme.core.cases.task.TaskUseCase.updateQuickActivity
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
-import com.foryouandme.core.ext.startCoroutineCancellableAsync
-import com.foryouandme.entity.order.Order
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.feed
+.GetFeedUseCase
+import com.foryouandme.domain.usecase.task.SubmitQuickActivityAnswer
+import com.foryouandme.domain.usecase.user.GetUserUseCase
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.feed.Feed
 import com.foryouandme.entity.feed.FeedType
 import com.foryouandme.entity.integration.IntegrationApp
@@ -39,292 +31,167 @@ import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
 import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
-import com.foryouandme.ui.main.MainToAboutYou
 import com.foryouandme.ui.main.MaiToFAQ
+import com.foryouandme.ui.main.MainToAboutYou
 import com.foryouandme.ui.main.MainToInformation
 import com.foryouandme.ui.main.MainToReward
+import com.foryouandme.ui.main.compose.FeedItem
 import com.foryouandme.ui.main.items.*
-import com.giacomoparisi.recyclerdroid.core.DroidItem
-import com.giacomoparisi.recyclerdroid.core.adapter.DroidAdapter
+import com.foryouandme.ui.main.tasks.TasksAction
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.addPage
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
+import javax.inject.Inject
 
-class FeedsViewModel(
-    navigator: Navigator,
-    private val feedModule: FeedModule,
-    private val taskModule: TaskModule,
-    private val authModule: AuthModule,
-    private val analyticsModule: AnalyticsModule
-) : BaseViewModel<
-        FeedsState,
-        FeedsStateUpdate,
-        FeedsError,
-        FeedsLoading>
-    (navigator = navigator) {
+@HiltViewModel
+class FeedsViewModel @Inject constructor(
+    private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getUserUseCase: GetUserUseCase,
+    private val getFeedUseCase: GetFeedUseCase,
+    private val submitQuickActivityAnswer: SubmitQuickActivityAnswer,
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    val imageConfiguration: ImageConfiguration
+) : ViewModel() {
+
+    /* --- state --- */
+
+    private val state = MutableStateFlow(FeedsState())
+    val stateFlow = state as StateFlow<FeedsState>
+
+    init {
+        execute(FeedsAction.GetConfiguration)
+    }
+
+    /* --- configuration --- */
+
+    private fun getConfiguration(): Action =
+        action(
+            {
+                state.emit(state.value.copy(configuration = LazyData.Loading()))
+                val configuration = getConfigurationUseCase(Policy.LocalFirst)
+                state.emit(state.value.copy(configuration = configuration.toData()))
+            },
+            { state.emit(state.value.copy(configuration = it.toError())) }
+        )
+
+    /* --- tasks --- */
 
     private val pageSize: Int = 20
+    private var fetchJob: Job? = null
 
-    private var fetchDisposable: Disposable? = null
-
-    /* --- initialize --- */
-
-    suspend fun initialize(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit {
-
-        showLoading(FeedsLoading.Initialization)
-
-        val userRequest =
-            suspend {
-                authModule.getUser(CachePolicy.Network)
-                    .handleAuthError(rootNavController, navigator)
-            }
-
-        val feedRequest =
-            suspend {
-                initializeFeeds(rootNavController, configuration)
-                    .handleAuthError(rootNavController, navigator)
-            }
-
-        val (user, feed) =
-            parMapN(
-                Dispatchers.IO,
-                userRequest,
-                feedRequest,
-                { user, feed ->
-                    user toT feed
-                })
-
-        feed.fold(
-            { setError(it, FeedsError.Initialization) },
-            { list ->
-                setState(
-                    FeedsState(
-                        list.addHeader(configuration, user.orNull())
-                            .addEmptyItem(configuration),
-                        user = user.orNull()
+    private fun getTasks(page: Int): Action =
+        action(
+            {
+                coroutineScope {
+                    state.emit(
+                        if (page == 1) state.value.copy(firstPage = LazyData.Loading())
+                        else state.value.copy(items = state.value.items.toLoading())
                     )
+
+                    val user =
+                        async {
+                            if (page == 1) getUserUseCase(Policy.Network)
+                            else state.value.user
+                        }
+
+                    val feeds =
+                        async {
+                            updateWithPage(
+                                page,
+                                getFeedUseCase(page, pageSize)
+                            )
+                        }
+                    state.emit(
+                        state.value.copy(
+                            feeds = feeds.await(),
+                            items = feeds.await().data.map { it.toItem() }.sort().toData(),
+                            user = user.await(),
+                            firstPage = LazyData.unit()
+                        )
+                    )
+                }
+            },
+            {
+                state.emit(
+                    if (page == 1) state.value.copy(
+                        firstPage = it.toError(),
+                        items = LazyData.Empty
+                    )
+                    else state.value.copy(items = state.value.items.toError(it))
                 )
-                { FeedsStateUpdate.Initialization(it.feeds, it.user) }
             }
         )
 
-        hideLoading(FeedsLoading.Initialization)
-
-    }
-
-    suspend fun reloadFeeds(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit =
-        loadFeed(rootNavController, 1, configuration)
-
-    suspend fun nextPage(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Unit {
-        if (state().feeds.isCompleted.not())
-            loadFeed(rootNavController, state().feeds.page + 1, configuration)
-    }
-
-    private suspend fun initializeFeeds(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): Either<ForYouAndMeError, PagedList<DroidItem<Any>>> {
-
-        fetchDisposable?.let { it() }
-        fetchDisposable = null
-
-        return feedModule.getFeeds(
-            Order.Descending,
-            1,
-            pageSize
-        ).map { list ->
-
-            val feeds = list.map { feeds -> feeds.toItem(configuration) }
-
-            feeds.sort(rootNavController, configuration)
-
-        }
-
-    }
-
-    private suspend fun loadFeed(
-        rootNavController: RootNavController,
+    private fun updateWithPage(
         page: Int,
-        configuration: Configuration
-    ): Unit {
+        feeds: PagedList<Feed>,
+    ): PagedList<Feed> =
+        if (page == 1) feeds
+        else state.value.feeds.addPage(feeds)
 
-        // the first page has the high priority
-        if (page == 1) {
-
-            fetchDisposable?.let { it() }
-            fetchDisposable = null
-
-        }
-
-        if (page == 1 || fetchDisposable == null)
-            fetchDisposable =
-                startCoroutineCancellableAsync {
-
-                    showLoading(FeedsLoading.Feeds(page))
-
-                    val response =
-                        feedModule.getFeeds(
-                            Order.Descending,
-                            page,
-                            pageSize
-                        ).map { list ->
-
-                            val feeds =
-                                if (page == 1) list.map { feeds -> feeds.toItem(configuration) }
-                                else
-                                    state().feeds.addPage(
-                                        list.map { feed ->
-                                            feed.toItem(configuration)
-                                        }
-                                    )
-
-                            feeds.sort(rootNavController, configuration)
-
-
-                        }.handleAuthError(rootNavController, navigator)
-
-
-                    cancelBoundary()
-
-                    response.fold(
-                        { setError(it, FeedsError.Feeds(page)) },
-                        {
-
-                            val feeds =
-                                if (page == 1)
-                                    it.addHeader(configuration, state().user)
-                                        .addEmptyItem(configuration)
-                                else it
-
-                            setFeeds(feeds)
-
-                        }
-                    )
-
-                    fetchDisposable = null
-
-                    hideLoading(FeedsLoading.Feeds(page))
-
-                }
-
-    }
-
-    private suspend fun setFeeds(feeds: PagedList<DroidItem<Any>>): Unit =
-        setState(state().copy(feeds = feeds)) { FeedsStateUpdate.Feeds(feeds) }
-
-    private fun Feed.toItem(
-        configuration: Configuration
-    ): DroidItem<Any> =
-
+    private fun Feed.toItem(): FeedItem =
         when (type) {
             is FeedType.StudyActivityFeed ->
                 when (type.studyActivity) {
                     is QuickActivity ->
-                        QuickActivityItem(configuration, type.studyActivity, null)
+                        FeedItem.QuickActivityItem(type.studyActivity, null)
                     is TaskActivity ->
-                        TaskActivityItem(configuration, type.studyActivity, from, to)
+                        FeedItem.TaskActivityItem(type.studyActivity, from, to)
                 }
             is FeedType.StudyNotifiableFeed ->
                 when (type.studyNotifiable) {
-                    is FeedReward ->
-                        FeedRewardItem(
-                            configuration,
-                            type.studyNotifiable,
-                            from,
-                            to
-                        )
                     is FeedAlert ->
-                        FeedAlertItem(
-                            configuration,
-                            type.studyNotifiable,
-                            from,
-                            to
-                        )
+                        FeedItem.FeedAlertItem(type.studyNotifiable, from, to)
                     is FeedEducational ->
-                        FeedEducationalItem(
-                            configuration,
-                            type.studyNotifiable,
-                            from,
-                            to
-                        )
+                        FeedItem.FeedEducationalItem(type.studyNotifiable, from, to)
+                    is FeedReward ->
+                        FeedItem.FeedRewardItem(type.studyNotifiable, from, to)
                 }
         }
 
-    private fun PagedList<DroidItem<Any>>.sort(
-        rootNavController: RootNavController,
-        configuration: Configuration
-    ): PagedList<DroidItem<Any>> {
+    private fun List<FeedItem>.sort(): List<FeedItem> {
 
-        val feedHeaderItem = data.filterIsInstance<FeedHeaderItem>()
-
-        val quickActivitiesItem = data.filterIsInstance<QuickActivitiesItem>().firstOrNull()
-
-        val quickActivitiesItems = data.filterIsInstance<QuickActivityItem>()
-
-        val feeds =
-            data.filter { it is TaskActivityItem || it is FeedRewardItem || it is FeedAlertItem }
-
-        val items = mutableListOf<DroidItem<Any>>()
-
-        items.addAll(feedHeaderItem)
+        val quickActivitiesItem = filterIsInstance<FeedItem.QuickActivitiesItem>().firstOrNull()
+        val quickActivitiesItems = filterIsInstance<FeedItem.QuickActivityItem>()
+        val feeds = filter {
+            it is FeedItem.TaskActivityItem ||
+                    it is FeedItem.FeedRewardItem ||
+                    it is FeedItem.FeedAlertItem ||
+                    it is FeedItem.FeedEducationalItem
+        }
+        val items = mutableListOf<FeedItem>()
 
         val quickActivities =
             if (quickActivitiesItems.isNotEmpty())
-                if (quickActivitiesItem == null)
-                    QuickActivitiesItem(
-                        "quick_activities",
-                        configuration,
-                        DroidAdapter(
-                            QuickActivityViewHolder.factory(
-                                { item, answer ->
-                                    startCoroutineAsync { selectAnswer(item, answer) }
-                                },
-                                { item ->
-                                    startCoroutineAsync {
-                                        submitAnswer(
-                                            item,
-                                            rootNavController,
-                                            configuration
-                                        )
-                                    }
-                                }
-                            )
-                        ).also { it.submitList(quickActivitiesItems.toList()) }
-                    )
-                else {
-                    quickActivitiesItem.quickActivities.submitList(
-                        quickActivitiesItem.quickActivities.getItems().plus(quickActivitiesItems)
-                    )
-                    quickActivitiesItem
-                }
+                quickActivitiesItem?.copy(
+                    items = quickActivitiesItems,
+                    selectedIndex =
+                    if (quickActivitiesItem.items.size == quickActivitiesItems.size)
+                        quickActivitiesItem.selectedIndex
+                    else 0
+                ) ?: FeedItem.QuickActivitiesItem(quickActivitiesItems.toList(), selectedIndex = 0)
             else quickActivitiesItem
 
         quickActivities?.let { items.add(it) }
 
         feeds
             .sortedByDescending {
-
                 val date =
                     when (it) {
-                        is TaskActivityItem -> it.from
-                        is FeedRewardItem -> it.from
-                        is FeedAlertItem -> it.from
-                        is FeedEducationalItem -> it.from
+                        is FeedItem.FeedAlertItem -> it.from
+                        is FeedItem.FeedEducationalItem -> it.from
+                        is FeedItem.FeedRewardItem -> it.from
+                        is FeedItem.TaskActivityItem -> it.from
                         else -> ZonedDateTime.now()
                     }
-
                 date.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
             }
@@ -332,23 +199,22 @@ class FeedsViewModel(
                 {
                     val date =
                         when (it) {
-                            is TaskActivityItem -> it.from
-                            is FeedRewardItem -> it.from
-                            is FeedAlertItem -> it.from
-                            is FeedEducationalItem -> it.from
+                            is FeedItem.FeedAlertItem -> it.from
+                            is FeedItem.FeedEducationalItem -> it.from
+                            is FeedItem.FeedRewardItem -> it.from
+                            is FeedItem.TaskActivityItem -> it.from
                             else -> ZonedDateTime.now()
                         }
 
                     date.withZoneSameInstant(ZoneId.systemDefault())
                         .format(DateTimeFormatter.ISO_LOCAL_DATE)
-
                 },
                 { it }
             ).forEach { (key, value) ->
 
                 items.add(
-                    DateItem(
-                        configuration, LocalDate.parse(
+                    FeedItem.DateItem(
+                        LocalDate.parse(
                             key,
                             DateTimeFormatter.ISO_LOCAL_DATE
                         )
@@ -358,168 +224,119 @@ class FeedsViewModel(
 
             }
 
-        return PagedList(items, page, isCompleted)
+        return items
 
     }
 
-    private fun PagedList<DroidItem<Any>>.addHeader(
-        configuration: Configuration,
-        user: User?
-    ): PagedList<DroidItem<Any>> =
-        listOf(FeedHeaderItem(configuration, "1", user?.points?.toString()))
-            .plus(data)
-            .let { PagedList(it, page, isCompleted) }
+    /* --- pagination --- */
 
-    private suspend fun selectAnswer(item: QuickActivityItem, answer: QuickActivityAnswer) {
+    private fun setScrollPosition(position: Int) {
 
-        logQuickActivityOptionSelected(item.data.id, answer.id)
-
-        state().feeds.data.map { droidItem ->
-            when (droidItem) {
-                is QuickActivitiesItem -> {
-
-                    val quickActivities =
-                        droidItem.quickActivities.getItems()
-
-                    val updatedActivities =
-                        quickActivities.map {
-
-                            when (it) {
-
-                                is QuickActivityItem ->
-                                    if (it.data.id == item.data.id)
-                                        it.copy(selectedAnswer = answer.id)
-                                    else
-                                        it
-
-                                else -> it
-                            }
-                        }
-
-                    evalOnMain { droidItem.quickActivities.submitList(updatedActivities) }
-
-                    QuickActivitiesItem(
-                        droidItem.id,
-                        droidItem.configuration,
-                        droidItem.quickActivities
-                    )
-
-                }
-                else -> droidItem
-            }
-        }
+        val items = state.value.items.dataOrNull()
+        if (items != null && (position + 1) >= (items.size))
+            execute(FeedsAction.GetFeedsNextPage)
 
     }
 
-    private suspend fun submitAnswer(
-        item: QuickActivityItem,
-        rootNavController: RootNavController,
-        configuration: Configuration
+    /* --- quick activities --- */
+
+    private suspend fun selectAnswer(
+        item: FeedItem.QuickActivityItem,
+        answer: QuickActivityAnswer
     ) {
-        if (item.selectedAnswer.isNullOrEmpty().not()) {
 
-            showLoading(FeedsLoading.QuickActivityUpload)
-            taskModule.updateQuickActivity(item.data.id, item.selectedAnswer!!.toInt())
-                .fold(
-                    {
-                        setError(it, FeedsError.QuickActivityUpload)
-                    },
-                    {
-                        initialize(rootNavController, configuration)
+        viewModelScope.launchSafe { logQuickActivityOptionSelected(item.data.id, answer.id) }
+
+        val itemsUpdate =
+            state.value.items.map { list ->
+                list.map { feed ->
+                    when (feed) {
+                        is FeedItem.QuickActivitiesItem -> {
+                            val items =
+                                feed.items
+                                    .map {
+                                        if (it.data.id == item.data.id)
+                                            it.copy(selectedAnswer = answer.id)
+                                        else
+                                            it
+                                    }
+                            feed.copy(items = items)
+                        }
+                        else -> feed
                     }
-                )
+                }
+            }
 
-            hideLoading(FeedsLoading.QuickActivityUpload)
-        }
+        state.emit(state.value.copy(items = itemsUpdate))
+
     }
 
-    private fun PagedList<DroidItem<Any>>.addEmptyItem(
-        configuration: Configuration
-    ): PagedList<DroidItem<Any>> =
-        if (size <= 1) PagedList(data.plus(FeedEmptyItem(configuration)), 1, true)
-        else this
+    private fun submitAnswer(item: FeedItem.QuickActivityItem): Action =
+        action(
+            {
+                if (item.selectedAnswer.isNullOrEmpty().not()) {
+                    state.emit(state.value.copy(submit = LazyData.Loading()))
+                    submitQuickActivityAnswer(item.data.id, item.selectedAnswer!!.toInt())
+                    state.emit(state.value.copy(submit = LazyData.unit()))
+                    execute(FeedsAction.GetFeedsFirstPage)
+                }
+            },
+            { state.emit(state.value.copy(submit = it.toError())) }
+        )
 
-    /* --- date --- */
-
-    suspend fun getPregnancyWeeks(user: User?): Long? =
-        user?.getPregnancyEndDate()
-            ?.getPregnancyStartDate()
-            ?.differenceInWeeksFromNow()
-
-    suspend fun getPregnancyMonths(user: User?): Long? =
-        user?.getPregnancyEndDate()
-            ?.getPregnancyStartDate()
-            ?.differenceInMonthsFromNow()
-
-    private suspend fun User.getPregnancyEndDate(): LocalDate? =
-        Either.catch {
-            getCustomDataByIdentifier(PREGNANCY_END_DATE_IDENTIFIER)
-                ?.value
-                ?.let { LocalDate.parse(it) }
-        }.orNull()
-
-    private suspend fun LocalDate.getPregnancyStartDate(): LocalDate? =
-        minusDays(280)
-
-    private suspend fun LocalDate.differenceInMonthsFromNow(): Long =
-        ChronoUnit.MONTHS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
-
-    private suspend fun LocalDate.differenceInWeeksFromNow(): Long =
-        ChronoUnit.WEEKS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
-
-    /* --- navigation --- */
-
-    suspend fun executeTasks(rootNavController: RootNavController, task: TaskActivityItem): Unit {
-        task.data.activityType?.let {
-            navigator.navigateToSuspend(
-                rootNavController,
-                FeedsToTask(task.data.taskId)
-            )
-        }
+    private suspend fun retrySubmit() {
+        state.emit(state.value.copy(submit = LazyData.unit()))
     }
-
-    suspend fun aboutYouPage(rootNavController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            rootNavController,
-            MainToAboutYou
-        )
-
-    suspend fun web(rootNavController: RootNavController, url: String): Unit =
-        navigator.navigateToSuspend(
-            rootNavController,
-            AnywhereToWeb(url)
-        )
-
-    suspend fun openIntegrationApp(integrationApp: IntegrationApp): Unit =
-        navigator.performActionSuspend(openApp(integrationApp.packageName))
-
-    suspend fun info(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MainToInformation
-        )
-
-    suspend fun reward(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MainToReward
-        )
-
-    suspend fun faq(navController: RootNavController): Unit =
-        navigator.navigateToSuspend(
-            navController,
-            MaiToFAQ
-        )
 
     /* --- analytics --- */
 
     private suspend fun logQuickActivityOptionSelected(
         activityId: String,
         optionId: String
-    ): Unit =
-        analyticsModule.logEvent(
+    ) {
+        sendAnalyticsEventUseCase(
             AnalyticsEvent.QuickActivityOptionClicked(activityId, optionId),
             EAnalyticsProvider.ALL
         )
+    }
 
+    /* --- actions --- */
+
+    fun execute(action: FeedsAction) {
+
+        when (action) {
+            FeedsAction.GetConfiguration ->
+                viewModelScope.launchAction(getConfiguration())
+            FeedsAction.GetFeedsFirstPage -> {
+
+                if (fetchJob?.isActive == true) {
+                    fetchJob?.cancel()
+                    fetchJob = null
+                }
+
+                fetchJob = viewModelScope.launchAction(getTasks(1))
+
+            }
+            FeedsAction.GetFeedsNextPage -> {
+                val feeds = state.value.feeds
+                if (feeds.isCompleted.not()) {
+
+                    val nextPage = feeds.page + 1
+
+                    if (fetchJob == null || fetchJob.isTerminated && nextPage != 1)
+                        fetchJob = viewModelScope.launchAction(getTasks(nextPage))
+                }
+
+            }
+            is FeedsAction.SetScrollPosition ->
+                viewModelScope.launchSafe { setScrollPosition(action.position) }
+            is FeedsAction.SelectQuickActivityAnswer ->
+                viewModelScope.launchSafe { selectAnswer(action.item, action.answer) }
+            is FeedsAction.SubmitQuickActivityAnswer ->
+                viewModelScope.launchAction(submitAnswer(action.item))
+            FeedsAction.RetrySubmit ->
+                viewModelScope.launchSafe { retrySubmit() }
+        }
+
+    }
 }
