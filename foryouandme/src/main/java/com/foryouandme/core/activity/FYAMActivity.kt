@@ -13,7 +13,6 @@ import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToAuth
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.imageConfiguration
 import com.foryouandme.databinding.FyamBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach

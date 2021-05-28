@@ -3,6 +3,7 @@ package com.foryouandme.core.arch.android
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
 import com.foryouandme.core.arch.navigation.Navigator
@@ -21,6 +22,9 @@ abstract class BaseActivity : FragmentActivity {
 
     @Inject
     lateinit var navigator: Navigator
+
+    @Inject
+    lateinit var imageConfiguration: ImageConfiguration
 
     val name: String
         get() = javaClass.simpleName

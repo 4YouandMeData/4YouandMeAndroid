@@ -10,26 +10,34 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.foryouandme.core.activity.FYAMActivity
 import com.foryouandme.core.arch.app.ForYouAndMeApp
-import com.foryouandme.core.cases.auth.AuthUseCase.isLogged
-import com.foryouandme.core.cases.auth.AuthUseCase.updateFirebaseToken
-import com.foryouandme.core.ext.injector
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.core.ext.mapNotNull
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.domain.usecase.auth.IsLoggedUseCase
+import com.foryouandme.domain.usecase.user.UpdateUserFirebaseTokenUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class PushService : FirebaseMessagingService() {
 
+    @Inject
+    lateinit var updateUserFirebaseTokenUseCase: UpdateUserFirebaseTokenUseCase
+
+    @Inject
+    lateinit var isLoggedUseCase: IsLoggedUseCase
+
+    @DelicateCoroutinesApi
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
 
-        val authModule = injector.authModule()
+        GlobalScope.launchSafe {
 
-        startCoroutineAsync {
-
-            if (authModule.isLogged())
-                authModule.updateFirebaseToken(p0)
+            if (isLoggedUseCase())
+                updateUserFirebaseTokenUseCase(p0)
 
         }
 
@@ -58,7 +66,7 @@ class PushService : FirebaseMessagingService() {
         icon: Int,
         id: String,
         args: Map<String, String>
-    ): Unit {
+    ) {
 
         val intent =
             FYAMActivity.getIntent(this, args)
