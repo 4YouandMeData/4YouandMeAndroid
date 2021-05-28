@@ -8,13 +8,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import com.foryouandme.core.cases.analytics.AnalyticsUseCase.logEvent
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.*
 import com.foryouandme.core.ext.html.setHtmlText
 import com.foryouandme.core.view.page.EPageType.*
 import com.foryouandme.databinding.PageBinding
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
+import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
@@ -23,42 +24,21 @@ import com.foryouandme.entity.page.Page
 import com.foryouandme.entity.page.PageRef
 import com.giacomoparisi.spandroid.Span
 import com.giacomoparisi.spandroid.SpanDroid
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+
+    @Inject
+    lateinit var sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+
+    @Inject
+    lateinit var imageConfiguration: ImageConfiguration
 
     private val binding =
         PageBinding.inflate(LayoutInflater.from(context), this, true)
-
-    @Deprecated("Use the non suspend version")
-    suspend fun applyDataSuspend(
-        configuration: Configuration,
-        page: Page,
-        pageType: EPageType,
-        action1: (PageRef?) -> Unit,
-        action2: ((PageRef?) -> Unit)? = null,
-        extraStringAction: ((String) -> Unit)? = null,
-        extraPageAction: ((PageRef) -> Unit)? = null,
-        specialStringAction: ((String) -> Unit)? = null,
-        specialStringPageAction: ((String, PageRef?) -> Unit)? = null
-    ): Unit =
-
-        evalOnMain {
-
-            setUpButtons(page, pageType, configuration, action1, action2)
-
-            setUpImage(page, pageType)
-
-            setUpTitleDescription(page, pageType, configuration)
-
-            setUpExtraAction(page, extraPageAction, extraStringAction, configuration)
-
-            setUpShadow(configuration)
-
-            setUpButtonsClick(page, action2, specialStringAction, specialStringPageAction)
-
-            setUpBackgrounds(configuration)
-
-        }
 
     fun applyData(
         configuration: Configuration,
@@ -141,13 +121,11 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 binding.external.isVisible = true
                 binding.external.setOnClickListener {
 
-                    startCoroutineAsync {
-                        context.injector
-                            .analyticsModule()
-                            .logEvent(
-                                AnalyticsEvent.ScreenViewed.LearnMore,
-                                EAnalyticsProvider.ALL
-                            )
+                    GlobalScope.launchSafe {
+                        sendAnalyticsEventUseCase(
+                            AnalyticsEvent.ScreenViewed.LearnMore,
+                            EAnalyticsProvider.ALL
+                        )
                     }
 
                     extraPageAction(page.linkModalValue)
@@ -161,10 +139,8 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 binding.external.isVisible = true
                 binding.external.setOnClickListener {
 
-                    startCoroutineAsync {
-                        context.injector
-                            .analyticsModule()
-                            .logEvent(
+                    GlobalScope.launchSafe {
+                        sendAnalyticsEventUseCase(
                                 AnalyticsEvent.ScreenViewed.LearnMore,
                                 EAnalyticsProvider.ALL
                             )
@@ -203,9 +179,9 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
             button(
                 context.resources,
                 when (pageType) {
-                    INFO -> context.imageConfiguration.nextStepSecondary()
-                    FAILURE -> context.imageConfiguration.previousStepSecondary()
-                    SUCCESS -> context.imageConfiguration.nextStepSecondary()
+                    INFO -> imageConfiguration.nextStepSecondary()
+                    FAILURE -> imageConfiguration.previousStepSecondary()
+                    SUCCESS -> imageConfiguration.nextStepSecondary()
                 }
             )
 

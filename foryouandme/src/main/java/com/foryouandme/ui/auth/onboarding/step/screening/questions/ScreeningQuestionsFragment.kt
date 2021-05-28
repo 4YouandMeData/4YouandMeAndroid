@@ -112,7 +112,7 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
             viewBinding.action1.background =
                 button(
                     requireContext().resources,
-                    requireContext().imageConfiguration.nextStepSecondary()
+                    imageConfiguration.nextStepSecondary()
                 )
 
             viewBinding.action1.setOnClickListener {

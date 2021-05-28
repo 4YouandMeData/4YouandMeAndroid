@@ -26,20 +26,6 @@ import es.dmoral.toasty.Toasty
 @ColorInt
 fun Context.color(@ColorRes res: Int): Int = ContextCompat.getColor(this, res)
 
-/* --- injector --- */
-
-val Context.injector: Injector
-    get() = (applicationContext as AppInjector).injector
-
-val Context.navigator: Navigator
-    get() = injector.navigator
-
-val Context.imageConfiguration: ImageConfiguration
-    get() = injector.imageConfiguration
-
-val Context.videoConfiguration: VideoConfiguration
-    get() = injector.videoConfiguration
-
 /* --- toast --- */
 
 fun Context.errorToast(message: String) {
