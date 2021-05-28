@@ -92,11 +92,11 @@ class MainViewModel @Inject constructor(
     suspend fun handleDeepLink(fyamState: FYAMState) {
 
         val taskId =
-            fyamState.taskId?.getContentOnce()?.orNull()?.item
+            fyamState.taskId?.getContentOnce()?.getOrNull()
         val url =
-            fyamState.url?.getContentOnce()?.orNull()?.item
+            fyamState.url?.getContentOnce()?.getOrNull()
         val openApplicationIntegration =
-            fyamState.openAppIntegration?.getContentOnce()?.orNull()?.item
+            fyamState.openAppIntegration?.getContentOnce()?.getOrNull()
 
         when {
 
@@ -105,7 +105,7 @@ class MainViewModel @Inject constructor(
             url != null ->
                 navigationFlow.navigateTo(AnywhereToWeb(url))
             openApplicationIntegration != null ->
-                navigator.performActionSuspend(openApp(openApplicationIntegration.packageName))
+                navigator.performAction(openApp(openApplicationIntegration.packageName))
 
         }
 

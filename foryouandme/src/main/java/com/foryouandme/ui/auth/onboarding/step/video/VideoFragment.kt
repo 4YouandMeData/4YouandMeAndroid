@@ -86,8 +86,7 @@ class VideoFragment : OnboardingStepFragment(R.layout.video) {
 
                     when (state) {
 
-                        Player.STATE_ENDED ->
-                            startCoroutineAsync { next() }
+                        Player.STATE_ENDED -> next()
 
                         else -> {
                         }

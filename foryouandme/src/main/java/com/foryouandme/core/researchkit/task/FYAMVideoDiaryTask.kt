@@ -1,6 +1,5 @@
 package com.foryouandme.core.researchkit.task
 
-import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
@@ -88,7 +87,7 @@ class FYAMVideoDiaryTask(
                 videoMissingPermissionMicBody = configuration.text.videoDiary.missingPermissionBodyMic,
                 videoSettings = configuration.text.videoDiary.missingPermissionBodySettings,
                 videoCancel = configuration.text.videoDiary.missingPermissionDiscard
-            ).pipe { list ->
+            ).let { list ->
 
                 successPage?.let {
 

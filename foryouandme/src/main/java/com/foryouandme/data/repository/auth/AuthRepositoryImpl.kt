@@ -1,6 +1,5 @@
 package com.foryouandme.data.repository.auth
 
-import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.data.repository.auth.network.AuthApi
 import com.foryouandme.data.repository.auth.network.request.*
@@ -45,8 +44,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     private fun Response<UserResponse>.unwrapUser(): User? =
         if (isSuccessful) {
-            mapNotNull(body(), headers()[Headers.AUTH])
-                ?.let { (user, token) -> user.toUser(token) }
+            val user = body()
+            val token = headers()[Headers.AUTH]
+                if(user != null && token != null) user.toUser(token) else null
         } else
             throw HttpException(this)
 

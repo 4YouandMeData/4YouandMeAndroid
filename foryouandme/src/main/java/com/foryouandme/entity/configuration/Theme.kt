@@ -4,8 +4,6 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Brush
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.foryouandme.core.ext.adjustAlpha
 
 data class HEXColor(val hex: String) {
@@ -34,13 +32,13 @@ data class HEXGradient(val primaryHex: String, val secondaryHex: String) {
     fun drawable(alphaOverride: Float? = null): GradientDrawable {
 
         val start =
-            alphaOverride.toOption()
-                .map { adjustAlpha(Color.parseColor(primaryHex), it) }
-                .getOrElse { Color.parseColor(primaryHex) }
+            alphaOverride
+                ?.let { adjustAlpha(Color.parseColor(primaryHex), it) }
+                ?: Color.parseColor(primaryHex)
         val end =
-            alphaOverride.toOption()
-                .map { adjustAlpha(Color.parseColor(secondaryHex), it) }
-                .getOrElse { Color.parseColor(secondaryHex) }
+            alphaOverride
+                ?.let { adjustAlpha(Color.parseColor(secondaryHex), it) }
+                ?: Color.parseColor(secondaryHex)
 
         val gd =
             GradientDrawable(

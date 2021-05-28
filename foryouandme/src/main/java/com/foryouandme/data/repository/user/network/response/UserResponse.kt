@@ -1,7 +1,6 @@
 package com.foryouandme.data.repository.user.network
 
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
@@ -66,10 +65,9 @@ data class UserCustomDataResponse(
 
                     val items =
                         items?.mapNotNull {
-                            mapNotNull(it.identifier, it.value)
-                                ?.let { (id, itemValue) ->
-                                    UserCustomDataItem(id, itemValue)
-                                }
+                            if (it.identifier != null && it.value != null)
+                                UserCustomDataItem(it.identifier, it.value)
+                            else null
                         } ?: emptyList()
 
                     if (items.isEmpty()) null

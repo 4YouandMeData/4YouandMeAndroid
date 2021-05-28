@@ -1,6 +1,5 @@
 package com.foryouandme.core.researchkit.task
 
-import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
@@ -93,7 +92,7 @@ class FYAMGaitTask(
                 restDescription = null,
                 restDescriptionColor = primaryText,
                 moshi = moshi
-            ).pipe { list ->
+            ).let { list ->
 
                 successPage?.let {
 

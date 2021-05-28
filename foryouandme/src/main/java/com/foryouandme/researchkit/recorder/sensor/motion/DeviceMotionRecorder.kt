@@ -4,8 +4,6 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorManager
 import android.os.Build
-import arrow.core.Tuple2
-import arrow.core.toT
 import com.foryouandme.researchkit.recorder.sensor.SensorRecorder
 import com.foryouandme.researchkit.step.Step
 import com.squareup.moshi.Moshi
@@ -166,7 +164,7 @@ open class DeviceMotionRecorder internal constructor(
         if (sensorData == null)
             Timber.e("Unable find type key for sensor type: $sensorType")
 
-        return sensorData?.b
+        return sensorData?.second
 
     }
 
@@ -177,7 +175,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordAccelerometerEvent(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.Accelerometer, String> =
+    ): Pair<DeviceMotionRecorderData.Accelerometer, String> =
         DeviceMotionRecorderData.Accelerometer(
             getCurrentRecordingTime() ?: 0,
             sensorType,
@@ -194,7 +192,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordLinearAccelerometerEvent(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.LinearAccelerometer, String> =
+    ): Pair<DeviceMotionRecorderData.LinearAccelerometer, String> =
         // acceleration = gravity + linear-acceleration
         DeviceMotionRecorderData.LinearAccelerometer(
             getCurrentRecordingTime() ?: 0,
@@ -213,7 +211,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordGravityEvent(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.Gravity, String> =
+    ): Pair<DeviceMotionRecorderData.Gravity, String> =
         DeviceMotionRecorderData.Gravity(
             getCurrentRecordingTime() ?: 0,
             sensorType,
@@ -231,7 +229,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordRotationVector(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.RotationVector, String> =
+    ): Pair<DeviceMotionRecorderData.RotationVector, String> =
 
         DeviceMotionRecorderData.RotationVector(
             getCurrentRecordingTime() ?: 0,
@@ -255,7 +253,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordGameRotationVector(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.GameRotationVector, String> =
+    ): Pair<DeviceMotionRecorderData.GameRotationVector, String> =
 
         DeviceMotionRecorderData.GameRotationVector(
             getCurrentRecordingTime() ?: 0,
@@ -280,7 +278,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordGeomagneticRotationVector(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.GeomagneticRotationVector, String> =
+    ): Pair<DeviceMotionRecorderData.GeomagneticRotationVector, String> =
 
         DeviceMotionRecorderData.GeomagneticRotationVector(
             getCurrentRecordingTime() ?: 0,
@@ -300,7 +298,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordGyroscope(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.Gyroscope, String> =
+    ): Pair<DeviceMotionRecorderData.Gyroscope, String> =
         DeviceMotionRecorderData.Gyroscope(
             getCurrentRecordingTime() ?: 0,
             sensorType,
@@ -314,7 +312,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordUncalibrated(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.Uncalibrated, String> =
+    ): Pair<DeviceMotionRecorderData.Uncalibrated, String> =
         // conceptually: _uncalibrated  = _calibrated + _bias.
         DeviceMotionRecorderData.Uncalibrated(
             getCurrentRecordingTime() ?: 0,
@@ -331,7 +329,7 @@ open class DeviceMotionRecorder internal constructor(
     private suspend fun recordMagneticField(
         sensorType: String,
         sensorEvent: SensorEvent
-    ): Tuple2<DeviceMotionRecorderData.MagneticField, String> =
+    ): Pair<DeviceMotionRecorderData.MagneticField, String> =
         DeviceMotionRecorderData.MagneticField(
             getCurrentRecordingTime() ?: 0,
             sensorType,
@@ -346,8 +344,8 @@ open class DeviceMotionRecorder internal constructor(
     }
 
     private suspend inline fun <reified T : DeviceMotionRecorderData> T.tupleWithJson(
-    ): Tuple2<T, String> =
-        this toT when (this) {
+    ): Pair<T, String> =
+        this to when (this) {
             is DeviceMotionRecorderData.Accelerometer -> this.toJson(moshi)
             is DeviceMotionRecorderData.GameRotationVector -> this.toJson(moshi)
             is DeviceMotionRecorderData.GeomagneticRotationVector -> this.toJson(moshi)

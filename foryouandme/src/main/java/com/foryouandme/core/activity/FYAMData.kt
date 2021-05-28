@@ -1,14 +1,14 @@
 package com.foryouandme.core.activity
 
-import com.foryouandme.core.arch.livedata.Event
+import com.foryouandme.core.arch.flow.UIEvent
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
 
 data class FYAMState(
     val configuration: Configuration? = null,
-    val taskId: Event<String>? = null,
-    val url: Event<String>? = null,
-    val openAppIntegration: Event<IntegrationApp>? = null
+    val taskId: UIEvent<String>? = null,
+    val url: UIEvent<String>? = null,
+    val openAppIntegration: UIEvent<IntegrationApp>? = null
 )
 
 sealed class FYAMStateUpdate {

@@ -10,7 +10,6 @@ import android.webkit.*
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.databinding.StepWebBinding
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,8 +90,8 @@ class WebStepFragment : StepFragment(R.layout.step_web) {
             webViewClient = getWebClient()
             webChromeClient = getWebChromeClient(viewBinding.progressBar)
 
-            mapNotNull(javascriptInterface, javascriptInterfaceName)
-                ?.let { addJavascriptInterface(it.a, it.b) }
+            if (javascriptInterface != null && javascriptInterfaceName != null)
+                addJavascriptInterface(javascriptInterface, javascriptInterfaceName)
 
             loadUrl(url)
 

@@ -1,15 +1,12 @@
 package com.foryouandme.researchkit.recorder.sensor.json
 
 import android.content.Context
-import arrow.fx.typeclasses.Disposable
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.mapNull
 import com.foryouandme.researchkit.recorder.Recorder
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.result.logger.DataLogger
 import com.foryouandme.researchkit.step.Step
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneOffset
@@ -104,13 +101,13 @@ abstract class JsonArrayDataRecorder(
 
                 if (file.exists().not()) file.createNewFile()
 
-                fileOutputStream.mapNull {
+                if(fileOutputStream == null) {
 
                     val fos = FileOutputStream(file, true)
                     fileOutputStream = fos
                     fos
 
-                }
+                } else fileOutputStream
 
             }
         }

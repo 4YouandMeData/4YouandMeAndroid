@@ -1,7 +1,6 @@
 package com.foryouandme.researchkit.recorder
 
 import android.content.Context
-import com.foryouandme.core.arch.livedata.toEvent
 import com.foryouandme.researchkit.recorder.sensor.RecorderData
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.step.Step

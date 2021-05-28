@@ -1,8 +1,9 @@
 package com.foryouandme.researchkit.recorder.sensor.pedometer
 
-import com.foryouandme.core.ext.evalOnIO
 import com.foryouandme.researchkit.recorder.sensor.RecorderData
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class PedometerRecorderData(
     timeStamp: Long,
@@ -11,9 +12,9 @@ class PedometerRecorderData(
 ) : RecorderData(timeStamp) {
 
     suspend fun toJson(moshi: Moshi): String =
-        evalOnIO {
+        withContext(Dispatchers.IO) {
             moshi.adapter(PedometerRecorderDataJson::class.java)
-                .toJson(PedometerRecorderDataJson.from(this))
+                .toJson(PedometerRecorderDataJson.from(this@PedometerRecorderData))
         }
 
 }

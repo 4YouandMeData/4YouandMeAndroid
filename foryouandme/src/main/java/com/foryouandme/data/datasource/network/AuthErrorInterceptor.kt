@@ -22,13 +22,13 @@ class AuthErrorInterceptor @Inject constructor(private val navigator: Navigator)
                         // navigate to auth page
                         410,
                         401 ->
-                            navigator.performActionSuspend(authActivityAction())
+                            navigator.performAction(authActivityAction())
                     }
                 }
                 is ForYouAndMeException.UserNotLoggedIn ->
-                    navigator.performActionSuspend(authActivityAction())
+                    navigator.performAction(authActivityAction())
                 is ForYouAndMeException.MissingConfiguration ->
-                    navigator.performActionSuspend(authActivityAction())
+                    navigator.performAction(authActivityAction())
 
             }
 

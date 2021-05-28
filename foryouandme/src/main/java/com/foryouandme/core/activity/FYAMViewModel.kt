@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.arch.livedata.toEvent
+import com.foryouandme.core.arch.flow.toUIEvent
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
@@ -57,9 +57,9 @@ class FYAMViewModel @Inject constructor(
         val initializedState =
             FYAMState(
                 configuration,
-                taskId?.toEvent(),
-                url?.toEvent(),
-                openAppIntegration?.let { IntegrationApp.fromIdentifier(it) }?.toEvent()
+                taskId?.toUIEvent(),
+                url?.toUIEvent(),
+                openAppIntegration?.let { IntegrationApp.fromIdentifier(it) }?.toUIEvent()
             )
 
         state = initializedState

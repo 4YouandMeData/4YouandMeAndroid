@@ -103,9 +103,9 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
 
             videoBinding.toolbar.showBackButton(imageConfiguration) { back() }
 
-            videoBinding.action1.setOnClickListenerAsync {
+            videoBinding.action1.setOnClickListener {
 
-                hideKeyboardSuspend()
+                hideKeyboard()
                 binding?.pin
                     ?.text
                     ?.toString()

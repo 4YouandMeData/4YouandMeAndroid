@@ -7,12 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.databinding.ConsentReviewDisagreeBinding
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.background.roundBackground
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.entity.consent.review.ConsentReview
 import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
 import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewSectionDialogFragment
 import dagger.hilt.android.AndroidEntryPoint

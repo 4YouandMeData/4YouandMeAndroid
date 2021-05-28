@@ -12,15 +12,6 @@ fun Toolbar.showBackButton(
     setNavigationOnClickListener { back() }
 }
 
-suspend fun Toolbar.showBackButtonSuspend(
-    imageConfiguration: ImageConfiguration,
-    back: suspend () -> Unit
-): Unit =
-    evalOnMain {
-        setNavigationIcon(imageConfiguration.back())
-        setNavigationOnClickListener { startCoroutineAsync { back() } }
-    }
-
 fun Toolbar.showBackSecondaryButton(
     imageConfiguration: ImageConfiguration,
     back: () -> Unit

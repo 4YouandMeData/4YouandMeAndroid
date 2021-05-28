@@ -6,8 +6,6 @@ import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import arrow.core.getOrElse
-import arrow.core.toOption
 
 typealias ActivityAction = (Context) -> Unit
 
@@ -43,15 +41,13 @@ fun playStoreAction(packageName: String): ActivityAction = {
 
 fun openApp(packageName: String): ActivityAction = {
 
-    val intent = it.packageManager.getLaunchIntentForPackage(packageName)
-        .toOption()
-        .getOrElse {
-            Intent(Intent.ACTION_VIEW)
+    val intent =
+        it.packageManager.getLaunchIntentForPackage(packageName)
+            ?: Intent(Intent.ACTION_VIEW)
                 .apply {
                     data = Uri.parse("$storeIntent$packageName")
                     setPackage("com.android.vending")
                 }
-        }
 
     it.startActivity(intent)
 

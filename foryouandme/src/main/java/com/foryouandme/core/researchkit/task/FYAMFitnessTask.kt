@@ -1,6 +1,5 @@
 package com.foryouandme.core.researchkit.task
 
-import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
@@ -92,7 +91,7 @@ class FYAMFitnessTask(
                 sitDescriptionColor = primaryText,
                 sitImage = imageConfiguration.sittingMan(),
                 moshi = moshi
-            ).pipe { list ->
+            ).let { list ->
 
                 successPage?.let {
 

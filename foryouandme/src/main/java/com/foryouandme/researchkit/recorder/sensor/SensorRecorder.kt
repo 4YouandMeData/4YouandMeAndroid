@@ -7,14 +7,13 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.HandlerThread
-import arrow.core.toOption
-import com.foryouandme.core.ext.evalOnIO
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.recorder.sensor.json.JsonArrayDataRecorder
 import com.foryouandme.researchkit.result.FileResult
 import com.foryouandme.researchkit.step.Step
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 
@@ -73,7 +72,7 @@ abstract class SensorRecorder(
     }
 
     private suspend fun startSensorRecording(context: Context): Unit {
-        evalOnIO {
+        withContext(Dispatchers.IO) {
             sensorManager =
                 (context.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
 
@@ -85,20 +84,20 @@ abstract class SensorRecorder(
 
                 sensorList = getSensorTypeList(availableSensorList).mapNotNull { sensorType ->
 
-                    sm.getDefaultSensor(sensorType).toOption()
-                        .map {
+                    sm.getDefaultSensor(sensorType)
+                        ?.let {
 
                             val success =
                                 if (isManualFrequency)
                                     sm.registerListener(
-                                        this,
+                                        this@SensorRecorder,
                                         it,
                                         SensorManager.SENSOR_DELAY_FASTEST,
                                         sensorHandler
                                     )
                                 else
                                     sm.registerListener(
-                                        this,
+                                        this@SensorRecorder,
                                         it,
                                         calculateDelayBetweenSamplesInMicroSeconds(),
                                         sensorHandler
@@ -111,8 +110,7 @@ abstract class SensorRecorder(
 
                             it
 
-                        }.orNull()
-
+                        }
                 }.toMutableList()
             }
 

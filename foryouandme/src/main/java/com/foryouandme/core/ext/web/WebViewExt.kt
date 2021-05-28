@@ -4,10 +4,6 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.os.Build
 import android.webkit.*
-import android.widget.ProgressBar
-import androidx.core.view.isVisible
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.entity.user.User
 import timber.log.Timber
 import java.net.URL
 

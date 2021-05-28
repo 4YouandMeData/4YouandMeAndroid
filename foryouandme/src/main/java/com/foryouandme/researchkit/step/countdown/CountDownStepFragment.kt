@@ -5,9 +5,9 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
-import com.foryouandme.core.ext.evalOnMain
-import com.foryouandme.core.ext.startCoroutineAsync
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.researchkit.step.StepFragment
 import kotlinx.android.synthetic.main.step_countdown.*
 import kotlinx.coroutines.delay
@@ -40,38 +40,36 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         progress.progressTintList =
             ColorStateList.valueOf(step.counterProgressColor)
 
-        startCoroutineAsync { startCounter(step.seconds) { next() } }
+        startCounter(step.seconds) { next() }
     }
 
-    private suspend fun startCounterAnimation(seconds: Int): Unit =
-        evalOnMain {
+    private fun startCounterAnimation(seconds: Int) {
 
-            val animator = ValueAnimator.ofInt(seconds, 0)
+        val animator = ValueAnimator.ofInt(seconds, 0)
 
-            animator.duration = seconds * 1000L
-            animator.addUpdateListener { counter.text = (it.animatedValue as Int).toString() }
-            animator.interpolator = LinearInterpolator()
+        animator.duration = seconds * 1000L
+        animator.addUpdateListener { counter.text = (it.animatedValue as Int).toString() }
+        animator.interpolator = LinearInterpolator()
 
-            lifecycle.addObserver(LifecycleValueAnimator(animator))
+        lifecycle.addObserver(LifecycleValueAnimator(animator))
 
-        }
+    }
 
-    private suspend fun startCounterProgressAnimation(seconds: Int): Unit =
-        evalOnMain {
+    private fun startCounterProgressAnimation(seconds: Int) {
 
-            progress.max = seconds * 1000
+        progress.max = seconds * 1000
 
-            val animator = ValueAnimator.ofInt(0, seconds * 1000)
+        val animator = ValueAnimator.ofInt(0, seconds * 1000)
 
-            animator.duration = seconds * 1000L
-            animator.addUpdateListener { progress.progress = it.animatedValue as Int }
-            animator.interpolator = LinearInterpolator()
+        animator.duration = seconds * 1000L
+        animator.addUpdateListener { progress.progress = it.animatedValue as Int }
+        animator.interpolator = LinearInterpolator()
 
-            lifecycle.addObserver(LifecycleValueAnimator(animator))
+        lifecycle.addObserver(LifecycleValueAnimator(animator))
 
-        }
+    }
 
-    private suspend fun startCounter(
+    private fun startCounter(
         seconds: Int,
         onCounterEnd: suspend () -> Unit
     ) {
@@ -79,10 +77,10 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         startCounterAnimation(seconds)
         startCounterProgressAnimation(seconds)
 
-        LifecycleCoroutine.startLifecycleCoroutineAsync(this) {
+        lifecycleScope.launchSafe {
 
             delay(seconds * 1000L + 300L)
-            evalOnMain { onCounterEnd() }
+            onCounterEnd()
 
         }
 

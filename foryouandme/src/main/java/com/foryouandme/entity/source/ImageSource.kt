@@ -12,10 +12,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.foryouandme.core.ext.decodeBase64Image
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.entity.configuration.button.button
 
 sealed class ImageSource {
@@ -46,10 +44,10 @@ fun ImageView.applyImage(imageResource: ImageSource) {
     }
 }
 
-fun Button.applyImage(imageResource: ImageSource): Unit =
+fun Button.applyImage(imageResource: ImageSource) {
     when (imageResource) {
         is ImageSource.AndroidResource -> setBackgroundResource(imageResource.image)
-        is ImageSource.Base64 -> startCoroutineAsync {
+        is ImageSource.Base64 -> {
 
             val bitmap =
                 imageResource.image
@@ -60,6 +58,7 @@ fun Button.applyImage(imageResource: ImageSource): Unit =
 
         }
     }
+}
 
 fun ImageView.applyImageAsButton(imageResource: ImageSource): Unit {
     when (imageResource) {
@@ -106,7 +105,7 @@ fun MultiSourceImage(
                     .image
                     .decodeBase64Image()
 
-            if(bitmap != null)
+            if (bitmap != null)
                 Image(
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = contentDescription,

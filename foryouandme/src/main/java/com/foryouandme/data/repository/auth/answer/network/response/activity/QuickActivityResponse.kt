@@ -3,7 +3,6 @@ package com.foryouandme.data.repository.auth.answer.network.response.activity
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.configuration.HEXGradient
-import com.foryouandme.core.ext.mapNotNull
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
@@ -33,7 +32,7 @@ class QuickActivityResponse(
             title,
             description,
             button,
-            mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
+            if(cardColor != null) HEXGradient(cardColor, cardColor) else null,
             getAnswer(1),
             getAnswer(2),
             getAnswer(3),

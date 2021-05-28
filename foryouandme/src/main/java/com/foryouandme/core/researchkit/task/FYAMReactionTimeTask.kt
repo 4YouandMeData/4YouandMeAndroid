@@ -1,6 +1,5 @@
 package com.foryouandme.core.researchkit.task
 
-import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.researchkit.step.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType

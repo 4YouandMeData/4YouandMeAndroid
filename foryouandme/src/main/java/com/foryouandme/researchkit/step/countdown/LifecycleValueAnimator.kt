@@ -14,7 +14,7 @@ class LifecycleValueAnimator(private val animator: ValueAnimator) : LifecycleObs
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun stop(): Unit {
+    fun stop() {
 
         animator.removeAllUpdateListeners()
         animator.end()

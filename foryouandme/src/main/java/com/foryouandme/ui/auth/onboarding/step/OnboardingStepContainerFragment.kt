@@ -6,11 +6,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.ext.find
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.OnboardingFragment
 import com.foryouandme.ui.auth.onboarding.OnboardingViewModel
-import com.foryouandme.core.ext.find
-import com.foryouandme.core.ext.mapNotNull
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,14 +30,13 @@ class OnboardingStepContainerFragment : BaseFragment(
         val fragment =
             step?.let { it.view() }?.let { OnboardingStepFragment.buildWithParams(args.index, it) }
 
-        mapNotNull(step, fragment)
-            ?.let {
+        if (step != null && fragment != null) {
 
-                val transaction = childFragmentManager.beginTransaction()
-                transaction.add(R.id.onboarding_step, it.b, it.a.identifier)
-                transaction.commit()
+            val transaction = childFragmentManager.beginTransaction()
+            transaction.add(R.id.onboarding_step, fragment, step.identifier)
+            transaction.commit()
 
-            }
+        }
     }
 
     fun onboardingFragment(): OnboardingFragment = find()

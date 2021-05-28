@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.recorder.sensor.motion
 
-import com.foryouandme.core.ext.evalOnIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.foryouandme.researchkit.recorder.sensor.RecorderData
 import com.squareup.moshi.Moshi
 
@@ -21,9 +22,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(AccelerometerJson::class.java)
-                    .toJson(AccelerometerJson.from(this))
+                    .toJson(AccelerometerJson.from(this@Accelerometer))
             }
     }
 
@@ -37,9 +38,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(LinearAccelerometerJson::class.java)
-                    .toJson(LinearAccelerometerJson.from(this))
+                    .toJson(LinearAccelerometerJson.from(this@LinearAccelerometer))
             }
     }
 
@@ -53,9 +54,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(GravityJson::class.java)
-                    .toJson(GravityJson.from(this))
+                    .toJson(GravityJson.from(this@Gravity))
             }
     }
 
@@ -71,9 +72,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(RotationVectorJson::class.java)
-                    .toJson(RotationVectorJson.from(this))
+                    .toJson(RotationVectorJson.from(this@RotationVector))
             }
     }
 
@@ -89,9 +90,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(GameRotationVectorJson::class.java)
-                    .toJson(GameRotationVectorJson.from(this))
+                    .toJson(GameRotationVectorJson.from(this@GameRotationVector))
             }
     }
 
@@ -107,9 +108,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(GeomagneticRotationVectorJson::class.java)
-                    .toJson(GeomagneticRotationVectorJson.from(this))
+                    .toJson(GeomagneticRotationVectorJson.from(this@GeomagneticRotationVector))
             }
     }
 
@@ -123,9 +124,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(GyroscopeJson::class.java)
-                    .toJson(GyroscopeJson.from(this))
+                    .toJson(GyroscopeJson.from(this@Gyroscope))
             }
     }
 
@@ -142,9 +143,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(UncalibratedJson::class.java)
-                    .toJson(UncalibratedJson.from(this))
+                    .toJson(UncalibratedJson.from(this@Uncalibrated))
             }
     }
 
@@ -158,9 +159,9 @@ sealed class DeviceMotionRecorderData(
     ) : DeviceMotionRecorderData(timeStamp, sensorType, sensorAccuracy) {
 
         suspend fun toJson(moshi: Moshi): String =
-            evalOnIO {
+            withContext(Dispatchers.IO) {
                 moshi.adapter(MagneticFieldJson::class.java)
-                    .toJson(MagneticFieldJson.from(this))
+                    .toJson(MagneticFieldJson.from(this@MagneticField))
             }
     }
 

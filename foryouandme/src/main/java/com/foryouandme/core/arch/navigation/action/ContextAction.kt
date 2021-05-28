@@ -5,8 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.foryouandme.core.ext.execute
 
 sealed class ContextAction(val block: (Context) -> Unit) {
@@ -48,15 +46,13 @@ sealed class ContextAction(val block: (Context) -> Unit) {
 
     data class OpenApp(val packageName: String) : ContextAction({
 
-        val intent = it.packageManager.getLaunchIntentForPackage(packageName)
-            .toOption()
-            .getOrElse {
-                Intent(Intent.ACTION_VIEW)
+        val intent =
+            it.packageManager.getLaunchIntentForPackage(packageName)
+                ?: Intent(Intent.ACTION_VIEW)
                     .apply {
                         data = Uri.parse("$playStoreIntent$packageName")
                         setPackage("com.android.vending")
                     }
-            }
 
         it.startActivity(intent)
 

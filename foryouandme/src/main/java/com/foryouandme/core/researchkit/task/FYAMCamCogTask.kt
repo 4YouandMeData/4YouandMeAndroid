@@ -1,6 +1,5 @@
 package com.foryouandme.core.researchkit.task
 
-import arrow.syntax.function.pipe
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.IntegrationLoginInterface
@@ -57,7 +56,7 @@ class FYAMCamCogTask(
                 webJavascriptInterface = camCogInterface,
                 webJavascriptInterfaceName = IntegrationLoginInterface.INTEGRATION_NAME,
             )
-        ).pipe { list ->
+        ).let { list ->
 
             successPage?.let {
 

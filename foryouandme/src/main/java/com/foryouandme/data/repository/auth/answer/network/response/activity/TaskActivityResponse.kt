@@ -1,8 +1,7 @@
 package com.foryouandme.data.repository.auth.answer.network.response.activity
 
-import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.core.ext.decodeBase64Image
-import com.foryouandme.core.ext.mapNotNull
+import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.activity.TaskActivityType
@@ -54,14 +53,15 @@ class TaskActivityResponse(
                     title,
                     description,
                     button,
-                    mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
+                    if (cardColor != null) HEXGradient(cardColor, cardColor) else null,
                     image?.decodeBase64Image(),
                     activityType?.let { TaskActivityType.fromType(it) },
                     welcomePage,
                     pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),
                     successPage?.get(document)?.toPage(document),
-                    mapNotNull(rescheduleIn, rescheduleTimes)
-                        ?.let { Reschedule(it.a, it.b, rescheduledTimes) }
+                    if (rescheduleIn != null && rescheduleTimes != null)
+                        Reschedule(rescheduleIn, rescheduleTimes, rescheduledTimes)
+                    else null
                 )
         }
     }

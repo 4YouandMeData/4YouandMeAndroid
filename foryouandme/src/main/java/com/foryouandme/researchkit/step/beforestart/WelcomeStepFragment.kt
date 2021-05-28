@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
-import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.html.setHtmlText
-import com.foryouandme.core.ext.setOnClickListenerAsync
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
@@ -24,59 +21,53 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
         val step =
             taskViewModel.getStepByIndexAs<WelcomeStep>(indexArg())
 
-        startCoroutineAsync {
-            setupView()
-            step?.let { applyData(it) }
-        }
+        setupView()
+        step?.let { applyData(it) }
+
     }
 
-    private suspend fun setupView(): Unit =
-        evalOnMain {
+    private fun setupView() {
 
-            remind_me_later.setOnClickListener { reschedule() }
+        remind_me_later.setOnClickListener { reschedule() }
 
-            start_now.setOnClickListenerAsync { next() }
-            start_now_full.setOnClickListenerAsync { next() }
+        start_now.setOnClickListener { next() }
+        start_now_full.setOnClickListener { next() }
 
-        }
+    }
 
-    private suspend fun applyData(
-        step: WelcomeStep
-    ): Unit =
+    private fun applyData(step: WelcomeStep) {
 
-        evalOnMain {
+        root.setBackgroundColor(step.backgroundColor)
 
-            root.setBackgroundColor(step.backgroundColor)
+        if (step.image != null) image.setImageResource(step.image)
 
-            if (step.image != null) image.setImageResource(step.image)
+        title.setHtmlText(step.title(requireContext()), true)
+        title.setTextColor(step.titleColor)
 
-            title.setHtmlText(step.title(requireContext()), true)
-            title.setTextColor(step.titleColor)
+        description.setHtmlText(step.description(requireContext()), true)
+        description.setTextColor(step.descriptionColor)
 
-            description.setHtmlText(step.description(requireContext()), true)
-            description.setTextColor(step.descriptionColor)
+        remind_me_later.background = button(step.remindButtonColor)
+        remind_me_later.text = step.remindButton(requireContext())
+        remind_me_later.setTextColor(step.remindButtonTextColor)
+        remind_me_later.isVisible = step.remindMeLater
 
-            remind_me_later.background = button(step.remindButtonColor)
-            remind_me_later.text = step.remindButton(requireContext())
-            remind_me_later.setTextColor(step.remindButtonTextColor)
-            remind_me_later.isVisible = step.remindMeLater
+        start_now.background = button(step.startButtonColor)
+        start_now.text = step.startButton(requireContext())
+        start_now.setTextColor(step.startButtonTextColor)
+        start_now.isVisible = step.remindMeLater
 
-            start_now.background = button(step.startButtonColor)
-            start_now.text = step.startButton(requireContext())
-            start_now.setTextColor(step.startButtonTextColor)
-            start_now.isVisible = step.remindMeLater
+        start_now_full.background = button(step.startButtonColor)
+        start_now_full.text = step.startButton(requireContext())
+        start_now_full.setTextColor(step.startButtonTextColor)
+        start_now_full.isVisible = step.remindMeLater.not()
 
-            start_now_full.background = button(step.startButtonColor)
-            start_now_full.text = step.startButton(requireContext())
-            start_now_full.setTextColor(step.startButtonTextColor)
-            start_now_full.isVisible = step.remindMeLater.not()
+        shadow.background =
+            HEXGradient.from(
+                HEXColor.transparent(),
+                HEXColor.parse(step.shadowColor)
+            ).drawable(0.3f)
 
-            shadow.background =
-                HEXGradient.from(
-                    HEXColor.transparent(),
-                    HEXColor.parse(step.shadowColor)
-                ).drawable(0.3f)
-
-        }
+    }
 
 }

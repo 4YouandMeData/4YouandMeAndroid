@@ -1,7 +1,5 @@
 package com.foryouandme.data.repository.video
 
-import arrow.core.getOrElse
-import arrow.core.toOption
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
 import com.abedelazizshe.lightcompressorlibrary.VideoQuality
@@ -38,10 +36,9 @@ class VideoRepositoryImpl @Inject constructor() : VideoRepository {
             val directory = File(videosPath)
 
             val videoFiles =
-                directory.listFiles()
-                    .toOption()
-                    .map { it.toList() }
-                    .getOrElse { emptyList() }
+                directory
+                    .listFiles()
+                    .let { it?.toList() ?: emptyList() }
                     .filter { it.path.endsWith("mp4") }
                     .sortedWith { o1, o2 ->
 

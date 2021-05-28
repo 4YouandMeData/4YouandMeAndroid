@@ -106,9 +106,9 @@ class EnterPhoneFragment : AuthSectionFragment(R.layout.enter_phone) {
 
             viewBinding.toolbar.showBackButton(imageConfiguration) { back() }
 
-            viewBinding.action1.setOnClickListenerAsync {
+            viewBinding.action1.setOnClickListener {
 
-                hideKeyboardSuspend()
+                hideKeyboard()
                 binding?.let {
                     viewModel.execute(
                         EnterPhoneStateEvent.VerifyPhoneNumber(

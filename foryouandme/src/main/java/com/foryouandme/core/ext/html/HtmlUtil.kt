@@ -5,14 +5,13 @@ import android.text.Html
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
-import arrow.syntax.function.pipe
 
 
 fun TextView.setHtmlText(html: String, enableLink: Boolean = true) {
 
     html.customizeListTags().fromHtml(CustomTagHandler())
         .also { if (enableLink) movementMethod = LinkMovementMethod.getInstance() }
-        .pipe { setText(it, TextView.BufferType.SPANNABLE) }
+        .let { setText(it, TextView.BufferType.SPANNABLE) }
 }
 
 private fun String.fromHtml(tagHandler: Html.TagHandler? = null): Spanned =

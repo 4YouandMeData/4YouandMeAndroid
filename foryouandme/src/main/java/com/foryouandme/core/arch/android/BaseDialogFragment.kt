@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.foryouandme.core.activity.FYAMActivity
-import com.foryouandme.core.activity.FYAMState
 import com.foryouandme.core.activity.FYAMStateUpdate
 import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
@@ -17,14 +14,11 @@ import com.foryouandme.core.arch.error.ErrorMessenger
 import com.foryouandme.core.arch.error.ErrorView
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.arch.livedata.Event
-import com.foryouandme.core.arch.livedata.EventObserver
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.core.ext.startCoroutineAsync
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 

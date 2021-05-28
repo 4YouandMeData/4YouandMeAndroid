@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
 import com.foryouandme.entity.configuration.button.button
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.researchkit.step.StepFragment
 import kotlinx.android.synthetic.main.step_start.*
 
@@ -36,7 +35,7 @@ class StartStepFragment : StepFragment(R.layout.step_start) {
         action_1.background = button(step.buttonColor)
         action_1.text = step.button(requireContext())
         action_1.setTextColor(step.buttonTextColor)
-        action_1.setOnClickListener { startCoroutineAsync { next() } }
+        action_1.setOnClickListener { next() }
 
     }
 

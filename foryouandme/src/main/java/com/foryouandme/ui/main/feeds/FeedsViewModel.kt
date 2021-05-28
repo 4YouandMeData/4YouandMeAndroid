@@ -2,12 +2,8 @@ package com.foryouandme.ui.main.feeds
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.RootNavController
-import com.foryouandme.core.arch.navigation.action.openApp
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
 import com.foryouandme.core.ext.*
@@ -25,19 +21,10 @@ import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.feed.Feed
 import com.foryouandme.entity.feed.FeedType
-import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.notifiable.FeedAlert
 import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
-import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
-import com.foryouandme.entity.user.User
-import com.foryouandme.ui.main.MaiToFAQ
-import com.foryouandme.ui.main.MainToAboutYou
-import com.foryouandme.ui.main.MainToInformation
-import com.foryouandme.ui.main.MainToReward
 import com.foryouandme.ui.main.compose.FeedItem
-import com.foryouandme.ui.main.items.*
-import com.foryouandme.ui.main.tasks.TasksAction
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.addPage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +35,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel

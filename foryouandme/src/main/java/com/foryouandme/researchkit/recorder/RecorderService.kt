@@ -12,7 +12,6 @@ import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorderData
 import com.foryouandme.researchkit.step.sensor.SensorRecorderTarget
@@ -251,11 +250,9 @@ open class RecorderService : BaseService() {
     private suspend fun stopRecorders() {
 
         val results = state?.recorderList?.mapNotNull { it.stop() }
-
-        mapNotNull(state?.step?.identifier, results)
-            ?.let {
-                stateUpdateFlow.update(RecorderStateUpdate.ResultCollected(it.a, it.b))
-            }
+        val identifier = state?.step?.identifier
+        if (identifier != null && results != null)
+            stateUpdateFlow.update(RecorderStateUpdate.ResultCollected(identifier, results))
 
     }
 

@@ -3,7 +3,6 @@ package com.foryouandme.data.repository.auth.answer.network.response.notifiable
 import com.foryouandme.data.repository.auth.answer.network.response.meta.MetaResponse
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.decodeBase64Image
-import com.foryouandme.core.ext.mapNotNull
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.notifiable.FeedAction
@@ -50,7 +49,7 @@ class FeedRewardResponse(
             id,
             if (title != null && metadata != null) metadata.applyMeta(title) else title,
             description,
-            mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
+            if (cardColor != null) HEXGradient(cardColor, cardColor) else null,
             image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
@@ -75,7 +74,7 @@ class FeedAlertResponse(
             id,
             title,
             description,
-            mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
+            if (cardColor != null) HEXGradient(cardColor, cardColor) else null,
             image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel
@@ -104,7 +103,7 @@ class FeedEducationalResponse(
             id,
             title,
             description,
-            mapNotNull(cardColor, cardColor)?.let { HEXGradient(it.a, it.b) },
+            if (cardColor != null) HEXGradient(cardColor, cardColor) else null,
             image?.decodeBase64Image(),
             linkUrl?.toFeedAction(),
             taskActionButtonLabel

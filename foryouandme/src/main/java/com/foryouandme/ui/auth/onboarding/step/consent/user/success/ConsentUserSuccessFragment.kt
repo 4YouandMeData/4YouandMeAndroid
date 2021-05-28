@@ -6,13 +6,9 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.ext.evalOnMain
 import com.foryouandme.core.ext.removeBackButton
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.databinding.ConsentUserPageBinding
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.consent.user.ConsentUser
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,11 +50,11 @@ class ConsentUserSuccessFragment : ConsentUserSectionFragment(R.layout.consent_u
 
     private fun setupView() {
 
-            consentUserFragment().binding?.toolbar?.removeBackButton()
+        consentUserFragment().binding?.toolbar?.removeBackButton()
 
-        }
+    }
 
-    private  fun applyData() {
+    private fun applyData() {
 
         val configuration = configuration
         val consentUser = viewModel.state.consent

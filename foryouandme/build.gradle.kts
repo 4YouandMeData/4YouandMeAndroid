@@ -94,14 +94,6 @@ dependencies {
     implementation(AndroidX.Lifecycle.ViewModelSavedState.get())
     implementation(AndroidX.Lifecycle.CommonJava8.get())
 
-    /* --- arrow --- */
-
-    implementation(Arrow.Fx.get())
-    implementation(Arrow.FxCoroutines.get())
-    implementation(Arrow.Optics.get())
-    implementation(Arrow.Syntax.get())
-    kapt(Arrow.Meta.get())
-
     /* --- coroutines --- */
 
     implementation(KotlinX.Coroutines.Core.get())

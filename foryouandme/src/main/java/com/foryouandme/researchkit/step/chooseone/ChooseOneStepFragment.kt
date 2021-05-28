@@ -9,7 +9,6 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.dpToPx
-import com.foryouandme.core.ext.startCoroutineAsync
 import com.foryouandme.databinding.StepChooseOneBinding
 import com.foryouandme.entity.configuration.background.shadow
 import com.foryouandme.researchkit.result.AnswerResult
@@ -91,9 +90,7 @@ class ChooseOneStepFragment : StepFragment(R.layout.step_choose_one) {
         viewBinding?.shadow?.background = shadow(step.shadowColor)
 
         viewBinding?.button?.applyImageAsButton(step.buttonImage)
-        viewBinding?.button?.setOnClickListener {
-            startCoroutineAsync { next() }
-        }
+        viewBinding?.button?.setOnClickListener { next() }
 
         viewBinding?.button?.setOnClickListener {
 
