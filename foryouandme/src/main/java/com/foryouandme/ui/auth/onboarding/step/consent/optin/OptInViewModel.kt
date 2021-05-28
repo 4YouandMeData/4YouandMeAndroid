@@ -2,23 +2,18 @@ package com.foryouandme.ui.auth.onboarding.step.consent.optin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.NavigationFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.arch.navigation.*
+import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.action.alertAction
-import com.foryouandme.core.arch.navigation.action.toastAction
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.auth.consent.GetOptInsUseCase
 import com.foryouandme.domain.usecase.auth.consent.SetOptInPermissionUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -153,7 +148,7 @@ class OptInViewModel @Inject constructor(
     /* --- state event --- */
 
     fun execute(stateEvent: OptInStateEvent) {
-        when(stateEvent) {
+        when (stateEvent) {
             OptInStateEvent.GetOptIn ->
                 errorFlow.launchCatch(
                     viewModelScope,

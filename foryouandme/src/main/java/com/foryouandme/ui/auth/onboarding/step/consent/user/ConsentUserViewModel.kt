@@ -5,23 +5,17 @@ import android.util.Base64
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.NavigationFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.RootNavController
 import com.foryouandme.core.arch.navigation.action.toastAction
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.auth.consent.*
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
@@ -177,7 +171,7 @@ class ConsentUserViewModel @Inject constructor(
         )
 
     fun execute(action: ConsentUserAction) {
-        when(action) {
+        when (action) {
             ConsentUserAction.GetConsentUser ->
                 errorFlow.launchCatch(
                     viewModelScope,
@@ -195,7 +189,7 @@ class ConsentUserViewModel @Inject constructor(
                     ConsentUserError.ConfirmEmail,
                     loadingFlow,
                     ConsentUserLoading.ConfirmEmail
-                ) { confirmEmail(action.code)}
+                ) { confirmEmail(action.code) }
             ConsentUserAction.ResendEmail ->
                 errorFlow.launchCatch(
                     viewModelScope,

@@ -6,18 +6,10 @@ import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentActivity
 import arrow.core.getOrElse
 import arrow.core.toOption
-import com.foryouandme.core.arch.error.ForYouAndMeError
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.ext.startCoroutineAsync
 
 typealias ActivityAction = (Context) -> Unit
-
-fun toastAction(error: ForYouAndMeError): ActivityAction = {
-    showToast(it, error.message(it))
-}
 
 fun toastAction(message: String): ActivityAction = {
     showToast(it, message)

@@ -6,7 +6,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.foryouandme.core.arch.error.ForYouAndMeError
 
 
 /* --- resources --- */
@@ -57,8 +56,6 @@ inline fun <reified T : Fragment> Fragment.find(): T {
 /* --- toast --- */
 
 fun Fragment.errorToast(message: String): Unit = requireContext().errorToast(message)
-
-fun Fragment.errorToast(error: ForYouAndMeError): Unit = requireContext().errorToast(error)
 
 fun Fragment.infoToast(message: String): Unit = requireContext().infoToast(message)
 

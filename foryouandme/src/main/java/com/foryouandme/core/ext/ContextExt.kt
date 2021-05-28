@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.core.arch.navigation.action.ContextAction
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
@@ -24,10 +23,6 @@ fun Context.color(@ColorRes res: Int): Int = ContextCompat.getColor(this, res)
 
 fun Context.errorToast(message: String) {
     Toasty.error(this, message, Toast.LENGTH_LONG).show()
-}
-
-fun Context.errorToast(error: ForYouAndMeError) {
-    Toasty.error(this, error.message(this), Toast.LENGTH_LONG).show()
 }
 
 fun Context.errorToast(error: ForYouAndMeException, configuration: Configuration? = null) {

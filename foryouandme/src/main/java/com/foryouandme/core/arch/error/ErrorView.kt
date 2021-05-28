@@ -21,9 +21,6 @@ class ErrorView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         hide()
     }
 
-    fun setError(error: ForYouAndMeError, retryAction: () -> Unit = {}): Unit =
-        setError(error.title(context), error.message(context), retryAction)
-
     fun setError(
         title: String,
         message: String,

@@ -3,7 +3,6 @@ package com.foryouandme.core.items
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
-import com.foryouandme.core.arch.error.ForYouAndMeError
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.button.button
 import com.giacomoparisi.recyclerdroid.core.DroidItem
