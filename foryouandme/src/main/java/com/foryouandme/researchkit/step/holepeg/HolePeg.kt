@@ -16,7 +16,7 @@ import com.foryouandme.R
 import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
-import com.foryouandme.researchkit.step.common.StepHeader
+import com.foryouandme.researchkit.step.compose.StepHeader
 import com.foryouandme.researchkit.step.holepeg.HolePegAction.*
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.toColor

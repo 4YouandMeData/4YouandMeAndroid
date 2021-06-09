@@ -2,6 +2,7 @@ package com.foryouandme.researchkit.step.date
 
 import android.os.Bundle
 import android.view.View
+import android.widget.DatePicker
 import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.databinding.StepDateBinding
@@ -34,6 +35,8 @@ class DatePickerStepFragment : StepFragment(R.layout.step_date) {
         val start = ZonedDateTime.now()
 
         viewBinding?.root?.setBackgroundColor(step.backgroundColor)
+
+        viewBinding?.datePicker?.descendantFocusability = DatePicker.FOCUS_BLOCK_DESCENDANTS
 
         step.minDate?.let { viewBinding?.datePicker?.minDate = it }
         step.maxDate?.let { viewBinding?.datePicker?.maxDate = it }

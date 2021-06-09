@@ -1,4 +1,4 @@
-package com.foryouandme.researchkit.step.common
+package com.foryouandme.researchkit.step.compose
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
