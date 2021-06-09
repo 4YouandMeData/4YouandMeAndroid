@@ -29,7 +29,7 @@ object GradlePlugin {
         Dependency(
             "com.google.firebase",
             "firebase-crashlytics-gradle",
-            "2.6.1"
+            "2.7.0"
         )
 
     object Bintray : Dependency(
