@@ -1,6 +1,6 @@
 object AndroidX {
 
-    object Activity : DependencyGroup("androidx.activity", "1.3.0-alpha08") {
+    object Activity : DependencyGroup("androidx.activity", "1.3.0-beta01") {
 
         object Compose : Dependency(Activity.group, "activity-compose", Activity.version)
 
@@ -74,7 +74,7 @@ object AndroidX {
             Dependency(
                 Lifecycle.group,
                 "lifecycle-viewmodel-compose",
-                "1.0.0-alpha05"
+                "1.0.0-alpha06"
             )
 
         object LiveDataKtx :
@@ -106,13 +106,13 @@ object AndroidX {
 
     object Camera : DependencyIndependentGroup("androidx.camera") {
 
-        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha04")
+        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha05")
 
-        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha04")
+        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha05")
 
-        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha04")
+        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha05")
 
-        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha24")
+        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha25")
 
     }
 

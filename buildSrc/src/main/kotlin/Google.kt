@@ -11,7 +11,7 @@ object Google {
         object CrashlyticsKtx : Dependency(
             Firebase.group,
             "firebase-crashlytics-ktx",
-            "18.0.0"
+            "18.0.1"
         )
 
         object AnalyticsKtx : Dependency(
@@ -38,7 +38,7 @@ object Google {
 
     object Dagger : DependencyIndependentGroup("com.google.dagger") {
 
-        object Hilt : DependencyGroup(Dagger.group, "2.35.1") {
+        object Hilt : DependencyGroup(Dagger.group, "2.36") {
 
             object Android : Dependency(Dagger.group, "hilt-android", Hilt.version)
 
@@ -62,7 +62,7 @@ object Google {
 
     }
 
-    object Accompanist: DependencyGroup("com.google.accompanist", "0.10.0") {
+    object Accompanist: DependencyGroup("com.google.accompanist", "0.11.1") {
 
         object Coil: Dependency(
             Accompanist.group,
@@ -86,7 +86,7 @@ object Google {
 
     object Test {
 
-        object Truth : Dependency("com.google.truth", "truth", "1.1.2")
+        object Truth : Dependency("com.google.truth", "truth", "1.1.3")
 
     }
 

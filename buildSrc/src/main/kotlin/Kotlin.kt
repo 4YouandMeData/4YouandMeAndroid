@@ -1,4 +1,4 @@
-object Kotlin : DependencyGroup("org.jetbrains.kotlin", "1.5.0") {
+object Kotlin : DependencyGroup("org.jetbrains.kotlin", "1.5.10") {
 
     object StdLib : Dependency(Kotlin.group, "kotlin-stdlib", Kotlin.version)
 

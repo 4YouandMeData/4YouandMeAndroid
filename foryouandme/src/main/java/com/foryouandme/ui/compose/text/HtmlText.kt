@@ -56,6 +56,7 @@ fun HtmlText(
                     TextAlign.Justify -> Gravity.START
                     TextAlign.Start -> Gravity.START
                     TextAlign.End -> Gravity.END
+                    else -> Gravity.START
                 }
 
         }

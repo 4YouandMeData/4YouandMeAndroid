@@ -1,4 +1,4 @@
-object Vanpra: DependencyGroup("io.github.vanpra.compose-material-dialogs", "0.4.0") {
+object Vanpra: DependencyGroup("io.github.vanpra.compose-material-dialogs", "0.4.2") {
 
     object Core: Dependency(Vanpra.group, "core", Vanpra.version)
 
