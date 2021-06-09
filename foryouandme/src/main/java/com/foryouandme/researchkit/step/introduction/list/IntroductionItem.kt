@@ -3,12 +3,12 @@ package com.foryouandme.researchkit.step.introduction.list
 import android.view.View
 import android.view.ViewGroup
 import com.foryouandme.R
+import com.foryouandme.databinding.StepIntroductionItemBinding
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.step_introduction_item.*
 
 data class IntroductionItem(
     val title: String,
@@ -46,15 +46,17 @@ class IntroductionViewHolder(
     }
 ), LayoutContainer {
 
-    override val containerView: View? = itemView
+    override val containerView: View = itemView
 
     override fun bind(item: IntroductionItem, position: Int) {
 
-        title.text = item.title
-        title.setTextColor(item.titleColor)
+        val binding = StepIntroductionItemBinding.bind(itemView)
 
-        description.text = item.description
-        description.setTextColor(item.descriptionColor)
+        binding.title.text = item.title
+        binding.title.setTextColor(item.titleColor)
+
+        binding.description.text = item.description
+        binding.description.setTextColor(item.descriptionColor)
 
     }
 

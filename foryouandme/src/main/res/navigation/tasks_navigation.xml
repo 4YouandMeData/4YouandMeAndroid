@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/tasks"
         android:name="com.foryouandme.ui.main.tasks.TasksFragment"
-        android:label="tasks"
-        tools:layout="@layout/tasks" />
+        android:label="tasks" />
 
 </navigation>

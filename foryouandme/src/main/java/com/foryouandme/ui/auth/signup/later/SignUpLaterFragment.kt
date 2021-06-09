@@ -11,7 +11,6 @@ import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.auth.AuthSectionFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.sign_up_later.*
 
 @AndroidEntryPoint
 class SignUpLaterFragment : AuthSectionFragment(R.layout.sign_up_later) {
@@ -45,8 +44,12 @@ class SignUpLaterFragment : AuthSectionFragment(R.layout.sign_up_later) {
 
     private fun setupView() {
 
-        binding?.logo?.setImageResource(imageConfiguration.logo())
-        back.setOnClickListener { back() }
+        val viewBinding = binding
+
+        if (viewBinding != null) {
+            viewBinding.logo.setImageResource(imageConfiguration.logo())
+            viewBinding.back.setOnClickListener { back() }
+        }
 
     }
 

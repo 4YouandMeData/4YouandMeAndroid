@@ -8,11 +8,14 @@ import android.view.animation.LinearInterpolator
 import androidx.lifecycle.lifecycleScope
 import com.foryouandme.R
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.databinding.StepCountdownBinding
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_countdown.*
 import kotlinx.coroutines.delay
 
 class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
+
+    private val binding: StepCountdownBinding?
+        get() = view?.let { StepCountdownBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -27,20 +30,25 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         step: CountDownStep
     ) {
 
-        root.setBackgroundColor(step.backgroundColor)
+        val viewBinding = binding
 
-        title.text = step.title(requireContext())
-        title.setTextColor(step.titleColor)
+        if (viewBinding != null) {
 
-        description.text = step.description(requireContext())
-        description.setTextColor(step.descriptionColor)
+            viewBinding.root.setBackgroundColor(step.backgroundColor)
 
-        counter.setTextColor(step.counterColor)
+            viewBinding.title.text = step.title(requireContext())
+            viewBinding.title.setTextColor(step.titleColor)
 
-        progress.progressTintList =
-            ColorStateList.valueOf(step.counterProgressColor)
+            viewBinding.description.text = step.description(requireContext())
+            viewBinding.description.setTextColor(step.descriptionColor)
 
-        startCounter(step.seconds) { next() }
+            viewBinding.counter.setTextColor(step.counterColor)
+
+            viewBinding.progress.progressTintList =
+                ColorStateList.valueOf(step.counterProgressColor)
+
+            startCounter(step.seconds) { next() }
+        }
     }
 
     private fun startCounterAnimation(seconds: Int) {
@@ -48,7 +56,7 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
         val animator = ValueAnimator.ofInt(seconds, 0)
 
         animator.duration = seconds * 1000L
-        animator.addUpdateListener { counter.text = (it.animatedValue as Int).toString() }
+        animator.addUpdateListener { binding?.counter?.text = (it.animatedValue as Int).toString() }
         animator.interpolator = LinearInterpolator()
 
         lifecycle.addObserver(LifecycleValueAnimator(animator))
@@ -57,12 +65,12 @@ class CountDownStepFragment : StepFragment(R.layout.step_countdown) {
 
     private fun startCounterProgressAnimation(seconds: Int) {
 
-        progress.max = seconds * 1000
+        binding?.progress?.max = seconds * 1000
 
         val animator = ValueAnimator.ofInt(0, seconds * 1000)
 
         animator.duration = seconds * 1000L
-        animator.addUpdateListener { progress.progress = it.animatedValue as Int }
+        animator.addUpdateListener { binding?.progress?.progress = it.animatedValue as Int }
         animator.interpolator = LinearInterpolator()
 
         lifecycle.addObserver(LifecycleValueAnimator(animator))

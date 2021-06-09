@@ -4,12 +4,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import com.foryouandme.R
+import com.foryouandme.databinding.StepIntroductionHeaderItemBinding
 import com.giacomoparisi.recyclerdroid.core.DroidItem
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
 import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.step_introduction_header_item.*
 
 data class IntroductionHeaderItem(
     val title: String,
@@ -46,14 +46,16 @@ class IntroductionHeaderViewHolder(
     }
 ), LayoutContainer {
 
-    override val containerView: View? = itemView
+    override val containerView: View = itemView
 
     override fun bind(item: IntroductionHeaderItem, position: Int) {
 
-        title.text = item.title
-        title.setTextColor(item.titleColor)
+        val binding = StepIntroductionHeaderItemBinding.bind(itemView)
 
-        image.setImageResource(item.image)
+        binding.title.text = item.title
+        binding.title.setTextColor(item.titleColor)
+
+        binding.image.setImageResource(item.image)
 
     }
 

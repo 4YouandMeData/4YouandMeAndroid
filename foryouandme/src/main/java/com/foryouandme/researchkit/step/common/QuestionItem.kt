@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.foryouandme.R
+import com.foryouandme.databinding.StepQuestionItemBinding
 import com.foryouandme.entity.source.ImageSource
 import com.foryouandme.entity.source.applyImage
 import com.giacomoparisi.recyclerdroid.core.DroidItem
+import com.giacomoparisi.recyclerdroid.core.compare
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolder
 import com.giacomoparisi.recyclerdroid.core.holder.DroidViewHolderFactory
-import com.giacomoparisi.recyclerdroid.core.compare
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.step_question_item.*
 
 data class QuestionItem(
     val id: String,
@@ -35,15 +35,17 @@ class QuestionViewHolder(
     parent: ViewGroup
 ) : DroidViewHolder<QuestionItem, Unit>(parent, R.layout.step_question_item), LayoutContainer {
 
-    override val containerView: View? = itemView
+    override val containerView: View = itemView
 
     override fun bind(item: QuestionItem, position: Int) {
 
-        item.image?.let { icon.applyImage(it) }
-        icon.isVisible = item.image != null
+        val binding = StepQuestionItemBinding.bind(itemView)
 
-        question.text = item.question(context)
-        question.setTextColor(item.questionColor)
+        item.image?.let { binding.icon.applyImage(it) }
+        binding.icon.isVisible = item.image != null
+
+        binding.question.text = item.question(context)
+        binding.question.setTextColor(item.questionColor)
 
     }
 

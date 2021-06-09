@@ -7,15 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showBackSecondaryButton
 import com.foryouandme.databinding.ScreeningQuestionsBinding
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.auth.onboarding.step.screening.*
 import com.giacomoparisi.recyclerdroid.core.adapter.StableDroidAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.screening.*
-import kotlinx.android.synthetic.main.screening_questions.*
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
@@ -66,7 +64,7 @@ class ScreeningQuestionsFragment : ScreeningSectionFragment(
 
         setupView()
         applyConfiguration()
-        if(adapter.itemCount <= 0) applyQuestions()
+        if (adapter.itemCount <= 0) applyQuestions()
 
 
     }

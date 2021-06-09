@@ -13,7 +13,6 @@ import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewDisagreeToAuth
 import com.foryouandme.ui.auth.onboarding.step.consent.review.ConsentReviewSectionDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.consent_review_disagree.*
 
 @AndroidEntryPoint
 class ConsentReviewDisagreeFragment : ConsentReviewSectionDialogFragment() {
@@ -54,10 +53,10 @@ class ConsentReviewDisagreeFragment : ConsentReviewSectionDialogFragment() {
 
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            close_recording.setImageResource(imageConfiguration.close())
-            close_recording.setOnClickListener { back() }
+            viewBinding.closeRecording.setImageResource(imageConfiguration.close())
+            viewBinding.closeRecording.setOnClickListener { back() }
 
-            disagree.setOnClickListener {
+            viewBinding.disagree.setOnClickListener {
                 navigator.navigateTo(
                     rootNavController(),
                     ConsentReviewDisagreeToAuth
@@ -76,15 +75,15 @@ class ConsentReviewDisagreeFragment : ConsentReviewSectionDialogFragment() {
 
         if (viewBinding != null && configuration != null && consentReview != null) {
 
-            root.background =
+            viewBinding.root.background =
                 roundBackground(configuration.theme.secondaryColor.color())
 
-            body.text = consentReview.disagreeModalBody
-            body.setTextColor(configuration.theme.primaryTextColor.color())
+            viewBinding.body.text = consentReview.disagreeModalBody
+            viewBinding.body.setTextColor(configuration.theme.primaryTextColor.color())
 
-            disagree.text = consentReview.disagreeModalButton
-            disagree.setTextColor(configuration.theme.secondaryColor.color())
-            disagree.background =
+            viewBinding.disagree.text = consentReview.disagreeModalButton
+            viewBinding.disagree.setTextColor(configuration.theme.secondaryColor.color())
+            viewBinding.disagree.background =
                 button(configuration.theme.primaryColorEnd.color())
 
         }

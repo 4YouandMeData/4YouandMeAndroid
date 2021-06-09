@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/feeds"
         android:name="com.foryouandme.ui.main.feeds.FeedsFragment"
-        android:label="feeds"
-        tools:layout="@layout/feeds" />
+        android:label="feeds" />
 
 </navigation>

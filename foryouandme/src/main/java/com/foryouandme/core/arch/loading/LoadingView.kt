@@ -2,6 +2,7 @@ package com.foryouandme.core.arch.loading
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -14,10 +15,10 @@ import com.foryouandme.core.ext.adjustAlpha
 import com.foryouandme.core.ext.catchToNullSuspend
 import com.foryouandme.core.ext.dpToPx
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.databinding.LoadingBinding
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.loading.view.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,9 +36,14 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
     private var rotation: Animation? = null
 
-    init {
+    private var binding: LoadingBinding =
+        LoadingBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
 
-        View.inflate(context, R.layout.loading, this)
+    init {
 
         rotation = AnimationUtils.loadAnimation(context, R.anim.rotate)
 
@@ -54,7 +60,7 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
     private fun show(): Unit {
 
-        rotation?.let { loader.startAnimation(it) }
+        rotation?.let { binding.loader.startAnimation(it) }
 
         visibility = View.VISIBLE
 
@@ -63,7 +69,7 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
     private fun hide(): Unit {
 
-        loader.clearAnimation()
+        binding.loader.clearAnimation()
 
         visibility = View.GONE
     }
@@ -79,14 +85,14 @@ class LoadingView(context: Context, attrs: AttributeSet?) : FrameLayout(context,
         if (isVisible) show() else hide()
     }
 
-    private fun setLoader(@DrawableRes image: Int): Unit = loader.setImageResource(image)
+    private fun setLoader(@DrawableRes image: Int): Unit = binding.loader.setImageResource(image)
 
     @DelicateCoroutinesApi
     private fun applyTheme(opaque: Boolean, @DrawableRes loaderImage: Int?) {
         GlobalScope.launchSafe {
 
             withContext(Dispatchers.Main) {
-                loader.setImageResource(loaderImage ?: R.drawable.loading)
+                binding.loader.setImageResource(loaderImage ?: R.drawable.loading)
 
                 val configuration =
                     catchToNullSuspend { getConfigurationUseCase(Policy.LocalFirst) }

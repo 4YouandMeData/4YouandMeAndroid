@@ -2,17 +2,18 @@ package com.foryouandme.core.arch.error
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.foryouandme.R
 import com.foryouandme.core.ext.dpToPx
-import kotlinx.android.synthetic.main.error.view.*
+import com.foryouandme.databinding.ErrorBinding
 
 class ErrorView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    init {
+    val binding: ErrorBinding =
+        ErrorBinding.inflate(LayoutInflater.from(context), this, true)
 
-        View.inflate(context, R.layout.error, this)
+    init {
 
         elevation = 10.dpToPx().toFloat()
         isFocusable = true
@@ -27,10 +28,10 @@ class ErrorView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         retryAction: () -> Unit = { }
     ): Unit {
 
-        error_title.text = title
-        error_message.text = message
+        binding.errorTitle.text = title
+        binding.errorMessage.text = message
 
-        retry.setOnClickListener {
+        binding.retry.setOnClickListener {
             retryAction()
             hide()
         }

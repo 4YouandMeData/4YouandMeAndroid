@@ -3,13 +3,15 @@ package com.foryouandme.researchkit.step.start
 import android.os.Bundle
 import android.view.View
 import com.foryouandme.R
+import com.foryouandme.databinding.StepStartBinding
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_start.*
 
 
 class StartStepFragment : StepFragment(R.layout.step_start) {
 
+    private val binding: StepStartBinding?
+        get() = view?.let { StepStartBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,19 +26,24 @@ class StartStepFragment : StepFragment(R.layout.step_start) {
         step: StartStep
     ) {
 
-        root.setBackgroundColor(step.backgroundColor)
+        val viewBinding = binding
 
-        title.text = step.title(requireContext())
-        title.setTextColor(step.titleColor)
+        if (viewBinding != null) {
 
-        description.text = step.description(requireContext())
-        description.setTextColor(step.descriptionColor)
+            viewBinding.root.setBackgroundColor(step.backgroundColor)
 
-        action_1.background = button(step.buttonColor)
-        action_1.text = step.button(requireContext())
-        action_1.setTextColor(step.buttonTextColor)
-        action_1.setOnClickListener { next() }
+            viewBinding.title.text = step.title(requireContext())
+            viewBinding.title.setTextColor(step.titleColor)
 
+            viewBinding.description.text = step.description(requireContext())
+            viewBinding.description.setTextColor(step.descriptionColor)
+
+            viewBinding.action1.background = button(step.buttonColor)
+            viewBinding.action1.text = step.button(requireContext())
+            viewBinding.action1.setTextColor(step.buttonTextColor)
+            viewBinding.action1.setOnClickListener { next() }
+
+        }
     }
 
 }

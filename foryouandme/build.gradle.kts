@@ -13,8 +13,6 @@ plugins {
     id("signing")
 }
 
-androidExtensions { isExperimental = true }
-
 android {
 
     compileSdk = ProjectConfig.compile_sdk

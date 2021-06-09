@@ -5,15 +5,17 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.foryouandme.R
 import com.foryouandme.core.ext.html.setHtmlText
+import com.foryouandme.databinding.StepWelcomeBinding
 import com.foryouandme.entity.configuration.HEXColor
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.researchkit.step.StepFragment
-import kotlinx.android.synthetic.main.step_welcome.*
 
 
 class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
 
+    val binding: StepWelcomeBinding?
+        get() = view?.let { StepWelcomeBinding.bind(it) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,46 +30,54 @@ class WelcomeStepFragment : StepFragment(R.layout.step_welcome) {
 
     private fun setupView() {
 
-        remind_me_later.setOnClickListener { reschedule() }
+        val viewBinding = binding
 
-        start_now.setOnClickListener { next() }
-        start_now_full.setOnClickListener { next() }
+        if (viewBinding != null) {
+            viewBinding.remindMeLater.setOnClickListener { reschedule() }
+
+            viewBinding.startNow.setOnClickListener { next() }
+            viewBinding.startNowFull.setOnClickListener { next() }
+        }
 
     }
 
     private fun applyData(step: WelcomeStep) {
 
-        root.setBackgroundColor(step.backgroundColor)
+        val viewBinding = binding
 
-        if (step.image != null) image.setImageResource(step.image)
+        if (viewBinding != null) {
+            viewBinding.root.setBackgroundColor(step.backgroundColor)
 
-        title.setHtmlText(step.title(requireContext()), true)
-        title.setTextColor(step.titleColor)
+            if (step.image != null) viewBinding.image.setImageResource(step.image)
 
-        description.setHtmlText(step.description(requireContext()), true)
-        description.setTextColor(step.descriptionColor)
+            viewBinding.title.setHtmlText(step.title(requireContext()), true)
+            viewBinding.title.setTextColor(step.titleColor)
 
-        remind_me_later.background = button(step.remindButtonColor)
-        remind_me_later.text = step.remindButton(requireContext())
-        remind_me_later.setTextColor(step.remindButtonTextColor)
-        remind_me_later.isVisible = step.remindMeLater
+            viewBinding.description.setHtmlText(step.description(requireContext()), true)
+            viewBinding.description.setTextColor(step.descriptionColor)
 
-        start_now.background = button(step.startButtonColor)
-        start_now.text = step.startButton(requireContext())
-        start_now.setTextColor(step.startButtonTextColor)
-        start_now.isVisible = step.remindMeLater
+            viewBinding.remindMeLater.background = button(step.remindButtonColor)
+            viewBinding.remindMeLater.text = step.remindButton(requireContext())
+            viewBinding.remindMeLater.setTextColor(step.remindButtonTextColor)
+            viewBinding.remindMeLater.isVisible = step.remindMeLater
 
-        start_now_full.background = button(step.startButtonColor)
-        start_now_full.text = step.startButton(requireContext())
-        start_now_full.setTextColor(step.startButtonTextColor)
-        start_now_full.isVisible = step.remindMeLater.not()
+            viewBinding.startNow.background = button(step.startButtonColor)
+            viewBinding.startNow.text = step.startButton(requireContext())
+            viewBinding.startNow.setTextColor(step.startButtonTextColor)
+            viewBinding.startNow.isVisible = step.remindMeLater
 
-        shadow.background =
-            HEXGradient.from(
-                HEXColor.transparent(),
-                HEXColor.parse(step.shadowColor)
-            ).drawable(0.3f)
+            viewBinding.startNowFull.background = button(step.startButtonColor)
+            viewBinding.startNowFull.text = step.startButton(requireContext())
+            viewBinding.startNowFull.setTextColor(step.startButtonTextColor)
+            viewBinding.startNowFull.isVisible = step.remindMeLater.not()
 
+            viewBinding.shadow.background =
+                HEXGradient.from(
+                    HEXColor.transparent(),
+                    HEXColor.parse(step.shadowColor)
+                ).drawable(0.3f)
+
+        }
     }
 
 }

@@ -8,8 +8,6 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
-androidExtensions { isExperimental = true }
-
 android {
 
     compileSdk = ProjectConfig.compile_sdk
