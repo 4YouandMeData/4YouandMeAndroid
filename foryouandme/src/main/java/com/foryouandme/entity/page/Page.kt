@@ -38,20 +38,26 @@ data class Page(
 
     companion object {
 
-        fun mock(): Page =
+        fun mock(
+            link1Label: String? = null,
+            link2Label: String? = null,
+            externalLinkUrl: String? = null,
+            specialLinkValue: String? = null,
+            specialLinkLabel: String? = null,
+        ): Page =
             Page(
                 id = "id",
                 title = Mock.title,
                 body = Mock.body,
                 image = null,
                 link1 = null,
-                link1Label = null,
+                link1Label = link1Label,
                 link2 = null,
-                link2Label = null,
+                link2Label = link2Label,
                 externalLinkLabel = null,
-                externalLinkUrl = null,
-                specialLinkLabel = null,
-                specialLinkValue = null,
+                externalLinkUrl = externalLinkUrl,
+                specialLinkLabel = specialLinkLabel,
+                specialLinkValue = specialLinkValue,
                 linkModalLabel = null,
                 linkModalValue = null
             )
