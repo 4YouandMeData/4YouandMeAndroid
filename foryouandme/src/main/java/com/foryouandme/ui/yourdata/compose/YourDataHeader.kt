@@ -42,7 +42,7 @@ fun YourDataHeader(
         )
         Spacer(modifier = Modifier.height(20.dp))
         RatingBar(
-            rating = yourData.starts ?: 0f,
+            rating = yourData.stars ?: 0f,
             startColor = Color(0xffFFCA00),
             backgroundColor = Color(0xffE1E1E1),
             startSpacing = 15.dp,

@@ -6,7 +6,7 @@ data class YourData(
     val id: String,
     val title: String?,
     val body: String?,
-    val starts: Float?
+    val stars: Float?
 ) {
 
     companion object {
@@ -16,7 +16,7 @@ data class YourData(
                 id = "id",
                 title = Mock.title,
                 body = Mock.body,
-                starts = 4f
+                stars = 4f
             )
 
     }
