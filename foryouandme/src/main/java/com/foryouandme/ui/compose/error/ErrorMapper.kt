@@ -19,7 +19,7 @@ fun Throwable.toForYouAndMeException(): ForYouAndMeException =
         is SocketTimeoutException ->
             ForYouAndMeException.NetworkErrorTimeOut()
         is HttpException ->
-            ForYouAndMeException.UserNotLoggedIn
+            ForYouAndMeException.NetworkHTTPException(code())
         else ->
             ForYouAndMeException.Unknown
     }
@@ -29,9 +29,9 @@ fun ForYouAndMeException.getMessage(configuration: Configuration?): TextSource =
         is ForYouAndMeException.NetworkErrorUnknownHost ->
             R.string.ERROR_network_connection.toTextResource()
         is ForYouAndMeException.NetworkErrorTimeOut ->
-            R.string.ERROR_network_connection.toTextResource()
+            R.string.ERROR_network_timeout.toTextResource()
         is ForYouAndMeException.NetworkHTTPException ->
-            R.string.ERROR_api.toTextResource()
+            R.string.ERROR_api.toTextResource(code)
         is ForYouAndMeException.MissingPhoneNumber ->
             configuration?.text
                 ?.phoneVerification

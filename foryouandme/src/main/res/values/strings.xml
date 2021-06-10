@@ -2,8 +2,9 @@
 ***REMOVED***
 
     <string name="ERROR_generic">Something went wrong, please try again</string>
-    <string name="ERROR_api">Something went wrong, please try again</string>
+    <string name="ERROR_api">Something went wrong, please try again (error code: %1$s)</string>
     <string name="ERROR_network_connection">Network error</string>
+    <string name="ERROR_network_timeout">Network error (timeout)</string>
 
     <string name="ERROR_title">Uh, oh!</string>
     <string name="ERROR_retry">Try again</string>

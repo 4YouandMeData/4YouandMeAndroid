@@ -1,6 +1,7 @@
 package com.foryouandme.ui.compose.page
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -44,6 +45,7 @@ fun PageFooter(
             .fillMaxWidth()
             .height(135.dp)
             .drawColoredShadow(configuration.theme.primaryTextColor.value)
+            .background(configuration.theme.secondaryColor.value)
             .padding(horizontal = 25.dp),
     ) {
         if (page.link2Label != null && action2 != null)

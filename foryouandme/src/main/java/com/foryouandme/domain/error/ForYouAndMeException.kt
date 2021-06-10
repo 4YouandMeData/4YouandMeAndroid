@@ -1,7 +1,5 @@
 package com.foryouandme.domain.error
 
-import android.content.Context
-
 sealed class ForYouAndMeException : Throwable() {
 
     /* --- generic --- */
@@ -16,7 +14,7 @@ sealed class ForYouAndMeException : Throwable() {
 
     class NetworkErrorTimeOut: ForYouAndMeException()
 
-    class NetworkHTTPException: ForYouAndMeException()
+    class NetworkHTTPException(val code: Int): ForYouAndMeException()
 
     /* --- auth --- */
 
