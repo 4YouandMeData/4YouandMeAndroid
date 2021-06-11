@@ -2,6 +2,7 @@ package com.foryouandme.entity.user
 
 import com.foryouandme.entity.integration.IntegrationApp
 import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 
 data class User(
     val id: String,
@@ -31,7 +32,7 @@ data class User(
                 onBoardingCompleted = true,
                 token = "token",
                 customData = emptyList(),
-                timeZone = ZoneId.of("Europe/Paris"),
+                timeZone = ZoneOffset.UTC,
                 points = 30
             )
 

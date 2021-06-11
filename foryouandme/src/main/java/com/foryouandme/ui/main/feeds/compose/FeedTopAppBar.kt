@@ -50,7 +50,7 @@ fun FeedTopAppBar(
         )
 
         val pregnancyMonths = getFormattedPregnancyMonths(configuration, user)
-        val pregnancyWeek = getFormattedPregnancyMonths(configuration, user)
+        val pregnancyWeek = getFormattedPregnancyWeeks(configuration, user)
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

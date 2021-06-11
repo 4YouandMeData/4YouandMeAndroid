@@ -158,7 +158,7 @@ object AndroidX {
 
     object Compose {
 
-        const val version: String = "1.0.0-SNAPSHOT"
+        const val version: String = "1.0.0-beta08"
 
         object UI : Dependency("androidx.compose.ui", "ui", version) {
 

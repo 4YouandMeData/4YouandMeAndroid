@@ -39,7 +39,7 @@ fun FeedList(
         val feeds = state.items.currentOrPrevious()
 
         LaunchedEffect(key1 = state.firstPage) {
-            if(state.firstPage.isLoading())
+            if(state.firstPage.isLoading() && feeds?.isEmpty() == false)
                 lazyListState.animateScrollToItem(0)
         }
 
