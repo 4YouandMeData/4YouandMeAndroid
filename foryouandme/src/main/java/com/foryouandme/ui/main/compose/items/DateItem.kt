@@ -1,4 +1,4 @@
-package com.foryouandme.ui.main.compose
+package com.foryouandme.ui.main.compose.items
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text

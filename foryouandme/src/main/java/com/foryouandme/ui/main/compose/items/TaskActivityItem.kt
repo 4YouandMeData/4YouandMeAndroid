@@ -1,4 +1,4 @@
-package com.foryouandme.ui.main.compose
+package com.foryouandme.ui.main.compose.items
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,20 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.notifiable.FeedAction
-import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
 import com.foryouandme.ui.compose.text.HtmlText
 import com.foryouandme.ui.compose.verticalGradient
 
 @Composable
-fun FeedEducationalItem(
-    item: FeedItem.FeedEducationalItem,
+fun TaskActivityItem(
+    item: FeedItem.TaskActivityItem,
     configuration: Configuration,
-    onStartClicked: (FeedAction) -> Unit = {}
+    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -67,28 +64,15 @@ fun FeedEducationalItem(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            if (item.data.action != null) {
+            if (item.data.activityType != null) {
                 Spacer(modifier = Modifier.height(20.dp))
                 ForYouAndMeButton(
-                    text =
-                    item.data.taskActionButtonLabel
-                        ?: configuration.text.feed.educationalButtonDefault,
+                    text = item.data.button ?: configuration.text.activity.activityButtonDefault,
                     backgroundColor = configuration.theme.secondaryColor.value,
                     textColor = configuration.theme.primaryTextColor.value,
-                    onClick = { onStartClicked(item.data.action) }
+                    onClick = { onStartClicked(item) }
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun FeedEducationalItemPreview() {
-    ForYouAndMeTheme {
-        FeedEducationalItem(
-            item = FeedItem.FeedEducationalItem.mock(),
-            configuration = Configuration.mock()
-        )
     }
 }

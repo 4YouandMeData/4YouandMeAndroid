@@ -6,7 +6,7 @@ import com.foryouandme.core.arch.toData
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.task.Task
-import com.foryouandme.ui.main.compose.FeedItem
+import com.foryouandme.ui.main.compose.items.FeedItem
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 
 data class TasksState(

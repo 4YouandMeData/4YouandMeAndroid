@@ -2,15 +2,16 @@ package com.foryouandme.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMState
-import com.foryouandme.core.arch.flow.ErrorFlow
-import com.foryouandme.core.arch.flow.LoadingFlow
-import com.foryouandme.core.arch.flow.NavigationFlow
-import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.arch.navigation.Navigator
-import com.foryouandme.core.arch.navigation.action.openApp
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.flow.UIEvent
+import com.foryouandme.core.arch.flow.toUIEvent
+import com.foryouandme.core.arch.toData
+import com.foryouandme.core.arch.toError
+import com.foryouandme.core.ext.Action
+import com.foryouandme.core.ext.action
+import com.foryouandme.core.ext.launchAction
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
@@ -18,78 +19,48 @@ import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val stateUpdateFlow: StateUpdateFlow<MainStateUpdate>,
-    private val loadingFlow: LoadingFlow<MainLoading>,
-    private val errorFlow: ErrorFlow<MainError>,
-    private val navigationFlow: NavigationFlow,
-    private val navigator: Navigator,
     private val getConfigurationUseCase: GetConfigurationUseCase,
-    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
+    private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    val imageConfiguration: ImageConfiguration,
 ) : ViewModel() {
 
     /* --- state --- */
 
-    var state = MainState()
-        private set
+    private val state = MutableStateFlow(MainState())
+    val stateFlow = state as StateFlow<MainState>
 
-    /* --- flow --- */
+    /* --- event --- */
 
-    val stateUpdate = stateUpdateFlow.stateUpdates
-    val loading = loadingFlow.loading
-    val error = errorFlow.error
-    val navigation = navigationFlow.navigation
+    private val events = MutableSharedFlow<UIEvent<MainEvent>>(replay = 1)
+    val eventsFlow = events as SharedFlow<UIEvent<MainEvent>>
+
+    init {
+        execute(MainAction.GetConfiguration)
+    }
 
     /* --- configuration --- */
 
-    private suspend fun getConfiguration() {
-
-        loadingFlow.show(MainLoading.Config)
-
-        val configuration = getConfigurationUseCase(Policy.LocalFirst)
-        //state = state.copy(configuration = configuration)
-        stateUpdateFlow.update(MainStateUpdate.Config(configuration))
-
-        loadingFlow.hide(MainLoading.Config)
-
-    }
-
-    /* --- page --- */
-
-    private suspend fun setRestorePage(id: Int) {
-
-        state = state.copy(restorePage = id)
-        stateUpdateFlow.update(MainStateUpdate.RestorePage(id))
-
-    }
-
-    private suspend fun selectFeed(): Unit =
-        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.feed_navigation))
-
-    private suspend fun selectTasks(): Unit =
-        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.tasks_navigation))
-
-    private suspend fun selectYourData(): Unit =
-        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.user_data_navigation))
-
-    private suspend fun selectStudyInfo(): Unit =
-        stateUpdateFlow.update(MainStateUpdate.PageNavigation(R.id.study_info_navigation))
-
-    fun getPagedIds(): List<Int> =
-        listOf(
-            R.navigation.feed_navigation,
-            R.navigation.tasks_navigation,
-            R.navigation.user_data_navigation,
-            R.navigation.study_info_navigation
+    private fun getConfiguration(): Action =
+        action(
+            {
+                state.emit(state.value.copy(configuration = LazyData.Loading()))
+                val configuration = getConfigurationUseCase(Policy.LocalFirst)
+                state.emit(state.value.copy(configuration = configuration.toData()))
+            },
+            { state.emit(state.value.copy(configuration = it.toError())) }
         )
-
 
     /* --- deep link --- */
 
-    suspend fun handleDeepLink(fyamState: FYAMState) {
+    private suspend fun handleDeepLink(fyamState: FYAMState) {
 
         val taskId =
             fyamState.taskId?.getContentOnce()?.getOrNull()
@@ -101,11 +72,11 @@ class MainViewModel @Inject constructor(
         when {
 
             taskId != null ->
-                navigationFlow.navigateTo(MainToTask(taskId))
+                events.emit(MainEvent.OpenTask(taskId).toUIEvent())
             url != null ->
-                navigationFlow.navigateTo(AnywhereToWeb(url))
+                events.emit(MainEvent.OpenUrl(url).toUIEvent())
             openApplicationIntegration != null ->
-                navigator.performAction(openApp(openApplicationIntegration.packageName))
+                events.emit(MainEvent.OpenApp(openApplicationIntegration.packageName).toUIEvent())
 
         }
 
@@ -113,13 +84,13 @@ class MainViewModel @Inject constructor(
 
     /* --- analytics --- */
 
-    private suspend fun logBottomBarPageEvent(itemId: Int) {
+    private suspend fun logScreenViewed(screen: Screen.HomeScreen) {
 
-        when (itemId) {
-            R.id.feed_navigation -> logFeedsViewed()
-            R.id.tasks_navigation -> logTasksViewed()
-            R.id.user_data_navigation -> logYourDataViewed()
-            R.id.study_info_navigation -> logStudyInfoViewed()
+        when (screen) {
+            Screen.HomeScreen.Feed -> logFeedsViewed()
+            Screen.HomeScreen.StudyInfo -> logStudyInfoViewed()
+            Screen.HomeScreen.Tasks -> logTasksViewed()
+            Screen.HomeScreen.YourData -> logYourDataViewed()
         }
 
     }
@@ -176,30 +147,17 @@ class MainViewModel @Inject constructor(
 
     }
 
-    /* --- state event --- */
+    /* --- action --- */
 
-    fun execute(stateEvent: MainStateEvent) {
-
-        when (stateEvent) {
-            MainStateEvent.GetConfig ->
-                errorFlow.launchCatch(viewModelScope, MainError.Config)
-                { getConfiguration() }
-            is MainStateEvent.LoadPageSelected ->
-                viewModelScope.launchSafe { logBottomBarPageEvent(stateEvent.itemId) }
-            is MainStateEvent.SetRestorePage ->
-                viewModelScope.launchSafe { setRestorePage(stateEvent.itemId) }
-            is MainStateEvent.HandleDeepLink ->
-                viewModelScope.launchSafe { handleDeepLink(stateEvent.fyamState) }
-            MainStateEvent.SelectFeed ->
-                viewModelScope.launchSafe { selectFeed() }
-            MainStateEvent.SelectTasks ->
-                viewModelScope.launchSafe { selectTasks() }
-            MainStateEvent.SelectYourData ->
-                viewModelScope.launchSafe { selectYourData() }
-            MainStateEvent.SelectStudyInfo ->
-                viewModelScope.launchSafe { selectStudyInfo() }
+    fun execute(action: MainAction) {
+        when (action) {
+            MainAction.GetConfiguration ->
+                viewModelScope.launchAction(getConfiguration())
+            is MainAction.LogScreenSelected ->
+                viewModelScope.launchSafe { logScreenViewed(action.screen) }
+            is MainAction.HandleDeepLink ->
+                viewModelScope.launchSafe { handleDeepLink(action.fyamState) }
         }
-
     }
 
 }

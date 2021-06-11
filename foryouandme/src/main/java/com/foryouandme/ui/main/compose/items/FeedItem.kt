@@ -1,8 +1,7 @@
-package com.foryouandme.ui.main.compose
+package com.foryouandme.ui.main.compose.items
 
 import com.foryouandme.entity.activity.QuickActivity
 import com.foryouandme.entity.activity.TaskActivity
-import com.foryouandme.entity.feed.FeedType
 import com.foryouandme.entity.mock.Mock
 import com.foryouandme.entity.notifiable.FeedAlert
 import com.foryouandme.entity.notifiable.FeedEducational

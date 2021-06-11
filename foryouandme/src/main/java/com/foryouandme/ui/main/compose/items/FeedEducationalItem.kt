@@ -1,4 +1,4 @@
-package com.foryouandme.ui.main.compose
+package com.foryouandme.ui.main.compose.items
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,8 +22,8 @@ import com.foryouandme.ui.compose.text.HtmlText
 import com.foryouandme.ui.compose.verticalGradient
 
 @Composable
-fun FeedRewardItem(
-    item: FeedItem.FeedRewardItem,
+fun FeedEducationalItem(
+    item: FeedItem.FeedEducationalItem,
     configuration: Configuration,
     onStartClicked: (FeedAction) -> Unit = {}
 ) {
@@ -71,7 +71,8 @@ fun FeedRewardItem(
                 Spacer(modifier = Modifier.height(20.dp))
                 ForYouAndMeButton(
                     text =
-                    item.data.taskActionButtonLabel ?: configuration.text.feed.rewardButtonDefault,
+                    item.data.taskActionButtonLabel
+                        ?: configuration.text.feed.educationalButtonDefault,
                     backgroundColor = configuration.theme.secondaryColor.value,
                     textColor = configuration.theme.primaryTextColor.value,
                     onClick = { onStartClicked(item.data.action) }
@@ -83,10 +84,10 @@ fun FeedRewardItem(
 
 @Preview
 @Composable
-private fun FeedRewardItemPreview() {
+private fun FeedEducationalItemPreview() {
     ForYouAndMeTheme {
-        FeedRewardItem(
-            item = FeedItem.FeedRewardItem.mock(),
+        FeedEducationalItem(
+            item = FeedItem.FeedEducationalItem.mock(),
             configuration = Configuration.mock()
         )
     }

@@ -1,4 +1,4 @@
-package com.foryouandme.ui.main.compose
+package com.foryouandme.ui.main.compose.items
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,17 +12,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.notifiable.FeedAction
+import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
 import com.foryouandme.ui.compose.text.HtmlText
 import com.foryouandme.ui.compose.verticalGradient
 
 @Composable
-fun TaskActivityItem(
-    item: FeedItem.TaskActivityItem,
+fun FeedAlertItem(
+    item: FeedItem.FeedAlertItem,
     configuration: Configuration,
-    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onStartClicked: (FeedAction) -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -64,15 +67,27 @@ fun TaskActivityItem(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            if (item.data.activityType != null) {
+            if (item.data.action != null) {
                 Spacer(modifier = Modifier.height(20.dp))
                 ForYouAndMeButton(
-                    text = item.data.button ?: configuration.text.activity.activityButtonDefault,
+                    text =
+                    item.data.taskActionButtonLabel ?: configuration.text.feed.alertButtonDefault,
                     backgroundColor = configuration.theme.secondaryColor.value,
                     textColor = configuration.theme.primaryTextColor.value,
-                    onClick = { onStartClicked(item) }
+                    onClick = { onStartClicked(item.data.action) }
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun FeedAlertItemPreview() {
+    ForYouAndMeTheme {
+        FeedAlertItem(
+            item = FeedItem.FeedAlertItem.mock(),
+            configuration = Configuration.mock()
+        )
     }
 }

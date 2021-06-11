@@ -27,7 +27,7 @@ class ConsentFragment private constructor() : OnboardingStepFragment(R.layout.co
         if (currentGraph == null) {
             val inflater = navHostFragment.navController.navInflater
             val graph = inflater.inflate(R.navigation.consent_navigation)
-            graph.startDestination = if (onlyOptInArg()) R.id.opt_in else R.id.consent_info
+            graph.setStartDestination(if (onlyOptInArg()) R.id.opt_in else R.id.consent_info)
             navHostFragment.navController.graph = graph
         }
 

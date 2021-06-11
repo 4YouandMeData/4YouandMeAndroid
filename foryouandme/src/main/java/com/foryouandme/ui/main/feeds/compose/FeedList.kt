@@ -3,7 +3,9 @@ package com.foryouandme.ui.main.feeds.compose
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,7 +18,7 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.error.ErrorItem
 import com.foryouandme.ui.compose.loading.Loading
-import com.foryouandme.ui.main.compose.*
+import com.foryouandme.ui.main.compose.items.*
 import com.foryouandme.ui.main.feeds.FeedsState
 
 @Composable
@@ -33,9 +35,16 @@ fun FeedList(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
+        val lazyListState = rememberLazyListState()
         val feeds = state.items.currentOrPrevious()
 
+        LaunchedEffect(key1 = state.firstPage) {
+            if(state.firstPage.isLoading())
+                lazyListState.animateScrollToItem(0)
+        }
+
         LazyColumn(
+            state = lazyListState,
             contentPadding = PaddingValues(bottom = 30.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.fillMaxSize()

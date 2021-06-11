@@ -101,6 +101,7 @@ dependencies {
 
     implementation(AndroidX.Navigation.FragmentKtx.get())
     implementation(AndroidX.Navigation.UIKtx.get())
+    implementation(AndroidX.Navigation.Compose.get())
 
     /* --- encrypted prefs --- */
 
@@ -192,6 +193,7 @@ dependencies {
 
     implementation(Google.Dagger.Hilt.Android.get())
     implementation(AndroidX.Hilt.LifecycleViewModel.get())
+    implementation(AndroidX.Hilt.NavigationCompose.get())
     kapt(AndroidX.Hilt.Compiler.get())
     kapt(Google.Dagger.Hilt.Compiler.get())
 

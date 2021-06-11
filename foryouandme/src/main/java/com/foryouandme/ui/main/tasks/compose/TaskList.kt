@@ -3,7 +3,9 @@ package com.foryouandme.ui.main.tasks.compose
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,10 +17,10 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.error.ErrorItem
 import com.foryouandme.ui.compose.loading.Loading
-import com.foryouandme.ui.main.compose.DateItem
-import com.foryouandme.ui.main.compose.FeedItem
-import com.foryouandme.ui.main.compose.QuickActivitiesItem
-import com.foryouandme.ui.main.compose.TaskActivityItem
+import com.foryouandme.ui.main.compose.items.DateItem
+import com.foryouandme.ui.main.compose.items.FeedItem
+import com.foryouandme.ui.main.compose.items.QuickActivitiesItem
+import com.foryouandme.ui.main.compose.items.TaskActivityItem
 import com.foryouandme.ui.main.tasks.TasksState
 
 @Composable
@@ -30,13 +32,20 @@ fun TaskList(
     onFeedScrollPositionChange: (Int) -> Unit = {},
     onAnswerSelected: (FeedItem.QuickActivityItem, QuickActivityAnswer) -> Unit = { _, _ -> },
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
-    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
+        val lazyListState = rememberLazyListState()
         val feeds = state.feeds.currentOrPrevious()
 
+        LaunchedEffect(key1 = state.firstPage) {
+            if(state.firstPage.isLoading())
+                lazyListState.animateScrollToItem(0)
+        }
+
         LazyColumn(
+            state = lazyListState,
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 30.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.fillMaxSize()
@@ -50,7 +59,7 @@ fun TaskList(
                             TaskActivityItem(
                                 item = item,
                                 configuration = configuration,
-                                onStartClicked = onStartClicked
+                                onStartClicked = onTaskActivityClicked
                             )
                         is FeedItem.QuickActivitiesItem ->
                             QuickActivitiesItem(

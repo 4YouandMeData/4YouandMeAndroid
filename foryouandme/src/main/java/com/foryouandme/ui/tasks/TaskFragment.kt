@@ -108,7 +108,7 @@ class TaskFragment : BaseFragment(R.layout.task) {
             val navController = navHostFragment.navController
 
             val destination = R.id.step
-            navGraph.startDestination = destination
+            navGraph.setStartDestination(destination)
             navController.graph = navGraph
         }
 

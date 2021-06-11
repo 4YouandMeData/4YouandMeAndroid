@@ -20,7 +20,7 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.statusbar.StatusBar
-import com.foryouandme.ui.main.compose.FeedItem
+import com.foryouandme.ui.main.compose.items.FeedItem
 import com.foryouandme.ui.main.feeds.FeedsAction.*
 import com.foryouandme.ui.main.feeds.FeedsState
 import com.foryouandme.ui.main.feeds.FeedsViewModel

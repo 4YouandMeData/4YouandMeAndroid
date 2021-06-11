@@ -18,8 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class
-FYAMActivity : BaseActivity() {
+class FYAMActivity : BaseActivity() {
 
     private val viewModel: FYAMViewModel by viewModels()
 

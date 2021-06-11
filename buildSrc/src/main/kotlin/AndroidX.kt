@@ -56,6 +56,12 @@ object AndroidX {
 
         object UIKtx : Dependency(Navigation.group, "navigation-ui-ktx", Navigation.version)
 
+        object Compose : Dependency(
+            Navigation.group,
+            "navigation-compose",
+            "2.4.0-alpha02"
+        )
+
     }
 
     object Lifecycle : DependencyGroup("androidx.lifecycle", "2.3.1") {
@@ -128,6 +134,12 @@ object AndroidX {
             Hilt.group,
             "hilt-lifecycle-viewmodel",
             "1.0.0-alpha03"
+        )
+
+        object NavigationCompose : Dependency(
+            Hilt.group,
+            "hilt-navigation-compose",
+            "1.0.0-alpha02"
         )
 
         object Compiler : Dependency(Hilt.group, "hilt-compiler", "1.0.0")

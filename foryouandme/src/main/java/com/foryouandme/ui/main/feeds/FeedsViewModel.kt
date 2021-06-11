@@ -24,7 +24,7 @@ import com.foryouandme.entity.feed.FeedType
 import com.foryouandme.entity.notifiable.FeedAlert
 import com.foryouandme.entity.notifiable.FeedEducational
 import com.foryouandme.entity.notifiable.FeedReward
-import com.foryouandme.ui.main.compose.FeedItem
+import com.foryouandme.ui.main.compose.items.FeedItem
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.addPage
 import dagger.hilt.android.lifecycle.HiltViewModel

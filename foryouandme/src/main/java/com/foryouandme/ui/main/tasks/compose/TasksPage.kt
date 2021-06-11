@@ -20,7 +20,7 @@ import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.verticalGradient
-import com.foryouandme.ui.main.compose.FeedItem
+import com.foryouandme.ui.main.compose.items.FeedItem
 import com.foryouandme.ui.main.tasks.TasksAction.*
 import com.foryouandme.ui.main.tasks.TasksState
 import com.foryouandme.ui.main.tasks.TasksViewModel
@@ -29,7 +29,7 @@ import com.foryouandme.ui.main.tasks.TasksViewModel
 fun TasksPage(
     tasksViewModel: TasksViewModel = viewModel(),
     onFeedButtonClicked: () -> Unit = {},
-    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {}
 ) {
 
     val state by tasksViewModel.stateFlow.collectAsState()
@@ -51,7 +51,7 @@ fun TasksPage(
             onAnswerSelected =
             { item, answer -> tasksViewModel.execute(SelectQuickActivityAnswer(item, answer)) },
             onSubmit = { tasksViewModel.execute(SubmitQuickActivityAnswer(it)) },
-            onStartClicked = onStartClicked
+            onTaskActivityClicked = onTaskActivityClicked
         )
     }
 
@@ -68,7 +68,7 @@ private fun TasksPage(
     onFeedButtonClicked: () -> Unit = {},
     onAnswerSelected: (FeedItem.QuickActivityItem, QuickActivityAnswer) -> Unit = { _, _ -> },
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
-    onStartClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {}
 ) {
 
     StatusBar(color = configuration.theme.primaryColorStart.value)
@@ -98,7 +98,7 @@ private fun TasksPage(
                     onFeedScrollPositionChange = onFeedScrollPositionChange,
                     onAnswerSelected = onAnswerSelected,
                     onSubmit = onSubmit,
-                    onStartClicked = onStartClicked
+                    onTaskActivityClicked = onTaskActivityClicked
                 )
             when (state.submit) {
                 is LazyData.Error ->

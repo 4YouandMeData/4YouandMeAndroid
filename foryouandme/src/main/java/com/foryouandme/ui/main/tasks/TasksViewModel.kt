@@ -18,7 +18,7 @@ import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.activity.TaskActivity
 import com.foryouandme.entity.order.Order
 import com.foryouandme.entity.task.Task
-import com.foryouandme.ui.main.compose.FeedItem
+import com.foryouandme.ui.main.compose.items.FeedItem
 import com.giacomoparisi.recyclerdroid.core.paging.PagedList
 import com.giacomoparisi.recyclerdroid.core.paging.addPage
 import dagger.hilt.android.lifecycle.HiltViewModel
