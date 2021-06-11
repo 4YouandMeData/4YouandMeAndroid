@@ -63,7 +63,7 @@ fun YourDataList(
                                 configuration = configuration,
                                 userData = it,
                                 period = state.period,
-                                padding = PaddingValues(horizontal = 20.dp)
+                                padding = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp)
                             )
                         }
                     is LazyData.Loading -> {
