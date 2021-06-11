@@ -27,6 +27,11 @@
             app:argType="string"
             app:nullable="true" />
 
+        <argument
+            android:name="type"
+            app:argType="com.foryouandme.ui.web.EWebPageType"
+            app:nullable="false" />
+
     </action>
 
     <fragment
@@ -37,6 +42,11 @@
         <argument
             android:name="url"
             app:argType="string" />
+
+        <argument
+            android:name="type"
+            app:argType="com.foryouandme.ui.web.EWebPageType"
+            android:defaultValue="OTHER" />
 
     </fragment>
 

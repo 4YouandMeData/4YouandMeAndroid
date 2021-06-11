@@ -10,7 +10,11 @@ import com.foryouandme.core.ext.removeBackButton
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.databinding.ScreeningPageBinding
-import com.foryouandme.ui.auth.onboarding.step.screening.*
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningFailureToScreeningWelcome
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateEvent
+import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -87,7 +91,14 @@ class ScreeningFailureFragment : ScreeningSectionFragment(R.layout.screening_pag
                 page = screening.failurePage,
                 pageType = EPageType.FAILURE,
                 action1 = { viewModel.execute(ScreeningStateEvent.Retry) },
-                extraStringAction = { navigator.navigateTo(rootNavController(), AnywhereToWeb(it)) }
+                extraStringAction = {
+                    navigator.navigateTo(
+                        rootNavController(), AnywhereToWeb(
+                            it,
+                            EWebPageType.LEARN_MORE
+                        )
+                    )
+                }
             )
         }
     }

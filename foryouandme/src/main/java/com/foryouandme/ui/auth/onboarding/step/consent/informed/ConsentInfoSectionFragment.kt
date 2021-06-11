@@ -13,6 +13,7 @@ import com.foryouandme.core.ext.find
 import com.foryouandme.ui.auth.AuthNavController
 import com.foryouandme.ui.auth.onboarding.step.OnboardingStepNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
+import com.foryouandme.ui.web.EWebPageType
 import kotlinx.coroutines.flow.onEach
 
 abstract class ConsentInfoSectionFragment(contentLayoutId: Int) : BaseFragment(contentLayoutId) {
@@ -80,8 +81,8 @@ abstract class ConsentInfoSectionFragment(contentLayoutId: Int) : BaseFragment(c
         )
     }
 
-    fun web(url: String) {
-        navigator.navigateTo(rootNavController(), AnywhereToWeb(url))
+    fun web(url: String, type: EWebPageType) {
+        navigator.navigateTo(rootNavController(), AnywhereToWeb(url, type))
     }
 
 }

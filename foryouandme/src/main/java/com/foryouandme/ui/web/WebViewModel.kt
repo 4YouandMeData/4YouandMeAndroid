@@ -2,7 +2,6 @@ package com.foryouandme.ui.web
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
@@ -15,8 +14,6 @@ import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
-import com.foryouandme.ui.studyinfo.StudyInfoAction
-import com.foryouandme.ui.studyinfo.StudyInfoState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +33,6 @@ class WebViewModel @Inject constructor(
 
     init {
         execute(WebAction.GetConfiguration)
-        execute(WebAction.ScreenViewed)
     }
 
     /* --- configuration --- */
@@ -57,14 +53,26 @@ class WebViewModel @Inject constructor(
         sendAnalyticsEventUseCase(AnalyticsEvent.ScreenViewed.Browser, EAnalyticsProvider.ALL)
     }
 
+    private suspend fun logLearnMoreViewedEvent() {
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.LearnMore,
+            EAnalyticsProvider.ALL
+        )
+    }
+
     /* --- action --- */
 
     fun execute(action: WebAction) {
-        when(action) {
+        when (action) {
             WebAction.GetConfiguration ->
                 viewModelScope.launchAction(getConfiguration())
-            WebAction.ScreenViewed ->
-                viewModelScope.launchSafe { logScreenViewed() }
+            is WebAction.ScreenViewed ->
+                viewModelScope.launchSafe {
+                    when (action.type) {
+                        EWebPageType.LEARN_MORE -> logLearnMoreViewedEvent()
+                        EWebPageType.OTHER -> logScreenViewed()
+                    }
+                }
         }
     }
 

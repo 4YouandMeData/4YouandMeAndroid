@@ -11,6 +11,7 @@ import com.foryouandme.databinding.ConsentInfoPageBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateEvent
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -81,7 +82,7 @@ class ConsentInfoFailureFragment : ConsentInfoSectionFragment(R.layout.consent_i
                             viewModel.execute(ConsentInfoStateEvent.RestartFromPage(it.id))
                     }
                 },
-                extraStringAction = { web(it) }
+                extraStringAction = { web(it, EWebPageType.LEARN_MORE) }
             )
 
         }

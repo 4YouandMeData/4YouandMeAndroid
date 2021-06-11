@@ -10,10 +10,10 @@ import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.view.page.EPageType
-import com.foryouandme.databinding.ScreeningPageBinding
 import com.foryouandme.databinding.ScreeningWelcomeBinding
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.screening.ScreeningStateUpdate
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -76,7 +76,15 @@ class ScreeningWelcomeFragment : ScreeningSectionFragment(R.layout.screening_wel
                     if (it == null) questions(true)
                     else page(it.id, true)
                 },
-                extraStringAction = { navigator.navigateTo(rootNavController(), AnywhereToWeb(it)) }
+                extraStringAction = {
+                    navigator.navigateTo(
+                        rootNavController(),
+                        AnywhereToWeb(
+                            it,
+                            EWebPageType.LEARN_MORE
+                        )
+                    )
+                }
             )
 
             screeningFragment().hideAbort()

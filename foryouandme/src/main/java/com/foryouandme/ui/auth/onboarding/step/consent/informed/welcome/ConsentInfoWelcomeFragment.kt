@@ -11,6 +11,7 @@ import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.databinding.ConsentInfoWelcomeBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -80,7 +81,7 @@ class ConsentInfoWelcomeFragment :
                     if (page == null) question(true)
                     else page(page.id, true)
                 },
-                extraStringAction = { web(it) }
+                extraStringAction = { web(it, EWebPageType.LEARN_MORE) }
             )
         }
     }

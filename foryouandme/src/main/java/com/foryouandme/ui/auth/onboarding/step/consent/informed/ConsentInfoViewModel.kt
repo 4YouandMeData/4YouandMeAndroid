@@ -6,7 +6,6 @@ import com.foryouandme.core.arch.flow.ErrorFlow
 import com.foryouandme.core.arch.flow.LoadingFlow
 import com.foryouandme.core.arch.flow.NavigationFlow
 import com.foryouandme.core.arch.flow.StateUpdateFlow
-import com.foryouandme.core.arch.navigation.AnywhereToWelcome
 import com.foryouandme.core.ext.countAndAccumulate
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
@@ -15,8 +14,6 @@ import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.auth.answer.SendAuthAnswerUseCase
 import com.foryouandme.domain.usecase.auth.consent.GetConsentInfoUseCase
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.ui.auth.AuthNavController
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentNavController
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.ConsentAnswerItem
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.question.toItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -207,6 +204,13 @@ class ConsentInfoViewModel @Inject constructor(
         )
     }
 
+    private suspend fun logLearnMoreViewedEvent() {
+        sendAnalyticsEventUseCase(
+            AnalyticsEvent.ScreenViewed.LearnMore,
+            EAnalyticsProvider.ALL
+        )
+    }
+
     /* --- state event --- */
 
     fun execute(stateEvent: ConsentInfoStateEvent) {
@@ -228,6 +232,8 @@ class ConsentInfoViewModel @Inject constructor(
                 viewModelScope.launchSafe { nextQuestion(stateEvent.currentIndex) }
             is ConsentInfoStateEvent.Abort ->
                 viewModelScope.launchSafe { abort(stateEvent.consentInfoAbort) }
+            ConsentInfoStateEvent.LearnMoreViewed ->
+                viewModelScope.launchSafe { logLearnMoreViewedEvent() }
         }
     }
 

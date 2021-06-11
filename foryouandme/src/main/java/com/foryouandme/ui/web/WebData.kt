@@ -18,6 +18,6 @@ data class WebState(val configuration: LazyData<Configuration> = LazyData.Empty)
 sealed class WebAction {
 
     object GetConfiguration: WebAction()
-    object ScreenViewed: WebAction()
+    data class ScreenViewed(val type: EWebPageType): WebAction()
 
 }

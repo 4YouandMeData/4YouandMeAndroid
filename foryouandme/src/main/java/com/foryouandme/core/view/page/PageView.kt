@@ -32,9 +32,6 @@ import javax.inject.Inject
 class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     @Inject
-    lateinit var sendAnalyticsEventUseCase: SendAnalyticsEventUseCase
-
-    @Inject
     lateinit var imageConfiguration: ImageConfiguration
 
     private val binding =
@@ -121,13 +118,6 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 binding.external.isVisible = true
                 binding.external.setOnClickListener {
 
-                    GlobalScope.launchSafe {
-                        sendAnalyticsEventUseCase(
-                            AnalyticsEvent.ScreenViewed.LearnMore,
-                            EAnalyticsProvider.ALL
-                        )
-                    }
-
                     extraPageAction(page.linkModalValue)
 
                 }
@@ -138,13 +128,6 @@ class PageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, at
                 binding.external.setTextColor(configuration.theme.primaryColorEnd.color())
                 binding.external.isVisible = true
                 binding.external.setOnClickListener {
-
-                    GlobalScope.launchSafe {
-                        sendAnalyticsEventUseCase(
-                                AnalyticsEvent.ScreenViewed.LearnMore,
-                                EAnalyticsProvider.ALL
-                            )
-                    }
 
                     extraStringAction(page.externalLinkUrl)
                 }

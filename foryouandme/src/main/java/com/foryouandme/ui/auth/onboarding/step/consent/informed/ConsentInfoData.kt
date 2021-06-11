@@ -36,8 +36,9 @@ sealed class ConsentInfoStateEvent {
     data class Answer(val index: Int, val answerId: String) : ConsentInfoStateEvent()
     object RestartFromWelcome : ConsentInfoStateEvent()
     data class RestartFromPage(val id: String) : ConsentInfoStateEvent()
-    data class NextQuestion(val currentIndex: Int): ConsentInfoStateEvent()
-    data class Abort(val consentInfoAbort: ConsentInfoAbort): ConsentInfoStateEvent()
+    data class NextQuestion(val currentIndex: Int) : ConsentInfoStateEvent()
+    data class Abort(val consentInfoAbort: ConsentInfoAbort) : ConsentInfoStateEvent()
+    object LearnMoreViewed : ConsentInfoStateEvent()
 
 }
 

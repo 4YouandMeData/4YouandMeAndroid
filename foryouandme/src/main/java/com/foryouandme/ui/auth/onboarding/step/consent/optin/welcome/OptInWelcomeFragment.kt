@@ -5,6 +5,7 @@ import android.view.View
 import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
+import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.ext.hide
 import com.foryouandme.core.ext.setStatusBar
 import com.foryouandme.core.view.page.EPageType
@@ -12,6 +13,7 @@ import com.foryouandme.databinding.OptInWelcomeBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInStateUpdate
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInWelcomeToOptInPermission
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -77,7 +79,14 @@ class OptInWelcomeFragment : OptInSectionFragment(R.layout.opt_in_welcome) {
                             OptInWelcomeToOptInPermission(0)
                         )
                 },
-                extraStringAction = {}
+                extraStringAction = {
+                    navigator.navigateTo(
+                        rootNavController(), AnywhereToWeb(
+                            it,
+                            EWebPageType.LEARN_MORE
+                        )
+                    )
+                }
             )
 
         }

@@ -22,12 +22,13 @@ class WebFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
+    ): View =
         ComposeView(requireContext()).apply {
             setContent {
                 WebPage(
                     webViewModel = viewModel,
                     url = args.url,
+                    type = args.type,
                     onBack = { navigator.back(rootNavController()) }
                 )
             }

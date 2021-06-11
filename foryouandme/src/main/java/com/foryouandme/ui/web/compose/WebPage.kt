@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,16 +17,23 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 import com.foryouandme.ui.compose.web.Web
+import com.foryouandme.ui.web.EWebPageType
+import com.foryouandme.ui.web.WebAction
 import com.foryouandme.ui.web.WebViewModel
 
 @Composable
 fun WebPage(
     webViewModel: WebViewModel = viewModel(),
     url: String,
+    type: EWebPageType,
     onBack: () -> Unit
 ) {
 
     val state by webViewModel.stateFlow.collectAsState()
+
+    LaunchedEffect(key1 = webViewModel) {
+        webViewModel.execute(WebAction.ScreenViewed(type))
+    }
 
     ForYouAndMeTheme(configuration = state.configuration) {
         WebPage(

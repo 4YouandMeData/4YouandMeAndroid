@@ -11,6 +11,7 @@ import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.databinding.ConsentUserPageBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.user.ConsentUserStateUpdate
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -70,7 +71,13 @@ class ConsentUserSuccessFragment : ConsentUserSectionFragment(R.layout.consent_u
                 pageType = EPageType.SUCCESS,
                 action1 = { consentUserFragment().consentFragment().next() },
                 extraStringAction = {
-                    navigator.navigateTo(rootNavController(), AnywhereToWeb(it))
+                    navigator.navigateTo(
+                        rootNavController(),
+                        AnywhereToWeb(
+                            it,
+                            EWebPageType.LEARN_MORE
+                        )
+                    )
                 }
             )
 

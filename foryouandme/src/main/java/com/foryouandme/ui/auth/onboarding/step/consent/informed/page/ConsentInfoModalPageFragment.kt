@@ -13,6 +13,7 @@ import com.foryouandme.core.ext.showCloseButton
 import com.foryouandme.databinding.ConsentInfoModalPageBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
+import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateEvent
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
@@ -45,6 +46,8 @@ class ConsentInfoModalPageFragment : ConsentInfoSectionFragment(R.layout.consent
 
         setUpView()
         applyData()
+
+        viewModel.execute(ConsentInfoStateEvent.LearnMoreViewed)
 
     }
 

@@ -11,6 +11,7 @@ import com.foryouandme.databinding.ConsentInfoPageBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoToConsentReview
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -66,7 +67,7 @@ class ConsentInfoSuccessFragment : ConsentInfoSectionFragment(R.layout.consent_i
                 action1 = {
                     navigator.navigateTo(consentNavController(), ConsentInfoToConsentReview)
                 },
-                extraStringAction = { web(it) }
+                extraStringAction = { web(it, EWebPageType.LEARN_MORE) }
             )
 
         }

@@ -15,6 +15,7 @@ import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoAbort
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoPageToConsentInfoModalPage
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.informed.ConsentInfoStateUpdate
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -93,7 +94,7 @@ class ConsentInfoPageFragment : ConsentInfoSectionFragment(R.layout.consent_info
                             if (it == null) question(false)
                             else page(it.id, false)
                         },
-                        extraStringAction = { web(it) },
+                        extraStringAction = { web(it, EWebPageType.LEARN_MORE) },
                         extraPageAction = { modalPage(it.id) }
                     )
                 }

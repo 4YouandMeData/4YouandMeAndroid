@@ -13,6 +13,7 @@ import com.foryouandme.databinding.OptInSuccessBinding
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInSectionFragment
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInStateUpdate
 import com.foryouandme.ui.auth.onboarding.step.consent.optin.OptInToConsentUser
+import com.foryouandme.ui.web.EWebPageType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -78,7 +79,12 @@ class OptInSuccessFragment : OptInSectionFragment(R.layout.opt_in_success) {
                         navigator.navigateTo(consentNavController(), OptInToConsentUser)
                 },
                 extraStringAction = {
-                    navigator.navigateTo(rootNavController(), AnywhereToWeb(it))
+                    navigator.navigateTo(
+                        rootNavController(), AnywhereToWeb(
+                            it,
+                            EWebPageType.LEARN_MORE
+                        )
+                    )
                 }
             )
         }

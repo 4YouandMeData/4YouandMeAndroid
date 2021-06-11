@@ -46,7 +46,7 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
 
             is AnywhereToAuth -> anywhereToAuth()
             is AnywhereToWelcome -> anywhereToWelcome()
-            is AnywhereToWeb -> anywhereToWeb(action.url)
+            is AnywhereToWeb -> anywhereToWeb(action.url, action.type)
 
             is SplashToWelcome -> splashToWelcome()
             is SplashToOnboarding -> splashToOnboarding()
