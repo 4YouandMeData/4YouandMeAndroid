@@ -14,14 +14,6 @@ import timber.log.Timber.DebugTree
 
 abstract class ForYouAndMeApp : Application(), CameraXConfig.Provider {
 
-    abstract val environment: Environment
-
-    abstract val imageConfiguration: ImageConfiguration
-
-    abstract val videoConfiguration: VideoConfiguration
-
-    abstract val firebaseAnalytics: FirebaseAnalytics
-
     override fun onCreate() {
         super.onCreate()
 
