@@ -1,6 +1,7 @@
 package com.foryouandme.entity.configuration
 
 import com.foryouandme.entity.mock.Mock
+import com.squareup.moshi.Json
 
 data class Text(
     val error: Error,
@@ -572,7 +573,13 @@ data class YourData(
     val periodDay: String,
     val periodWeek: String,
     val periodMonth: String,
-    val periodYear: String
+    val periodYear: String,
+    val emptyFilterButton: String,
+    val emptyFilterMessage: String,
+    val filterTitle: String,
+    val filterClearButton: String,
+    val filterSelectAllButton: String,
+    val filterSaveButton: String,
 ) {
 
     companion object {
@@ -583,7 +590,13 @@ data class YourData(
                 periodDay = Mock.button,
                 periodWeek = Mock.button,
                 periodMonth = Mock.button,
-                periodYear = Mock.button
+                periodYear = Mock.button,
+                emptyFilterButton = Mock.button,
+                emptyFilterMessage = Mock.body,
+                filterTitle = Mock.title,
+                filterClearButton = Mock.button,
+                filterSelectAllButton = Mock.button,
+                filterSaveButton = Mock.button
             )
 
     }

@@ -180,6 +180,13 @@ data class StringsResponse(
     @Json(name = "TAB_USER_DATA_PERIOD_WEEK") val tabUserDataPeriodWeek: String? = null,
     @Json(name = "TAB_USER_DATA_PERIOD_MONTH") val tabUserDataPeriodMonth: String? = null,
     @Json(name = "TAB_USER_DATA_PERIOD_YEAR") val tabUserDataPeriodYear: String? = null,
+    @Json(name = "TAB_USER_DATA_EMPTY_FILTER_BUTTON") val tabUserDataEmptyFilterButton: String? = null,
+    @Json(name = "TAB_USER_DATA_EMPTY_FILTER_MESSAGE") val tabUserDataEmptyFilterMessage: String? = null,
+
+    @Json(name = "USER_DATA_FILTER_TITLE") val userDataFilterTitle: String? = null,
+    @Json(name = "USER_DATA_FILTER_CLEAR_BUTTON") val userDataFilterClearButton: String? = null,
+    @Json(name = "USER_DATA_FILTER_SELECT_ALL_BUTTON") val userDataFilterSelectAllButton: String? = null,
+    @Json(name = "USER_DATA_FILTER_SAVE_BUTTON") val userDataFilterSaveButton: String? = null,
 
     @Json(name = "ERROR_TITLE_DEFAULT") val errorTitleDefault: String? = null,
     @Json(name = "ERROR_MESSAGE_DEFAULT") val errorMessageDefault: String? = null,
@@ -589,14 +596,22 @@ data class StringsResponse(
     private fun toYourData(): YourData? =
         when (null) {
             tabUserDataPeriodTitle, tabUserDataPeriodDay, tabUserDataPeriodWeek,
-            tabUserDataPeriodMonth, tabUserDataPeriodYear -> null
+            tabUserDataPeriodMonth, tabUserDataPeriodYear, tabUserDataEmptyFilterButton,
+            tabUserDataEmptyFilterMessage, userDataFilterTitle, userDataFilterClearButton,
+            userDataFilterSelectAllButton, userDataFilterSaveButton -> null
             else ->
                 YourData(
-                    tabUserDataPeriodTitle,
-                    tabUserDataPeriodDay,
-                    tabUserDataPeriodWeek,
-                    tabUserDataPeriodMonth,
-                    tabUserDataPeriodYear
+                    dataPeriodTitle = tabUserDataPeriodTitle,
+                    periodDay = tabUserDataPeriodDay,
+                    periodWeek = tabUserDataPeriodWeek,
+                    periodMonth = tabUserDataPeriodMonth,
+                    periodYear = tabUserDataPeriodYear,
+                    emptyFilterButton = tabUserDataEmptyFilterButton,
+                    emptyFilterMessage = tabUserDataEmptyFilterMessage,
+                    filterTitle = userDataFilterTitle,
+                    filterClearButton = userDataFilterClearButton,
+                    filterSelectAllButton = userDataFilterSelectAllButton,
+                    filterSaveButton = userDataFilterSaveButton
                 )
 
         }
