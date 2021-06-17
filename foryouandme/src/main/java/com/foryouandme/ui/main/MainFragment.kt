@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.foryouandme.R
@@ -29,6 +31,8 @@ class MainFragment : BaseFragment() {
 
     private val fyamViewModel: FYAMViewModel by viewModels({ requireActivity() })
 
+    @ExperimentalComposeUiApi
+    @ExperimentalAnimationApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

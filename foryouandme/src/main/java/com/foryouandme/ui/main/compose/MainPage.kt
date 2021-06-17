@@ -1,5 +1,6 @@
 package com.foryouandme.ui.main.compose
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -36,6 +38,8 @@ import com.foryouandme.ui.yourdata.compose.YourDataPage
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
 @Composable
 fun MainPage(
     viewModel: MainViewModel,
@@ -82,6 +86,8 @@ fun MainPage(
 
 }
 
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
 @Composable
 private fun MainPage(
     configuration: Configuration,
@@ -144,6 +150,8 @@ private fun MainPage(
     }
 }
 
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
 @Composable
 private fun NavigationHost(
     paddingValues: PaddingValues,

@@ -9,12 +9,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.ext.transparent
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 
 @Composable
@@ -22,12 +24,14 @@ fun ForYouAndMeTopAppBar(
     modifier: Modifier = Modifier,
     imageConfiguration: ImageConfiguration,
     icon: TopAppBarIcon?,
+    topAppBarAlignment: Alignment = Alignment.Center,
     onBack: () -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier,
         imageConfiguration = imageConfiguration,
         icon = icon,
+        topAppBarAlignment = topAppBarAlignment,
         onBack = onBack
     )
 }
@@ -37,11 +41,15 @@ fun ForYouAndMeTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
     titleColor: Color,
+    titleAlignment: Alignment = Alignment.Center,
+    topAppBarAlignment: Alignment = Alignment.Center,
 ) {
     TopAppBar(
         modifier = modifier,
         title = title,
-        titleColor = titleColor
+        titleColor = titleColor,
+        titleAlignment = titleAlignment,
+        topAppBarAlignment = topAppBarAlignment,
     )
 }
 
@@ -51,6 +59,8 @@ fun ForYouAndMeTopAppBar(
     imageConfiguration: ImageConfiguration,
     title: String,
     titleColor: Color,
+    titleAlignment: Alignment = Alignment.Center,
+    topAppBarAlignment: Alignment = Alignment.Center,
     icon: TopAppBarIcon,
     onBack: () -> Unit = {}
 ) {
@@ -60,6 +70,8 @@ fun ForYouAndMeTopAppBar(
         icon = icon,
         title = title,
         titleColor = titleColor,
+        titleAlignment = titleAlignment,
+        topAppBarAlignment = topAppBarAlignment,
         onBack = onBack
     )
 }
@@ -71,6 +83,8 @@ private fun TopAppBar(
     icon: TopAppBarIcon? = null,
     title: String? = null,
     titleColor: Color? = null,
+    titleAlignment: Alignment = Alignment.Center,
+    topAppBarAlignment: Alignment = Alignment.Center,
     onBack: () -> Unit = {}
 ) {
     Box(
@@ -105,7 +119,7 @@ private fun TopAppBar(
                 }
             },
             elevation = 0.dp,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().align(topAppBarAlignment)
         )
         if (title != null && titleColor != null)
             Box(
@@ -114,6 +128,7 @@ private fun TopAppBar(
                 Modifier
                     .fillMaxWidth()
                     .padding(start = 60.dp, end = 60.dp)
+                    .align(titleAlignment)
             ) {
                 Text(
                     text = title,

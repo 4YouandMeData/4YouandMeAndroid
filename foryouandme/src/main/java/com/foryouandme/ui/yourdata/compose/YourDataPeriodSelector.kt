@@ -1,6 +1,8 @@
 package com.foryouandme.ui.yourdata.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -11,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.yourdata.YourDataPeriod
@@ -23,22 +27,46 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 @Composable
 fun YourDataPeriodSelector(
     configuration: Configuration,
+    imageConfiguration: ImageConfiguration,
     period: YourDataPeriod,
+    showFilterButton: Boolean,
+    padding: PaddingValues = PaddingValues(0.dp),
     onPeriodSelected: (YourDataPeriod) -> Unit = {},
-    padding: PaddingValues = PaddingValues(0.dp)
+    onFilterClicked: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(padding)
     ) {
-        Text(
-            text = configuration.text.yourData.dataPeriodTitle,
-            style = MaterialTheme.typography.body1,
-            color = configuration.theme.primaryTextColor.value,
-            modifier =
-            Modifier.fillMaxWidth()
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = configuration.text.yourData.dataPeriodTitle,
+                style = MaterialTheme.typography.body1,
+                color = configuration.theme.primaryTextColor.value,
+                modifier = Modifier.weight(1f)
+            )
+            if (showFilterButton) {
+                Spacer(modifier = Modifier.width(20.dp))
+                Image(
+                    painter = painterResource(id = imageConfiguration.filters()),
+                    contentDescription = null,
+                    modifier =
+                    Modifier
+                        .background(
+                            configuration.theme.primaryColorEnd.value,
+                            RoundedCornerShape(20.dp)
+                        )
+                        .size(44.dp, 34.dp)
+                        .clickable { onFilterClicked() }
+                        .padding(vertical = 7.dp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
         Spacer(modifier = Modifier.height(20.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             PeriodButton(
@@ -123,6 +151,11 @@ private fun getShape(period: YourDataPeriod): Shape =
 @Composable
 private fun YourDataPeriodSelector() {
     ForYouAndMeTheme {
-        YourDataPeriodSelector(configuration = Configuration.mock(), period = Week)
+        YourDataPeriodSelector(
+            configuration = Configuration.mock(),
+            imageConfiguration = ImageConfiguration.mock(),
+            period = Week,
+            showFilterButton = true
+        )
     }
 }

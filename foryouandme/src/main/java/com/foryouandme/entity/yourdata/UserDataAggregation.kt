@@ -5,6 +5,7 @@ import com.foryouandme.entity.mock.Mock
 data class UserDataAggregation(
     val id: String,
     val type: String,
+    val strategy: String,
     val title: String,
     val color: String?,
     val data: List<Float?>,
@@ -18,6 +19,7 @@ data class UserDataAggregation(
             UserDataAggregation(
                 id = "id",
                 type = "type",
+                strategy = "strategy",
                 title = Mock.title,
                 color = null,
                 data = listOf(1f, 2f, 3f),

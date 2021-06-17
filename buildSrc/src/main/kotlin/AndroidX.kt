@@ -1,6 +1,6 @@
 object AndroidX {
 
-    object Activity : DependencyGroup("androidx.activity", "1.3.0-beta01") {
+    object Activity : DependencyGroup("androidx.activity", "1.3.0-beta02") {
 
         object Compose : Dependency(Activity.group, "activity-compose", Activity.version)
 
@@ -21,7 +21,7 @@ object AndroidX {
     object FragmentKtx : Dependency(
         "androidx.fragment",
         "fragment-ktx",
-        "1.3.4"
+        "1.3.5"
     )
 
     object ViewPager2 : Dependency(
@@ -80,7 +80,7 @@ object AndroidX {
             Dependency(
                 Lifecycle.group,
                 "lifecycle-viewmodel-compose",
-                "1.0.0-alpha06"
+                "1.0.0-alpha07"
             )
 
         object LiveDataKtx :
@@ -139,7 +139,7 @@ object AndroidX {
         object NavigationCompose : Dependency(
             Hilt.group,
             "hilt-navigation-compose",
-            "1.0.0-alpha02"
+            "1.0.0-alpha03"
         )
 
         object Compiler : Dependency(Hilt.group, "hilt-compiler", "1.0.0")
@@ -158,7 +158,7 @@ object AndroidX {
 
     object Compose {
 
-        const val version: String = "1.0.0-beta08"
+        const val version: String = "1.0.0-beta09"
 
         object UI : Dependency("androidx.compose.ui", "ui", version) {
 

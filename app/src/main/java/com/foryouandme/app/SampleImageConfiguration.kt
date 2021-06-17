@@ -32,6 +32,10 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun previousStepSecondary(): Int = R.drawable.previous_step_secondary
 
+    override fun checkBoxOn(): Int = R.drawable.check_box_on
+
+    override fun checkBoxOff(): Int = R.drawable.check_box_off
+
     /* --- auth --- */
 
     override fun entryWrong(): Int = R.drawable.phone_wrong
@@ -125,4 +129,6 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun twitter(): Int = R.drawable.twitter
 
     override fun garmin(): Int = R.drawable.garmin
+
+    override fun filters(): Int = R.drawable.filters
 }

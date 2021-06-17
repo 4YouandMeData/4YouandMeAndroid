@@ -2,6 +2,7 @@ package com.foryouandme.domain.usecase.yourdata
 
 import com.foryouandme.entity.yourdata.UserDataAggregation
 import com.foryouandme.entity.yourdata.YourData
+import com.foryouandme.entity.yourdata.YourDataFilter
 import com.foryouandme.entity.yourdata.YourDataPeriod
 
 interface YourDataRepository {
@@ -13,5 +14,9 @@ interface YourDataRepository {
         token: String,
         studyId: String
     ): List<UserDataAggregation>
+
+    suspend fun saveFilters(filters: List<YourDataFilter>)
+
+    suspend fun getFiltersIds(): List<String>
 
 }

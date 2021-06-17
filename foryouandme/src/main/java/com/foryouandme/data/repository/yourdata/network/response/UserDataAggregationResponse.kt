@@ -12,6 +12,7 @@ data class UserDataAggregationResponse(
 
             val id = response.id
             val type = response.type
+            val strategy = response.attributes?.strategy
             val title = response.attributes?.title
             val color = response.attributes?.color
             val data = response.attributes?.data?.data?.map { if (it != null) it - 1 else it }
@@ -19,11 +20,12 @@ data class UserDataAggregationResponse(
             val yLabels = response.attributes?.data?.yLabels
 
             when (null) {
-                id, type, title, data, xLabels, yLabels -> null
+                id, type, strategy, title, data, xLabels, yLabels -> null
                 else ->
                     UserDataAggregation(
                         id = id,
                         type = type,
+                        strategy = strategy,
                         title = title,
                         color = color,
                         data = data,

@@ -46,6 +46,12 @@ interface ImageConfiguration {
     @DrawableRes
     fun previousStepSecondary(): Int
 
+    @DrawableRes
+    fun checkBoxOn(): Int
+
+    @DrawableRes
+    fun checkBoxOff(): Int
+
     /* --- auth --- */
 
     @DrawableRes
@@ -189,6 +195,11 @@ interface ImageConfiguration {
     @DrawableRes
     fun pencil(): Int
 
+    /*--- user data ---*/
+
+    @DrawableRes
+    fun filters(): Int
+
     /* --- mock --- */
 
     companion object {
@@ -251,6 +262,9 @@ interface ImageConfiguration {
                 override fun location(): Int = R.drawable.placeholder
                 override fun pushNotification(): Int = R.drawable.placeholder
                 override fun pencil(): Int = R.drawable.placeholder
+                override fun filters(): Int = R.drawable.placeholder
+                override fun checkBoxOn(): Int = R.drawable.placeholder
+                override fun checkBoxOff(): Int = R.drawable.placeholder
             }
 
     }
