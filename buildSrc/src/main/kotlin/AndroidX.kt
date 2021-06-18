@@ -59,7 +59,7 @@ object AndroidX {
         object Compose : Dependency(
             Navigation.group,
             "navigation-compose",
-            "2.4.0-alpha02"
+            "2.4.0-alpha03"
         )
 
     }

@@ -1,5 +1,7 @@
 package com.foryouandme.ui.userInfo.compose
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,10 +25,14 @@ import com.foryouandme.ui.userInfo.UserInfoAction.*
 import com.foryouandme.ui.userInfo.UserInfoEvent
 import com.foryouandme.ui.userInfo.UserInfoState
 import com.foryouandme.ui.userInfo.UserInfoViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import org.threeten.bp.LocalDate
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
+@ExperimentalPagerApi
 @Composable
 fun UserInfoPage(
     userInfoViewModel: UserInfoViewModel = viewModel(),
@@ -68,6 +74,9 @@ fun UserInfoPage(
 
 }
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
+@ExperimentalPagerApi
 @Composable
 fun UserInfoPage(
     state: UserInfoState,

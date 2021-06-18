@@ -82,6 +82,12 @@ object Google {
             Accompanist.version
         )
 
+        object Pager: Dependency(
+            Accompanist.group,
+            "accompanist-pager",
+            Accompanist.version
+        )
+
     }
 
     object Test {

@@ -15,10 +15,10 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.textfield.ForYouAndMeReadOnlyTextField
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.buttons
-import com.vanpra.composematerialdialogs.listItemsSingleChoice
-import com.vanpra.composematerialdialogs.title
+import com.foryouandme.ui.dialog.MaterialDialog
+import com.foryouandme.ui.dialog.buttons
+import com.foryouandme.ui.dialog.listItemsSingleChoice
+import com.foryouandme.ui.dialog.title
 import kotlin.math.max
 
 @Composable

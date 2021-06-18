@@ -1,5 +1,7 @@
 package com.foryouandme.ui.userInfo.compose
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -11,6 +13,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,13 +21,17 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.textfield.ForYouAndMeReadOnlyTextField
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.buttons
-import com.vanpra.composematerialdialogs.datetime.datepicker.DatePickerColors
-import com.vanpra.composematerialdialogs.datetime.datepicker.datepicker
+import com.foryouandme.ui.dialog.MaterialDialog
+import com.foryouandme.ui.dialog.buttons
+import com.foryouandme.ui.dialog.date.DatePickerColors
+import com.foryouandme.ui.dialog.date.datepicker
+import com.google.accompanist.pager.ExperimentalPagerApi
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
+@ExperimentalPagerApi
 @Composable
 fun EntryDateItem(
     item: EntryItem.Date,
@@ -96,6 +103,9 @@ class ForYouAndMeDatePickerColors(
 
 }
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
+@ExperimentalPagerApi
 @Preview
 @Composable
 private fun EntryDateItemPreview() {
