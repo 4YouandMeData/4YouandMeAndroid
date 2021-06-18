@@ -38,7 +38,8 @@ import org.threeten.bp.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class FeedsViewModel @Inject constructor(
+class
+FeedsViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val getFeedUseCase: GetFeedUseCase,

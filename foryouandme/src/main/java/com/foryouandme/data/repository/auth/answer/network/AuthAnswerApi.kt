@@ -1,7 +1,7 @@
 package com.foryouandme.data.repository.auth.answer.network
 
 import com.foryouandme.data.datasource.network.Headers
-import com.foryouandme.core.data.api.common.request.AnswersRequest
+import com.foryouandme.data.repository.auth.answer.network.request.AnswersRequest
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST

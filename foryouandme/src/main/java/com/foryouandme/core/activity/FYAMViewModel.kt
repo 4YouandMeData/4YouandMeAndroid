@@ -8,8 +8,11 @@ import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.flow.toUIEvent
 import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.domain.policy.Policy
+import com.foryouandme.domain.usecase.auth.IsLoggedUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.device.SendDeviceInfoUseCase
+import com.foryouandme.domain.usecase.push.GetPushTokenUseCase
+import com.foryouandme.domain.usecase.user.UpdateUserFirebaseTokenUseCase
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +28,9 @@ class FYAMViewModel @Inject constructor(
     private val errorFlow: ErrorFlow<FYAMError>,
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val sendDeviceInfoUseCase: SendDeviceInfoUseCase,
+    private val isLoggedUseCase: IsLoggedUseCase,
+    private val updateUserFirebaseTokenUseCase: UpdateUserFirebaseTokenUseCase,
+    private val getPushTokenUseCase: GetPushTokenUseCase
 ) : ViewModel() {
 
     /* --- state --- */
@@ -53,6 +59,12 @@ class FYAMViewModel @Inject constructor(
 
         // try to refresh configuration in background
         viewModelScope.launchSafe { getConfigurationUseCase(Policy.Network) }
+
+        // try to refresh push token in background
+        viewModelScope.launchSafe {
+            if (isLoggedUseCase())
+                updateUserFirebaseTokenUseCase(getPushTokenUseCase())
+        }
 
         val initializedState =
             FYAMState(

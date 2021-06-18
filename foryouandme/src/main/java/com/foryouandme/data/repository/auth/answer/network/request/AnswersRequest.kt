@@ -1,4 +1,4 @@
-package com.foryouandme.core.data.api.common.request
+package com.foryouandme.data.repository.auth.answer.network.request
 
 import com.squareup.moshi.Json
 

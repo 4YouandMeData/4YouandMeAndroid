@@ -32,7 +32,7 @@
         <service android:name="com.foryouandme.researchkit.recorder.RecorderService" />
 
         <service
-            android:name="com.foryouandme.core.cases.push.PushService"
+            android:name="com.foryouandme.core.push.PushService"
             android:exported="false">
 
             <intent-filter>

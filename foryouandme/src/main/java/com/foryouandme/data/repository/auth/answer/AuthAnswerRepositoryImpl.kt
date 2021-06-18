@@ -1,10 +1,10 @@
 package com.foryouandme.data.repository.auth.answer
 
-import com.foryouandme.core.data.api.common.request.AnswerDataRequest
-import com.foryouandme.core.data.api.common.request.AnswersRequest
 import com.foryouandme.data.datasource.network.AuthErrorInterceptor
 import com.foryouandme.data.ext.getTimestampUTC
 import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
+import com.foryouandme.data.repository.auth.answer.network.request.AnswerDataRequest
+import com.foryouandme.data.repository.auth.answer.network.request.AnswersRequest
 import com.foryouandme.domain.usecase.auth.answer.AuthAnswerRepository
 import javax.inject.Inject
 
