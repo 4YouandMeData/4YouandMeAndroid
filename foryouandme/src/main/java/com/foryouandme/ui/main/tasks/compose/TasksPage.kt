@@ -34,7 +34,10 @@ fun TasksPage(
 
     val state by tasksViewModel.stateFlow.collectAsState()
 
-    ForYouAndMeTheme(configuration = state.configuration) { configuration ->
+    ForYouAndMeTheme(
+        configuration = state.configuration,
+        onConfigurationError = { tasksViewModel.execute(GetConfiguration) }
+    ) { configuration ->
 
         LaunchedEffect(key1 = "tasks") {
             tasksViewModel.execute(GetTasksFirstPage)

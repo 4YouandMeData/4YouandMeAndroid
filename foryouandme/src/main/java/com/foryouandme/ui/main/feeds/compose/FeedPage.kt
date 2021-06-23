@@ -21,6 +21,7 @@ import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.main.compose.items.FeedItem
+import com.foryouandme.ui.main.feeds.FeedsAction
 import com.foryouandme.ui.main.feeds.FeedsAction.*
 import com.foryouandme.ui.main.feeds.FeedsState
 import com.foryouandme.ui.main.feeds.FeedsViewModel
@@ -35,7 +36,10 @@ fun FeedPage(
 
     val state by feedsViewModel.stateFlow.collectAsState()
 
-    ForYouAndMeTheme(configuration = state.configuration) { configuration ->
+    ForYouAndMeTheme(
+        configuration = state.configuration,
+        onConfigurationError = { feedsViewModel.execute(GetConfiguration) }
+    ) { configuration ->
 
         LaunchedEffect(key1 = "tasks") {
             feedsViewModel.execute(GetFeedsFirstPage)

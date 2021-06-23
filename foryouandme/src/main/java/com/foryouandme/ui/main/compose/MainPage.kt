@@ -27,6 +27,7 @@ import com.foryouandme.core.ext.execute
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.notifiable.FeedAction
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.main.MainAction
 import com.foryouandme.ui.main.MainEvent
 import com.foryouandme.ui.main.MainViewModel
 import com.foryouandme.ui.main.Screen
@@ -61,7 +62,7 @@ fun MainPage(
         viewModel.eventsFlow
             .unwrapEvent("main")
             .onEach {
-                when(it) {
+                when (it) {
                     is MainEvent.OpenApp -> context.execute(ContextAction.OpenApp(it.packageName))
                     is MainEvent.OpenTask -> openTask(it.taskId)
                     is MainEvent.OpenUrl -> openUrl(it.url)
@@ -70,7 +71,10 @@ fun MainPage(
             .collect()
     }
 
-    ForYouAndMeTheme(configuration = state.value.configuration) {
+    ForYouAndMeTheme(
+        configuration = state.value.configuration,
+        onConfigurationError = { viewModel.execute(MainAction.GetConfiguration) }
+    ) {
         MainPage(
             configuration = it,
             imageConfiguration = viewModel.imageConfiguration,

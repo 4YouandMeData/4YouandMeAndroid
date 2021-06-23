@@ -43,7 +43,10 @@ fun YourDataPage(
         viewModel.execute(GetUserAggregations)
     }
 
-    ForYouAndMeTheme(configuration = state.configuration) { configuration ->
+    ForYouAndMeTheme(
+        configuration = state.configuration,
+        onConfigurationError = { viewModel.execute(GetConfiguration) }
+    ) { configuration ->
         YourDataPage(
             state = state,
             configuration = configuration,

@@ -1,8 +1,11 @@
 package com.foryouandme.ui.auth.welcome
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.core.ext.setStatusBar
@@ -10,10 +13,11 @@ import com.foryouandme.databinding.WelcomeBinding
 import com.foryouandme.entity.configuration.HEXGradient
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.welcome.compose.WelcomePage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WelcomeFragment : AuthSectionFragment(R.layout.welcome) {
+class WelcomeFragment : AuthSectionFragment() {
 
     private val viewModel: WelcomeViewModel by viewModels()
 
@@ -21,25 +25,34 @@ class WelcomeFragment : AuthSectionFragment(R.layout.welcome) {
         get() = view?.let { WelcomeBinding.bind(it) }
 
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                WelcomePage(
+                    viewModel = viewModel,
+                    onStartClicked = {
+                        navigator.navigateTo(authNavController(), WelcomeToSignUpInfo)
+                    }
+                )
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
-        applyConfiguration()
-
-    }
-
-    override fun onConfigurationChange() {
-        super.onConfigurationChange()
-
-        applyConfiguration()
+        /*setupView()
+        applyConfiguration()*/
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        viewModel.execute(WelcomeStateEvent.ScreenViewed)
+        viewModel.execute(WelcomeAction.ScreenViewed)
 
     }
 
@@ -75,7 +88,7 @@ class WelcomeFragment : AuthSectionFragment(R.layout.welcome) {
             viewBinding.start.setTextColor(config.theme.primaryColorEnd.color())
             viewBinding.start.isAllCaps = false
             viewBinding.start.setOnClickListener {
-                navigator.navigateTo(authNavController(), WelcomeToSignUpInfo)
+
             }
 
             viewBinding.start.alpha = 0f

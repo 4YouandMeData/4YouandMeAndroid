@@ -35,7 +35,10 @@ fun WebPage(
         webViewModel.execute(WebAction.ScreenViewed(type))
     }
 
-    ForYouAndMeTheme(configuration = state.configuration) {
+    ForYouAndMeTheme(
+        configuration = state.configuration,
+        onConfigurationError = { webViewModel.execute(WebAction.GetConfiguration) }
+    ) {
         WebPage(
             configuration = it,
             imageConfiguration = webViewModel.imageConfiguration,

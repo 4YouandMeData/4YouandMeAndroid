@@ -55,7 +55,10 @@ fun UserInfoPage(
             .collect()
     }
 
-    ForYouAndMeTheme(configuration = state.configuration) {
+    ForYouAndMeTheme(
+        configuration = state.configuration,
+        onConfigurationError = { userInfoViewModel.execute(GetConfiguration) }
+    ) {
         UserInfoPage(
             state = state,
             configuration = it,
