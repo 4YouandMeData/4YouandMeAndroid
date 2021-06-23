@@ -3,7 +3,6 @@ package com.foryouandme.ui.auth.signin.phone
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -21,8 +20,7 @@ import com.foryouandme.entity.configuration.Url
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.configuration.checkbox.checkbox
 import com.foryouandme.ui.auth.AuthSectionFragment
-import com.giacomoparisi.spandroid.Span
-import com.giacomoparisi.spandroid.SpanDroid
+import com.foryouandme.ui.auth.signin.getPrivacyTermsSpan
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
 
@@ -264,64 +262,28 @@ class EnterPhoneFragment : AuthSectionFragment(R.layout.enter_phone) {
         viewBinding.checkboxText.setTextColor(theme.secondaryColor.color())
         viewBinding.checkboxText.movementMethod = LinkMovementMethod.getInstance()
 
-        val privacyIndex = text.legal.indexOf(text.legalPrivacyPolicy)
-        val termsIndex = text.legal.indexOf(text.legalTermsOfService)
-
-        val privacySplit = text.legal.split(text.legalPrivacyPolicy)
-        val split = privacySplit.flatMap { it.split(text.legalTermsOfService) }
-
         viewBinding.checkboxText.text =
-            SpanDroid
-                .span()
-                .append(
-                    split.getOrElse(0) { "" },
-                    Span.Typeface(R.font.helvetica, requireContext())
-                )
-                .append(
-                    if (privacyIndex > termsIndex) text.legalPrivacyPolicy
-                    else text.legalTermsOfService,
-                    Span.Click {
-
-                        viewModel.execute(EnterPhoneStateEvent.LogPrivacyPolicy)
-                        navigator.navigateTo(
-                            rootNavController(),
-                            AnywhereToWeb(
-                                if (privacyIndex > termsIndex) url.privacy
-                                else url.terms
-                            )
-                        )
-                    },
-                    Span.Typeface(R.font.helvetica, requireContext()),
-                    Span.Custom(ForegroundColorSpan(theme.secondaryColor.color())),
-                    Span.Underline
-                )
-                .append(
-                    split.getOrElse(1) { "" },
-                    Span.Typeface(R.font.helvetica, requireContext())
-                )
-                .append(
-                    if (privacyIndex > termsIndex) text.legalTermsOfService
-                    else text.legalPrivacyPolicy,
-                    Span.Click {
-
-                        viewModel.execute(EnterPhoneStateEvent.LogPrivacyPolicy)
-                        navigator.navigateTo(
-                            rootNavController(),
-                            AnywhereToWeb(
-                                if (privacyIndex > termsIndex) url.terms
-                                else url.privacy
-                            )
-                        )
-                    },
-                    Span.Typeface(R.font.helvetica, requireContext()),
-                    Span.Custom(ForegroundColorSpan(theme.secondaryColor.color())),
-                    Span.Underline
-                )
-                .append(
-                    split.getOrElse(2) { "" },
-                    Span.Typeface(R.font.helvetica, requireContext()),
-                )
-                .toSpannableString()
+            getPrivacyTermsSpan(
+                text.legal,
+                text.legalPrivacyPolicy,
+                text.legalTermsOfService,
+                theme.secondaryColor.color(),
+                requireContext(),
+                {
+                    viewModel.execute(EnterPhoneStateEvent.LogPrivacyPolicy)
+                    navigator.navigateTo(
+                        rootNavController(),
+                        AnywhereToWeb(url.privacy)
+                    )
+                },
+                {
+                    viewModel.execute(EnterPhoneStateEvent.LogTermsOfService)
+                    navigator.navigateTo(
+                        rootNavController(),
+                        AnywhereToWeb(url.terms)
+                    )
+                }
+            )
 
     }
 

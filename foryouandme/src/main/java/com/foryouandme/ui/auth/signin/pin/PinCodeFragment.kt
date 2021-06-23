@@ -11,7 +11,10 @@ import com.foryouandme.R
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
-import com.foryouandme.core.ext.*
+import com.foryouandme.core.ext.autoCloseKeyboard
+import com.foryouandme.core.ext.hideKeyboard
+import com.foryouandme.core.ext.setStatusBar
+import com.foryouandme.core.ext.showBackButton
 import com.foryouandme.databinding.EnterPinBinding
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.HEXGradient
@@ -21,6 +24,7 @@ import com.foryouandme.entity.configuration.Url
 import com.foryouandme.entity.configuration.button.button
 import com.foryouandme.entity.configuration.checkbox.checkbox
 import com.foryouandme.ui.auth.AuthSectionFragment
+import com.foryouandme.ui.auth.signin.getPrivacyTermsSpan
 import com.giacomoparisi.spandroid.Span
 import com.giacomoparisi.spandroid.SpanDroid
 import dagger.hilt.android.AndroidEntryPoint
@@ -210,64 +214,28 @@ class PinCodeFragment : AuthSectionFragment(R.layout.enter_pin) {
         viewBinding.checkboxText.setTextColor(theme.secondaryColor.color())
         viewBinding.checkboxText.movementMethod = LinkMovementMethod.getInstance()
 
-        val privacyIndex = text.legal.indexOf(text.legalPrivacyPolicy)
-        val termsIndex = text.legal.indexOf(text.legalTermsOfService)
-
-        val privacySplit = text.legal.split(text.legalPrivacyPolicy)
-        val split = privacySplit.flatMap { it.split(text.legalTermsOfService) }
-
         viewBinding.checkboxText.text =
-            SpanDroid
-                .span()
-                .append(
-                    split.getOrElse(0) { "" },
-                    Span.Typeface(R.font.helvetica, requireContext()),
-                )
-                .append(
-                    if (privacyIndex > termsIndex) text.legalPrivacyPolicy
-                    else text.legalTermsOfService,
-                    Span.Click {
-
-                        viewModel.execute(PinCodeStateEvent.LogPrivacyPolicy)
-                        navigator.navigateTo(
-                            rootNavController(),
-                            AnywhereToWeb(
-                                if (privacyIndex > termsIndex) url.privacy
-                                else url.terms
-                            )
-                        )
-
-                    },
-                    Span.Typeface(R.font.helvetica, requireContext()),
-                    Span.Custom(ForegroundColorSpan(theme.secondaryColor.color())),
-                    Span.Underline
-                )
-                .append(
-                    split.getOrElse(1) { "" },
-                    Span.Typeface(R.font.helvetica, requireContext())
-                )
-                .append(
-                    if (privacyIndex > termsIndex) text.legalTermsOfService
-                    else text.legalPrivacyPolicy,
-                    Span.Click {
-                        viewModel.execute(PinCodeStateEvent.LogTermsOfService)
-                        navigator.navigateTo(
-                            rootNavController(),
-                            AnywhereToWeb(
-                                if (privacyIndex > termsIndex) url.terms
-                                else url.privacy
-                            )
-                        )
-                    },
-                    Span.Typeface(R.font.helvetica, requireContext()),
-                    Span.Custom(ForegroundColorSpan(theme.secondaryColor.color())),
-                    Span.Underline
-                )
-                .append(
-                    split.getOrElse(2) { "" },
-                    Span.Typeface(R.font.helvetica, requireContext())
-                )
-                .toSpannableString()
+            getPrivacyTermsSpan(
+                text.legal,
+                text.legalPrivacyPolicy,
+                text.legalTermsOfService,
+                theme.secondaryColor.color(),
+                requireContext(),
+                {
+                    viewModel.execute(PinCodeStateEvent.LogPrivacyPolicy)
+                    navigator.navigateTo(
+                        rootNavController(),
+                        AnywhereToWeb(url.privacy)
+                    )
+                },
+                {
+                    viewModel.execute(PinCodeStateEvent.LogTermsOfService)
+                    navigator.navigateTo(
+                        rootNavController(),
+                        AnywhereToWeb(url.terms)
+                    )
+                }
+            )
     }
 
     private fun setWrongCodeErrorVisibility(visible: Boolean) {
