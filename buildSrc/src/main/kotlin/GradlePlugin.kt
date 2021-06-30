@@ -3,7 +3,7 @@ object GradlePlugin {
     object Android : Dependency(
         "com.android.tools.build",
         "gradle",
-        "7.0.0-beta03"
+        "7.1.0-alpha02"
     )
 
     object KotlinPlugin : Dependency(
@@ -29,7 +29,7 @@ object GradlePlugin {
         Dependency(
             "com.google.firebase",
             "firebase-crashlytics-gradle",
-            "2.7.0"
+            "2.7.1"
         )
 
     object Bintray : Dependency(

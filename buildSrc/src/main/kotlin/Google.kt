@@ -11,7 +11,7 @@ object Google {
         object CrashlyticsKtx : Dependency(
             Firebase.group,
             "firebase-crashlytics-ktx",
-            "18.0.1"
+            "18.1.0"
         )
 
         object AnalyticsKtx : Dependency(
