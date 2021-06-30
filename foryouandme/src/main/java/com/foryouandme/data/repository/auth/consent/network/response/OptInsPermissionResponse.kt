@@ -22,18 +22,20 @@ data class OptInsPermissionResponse(
     fun toOptInsPermission(): OptInsPermission? =
         when (null) {
             title, body, position, agreeText, disagreeText -> null
+            systemPermissions.orEmpty().contains("health") -> null // skip HealthKit permission
             else ->
                 OptInsPermission(
-                    id,
-                    image,
-                    title,
-                    body,
-                    position,
-                    agreeText,
-                    disagreeText,
+                    id = id,
+                    image = image,
+                    title = title,
+                    body = body,
+                    position = position,
+                    agreeText = agreeText,
+                    disagreeText = disagreeText,
+                    systemPermissions =
                     systemPermissions?.mapNotNull { mapPermission(it) } ?: emptyList(),
-                    mandatory ?: false,
-                    mandatoryDescription
+                    mandatory= mandatory ?: false,
+                    mandatoryDescription = mandatoryDescription
                 )
 
         }
