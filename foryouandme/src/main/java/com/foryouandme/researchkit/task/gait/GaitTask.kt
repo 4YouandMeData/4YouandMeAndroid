@@ -1,7 +1,7 @@
 package com.foryouandme.researchkit.task.gait
 
 import com.foryouandme.R
-import com.foryouandme.core.ext.toTextResource
+import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import com.foryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
 import com.foryouandme.researchkit.recorder.config.PedometerRecorderConfig
@@ -301,12 +301,12 @@ class GaitTask(
                     identifier = GAIT_INTRO,
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
-                    title = introTitle.toTextResource(R.string.GAIT_title),
+                    title = introTitle.toTextSource(R.string.GAIT_title),
                     titleColor = introTitleColor,
-                    description = introDescription.toTextResource(R.string.GAIT_intro),
+                    description = introDescription.toTextSource(R.string.GAIT_intro),
                     descriptionColor = introDescriptionColor,
                     image = listOf(introImage),
-                    button = introButton.toTextResource(R.string.TASK_next),
+                    button = introButton.toTextSource(R.string.TASK_next),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor
                 ),

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,7 @@ fun StepFooter(
     button: ImageSource,
     shadowColor: Color,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     Box(
@@ -39,7 +41,8 @@ fun StepFooter(
             contentDescription = null,
             modifier = Modifier
                 .size(70.dp)
-                .clickable { onClick() }
+                .clickable { if(isEnabled) onClick() }
+                .alpha(if(isEnabled) 1f else 0.5f)
         )
     }
 }

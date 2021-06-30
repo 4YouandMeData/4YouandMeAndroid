@@ -39,7 +39,7 @@ fun NumberRangePickerPage(
 
     LaunchedEffect(numberRangePickerViewModel) {
         numberRangePickerViewModel.eventFlow
-            .unwrapEvent("NumberRangePickerPage")
+            .unwrapEvent("number_range_picker")
             .onEach {
                 when(it) {
                     is NumberPickerEvents.Next -> onNext(it.result)

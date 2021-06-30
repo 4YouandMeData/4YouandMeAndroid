@@ -1,7 +1,8 @@
 package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.ext.toTextResource
+import com.foryouandme.core.ext.toColorSource
+import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.core.researchkit.step.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.entity.activity.Reschedule
@@ -115,7 +116,7 @@ fun buildSurvey(
                                     backgroundColor = configuration.theme.secondaryColor.color(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = question.text.toTextResource(),
+                                    question = question.text.toTextSource(),
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
                                     arrowColor = configuration.theme.primaryColorStart.color(),
@@ -331,18 +332,25 @@ fun buildSurvey(
                                     ),
                                     minValue = question.min,
                                     maxValue = question.max,
-                                    valueColor = configuration.theme.primaryTextColor.color(),
-                                    minDisplayValue = question.minDisplay,
-                                    maxDisplayValue = question.maxDisplay,
-                                    minDisplayColor = configuration.theme.primaryTextColor.color(),
-                                    maxDisplayColor = configuration.theme.primaryTextColor.color(),
-                                    progressColor = configuration.theme.primaryColorEnd.color(),
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    valueColor =
+                                    configuration.theme.primaryTextColor.color().toColorSource(),
+                                    minDisplayValue = question.minDisplay?.toTextSource(),
+                                    maxDisplayValue = question.maxDisplay?.toTextSource(),
+                                    minDisplayColor =
+                                    configuration.theme.primaryTextColor.color().toColorSource(),
+                                    maxDisplayColor =
+                                    configuration.theme.primaryTextColor.color().toColorSource(),
+                                    progressColor =
+                                    configuration.theme.primaryColorEnd.color().toColorSource(),
+                                    backgroundColor =
+                                    configuration.theme.secondaryColor.color().toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    question = question.text.toTextSource(),
+                                    questionColor =
+                                    configuration.theme.primaryTextColor.color().toColorSource(),
+                                    shadowColor =
+                                    configuration.theme.primaryTextColor.color().toColorSource(),
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()

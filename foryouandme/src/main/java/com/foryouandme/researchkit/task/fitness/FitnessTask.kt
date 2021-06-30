@@ -1,7 +1,7 @@
 package com.foryouandme.researchkit.task.fitness
 
 import com.foryouandme.R
-import com.foryouandme.core.ext.toTextResource
+import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.researchkit.recorder.config.AccelerometerRecorderConfig
 import com.foryouandme.researchkit.recorder.config.DeviceMotionRecorderConfig
 import com.foryouandme.researchkit.recorder.config.PedometerRecorderConfig
@@ -257,16 +257,16 @@ class FitnessTask(
                     identifier = FITNESS_START,
                     back = Back(startBackImage),
                     backgroundColor = startBackgroundColor,
-                    title = startTitle.toTextResource(R.string.FITNESS_title),
+                    title = startTitle.toTextSource(R.string.FITNESS_title),
                     titleColor = startTitleColor,
                     description =
-                    startDescription.toTextResource(
+                    startDescription.toTextSource(
                         R.string.FITNESS_start,
                         "two minutes"
                     ),
                     descriptionColor = startDescriptionColor,
                     image = listOf(startImage),
-                    button = startButton.toTextResource(R.string.TASK_next),
+                    button = startButton.toTextSource(R.string.TASK_next),
                     buttonColor = startButtonColor,
                     buttonTextColor = startButtonTextColor,
                 ),
@@ -274,17 +274,17 @@ class FitnessTask(
                     identifier = FITNESS_INTRO,
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
-                    title = introTitle.toTextResource(R.string.FITNESS_title),
+                    title = introTitle.toTextSource(R.string.FITNESS_title),
                     titleColor = introTitleColor,
                     description =
-                        introDescription.toTextResource(
+                        introDescription.toTextSource(
                             R.string.FITNESS_intro,
                             "two minutes",
                             "thirty seconds"
                         ),
                     descriptionColor = introDescriptionColor,
                     image = listOf(introImage),
-                    button = introButton.toTextResource(R.string.TASK_get_started),
+                    button = introButton.toTextSource(R.string.TASK_get_started),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor,
                 ),

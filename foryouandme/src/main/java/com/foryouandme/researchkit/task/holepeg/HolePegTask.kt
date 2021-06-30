@@ -1,7 +1,7 @@
 package com.foryouandme.researchkit.task.holepeg
 
 import com.foryouandme.R
-import com.foryouandme.core.ext.toTextResource
+import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
@@ -141,16 +141,16 @@ class HolePegTask(
                     identifier = HOLE_PEG_INTRO,
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
-                    title = introTitle.toTextResource(R.string.HOLE_PEG_title),
+                    title = introTitle.toTextSource(R.string.HOLE_PEG_title),
                     titleColor = introTitleColor,
                     description =
-                    introDescription.toTextResource(
+                    introDescription.toTextSource(
                         R.string.HOLE_PEG_intro_description,
                         holePegNumberOfPegs.toString()
                     ),
                     descriptionColor = introDescriptionColor,
                     image = listOf(introImage ?: R.drawable.hole_peg_intro),
-                    button = introButton.toTextResource(R.string.TASK_next),
+                    button = introButton.toTextSource(R.string.TASK_next),
                     buttonColor = introButtonColor,
                     buttonTextColor = introButtonTextColor,
                 ),
@@ -158,10 +158,10 @@ class HolePegTask(
                     identifier = HOLE_PEG_TUTORIAL,
                     back = Back(tutorialBackImage),
                     backgroundColor = tutorialBackgroundColor,
-                    title = tutorialTitle.toTextResource(R.string.HOLE_PEG_title),
+                    title = tutorialTitle.toTextSource(R.string.HOLE_PEG_title),
                     titleColor = tutorialTitleColor,
                     description =
-                    tutorialDescription.toTextResource(
+                    tutorialDescription.toTextSource(
                         R.string.HOLE_PEG_tutorial_description,
                         holePegNumberOfPegs.toString()
                     ),
@@ -176,7 +176,7 @@ class HolePegTask(
                         R.drawable.hole_peg_tutorial_5,
                         R.drawable.hole_peg_tutorial_6
                     ),
-                    button = tutorialButton.toTextResource(R.string.TASK_next),
+                    button = tutorialButton.toTextSource(R.string.TASK_next),
                     buttonColor = tutorialButtonColor,
                     buttonTextColor = tutorialButtonTextColor,
                 ),

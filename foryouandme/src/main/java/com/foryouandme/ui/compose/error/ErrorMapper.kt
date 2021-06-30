@@ -1,7 +1,7 @@
 package com.foryouandme.ui.compose.error
 
 import com.foryouandme.R
-import com.foryouandme.core.ext.toTextResource
+import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.source.TextSource
@@ -27,29 +27,29 @@ fun Throwable.toForYouAndMeException(): ForYouAndMeException =
 fun ForYouAndMeException.getMessage(configuration: Configuration?): TextSource =
     when (this) {
         is ForYouAndMeException.NetworkErrorUnknownHost ->
-            R.string.ERROR_network_connection.toTextResource()
+            R.string.ERROR_network_connection.toTextSource()
         is ForYouAndMeException.NetworkErrorTimeOut ->
-            R.string.ERROR_network_timeout.toTextResource()
+            R.string.ERROR_network_timeout.toTextSource()
         is ForYouAndMeException.NetworkHTTPException ->
-            R.string.ERROR_api.toTextResource(code)
+            R.string.ERROR_api.toTextSource(code)
         is ForYouAndMeException.MissingPhoneNumber ->
             configuration?.text
                 ?.phoneVerification
                 ?.error
                 ?.errorMissingNumber
-                .toTextResource(R.string.ERROR_generic)
+                .toTextSource(R.string.ERROR_generic)
         is ForYouAndMeException.WrongCode ->
             configuration?.text
                 ?.phoneVerification
                 ?.error
                 ?.errorWrongCode
-                .toTextResource(R.string.ERROR_generic)
+                .toTextSource(R.string.ERROR_generic)
         ForYouAndMeException.Unknown ->
             configuration?.text
                 ?.error
                 ?.messageDefault
-                .toTextResource(R.string.ERROR_generic)
+                .toTextSource(R.string.ERROR_generic)
         ForYouAndMeException.MissingConfiguration,
         ForYouAndMeException.UserNotLoggedIn ->
-            R.string.ERROR_generic.toTextResource()
+            R.string.ERROR_generic.toTextSource()
     }

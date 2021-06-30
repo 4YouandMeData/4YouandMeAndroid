@@ -1,7 +1,7 @@
 package com.foryouandme.researchkit.task.reaction
 
 import com.foryouandme.R
-import com.foryouandme.core.ext.toTextResource
+import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.beforestart.WelcomeStep
@@ -213,15 +213,15 @@ class ReactionTimeTask(
                                 back = Back(startBackImage),
                                 backgroundColor = startBackgroundColor,
                                 title =
-                                    startTitle.toTextResource(R.string.REACTION_TIME_welcome_title),
+                                    startTitle.toTextSource(R.string.REACTION_TIME_welcome_title),
                                 titleColor = startTitleColor,
                                 description =
-                                    startDescription.toTextResource(
+                                    startDescription.toTextSource(
                                             R.string.REACTION_TIME_start
                                     ),
                                 descriptionColor = startDescriptionColor,
                                 image = listOf(startImage),
-                                button = startButton.toTextResource(R.string.TASK_next),
+                                button = startButton.toTextSource(R.string.TASK_next),
                                 buttonColor = startButtonColor,
                                 buttonTextColor = startButtonTextColor
                         ),
@@ -229,16 +229,16 @@ class ReactionTimeTask(
                                 identifier = REACTION_TIME_INTRO,
                                 back = Back(introBackImage),
                                 backgroundColor = introBackgroundColor,
-                                title = introTitle.toTextResource(R.string.REACTION_TIME_welcome_title),
+                                title = introTitle.toTextSource(R.string.REACTION_TIME_welcome_title),
                                 titleColor = introTitleColor,
                                 description =
-                                    introDescription.toTextResource(
+                                    introDescription.toTextSource(
                                             R.string.REACTION_TIME_intro,
                                             "3"
                                     ),
                                 descriptionColor = introDescriptionColor,
                                 image = listOf(introImage),
-                                button = introButton.toTextResource(R.string.TASK_get_started),
+                                button = introButton.toTextSource(R.string.TASK_get_started),
                                 buttonColor = introButtonColor,
                                 buttonTextColor = introButtonTextColor,
                         ),
