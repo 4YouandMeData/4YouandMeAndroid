@@ -80,34 +80,7 @@ fun QuickActivityItem(
             ) {
                 QuickActivityAnswer(
                     item = item,
-                    answer = item.data.answer1,
-                    configuration = configuration,
-                    selectedAnswer = item.selectedAnswer,
-                    onAnswerSelected = onAnswerSelected
-                )
-                QuickActivityAnswer(
-                    item = item,
-                    answer = item.data.answer2,
-                    configuration = configuration,
-                    selectedAnswer = item.selectedAnswer,
-                    onAnswerSelected = onAnswerSelected
-                )
-                QuickActivityAnswer(
-                    item = item,
-                    answer = item.data.answer3,
-                    configuration = configuration,
-                    selectedAnswer = item.selectedAnswer,
-                    onAnswerSelected = onAnswerSelected
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                QuickActivityAnswer(
-                    item = item,
-                    answer = item.data.answer4,
+                    answer = item.data.answer6,
                     configuration = configuration,
                     selectedAnswer = item.selectedAnswer,
                     onAnswerSelected = onAnswerSelected
@@ -121,7 +94,34 @@ fun QuickActivityItem(
                 )
                 QuickActivityAnswer(
                     item = item,
-                    answer = item.data.answer6,
+                    answer = item.data.answer4,
+                    configuration = configuration,
+                    selectedAnswer = item.selectedAnswer,
+                    onAnswerSelected = onAnswerSelected
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                QuickActivityAnswer(
+                    item = item,
+                    answer = item.data.answer3,
+                    configuration = configuration,
+                    selectedAnswer = item.selectedAnswer,
+                    onAnswerSelected = onAnswerSelected
+                )
+                QuickActivityAnswer(
+                    item = item,
+                    answer = item.data.answer2,
+                    configuration = configuration,
+                    selectedAnswer = item.selectedAnswer,
+                    onAnswerSelected = onAnswerSelected
+                )
+                QuickActivityAnswer(
+                    item = item,
+                    answer = item.data.answer1,
                     configuration = configuration,
                     selectedAnswer = item.selectedAnswer,
                     onAnswerSelected = onAnswerSelected
