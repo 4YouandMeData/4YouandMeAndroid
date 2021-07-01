@@ -1,3 +1,65 @@
+- Release 0.2.1
+- Fix privacy and terms text generation
+
+## Release 0.2.1
+
+- Fix privacy and terms text generation
+
+- Refactor Welcome page
+
+## Release 0.2.0
+
+- Restore push service and send push token on application start
+
+- Add compose dialogs
+
+- Add your data filter page
+
+- Update configuration for your data filter page
+
+- Update hilt version
+
+- Fix push repository crash
+
+- Remove old app configuration
+
+- Fix your data padding
+
+- Fix feed header
+
+- Fix page analytics logging
+
+- Refactor main page
+
+- Update your data entity
+
+- Update network error messages
+
+- Add page footer compose
+
+- Disable date picker keyboard focus
+
+- Remove old binding library
+
+- Update crashlytics plugin
+
+- Update dependencies
+
+- Remove arrow dependencies
+
+- Remove old cases
+
+- Remove injector
+
+- Remove injector context ext
+
+- Remove injector  fragment ext
+
+- Remove old base classes
+
+- Refactor feed
+
+- Refactor tasks page
 
 ## Release 0.1.50
 
