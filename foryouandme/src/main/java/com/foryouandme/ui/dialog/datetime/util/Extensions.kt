@@ -1,4 +1,4 @@
-package com.foryouandme.ui.dialog.date
+package com.foryouandme.ui.dialog.datetime.util
 
 import androidx.compose.ui.geometry.Offset
 import org.threeten.bp.*
@@ -34,4 +34,4 @@ internal val LocalTime.simpleHour: Int
 internal fun LocalTime.toAM(): LocalTime = if (this.isAM) this else this.minusHours(12)
 internal fun LocalTime.toPM(): LocalTime = if (!this.isAM) this else this.plusHours(12)
 
-internal fun LocalTime.noSeconds(): LocalTime = LocalTime.of(this.hour, this.second)
+internal fun LocalTime.noSeconds(): LocalTime = LocalTime.of(this.hour, this.minute)

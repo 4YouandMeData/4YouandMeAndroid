@@ -1,4 +1,4 @@
-package com.foryouandme.ui.dialog.date
+package com.foryouandme.ui.dialog.datetime.date
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.spring
@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.foryouandme.ui.dialog.MaterialDialog
+import com.foryouandme.ui.dialog.datetime.util.shortLocalName
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate

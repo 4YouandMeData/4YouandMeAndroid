@@ -1,4 +1,4 @@
-package com.foryouandme.ui.dialog.date
+package com.foryouandme.ui.dialog.datetime.date
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

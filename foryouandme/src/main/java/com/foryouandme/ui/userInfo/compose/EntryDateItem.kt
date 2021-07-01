@@ -13,7 +13,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,8 +22,8 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.textfield.ForYouAndMeReadOnlyTextField
 import com.foryouandme.ui.dialog.MaterialDialog
 import com.foryouandme.ui.dialog.buttons
-import com.foryouandme.ui.dialog.date.DatePickerColors
-import com.foryouandme.ui.dialog.date.datepicker
+import com.foryouandme.ui.dialog.datetime.date.DatePickerColors
+import com.foryouandme.ui.dialog.datetime.date.datepicker
 import com.google.accompanist.pager.ExperimentalPagerApi
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
