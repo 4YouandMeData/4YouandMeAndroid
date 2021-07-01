@@ -73,7 +73,7 @@ fun AppsAndDevicesPage(
                 ForYouAndMeTopAppBar(
                     imageConfiguration = imageConfiguration,
                     icon = TopAppBarIcon.Back,
-                    title = configuration.text.profile.secondItem,
+                    title = configuration.text.profile.appsAndDevices.title,
                     titleColor = configuration.theme.secondaryColor.value,
                     modifier =
                     Modifier

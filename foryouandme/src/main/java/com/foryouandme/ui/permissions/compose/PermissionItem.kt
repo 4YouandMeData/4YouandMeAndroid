@@ -100,8 +100,8 @@ private fun getGrantedStatus(isAllowed: Boolean, configuration: Configuration): 
     buildAnnotatedString {
         withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
             append(
-                if (isAllowed) configuration.text.profile.permissionAllowed
-                else configuration.text.profile.permissionAllow
+                if (isAllowed) configuration.text.profile.permissions.allowed
+                else configuration.text.profile.permissions.allow
             )
         }
     }

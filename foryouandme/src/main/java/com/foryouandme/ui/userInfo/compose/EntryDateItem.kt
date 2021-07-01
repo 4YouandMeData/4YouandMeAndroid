@@ -41,7 +41,7 @@ fun EntryDateItem(
 ) {
 
     val dialog = remember { MaterialDialog() }
-    dialog.build {
+    dialog.build(backgroundColor = configuration.theme.secondaryColor.value) {
         datepicker(colors = ForYouAndMeDatePickerColors(configuration)) {
             onDateSelected(item, LocalDate.of(it.year, it.monthValue, it.dayOfMonth))
         }

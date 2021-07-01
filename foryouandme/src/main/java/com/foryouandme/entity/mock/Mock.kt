@@ -1,9 +1,6 @@
 package com.foryouandme.entity.mock
 
-import org.threeten.bp.LocalDate
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.*
 
 object Mock {
 
@@ -59,5 +56,8 @@ object Mock {
             6,
             20
         )
+
+    val localTime: LocalTime =
+        LocalTime.of(12, 30)
 
 }

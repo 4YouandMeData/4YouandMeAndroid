@@ -1,7 +1,6 @@
 package com.foryouandme.entity.configuration
 
 import com.foryouandme.entity.mock.Mock
-import com.squareup.moshi.Json
 
 data class Text(
     val error: Error,
@@ -517,25 +516,12 @@ data class StudyInfo(
 
 data class Profile(
     val title: String,
-    val firstItem: String,
-    val secondItem: String,
-    val thirdItem: String,
-    val fourthItem: String,
-    val fifthItem: String,
+    val userInfo: UserInfo,
+    val appsAndDevices: AppsAndDevices,
+    val reviewConsent: String,
+    val permissions: Permissions,
+    val dailySurveyTime: DailySurveyTime,
     val disclaimer: String,
-    val connect: String,
-    val deauthorize: String,
-    val permissionAllow: String,
-    val permissionAllowed: String,
-    val permissionDenied: String,
-    val permissionCancel: String,
-    val permissionMessage: String,
-    val permissionSettings: String,
-    val permissionLocation: String,
-    val edit: String,
-    val submit: String,
-    val dailySurveyTimeDescription: String,
-    val dailySurveyTimingHidden: Int
 ) {
 
     companion object {
@@ -543,25 +529,100 @@ data class Profile(
         fun mock(): Profile =
             Profile(
                 title = Mock.title,
-                firstItem = Mock.title,
-                secondItem = Mock.title,
-                thirdItem = Mock.title,
-                fourthItem = Mock.title,
-                fifthItem = Mock.title,
+                userInfo = UserInfo.mock(),
+                appsAndDevices = AppsAndDevices.mock(),
+                reviewConsent = Mock.title,
+                permissions = Permissions.mock(),
+                dailySurveyTime = DailySurveyTime.mock(),
                 disclaimer = Mock.body,
-                connect = Mock.button,
-                deauthorize = Mock.button,
-                permissionAllow = Mock.button,
-                permissionAllowed = Mock.button,
-                permissionDenied = Mock.button,
-                permissionCancel = Mock.button,
-                permissionMessage = Mock.body,
-                permissionSettings = Mock.button,
-                permissionLocation = Mock.body,
+            )
+
+    }
+
+}
+
+data class UserInfo(
+    val title: String,
+    val edit: String,
+    val submit: String,
+) {
+
+    companion object {
+
+        fun mock(): UserInfo =
+            UserInfo(
+                title = Mock.title,
                 edit = Mock.button,
                 submit = Mock.button,
-                dailySurveyTimeDescription = Mock.body,
-                dailySurveyTimingHidden = 0
+            )
+
+    }
+
+}
+
+data class AppsAndDevices(
+    val title: String,
+    val connect: String,
+    val deauthorize: String,
+) {
+
+    companion object {
+
+        fun mock(): AppsAndDevices =
+            AppsAndDevices(
+                title = Mock.title,
+                connect = Mock.button,
+                deauthorize = Mock.button
+            )
+
+    }
+
+}
+
+data class Permissions(
+    val title: String,
+    val allow: String,
+    val allowed: String,
+    val denied: String,
+    val cancel: String,
+    val message: String,
+    val settings: String,
+    val location: String,
+) {
+
+    companion object {
+
+        fun mock(): Permissions =
+            Permissions(
+                title = Mock.title,
+                allow = Mock.button,
+                allowed = Mock.button,
+                denied = Mock.button,
+                cancel = Mock.button,
+                message = Mock.body,
+                settings = Mock.button,
+                location = Mock.body,
+            )
+
+    }
+
+}
+
+data class DailySurveyTime(
+    val title: String,
+    val description: String,
+    val save: String,
+    val hidden: Int
+) {
+
+    companion object {
+
+        fun mock(): DailySurveyTime =
+            DailySurveyTime(
+                title = Mock.title,
+                description = Mock.body,
+                save = Mock.button,
+                hidden = 0
             )
 
     }

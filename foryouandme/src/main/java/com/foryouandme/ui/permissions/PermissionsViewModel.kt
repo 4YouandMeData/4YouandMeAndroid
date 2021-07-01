@@ -70,7 +70,7 @@ class PermissionsViewModel @Inject constructor(
                                 configuration.await(),
                                 "1",
                                 Permission.Location,
-                                configuration.await().text.profile.permissionLocation,
+                                configuration.await().text.profile.permissions.location,
                                 imageConfiguration.location(),
                                 isLocationGranted.await()
                             )

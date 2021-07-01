@@ -42,8 +42,8 @@ fun UserInfoEditSaveButton(
         ) {
             Text(
                 text =
-                if (isEditing) configuration.text.profile.submit
-                else configuration.text.profile.edit,
+                if (isEditing) configuration.text.profile.userInfo.submit
+                else configuration.text.profile.userInfo.edit,
                 style = MaterialTheme.typography.h3,
                 color = configuration.theme.secondaryColor.value
             )

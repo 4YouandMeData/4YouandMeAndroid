@@ -152,17 +152,18 @@ data class StringsResponse(
 
     @Json(name = "PROFILE_TITLE") val profileTitle: String? = null,
 
-    @Json(name = "ABOUT_YOU_YOUR_PREGNANCY") val aboutYouYourPregnancy: String? = null,
-    @Json(name = "ABOUT_YOU_APPS_AND_DEVICES") val aboutYouAppsAndDevices: String? = null,
-    @Json(name = "ABOUT_YOU_REVIEW_CONSENT") val aboutYouReviewConsent: String? = null,
-    @Json(name = "ABOUT_YOU_PERMISSIONS") val aboutYouPermissions: String? = null,
-    @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_TITLE") val aboutYouDailSurveyTime: String? = null,
+    @Json(name = "ABOUT_YOU_YOUR_PREGNANCY") val userInfoTitle: String? = null,
+    @Json(name = "ABOUT_YOU_APPS_AND_DEVICES") val appsAndDevicesTitle: String? = null,
+    @Json(name = "ABOUT_YOU_REVIEW_CONSENT") val reviewConsentTitle: String? = null,
+    @Json(name = "ABOUT_YOU_PERMISSIONS") val permissionsTitle: String? = null,
+    @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_TITLE") val dailSurveyTimeTitle: String? = null,
+    @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_TITLE_BUTTON") val dailSurveyTimeButton: String? = null,
     @Json(name = "ABOUT_YOU_DAILY_SURVEY_TIMING_DESCRIPTION") val dailySurveyTimeDescription: String? = null,
-    @Json(name = "ABOUT_YOU_DISCLAIMER") val aboutYouDisclaimer: String? = null,
+    @Json(name = "ABOUT_YOU_DISCLAIMER") val profileDisclaimer: String? = null,
     @Json(name = "DAILY_SURVEY_TIMING_HIDDEN") val dailySurveyTimingHidden: Int? = null,
 
-    @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val yourAppsAndDevicesConnect: String? = null,
-    @Json(name = "YOUR_APPS_AND_DEVICES_DEAUTHORIZE") val yourAppsAndDevicesDeauthorize: String? = null,
+    @Json(name = "YOUR_APPS_AND_DEVICES_CONNECT") val appsAndDevicesConnect: String? = null,
+    @Json(name = "YOUR_APPS_AND_DEVICES_DEAUTHORIZE") val appsAndDevicesDeauthorize: String? = null,
 
     @Json(name = "PERMISSIONS_ALLOW") val permissionsAllow: String? = null,
     @Json(name = "PERMISSIONS_ALLOWED") val permissionsAllowed: String? = null,
@@ -172,8 +173,8 @@ data class StringsResponse(
     @Json(name = "PERMISSION_SETTINGS") val permissionSettings: String? = null,
     @Json(name = "PERMISSION_LOCATION") val permissionLocation: String? = null,
 
-    @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val profileUserInfoButtonEdit: String? = null,
-    @Json(name = "PROFILE_USER_INFO_BUTTON_SUBMIT") val profileUserInfoButtonSubmit: String? = null,
+    @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val userInfoButtonEdit: String? = null,
+    @Json(name = "PROFILE_USER_INFO_BUTTON_SUBMIT") val userInfoButtonSubmit: String? = null,
 
     @Json(name = "TAB_USER_DATA_PERIOD_TITLE") val tabUserDataPeriodTitle: String? = null,
     @Json(name = "TAB_USER_DATA_PERIOD_DAY") val tabUserDataPeriodDay: String? = null,
@@ -559,38 +560,80 @@ data class StringsResponse(
 
         }
 
-    private fun toProfile(): Profile? =
-        when (null) {
-            profileTitle, aboutYouYourPregnancy, aboutYouAppsAndDevices, aboutYouReviewConsent,
-            aboutYouPermissions, aboutYouDailSurveyTime, aboutYouDisclaimer,
-            yourAppsAndDevicesConnect, yourAppsAndDevicesDeauthorize, permissionsAllow,
-            permissionsAllowed, permissionDenied, permissionCancel, permissionMessage,
-            permissionSettings, permissionLocation, profileUserInfoButtonEdit,
-            profileUserInfoButtonSubmit, dailySurveyTimeDescription, dailySurveyTimingHidden -> null
+    private fun toProfile(): Profile? {
+
+        val userInfo = toUserInfo()
+        val appsAndDevices = toAppsAndDevices()
+        val permissions = toPermissions()
+        val dailySurveyTime = toDailySurveyTime()
+
+        return when (null) {
+            profileTitle, reviewConsentTitle, userInfo, appsAndDevices, permissions,
+            dailySurveyTime, profileDisclaimer -> null
             else ->
                 Profile(
-                    profileTitle,
-                    aboutYouYourPregnancy,
-                    aboutYouAppsAndDevices,
-                    aboutYouReviewConsent,
-                    aboutYouPermissions,
-                    aboutYouDailSurveyTime,
-                    aboutYouDisclaimer,
-                    yourAppsAndDevicesConnect,
-                    yourAppsAndDevicesDeauthorize,
-                    permissionsAllow,
-                    permissionsAllowed,
-                    permissionDenied,
-                    permissionCancel,
-                    permissionMessage,
-                    permissionSettings,
-                    permissionLocation,
-                    profileUserInfoButtonEdit,
-                    profileUserInfoButtonSubmit,
-                    dailySurveyTimeDescription,
-                    dailySurveyTimingHidden
+                    title = profileTitle,
+                    userInfo = userInfo,
+                    appsAndDevices = appsAndDevices,
+                    reviewConsent = reviewConsentTitle,
+                    permissions = permissions,
+                    dailySurveyTime = dailySurveyTime,
+                    disclaimer = profileDisclaimer
                 )
+        }
+    }
 
+    private fun toUserInfo(): UserInfo? =
+        when(null) {
+            userInfoTitle,userInfoButtonEdit, userInfoButtonSubmit -> null
+            else ->
+                UserInfo(
+                    title = userInfoTitle,
+                    edit = userInfoButtonEdit,
+                    submit = userInfoButtonSubmit
+                )
+        }
+
+    private fun toAppsAndDevices(): AppsAndDevices? =
+        when(null) {
+            appsAndDevicesTitle, appsAndDevicesConnect,
+            appsAndDevicesDeauthorize -> null
+            else ->
+                AppsAndDevices(
+                    title = appsAndDevicesTitle,
+                    connect = appsAndDevicesConnect,
+                    deauthorize = appsAndDevicesDeauthorize
+                )
+        }
+
+    private fun toPermissions(): Permissions? =
+        when (null) {
+            permissionsTitle, permissionsAllow, permissionsAllowed, permissionDenied,
+            permissionCancel, permissionMessage, permissionSettings, permissionLocation -> null
+            else ->
+                Permissions(
+                    title = permissionsTitle,
+                    allow = permissionsAllow,
+                    allowed = permissionsAllowed,
+                    denied = permissionDenied,
+                    cancel = permissionCancel,
+                    message = permissionMessage,
+                    settings = permissionSettings,
+                    location = permissionLocation
+                )
+        }
+
+    private fun toDailySurveyTime(): DailySurveyTime? =
+        when(null) {
+            dailSurveyTimeTitle, dailySurveyTimeDescription, dailSurveyTimeButton,
+            dailySurveyTimingHidden -> null
+            else ->
+                DailySurveyTime(
+                    title = dailSurveyTimeTitle,
+                    description = dailySurveyTimeDescription,
+                    save = dailSurveyTimeButton,
+                    hidden = dailySurveyTimingHidden
+                )
         }
 
     private fun toYourData(): YourData? =

@@ -104,14 +104,14 @@ fun AboutYouPage(
                 Spacer(modifier = Modifier.height(30.dp))
                 if (it.customData.isNotEmpty())
                     MenuItem(
-                        text = configuration.text.profile.firstItem,
+                        text = configuration.text.profile.userInfo.title,
                         icon = imageConfiguration.pregnancy(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
                         onClick = onPregnancyClicked
                     )
                 MenuItem(
-                    text = configuration.text.profile.secondItem,
+                    text = configuration.text.profile.appsAndDevices.title,
                     icon = imageConfiguration.devices(),
                     configuration = configuration,
                     imageConfiguration = imageConfiguration,
@@ -132,22 +132,22 @@ fun AboutYouPage(
                     )
                 }
                 MenuItem(
-                    text = configuration.text.profile.thirdItem,
+                    text = configuration.text.profile.reviewConsent,
                     icon = imageConfiguration.reviewConsent(),
                     configuration = configuration,
                     imageConfiguration = imageConfiguration,
                     onClick = onReviewConsentClicked
                 )
                 MenuItem(
-                    text = configuration.text.profile.fourthItem,
+                    text = configuration.text.profile.permissions.title,
                     icon = imageConfiguration.permissions(),
                     configuration = configuration,
                     imageConfiguration = imageConfiguration,
                     onClick = onPermissionsClicked
                 )
-                if (configuration.text.profile.dailySurveyTimingHidden == 0)
+                if (configuration.text.profile.dailySurveyTime.hidden == 0)
                     MenuItem(
-                        text = configuration.text.profile.fifthItem,
+                        text = configuration.text.profile.dailySurveyTime.title,
                         icon = imageConfiguration.dailySurveyTime(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,

@@ -1,29 +1,41 @@
 package com.foryouandme.ui.dailysurveytime
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
-import com.foryouandme.core.arch.flow.observeIn
-import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.showBackButton
 import com.foryouandme.databinding.DailySurveyTimeBinding
-import com.foryouandme.entity.configuration.button.button
+import com.foryouandme.ui.dailysurveytime.compose.DailySurveyTimePage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.onEach
-import org.threeten.bp.LocalTime
 
 @AndroidEntryPoint
-class DailySurveyTimeFragment : BaseFragment(R.layout.daily_survey_time) {
+class DailySurveyTimeFragment : BaseFragment() {
 
     private val viewModel: DailySurveyTimeViewModel by viewModels()
 
     private val binding: DailySurveyTimeBinding?
         get() = view?.let { DailySurveyTimeBinding.bind(it) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    @ExperimentalAnimationApi
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                DailySurveyTimePage(
+                    viewModel = viewModel,
+                    onBack = { navigator.back(rootNavController()) }
+                )
+            }
+        }
+
+    /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.stateUpdate
@@ -135,6 +147,6 @@ class DailySurveyTimeFragment : BaseFragment(R.layout.daily_survey_time) {
             viewBinding.timePicker.minute = time.minute
         }
 
-    }
+    }*/
 
 }

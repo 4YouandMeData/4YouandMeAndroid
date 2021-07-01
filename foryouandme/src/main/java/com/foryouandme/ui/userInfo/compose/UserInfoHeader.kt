@@ -52,7 +52,7 @@ fun UserInfoHeader(
                 .align(Alignment.Center)
         )
         Text(
-            text = configuration.text.profile.firstItem,
+            text = configuration.text.profile.userInfo.title,
             color = configuration.theme.secondaryColor.value,
             style = MaterialTheme.typography.h1,
             modifier = Modifier

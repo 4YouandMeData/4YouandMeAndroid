@@ -1,30 +1,38 @@
 package com.foryouandme.ui.dailysurveytime
 
+import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.toData
+import com.foryouandme.domain.error.ForYouAndMeException
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.usersettings.UserSettings
 import org.threeten.bp.LocalTime
 
 data class DailySurveyTimeState(
-    val userSettings: UserSettings? = null
-)
+    val configuration: LazyData<Configuration> = LazyData.Empty,
+    val userSettings: LazyData<UserSettings> = LazyData.Empty,
+    val save: LazyData<Unit> = LazyData.Empty
+) {
 
-sealed class DailySurveyTimeStateUpdate {
-    object GetUserSettings : DailySurveyTimeStateUpdate()
-    object SaveUserSettings : DailySurveyTimeStateUpdate()
+    companion object {
+
+        fun mock(): DailySurveyTimeState =
+            DailySurveyTimeState(
+                configuration = Configuration.mock().toData(),
+                userSettings = UserSettings.mock().toData(),
+            )
+
+    }
+
 }
 
-sealed class DailySurveyTimeLoading {
-    object GetUserSettings : DailySurveyTimeLoading()
-    object SaveUserSettings : DailySurveyTimeLoading()
+sealed class DailySurveyTimeAction {
+    object GetConfiguration: DailySurveyTimeAction()
+    object GetUserSettings : DailySurveyTimeAction()
+    data class UpdateTime(val time: LocalTime): DailySurveyTimeAction()
+    object SaveUserSettings : DailySurveyTimeAction()
 }
 
-sealed class DailySurveyTimeError {
-    object GetUserSettings : DailySurveyTimeError()
-    object SaveUserSettings : DailySurveyTimeError()
-}
-
-sealed class DailySurveyTimeStateEvent {
-    object GetUserSettings : DailySurveyTimeStateEvent()
-    data class SaveUserSettings(
-        val dailySurveyTime: LocalTime
-    ) : DailySurveyTimeStateEvent()
+sealed class DailySurveyTimeEvent {
+    object Saved : DailySurveyTimeEvent()
+    data class SaveError(val error: ForYouAndMeException) : DailySurveyTimeEvent()
 }

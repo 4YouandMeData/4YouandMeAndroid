@@ -55,10 +55,10 @@ fun PermissionsPage(
                         if (configuration != null)
                             context.execute(
                                 ContextAction.PermissionSettingsDialogAction(
-                                    title = configuration.text.profile.permissionDenied,
-                                    description = configuration.text.profile.permissionMessage,
-                                    settings = configuration.text.profile.permissionSettings,
-                                    cancel = configuration.text.profile.permissionCancel,
+                                    title = configuration.text.profile.permissions.denied,
+                                    description = configuration.text.profile.permissions.message,
+                                    settings = configuration.text.profile.permissions.settings,
+                                    cancel = configuration.text.profile.permissions.cancel,
                                     isCancelable = true
                                 )
                             )
@@ -99,7 +99,7 @@ fun PermissionsPage(
         ForYouAndMeTopAppBar(
             imageConfiguration = imageConfiguration,
             icon = TopAppBarIcon.Back,
-            title = configuration.text.profile.fourthItem,
+            title = configuration.text.profile.permissions.title,
             titleColor = configuration.theme.secondaryColor.value,
             modifier =
             Modifier

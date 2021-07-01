@@ -92,8 +92,8 @@ fun AppsAndDeviceItem(
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text =
-                if (item.isConnected) configuration.text.profile.deauthorize
-                else configuration.text.profile.connect,
+                if (item.isConnected) configuration.text.profile.appsAndDevices.deauthorize
+                else configuration.text.profile.appsAndDevices.connect,
                 style = MaterialTheme.typography.h3,
                 color =
                 if (item.isConnected) configuration.theme.deactiveColor.value

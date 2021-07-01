@@ -83,7 +83,7 @@ fun ReviewConsentPage(
 
                 item {
                     Text(
-                        text = configuration.text.profile.thirdItem,
+                        text = configuration.text.profile.reviewConsent,
                         style = MaterialTheme.typography.h1,
                         modifier = Modifier.fillMaxWidth()
                     )

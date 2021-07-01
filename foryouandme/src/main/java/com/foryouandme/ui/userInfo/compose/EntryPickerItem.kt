@@ -31,7 +31,7 @@ fun EntryPickerItem(
 ) {
 
     val dialog = remember { MaterialDialog() }
-    dialog.build {
+    dialog.build(backgroundColor = configuration.theme.secondaryColor.value) {
 
         title(item.name)
 
