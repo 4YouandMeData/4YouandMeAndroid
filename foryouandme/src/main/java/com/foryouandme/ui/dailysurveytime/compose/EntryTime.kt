@@ -65,7 +65,7 @@ fun EntryTime(
 
     ForYouAndMeReadOnlyTextField(
         value = time.format(DateTimeFormatter.ofPattern("HH:mm")).orEmpty(),
-        label = "Time",
+        label = null,
         placeholder = null,
         configuration = configuration,
         trailingIcon = {

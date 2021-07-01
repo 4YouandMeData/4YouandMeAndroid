@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -112,6 +114,13 @@ private fun DailySurveyTimePage(
                     onBack = onBack
                 )
                 Spacer(modifier = Modifier.height(30.dp))
+                Text(
+                    text = configuration.text.profile.dailySurveyTime.description,
+                    style = MaterialTheme.typography.body1,
+                    color = configuration.theme.primaryTextColor.value,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 EntryTime(
                     time = it.dailySurveyTime,
                     configuration = configuration,
