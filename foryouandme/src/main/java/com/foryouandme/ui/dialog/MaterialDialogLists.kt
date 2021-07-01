@@ -14,11 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Checkbox
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 private const val listRatio = 0.6f
@@ -211,6 +208,9 @@ fun MaterialDialog.listItemsMultiChoice(
 @Composable
 fun MaterialDialog.listItemsSingleChoice(
     list: List<String>,
+    selectedTextColor: Color = MaterialTheme.colors.onSurface,
+    unselectedTextColor: Color = selectedTextColor.copy(alpha = ContentAlpha.disabled),
+    radioButtonColors: RadioButtonColors = RadioButtonDefaults.colors(),
     disabledIndices: List<Int> = listOf(),
     initialSelection: Int? = null,
     waitForPositiveButton: Boolean = true,
@@ -257,7 +257,10 @@ fun MaterialDialog.listItemsSingleChoice(
             disabledIndices = disabledIndices,
             selected = selected,
             isEnabled = isEnabled,
-            onSelect = onSelect
+            onSelect = onSelect,
+            selectedTextColor = selectedTextColor,
+            unselectedTextColor = unselectedTextColor,
+            radioButtonColors = radioButtonColors
         )
     }
 }
@@ -269,7 +272,10 @@ private fun SingleChoiceItem(
     disabledIndices: List<Int>,
     selected: Int?,
     isEnabled: (index: Int) -> Boolean,
-    onSelect: (index: Int) -> Unit
+    onSelect: (index: Int) -> Unit,
+    selectedTextColor: Color = MaterialTheme.colors.onSurface,
+    unselectedTextColor: Color = selectedTextColor.copy(alpha = ContentAlpha.disabled),
+    radioButtonColors: RadioButtonColors = RadioButtonDefaults.colors()
 ) {
     val enabled = remember(disabledIndices) { index !in disabledIndices }
 
@@ -286,7 +292,8 @@ private fun SingleChoiceItem(
                     onSelect(index)
                 }
             },
-            enabled = isEnabled(index)
+            enabled = isEnabled(index),
+            colors = radioButtonColors
         )
         Spacer(
             modifier = Modifier
@@ -296,11 +303,7 @@ private fun SingleChoiceItem(
         Text(
             item,
             modifier = Modifier,
-            color = if (enabled) {
-                MaterialTheme.colors.onSurface
-            } else {
-                MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-            },
+            color = if (enabled) selectedTextColor else unselectedTextColor,
             style = MaterialTheme.typography.body1
         )
     }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -33,10 +34,16 @@ fun EntryPickerItem(
     val dialog = remember { MaterialDialog() }
     dialog.build(backgroundColor = configuration.theme.secondaryColor.value) {
 
-        title(item.name)
+        title(text = item.name, color = configuration.theme.primaryTextColor.value)
 
         listItemsSingleChoice(
             list = item.values.map { it.name },
+            selectedTextColor = configuration.theme.primaryTextColor.value,
+            radioButtonColors =
+            RadioButtonDefaults.colors(
+                selectedColor = configuration.theme.primaryColorStart.value,
+                unselectedColor = configuration.theme.primaryTextColor.value
+            ),
             initialSelection = max(item.values.indexOf(item.value), 0)
         ) {
             val value = item.values.getOrNull(it)

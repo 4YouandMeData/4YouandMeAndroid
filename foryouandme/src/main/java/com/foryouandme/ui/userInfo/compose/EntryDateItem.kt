@@ -23,6 +23,7 @@ import com.foryouandme.ui.compose.textfield.ForYouAndMeReadOnlyTextField
 import com.foryouandme.ui.dialog.MaterialDialog
 import com.foryouandme.ui.dialog.buttons
 import com.foryouandme.ui.dialog.datetime.date.DatePickerColors
+import com.foryouandme.ui.dialog.datetime.date.DatePickerDefaults
 import com.foryouandme.ui.dialog.datetime.date.datepicker
 import com.google.accompanist.pager.ExperimentalPagerApi
 import org.threeten.bp.LocalDate
@@ -42,8 +43,21 @@ fun EntryDateItem(
 
     val dialog = remember { MaterialDialog() }
     dialog.build(backgroundColor = configuration.theme.secondaryColor.value) {
-        datepicker(colors = ForYouAndMeDatePickerColors(configuration)) {
-            onDateSelected(item, LocalDate.of(it.year, it.monthValue, it.dayOfMonth))
+        datepicker(
+            colors =
+            DatePickerDefaults.colors(
+                headerBackgroundColor = configuration.theme.primaryColorStart.value,
+                headerTextColor = configuration.theme.secondaryColor.value,
+                activeTextColor = configuration.theme.secondaryColor.value,
+                activeBackgroundColor = configuration.theme.primaryColorStart.value,
+                inactiveBackgroundColor = Color.Transparent,
+                inactiveTextColor = configuration.theme.primaryTextColor.value,
+            )
+        ) {
+            onDateSelected(
+                item,
+                LocalDate.of(it.year, it.monthValue, it.dayOfMonth)
+            )
         }
         buttons {
             val style =
@@ -74,32 +88,6 @@ fun EntryDateItem(
         modifier = Modifier.fillMaxWidth(),
         onClick = { if (isEditable) dialog.show() }
     )
-}
-
-class ForYouAndMeDatePickerColors(
-    private val configuration: Configuration
-) : DatePickerColors {
-
-    override val headerBackgroundColor: Color
-        get() = configuration.theme.primaryColorStart.value
-
-    override val headerTextColor: Color
-        get() = configuration.theme.secondaryColor.value
-
-    @Composable
-    override fun backgroundColor(active: Boolean): State<Color> =
-        rememberUpdatedState(
-            if (active) configuration.theme.primaryColorStart.value
-            else configuration.theme.secondaryColor.value
-        )
-
-    @Composable
-    override fun textColor(active: Boolean): State<Color> =
-        rememberUpdatedState(
-            if (active) configuration.theme.secondaryColor.value
-            else configuration.theme.primaryTextColor.value
-        )
-
 }
 
 @ExperimentalAnimationApi
