@@ -155,8 +155,7 @@
     <fragment
         android:id="@+id/pin_code"
         android:name="com.foryouandme.ui.auth.signin.pin.PinCodeFragment"
-        android:label="pin_code"
-        tools:layout="@layout/enter_pin">
+        android:label="pin_code">
 
         <action
             android:id="@+id/action_pin_code_to_onboarding"

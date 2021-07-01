@@ -64,7 +64,11 @@ fun EntryPickerItem(
         value = item.value?.name.orEmpty(),
         label = item.name,
         placeholder = null,
-        configuration = configuration,
+        labelColor = configuration.theme.fourthTextColor.value,
+        placeholderColor = configuration.theme.fourthTextColor.value,
+        cursorColor = configuration.theme.primaryTextColor.value,
+        textColor = configuration.theme.primaryTextColor.value,
+        indicatorColor = configuration.theme.fourthTextColor.value,
         trailingIcon = {
             Image(
                 painter =

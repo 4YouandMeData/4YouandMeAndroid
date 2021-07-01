@@ -3,6 +3,7 @@ package com.foryouandme.ui.compose.textfield
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
@@ -22,8 +24,13 @@ fun ForYouAndMeTextField(
     label: String?,
     placeholder: String?,
     isEditable: Boolean,
-    configuration: Configuration,
+    labelColor: Color,
+    placeholderColor: Color,
+    textColor: Color,
+    indicatorColor: Color,
+    cursorColor: Color,
     modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: @Composable () -> Unit = {},
     onTextChanged: (String) -> Unit = { }
 ) {
@@ -34,7 +41,7 @@ fun ForYouAndMeTextField(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body1,
-                    color = configuration.theme.fourthTextColor.value
+                    color = labelColor
                 )
         },
         placeholder = {
@@ -42,7 +49,7 @@ fun ForYouAndMeTextField(
                 Text(
                     text = placeholder,
                     style = MaterialTheme.typography.body1,
-                    color = configuration.theme.fourthTextColor.value
+                    color = placeholderColor
                 )
         },
         enabled = isEditable,
@@ -52,19 +59,20 @@ fun ForYouAndMeTextField(
         MaterialTheme
             .typography
             .body1
-            .copy(color = configuration.theme.primaryTextColor.value),
+            .copy(color = textColor),
         colors =
         TextFieldDefaults.textFieldColors(
-            textColor = configuration.theme.primaryTextColor.value,
+            textColor = textColor,
             backgroundColor = Color.Transparent,
-            placeholderColor = configuration.theme.primaryTextColor.value.copy(alpha = 0.6f),
-            focusedIndicatorColor = configuration.theme.primaryTextColor.value,
-            unfocusedIndicatorColor = configuration.theme.primaryTextColor.value,
-            focusedLabelColor = configuration.theme.primaryTextColor.value,
-            unfocusedLabelColor = configuration.theme.primaryTextColor.value,
-            cursorColor = configuration.theme.primaryTextColor.value,
+            placeholderColor = placeholderColor.copy(alpha = 0.6f),
+            focusedIndicatorColor = indicatorColor,
+            unfocusedIndicatorColor = indicatorColor,
+            focusedLabelColor = labelColor,
+            unfocusedLabelColor = labelColor,
+            cursorColor = cursorColor,
         ),
         onValueChange = onTextChanged,
+        keyboardOptions = keyboardOptions,
         modifier = modifier
     )
 }
@@ -75,7 +83,11 @@ fun ForYouAndMeReadOnlyTextField(
     value: String,
     label: String?,
     placeholder: String?,
-    configuration: Configuration,
+    labelColor: Color,
+    placeholderColor: Color,
+    textColor: Color,
+    indicatorColor: Color,
+    cursorColor: Color,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable () -> Unit = {},
     onClick: () -> Unit,
@@ -85,9 +97,13 @@ fun ForYouAndMeReadOnlyTextField(
             value = value,
             label = label,
             placeholder = placeholder,
+            labelColor = labelColor,
+            placeholderColor = placeholderColor,
+            textColor = textColor,
+            indicatorColor = indicatorColor,
+            cursorColor = cursorColor,
             isEditable = false,
             trailingIcon = trailingIcon,
-            configuration = configuration,
             modifier = modifier,
         )
         Box(
@@ -95,21 +111,6 @@ fun ForYouAndMeReadOnlyTextField(
                 .matchParentSize()
                 .alpha(0f)
                 .clickable(onClick = onClick),
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ForYouAndMeTextFieldPreview() {
-    ForYouAndMeTheme {
-        ForYouAndMeTextField(
-            value = Mock.body,
-            label = Mock.name,
-            placeholder = Mock.name,
-            isEditable = true,
-            configuration = Configuration.mock(),
-            modifier = Modifier.fillMaxWidth()
         )
     }
 }

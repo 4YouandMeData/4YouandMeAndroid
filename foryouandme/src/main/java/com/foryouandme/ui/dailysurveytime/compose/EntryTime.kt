@@ -67,7 +67,11 @@ fun EntryTime(
         value = time.format(DateTimeFormatter.ofPattern("HH:mm")).orEmpty(),
         label = null,
         placeholder = null,
-        configuration = configuration,
+        labelColor = configuration.theme.fourthTextColor.value,
+        placeholderColor = configuration.theme.fourthTextColor.value,
+        cursorColor = configuration.theme.primaryTextColor.value,
+        textColor = configuration.theme.primaryTextColor.value,
+        indicatorColor = configuration.theme.fourthTextColor.value,
         trailingIcon = {
             Image(
                 painter = painterResource(imageConfiguration.entryWrong()),
