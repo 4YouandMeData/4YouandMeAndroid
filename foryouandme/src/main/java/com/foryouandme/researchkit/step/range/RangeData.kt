@@ -17,6 +17,7 @@ sealed class RangeAction {
 
     data class SetStep(val step: RangeStep) : RangeAction()
     data class SelectValue(val value: Float) : RangeAction()
+    object EndValueSelection : RangeAction()
     object Next : RangeAction()
 
 }

@@ -47,12 +47,27 @@ class RangeViewModel @Inject constructor() : ViewModel() {
 
         val step = state.value.step
         if (step != null) {
-            val roundedValue = (value * step.maxValue).roundToInt()
+            val roundedValue = (value * (step.maxValue - step.minValue)).roundToInt() + step.minValue
             state.emit(
                 state.value.copy(
                     value = roundedValue,
                     valuePercent = value,
                     canGoNext = true
+                )
+            )
+        }
+    }
+
+    private suspend fun snapValue() {
+
+        val step = state.value.step
+        if (step != null) {
+            val snapValue =
+                (state.value.value - step.minValue).toFloat() /
+                        (step.maxValue - step.minValue).toFloat()
+            state.emit(
+                state.value.copy(
+                    valuePercent = snapValue,
                 )
             )
         }
@@ -104,6 +119,8 @@ class RangeViewModel @Inject constructor() : ViewModel() {
                 viewModelScope.launchSafe { selectValue(action.value) }
             RangeAction.Next ->
                 viewModelScope.launchSafe { checkSkip() }
+            RangeAction.EndValueSelection ->
+                viewModelScope.launchSafe { snapValue() }
         }
     }
 

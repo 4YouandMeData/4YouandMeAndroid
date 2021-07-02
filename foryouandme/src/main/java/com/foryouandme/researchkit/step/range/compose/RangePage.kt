@@ -21,13 +21,14 @@ import com.foryouandme.researchkit.result.SingleIntAnswerResult
 import com.foryouandme.researchkit.skip.SkipTarget
 import com.foryouandme.researchkit.step.compose.QuestionPage
 import com.foryouandme.researchkit.step.range.RangeAction
-import com.foryouandme.researchkit.step.range.RangeAction.SelectValue
+import com.foryouandme.researchkit.step.range.RangeAction.*
 import com.foryouandme.researchkit.step.range.RangeEvents
 import com.foryouandme.researchkit.step.range.RangeState
 import com.foryouandme.researchkit.step.range.RangeViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import java.lang.Integer.max
 
 @Composable
 fun RangePage(
@@ -55,7 +56,8 @@ fun RangePage(
         RangePage(
             state = state,
             onValueChange = { viewModel.execute(SelectValue(it)) },
-            onNext = { viewModel.execute(RangeAction.Next) }
+            onValueChangeFinished = { viewModel.execute(EndValueSelection) },
+            onNext = { viewModel.execute(Next) }
         )
     }
 
@@ -65,6 +67,7 @@ fun RangePage(
 private fun RangePage(
     state: RangeState,
     onValueChange: (Float) -> Unit = {},
+    onValueChangeFinished: () -> Unit = {},
     onNext: () -> Unit = {}
 ) {
     if (state.step != null)
@@ -88,8 +91,9 @@ private fun RangePage(
             item {
                 Slider(
                     value = state.valuePercent,
-                    steps = state.step.maxValue - state.step.minValue,
+                    steps = maxOf(state.step.maxValue - state.step.minValue - 1, 0),
                     onValueChange = onValueChange,
+                    onValueChangeFinished = onValueChangeFinished,
                     colors =
                     SliderDefaults.colors(
                         thumbColor = state.step.progressColor.getColor(),
