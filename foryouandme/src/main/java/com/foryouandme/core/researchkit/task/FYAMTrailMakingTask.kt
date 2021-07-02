@@ -2,7 +2,7 @@ package com.foryouandme.core.researchkit.task
 
 import android.graphics.Color
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.researchkit.step.FYAMPageStep
+import com.foryouandme.core.researchkit.step.page.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled

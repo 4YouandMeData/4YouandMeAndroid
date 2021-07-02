@@ -1,22 +1,45 @@
-package com.foryouandme.core.researchkit.step
+package com.foryouandme.core.researchkit.step.page
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.databinding.StepFyamPageBinding
 import com.foryouandme.researchkit.step.StepFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
+class FYAMPageStepFragment : StepFragment() {
+
+    private val viewModel: FYAMPageStepViewModel by viewModels()
 
     val binding: StepFyamPageBinding?
         get() = view?.let { StepFyamPageBinding.bind(it) }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                FYAMPageStepPage(
+                    viewModel = viewModel,
+                    next = { next() },
+                    reschedule = { reschedule() }
+                )
+            }
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        taskViewModel.getStepByIndexAs<FYAMPageStep>(indexArg())?.let { applyData(it) }
+        val step = taskViewModel.getStepByIndexAs<FYAMPageStep>(indexArg())
+        if(step != null) viewModel.execute(FYAMPageStepAction.SetStep(step))
+
     }
 
     private fun applyData(step: FYAMPageStep) {
@@ -49,7 +72,6 @@ class FYAMPageStepFragment : StepFragment(R.layout.step_fyam_page) {
             extraStringAction = null,
             extraPageAction = null,
             specialStringAction = specialAction
-
         )
 
     }

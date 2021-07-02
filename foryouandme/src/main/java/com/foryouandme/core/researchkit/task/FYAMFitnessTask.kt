@@ -5,7 +5,7 @@ import com.foryouandme.entity.activity.Reschedule
 import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.page.Page
-import com.foryouandme.core.researchkit.step.FYAMPageStep
+import com.foryouandme.core.researchkit.step.page.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Step

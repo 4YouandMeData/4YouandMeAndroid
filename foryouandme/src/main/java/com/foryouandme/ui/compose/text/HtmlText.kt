@@ -44,10 +44,6 @@ fun HtmlText(
                 )
             )
 
-            it.typeface = ResourcesCompat.getFont(it.context, R.font.helvetica)
-            it.setTextSize(TypedValue.COMPLEX_UNIT_SP, style.fontSize.value)
-            val fontHeight: Int = it.paint.getFontMetricsInt(null)
-            it.setLineSpacing(lineHeight - fontHeight, 1f)
             it.gravity =
                 when(textAlign) {
                     TextAlign.Left -> Gravity.START
@@ -58,6 +54,11 @@ fun HtmlText(
                     TextAlign.End -> Gravity.END
                     else -> Gravity.START
                 }
+            it.typeface = ResourcesCompat.getFont(it.context, R.font.helvetica)
+            it.setTextSize(TypedValue.COMPLEX_UNIT_SP, style.fontSize.value)
+            val fontHeight: Int = it.paint.getFontMetricsInt(null)
+            it.setLineSpacing(lineHeight - fontHeight, 1f)
+
 
         }
     )

@@ -35,68 +35,75 @@ fun Page(
     specialStringPageAction: ((String, PageRef?) -> Unit)? = null
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .background(configuration.theme.secondaryColor.value)
-            .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
-        if (page.image != null)
-            MultiSourceImage(
-                source = ImageSource.Base64(page.image),
-                contentDescription = null,
-                modifier = Modifier.size(if (pageType == EPageType.INFO) 60.dp else 100.dp)
-            )
-        else
-            Spacer(modifier = Modifier.size(if (pageType == EPageType.INFO) 60.dp else 100.dp))
-        Spacer(modifier = Modifier.height(30.dp))
-        HtmlText(
-            text = page.title,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h1,
-            color = configuration.theme.primaryTextColor.value,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 25.dp)
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-        HtmlText(
-            text = page.body,
-            textAlign =
-            when (pageType) {
-                EPageType.INFO -> TextAlign.Start
-                EPageType.FAILURE -> TextAlign.Center
-                EPageType.SUCCESS -> TextAlign.Center
-            },
-            style = MaterialTheme.typography.body1,
-            color = configuration.theme.primaryTextColor.value,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(50.dp))
-        when {
-
-            extraPageAction != null && page.linkModalValue != null ->
-                Text(
-                    text = page.linkModalLabel.orEmpty(),
-                    style = MaterialTheme.typography.h3,
-                    color = configuration.theme.primaryColorEnd.value,
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable { extraPageAction(page.linkModalValue) }
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
+            if (page.image != null)
+                MultiSourceImage(
+                    source = ImageSource.Base64(page.image),
+                    contentDescription = null,
+                    modifier = Modifier.size(if (pageType == EPageType.INFO) 60.dp else 100.dp)
                 )
+            else
+                Spacer(modifier = Modifier.size(if (pageType == EPageType.INFO) 60.dp else 100.dp))
+            Spacer(modifier = Modifier.height(30.dp))
+            HtmlText(
+                text = page.title,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h1,
+                color = configuration.theme.primaryTextColor.value,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 25.dp)
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            HtmlText(
+                text = page.body,
+                textAlign =
+                when (pageType) {
+                    EPageType.INFO -> TextAlign.Start
+                    EPageType.FAILURE -> TextAlign.Center
+                    EPageType.SUCCESS -> TextAlign.Center
+                },
+                style = MaterialTheme.typography.body1,
+                color = configuration.theme.primaryTextColor.value,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(50.dp))
+            when {
 
-            extraStringAction != null && page.externalLinkUrl != null ->
-                Text(
-                    text = page.externalLinkLabel.orEmpty(),
-                    style = MaterialTheme.typography.h3,
-                    color = configuration.theme.primaryColorEnd.value,
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable { extraStringAction(page.externalLinkUrl) }
-                )
+                extraPageAction != null && page.linkModalValue != null ->
+                    Text(
+                        text = page.linkModalLabel.orEmpty(),
+                        style = MaterialTheme.typography.h3,
+                        color = configuration.theme.primaryColorEnd.value,
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { extraPageAction(page.linkModalValue) }
+                    )
+
+                extraStringAction != null && page.externalLinkUrl != null ->
+                    Text(
+                        text = page.externalLinkLabel.orEmpty(),
+                        style = MaterialTheme.typography.h3,
+                        color = configuration.theme.primaryColorEnd.value,
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { extraStringAction(page.externalLinkUrl) }
+                    )
+            }
         }
         PageFooter(
             configuration = configuration,

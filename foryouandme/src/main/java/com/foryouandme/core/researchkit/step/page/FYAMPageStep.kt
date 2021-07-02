@@ -1,5 +1,6 @@
-package com.foryouandme.core.researchkit.step
+package com.foryouandme.core.researchkit.step.page
 
+import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.page.Page
 import com.foryouandme.core.view.page.EPageType
