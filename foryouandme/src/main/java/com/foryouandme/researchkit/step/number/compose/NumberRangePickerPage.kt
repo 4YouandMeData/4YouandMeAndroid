@@ -104,7 +104,7 @@ fun NumberRangePickerPage(
                         modifier =
                         Modifier
                             .width(100.dp)
-                            .height(100.dp),
+                            .height(110.dp),
                     )
                 }
             }

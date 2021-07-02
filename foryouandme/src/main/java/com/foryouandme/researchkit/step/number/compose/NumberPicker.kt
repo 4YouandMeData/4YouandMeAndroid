@@ -1,6 +1,7 @@
 package com.foryouandme.researchkit.step.number.compose
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
@@ -102,7 +103,8 @@ fun NumberPicker(
         Icon(
             imageVector = Icons.Filled.KeyboardArrowUp,
             contentDescription = null,
-            tint = arrowColor
+            tint = arrowColor,
+            modifier = Modifier.size(30.dp).clickable { onValueChange(value - 1) }
         )
 
         Spacer(modifier = Modifier.height(spacing))
@@ -141,7 +143,8 @@ fun NumberPicker(
         Icon(
             imageVector = Icons.Filled.KeyboardArrowDown,
             contentDescription = null,
-            tint = arrowColor
+            tint = arrowColor,
+            modifier = Modifier.size(30.dp).clickable { onValueChange(value + 1) }
         )
     }
 }
@@ -191,6 +194,6 @@ private fun PreviewNumberPicker() {
             values = (0..10).map { it.toString() },
             numbersColumnHeight = 50.dp,
             arrowColor = Color.Red,
-            modifier = Modifier.height(100.dp)
+            modifier = Modifier.height(110.dp)
         )
 }
