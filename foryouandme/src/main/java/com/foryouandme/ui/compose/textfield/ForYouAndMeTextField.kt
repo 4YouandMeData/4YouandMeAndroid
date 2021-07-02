@@ -41,7 +41,7 @@ fun ForYouAndMeTextField(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body1,
-                    color = labelColor
+                    color = labelColor,
                 )
         },
         placeholder = {

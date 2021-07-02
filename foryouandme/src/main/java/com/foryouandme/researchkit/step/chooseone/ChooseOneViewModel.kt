@@ -2,50 +2,52 @@ package com.foryouandme.researchkit.step.chooseone
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.core.arch.flow.UIEvent
+import com.foryouandme.core.arch.flow.toUIEvent
+import com.foryouandme.core.ext.getColor
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.researchkit.step.common.QuestionItem
+import com.foryouandme.researchkit.result.AnswerResult
+import com.foryouandme.researchkit.result.SingleAnswerResult
+import com.foryouandme.researchkit.step.chooseone.compose.ChooseOneAnswerData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ChooseOneViewModel @Inject constructor(
-    private val stateUpdateFlow: StateUpdateFlow<ChooseOneStepStateUpdate>
-): ViewModel() {
+) : ViewModel() {
 
     /* --- state --- */
 
-    var state: ChooseOneStepState = ChooseOneStepState()
-        private set
+    private val state = MutableStateFlow(ChooseOneState())
+    val stateFlow = state as StateFlow<ChooseOneState>
 
-    /* --- flow --- */
+    /* --- event --- */
 
-    val stateUpdate = stateUpdateFlow.stateUpdates
+    private val events = MutableSharedFlow<UIEvent<ChooseOneEvent>>(replay = 1)
+    val eventsFlow = events as SharedFlow<UIEvent<ChooseOneEvent>>
 
-    /* --- initialize --- */
+    /* --- step --- */
 
-    private suspend fun initialize(step: ChooseOneStep, answers: List<ChooseOneAnswer>) {
+    private suspend fun setStep(step: ChooseOneStep) {
 
         val items =
-            listOf(QuestionItem(step.questionId, step.question, step.questionColor, step.image))
-                .plus(
-                    answers.map {
-
-                        ChooseOneAnswerItem(
-                            it.id,
-                            it.text,
-                            false,
-                            it.textColor,
-                            it.buttonColor,
-                            if(it.isOther) "" else null,
-                            it.otherPlaceholder
-                        )
-                    }
+            step.values.map {
+                ChooseOneAnswerData(
+                    answer = it,
+                    otherText = if (it.isOther) "" else null,
+                    isSelected = false,
+                    selectedColor = it.selectedColor.getColor(),
+                    unselectedColor = it.unselectedColor.getColor(),
+                    textColor = it.textColor.getColor(),
                 )
+            }
 
-        state = state.copy(items = items)
-        stateUpdateFlow.update(ChooseOneStepStateUpdate.Initialization(items))
+        state.emit(state.value.copy(step = step, answers = items))
 
     }
 
@@ -53,47 +55,73 @@ class ChooseOneViewModel @Inject constructor(
 
     private suspend fun answer(answerId: String) {
 
-        val items = state.items.map {
-            if (it is ChooseOneAnswerItem) it.copy(isSelected = it.id == answerId)
-            else it
+        val items = state.value.answers.map {
+            it.copy(isSelected = it.answer.id == answerId)
         }
 
-        state = state.copy(items = items)
-        stateUpdateFlow.update(ChooseOneStepStateUpdate.Answer(items))
+        state.emit(state.value.copy(answers = items, canGoNext = true))
 
     }
 
     private suspend fun answerText(answerId: String, text: String) {
 
-        val items = state.items.map {
-            if (it is ChooseOneAnswerItem && it.id == answerId) it.copy(otherText = text)
-            else it
+        val items = state.value.answers.map {
+            if (it.answer.id == answerId) it.copy(otherText = text) else it
         }
 
-        state = state.copy(items = items)
-        stateUpdateFlow.update(ChooseOneStepStateUpdate.Answer(items))
+        state.emit(state.value.copy(answers = items))
 
     }
 
-    fun getSelectedAnswer(): ChooseOneAnswerItem? =
-        state.items.firstOrNull {
-            when (it) {
-                is ChooseOneAnswerItem -> it.isSelected
-                else -> false
-            }
-        } as? ChooseOneAnswerItem
+    /* --- skip --- */
 
-    /* --- state event --- */
+    private suspend fun checkSkip() {
 
-    fun execute(stateEvent: ChooseOneStepStateEvent) {
+        val item = state.value.answers.firstOrNull { it.isSelected }
 
-        when(stateEvent) {
-            is ChooseOneStepStateEvent.Initialize ->
-                viewModelScope.launchSafe { initialize(stateEvent.step, stateEvent.answers) }
-            is ChooseOneStepStateEvent.Answer ->
-                viewModelScope.launchSafe { answer(stateEvent.answerId) }
-            is ChooseOneStepStateEvent.AnswerTextChange ->
-                viewModelScope.launchSafe { answerText(stateEvent.answerId, stateEvent.text) }
+        if (item != null) {
+
+            val skip = state.value.step?.skips?.firstOrNull { it.answerId == item.answer.id }
+            if (skip != null)
+                events.emit(ChooseOneEvent.Skip(getResult(), skip.target).toUIEvent())
+            else
+                events.emit(ChooseOneEvent.Next(getResult()).toUIEvent())
+        }
+
+    }
+
+    /* --- result --- */
+
+    private fun getResult(): SingleAnswerResult? {
+
+        val step = state.value.step
+        val item = state.value.answers.firstOrNull { it.isSelected }
+
+        return if (step != null && item != null)
+            SingleAnswerResult(
+                step.identifier,
+                state.value.start,
+                ZonedDateTime.now(),
+                step.questionId,
+                AnswerResult(item.answer.id, item.otherText)
+            )
+        else null
+
+    }
+
+    /* --- action--- */
+
+    fun execute(action: ChooseOneAction) {
+
+        when (action) {
+            is ChooseOneAction.SetStep ->
+                viewModelScope.launchSafe { setStep(action.step) }
+            is ChooseOneAction.Answer ->
+                viewModelScope.launchSafe { answer(action.answerId) }
+            is ChooseOneAction.AnswerTextChange ->
+                viewModelScope.launchSafe { answerText(action.answerId, action.text) }
+            ChooseOneAction.Next ->
+                viewModelScope.launchSafe { checkSkip() }
         }
 
     }

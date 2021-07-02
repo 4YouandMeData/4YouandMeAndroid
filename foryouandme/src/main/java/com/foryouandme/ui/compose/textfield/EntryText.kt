@@ -20,6 +20,40 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 @Composable
 fun EntryText(
     text: String,
+    labelColor: Color,
+    placeholderColor: Color,
+    textColor: Color,
+    indicatorColor: Color,
+    cursorColor: Color,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    placeholder: String? = null,
+    isEditable: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onTextChanged: (String) -> Unit = { },
+) {
+    EntryTextImpl(
+        text = text,
+        imageConfiguration = null,
+        labelColor = labelColor,
+        placeholderColor = placeholderColor,
+        textColor = textColor,
+        indicatorColor = indicatorColor,
+        cursorColor = cursorColor,
+        iconColor = null,
+        modifier = modifier,
+        label = label,
+        placeholder = placeholder,
+        isEditable = isEditable,
+        isValid = true,
+        keyboardOptions = keyboardOptions,
+        onTextChanged = onTextChanged,
+    )
+}
+
+@Composable
+fun EntryText(
+    text: String,
     imageConfiguration: ImageConfiguration,
     labelColor: Color,
     placeholderColor: Color,
@@ -29,6 +63,44 @@ fun EntryText(
     iconColor: Color,
     modifier: Modifier = Modifier,
     placeholder: String? = null,
+    label: String? = null,
+    isEditable: Boolean = true,
+    isValid: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onTextChanged: (String) -> Unit = { },
+) {
+    EntryTextImpl(
+        text = text,
+        imageConfiguration = imageConfiguration,
+        labelColor = labelColor,
+        placeholderColor = placeholderColor,
+        textColor = textColor,
+        indicatorColor = indicatorColor,
+        cursorColor = cursorColor,
+        iconColor = iconColor,
+        modifier = modifier,
+        label = label,
+        placeholder = placeholder,
+        isEditable = isEditable,
+        isValid = isValid,
+        keyboardOptions = keyboardOptions,
+        onTextChanged = onTextChanged,
+    )
+}
+
+@Composable
+private fun EntryTextImpl(
+    text: String,
+    imageConfiguration: ImageConfiguration?,
+    labelColor: Color,
+    placeholderColor: Color,
+    textColor: Color,
+    indicatorColor: Color,
+    cursorColor: Color,
+    iconColor: Color?,
+    modifier: Modifier = Modifier,
+    placeholder: String? = null,
+    label: String? = null,
     isEditable: Boolean = true,
     isValid: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -39,7 +111,7 @@ fun EntryText(
 
     ForYouAndMeTextField(
         value = text,
-        label = placeholder,
+        label = label,
         placeholder = placeholder,
         isEditable = isEditable,
         labelColor = labelColor,
@@ -50,7 +122,12 @@ fun EntryText(
         keyboardOptions = keyboardOptions,
         trailingIcon = {
             val focus = focusState
-            if (focus != null && focus.isFocused.not()) {
+            if (
+                imageConfiguration != null &&
+                iconColor != null &&
+                focus != null &&
+                focus.isFocused.not()
+            ) {
                 Image(
                     painter =
                     painterResource(
@@ -77,7 +154,7 @@ fun EntryText(
 @Composable
 private fun EntryTextItemPreview() {
     ForYouAndMeTheme {
-        EntryText(
+        EntryTextImpl(
             text = Mock.name,
             placeholder = Mock.title,
             labelColor = Color.Black,

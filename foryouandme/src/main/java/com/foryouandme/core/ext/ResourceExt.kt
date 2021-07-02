@@ -35,7 +35,6 @@ fun TextSource.getText(context: Context): String =
 
 /* --- color resource --- */
 
-@Composable
 fun ColorSource.getColor(): Color =
     when (this) {
         is ColorSource.AndroidRes -> resId.toColor()

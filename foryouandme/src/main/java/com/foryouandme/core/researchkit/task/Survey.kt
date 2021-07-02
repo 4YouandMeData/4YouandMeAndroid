@@ -156,20 +156,21 @@ fun buildSurvey(
                                     values =
                                     question.answers.map {
                                         ChooseOneAnswer(
-                                            it.id,
-                                            it.text,
-                                            configuration.theme.primaryTextColor.color(),
-                                            configuration.theme.primaryColorEnd.color(),
-                                            it.isOther,
-                                            configuration.text.survey.otherAnswerPlaceholder
+                                            id = it.id,
+                                            text = it.text.toTextSource(),
+                                            textColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                            selectedColor  =configuration.theme.primaryColorEnd.color().toColorSource(),
+                                            unselectedColor  =configuration.theme.deactiveColor.color().toColorSource(),
+                                            isOther = it.isOther,
+                                            otherPlaceholder = configuration.text.survey.otherAnswerPlaceholder.toTextSource()
                                         )
                                     },
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    question = question.text.toTextSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()

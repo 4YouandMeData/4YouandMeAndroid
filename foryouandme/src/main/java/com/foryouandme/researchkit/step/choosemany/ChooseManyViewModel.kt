@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.researchkit.step.chooseone.ChooseOneAnswerItem
 import com.foryouandme.researchkit.step.common.QuestionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

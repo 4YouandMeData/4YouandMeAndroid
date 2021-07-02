@@ -77,37 +77,43 @@ private fun RangePage(
             isNextEnabled = state.canGoNext,
             onNext = onNext
         ) {
-            Text(
-                text = state.value.toString(),
-                style = MaterialTheme.typography.h1,
-                color = state.step.valueColor.getColor()
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Slider(
-                value = state.valuePercent,
-                steps = state.step.maxValue - state.step.minValue,
-                onValueChange = onValueChange,
-                colors =
-                SliderDefaults.colors(
-                    thumbColor = state.step.progressColor.getColor(),
-                    activeTrackColor = state.step.progressColor.getColor(),
-                    activeTickColor = state.step.progressColor.getColor()
+            item {
+                Text(
+                    text = state.value.toString(),
+                    style = MaterialTheme.typography.h1,
+                    color = state.step.valueColor.getColor()
                 )
-            )
-            Row(modifier = Modifier.fillMaxWidth()) {
-                if (state.step.minDisplayValue != null)
-                    Text(
-                        text = state.step.minDisplayValue.getText(),
-                        style = MaterialTheme.typography.h3,
-                        color = state.step.minDisplayColor.getColor()
+            }
+            item { Spacer(modifier = Modifier.height(20.dp)) }
+            item {
+                Slider(
+                    value = state.valuePercent,
+                    steps = state.step.maxValue - state.step.minValue,
+                    onValueChange = onValueChange,
+                    colors =
+                    SliderDefaults.colors(
+                        thumbColor = state.step.progressColor.getColor(),
+                        activeTrackColor = state.step.progressColor.getColor(),
+                        activeTickColor = state.step.progressColor.getColor()
                     )
-                Spacer(modifier = Modifier.weight(1f))
-                if (state.step.maxDisplayValue != null)
-                    Text(
-                        text = state.step.maxDisplayValue.getText(),
-                        style = MaterialTheme.typography.h3,
-                        color = state.step.maxDisplayColor.getColor()
-                    )
+                )
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    if (state.step.minDisplayValue != null)
+                        Text(
+                            text = state.step.minDisplayValue.getText(),
+                            style = MaterialTheme.typography.h3,
+                            color = state.step.minDisplayColor.getColor()
+                        )
+                    Spacer(modifier = Modifier.weight(1f))
+                    if (state.step.maxDisplayValue != null)
+                        Text(
+                            text = state.step.maxDisplayValue.getText(),
+                            style = MaterialTheme.typography.h3,
+                            color = state.step.maxDisplayColor.getColor()
+                        )
+                }
             }
         }
 }

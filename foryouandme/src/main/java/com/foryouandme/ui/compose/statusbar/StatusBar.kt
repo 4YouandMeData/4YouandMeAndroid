@@ -20,4 +20,4 @@ fun StatusBar(color: Color) {
 }
 
 private fun isDark(color: Color): Boolean =
-    ((color.red * 0.299) + (color.green * 0.587) + (color.blue * 0.114)) < 186
+    ((color.red * 255 * 0.299) + (color.green * 255 * 0.587) + (color.blue * 255 * 0.114)) < 186
