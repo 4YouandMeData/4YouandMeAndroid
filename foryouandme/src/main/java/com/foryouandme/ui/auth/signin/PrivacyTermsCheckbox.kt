@@ -72,14 +72,14 @@ private enum class EAppendableType {
 
 }
 
-private fun getPrivacyTermsAnnotatedString(
+fun getPrivacyTermsAnnotatedString(
     text: String,
     privacy: String,
     terms: String,
 ): AnnotatedString {
 
-    val privacyIndex = text.indexOf(privacy)
-    val termsIndex = text.indexOf(terms)
+    val privacyIndex = if(privacy.isEmpty()) -1 else text.indexOf(privacy)
+    val termsIndex = if(terms.isEmpty()) -1 else text.indexOf(terms)
 
     val privacySplit =
         if (privacyIndex >= 0) text.split(privacy)

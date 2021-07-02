@@ -24,8 +24,8 @@ fun getPrivacyTermsSpan(
     onTermsClick: () -> Unit
 ): SpannableString {
 
-    val privacyIndex = text.indexOf(privacy)
-    val termsIndex = text.indexOf(terms)
+    val privacyIndex = if(privacy.isEmpty()) -1 else text.indexOf(privacy)
+    val termsIndex = if(terms.isEmpty()) -1 else text.indexOf(terms)
 
     val privacySplit =
         if (privacyIndex >= 0) text.split(privacy)
