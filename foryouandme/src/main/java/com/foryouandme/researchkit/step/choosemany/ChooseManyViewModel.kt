@@ -131,7 +131,7 @@ class ChooseManyViewModel @Inject constructor(
 
     }
 
-    /* --- state event --- */
+    /* --- action --- */
 
     fun execute(action: ChooseManyAction) {
 

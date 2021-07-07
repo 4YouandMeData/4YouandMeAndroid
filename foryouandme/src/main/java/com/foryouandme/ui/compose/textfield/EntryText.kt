@@ -29,6 +29,7 @@ fun EntryText(
     label: String? = null,
     placeholder: String? = null,
     isEditable: Boolean = true,
+    maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onTextChanged: (String) -> Unit = { },
 ) {
@@ -45,6 +46,7 @@ fun EntryText(
         label = label,
         placeholder = placeholder,
         isEditable = isEditable,
+        maxCharacter = maxCharacter,
         isValid = true,
         keyboardOptions = keyboardOptions,
         onTextChanged = onTextChanged,
@@ -66,6 +68,7 @@ fun EntryText(
     label: String? = null,
     isEditable: Boolean = true,
     isValid: Boolean = true,
+    maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onTextChanged: (String) -> Unit = { },
 ) {
@@ -83,6 +86,7 @@ fun EntryText(
         placeholder = placeholder,
         isEditable = isEditable,
         isValid = isValid,
+        maxCharacter = maxCharacter,
         keyboardOptions = keyboardOptions,
         onTextChanged = onTextChanged,
     )
@@ -103,6 +107,7 @@ private fun EntryTextImpl(
     label: String? = null,
     isEditable: Boolean = true,
     isValid: Boolean = true,
+    maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onTextChanged: (String) -> Unit = { },
 ) {
@@ -120,6 +125,7 @@ private fun EntryTextImpl(
         indicatorColor = indicatorColor,
         cursorColor = cursorColor,
         keyboardOptions = keyboardOptions,
+        maxCharacter = maxCharacter,
         trailingIcon = {
             val focus = focusState
             if (

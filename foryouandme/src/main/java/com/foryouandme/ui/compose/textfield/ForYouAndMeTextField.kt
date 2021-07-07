@@ -2,8 +2,6 @@ package com.foryouandme.ui.compose.textfield
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -13,11 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.mock.Mock
-import com.foryouandme.ui.compose.ForYouAndMeTheme
 
 @Composable
 fun ForYouAndMeTextField(
@@ -31,6 +24,7 @@ fun ForYouAndMeTextField(
     indicatorColor: Color,
     cursorColor: Color,
     modifier: Modifier = Modifier,
+    maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: @Composable () -> Unit = {},
     onTextChanged: (String) -> Unit = { }
@@ -72,7 +66,12 @@ fun ForYouAndMeTextField(
             unfocusedLabelColor = labelColor,
             cursorColor = cursorColor,
         ),
-        onValueChange = onTextChanged,
+        onValueChange = {
+            when {
+                maxCharacter == null -> onTextChanged(it)
+                it.length <= maxCharacter -> onTextChanged(it)
+            }
+        },
         keyboardOptions = keyboardOptions,
         modifier = modifier
     )

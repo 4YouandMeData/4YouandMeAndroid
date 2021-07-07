@@ -2,8 +2,12 @@ package com.foryouandme.researchkit.step.textinput
 
 import android.os.Bundle
 import android.text.InputFilter
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import com.foryouandme.R
 import com.foryouandme.core.ext.hideKeyboard
 import com.foryouandme.databinding.StepTextInputBinding
@@ -12,23 +16,41 @@ import com.foryouandme.researchkit.result.SingleStringAnswerResult
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.entity.source.applyImage
 import com.foryouandme.entity.source.applyImageAsButton
+import com.foryouandme.researchkit.step.textinput.compose.TextInputPage
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.ZonedDateTime
 
 @AndroidEntryPoint
-class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
+class TextInputStepFragment : StepFragment() {
 
-    private val binding: StepTextInputBinding?
-        get() = view?.let { StepTextInputBinding.bind(it) }
+    private val viewModel: TextInputViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                TextInputPage(
+                    viewModel = viewModel,
+                    onNext = {
+                        if (it != null) addResult(it)
+                        next()
+                    }
+                )
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        taskViewModel.getStepByIndexAs<TextInputStep>(indexArg())?.let { applyData(it) }
+        val step = taskViewModel.getStepByIndexAs<TextInputStep>(indexArg())
+        if(step != null) viewModel.execute(TextInputAction.SetStep(step))
 
     }
 
-    private fun applyData(step: TextInputStep) {
+    /*private fun applyData(step: TextInputStep) {
 
         val viewBinding = binding
 
@@ -74,6 +96,6 @@ class TextInputStepFragment : StepFragment(R.layout.step_text_input) {
 
         }
 
-    }
+    }*/
 
 }

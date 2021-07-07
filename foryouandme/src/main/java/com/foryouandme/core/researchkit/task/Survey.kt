@@ -261,17 +261,16 @@ fun buildSurvey(
                                         configuration.text.task.skipButton,
                                         configuration.theme.primaryColorEnd.color()
                                     ),
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource(),
-                                    textColor = configuration.theme.primaryTextColor.color(),
-                                    placeholderColor = configuration.theme.fourthTextColor.color(),
-                                    placeholder = question.placeholder,
+                                    question = question.text.toTextSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    buttonImage = imageConfiguration.nextStepSecondary().toAndroidResource(),
+                                    textColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    placeholderColor = configuration.theme.fourthTextColor.color().toColorSource(),
+                                    placeholder = question.placeholder?.toTextSource(),
                                     maxCharacters = question.maxCharacters
                                 )
 
