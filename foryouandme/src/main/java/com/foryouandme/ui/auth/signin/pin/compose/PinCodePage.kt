@@ -153,6 +153,7 @@ private fun PinCodePage(
                     imageConfiguration = imageConfiguration,
                     labelColor = configuration.theme.secondaryColor.value,
                     placeholderColor = configuration.theme.secondaryColor.value,
+                    label = configuration.text.phoneVerification.numberDescription,
                     cursorColor = configuration.theme.secondaryColor.value,
                     textColor = configuration.theme.secondaryColor.value,
                     indicatorColor = configuration.theme.secondaryColor.value,
