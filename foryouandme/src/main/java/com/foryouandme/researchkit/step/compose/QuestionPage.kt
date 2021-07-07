@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,8 +22,9 @@ fun QuestionPage(
     buttonImage: ImageSource,
     shadowColor: Color,
     isNextEnabled: Boolean = true,
+    lazyListState: LazyListState = rememberLazyListState(),
     onNext: () -> Unit = {},
-    content: LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit,
 ) {
     StatusBar(color = backgroundColor)
     Column(
@@ -32,6 +35,7 @@ fun QuestionPage(
             .padding(top = 55.dp) // TODO: remove padding and apply background to toolbar
     ) {
         LazyColumn(
+            state = lazyListState,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),

@@ -208,21 +208,24 @@ fun buildSurvey(
                                     ),
                                     values = question.answers.map {
                                         ChooseManyAnswer(
-                                            it.id,
-                                            it.text,
-                                            configuration.theme.primaryTextColor.color(),
-                                            configuration.theme.primaryColorEnd.color(),
-                                            it.isNone,
-                                            it.isOther,
-                                            configuration.text.survey.otherAnswerPlaceholder
+                                            id = it.id,
+                                            text = it.text.toTextSource(),
+                                            textColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                            entryColor = configuration.theme.deactiveColor.color().toColorSource(),
+                                            selectedColor = configuration.theme.primaryColorEnd.color().toColorSource(),
+                                            unselectedColor = configuration.theme.deactiveColor.color().toColorSource(),
+                                            checkmarkColor = configuration.theme.secondaryColor.color().toColorSource(),
+                                            isNone = it.isNone,
+                                            isOther= it.isOther,
+                                            otherPlaceholder = configuration.text.survey.otherAnswerPlaceholder.toTextSource()
                                         )
                                     },
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    question = question.text.toTextSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()

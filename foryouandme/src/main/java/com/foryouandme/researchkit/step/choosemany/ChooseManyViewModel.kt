@@ -2,52 +2,48 @@ package com.foryouandme.researchkit.step.choosemany
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.flow.StateUpdateFlow
+import com.foryouandme.core.arch.flow.UIEvent
+import com.foryouandme.core.arch.flow.toUIEvent
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.researchkit.step.common.QuestionItem
+import com.foryouandme.researchkit.result.AnswerResult
+import com.foryouandme.researchkit.result.MultipleAnswerResult
+import com.foryouandme.researchkit.step.choosemany.compose.ChooseManyAnswerData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ChooseManyViewModel @Inject constructor(
-    private val stateUpdateFlow: StateUpdateFlow<ChooseManyStepStateUpdate>
 ) : ViewModel() {
 
     /* --- state -- */
 
-    var state: ChooseManyStepState = ChooseManyStepState()
-        private set
+    private val state = MutableStateFlow(ChooseManyState())
+    val stateFlow = state as StateFlow<ChooseManyState>
 
-    /* --- flow --- */
+    /* --- events --- */
 
-    val stateUpdates = stateUpdateFlow.stateUpdates
+    private val events = MutableSharedFlow<UIEvent<ChooseManyEvent>>(replay = 1)
+    val eventsFlow = events as SharedFlow<UIEvent<ChooseManyEvent>>
 
-    /* --- initialize --- */
+    /* --- step --- */
 
-    private suspend fun initialize(step: ChooseManyStep, answers: List<ChooseManyAnswer>) {
+    private suspend fun setStep(step: ChooseManyStep) {
 
-        val items =
-            listOf(QuestionItem(step.questionId, step.question, step.questionColor, step.image))
-                .plus(
-                    answers.map {
-
-                        ChooseManyAnswerItem(
-                            it.id,
-                            it.text,
-                            false,
-                            it.textColor,
-                            it.buttonColor,
-                            it.isNone,
-                            if (it.isOther) "" else null,
-                            it.otherPlaceholder
-                        )
-
-
-                    }
+        val answers =
+            step.values.map {
+                ChooseManyAnswerData(
+                    answer = it,
+                    otherText = if (it.isOther) "" else null,
+                    isSelected = false
                 )
+            }
 
-        state = state.copy(items = items)
-        stateUpdateFlow.update(ChooseManyStepStateUpdate.Initialization(items))
+        state.emit(state.value.copy(step = step, answers = answers))
 
     }
 
@@ -56,65 +52,98 @@ class ChooseManyViewModel @Inject constructor(
     private suspend fun answer(answerId: String) {
 
         val selectedAnswerIsNone =
-            state.items
-                .filterIsInstance<ChooseManyAnswerItem>()
-                .firstOrNull { it.id == answerId }
+            state
+                .value
+                .answers
+                .firstOrNull { it.answer.id == answerId }
+                ?.answer
                 ?.isNone ?: false
 
-        val items =
-            state.items.map {
-                if (it is ChooseManyAnswerItem) {
-                    when (it.id) {
-                        answerId -> it.copy(isSelected = it.isSelected.not())
-                        else -> {
-
-                            val isSelected =
-                                when {
-                                    selectedAnswerIsNone -> false
-                                    it.isNone -> false
-                                    else -> it.isSelected
-                                }
-
-
-                            it.copy(isSelected = isSelected)
-                        }
+        val answers =
+            state.value.answers.map {
+                when (it.answer.id) {
+                    answerId -> it.copy(isSelected = it.isSelected.not())
+                    else -> {
+                        val isSelected =
+                            when {
+                                selectedAnswerIsNone -> false
+                                it.answer.isNone -> false
+                                else -> it.isSelected
+                            }
+                        it.copy(isSelected = isSelected)
                     }
-                } else it
+                }
             }
 
-        state = state.copy(items = items)
-        stateUpdateFlow.update(ChooseManyStepStateUpdate.Answer(items))
+        state.emit(
+            state.value.copy(
+                answers = answers,
+                canGoNext = answers.firstOrNull { it.isSelected } != null
+            )
+        )
 
     }
 
     private suspend fun answerText(answerId: String, text: String) {
 
-        val items = state.items.map {
-            if (it is ChooseManyAnswerItem && it.id == answerId) it.copy(otherText = text)
+        val answers = state.value.answers.map {
+            if (it.answer.id == answerId) it.copy(otherText = text)
             else it
         }
 
-        state = state.copy(items = items)
-        stateUpdateFlow.update(ChooseManyStepStateUpdate.Answer(items))
+        state.emit(state.value.copy(answers = answers))
 
     }
 
-    fun getSelectedAnswers(): List<ChooseManyAnswerItem> =
-        state.items
-            .mapNotNull { it as? ChooseManyAnswerItem }
-            .filter { it.isSelected }
+    /* --- skip --- */
+
+    private suspend fun checkSkip() {
+
+        val item = state.value.answers.firstOrNull { it.isSelected }
+
+        if (item != null) {
+
+            val skip = state.value.step?.skips?.firstOrNull { it.answerId == item.answer.id }
+            if (skip != null)
+                events.emit(ChooseManyEvent.Skip(getResult(), skip.target).toUIEvent())
+            else
+                events.emit(ChooseManyEvent.Next(getResult()).toUIEvent())
+        }
+
+    }
+
+    /* --- result --- */
+
+    private fun getResult(): MultipleAnswerResult? {
+
+        val step = state.value.step
+        val answers = state.value.answers.filter { it.isSelected }
+
+        return if (step != null && answers.isNotEmpty())
+            MultipleAnswerResult(
+                step.identifier,
+                state.value.start,
+                ZonedDateTime.now(),
+                step.questionId,
+                answers.map { AnswerResult(it.answer.id, it.otherText) }
+            )
+        else null
+
+    }
 
     /* --- state event --- */
 
-    fun execute(stateEvent: ChooseManyStepStateEvent) {
+    fun execute(action: ChooseManyAction) {
 
-        when (stateEvent) {
-            is ChooseManyStepStateEvent.Answer ->
-                viewModelScope.launchSafe { answer(stateEvent.id) }
-            is ChooseManyStepStateEvent.Initialize ->
-                viewModelScope.launchSafe { initialize(stateEvent.step, stateEvent.answers) }
-            is ChooseManyStepStateEvent.AnswerTextChange ->
-                viewModelScope.launchSafe { answerText(stateEvent.answerId, stateEvent.text) }
+        when (action) {
+            is ChooseManyAction.SetStep ->
+                viewModelScope.launchSafe { setStep(action.step) }
+            is ChooseManyAction.Answer ->
+                viewModelScope.launchSafe { answer(action.id) }
+            is ChooseManyAction.AnswerTextChange ->
+                viewModelScope.launchSafe { answerText(action.answerId, action.text) }
+            ChooseManyAction.Next ->
+                viewModelScope.launchSafe { checkSkip() }
         }
 
     }
