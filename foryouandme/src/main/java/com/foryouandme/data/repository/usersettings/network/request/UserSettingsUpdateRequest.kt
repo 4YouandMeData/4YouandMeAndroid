@@ -12,7 +12,7 @@ data class UserSettingsUpdateRequest (
         fun build(userSettings: UserSettings) : UserSettingsUpdateRequest =
             UserSettingsUpdateRequest(
                 UserSettingsUpdateDataRequest(
-                    userSettings.dailySurveyTime.toSecondOfDay().toLong()
+                    userSettings.dailySurveyTime?.toSecondOfDay()?.toLong()
                 )
             )
 
@@ -22,5 +22,5 @@ data class UserSettingsUpdateRequest (
 
 data class UserSettingsUpdateDataRequest(
     @Json(name = "daily_survey_time_seconds_since_midnight")
-    val dailySurveyTimeSecondsSinceMidnight: Long
+    val dailySurveyTimeSecondsSinceMidnight: Long?
 )

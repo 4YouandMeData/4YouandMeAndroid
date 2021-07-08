@@ -16,14 +16,13 @@ import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.usersettings.GetUserSettingsUseCase
 import com.foryouandme.domain.usecase.usersettings.UpdateUserSettingsUseCase
-import com.foryouandme.entity.usersettings.UserSettings
 import com.foryouandme.ui.compose.error.toForYouAndMeException
-import com.foryouandme.ui.userInfo.UserInfoAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import javax.inject.Inject
 
@@ -71,7 +70,11 @@ class DailySurveyTimeViewModel @Inject constructor(
             {
                 state.emit(state.value.copy(userSettings = LazyData.Loading()))
                 val userSettings = getUserSettingsUseCase()!!
-                state.emit(state.value.copy(userSettings = userSettings.toData()))
+                val updatedSettings =
+                    if (userSettings.dailySurveyTime == null)
+                        userSettings.copy(dailySurveyTime = LocalTime.now())
+                    else userSettings
+                state.emit(state.value.copy(userSettings = updatedSettings.toData()))
             },
             {
                 val update =
@@ -86,7 +89,7 @@ class DailySurveyTimeViewModel @Inject constructor(
         action(
             {
                 val userSettings = state.value.userSettings.dataOrNull()
-                if(userSettings != null) {
+                if (userSettings != null) {
                     state.emit(state.value.copy(save = LazyData.Loading()))
                     updateUserSettingsUseCase(userSettings)
                     state.emit(state.value.copy(save = LazyData.unit()))

@@ -12,12 +12,15 @@ data class UserSettingsResponse(
     val dailySurveyTimeSecondsSinceMidnight: Long? = null
 ) : Resource() {
 
-    fun toUserSettings(): UserSettings? {
+    fun toUserSettings(): UserSettings {
 
-        return when (null) {
-            dailySurveyTimeSecondsSinceMidnight -> null
-            else -> UserSettings(LocalTime.ofSecondOfDay(dailySurveyTimeSecondsSinceMidnight))
-        }
+        val dailySurveyTime =
+            if (dailySurveyTimeSecondsSinceMidnight != null)
+                LocalTime.ofSecondOfDay(dailySurveyTimeSecondsSinceMidnight)
+            else
+                null
+
+        return UserSettings(dailySurveyTime)
 
     }
 

@@ -118,16 +118,19 @@ private fun DailySurveyTimePage(
                     text = configuration.text.profile.dailySurveyTime.description,
                     style = MaterialTheme.typography.body1,
                     color = configuration.theme.primaryTextColor.value,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                EntryTime(
-                    time = it.dailySurveyTime,
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onTimeSelected = onTimeSelected,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
+                if (it.dailySurveyTime != null)
+                    EntryTime(
+                        time = it.dailySurveyTime,
+                        configuration = configuration,
+                        imageConfiguration = imageConfiguration,
+                        onTimeSelected = onTimeSelected,
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    )
                 Spacer(modifier = Modifier.weight(1f))
                 ForYouAndMeButton(
                     text = configuration.text.profile.dailySurveyTime.save,
@@ -145,7 +148,7 @@ private fun DailySurveyTimePage(
             visible = state.save.isLoading(),
             enter = fadeIn(),
             exit = fadeOut()
-        ) { Loading(configuration = configuration, Modifier.fillMaxSize())}
+        ) { Loading(configuration = configuration, Modifier.fillMaxSize()) }
     }
 }
 

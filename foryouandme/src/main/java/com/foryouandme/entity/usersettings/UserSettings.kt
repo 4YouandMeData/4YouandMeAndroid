@@ -4,7 +4,7 @@ import com.foryouandme.entity.mock.Mock
 import org.threeten.bp.LocalTime
 
 data class UserSettings(
-    val dailySurveyTime: LocalTime
+    val dailySurveyTime: LocalTime?
 ) {
 
     companion object {
