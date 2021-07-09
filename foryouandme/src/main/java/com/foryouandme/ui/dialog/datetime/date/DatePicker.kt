@@ -8,32 +8,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -54,6 +40,7 @@ import com.foryouandme.ui.dialog.datetime.util.shortLocalName
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
 /**
@@ -74,12 +61,24 @@ fun MaterialDialog.datepicker(
     initialDate: LocalDate = LocalDate.now(),
     title: String = "SELECT DATE",
     colors: DatePickerColors = DatePickerDefaults.colors(),
-    yearRange: IntRange = IntRange(1900, 2100),
+    maxDate: LocalDate = LocalDate.of(2100, 1, 1),
+    minDate: LocalDate = LocalDate.of(1900, 1, 1),
     waitForPositiveButton: Boolean = true,
     onDateChange: (LocalDate) -> Unit = {}
 ) {
     val datePickerState = remember {
-        DatePickerState(initialDate, colors, yearRange, dialogBackgroundColor!!)
+        DatePickerState(
+            when {
+                initialDate.isAfter(minDate.minusDays(1)) &&
+                        initialDate.isBefore(maxDate.plusDays(1)) -> initialDate
+                initialDate.isBefore(minDate.minusDays(1)) -> minDate
+                else -> maxDate
+            },
+            colors,
+            maxDate,
+            minDate,
+            dialogBackgroundColor!!
+        )
     }
 
     DatePickerImpl(title = title, state = datePickerState)
@@ -100,8 +99,8 @@ fun MaterialDialog.datepicker(
 @Composable
 internal fun DatePickerImpl(title: String, state: DatePickerState) {
     val pagerState = rememberPagerState(
-        pageCount = ((state.yearRange.last - state.yearRange.first) + 1) * 12,
-        initialPage = (state.selected.year - state.yearRange.first) * 12 + state.selected.monthValue - 1
+        pageCount = ChronoUnit.MONTHS.between(state.minDate, state.maxDate).toInt() + 1,
+        initialPage = ChronoUnit.MONTHS.between(state.minDate, state.selected).toInt()
     )
 
     Column(Modifier.fillMaxWidth()) {
@@ -116,7 +115,7 @@ internal fun DatePickerImpl(title: String, state: DatePickerState) {
         ) { page ->
             val viewDate = remember {
                 LocalDate.of(
-                    state.yearRange.first + page / 12,
+                    state.minDate.year + page / 12,
                     page % 12 + 1,
                     1
                 )
@@ -152,7 +151,7 @@ private fun YearPicker(
     state: DatePickerState,
     pagerState: PagerState,
 ) {
-    val gridState = rememberLazyListState((viewDate.year - state.yearRange.first) / 3)
+    val gridState = rememberLazyListState((viewDate.year - state.minDate.year) / 3)
     val coroutineScope = rememberCoroutineScope()
 
     LazyVerticalGrid(
@@ -160,7 +159,7 @@ private fun YearPicker(
         state = gridState,
         modifier = Modifier.background(state.dialogBackground)
     ) {
-        itemsIndexed(state.yearRange.toList()) { _, item ->
+        itemsIndexed((state.minDate.year..state.maxDate.year).toList()) { _, item ->
             val selected = remember { item == viewDate.year }
             YearPickerItem(year = item, selected = selected, colors = state.colors) {
                 if (!selected) {
@@ -215,7 +214,12 @@ private fun CalendarViewHeader(
     pagerState: PagerState
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val month = remember { viewDate.month.getDisplayName(org.threeten.bp.format.TextStyle.FULL, Locale.getDefault()) }
+    val month = remember {
+        viewDate.month.getDisplayName(
+            org.threeten.bp.format.TextStyle.FULL,
+            Locale.getDefault()
+        )
+    }
     val yearDropdownIcon = remember(state.yearPickerShowing) {
         if (state.yearPickerShowing) Icons.Default.KeyboardArrowUp
         else Icons.Default.KeyboardArrowDown
@@ -315,7 +319,12 @@ private fun CalendarView(viewDate: LocalDate, state: DatePickerState) {
                     possibleSelected && it == state.selected.dayOfMonth
                 }
 
-                DateSelectionBox(it, selected, state.colors) {
+                DateSelectionBox(
+                    state,
+                    viewDate.withDayOfMonth(it),
+                    selected,
+                    state.colors
+                ) {
                     state.selected = viewDate.withDayOfMonth(it)
                 }
             }
@@ -324,26 +333,39 @@ private fun CalendarView(viewDate: LocalDate, state: DatePickerState) {
 }
 
 @Composable
-private fun DateSelectionBox(date: Int, selected: Boolean, colors: DatePickerColors, onClick: () -> Unit) {
+private fun DateSelectionBox(
+    state: DatePickerState,
+    date: LocalDate,
+    selected: Boolean,
+    colors: DatePickerColors,
+    onClick: () -> Unit
+) {
+    val isInRange =
+        date.isAfter(state.minDate.minusDays(1)) &&
+                date.isBefore(state.maxDate.plusDays(1))
     Box(
         Modifier
             .size(40.dp)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                onClick = onClick,
-                indication = null
-            ),
+            .let {
+                if (isInRange) it.clickable(
+                    interactionSource = MutableInteractionSource(),
+                    onClick = onClick,
+                    indication = null
+                )
+                else it
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
-            date.toString(),
+            date.dayOfMonth.toString(),
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)
                 .background(colors.backgroundColor(selected).value)
                 .wrapContentSize(Alignment.Center),
             style = TextStyle(
-                color = colors.textColor(selected).value,
+                color =
+                colors.textColor(selected).value.copy(alpha = if (isInRange) 1f else 0.2f),
                 fontSize = 12.sp
             )
         )

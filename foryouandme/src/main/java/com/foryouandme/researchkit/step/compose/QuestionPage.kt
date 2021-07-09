@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.foryouandme.entity.source.ImageSource
+import com.foryouandme.entity.source.MultiSourceImage
 import com.foryouandme.ui.compose.statusbar.StatusBar
 
 @Composable
@@ -22,6 +23,7 @@ fun QuestionPage(
     buttonImage: ImageSource,
     shadowColor: Color,
     isNextEnabled: Boolean = true,
+    image: ImageSource? = null,
     lazyListState: LazyListState = rememberLazyListState(),
     onNext: () -> Unit = {},
     content: LazyListScope.() -> Unit,
@@ -44,6 +46,16 @@ fun QuestionPage(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
+            if (image != null) {
+                item {
+                    MultiSourceImage(
+                        source = image,
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(20.dp)) }
+            }
             item {
                 QuestionText(
                     question = question,

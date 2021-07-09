@@ -31,7 +31,7 @@ fun TextInputPage(
 
     LaunchedEffect(viewModel) {
         viewModel.eventsFlow
-            .unwrapEvent("range")
+            .unwrapEvent("text_input")
             .onEach {
                 when (it) {
                     is TextInputEvent.Next -> onNext(it.result)

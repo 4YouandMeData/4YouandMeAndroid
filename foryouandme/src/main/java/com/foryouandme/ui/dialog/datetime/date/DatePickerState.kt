@@ -9,7 +9,8 @@ import org.threeten.bp.LocalDate
 internal class DatePickerState(
     initialDate: LocalDate,
     val colors: DatePickerColors,
-    val yearRange: IntRange,
+    val maxDate: LocalDate,
+    val minDate: LocalDate,
     val dialogBackground: Color
 ) {
     var selected by mutableStateOf(initialDate)

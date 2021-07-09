@@ -29,6 +29,8 @@ import com.foryouandme.researchkit.step.range.RangeStep
 import com.foryouandme.researchkit.step.scale.ScaleStep
 import com.foryouandme.researchkit.step.textinput.TextInputStep
 import com.foryouandme.researchkit.task.Task
+import com.foryouandme.ui.compose.textfield.EntryDateDefaults
+import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneOffset
 
 fun buildSurvey(
@@ -80,20 +82,17 @@ fun buildSurvey(
                                         configuration.text.task.skipButton,
                                         configuration.theme.primaryColorEnd.color()
                                     ),
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    question = question.text.toTextSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    entryDateColors = EntryDateDefaults.colors(configuration),
                                     buttonImage = imageConfiguration.nextStepSecondary()
                                         .toAndroidResource(),
-                                    minDate = question.minDate?.atStartOfDay(ZoneOffset.UTC)
-                                        ?.toInstant()
-                                        ?.toEpochMilli(),
-                                    maxDate = question.maxDate?.atStartOfDay(ZoneOffset.UTC)
-                                        ?.toInstant()
-                                        ?.toEpochMilli()
+                                    minDate = question.minDate?.atStartOfDay(ZoneOffset.UTC)?.toLocalDate(),
+                                    maxDate = question.maxDate?.atStartOfDay(ZoneOffset.UTC)?.toLocalDate()
                                 )
 
                             is SurveyQuestion.Numerical ->

@@ -1,15 +1,12 @@
-package com.foryouandme.ui.dailysurveytime.compose
+package com.foryouandme.ui.compose.textfield
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,10 +15,8 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.ForYouAndMeTheme
-import com.foryouandme.ui.compose.textfield.ForYouAndMeReadOnlyTextField
 import com.foryouandme.ui.dialog.MaterialDialog
 import com.foryouandme.ui.dialog.buttons
-import com.foryouandme.ui.dialog.datetime.date.DatePickerColors
 import com.foryouandme.ui.dialog.datetime.time.TimePickerDefaults
 import com.foryouandme.ui.dialog.datetime.time.timepicker
 import org.threeten.bp.LocalTime

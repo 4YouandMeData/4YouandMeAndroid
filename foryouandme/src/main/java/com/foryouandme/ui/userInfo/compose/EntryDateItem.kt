@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.compose.textfield.EntryDate
 import com.foryouandme.ui.compose.textfield.ForYouAndMeReadOnlyTextField
 import com.foryouandme.ui.dialog.MaterialDialog
 import com.foryouandme.ui.dialog.buttons
@@ -40,57 +41,13 @@ fun EntryDateItem(
     imageConfiguration: ImageConfiguration,
     onDateSelected: (EntryItem.Date, LocalDate) -> Unit = { _, _ -> }
 ) {
-
-    val dialog = remember { MaterialDialog() }
-    dialog.build(backgroundColor = configuration.theme.secondaryColor.value) {
-        datepicker(
-            colors =
-            DatePickerDefaults.colors(
-                headerBackgroundColor = configuration.theme.primaryColorStart.value,
-                headerTextColor = configuration.theme.secondaryColor.value,
-                activeTextColor = configuration.theme.secondaryColor.value,
-                activeBackgroundColor = configuration.theme.primaryColorStart.value,
-                inactiveBackgroundColor = Color.Transparent,
-                inactiveTextColor = configuration.theme.primaryTextColor.value,
-            )
-        ) {
-            onDateSelected(
-                item,
-                LocalDate.of(it.year, it.monthValue, it.dayOfMonth)
-            )
-        }
-        buttons {
-            val style =
-                MaterialTheme.typography.body1
-                    .copy(color = configuration.theme.primaryTextColor.value)
-            positiveButton("Ok", textStyle = style)
-            negativeButton("Cancel", textStyle = style)
-        }
-    }
-
-    ForYouAndMeReadOnlyTextField(
-        value = item.value?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")).orEmpty(),
+    EntryDate(
+        value = item.value,
+        isEditable = isEditable,
+        configuration = configuration,
+        imageConfiguration = imageConfiguration,
         label = item.name,
-        placeholder = null,
-        labelColor = configuration.theme.fourthTextColor.value,
-        placeholderColor = configuration.theme.fourthTextColor.value,
-        cursorColor = configuration.theme.primaryTextColor.value,
-        textColor = configuration.theme.primaryTextColor.value,
-        indicatorColor = configuration.theme.fourthTextColor.value,
-        trailingIcon = {
-            Image(
-                painter =
-                painterResource(
-                    id = if (isEditable) imageConfiguration.entryWrong()
-                    else imageConfiguration.entryValid()
-                ),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(configuration.theme.primaryTextColor.value),
-                modifier = Modifier.size(40.dp)
-            )
-        },
-        modifier = Modifier.fillMaxWidth(),
-        onClick = { if (isEditable) dialog.show() }
+        onDateSelected = { onDateSelected(item, it) }
     )
 }
 

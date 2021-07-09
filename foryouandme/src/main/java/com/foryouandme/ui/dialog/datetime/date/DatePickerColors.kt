@@ -39,7 +39,7 @@ internal class DefaultDatePickerColors(
     private val activeBackgroundColor: Color,
     private val inactiveBackgroundColor: Color,
     private val activeTextColor: Color,
-    private val inactiveTextColor: Color
+    private val inactiveTextColor: Color,
 ) : DatePickerColors {
     @Composable
     override fun backgroundColor(active: Boolean): State<Color> {
