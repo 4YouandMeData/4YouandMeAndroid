@@ -62,7 +62,7 @@ object Google {
 
     }
 
-    object Accompanist: DependencyGroup("com.google.accompanist", "0.12.0") {
+    object Accompanist: DependencyGroup("com.google.accompanist", "0.13.0") {
 
         object Coil: Dependency(
             Accompanist.group,

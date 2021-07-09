@@ -1,4 +1,4 @@
-object Karumi : DependencyGroup("com.karumi", "6.2.2") {
+object Karumi : DependencyGroup("com.karumi", "6.2.3") {
 
     object Dexter : Dependency(Karumi.group, "dexter", Karumi.version)
 

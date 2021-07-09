@@ -1,6 +1,6 @@
 object AndroidX {
 
-    object Activity : DependencyGroup("androidx.activity", "1.3.0-beta02") {
+    object Activity : DependencyGroup("androidx.activity", "1.3.0-rc01") {
 
         object Compose : Dependency(Activity.group, "activity-compose", Activity.version)
 
@@ -37,7 +37,7 @@ object AndroidX {
             "1.1.0"
         )
 
-    object Core : DependencyGroup("androidx.core", "1.5.0") {
+    object Core : DependencyGroup("androidx.core", "1.6.0") {
 
         object CoreKtx : Dependency(Core.group, "core-ktx", Core.version)
 
@@ -59,7 +59,7 @@ object AndroidX {
         object Compose : Dependency(
             Navigation.group,
             "navigation-compose",
-            "2.4.0-alpha03"
+            "2.4.0-alpha04"
         )
 
     }
@@ -112,13 +112,13 @@ object AndroidX {
 
     object Camera : DependencyIndependentGroup("androidx.camera") {
 
-        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha05")
+        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha06")
 
-        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha05")
+        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha06")
 
-        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha05")
+        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha06")
 
-        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha25")
+        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha26")
 
     }
 
@@ -158,7 +158,7 @@ object AndroidX {
 
     object Compose {
 
-        const val version: String = "1.0.0-beta09"
+        const val version: String = "1.0.0-rc01"
 
         object UI : Dependency("androidx.compose.ui", "ui", version) {
 
@@ -188,13 +188,13 @@ object AndroidX {
 
     object Test : DependencyIndependentGroup("androidx.test") {
 
-        object Ext : DependencyGroup("${Test.group}.ext", "1.1.2") {
+        object Ext : DependencyGroup("${Test.group}.ext", "1.1.3") {
 
             object JunitKtx : Dependency(Ext.group, "junit-ktx", Ext.version)
 
         }
 
-        object Espresso : DependencyGroup("$group.espresso", "3.3.0") {
+        object Espresso : DependencyGroup("$group.espresso", "3.4.0") {
 
             object Core : Dependency(Espresso.group, "espresso-core", Espresso.version)
 
