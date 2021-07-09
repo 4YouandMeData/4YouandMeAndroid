@@ -47,7 +47,6 @@ class PermissionsViewModel @Inject constructor(
     val events = eventChannel.receiveAsFlow()
 
     init {
-        execute(PermissionsAction.Initialize)
         execute(PermissionsAction.ScreenViewed)
     }
 

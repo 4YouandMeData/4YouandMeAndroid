@@ -27,12 +27,9 @@ import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 import com.foryouandme.ui.compose.verticalGradient
+import com.foryouandme.ui.permissions.*
 import com.foryouandme.ui.permissions.PermissionsAction.Initialize
 import com.foryouandme.ui.permissions.PermissionsAction.RequestPermissions
-import com.foryouandme.ui.permissions.PermissionsData
-import com.foryouandme.ui.permissions.PermissionsEvent
-import com.foryouandme.ui.permissions.PermissionsState
-import com.foryouandme.ui.permissions.PermissionsViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
@@ -44,6 +41,10 @@ fun PermissionsPage(
 
     val state by permissionsViewModel.stateFlow.collectAsState()
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = "permissions") {
+        permissionsViewModel.execute(PermissionsAction.Initialize)
+    }
 
     LaunchedEffect(key1 = permissionsViewModel) {
         permissionsViewModel.events
