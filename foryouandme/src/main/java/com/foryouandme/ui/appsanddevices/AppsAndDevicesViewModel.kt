@@ -50,7 +50,6 @@ class AppsAndDevicesViewModel @Inject constructor(
                 state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 state.emit(state.value.copy(configuration = configuration.toData()))
-                execute(AppsAndDevicesAction.GetIntegrations)
 
             },
             { state.emit(state.value.copy(configuration = it.toError())) }

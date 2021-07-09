@@ -77,6 +77,8 @@ fun IntegrationLoginPage(
                 url = url,
                 configuration = configuration,
                 showProgress = true,
+                success = onBack,
+                failure = onBack,
                 cookies = it.token.asIntegrationCookies(),
                 modifier = Modifier.fillMaxSize()
             )
