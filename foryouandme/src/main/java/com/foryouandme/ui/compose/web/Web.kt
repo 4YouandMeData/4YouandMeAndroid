@@ -1,5 +1,6 @@
 package com.foryouandme.ui.compose.web
 
+import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.LinearProgressIndicator
@@ -38,6 +39,11 @@ fun Web(
         AndroidView(
             factory = { context ->
                 val webView = WebView(context)
+                webView.layoutParams =
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
                 webView.setupWebViewWithCookies(
                     url = url,
                     onProgressChanged = { progress = it },
