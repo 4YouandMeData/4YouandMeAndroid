@@ -1,5 +1,13 @@
 # MIGRATION
 
+## 0.2.4
+
+### 1) Recommended dependencies versions
+
+Android Studio : **ArticFox-Beta5**
+
+androidx.core:core-ktx : **1.6.0**
+
 ## 0.2.2
 
 ### 1) Recommended dependencies versions
