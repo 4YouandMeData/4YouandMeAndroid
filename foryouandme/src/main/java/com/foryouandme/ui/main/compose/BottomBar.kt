@@ -1,19 +1,18 @@
 package com.foryouandme.ui.main.compose
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.main.Screen
 
 @Composable
@@ -56,7 +55,8 @@ fun BottomBar(
                             Screen.HomeScreen.Tasks -> configuration.text.tab.tasks
                             Screen.HomeScreen.YourData -> configuration.text.tab.userData
                             Screen.HomeScreen.StudyInfo -> configuration.text.tab.studyInfo
-                        }
+                        },
+                        fontSize = ForYouAndMeTheme.dimens.bottomBarTextSize
                     )
                 },
                 selectedContentColor = configuration.theme.primaryColorEnd.value,

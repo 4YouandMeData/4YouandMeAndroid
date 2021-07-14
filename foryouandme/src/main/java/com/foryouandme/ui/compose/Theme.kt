@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import com.foryouandme.core.arch.LazyData
-import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.error.Error
 import com.foryouandme.ui.compose.loading.Loading
@@ -13,10 +13,17 @@ import com.foryouandme.ui.compose.loading.Loading
 @Composable
 fun ForYouAndMeTheme(content: @Composable () -> Unit) {
 
-    MaterialTheme(
-        content = content,
-        typography = ForYouAndMeTypography
-    )
+    val localConfiguration = LocalConfiguration.current
+    val dimensions =
+        if (localConfiguration.screenWidthDp <= 360) smallDimensions
+        else w360Dimensions
+
+    ProvideDimens(dimensions = dimensions) {
+        MaterialTheme(
+            content = content,
+            typography = ForYouAndMeTypography
+        )
+    }
 
 }
 
@@ -27,16 +34,23 @@ fun ForYouAndMeTheme(
     content: @Composable (Configuration) -> Unit = {}
 ) {
 
-    MaterialTheme(
-        content = {
-            ConfigurationContent(
-                configuration,
-                onConfigurationError,
-                content
-            )
-        },
-        typography = ForYouAndMeTypography
-    )
+    val localConfiguration = LocalConfiguration.current
+    val dimensions =
+        if (localConfiguration.screenWidthDp <= 360) smallDimensions
+        else w360Dimensions
+
+    ProvideDimens(dimensions = dimensions) {
+        MaterialTheme(
+            content = {
+                ConfigurationContent(
+                    configuration,
+                    onConfigurationError,
+                    content
+                )
+            },
+            typography = ForYouAndMeTypography
+        )
+    }
 
 }
 
@@ -71,6 +85,18 @@ fun ConfigurationContent(
 
     }
 }
+
+object ForYouAndMeTheme {
+
+    val dimens: Dimensions
+        @Composable
+        get() = LocalAppDimens.current
+
+}
+
+val Dimens: Dimensions
+    @Composable
+    get() = ForYouAndMeTheme.dimens
 
 
 
