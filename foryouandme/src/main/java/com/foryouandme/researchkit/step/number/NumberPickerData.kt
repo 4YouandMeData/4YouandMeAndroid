@@ -8,7 +8,8 @@ data class NumberPickerState(
     val step: NumberRangePickerStep? = null,
     val values: List<String> = emptyList(),
     val selectedIndex: Int = 0,
-    val start: ZonedDateTime = ZonedDateTime.now()
+    val start: ZonedDateTime = ZonedDateTime.now(),
+    val canGoNext: Boolean = false
 )
 
 sealed class NumberPickerAction {

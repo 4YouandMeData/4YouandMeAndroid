@@ -68,7 +68,7 @@ class NumberRangePickerViewModel @Inject constructor(): ViewModel() {
     }
 
     private suspend fun selectValue(value: Int) {
-        state.emit(state.value.copy(selectedIndex = value))
+        state.emit(state.value.copy(selectedIndex = value, canGoNext = true))
     }
 
     /* --- skip --- */
