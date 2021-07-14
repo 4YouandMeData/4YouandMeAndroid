@@ -16,7 +16,8 @@ data class FeedsState(
     val user: User? = null,
     val firstPage: LazyData<Unit> = LazyData.Empty,
     val configuration: LazyData<Configuration> = LazyData.Empty,
-    val submit: LazyData<Unit> = LazyData.Empty
+    val submit: LazyData<Unit> = LazyData.Empty,
+    val isRefreshing: Boolean = false
 ) {
 
     companion object {
@@ -45,7 +46,7 @@ sealed class FeedsAction {
 
     object GetConfiguration : FeedsAction()
 
-    object GetFeedsFirstPage : FeedsAction()
+    data class GetFeedsFirstPage(val isRefreshing: Boolean = false) : FeedsAction()
 
     object GetFeedsNextPage : FeedsAction()
 

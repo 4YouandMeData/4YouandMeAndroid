@@ -64,11 +64,15 @@ class TasksViewModel @Inject constructor(
     private val pageSize: Int = 20
     private var fetchJob: Job? = null
 
-    private fun getTasks(page: Int): Action =
+    private fun getTasks(page: Int, isRefreshing: Boolean = false): Action =
         action(
             {
                 state.emit(
-                    if (page == 1) state.value.copy(firstPage = LazyData.Loading())
+                    if (page == 1)
+                        state.value.copy(
+                            firstPage = LazyData.Loading(),
+                            isRefreshing = isRefreshing
+                        )
                     else state.value.copy(feeds = state.value.feeds.toLoading())
                 )
                 val tasks =
@@ -80,17 +84,24 @@ class TasksViewModel @Inject constructor(
                     state.value.copy(
                         tasks = tasks,
                         feeds = tasks.data.map { it.toItem() }.sort().toData(),
-                        firstPage = LazyData.unit()
+                        firstPage = LazyData.unit(),
+                        isRefreshing = false
                     )
                 )
             },
             {
                 state.emit(
-                    if (page == 1) state.value.copy(
-                        firstPage = it.toError(),
-                        feeds = LazyData.Empty
-                    )
-                    else state.value.copy(feeds = state.value.feeds.toError(it))
+                    if (page == 1)
+                        state.value.copy(
+                            firstPage = it.toError(),
+                            feeds = LazyData.Empty,
+                            isRefreshing = false
+                        )
+                    else
+                        state.value.copy(
+                            feeds = state.value.feeds.toError(it),
+                            isRefreshing = false
+                        )
                 )
             }
         )
@@ -207,7 +218,7 @@ class TasksViewModel @Inject constructor(
                     state.emit(state.value.copy(submit = LazyData.Loading()))
                     submitQuickActivityAnswer(item.data.id, item.selectedAnswer!!.toInt())
                     state.emit(state.value.copy(submit = LazyData.unit()))
-                    execute(TasksAction.GetTasksFirstPage)
+                    execute(TasksAction.GetTasksFirstPage())
                 }
             },
             { state.emit(state.value.copy(submit = it.toError())) }
@@ -238,14 +249,14 @@ class TasksViewModel @Inject constructor(
         when (action) {
             TasksAction.GetConfiguration ->
                 viewModelScope.launchAction(getConfiguration())
-            TasksAction.GetTasksFirstPage -> {
+            is TasksAction.GetTasksFirstPage -> {
 
                 if (fetchJob?.isActive == true) {
                     fetchJob?.cancel()
                     fetchJob = null
                 }
 
-                fetchJob = viewModelScope.launchAction(getTasks(1))
+                fetchJob = viewModelScope.launchAction(getTasks(1, action.isRefreshing))
 
             }
             TasksAction.GetTasksNextPage -> {

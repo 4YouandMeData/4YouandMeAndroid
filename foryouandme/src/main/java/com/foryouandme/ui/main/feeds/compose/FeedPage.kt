@@ -42,14 +42,14 @@ fun FeedPage(
     ) { configuration ->
 
         LaunchedEffect(key1 = "tasks") {
-            feedsViewModel.execute(GetFeedsFirstPage)
+            feedsViewModel.execute(GetFeedsFirstPage())
         }
 
         FeedPage(
             state = state,
             configuration = configuration,
             imageConfiguration = feedsViewModel.imageConfiguration,
-            onFirstPageRetry = { feedsViewModel.execute(GetFeedsFirstPage) },
+            onFirstPageRetry = { feedsViewModel.execute(GetFeedsFirstPage()) },
             onNextPageRetry = { feedsViewModel.execute(GetFeedsNextPage) },
             onSubmitRetry = { feedsViewModel.execute(RetrySubmit) },
             onFeedScrollPositionChange = { feedsViewModel.execute(SetScrollPosition(it)) },
@@ -58,7 +58,8 @@ fun FeedPage(
             onSubmit = { feedsViewModel.execute(SubmitQuickActivityAnswer(it)) },
             onTaskActivityClicked = onTaskActivityClicked,
             onFeedActionClicked = onFeedActionClicked,
-            onLogoClicked = onLogoClicked
+            onLogoClicked = onLogoClicked,
+            onRefresh = { feedsViewModel.execute(GetFeedsFirstPage(true)) }
         )
     }
 
@@ -77,7 +78,8 @@ private fun FeedPage(
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
     onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {},
     onFeedActionClicked: (FeedAction) -> Unit = {},
-    onLogoClicked: () -> Unit = {}
+    onLogoClicked: () -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
 
     StatusBar(color = configuration.theme.primaryColorStart.value)
@@ -109,7 +111,8 @@ private fun FeedPage(
                     onAnswerSelected = onAnswerSelected,
                     onSubmit = onSubmit,
                     onTaskActivityClicked = onTaskActivityClicked,
-                    onFeedActionClicked = onFeedActionClicked
+                    onFeedActionClicked = onFeedActionClicked,
+                    onRefresh = onRefresh
                 )
             when (state.submit) {
                 is LazyData.Error ->

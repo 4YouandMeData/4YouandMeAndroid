@@ -14,7 +14,8 @@ data class TasksState(
     val feeds: LazyData<List<FeedItem>> = LazyData.Empty,
     val firstPage: LazyData<Unit> = LazyData.Empty,
     val configuration: LazyData<Configuration> = LazyData.Empty,
-    val submit: LazyData<Unit> = LazyData.Empty
+    val submit: LazyData<Unit> = LazyData.Empty,
+    val isRefreshing: Boolean = false
 ) {
 
     companion object {
@@ -40,7 +41,7 @@ sealed class TasksAction {
 
     object GetConfiguration : TasksAction()
 
-    object GetTasksFirstPage : TasksAction()
+    data class GetTasksFirstPage(val isRefreshing: Boolean = false) : TasksAction()
 
     object GetTasksNextPage : TasksAction()
 

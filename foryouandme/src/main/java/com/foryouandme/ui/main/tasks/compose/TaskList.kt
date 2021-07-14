@@ -22,6 +22,8 @@ import com.foryouandme.ui.main.compose.items.FeedItem
 import com.foryouandme.ui.main.compose.items.QuickActivitiesItem
 import com.foryouandme.ui.main.compose.items.TaskActivityItem
 import com.foryouandme.ui.main.tasks.TasksState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun TaskList(
@@ -32,7 +34,8 @@ fun TaskList(
     onFeedScrollPositionChange: (Int) -> Unit = {},
     onAnswerSelected: (FeedItem.QuickActivityItem, QuickActivityAnswer) -> Unit = { _, _ -> },
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
-    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -44,56 +47,61 @@ fun TaskList(
                 lazyListState.animateScrollToItem(0)
         }
 
-        LazyColumn(
-            state = lazyListState,
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 30.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier.fillMaxSize()
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = state.isRefreshing),
+            onRefresh = onRefresh
         ) {
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 30.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-            if (feeds != null)
-                itemsIndexed(feeds) { index, item ->
-                    onFeedScrollPositionChange(index)
-                    when (item) {
-                        is FeedItem.TaskActivityItem ->
-                            TaskActivityItem(
-                                item = item,
-                                configuration = configuration,
-                                onStartClicked = onTaskActivityClicked
-                            )
-                        is FeedItem.QuickActivitiesItem ->
-                            QuickActivitiesItem(
-                                item = item,
-                                configuration = configuration,
-                                onAnswerSelected = onAnswerSelected,
-                                onSubmit = onSubmit
-                            )
-                        is FeedItem.DateItem ->
-                            DateItem(item = item, configuration = configuration)
-                        else -> Unit
+                if (feeds != null)
+                    itemsIndexed(feeds) { index, item ->
+                        onFeedScrollPositionChange(index)
+                        when (item) {
+                            is FeedItem.TaskActivityItem ->
+                                TaskActivityItem(
+                                    item = item,
+                                    configuration = configuration,
+                                    onStartClicked = onTaskActivityClicked
+                                )
+                            is FeedItem.QuickActivitiesItem ->
+                                QuickActivitiesItem(
+                                    item = item,
+                                    configuration = configuration,
+                                    onAnswerSelected = onAnswerSelected,
+                                    onSubmit = onSubmit
+                                )
+                            is FeedItem.DateItem ->
+                                DateItem(item = item, configuration = configuration)
+                            else -> Unit
+                        }
                     }
-                }
 
-            when (state.feeds) {
-                is LazyData.Loading ->
-                    item {
-                        Loading(
-                            backgroundColor = Color.Transparent,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(140.dp)
-                        )
+                when (state.feeds) {
+                    is LazyData.Loading ->
+                        item {
+                            Loading(
+                                backgroundColor = Color.Transparent,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(140.dp)
+                            )
+                        }
+                    is LazyData.Error ->
+                        item {
+                            ErrorItem(
+                                error = state.feeds.error,
+                                configuration = configuration,
+                                retry = onNextPageRetry
+                            )
+                        }
+                    else -> {
                     }
-                is LazyData.Error ->
-                    item {
-                        ErrorItem(
-                            error = state.feeds.error,
-                            configuration = configuration,
-                            retry = onNextPageRetry
-                        )
-                    }
-                else -> {
                 }
             }
         }

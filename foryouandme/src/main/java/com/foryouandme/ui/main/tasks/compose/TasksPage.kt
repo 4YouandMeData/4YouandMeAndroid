@@ -40,13 +40,13 @@ fun TasksPage(
     ) { configuration ->
 
         LaunchedEffect(key1 = "tasks") {
-            tasksViewModel.execute(GetTasksFirstPage)
+            tasksViewModel.execute(GetTasksFirstPage())
         }
 
         TasksPage(
             state = state,
             configuration = configuration,
-            onFirstPageRetry = { tasksViewModel.execute(GetTasksFirstPage) },
+            onFirstPageRetry = { tasksViewModel.execute(GetTasksFirstPage()) },
             onNextPageRetry = { tasksViewModel.execute(GetTasksNextPage) },
             onSubmitRetry = { tasksViewModel.execute(RetrySubmit) },
             onFeedScrollPositionChange = { tasksViewModel.execute(SetScrollPosition(it)) },
@@ -54,7 +54,8 @@ fun TasksPage(
             onAnswerSelected =
             { item, answer -> tasksViewModel.execute(SelectQuickActivityAnswer(item, answer)) },
             onSubmit = { tasksViewModel.execute(SubmitQuickActivityAnswer(it)) },
-            onTaskActivityClicked = onTaskActivityClicked
+            onTaskActivityClicked = onTaskActivityClicked,
+            onRefresh = { tasksViewModel.execute(GetTasksFirstPage(true)) }
         )
     }
 
@@ -71,7 +72,8 @@ private fun TasksPage(
     onFeedButtonClicked: () -> Unit = {},
     onAnswerSelected: (FeedItem.QuickActivityItem, QuickActivityAnswer) -> Unit = { _, _ -> },
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
-    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {}
+    onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
 
     StatusBar(color = configuration.theme.primaryColorStart.value)
@@ -101,7 +103,8 @@ private fun TasksPage(
                     onFeedScrollPositionChange = onFeedScrollPositionChange,
                     onAnswerSelected = onAnswerSelected,
                     onSubmit = onSubmit,
-                    onTaskActivityClicked = onTaskActivityClicked
+                    onTaskActivityClicked = onTaskActivityClicked,
+                    onRefresh = onRefresh
                 )
             when (state.submit) {
                 is LazyData.Error ->

@@ -20,6 +20,8 @@ import com.foryouandme.ui.compose.error.ErrorItem
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.main.compose.items.*
 import com.foryouandme.ui.main.feeds.FeedsState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun FeedList(
@@ -31,7 +33,8 @@ fun FeedList(
     onAnswerSelected: (FeedItem.QuickActivityItem, QuickActivityAnswer) -> Unit = { _, _ -> },
     onSubmit: (FeedItem.QuickActivityItem) -> Unit = {},
     onTaskActivityClicked: (FeedItem.TaskActivityItem) -> Unit = {},
-    onFeedActionClicked: (FeedAction) -> Unit = {}
+    onFeedActionClicked: (FeedAction) -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -43,91 +46,96 @@ fun FeedList(
                 lazyListState.animateScrollToItem(0)
         }
 
-        LazyColumn(
-            state = lazyListState,
-            contentPadding = PaddingValues(bottom = 30.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier.fillMaxSize()
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = state.isRefreshing),
+            onRefresh = onRefresh
         ) {
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = PaddingValues(bottom = 30.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-            if (feeds != null) {
+                if (feeds != null) {
 
-                item(state.user?.points) {
-                    FeedHeader(configuration = configuration, user = state.user)
-                }
-
-                itemsIndexed(feeds) { index, item ->
-                    onFeedScrollPositionChange(index)
-                    when (item) {
-                        is FeedItem.TaskActivityItem ->
-                            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                                TaskActivityItem(
-                                    item = item,
-                                    configuration = configuration,
-                                    onStartClicked = onTaskActivityClicked
-                                )
-                            }
-                        is FeedItem.QuickActivitiesItem ->
-                            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                                QuickActivitiesItem(
-                                    item = item,
-                                    configuration = configuration,
-                                    onAnswerSelected = onAnswerSelected,
-                                    onSubmit = onSubmit
-                                )
-                            }
-                        is FeedItem.DateItem ->
-                            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                                DateItem(item = item, configuration = configuration)
-                            }
-                        is FeedItem.FeedRewardItem ->
-                            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                                FeedRewardItem(
-                                    item = item,
-                                    configuration = configuration,
-                                    onStartClicked = onFeedActionClicked
-                                )
-                            }
-                        is FeedItem.FeedEducationalItem ->
-                            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                                FeedEducationalItem(
-                                    item = item,
-                                    configuration = configuration,
-                                    onStartClicked = onFeedActionClicked
-                                )
-                            }
-                        is FeedItem.FeedAlertItem ->
-                            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
-                                FeedAlertItem(
-                                    item = item,
-                                    configuration = configuration,
-                                    onStartClicked = onFeedActionClicked
-                                )
-                            }
-                        else -> Unit
+                    item(state.user?.points) {
+                        FeedHeader(configuration = configuration, user = state.user)
                     }
-                }
 
-                when (state.items) {
-                    is LazyData.Loading ->
-                        item {
-                            Loading(
-                                backgroundColor = Color.Transparent,
-                                modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(140.dp)
-                            )
+                    itemsIndexed(feeds) { index, item ->
+                        onFeedScrollPositionChange(index)
+                        when (item) {
+                            is FeedItem.TaskActivityItem ->
+                                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    TaskActivityItem(
+                                        item = item,
+                                        configuration = configuration,
+                                        onStartClicked = onTaskActivityClicked
+                                    )
+                                }
+                            is FeedItem.QuickActivitiesItem ->
+                                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    QuickActivitiesItem(
+                                        item = item,
+                                        configuration = configuration,
+                                        onAnswerSelected = onAnswerSelected,
+                                        onSubmit = onSubmit
+                                    )
+                                }
+                            is FeedItem.DateItem ->
+                                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    DateItem(item = item, configuration = configuration)
+                                }
+                            is FeedItem.FeedRewardItem ->
+                                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    FeedRewardItem(
+                                        item = item,
+                                        configuration = configuration,
+                                        onStartClicked = onFeedActionClicked
+                                    )
+                                }
+                            is FeedItem.FeedEducationalItem ->
+                                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    FeedEducationalItem(
+                                        item = item,
+                                        configuration = configuration,
+                                        onStartClicked = onFeedActionClicked
+                                    )
+                                }
+                            is FeedItem.FeedAlertItem ->
+                                Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    FeedAlertItem(
+                                        item = item,
+                                        configuration = configuration,
+                                        onStartClicked = onFeedActionClicked
+                                    )
+                                }
+                            else -> Unit
                         }
-                    is LazyData.Error ->
-                        item {
-                            ErrorItem(
-                                error = state.items.error,
-                                configuration = configuration,
-                                retry = onNextPageRetry
-                            )
+                    }
+
+                    when (state.items) {
+                        is LazyData.Loading ->
+                            item {
+                                Loading(
+                                    backgroundColor = Color.Transparent,
+                                    modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(140.dp)
+                                )
+                            }
+                        is LazyData.Error ->
+                            item {
+                                ErrorItem(
+                                    error = state.items.error,
+                                    configuration = configuration,
+                                    retry = onNextPageRetry
+                                )
+                            }
+                        else -> {
                         }
-                    else -> {
                     }
                 }
             }

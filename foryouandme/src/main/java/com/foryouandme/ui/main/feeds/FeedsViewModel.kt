@@ -12,8 +12,7 @@ import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
-import com.foryouandme.domain.usecase.feed
-.GetFeedUseCase
+import com.foryouandme.domain.usecase.feed.GetFeedUseCase
 import com.foryouandme.domain.usecase.task.SubmitQuickActivityAnswer
 import com.foryouandme.domain.usecase.user.GetUserUseCase
 import com.foryouandme.entity.activity.QuickActivity
@@ -33,7 +32,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.threeten.bp.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -74,13 +75,18 @@ FeedsViewModel @Inject constructor(
     private val pageSize: Int = 20
     private var fetchJob: Job? = null
 
-    private fun getTasks(page: Int): Action =
+    private fun getTasks(page: Int, isRefreshing: Boolean): Action =
         action(
             {
                 coroutineScope {
                     state.emit(
-                        if (page == 1) state.value.copy(firstPage = LazyData.Loading())
-                        else state.value.copy(items = state.value.items.toLoading())
+                        if (page == 1)
+                            state.value.copy(
+                                firstPage = LazyData.Loading(),
+                                isRefreshing = isRefreshing
+                            )
+                        else
+                            state.value.copy(items = state.value.items.toLoading())
                     )
 
                     val user =
@@ -101,18 +107,25 @@ FeedsViewModel @Inject constructor(
                             feeds = feeds.await(),
                             items = feeds.await().data.map { it.toItem() }.sort().toData(),
                             user = user.await(),
-                            firstPage = LazyData.unit()
+                            firstPage = LazyData.unit(),
+                            isRefreshing = false
                         )
                     )
                 }
             },
             {
                 state.emit(
-                    if (page == 1) state.value.copy(
-                        firstPage = it.toError(),
-                        items = LazyData.Empty
-                    )
-                    else state.value.copy(items = state.value.items.toError(it))
+                    if (page == 1)
+                        state.value.copy(
+                            firstPage = it.toError(),
+                            items = LazyData.Empty,
+                            isRefreshing = false
+                        )
+                    else
+                        state.value.copy(
+                            items = state.value.items.toError(it),
+                            isRefreshing = false
+                        )
                 )
             }
         )
@@ -265,7 +278,7 @@ FeedsViewModel @Inject constructor(
                     state.emit(state.value.copy(submit = LazyData.Loading()))
                     submitQuickActivityAnswer(item.data.id, item.selectedAnswer!!.toInt())
                     state.emit(state.value.copy(submit = LazyData.unit()))
-                    execute(FeedsAction.GetFeedsFirstPage)
+                    execute(FeedsAction.GetFeedsFirstPage())
                 }
             },
             { state.emit(state.value.copy(submit = it.toError())) }
@@ -294,14 +307,14 @@ FeedsViewModel @Inject constructor(
         when (action) {
             FeedsAction.GetConfiguration ->
                 viewModelScope.launchAction(getConfiguration())
-            FeedsAction.GetFeedsFirstPage -> {
+            is FeedsAction.GetFeedsFirstPage -> {
 
                 if (fetchJob?.isActive == true) {
                     fetchJob?.cancel()
                     fetchJob = null
                 }
 
-                fetchJob = viewModelScope.launchAction(getTasks(1))
+                fetchJob = viewModelScope.launchAction(getTasks(1, action.isRefreshing))
 
             }
             FeedsAction.GetFeedsNextPage -> {
@@ -311,7 +324,7 @@ FeedsViewModel @Inject constructor(
                     val nextPage = feeds.page + 1
 
                     if (fetchJob == null || fetchJob.isTerminated && nextPage != 1)
-                        fetchJob = viewModelScope.launchAction(getTasks(nextPage))
+                        fetchJob = viewModelScope.launchAction(getTasks(nextPage, false))
                 }
 
             }

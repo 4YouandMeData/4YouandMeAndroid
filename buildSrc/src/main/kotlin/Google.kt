@@ -88,6 +88,12 @@ object Google {
             Accompanist.version
         )
 
+        object SwipeRefresh: Dependency(
+            Accompanist.group,
+            "accompanist-swiperefresh",
+            Accompanist.version
+        )
+
     }
 
     object Test {
