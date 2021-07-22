@@ -4,10 +4,6 @@ import android.app.Application
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraXConfig
 import com.foryouandme.BuildConfig
-import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.arch.deps.VideoConfiguration
-import com.foryouandme.data.datasource.Environment
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.threetenabp.AndroidThreeTen
 import timber.log.Timber
 import timber.log.Timber.DebugTree

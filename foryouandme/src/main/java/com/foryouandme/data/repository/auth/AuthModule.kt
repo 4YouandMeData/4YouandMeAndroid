@@ -1,9 +1,8 @@
 package com.foryouandme.data.repository.auth
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.auth.network.AuthApi
-import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.domain.usecase.auth.AuthRepository
 import com.squareup.moshi.Moshi
 import dagger.Binds
@@ -19,8 +18,8 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): AuthApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): AuthApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

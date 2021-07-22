@@ -1,7 +1,7 @@
 package com.foryouandme.data.repository.feed
 
 import com.foryouandme.data.DataModule
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.feed.network.FeedApi
 import com.foryouandme.domain.usecase.feed.FeedRepository
@@ -20,8 +20,8 @@ object FeedModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, @Named(DataModule.FEED_MOSHI) moshi: Moshi): FeedApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, @Named(DataModule.FEED_MOSHI) moshi: Moshi): FeedApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

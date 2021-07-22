@@ -2,7 +2,7 @@ package com.foryouandme.data.repository.configuration
 
 import android.content.SharedPreferences
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.domain.usecase.configuration.ConfigurationRepository
 import com.foryouandme.entity.configuration.Configuration
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Singleton
 class ConfigurationRepositoryImpl @Inject constructor(
     private val api: ConfigurationApi,
-    private val environment: Environment,
+    private val settings: StudySettings,
     private val prefs: SharedPreferences,
     private val moshi: Moshi,
 ) : ConfigurationRepository {
@@ -22,7 +22,7 @@ class ConfigurationRepositoryImpl @Inject constructor(
     var config: Configuration? = null
 
     override suspend fun fetchConfiguration(): Configuration =
-        api.getConfiguration(environment.studyId()).toConfiguration()!!
+        api.getConfiguration(settings.studyId).toConfiguration()!!
 
     override suspend fun loadConfiguration(): Configuration? =
 

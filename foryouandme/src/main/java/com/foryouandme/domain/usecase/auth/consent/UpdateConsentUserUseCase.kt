@@ -1,13 +1,13 @@
 package com.foryouandme.domain.usecase.auth.consent
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import javax.inject.Inject
 
 class UpdateConsentUserUseCase @Inject constructor(
     private val repository: ConsentRepository,
     private val getTokenUseCase: GetTokenUseCase,
-    private val environment: Environment
+    private val settings: StudySettings
 ) {
 
     suspend operator fun invoke(
@@ -17,7 +17,7 @@ class UpdateConsentUserUseCase @Inject constructor(
     ) {
         repository.updateUserConsent(
             getTokenUseCase(),
-            environment.studyId(),
+            settings.studyId,
             firstName,
             lastName,
             signatureBase64

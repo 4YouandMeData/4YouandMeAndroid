@@ -9,7 +9,7 @@ import com.foryouandme.core.ext.Action
 import com.foryouandme.core.ext.action
 import com.foryouandme.core.ext.launchAction
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
@@ -28,7 +28,7 @@ class AppsAndDevicesViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
-    private val environment: Environment,
+    private val settings: StudySettings,
     val imageConfiguration: ImageConfiguration
 ) : ViewModel() {
 
@@ -110,8 +110,8 @@ class AppsAndDevicesViewModel @Inject constructor(
             name = "Garmin",
             image = imageConfiguration.garmin(),
             isConnected = isConnected,
-            connectLink = "${environment.getOAuthBaseUrl()}/users/integration_oauth/garmin",
-            disconnectLink = "${environment.getOAuthBaseUrl()}/users/deauthenticate/garmin"
+            connectLink = "${settings.getOAuthBaseUrl}/users/integration_oauth/garmin",
+            disconnectLink = "${settings.getOAuthBaseUrl}/users/deauthenticate/garmin"
         )
 
     private fun createFitbitItem(isConnected: Boolean): AppsAndDeviceItem =
@@ -119,8 +119,8 @@ class AppsAndDevicesViewModel @Inject constructor(
             name = "Fitbit",
             image = imageConfiguration.smartwatch(),
             isConnected = isConnected,
-            connectLink = "${environment.getOAuthBaseUrl()}/users/integration_oauth/fitbit",
-            disconnectLink = "${environment.getOAuthBaseUrl()}/users/deauthenticate/fitbit"
+            connectLink = "${settings.getOAuthBaseUrl}/users/integration_oauth/fitbit",
+            disconnectLink = "${settings.getOAuthBaseUrl}/users/deauthenticate/fitbit"
         )
 
     private fun createOuraItem(isConnected: Boolean): AppsAndDeviceItem =
@@ -128,8 +128,8 @@ class AppsAndDevicesViewModel @Inject constructor(
             name = "Oura",
             image = imageConfiguration.oura(),
             isConnected = isConnected,
-            connectLink = "${environment.getOAuthBaseUrl()}/users/integration_oauth/oura",
-            disconnectLink = "${environment.getOAuthBaseUrl()}/users/deauthenticate/oura"
+            connectLink = "${settings.getOAuthBaseUrl}/users/integration_oauth/oura",
+            disconnectLink = "${settings.getOAuthBaseUrl}/users/deauthenticate/oura"
         )
 
     private fun createInstagramItem(isConnected: Boolean): AppsAndDeviceItem =
@@ -137,8 +137,8 @@ class AppsAndDevicesViewModel @Inject constructor(
             name = "Instagram",
             image = imageConfiguration.instagram(),
             isConnected = isConnected,
-            connectLink = "${environment.getOAuthBaseUrl()}/users/integration_oauth/instagram",
-            disconnectLink = "${environment.getOAuthBaseUrl()}/users/deauthenticate/instagram"
+            connectLink = "${settings.getOAuthBaseUrl}/users/integration_oauth/instagram",
+            disconnectLink = "${settings.getOAuthBaseUrl}/users/deauthenticate/instagram"
         )
 
     private fun createRescueTimeItem(isConnected: Boolean): AppsAndDeviceItem =
@@ -146,8 +146,8 @@ class AppsAndDevicesViewModel @Inject constructor(
             name = "RescueTime",
             image = imageConfiguration.rescuetime(),
             isConnected = isConnected,
-            connectLink = "${environment.getOAuthBaseUrl()}/users/integration_oauth/rescuetime",
-            disconnectLink = "${environment.getOAuthBaseUrl()}/users/deauthenticate/rescuetime"
+            connectLink = "${settings.getOAuthBaseUrl}/users/integration_oauth/rescuetime",
+            disconnectLink = "${settings.getOAuthBaseUrl}/users/deauthenticate/rescuetime"
         )
 
     private fun createTwitterItem(isConnected: Boolean): AppsAndDeviceItem =
@@ -155,8 +155,8 @@ class AppsAndDevicesViewModel @Inject constructor(
             "Twitter",
             imageConfiguration.twitter(),
             isConnected,
-            "${environment.getOAuthBaseUrl()}/users/integration_oauth/twitter",
-            "${environment.getOAuthBaseUrl()}/users/deauthenticate/twitter"
+            "${settings.getOAuthBaseUrl}/users/integration_oauth/twitter",
+            "${settings.getOAuthBaseUrl}/users/deauthenticate/twitter"
         )
 
     /* --- analytics --- */

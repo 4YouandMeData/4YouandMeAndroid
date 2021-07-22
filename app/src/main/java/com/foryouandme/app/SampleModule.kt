@@ -3,7 +3,7 @@ package com.foryouandme.app
 import android.content.Context
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.deps.VideoConfiguration
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
 import dagger.Provides
@@ -18,8 +18,8 @@ object SampleModule {
 
     @Provides
     @Singleton
-    fun provideEnvironment(@ApplicationContext context: Context): Environment =
-        SampleEnvironment(context)
+    fun provideStudySettings(@ApplicationContext context: Context): StudySettings =
+        SampleStudySettings(context)
 
     @Provides
     @Singleton

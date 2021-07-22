@@ -1,7 +1,7 @@
 package com.foryouandme.data.repository.survey
 
 import com.foryouandme.data.DataModule
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.survey.network.SurveyApi
 import com.foryouandme.domain.usecase.survey.SurveyRepository
@@ -21,10 +21,10 @@ object SurveyModule {
     @Provides
     @Singleton
     fun provideApi(
-        environment: Environment,
+        settings: StudySettings,
         @Named(DataModule.SURVEY_MOSHI) moshi: Moshi
     ): SurveyApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

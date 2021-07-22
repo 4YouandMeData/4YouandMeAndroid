@@ -9,7 +9,7 @@ import com.foryouandme.core.ext.Action
 import com.foryouandme.core.ext.action
 import com.foryouandme.core.ext.launchAction
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
@@ -36,7 +36,7 @@ class PermissionsViewModel @Inject constructor(
     private val requestPermissionUseCase: RequestPermissionUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
     val imageConfiguration: ImageConfiguration,
-    val environment: Environment
+    val settings: StudySettings
 ) : ViewModel() {
 
     /* --- state --- */
@@ -65,7 +65,7 @@ class PermissionsViewModel @Inject constructor(
                         async { isPermissionGrantedUseCase(Permission.Location) }
 
                     val permissions =
-                        if (environment.isLocationPermissionEnabled)
+                        if (settings.isLocationPermissionEnabled)
                             listOf(
                                 PermissionsItem(
                                     configuration.await(),

@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.user
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.user.network.UserApi
 import com.foryouandme.domain.usecase.user.UserRepository
@@ -18,8 +18,8 @@ object UserModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): UserApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): UserApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

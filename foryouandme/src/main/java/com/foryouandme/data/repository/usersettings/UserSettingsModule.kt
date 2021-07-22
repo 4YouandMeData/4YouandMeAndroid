@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.usersettings
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.usersettings.network.UserSettingsApi
 import com.foryouandme.domain.usecase.usersettings.UserSettingsRepository
@@ -18,8 +18,8 @@ object UserSettingsModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): UserSettingsApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): UserSettingsApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

@@ -9,7 +9,7 @@ import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.action.alertAction
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.usecase.auth.consent.GetOptInsUseCase
 import com.foryouandme.domain.usecase.auth.consent.SetOptInPermissionUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
@@ -30,7 +30,7 @@ class OptInViewModel @Inject constructor(
     private val setOptInPermissionUseCase: SetOptInPermissionUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
     private val requestPermissionsUseCase: RequestPermissionsUseCase,
-    private val environment: Environment
+    private val settings: StudySettings
 ) : ViewModel() {
 
     /* --- state --- */
@@ -96,7 +96,7 @@ class OptInViewModel @Inject constructor(
         val optIn =
             sourceOptIn?.copy(
                 systemPermissions =
-                if (environment.isLocationPermissionEnabled)
+                if (settings.isLocationPermissionEnabled)
                     sourceOptIn.systemPermissions
                 else
                     sourceOptIn

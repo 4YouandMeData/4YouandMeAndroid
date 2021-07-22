@@ -1,7 +1,7 @@
 package com.foryouandme.data.repository.task
 
 import com.foryouandme.data.DataModule
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.task.network.TaskApi
 import com.foryouandme.domain.usecase.task.TaskRepository
@@ -20,8 +20,8 @@ object TaskModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, @Named(DataModule.TASK_MOSHI) moshi: Moshi): TaskApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, @Named(DataModule.TASK_MOSHI) moshi: Moshi): TaskApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

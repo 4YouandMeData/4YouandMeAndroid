@@ -8,9 +8,52 @@ Android Studio : ArticFox-RC1
 
 com.android.tools.build:gradle: : **7.0.0-rc01**
 
-### 2) Environment
+### 2) Refactor
 
-Added **isLocationPermissionEnabled** in the Environment configuration
+1) **Environment** was renamed in **StudySettings**
+
+it is suggested to rename the name of the class that implements environment and the method in the module
+
+**Before**
+
+```
+class SampleEnvironment() : Environment()
+```
+
+```
+@Provides
+@Singleton
+fun provideEnvironment(): Environment =
+        SampleEnvironment()
+```
+
+**After**
+
+```
+class SampleStudySettings() : StudySettings()
+```
+```
+@Provides
+@Singleton
+fun provideStudySettings(): StudySettings =
+        SampleStudySettings()
+```
+
+2) All functions of this class have been transformed to val
+
+**Before**
+
+```
+override fun isDebuggable(): Boolean = true
+```
+
+**After**
+
+```
+override val isDebuggable: Boolean = true
+```
+
+3) Added **isLocationPermissionEnabled** in the Environment
 
 ## 0.2.4
 

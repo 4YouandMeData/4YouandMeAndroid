@@ -2,7 +2,6 @@ package com.foryouandme.ui.aboutyou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
@@ -10,7 +9,7 @@ import com.foryouandme.core.ext.Action
 import com.foryouandme.core.ext.action
 import com.foryouandme.core.ext.launchAction
 import com.foryouandme.core.ext.launchSafe
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
@@ -28,7 +27,7 @@ class AboutYouViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
     val imageConfiguration: ImageConfiguration,
-    val environment: Environment
+    val settings: StudySettings
 ) : ViewModel() {
 
     /* --- state --- */
