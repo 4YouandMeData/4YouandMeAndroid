@@ -9,11 +9,13 @@ import com.foryouandme.core.arch.flow.StateUpdateFlow
 import com.foryouandme.core.arch.navigation.Navigator
 import com.foryouandme.core.arch.navigation.action.alertAction
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.domain.usecase.auth.consent.GetOptInsUseCase
 import com.foryouandme.domain.usecase.auth.consent.SetOptInPermissionUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionsUseCase
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.permission.Permission
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -27,7 +29,8 @@ class OptInViewModel @Inject constructor(
     private val getOptInsUseCase: GetOptInsUseCase,
     private val setOptInPermissionUseCase: SetOptInPermissionUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
-    private val requestPermissionsUseCase: RequestPermissionsUseCase
+    private val requestPermissionsUseCase: RequestPermissionsUseCase,
+    private val environment: Environment
 ) : ViewModel() {
 
     /* --- state --- */
@@ -87,7 +90,19 @@ class OptInViewModel @Inject constructor(
     private suspend fun requestPermissions(configuration: Configuration, index: Int) {
 
         val agree = state.permissions[index]
-        val optIn = state.optIns?.permissions?.getOrNull(index)
+        val sourceOptIn = state.optIns?.permissions?.getOrNull(index)
+
+        // avoid to request location permission if it's disabled in the study settings
+        val optIn =
+            sourceOptIn?.copy(
+                systemPermissions =
+                if (environment.isLocationPermissionEnabled)
+                    sourceOptIn.systemPermissions
+                else
+                    sourceOptIn
+                        .systemPermissions
+                        .mapNotNull { if (it is Permission.Location) null else it }
+            )
 
         if (agree != null && optIn != null) {
             if (agree) {

@@ -2,7 +2,6 @@ package com.foryouandme.ui.permissions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
@@ -10,6 +9,7 @@ import com.foryouandme.core.ext.Action
 import com.foryouandme.core.ext.action
 import com.foryouandme.core.ext.launchAction
 import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
@@ -35,7 +35,8 @@ class PermissionsViewModel @Inject constructor(
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
-    val imageConfiguration: ImageConfiguration
+    val imageConfiguration: ImageConfiguration,
+    val environment: Environment
 ) : ViewModel() {
 
     /* --- state --- */
@@ -64,16 +65,19 @@ class PermissionsViewModel @Inject constructor(
                         async { isPermissionGrantedUseCase(Permission.Location) }
 
                     val permissions =
-                        listOf(
-                            PermissionsItem(
-                                configuration.await(),
-                                "1",
-                                Permission.Location,
-                                configuration.await().text.profile.permissions.location,
-                                imageConfiguration.location(),
-                                isLocationGranted.await()
+                        if (environment.isLocationPermissionEnabled)
+                            listOf(
+                                PermissionsItem(
+                                    configuration.await(),
+                                    "1",
+                                    Permission.Location,
+                                    configuration.await().text.profile.permissions.location,
+                                    imageConfiguration.location(),
+                                    isLocationGranted.await()
+                                )
                             )
-                        )
+                        else
+                            emptyList()
 
                     state.emit(
                         state.value.copy(

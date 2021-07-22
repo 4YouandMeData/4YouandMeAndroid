@@ -48,6 +48,7 @@ fun AboutYouPage(
         AboutYouPage(
             state = state,
             configuration = it,
+            permissions = aboutYouViewModel.environment.isLocationPermissionEnabled,
             imageConfiguration = aboutYouViewModel.imageConfiguration,
             onUserError = { aboutYouViewModel.execute(GetUser) },
             onBack = onBack,
@@ -66,6 +67,7 @@ fun AboutYouPage(
     state: AboutYouState,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
+    permissions: Boolean,
     onUserError: () -> Unit = {},
     onBack: () -> Unit = {},
     onPregnancyClicked: () -> Unit = {},
@@ -140,13 +142,14 @@ fun AboutYouPage(
                         imageConfiguration = imageConfiguration,
                         onClick = onReviewConsentClicked
                     )
-                MenuItem(
-                    text = configuration.text.profile.permissions.title,
-                    icon = imageConfiguration.permissions(),
-                    configuration = configuration,
-                    imageConfiguration = imageConfiguration,
-                    onClick = onPermissionsClicked
-                )
+                if (permissions)
+                    MenuItem(
+                        text = configuration.text.profile.permissions.title,
+                        icon = imageConfiguration.permissions(),
+                        configuration = configuration,
+                        imageConfiguration = imageConfiguration,
+                        onClick = onPermissionsClicked
+                    )
                 if (configuration.text.profile.dailySurveyTime.hidden == 0)
                     MenuItem(
                         text = configuration.text.profile.dailySurveyTime.title,
@@ -188,9 +191,9 @@ private fun AboutYouPagePreview() {
                     timeZone = ZoneId.of("UTC"),
                     points = 0
                 ).toData(),
-                configuration =
-                Configuration.mock().toData()
+                configuration = Configuration.mock().toData()
             ),
+            permissions = true,
             configuration = Configuration.mock(),
             imageConfiguration = ImageConfiguration.mock()
         )
