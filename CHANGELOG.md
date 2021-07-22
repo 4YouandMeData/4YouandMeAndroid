@@ -1,5 +1,80 @@
-- Release 0.2.1
-- Fix privacy and terms text generation
+## Release 0.2.8
+
+- Add isLocationPermissionEnabled in Environment settings
+
+- Add isLocationPermissionEnabled in Environment settings
+
+## Release 0.2.7
+
+- NumberRangePickerStep force user to move number
+
+- Add feed and tasks pull to refresh
+
+- Fix feed reward parsing
+
+- Fix bottom bar text dimensions
+
+- Update hole peg activity id
+
+## Release 0.2.6
+
+- Navigation issue fixed
+
+## Release 0.2.5
+
+- Fix permissions refresh
+
+- Fix integration refresh
+
+- Update deps
+
+## Release 0.2.4
+
+- Fix web layout
+
+- Refactor date picker step
+
+- Fix review consent visibility
+
+- Handle null daily survey time
+
+- Fix pin code placeholder
+
+- Refactor text input step
+
+- Refactor choose many step
+
+- Refactor fyam page step
+
+## Release 0.2.3
+
+- Fix slider picker values and feedback
+
+- Make number picker arrows clickable
+
+- Refactor choose one step
+
+- Fix privacy terms text parsing
+
+## Release 0.2.2
+
+- Refactor pin code
+
+- Fix dialog colors
+
+- Add daily survey time description
+
+- Refactor daily survey time
+
+- Update compose dialogs
+
+- Fix quick activities order
+
+- Skip HealthKit permission in opt in
+
+- Refactor range step
+
+- Update dependencies for android studio beta04
 
 ## Release 0.2.1
 
