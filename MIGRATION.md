@@ -1,5 +1,17 @@
 # MIGRATION
 
+## 0.2.8
+
+### 1) Recommended dependencies versions
+
+Android Studio : ArticFox-RC1
+
+com.android.tools.build:gradle: : **7.0.0-rc01**
+
+### 2) Environment
+
+Added **isLocationPermissionEnabled** in the Environment configuration
+
 ## 0.2.4
 
 ### 1) Recommended dependencies versions

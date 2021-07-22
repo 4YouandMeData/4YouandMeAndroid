@@ -1,6 +1,7 @@
 package com.foryouandme.domain.usecase.device
 
 import com.foryouandme.core.ext.catchToNullSuspend
+import com.foryouandme.data.datasource.Environment
 import com.foryouandme.data.ext.getTimestampDateUTC
 import com.foryouandme.data.ext.minusDays
 import com.foryouandme.domain.usecase.user.GetTokenUseCase
@@ -18,14 +19,18 @@ class SendDeviceInfoUseCase @Inject constructor(
     private val getTokenUseCase: GetTokenUseCase,
     private val getHomeLocationUseCase: GetHomeLocationUseCase,
     private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
-    private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase
+    private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
+    private val environment: Environment
 ) {
 
     suspend operator fun invoke() {
 
         coroutineScope {
 
-            val locationPermission = isPermissionGrantedUseCase(Permission.Location)
+            // check if location permission it's disabled in the study settings
+            val locationPermission =
+                environment.isLocationPermissionEnabled &&
+                        isPermissionGrantedUseCase(Permission.Location)
             val currentLocation = getCurrentLocationUseCase()
             val homeLocation = getHomeLocationUseCase()
 

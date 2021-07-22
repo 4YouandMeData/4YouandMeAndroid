@@ -16,4 +16,6 @@ abstract class Environment {
 
     open fun pinCodeSuffix(): String = ""
 
+    abstract val isLocationPermissionEnabled: Boolean
+
 }

@@ -23,4 +23,5 @@ class SampleEnvironment(private val context: Context) : Environment() {
     override fun pinCodeSuffix(): String =
         context.getString(R.string.PIN_CODE_SUFFIX)
 
+    override val isLocationPermissionEnabled: Boolean = true
 }
