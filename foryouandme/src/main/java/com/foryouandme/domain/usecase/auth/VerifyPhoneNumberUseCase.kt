@@ -1,15 +1,15 @@
 package com.foryouandme.domain.usecase.auth
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import javax.inject.Inject
 
 class VerifyPhoneNumberUseCase @Inject constructor(
     private val repository: AuthRepository,
-    private val environment: Environment
+    private val settings: StudySettings
 ) {
 
     suspend operator fun invoke(phone: String) {
-        repository.verifyPhoneNumber(environment.studyId(), phone)
+        repository.verifyPhoneNumber(settings.studyId, phone)
     }
 
 }

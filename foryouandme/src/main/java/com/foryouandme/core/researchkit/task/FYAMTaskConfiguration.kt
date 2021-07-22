@@ -3,7 +3,7 @@ package com.foryouandme.core.researchkit.task
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.web.CamCogInterface
 import com.foryouandme.core.ext.web.asIntegrationCookies
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
@@ -35,7 +35,7 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class FYAMTaskConfiguration @Inject constructor(
-    private val environment: Environment,
+    private val settings: StudySettings,
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getTokenUseCase: GetTokenUseCase,
     private val getTaskUseCase: GetTaskUseCase,
@@ -135,7 +135,7 @@ class FYAMTaskConfiguration @Inject constructor(
                     .let { token ->
 
                         val camCogUrl =
-                            "${environment.getApiBaseUrl()}/camcog/tasks/$id"
+                            "${settings.getApiBaseUrl}/camcog/tasks/$id"
 
                         FYAMCamCogTask(
                             id,

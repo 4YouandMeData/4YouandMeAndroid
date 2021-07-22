@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.device
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.device.network.DeviceApi
 import com.foryouandme.domain.usecase.device.DeviceRepository
@@ -18,8 +18,8 @@ object DeviceModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): DeviceApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): DeviceApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

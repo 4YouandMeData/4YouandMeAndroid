@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.auth
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.usecase.analytics.SetAnalyticsUserIdUseCase
 import com.foryouandme.domain.usecase.push.GetPushTokenUseCase
 import com.foryouandme.domain.usecase.user.GetUserUseCase
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class PinLoginUseCase @Inject constructor(
     private val repository: AuthRepository,
-    private val environment: Environment,
+    private val settings: StudySettings,
     private val updateUserTimeZoneUseCase: UpdateUserTimeZoneUseCase,
     private val getPushTokenUseCase: GetPushTokenUseCase,
     private val updateUserFirebaseTokenUseCase: UpdateUserFirebaseTokenUseCase,
@@ -28,8 +28,8 @@ class PinLoginUseCase @Inject constructor(
         try {
 
             val user = repository.pinLogin(
-                environment.studyId(),
-                "$pin${environment.pinCodeSuffix()}"
+                settings.studyId,
+                "$pin${settings.pinCodeSuffix}"
             )!!
             updateUserTimeZoneUseCase(user.token, ZoneId.systemDefault())
             val firebaseToken = getPushTokenUseCase()

@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.study
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.study.network.StudyInfoApi
 import com.foryouandme.domain.usecase.study.StudyInfoRepository
@@ -18,8 +18,8 @@ object TaskModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): StudyInfoApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): StudyInfoApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

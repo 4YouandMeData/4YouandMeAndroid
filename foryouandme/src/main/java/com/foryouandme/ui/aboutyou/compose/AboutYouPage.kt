@@ -48,7 +48,7 @@ fun AboutYouPage(
         AboutYouPage(
             state = state,
             configuration = it,
-            permissions = aboutYouViewModel.environment.isLocationPermissionEnabled,
+            permissions = aboutYouViewModel.settings.isLocationPermissionEnabled,
             imageConfiguration = aboutYouViewModel.imageConfiguration,
             onUserError = { aboutYouViewModel.execute(GetUser) },
             onBack = onBack,

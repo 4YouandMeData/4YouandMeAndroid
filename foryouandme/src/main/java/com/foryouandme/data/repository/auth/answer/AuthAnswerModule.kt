@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.auth.answer
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.auth.answer.network.AuthAnswerApi
 import com.foryouandme.domain.usecase.auth.answer.AuthAnswerRepository
@@ -18,8 +18,8 @@ object AuthAnswerModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): AuthAnswerApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): AuthAnswerApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

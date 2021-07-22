@@ -1,6 +1,6 @@
 package com.foryouandme.domain.usecase.user
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class GetUserUseCase @Inject constructor(
     private val repository: UserRepository,
-    private val environment: Environment,
+    private val settings: StudySettings,
     private val getTokenUseCase: GetTokenUseCase,
     private val updateUserCustomDataUseCase: UpdateUserCustomDataUseCase
 ) {
@@ -23,7 +23,7 @@ class GetUserUseCase @Inject constructor(
                 val user = repository.getUser(token)!!
 
                 // if user has empty custom data update it with default configuration
-                if (environment.useCustomData() && user.customData.isEmpty()) {
+                if (settings.useCustomData && user.customData.isEmpty()) {
 
                     updateUserCustomDataUseCase(defaultUserCustomData())
                     repository.getUser(token)!!

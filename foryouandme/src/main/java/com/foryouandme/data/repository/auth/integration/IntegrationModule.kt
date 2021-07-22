@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.auth.integration
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.auth.integration.network.IntegrationApi
 import com.foryouandme.domain.usecase.auth.integration.IntegrationRepository
@@ -18,8 +18,8 @@ object IntegrationModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): IntegrationApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): IntegrationApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 

@@ -1,6 +1,6 @@
 package com.foryouandme.data.repository.auth.screening
 
-import com.foryouandme.data.datasource.Environment
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.getApiService
 import com.foryouandme.data.repository.auth.screening.network.ScreeningApi
 import com.foryouandme.domain.usecase.auth.screening.ScreeningRepository
@@ -18,8 +18,8 @@ object ScreeningModule {
 
     @Provides
     @Singleton
-    fun provideApi(environment: Environment, moshi: Moshi): ScreeningApi =
-        getApiService(environment.getApiBaseUrl(), moshi)
+    fun provideApi(settings: StudySettings, moshi: Moshi): ScreeningApi =
+        getApiService(settings.getApiBaseUrl, moshi)
 
 }
 
