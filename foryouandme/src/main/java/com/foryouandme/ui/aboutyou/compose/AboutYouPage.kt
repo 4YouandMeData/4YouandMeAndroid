@@ -21,7 +21,6 @@ import com.foryouandme.ui.aboutyou.AboutYouAction.GetConfiguration
 import com.foryouandme.ui.aboutyou.AboutYouAction.GetUser
 import com.foryouandme.ui.aboutyou.AboutYouState
 import com.foryouandme.ui.aboutyou.AboutYouViewModel
-import com.foryouandme.ui.auth.onboarding.step.consent.ConsentStep
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
 import com.foryouandme.ui.compose.menu.MenuItem
@@ -134,14 +133,14 @@ fun AboutYouPage(
                             .background(configuration.theme.fourthTextColor.value)
                     )
                 }
-                if (configuration.text.onboarding.sections.contains(ConsentStep.identifier))
-                    MenuItem(
-                        text = configuration.text.profile.reviewConsent,
-                        icon = imageConfiguration.reviewConsent(),
-                        configuration = configuration,
-                        imageConfiguration = imageConfiguration,
-                        onClick = onReviewConsentClicked
-                    )
+//                if (configuration.text.onboarding.sections.contains(ConsentStep.identifier))
+//                    MenuItem(
+//                        text = configuration.text.profile.reviewConsent,
+//                        icon = imageConfiguration.reviewConsent(),
+//                        configuration = configuration,
+//                        imageConfiguration = imageConfiguration,
+//                        onClick = onReviewConsentClicked
+//                    )
                 if (permissions)
                     MenuItem(
                         text = configuration.text.profile.permissions.title,
