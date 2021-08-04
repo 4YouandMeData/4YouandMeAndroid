@@ -26,20 +26,34 @@ import com.foryouandme.entity.mock.Mock
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 
-data class PermissionsItem(
-    val configuration: Configuration,
+data class PermissionItem(
     val id: String,
     val permission: Permission,
     val description: String,
     @DrawableRes val image: Int,
     val isAllowed: Boolean
-)
+) {
+
+    companion object {
+
+        fun mock(): PermissionItem =
+            PermissionItem(
+                "",
+                Permission.Location,
+                Mock.body,
+                R.drawable.placeholder,
+                true
+            )
+
+    }
+
+}
 
 @Composable
 fun PermissionItem(
-    item: PermissionsItem,
+    item: PermissionItem,
     configuration: Configuration,
-    onItemClicked: (PermissionsItem) -> Unit = {}
+    onItemClicked: (PermissionItem) -> Unit = {}
 ) {
 
     Card(
@@ -111,15 +125,7 @@ private fun getGrantedStatus(isAllowed: Boolean, configuration: Configuration): 
 fun AboutYouPermissionPreview() {
     ForYouAndMeTheme {
         PermissionItem(
-            item =
-            PermissionsItem(
-                configuration = Configuration.mock(),
-                "",
-                Permission.Location,
-                Mock.body,
-                R.drawable.placeholder,
-                true
-            ),
+            item = PermissionItem.mock(),
             configuration = Configuration.mock()
         )
     }

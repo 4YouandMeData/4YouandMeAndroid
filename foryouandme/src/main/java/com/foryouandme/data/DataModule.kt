@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.foryouandme.data.repository.user.network.UserResponse
+import com.foryouandme.data.repository.user.network.response.UserResponse
 import com.foryouandme.data.repository.auth.answer.network.response.AnswerResponse
 import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.data.repository.auth.answer.network.response.QuestionResponse
@@ -179,7 +179,8 @@ class DataModule {
     @Singleton
     @Provides
     fun provideLocationRequest(): LocationRequest =
-        LocationRequest()
+        LocationRequest
+            .create()
             .apply {
 
                 // Sets the desired interval for active location updates. This interval is inexact.

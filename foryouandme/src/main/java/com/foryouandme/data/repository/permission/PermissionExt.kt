@@ -10,7 +10,7 @@ val Permission.name: String
         Permission.Location -> Manifest.permission.ACCESS_FINE_LOCATION
     }
 
-fun Permission.Companion.fromName(name: String): Permission? =
+fun Permission.Companion.fromAndroidName(name: String): Permission? =
     when (name) {
 
         Permission.Camera.name -> Permission.Camera
@@ -18,4 +18,10 @@ fun Permission.Companion.fromName(name: String): Permission? =
         Permission.Location.name -> Permission.Location
         else -> null
 
+    }
+
+fun Permission.Companion.fromServerName(permission: String): Permission? =
+    when (permission) {
+        "location" -> Permission.Location
+        else -> null
     }

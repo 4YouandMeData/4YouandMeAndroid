@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.R
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.navigation.action.ContextAction
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.ext.execute
@@ -43,11 +44,12 @@ fun PermissionsPage(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = "permissions") {
-        permissionsViewModel.execute(PermissionsAction.Initialize)
+        permissionsViewModel.execute(Initialize)
     }
 
     LaunchedEffect(key1 = permissionsViewModel) {
-        permissionsViewModel.events
+        permissionsViewModel.eventsFlow
+            .unwrapEvent("permissions")
             .onEach {
                 when (it) {
                     PermissionsEvent.PermissionPermanentlyDenied -> {
@@ -93,7 +95,7 @@ fun PermissionsPage(
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     onBack: () -> Unit = {},
-    onPermissionClicked: (PermissionsItem) -> Unit = {}
+    onPermissionClicked: (PermissionItem) -> Unit = {}
 ) {
     StatusBar(color = configuration.theme.primaryColorStart.value)
     Column(modifier = Modifier.fillMaxSize()) {
@@ -133,23 +135,7 @@ fun PermissionsPage(
 fun PermissionsPagePreview() {
     ForYouAndMeTheme {
         PermissionsPage(
-            state =
-            PermissionsState(
-                data =
-                PermissionsData(
-                    permissions = listOf(
-                        PermissionsItem(
-                            configuration = Configuration.mock(),
-                            "",
-                            Permission.Location,
-                            Mock.body,
-                            R.drawable.placeholder,
-                            true
-                        )
-                    ),
-                    configuration = Configuration.mock()
-                ).toData()
-            ),
+            state = PermissionsState.mock(),
             configuration = Configuration.mock(),
             imageConfiguration = ImageConfiguration.mock()
         )

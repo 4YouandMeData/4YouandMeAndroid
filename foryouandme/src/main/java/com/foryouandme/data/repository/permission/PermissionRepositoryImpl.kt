@@ -26,10 +26,7 @@ class PermissionRepositoryImpl @Inject constructor(
 ) : PermissionRepository {
 
     override fun isPermissionGranted(permission: Permission): Boolean =
-        if (Build.VERSION.SDK_INT >= 23)
-            ContextCompat.checkSelfPermission(context, permission.name).isGranted()
-        else
-            PermissionChecker.checkSelfPermission(context, permission.name).isGranted()
+        ContextCompat.checkSelfPermission(context, permission.name).isGranted()
 
     private fun Int.isGranted(): Boolean = this == PackageManager.PERMISSION_GRANTED
 
@@ -82,13 +79,13 @@ class PermissionRepositoryImpl @Inject constructor(
 
                             val granted =
                                 p0?.grantedPermissionResponses
-                                    ?.mapNotNull { Permission.fromName(it.permissionName) }
+                                    ?.mapNotNull { Permission.fromAndroidName(it.permissionName) }
                                     ?.map { PermissionResult.Granted(it) } ?: emptyList()
 
                             val denied =
                                 p0?.deniedPermissionResponses
                                     ?.mapNotNull { permissionDenied ->
-                                        Permission.fromName(permissionDenied.permissionName)
+                                        Permission.fromAndroidName(permissionDenied.permissionName)
                                             ?.let {
                                                 PermissionResult.Denied(
                                                     it,

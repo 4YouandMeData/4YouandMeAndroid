@@ -3,6 +3,8 @@ package com.foryouandme.ui.permissions
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.flow.UIEvent
+import com.foryouandme.core.arch.flow.toUIEvent
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
 import com.foryouandme.core.ext.Action
@@ -17,21 +19,21 @@ import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.permission.IsPermissionGrantedUseCase
 import com.foryouandme.domain.usecase.permission.RequestPermissionUseCase
+import com.foryouandme.domain.usecase.user.GetUserUseCase
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.permission.PermissionResult
-import com.foryouandme.ui.permissions.compose.PermissionsItem
+import com.foryouandme.ui.permissions.compose.PermissionItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class PermissionsViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
@@ -44,8 +46,8 @@ class PermissionsViewModel @Inject constructor(
     private val state = MutableStateFlow(PermissionsState())
     val stateFlow = state as StateFlow<PermissionsState>
 
-    private val eventChannel = Channel<PermissionsEvent>(Channel.BUFFERED)
-    val events = eventChannel.receiveAsFlow()
+    private val events = MutableSharedFlow<UIEvent<PermissionsEvent>>(replay = 1)
+    val eventsFlow = events as SharedFlow<UIEvent<PermissionsEvent>>
 
     init {
         execute(PermissionsAction.ScreenViewed)
@@ -61,27 +63,30 @@ class PermissionsViewModel @Inject constructor(
                     state.emit(state.value.copy(data = state.value.data.toLoading()))
 
                     val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
+                    val user = async { getUserUseCase(Policy.LocalFirst) }
                     val isLocationGranted =
                         async { isPermissionGrantedUseCase(Permission.Location) }
 
                     val permissions =
-                        if (settings.isLocationPermissionEnabled)
-                            listOf(
-                                PermissionsItem(
-                                    configuration.await(),
-                                    "1",
-                                    Permission.Location,
-                                    configuration.await().text.profile.permissions.location,
-                                    imageConfiguration.location(),
-                                    isLocationGranted.await()
-                                )
-                            )
-                        else
-                            emptyList()
+                        user.await()
+                            .permissions
+                            .mapNotNull {
+                                if (it is Permission.Location && settings.isLocationPermissionEnabled)
+                                    PermissionItem(
+                                        "1",
+                                        Permission.Location,
+                                        configuration.await().text.profile.permissions.location,
+                                        imageConfiguration.location(),
+                                        isLocationGranted.await()
+                                    )
+                                else null
+
+                            }
 
                     state.emit(
                         state.value.copy(
                             data = PermissionsData(
+                                user = user.await(),
                                 permissions = permissions,
                                 configuration = configuration.await()
                             ).toData()
@@ -105,7 +110,7 @@ class PermissionsViewModel @Inject constructor(
             permissionRequest is PermissionResult.Denied &&
             permissionRequest.isPermanentlyDenied
         )
-            eventChannel.send(PermissionsEvent.PermissionPermanentlyDenied)
+            events.emit(PermissionsEvent.PermissionPermanentlyDenied.toUIEvent())
         else {
             val data =
                 state.value.data.map { data ->

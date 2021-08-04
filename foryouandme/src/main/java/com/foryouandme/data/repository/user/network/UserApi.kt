@@ -4,6 +4,7 @@ import com.foryouandme.data.repository.user.network.request.UserCustomDataUpdate
 import com.foryouandme.data.repository.user.network.request.UserTimeZoneUpdateRequest
 import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.data.repository.user.network.request.UserFirebaseTokenUpdateRequest
+import com.foryouandme.data.repository.user.network.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
