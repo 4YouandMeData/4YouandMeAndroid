@@ -18,12 +18,14 @@ buildscript {
         classpath(GradlePlugin.FirebaseCrashlytics.get())
         classpath(GradlePlugin.Bintray.get())
         classpath(GradlePlugin.Hilt.get())
-        classpath(GradlePlugin.Versions.get())
         classpath(GradlePlugin.Dokka.get())
     }
 }
 
-apply(plugin = "com.github.ben-manes.versions")
+plugins {
+    id("com.github.ben-manes.versions") version GradlePlugin.Versions.version
+}
+
 apply(plugin = "org.jetbrains.dokka")
 
 allprojects {

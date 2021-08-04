@@ -212,11 +212,13 @@ dependencies {
     implementation(AndroidX.Lifecycle.ViewModelCompose.get())
 
     /* --- accompanist --- */
-    implementation(Google.Accompanist.Coil.get())
     implementation(Google.Accompanist.Insets.get())
     implementation(Google.Accompanist.SystemUIController.get())
     implementation(Google.Accompanist.Pager.get())
     implementation(Google.Accompanist.SwipeRefresh.get())
+
+    /* --- coil --- */
+    implementation(Coil.Compose.get())
 
     /* --- test --- */
 

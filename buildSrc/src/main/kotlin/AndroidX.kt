@@ -1,6 +1,6 @@
 object AndroidX {
 
-    object Activity : DependencyGroup("androidx.activity", "1.3.0-rc01") {
+    object Activity : DependencyGroup("androidx.activity", "1.3.0") {
 
         object Compose : Dependency(Activity.group, "activity-compose", Activity.version)
 
@@ -9,7 +9,7 @@ object AndroidX {
     object AppCompat : Dependency(
         "androidx.appcompat",
         "appcompat",
-        "1.3.0"
+        "1.3.1"
     )
 
     object RecyclerView : Dependency(
@@ -21,7 +21,7 @@ object AndroidX {
     object FragmentKtx : Dependency(
         "androidx.fragment",
         "fragment-ktx",
-        "1.3.5"
+        "1.3.6"
     )
 
     object ViewPager2 : Dependency(
@@ -46,7 +46,7 @@ object AndroidX {
     object ConstraintLayout : Dependency(
         "androidx.constraintlayout",
         "constraintlayout",
-        "2.0.4"
+        "2.1.0"
     )
 
     object Navigation : DependencyGroup("androidx.navigation", "2.3.5") {
@@ -59,7 +59,7 @@ object AndroidX {
         object Compose : Dependency(
             Navigation.group,
             "navigation-compose",
-            "2.4.0-alpha04"
+            "2.4.0-alpha05"
         )
 
     }
@@ -112,13 +112,13 @@ object AndroidX {
 
     object Camera : DependencyIndependentGroup("androidx.camera") {
 
-        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha06")
+        object Core : Dependency(Camera.group, "camera-core", "1.1.0-alpha07")
 
-        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha06")
+        object Camera2 : Dependency(Camera.group, "camera-camera2", "1.1.0-alpha07")
 
-        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha06")
+        object Lifecycle : Dependency(Camera.group, "camera-lifecycle", "1.1.0-alpha07")
 
-        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha26")
+        object View : Dependency(Camera.group, "camera-view", "1.0.0-alpha27")
 
     }
 
@@ -158,7 +158,7 @@ object AndroidX {
 
     object Compose {
 
-        const val version: String = "1.0.0-rc01"
+        const val version: String = "1.0.0"
 
         object UI : Dependency("androidx.compose.ui", "ui", version) {
 
