@@ -28,7 +28,12 @@ data class UserDataAggregationResponse(
                         strategy = strategy,
                         title = title,
                         color = color,
-                        data = data,
+                        data =
+                        // for bodyport convert data from kg to libs
+                        if (strategy.contains("bodyport_weight"))
+                            data.map { if (it != null) it * 2.205f else it }
+                        else
+                            data,
                         xLabels = xLabels,
                         yLabels = yLabels
                     )
