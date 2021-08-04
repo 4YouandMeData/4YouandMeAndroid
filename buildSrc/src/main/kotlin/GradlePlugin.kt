@@ -3,7 +3,7 @@ object GradlePlugin {
     object Android : Dependency(
         "com.android.tools.build",
         "gradle",
-        "7.0.0-rc01"
+        "7.0.0"
     )
 
     object KotlinPlugin : Dependency(
@@ -63,7 +63,7 @@ object GradlePlugin {
             Dependency(
                 "org.jetbrains.dokka",
                 "dokka-gradle-plugin",
-                "1.4.32"
+                "1.5.0"
             )
 
 }

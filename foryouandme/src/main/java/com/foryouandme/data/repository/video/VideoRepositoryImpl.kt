@@ -3,8 +3,10 @@ package com.foryouandme.data.repository.video
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
 import com.abedelazizshe.lightcompressorlibrary.VideoQuality
+import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.usecase.video.VideoRepository
+import com.foryouandme.ui.compose.ConfigurationContent
 import com.googlecode.mp4parser.BasicContainer
 import com.googlecode.mp4parser.authoring.Movie
 import com.googlecode.mp4parser.authoring.Track
@@ -151,9 +153,13 @@ class VideoRepositoryImpl @Inject constructor() : VideoRepository {
                     }
 
                 },
-                quality = quality,
-                isMinBitRateEnabled = false,
-                keepOriginalResolution = false
+                configureWith =
+                Configuration(
+                    quality = quality,
+                    isMinBitRateEnabled = false,
+                    keepOriginalResolution = false
+                )
+
             )
         }
 
