@@ -1,6 +1,7 @@
 package com.foryouandme.entity.user
 
 import com.foryouandme.entity.integration.IntegrationApp
+import com.foryouandme.entity.permission.Permission
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
 
@@ -14,7 +15,8 @@ data class User(
     val token: String,
     val customData: List<UserCustomData>,
     val timeZone: ZoneId?,
-    val points: Int
+    val points: Int,
+    val permissions: List<Permission>
 ) {
 
     fun getCustomDataByIdentifier(identifier: String): UserCustomData? =
@@ -33,7 +35,8 @@ data class User(
                 token = "token",
                 customData = emptyList(),
                 timeZone = ZoneOffset.UTC,
-                points = 30
+                points = 30,
+                permissions = listOf(Permission.Location, Permission.Camera)
             )
 
     }

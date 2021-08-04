@@ -16,6 +16,7 @@ import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.user.GetUserUseCase
+import com.foryouandme.entity.permission.Permission
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -60,7 +61,21 @@ class AboutYouViewModel @Inject constructor(
             {
                 state.emit(state.value.copy(user = state.value.user.toLoading()))
                 val user = getUserUseCase(Policy.LocalFirst)
-                state.emit(state.value.copy(user = user.toData()))
+                state.emit(
+                    state.value.copy(
+                        user = user.toData(),
+                        permissions =
+                        user.permissions
+                            .mapNotNull {
+                                if (
+                                    it is Permission.Location &&
+                                    settings.isLocationPermissionEnabled.not()
+                                ) null
+                                else it
+                            }
+                            .isNotEmpty()
+                    )
+                )
             },
             { state.emit(state.value.copy(user = it.toError())) }
         )

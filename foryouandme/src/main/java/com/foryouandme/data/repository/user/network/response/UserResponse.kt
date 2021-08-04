@@ -1,7 +1,9 @@
-package com.foryouandme.data.repository.user.network
+package com.foryouandme.data.repository.user.network.response
 
 import com.foryouandme.core.ext.catchToNull
+import com.foryouandme.data.repository.permission.fromServerName
 import com.foryouandme.entity.integration.IntegrationApp
+import com.foryouandme.entity.permission.Permission
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.entity.user.UserCustomDataItem
@@ -20,7 +22,8 @@ data class UserResponse(
     @field:Json(name = "on_boarding_completed") val onBoardingCompleted: Boolean? = null,
     @field:Json(name = "custom_data") val customData: List<UserCustomDataResponse>? = null,
     @field:Json(name = "time_zone") val timeZone: String? = null,
-    @field:Json(name = "points") val points: Int? = null
+    @field:Json(name = "points") val points: Int? = null,
+    @field:Json(name = "agreed_permissions") val permissions: List<String>? = null
 ) : Resource() {
 
     fun toUser(token: String): User? =
@@ -38,7 +41,11 @@ data class UserResponse(
                     token = token,
                     customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList(),
                     timeZone = catchToNull { ZoneId.of(timeZone) },
-                    points = points
+                    points = points,
+                    permissions =
+                    permissions
+                        ?.mapNotNull { Permission.fromServerName(it) }
+                        ?: emptyList()
                 )
 
         }

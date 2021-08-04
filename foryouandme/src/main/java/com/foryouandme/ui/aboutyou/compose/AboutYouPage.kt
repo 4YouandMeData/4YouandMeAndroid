@@ -47,7 +47,6 @@ fun AboutYouPage(
         AboutYouPage(
             state = state,
             configuration = it,
-            permissions = aboutYouViewModel.settings.isLocationPermissionEnabled,
             imageConfiguration = aboutYouViewModel.imageConfiguration,
             onUserError = { aboutYouViewModel.execute(GetUser) },
             onBack = onBack,
@@ -66,7 +65,6 @@ fun AboutYouPage(
     state: AboutYouState,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
-    permissions: Boolean,
     onUserError: () -> Unit = {},
     onBack: () -> Unit = {},
     onPregnancyClicked: () -> Unit = {},
@@ -141,7 +139,7 @@ fun AboutYouPage(
 //                        imageConfiguration = imageConfiguration,
 //                        onClick = onReviewConsentClicked
 //                    )
-                if (permissions)
+                if (state.permissions)
                     MenuItem(
                         text = configuration.text.profile.permissions.title,
                         icon = imageConfiguration.permissions(),
@@ -175,24 +173,7 @@ fun AboutYouPage(
 private fun AboutYouPagePreview() {
     ForYouAndMeTheme(configuration = Configuration.mock().toData()) {
         AboutYouPage(
-            state =
-            AboutYouState(
-                user =
-                User(
-                    id = "",
-                    email = "",
-                    phoneNumber = "",
-                    daysInStudy = 0,
-                    identities = emptyList(),
-                    onBoardingCompleted = true,
-                    token = "",
-                    customData = emptyList(),
-                    timeZone = ZoneId.of("UTC"),
-                    points = 0
-                ).toData(),
-                configuration = Configuration.mock().toData()
-            ),
-            permissions = true,
+            state = AboutYouState.mock(),
             configuration = Configuration.mock(),
             imageConfiguration = ImageConfiguration.mock()
         )

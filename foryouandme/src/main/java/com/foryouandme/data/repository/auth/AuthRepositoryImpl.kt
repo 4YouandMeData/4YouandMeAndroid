@@ -3,7 +3,7 @@ package com.foryouandme.data.repository.auth
 import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.data.repository.auth.network.AuthApi
 import com.foryouandme.data.repository.auth.network.request.*
-import com.foryouandme.data.repository.user.network.UserResponse
+import com.foryouandme.data.repository.user.network.response.UserResponse
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.usecase.auth.AuthRepository
 import com.foryouandme.entity.user.User

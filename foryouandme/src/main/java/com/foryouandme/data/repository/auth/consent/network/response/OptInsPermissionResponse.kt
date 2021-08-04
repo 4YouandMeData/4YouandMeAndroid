@@ -1,5 +1,6 @@
 package com.foryouandme.data.repository.auth.consent.network.response
 
+import com.foryouandme.data.repository.permission.fromServerName
 import com.foryouandme.entity.optins.OptInsPermission
 import com.foryouandme.entity.permission.Permission
 import com.squareup.moshi.Json
@@ -35,7 +36,9 @@ data class OptInsPermissionResponse(
                         agreeText = agreeText,
                         disagreeText = disagreeText,
                         systemPermissions =
-                        systemPermissions?.mapNotNull { mapPermission(it) } ?: emptyList(),
+                        systemPermissions
+                            ?.mapNotNull { Permission.fromServerName(it) }
+                            ?: emptyList(),
                         mandatory = mandatory ?: false,
                         mandatoryDescription = mandatoryDescription
                     )
@@ -45,9 +48,3 @@ data class OptInsPermissionResponse(
 
 fun List<OptInsPermissionResponse>.toOptInsPermissions(): List<OptInsPermission> =
     mapNotNull { it.toOptInsPermission() }
-
-private fun mapPermission(permission: String): Permission? =
-    when (permission) {
-        "location" -> Permission.Location
-        else -> null
-    }
