@@ -6,20 +6,27 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.layout.RelocationRequester
+import androidx.compose.ui.layout.relocationRequester
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.ext.getColor
 import com.foryouandme.core.ext.getText
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.researchkit.step.choosemany.ChooseManyAnswer
-import com.foryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import com.foryouandme.ui.compose.textfield.EntryText
+import kotlinx.coroutines.CoroutineScope
 
 data class ChooseManyAnswerData(
     val answer: ChooseManyAnswer,
@@ -27,6 +34,7 @@ data class ChooseManyAnswerData(
     val isSelected: Boolean
 )
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun ChooseManyAnswerItem(
@@ -35,6 +43,10 @@ fun ChooseManyAnswerItem(
     onTextChanged: (ChooseManyAnswerData, String) -> Unit = { _, _ -> },
     onTextFocused: () -> Unit = {}
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val relocationRequester = remember { RelocationRequester() }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -77,7 +89,15 @@ fun ChooseManyAnswerItem(
                 modifier =
                 Modifier
                     .fillMaxWidth()
-                    .onFocusChanged { if (it.isFocused) onTextFocused() },
+                    .onFocusChanged { if (it.isFocused) onTextFocused() }
+                    .relocationRequester(relocationRequester)
+                    .onFocusEvent {
+                        if (it.isFocused) {
+                            coroutineScope.launchSafe {
+                                relocationRequester.bringIntoView()
+                            }
+                        }
+                    },
                 onTextChanged = { onTextChanged(data, it) }
             )
         }

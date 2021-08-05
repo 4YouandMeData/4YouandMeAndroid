@@ -19,8 +19,7 @@ import com.foryouandme.core.ext.getColor
 import com.foryouandme.core.ext.getText
 import com.foryouandme.researchkit.result.SingleIntAnswerResult
 import com.foryouandme.researchkit.skip.SkipTarget
-import com.foryouandme.researchkit.step.compose.QuestionPage
-import com.foryouandme.researchkit.step.range.RangeAction
+import com.foryouandme.researchkit.step.compose.QuestionPageLazy
 import com.foryouandme.researchkit.step.range.RangeAction.*
 import com.foryouandme.researchkit.step.range.RangeEvents
 import com.foryouandme.researchkit.step.range.RangeState
@@ -28,7 +27,6 @@ import com.foryouandme.researchkit.step.range.RangeViewModel
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import java.lang.Integer.max
 
 @Composable
 fun RangePage(
@@ -71,7 +69,7 @@ private fun RangePage(
     onNext: () -> Unit = {}
 ) {
     if (state.step != null)
-        QuestionPage(
+        QuestionPageLazy(
             backgroundColor = state.step.backgroundColor.getColor(),
             question = state.step.question.getText(),
             questionColor = state.step.questionColor.getColor(),

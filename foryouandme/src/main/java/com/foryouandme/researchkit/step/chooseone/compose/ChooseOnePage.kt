@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.flow.unwrapEvent
@@ -19,10 +20,12 @@ import com.foryouandme.researchkit.step.chooseone.ChooseOneEvent
 import com.foryouandme.researchkit.step.chooseone.ChooseOneState
 import com.foryouandme.researchkit.step.chooseone.ChooseOneViewModel
 import com.foryouandme.researchkit.step.compose.QuestionPage
+import com.foryouandme.researchkit.step.compose.QuestionPageLazy
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun ChooseOnePage(
@@ -59,6 +62,7 @@ fun ChooseOnePage(
 
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 private fun ChooseOnePage(
@@ -77,7 +81,7 @@ private fun ChooseOnePage(
             isNextEnabled = state.canGoNext,
             onNext = onNext
         ) {
-            items(state.answers) {
+            state.answers.forEach {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

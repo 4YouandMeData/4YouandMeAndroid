@@ -2,17 +2,15 @@ package com.foryouandme.researchkit.step.choosemany.compose
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.RelocationRequester
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.getColor
 import com.foryouandme.core.ext.getText
-import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.researchkit.result.MultipleAnswerResult
-import com.foryouandme.researchkit.result.SingleAnswerResult
 import com.foryouandme.researchkit.skip.SkipTarget
 import com.foryouandme.researchkit.step.choosemany.ChooseManyAction.*
 import com.foryouandme.researchkit.step.choosemany.ChooseManyEvent
@@ -20,10 +18,10 @@ import com.foryouandme.researchkit.step.choosemany.ChooseManyState
 import com.foryouandme.researchkit.step.choosemany.ChooseManyViewModel
 import com.foryouandme.researchkit.step.compose.QuestionPage
 import com.foryouandme.ui.compose.ForYouAndMeTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun ChooseManyPage(
@@ -60,6 +58,7 @@ fun ChooseManyPage(
 
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 private fun ChooseManyPage(
@@ -69,12 +68,8 @@ private fun ChooseManyPage(
     onNext: () -> Unit = {}
 ) {
 
-    val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
     if (state.step != null)
         QuestionPage(
-            lazyListState = lazyListState,
             backgroundColor = state.step.backgroundColor.getColor(),
             question = state.step.question.getText(),
             questionColor = state.step.questionColor.getColor(),
@@ -83,7 +78,7 @@ private fun ChooseManyPage(
             isNextEnabled = state.canGoNext,
             onNext = onNext
         ) {
-            itemsIndexed(state.answers) { index, item ->
+            state.answers.forEach { item ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -94,8 +89,7 @@ private fun ChooseManyPage(
                         data = item,
                         onAnswerClicked = onAnswerClicked,
                         onTextChanged = onTextChanged,
-                        onTextFocused = {
-                        }
+                        onTextFocused = {}
                     )
                 }
             }

@@ -10,7 +10,7 @@ import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.getColor
 import com.foryouandme.core.ext.getText
 import com.foryouandme.researchkit.result.SingleStringAnswerResult
-import com.foryouandme.researchkit.step.compose.QuestionPage
+import com.foryouandme.researchkit.step.compose.QuestionPageLazy
 import com.foryouandme.researchkit.step.textinput.TextInputAction.Next
 import com.foryouandme.researchkit.step.textinput.TextInputAction.SetText
 import com.foryouandme.researchkit.step.textinput.TextInputEvent
@@ -58,7 +58,7 @@ private fun TextInputPage(
     onNext: () -> Unit = {}
 ) {
     if (state.step != null)
-        QuestionPage(
+        QuestionPageLazy(
             backgroundColor = state.step.backgroundColor.getColor(),
             question = state.step.question.getText(),
             questionColor = state.step.questionColor.getColor(),

@@ -11,11 +11,18 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.RelocationRequester
+import androidx.compose.ui.layout.relocationRequester
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.ext.getText
+import com.foryouandme.core.ext.launchSafe
 import com.foryouandme.researchkit.step.chooseone.ChooseOneAnswer
 import com.foryouandme.ui.compose.textfield.EntryText
 
@@ -28,6 +35,7 @@ data class ChooseOneAnswerData(
     val textColor: Color,
 )
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun ChooseOneAnswerItem(
@@ -35,6 +43,10 @@ fun ChooseOneAnswerItem(
     onAnswerClicked: (ChooseOneAnswerData) -> Unit = {},
     onTextChanged: (ChooseOneAnswerData, String) -> Unit = { _, _ -> }
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val relocationRequester = remember { RelocationRequester() }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -73,7 +85,18 @@ fun ChooseOneAnswerItem(
                 indicatorColor = data.textColor.copy(alpha = 0.5f),
                 cursorColor = data.textColor,
                 label = data.answer.otherPlaceholder?.getText().orEmpty(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .relocationRequester(relocationRequester)
+                    .onFocusEvent {
+                        if (it.isFocused) {
+                            coroutineScope.launchSafe {
+                                relocationRequester.bringIntoView()
+                            }
+                        }
+                    }
+                ,
                 onTextChanged = { onTextChanged(data, it) }
             )
         }
