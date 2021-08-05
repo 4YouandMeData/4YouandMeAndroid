@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.foryouandme.researchkit.step.StepFragment
@@ -16,6 +17,7 @@ class ChooseManyStepFragment : StepFragment() {
 
     private val viewModel: ChooseManyViewModel by viewModels()
 
+    @ExperimentalComposeUiApi
     @ExperimentalAnimationApi
     override fun onCreateView(
         inflater: LayoutInflater,
