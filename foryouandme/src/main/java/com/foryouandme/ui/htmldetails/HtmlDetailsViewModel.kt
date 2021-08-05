@@ -41,7 +41,7 @@ class HtmlDetailsViewModel @Inject constructor(
             loadingFlow.show(HtmlDetailsLoading.Initialization)
 
             val configuration = async { getConfigurationUseCase(Policy.LocalFirst) }
-            val studyInfo = async { getStudyInfoUseCase()!! }
+            val studyInfo = async { getStudyInfoUseCase(Policy.LocalFirst)!! }
 
             state = state.copy(configuration = configuration.await(), studyInfo = studyInfo.await())
             stateUpdateFlow.update(

@@ -9,46 +9,67 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.toData
+import com.foryouandme.core.ext.errorToast
+import com.foryouandme.core.ext.toBase64ImageSource
+import com.foryouandme.core.ext.toImageSource
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.menu.MenuItem
 import com.foryouandme.ui.compose.statusbar.StatusBar
 import com.foryouandme.ui.studyinfo.StudyInfoAction
+import com.foryouandme.ui.studyinfo.StudyInfoEvent
 import com.foryouandme.ui.studyinfo.StudyInfoState
 import com.foryouandme.ui.studyinfo.StudyInfoViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 
 @Composable
 fun StudyInfoPage(
-    studyInfoViewModel: StudyInfoViewModel = viewModel(),
+    viewModel: StudyInfoViewModel,
     onAboutYouClicked: () -> Unit = {},
     onContactClicked: () -> Unit = {},
     onRewardsClicked: () -> Unit = {},
     onFAQClicked: () -> Unit = {},
 ) {
 
-    val state by studyInfoViewModel.stateFlow.collectAsState()
+    val state by viewModel.stateFlow.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = "study_info") {
+        viewModel.execute(StudyInfoAction.GetStudyInfo)
+    }
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.eventsFlow
+            .unwrapEvent("study_info")
+            .onEach {
+                when(it) {
+                    is StudyInfoEvent.StudyInfoError -> context.errorToast(it.error)
+                }
+            }
+            .collect()
+    }
 
     ForYouAndMeTheme(
         state.configuration,
-        { studyInfoViewModel.execute(StudyInfoAction.GetConfiguration) }
+        { viewModel.execute(StudyInfoAction.GetConfiguration) }
     ) {
         StudyInfoPage(
             state = state,
             configuration = it,
-            imageConfiguration = studyInfoViewModel.imageConfiguration,
+            imageConfiguration = viewModel.imageConfiguration,
             onAboutYouClicked = onAboutYouClicked,
             onContactClicked = onContactClicked,
             onRewardsClicked = onRewardsClicked,
@@ -94,34 +115,55 @@ fun StudyInfoPage(
             Spacer(modifier = Modifier.height(30.dp))
             MenuItem(
                 text = configuration.text.studyInfo.aboutYou,
-                icon = imageConfiguration.aboutYou(),
+                icon = imageConfiguration.aboutYou().toImageSource(),
                 configuration = configuration,
                 imageConfiguration = imageConfiguration,
                 onClick = onAboutYouClicked
             )
             Divider(color = configuration.theme.fourthTextColor.value)
-            MenuItem(
-                text = configuration.text.studyInfo.contactInfo,
-                icon = imageConfiguration.contactInfo(),
-                configuration = configuration,
-                imageConfiguration = imageConfiguration,
-                onClick = onContactClicked
-            )
-            MenuItem(
-                text = configuration.text.studyInfo.rewards,
-                icon = imageConfiguration.rewards(),
-                configuration = configuration,
-                imageConfiguration = imageConfiguration,
-                onClick = onRewardsClicked
-            )
-            MenuItem(
-                text = configuration.text.studyInfo.faq,
-                icon = imageConfiguration.faq(),
-                configuration = configuration,
-                imageConfiguration = imageConfiguration,
-                onClick = onFAQClicked
-            )
-            Spacer(modifier = Modifier.height(30.dp))
+            when (state.studyInfo) {
+                is LazyData.Data -> {
+                    if (state.studyInfo.value.informationPage != null)
+                        MenuItem(
+                            text = state.studyInfo.value.informationPage.title,
+                            icon =
+                            state.studyInfo.value.informationPage.image?.toBase64ImageSource()
+                                ?: imageConfiguration.contactInfo().toImageSource(),
+                            configuration = configuration,
+                            imageConfiguration = imageConfiguration,
+                            onClick = onContactClicked
+                        )
+                    if (state.studyInfo.value.rewardPage != null)
+                        MenuItem(
+                            text = state.studyInfo.value.rewardPage.title,
+                            icon =
+                            state.studyInfo.value.rewardPage.image?.toBase64ImageSource()
+                                ?: imageConfiguration.rewards().toImageSource(),
+                            configuration = configuration,
+                            imageConfiguration = imageConfiguration,
+                            onClick = onRewardsClicked
+                        )
+                    if (state.studyInfo.value.faqPage != null)
+                        MenuItem(
+                            text = state.studyInfo.value.faqPage.title,
+                            icon =
+                            state.studyInfo.value.faqPage.image?.toBase64ImageSource()
+                                ?: imageConfiguration.faq().toImageSource(),
+                            configuration = configuration,
+                            imageConfiguration = imageConfiguration,
+                            onClick = onFAQClicked
+                        )
+                    Spacer(modifier = Modifier.height(30.dp))
+                }
+                is LazyData.Loading ->
+                    Loading(
+                        configuration = configuration,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(2f)
+                    )
+                else -> Unit
+            }
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = getAppVersion(),

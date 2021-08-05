@@ -100,7 +100,7 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView(page: EHtmlDetails) {
+    private fun setupWebView(htmlDetails: EHtmlDetails) {
 
         val viewBinding = binding
         val studyInfo = viewModel.state.studyInfo
@@ -108,19 +108,15 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
         if (viewBinding != null && studyInfo != null) {
 
             var source = ""
-            when (page) {
-                EHtmlDetails.INFO -> {
-                    viewBinding.title.text = studyInfo.informationPage.title
-                    source = studyInfo.informationPage.body
-                }
-                EHtmlDetails.REWARD -> {
-                    viewBinding.title.text = studyInfo.rewardPage.title
-                    source = studyInfo.rewardPage.body
-                }
-                EHtmlDetails.FAQ -> {
-                    viewBinding.title.text = studyInfo.faqPage.title
-                    source = studyInfo.faqPage.body
-                }
+            val page = when (htmlDetails) {
+                EHtmlDetails.INFO -> studyInfo.informationPage
+                EHtmlDetails.REWARD -> studyInfo.rewardPage
+                EHtmlDetails.FAQ -> studyInfo.faqPage
+            }
+
+            if(page != null) {
+                viewBinding.title.text = page.title
+                source = page.body
             }
 
             viewBinding.webView.settings.also {
