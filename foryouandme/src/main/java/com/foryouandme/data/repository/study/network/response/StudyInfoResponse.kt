@@ -21,10 +21,7 @@ data class StudyInfoResponse(
         val faq = faqPage?.get(document)?.toPage(document)
         val reward = rewardPage?.get(document)?.toPage(document)
 
-        return when (null) {
-            information, faq, reward -> null
-            else -> StudyInfo(information, faq, reward)
-        }
+        return StudyInfo(information, faq, reward)
 
     }
 

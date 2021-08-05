@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
+import com.foryouandme.core.ext.toImageSource
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
 import com.foryouandme.ui.aboutyou.AboutYouAction.GetConfiguration
@@ -105,14 +106,14 @@ fun AboutYouPage(
                 if (it.customData.isNotEmpty())
                     MenuItem(
                         text = configuration.text.profile.userInfo.title,
-                        icon = imageConfiguration.pregnancy(),
+                        icon = imageConfiguration.pregnancy().toImageSource(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
                         onClick = onPregnancyClicked
                     )
                 MenuItem(
                     text = configuration.text.profile.appsAndDevices.title,
-                    icon = imageConfiguration.devices(),
+                    icon = imageConfiguration.devices().toImageSource(),
                     configuration = configuration,
                     imageConfiguration = imageConfiguration,
                     onClick = onDevicesClicked
@@ -142,7 +143,7 @@ fun AboutYouPage(
                 if (state.permissions)
                     MenuItem(
                         text = configuration.text.profile.permissions.title,
-                        icon = imageConfiguration.permissions(),
+                        icon = imageConfiguration.permissions().toImageSource(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
                         onClick = onPermissionsClicked
@@ -150,7 +151,7 @@ fun AboutYouPage(
                 if (configuration.text.profile.dailySurveyTime.hidden == 0)
                     MenuItem(
                         text = configuration.text.profile.dailySurveyTime.title,
-                        icon = imageConfiguration.dailySurveyTime(),
+                        icon = imageConfiguration.dailySurveyTime().toImageSource(),
                         configuration = configuration,
                         imageConfiguration = imageConfiguration,
                         onClick = onDailySurveyTimeClicked

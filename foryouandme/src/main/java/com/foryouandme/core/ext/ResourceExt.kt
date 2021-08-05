@@ -6,10 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.foryouandme.entity.source.ColorSource
+import com.foryouandme.entity.source.ImageSource
 import com.foryouandme.entity.source.TextSource
 import com.foryouandme.ui.compose.toColor
 
-/* --- text resource --- */
+/* --- text source --- */
 
 fun String.toTextSource(): TextSource =
     TextSource.Text(this)
@@ -33,7 +34,15 @@ fun TextSource.getText(context: Context): String =
         is TextSource.Text -> string
     }
 
-/* --- color resource --- */
+/* --- image source --- */
+
+fun Int.toImageSource(): ImageSource =
+    ImageSource.AndroidResource(this)
+
+fun String.toBase64ImageSource(): ImageSource =
+    ImageSource.Base64(this)
+
+/* --- color source --- */
 
 fun ColorSource.getColor(): Color =
     when (this) {

@@ -14,13 +14,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.R
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.ext.toImageSource
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
+import com.foryouandme.entity.source.ImageSource
+import com.foryouandme.entity.source.MultiSourceImage
 
 @Composable
 fun MenuItem(
     text: String,
-    icon: Int,
+    icon: ImageSource,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     onClick: () -> Unit = {}
@@ -33,8 +36,8 @@ fun MenuItem(
             .height(60.dp)
             .clickable { onClick() }
     ) {
-        Image(
-            painter = painterResource(id = icon),
+        MultiSourceImage(
+            source = icon,
             contentDescription = null,
             modifier = Modifier.size(32.dp)
         )
@@ -62,7 +65,7 @@ fun MenuItem(
 private fun MenuItemPreview() {
     MenuItem(
         text = Mock.title,
-        icon = R.drawable.placeholder,
+        icon = R.drawable.placeholder.toImageSource(),
         configuration = Configuration.mock(),
         imageConfiguration = ImageConfiguration.mock()
     )

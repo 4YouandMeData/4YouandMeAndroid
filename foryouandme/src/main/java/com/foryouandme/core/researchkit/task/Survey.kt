@@ -2,6 +2,7 @@ package com.foryouandme.core.researchkit.task
 
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.toColorSource
+import com.foryouandme.core.ext.toImageSource
 import com.foryouandme.core.ext.toTextSource
 import com.foryouandme.core.researchkit.step.page.FYAMPageStep
 import com.foryouandme.core.view.page.EPageType
@@ -10,7 +11,6 @@ import com.foryouandme.entity.activity.Reschedule.Companion.isEnabled
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.page.Page
 import com.foryouandme.entity.source.ImageSource
-import com.foryouandme.entity.source.ImageSource.AndroidResource.Companion.toAndroidResource
 import com.foryouandme.entity.survey.Survey
 import com.foryouandme.entity.survey.SurveyBlock
 import com.foryouandme.entity.survey.SurveyQuestion
@@ -89,8 +89,7 @@ fun buildSurvey(
                                     questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
                                     shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
                                     entryDateColors = EntryDateDefaults.colors(configuration),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource(),
+                                    buttonImage = imageConfiguration.nextStepSecondary().toImageSource(),
                                     minDate = question.minDate?.atStartOfDay(ZoneOffset.UTC)?.toLocalDate(),
                                     maxDate = question.maxDate?.atStartOfDay(ZoneOffset.UTC)?.toLocalDate()
                                 )
@@ -119,8 +118,7 @@ fun buildSurvey(
                                     questionColor = configuration.theme.primaryTextColor.color(),
                                     shadowColor = configuration.theme.primaryTextColor.color(),
                                     arrowColor = configuration.theme.primaryColorStart.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary()
-                                        .toAndroidResource(),
+                                    buttonImage = imageConfiguration.nextStepSecondary().toImageSource(),
                                     skips =
                                     question.targets.mapNotNull {
 
@@ -173,7 +171,7 @@ fun buildSurvey(
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
-                                        .toAndroidResource(),
+                                        .toImageSource(),
                                     skips =
                                     question.targets.mapNotNull {
 
@@ -228,7 +226,7 @@ fun buildSurvey(
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
-                                        .toAndroidResource(),
+                                        .toImageSource(),
                                     skips =
                                     question.targets.mapNotNull {
 
@@ -266,7 +264,7 @@ fun buildSurvey(
                                     question = question.text.toTextSource(),
                                     questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
                                     shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    buttonImage = imageConfiguration.nextStepSecondary().toAndroidResource(),
+                                    buttonImage = imageConfiguration.nextStepSecondary().toImageSource(),
                                     textColor = configuration.theme.primaryTextColor.color().toColorSource(),
                                     placeholderColor = configuration.theme.fourthTextColor.color().toColorSource(),
                                     placeholder = question.placeholder?.toTextSource(),
@@ -299,7 +297,7 @@ fun buildSurvey(
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
-                                        .toAndroidResource(),
+                                        .toImageSource(),
                                     skips =
                                     question.targets.mapNotNull {
 
@@ -356,7 +354,7 @@ fun buildSurvey(
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
-                                        .toAndroidResource(),
+                                        .toImageSource(),
                                     skips =
                                     question.targets.mapNotNull {
 

@@ -18,15 +18,7 @@ import com.foryouandme.entity.configuration.button.button
 
 sealed class ImageSource {
 
-    data class AndroidResource(@DrawableRes val image: Int) : ImageSource() {
-
-        companion object {
-
-            fun Int.toAndroidResource(): AndroidResource = AndroidResource(this)
-
-        }
-
-    }
+    data class AndroidResource(@DrawableRes val image: Int) : ImageSource()
 
     data class Base64(val image: String) : ImageSource()
 

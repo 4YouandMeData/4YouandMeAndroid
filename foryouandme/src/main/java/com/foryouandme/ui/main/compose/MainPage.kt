@@ -192,7 +192,7 @@ private fun NavigationHost(
         composable(Screen.HomeScreen.YourData.route) { YourDataPage(hiltViewModel()) }
         composable(Screen.HomeScreen.StudyInfo.route) {
             StudyInfoPage(
-                studyInfoViewModel = hiltViewModel(),
+                viewModel = hiltViewModel(),
                 onAboutYouClicked = onAboutYouClicked,
                 onContactClicked = onContactClicked,
                 onRewardsClicked = onRewardsClicked,
