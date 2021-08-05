@@ -1,3 +1,21 @@
+## Release 0.2.10
+
+- Fix Experimental annotation
+
+- Study Info section titles and icons must be taken from API
+
+- Glitch when entering "Other, specify:" answer
+
+- Retrieve permissions list from user API
+
+- Weight on your-data tab - display in lbs
+
+- Update dependencies
+
+## Release 0.2.9
+
+- review consent section temporarily hidden
+
 ## Release 0.2.8
 
 - Add isLocationPermissionEnabled in Environment settings
