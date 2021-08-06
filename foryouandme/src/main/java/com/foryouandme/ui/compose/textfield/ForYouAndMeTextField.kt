@@ -2,6 +2,7 @@ package com.foryouandme.ui.compose.textfield
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -26,6 +27,7 @@ fun ForYouAndMeTextField(
     modifier: Modifier = Modifier,
     maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     trailingIcon: @Composable () -> Unit = {},
     onTextChanged: (String) -> Unit = { }
 ) {
@@ -73,6 +75,7 @@ fun ForYouAndMeTextField(
             }
         },
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         modifier = modifier
     )
 }
