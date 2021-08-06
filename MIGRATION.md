@@ -1,5 +1,18 @@
 # MIGRATION
 
+## 0.2.11
+
+### 1) Configuration update
+
+Removed keys:
+
+STUDY\_INFO\_CONTACT\_INFO
+
+STUDY\_INFO\_REWARDS
+
+STUDY\_INFO\_FAQ
+
+
 ## 0.2.10
 
 ### 1) Recommended dependencies versions
