@@ -3,6 +3,7 @@ package com.foryouandme.ui.compose.textfield
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ fun EntryText(
     isEditable: Boolean = true,
     maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     onTextChanged: (String) -> Unit = { },
 ) {
     EntryTextImpl(
@@ -49,6 +51,7 @@ fun EntryText(
         maxCharacter = maxCharacter,
         isValid = true,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         onTextChanged = onTextChanged,
     )
 }
@@ -70,6 +73,7 @@ fun EntryText(
     isValid: Boolean = true,
     maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     onTextChanged: (String) -> Unit = { },
 ) {
     EntryTextImpl(
@@ -88,6 +92,7 @@ fun EntryText(
         isValid = isValid,
         maxCharacter = maxCharacter,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         onTextChanged = onTextChanged,
     )
 }
@@ -109,6 +114,7 @@ private fun EntryTextImpl(
     isValid: Boolean = true,
     maxCharacter: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     onTextChanged: (String) -> Unit = { },
 ) {
 
@@ -125,6 +131,7 @@ private fun EntryTextImpl(
         indicatorColor = indicatorColor,
         cursorColor = cursorColor,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         maxCharacter = maxCharacter,
         trailingIcon = {
             val focus = focusState

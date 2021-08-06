@@ -3,6 +3,8 @@ package com.foryouandme.ui.auth.signin.pin.compose
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.flow.unwrapEvent
@@ -99,6 +102,7 @@ fun PinCodePage(
 
 }
 
+@ExperimentalComposeUiApi
 @Composable
 private fun PinCodePage(
     state: PinCodeState,
@@ -112,6 +116,9 @@ private fun PinCodePage(
     onTermsClicked: () -> Unit = {},
     onNextClicked: () -> Unit = {}
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     StatusBar(color = configuration.theme.primaryColorStart.value)
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -160,7 +167,9 @@ private fun PinCodePage(
                     iconColor = configuration.theme.secondaryColor.value,
                     isValid = state.isPinValid,
                     modifier = Modifier.fillMaxWidth(),
-                    onTextChanged = onPinChange
+                    onTextChanged = onPinChange,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions { keyboardController?.hide() }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
