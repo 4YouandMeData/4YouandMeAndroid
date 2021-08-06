@@ -78,3 +78,44 @@ fun Web(
             )
     }
 }
+
+@Composable
+fun Web(
+    html: String,
+    modifier: Modifier = Modifier,
+) {
+
+    var view by remember { mutableStateOf<WebView?>(null) }
+
+    DisposableEffect("web") {
+        onDispose {
+
+            view?.destroy()
+            view = null
+
+        }
+    }
+
+    Box(modifier) {
+        AndroidView(
+            factory = { context ->
+                val webView = WebView(context)
+                webView.layoutParams =
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                webView.loadDataWithBaseURL(
+                    null,
+                    html,
+                    "text/html; charset=utf-8",
+                    "utf-8",
+                    null
+                )
+                view = webView
+                webView
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}

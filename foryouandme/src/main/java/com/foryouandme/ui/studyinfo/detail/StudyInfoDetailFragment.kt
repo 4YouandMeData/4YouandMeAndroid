@@ -1,26 +1,37 @@
-package com.foryouandme.ui.htmldetails
+package com.foryouandme.ui.studyinfo.detail
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
-import com.foryouandme.R
 import com.foryouandme.core.arch.android.BaseFragment
-import com.foryouandme.core.arch.flow.observeIn
-import com.foryouandme.core.arch.flow.unwrapEvent
-import com.foryouandme.core.ext.setStatusBar
-import com.foryouandme.core.ext.showBackButton
-import com.foryouandme.databinding.HtmlDetailBinding
+import com.foryouandme.ui.studyinfo.detail.compose.StudyInfoDetailPage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
+class StudyInfoDetailFragment : BaseFragment() {
 
-    private val args: HtmlDetailsFragmentArgs by navArgs()
+    private val viewModel: StudyInfoDetailViewModel by viewModels()
 
-    private val viewModel: HtmlDetailsViewModel by viewModels()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                StudyInfoDetailPage(
+                    viewModel = viewModel,
+                    onBack = { navigator.back(rootNavController()) }
+                )
+            }
+        }
+
+    /*private val args: com.foryouandme.ui.htmldetails.HtmlDetailsFragmentArgs by navArgs()
+
+    private val viewModel: StudyInfoPageViewModel by viewModels()
 
     private val binding: HtmlDetailBinding?
         get() = view?.let { HtmlDetailBinding.bind(it) }
@@ -131,6 +142,6 @@ class HtmlDetailsFragment : BaseFragment(R.layout.html_detail) {
                 null
             )
         }
-    }
+    }*/
 
 }

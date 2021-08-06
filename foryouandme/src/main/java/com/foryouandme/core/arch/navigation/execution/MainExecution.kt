@@ -2,7 +2,7 @@ package com.foryouandme.core.arch.navigation.execution
 
 import com.foryouandme.R
 import com.foryouandme.core.arch.navigation.NavigationExecution
-import com.foryouandme.ui.htmldetails.EHtmlDetails
+import com.foryouandme.ui.studyinfo.detail.EStudyInfoType
 import com.foryouandme.ui.main.MainFragmentDirections
 import com.foryouandme.ui.tasks.TaskFragment
 
@@ -11,19 +11,9 @@ fun mainToAboutYouPage(): NavigationExecution =
         it.navigate(MainFragmentDirections.actionMainToAboutYou())
     }
 
-fun mainToInformation(): NavigationExecution =
+fun mainToStudyInfoDetail(type: EStudyInfoType): NavigationExecution =
     {
-        it.navigate(MainFragmentDirections.actionMainToHtmlDetails(EHtmlDetails.INFO))
-    }
-
-fun mainToReward(): NavigationExecution =
-    {
-        it.navigate(MainFragmentDirections.actionMainToHtmlDetails(EHtmlDetails.REWARD))
-    }
-
-fun mainToFaq(): NavigationExecution =
-    {
-        it.navigate(MainFragmentDirections.actionMainToHtmlDetails(EHtmlDetails.FAQ))
+        it.navigate(MainFragmentDirections.actionMainToStudyInfoDetail(type))
     }
 
 fun mainToTask(id: String): NavigationExecution = {

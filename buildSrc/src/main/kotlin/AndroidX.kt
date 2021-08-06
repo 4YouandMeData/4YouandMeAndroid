@@ -69,13 +69,6 @@ object AndroidX {
         object ViewModelKtx :
             Dependency(Lifecycle.group, "lifecycle-viewmodel-ktx", Lifecycle.version)
 
-        object ViewModelSavedState :
-            Dependency(
-                Lifecycle.group,
-                "lifecycle-viewmodel-savedstate",
-                Lifecycle.version
-            )
-
         object ViewModelCompose :
             Dependency(
                 Lifecycle.group,

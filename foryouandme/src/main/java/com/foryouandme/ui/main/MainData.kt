@@ -4,6 +4,7 @@ import com.foryouandme.core.activity.FYAMState
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.ui.studyinfo.detail.EStudyInfoType
 
 data class MainState(
     val configuration: LazyData<Configuration> = LazyData.Empty
@@ -29,10 +30,6 @@ sealed class MainEvent {
 
 object MainToAboutYou : NavigationAction
 
-object MainToInformation : NavigationAction
-
-object MainToReward : NavigationAction
-
-object MaiToFAQ : NavigationAction
+data class MainToStudyInfoDetail(val type: EStudyInfoType) : NavigationAction
 
 data class MainToTask(val id: String) : NavigationAction
