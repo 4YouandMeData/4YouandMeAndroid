@@ -45,8 +45,8 @@
 
         <argument
             android:name="type"
-            app:argType="com.foryouandme.ui.web.EWebPageType"
-            android:defaultValue="OTHER" />
+            android:defaultValue="OTHER"
+            app:argType="com.foryouandme.ui.web.EWebPageType" />
 
     </fragment>
 
@@ -81,8 +81,8 @@
             app:popExitAnim="@anim/slide_to_right" />
 
         <action
-            android:id="@+id/action_main_to_html_details"
-            app:destination="@id/html_details"
+            android:id="@+id/action_main_to_study_info_detail"
+            app:destination="@id/study_info_detail"
             app:enterAnim="@anim/slide_from_right"
             app:exitAnim="@anim/slide_to_left"
             app:popEnterAnim="@anim/slide_from_left"
@@ -94,7 +94,7 @@
             app:enterAnim="@anim/slide_from_top"
             app:exitAnim="@anim/idle"
             app:popEnterAnim="@anim/idle"
-            app:popExitAnim="@anim/slide_to_top"  />
+            app:popExitAnim="@anim/slide_to_top" />
 
 
     </fragment>
@@ -108,7 +108,7 @@
     <fragment
         android:id="@+id/about_you"
         android:name="com.foryouandme.ui.aboutyou.AboutYouFragment"
-        android:label="about_you" >
+        android:label="about_you">
 
         <action
             android:id="@+id/action_about_you_to_review_consent"
@@ -160,7 +160,7 @@
     <fragment
         android:id="@+id/apps_and_devices"
         android:name="com.foryouandme.ui.appsanddevices.AppsAndDevicesFragment"
-        android:label="apps_and_devices" >
+        android:label="apps_and_devices">
 
         <action
             android:id="@+id/action_apps_and_devices_to_integration_login"
@@ -207,14 +207,13 @@
         tools:layout="@layout/daily_survey_time" />
 
     <fragment
-        android:id="@+id/html_details"
-        android:name="com.foryouandme.ui.htmldetails.HtmlDetailsFragment"
-        android:label="HtmlDetailsFragment"
-        tools:layout="@layout/html_detail">
+        android:id="@+id/study_info_detail"
+        android:name="com.foryouandme.ui.studyinfo.detail.StudyInfoDetailFragment"
+        android:label="study_info_detail">
 
         <argument
             android:name="pageId"
-            app:argType="com.foryouandme.ui.htmldetails.EHtmlDetails" />
+            app:argType="com.foryouandme.ui.studyinfo.detail.EStudyInfoType" />
 
     </fragment>
 

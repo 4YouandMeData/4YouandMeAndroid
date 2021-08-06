@@ -157,12 +157,8 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
 
             is MainToAboutYou ->
                 mainToAboutYouPage()
-            is MainToInformation ->
-                mainToInformation()
-            is MainToReward ->
-                mainToReward()
-            is MaiToFAQ ->
-                mainToFaq()
+            is MainToStudyInfoDetail ->
+                mainToStudyInfoDetail(action.type)
             is MainToTask ->
                 mainToTask(action.id)
 

@@ -2,26 +2,22 @@ package com.foryouandme.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
-import com.foryouandme.R
 import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.android.BaseFragment
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.action.ContextAction
 import com.foryouandme.core.ext.execute
-import com.foryouandme.core.ext.selectedUnselectedColor
-import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.notifiable.FeedAction
 import com.foryouandme.ui.main.compose.MainPage
 import com.foryouandme.ui.main.feeds.FeedsToTask
+import com.foryouandme.ui.studyinfo.detail.EStudyInfoType
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.welcome.view.*
 
 
 @AndroidEntryPoint
@@ -64,19 +60,19 @@ class MainFragment : BaseFragment() {
                     onContactClicked = {
                         navigator.navigateTo(
                             rootNavController(),
-                            MainToInformation
+                            MainToStudyInfoDetail(EStudyInfoType.INFO)
                         )
                     },
                     onRewardsClicked = {
                         navigator.navigateTo(
                             rootNavController(),
-                            MainToReward
+                            MainToStudyInfoDetail(EStudyInfoType.REWARD)
                         )
                     },
                     onFAQClicked = {
                         navigator.navigateTo(
                             rootNavController(),
-                            MaiToFAQ
+                            MainToStudyInfoDetail(EStudyInfoType.FAQ)
                         )
                     },
                     openTask = { navigator.navigateTo(rootNavController(), MainToTask(it)) },
@@ -91,11 +87,20 @@ class MainFragment : BaseFragment() {
             FeedAction.AboutYou ->
                 navigator.navigateTo(rootNavController(), MainToAboutYou)
             FeedAction.Faq ->
-                navigator.navigateTo(rootNavController(), MaiToFAQ)
+                navigator.navigateTo(
+                    rootNavController(),
+                    MainToStudyInfoDetail(EStudyInfoType.FAQ)
+                )
             FeedAction.Rewards ->
-                navigator.navigateTo(rootNavController(), MainToReward)
+                navigator.navigateTo(
+                    rootNavController(),
+                    MainToStudyInfoDetail(EStudyInfoType.REWARD)
+                )
             FeedAction.Contacts ->
-                navigator.navigateTo(rootNavController(), MainToInformation)
+                navigator.navigateTo(
+                    rootNavController(),
+                    MainToStudyInfoDetail(EStudyInfoType.INFO)
+                )
             is FeedAction.Integration ->
                 requireContext().execute(ContextAction.OpenApp(feedAction.app.packageName))
             is FeedAction.Web ->
