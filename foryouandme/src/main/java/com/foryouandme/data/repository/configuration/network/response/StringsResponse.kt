@@ -550,13 +550,7 @@ data class StringsResponse(
     private fun toStudyInfo(): StudyInfo? =
         when (null) {
             studyInfoAboutYou, studyInfoContactInfo, studyInfoRewards, studyInfoFaq -> null
-            else ->
-                StudyInfo(
-                    studyInfoAboutYou,
-                    studyInfoContactInfo,
-                    studyInfoRewards,
-                    studyInfoFaq
-                )
+            else -> StudyInfo(studyInfoAboutYou)
 
         }
 
