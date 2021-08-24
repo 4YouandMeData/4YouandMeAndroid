@@ -33,7 +33,14 @@ fun EntryTime(
 
     val dialog = remember { MaterialDialog() }
     dialog.build(
-        backgroundColor = configuration.theme.secondaryColor.value
+        backgroundColor = configuration.theme.secondaryColor.value,
+        buttons = {
+            val style =
+                MaterialTheme.typography.body1
+                    .copy(color = configuration.theme.primaryTextColor.value)
+            positiveButton("Ok", textStyle = style)
+            negativeButton("Cancel", textStyle = style)
+        }
     ) {
         timepicker(
             initialTime = time,
@@ -49,13 +56,6 @@ fun EntryTime(
                 borderColor = configuration.theme.primaryTextColor.value
             )
         ) { onTimeSelected(it) }
-        buttons {
-            val style =
-                MaterialTheme.typography.body1
-                    .copy(color = configuration.theme.primaryTextColor.value)
-            positiveButton("Ok", textStyle = style)
-            negativeButton("Cancel", textStyle = style)
-        }
     }
 
     ForYouAndMeReadOnlyTextField(

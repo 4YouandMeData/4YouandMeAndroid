@@ -33,14 +33,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.foryouandme.ui.dialog.MaterialDialog
+import com.foryouandme.ui.dialog.datetime.util.isSmallDevice
 import com.foryouandme.ui.dialog.datetime.util.shortLocalName
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.temporal.ChronoUnit
+import java.lang.Integer.max
 import java.util.*
 
 /**
@@ -103,7 +106,8 @@ internal fun DatePickerImpl(title: String, state: DatePickerState) {
         initialPage = ChronoUnit.MONTHS.between(state.minDate, state.selected).toInt()
     )
 
-    Column(Modifier.fillMaxWidth()) {
+    // TODO: Fix me: Set fixed height for 6 week months
+    Column(Modifier.fillMaxWidth().height(480.dp)) {
         CalendarHeader(title, state)
         HorizontalPager(
             state = pagerState,
@@ -164,9 +168,9 @@ private fun YearPicker(
             YearPickerItem(year = item, selected = selected, colors = state.colors) {
                 if (!selected) {
                     coroutineScope.launch {
-                        pagerState.scrollToPage(
-                            pagerState.currentPage + (item - viewDate.year) * 12
-                        )
+                        val yearPage = pagerState.currentPage + (item - viewDate.year) * 12
+                        val targetPage = maxOf(0, minOf(yearPage, pagerState.pageCount -1))
+                        pagerState.scrollToPage(targetPage)
                     }
                 }
                 state.yearPickerShowing = false
@@ -411,19 +415,18 @@ private fun CalendarHeader(title: String, state: DatePickerState) {
         Modifier
             .background(state.colors.headerBackgroundColor)
             .fillMaxWidth()
-            .height(120.dp)
     ) {
         Column(Modifier.padding(start = 24.dp, end = 24.dp)) {
             Text(
                 text = title,
-                modifier = Modifier.paddingFromBaseline(top = 32.dp),
+                modifier = Modifier.paddingFromBaseline(top = if (isSmallDevice()) 24.dp else 32.dp),
                 color = state.colors.headerTextColor,
                 style = TextStyle(fontSize = 12.sp)
             )
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .paddingFromBaseline(top = 64.dp)
+                    .paddingFromBaseline(top = if (isSmallDevice()) 0.dp else 64.dp)
             ) {
                 Text(
                     text = "$day, $month ${state.selected.dayOfMonth}",
@@ -432,6 +435,7 @@ private fun CalendarHeader(title: String, state: DatePickerState) {
                     style = TextStyle(fontSize = 30.sp, fontWeight = W400)
                 )
             }
+            Spacer(Modifier.height(if (isSmallDevice()) 8.dp else 16.dp))
         }
     }
 }

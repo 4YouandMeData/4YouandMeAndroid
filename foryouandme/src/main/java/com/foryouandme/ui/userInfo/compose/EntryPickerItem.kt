@@ -32,7 +32,16 @@ fun EntryPickerItem(
 ) {
 
     val dialog = remember { MaterialDialog() }
-    dialog.build(backgroundColor = configuration.theme.secondaryColor.value) {
+    dialog.build(
+        backgroundColor = configuration.theme.secondaryColor.value,
+        buttons = {
+            val style =
+                MaterialTheme.typography.body1
+                    .copy(color = configuration.theme.primaryTextColor.value)
+            positiveButton("Ok", textStyle = style)
+            negativeButton("Cancel", textStyle = style)
+        }
+    ) {
 
         title(text = item.name, color = configuration.theme.primaryTextColor.value)
 
@@ -50,14 +59,6 @@ fun EntryPickerItem(
             if (value != null)
                 onValueSelected(item, value)
         }
-        buttons {
-            val style =
-                MaterialTheme.typography.body1
-                .copy(color = configuration.theme.primaryTextColor.value)
-            positiveButton("Ok", textStyle = style)
-            negativeButton("Cancel", textStyle = style)
-        }
-
     }
 
     ForYouAndMeReadOnlyTextField(

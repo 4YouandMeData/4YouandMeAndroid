@@ -1,5 +1,7 @@
 package com.foryouandme.ui.compose.textfield
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -11,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,7 +22,6 @@ import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.dialog.MaterialDialog
-import com.foryouandme.ui.dialog.buttons
 import com.foryouandme.ui.dialog.datetime.date.DatePickerDefaults
 import com.foryouandme.ui.dialog.datetime.date.datepicker
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -97,7 +99,16 @@ private fun EntryDateImpl(
 ) {
 
     val dialog = remember { MaterialDialog() }
-    dialog.build(backgroundColor = entryDateColors.datePickerBackgroundColor) {
+    dialog.build(
+        backgroundColor = entryDateColors.datePickerBackgroundColor,
+        buttons = {
+            val style =
+                MaterialTheme.typography.body1
+                    .copy(color = entryDateColors.datePickerButtonsColor)
+            positiveButton("Ok", textStyle = style)
+            negativeButton("Cancel", textStyle = style)
+        }
+    ) {
         datepicker(
             colors =
             DatePickerDefaults.colors(
@@ -112,13 +123,6 @@ private fun EntryDateImpl(
             maxDate = maxDate ?: LocalDate.of(2100, 1, 1)
         ) {
             onDateSelected(LocalDate.of(it.year, it.monthValue, it.dayOfMonth))
-        }
-        buttons {
-            val style =
-                MaterialTheme.typography.body1
-                    .copy(color = entryDateColors.datePickerButtonsColor)
-            positiveButton("Ok", textStyle = style)
-            negativeButton("Cancel", textStyle = style)
         }
     }
 
