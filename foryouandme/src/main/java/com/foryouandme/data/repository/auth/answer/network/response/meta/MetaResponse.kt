@@ -2,7 +2,8 @@ package com.foryouandme.data.repository.auth.answer.network.response.meta
 
 import com.foryouandme.core.ext.catchToNull
 import com.squareup.moshi.Json
-import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
@@ -36,12 +37,12 @@ data class MetaResponse(
 
     }
 
-    private fun getDate(dateStr: String): LocalDate? =
+    private fun getDate(dateStr: String): ZonedDateTime? =
         catchToNull {
-            LocalDate.parse(
+            ZonedDateTime.parse(
                 dateStr,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-            )
+            ).withZoneSameInstant(ZoneOffset.UTC)
         }
 }
 
