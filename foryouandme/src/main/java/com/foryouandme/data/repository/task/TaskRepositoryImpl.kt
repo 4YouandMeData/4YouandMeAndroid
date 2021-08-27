@@ -57,6 +57,14 @@ class TaskRepositoryImpl @Inject constructor(
 
     override suspend fun attachVideo(token: String, taskId: String, file: File) {
 
+        authErrorInterceptor.execute {
+            api.updateVideoTask(
+                token,
+                taskId,
+                TaskResultRequest(EmptyUpdateRequest())
+            )
+        }
+
         // create RequestBody instance from file
         val requestFile = file.asRequestBody("video/mp4".toMediaTypeOrNull())
 
