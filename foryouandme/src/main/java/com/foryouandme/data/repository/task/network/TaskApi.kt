@@ -33,6 +33,13 @@ interface TaskApi {
     )
 
     @PATCH("api/v1/tasks/{id}")
+    suspend fun updateVideoTask(
+        @Header(Headers.AUTH) token: String,
+        @Path("id") taskId: String,
+        @Body request: TaskResultRequest<EmptyUpdateRequest>
+    )
+
+    @PATCH("api/v1/tasks/{id}")
     suspend fun updateGaitTask(
         @Header(Headers.AUTH) token: String,
         @Path("id") taskId: String,
