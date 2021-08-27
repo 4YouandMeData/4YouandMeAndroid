@@ -30,7 +30,6 @@ import com.foryouandme.researchkit.step.scale.ScaleStep
 import com.foryouandme.researchkit.step.textinput.TextInputStep
 import com.foryouandme.researchkit.task.Task
 import com.foryouandme.ui.compose.textfield.EntryDateDefaults
-import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneOffset
 
 fun buildSurvey(
@@ -82,16 +81,20 @@ fun buildSurvey(
                                         configuration.text.task.skipButton,
                                         configuration.theme.primaryColorEnd.color()
                                     ),
-                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
+                                    backgroundColor = configuration.theme.secondaryColor.color()
+                                        .toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
-                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color()
+                                        .toColorSource(),
                                     entryDateColors = EntryDateDefaults.colors(configuration),
-                                    buttonImage = imageConfiguration.nextStepSecondary().toImageSource(),
-                                    minDate = question.minDate?.atStartOfDay(ZoneOffset.UTC)?.toLocalDate(),
-                                    maxDate = question.maxDate?.atStartOfDay(ZoneOffset.UTC)?.toLocalDate()
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toImageSource(),
+                                    minDate = question.minDate?.atStartOfDay(ZoneOffset.UTC)
+                                        ?.toLocalDate(),
+                                    maxDate = question.maxDate?.atStartOfDay(ZoneOffset.UTC)
+                                        ?.toLocalDate()
                                 )
 
                             is SurveyQuestion.Numerical ->
@@ -116,9 +119,9 @@ fun buildSurvey(
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
                                     questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
                                     arrowColor = configuration.theme.primaryColorStart.color(),
-                                    buttonImage = imageConfiguration.nextStepSecondary().toImageSource(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toImageSource(),
                                     skips =
                                     question.targets.mapNotNull {
 
@@ -155,19 +158,23 @@ fun buildSurvey(
                                         ChooseOneAnswer(
                                             id = it.id,
                                             text = it.text.toTextSource(),
-                                            textColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                            selectedColor  =configuration.theme.primaryColorEnd.color().toColorSource(),
-                                            unselectedColor  =configuration.theme.deactiveColor.color().toColorSource(),
+                                            textColor = configuration.theme.primaryTextColor.color()
+                                                .toColorSource(),
+                                            selectedColor = configuration.theme.primaryColorEnd.color()
+                                                .toColorSource(),
+                                            unselectedColor = configuration.theme.deactiveColor.color()
+                                                .toColorSource(),
                                             isOther = it.isOther,
                                             otherPlaceholder = configuration.text.survey.otherAnswerPlaceholder.toTextSource()
                                         )
                                     },
-                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
+                                    backgroundColor = configuration.theme.secondaryColor.color()
+                                        .toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
-                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color()
+                                        .toColorSource(),
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
@@ -207,22 +214,28 @@ fun buildSurvey(
                                         ChooseManyAnswer(
                                             id = it.id,
                                             text = it.text.toTextSource(),
-                                            textColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                            entryColor = configuration.theme.deactiveColor.color().toColorSource(),
-                                            selectedColor = configuration.theme.primaryColorEnd.color().toColorSource(),
-                                            unselectedColor = configuration.theme.deactiveColor.color().toColorSource(),
-                                            checkmarkColor = configuration.theme.secondaryColor.color().toColorSource(),
+                                            textColor = configuration.theme.primaryTextColor.color()
+                                                .toColorSource(),
+                                            entryColor = configuration.theme.deactiveColor.color()
+                                                .toColorSource(),
+                                            selectedColor = configuration.theme.primaryColorEnd.color()
+                                                .toColorSource(),
+                                            unselectedColor = configuration.theme.deactiveColor.color()
+                                                .toColorSource(),
+                                            checkmarkColor = configuration.theme.secondaryColor.color()
+                                                .toColorSource(),
                                             isNone = it.isNone,
-                                            isOther= it.isOther,
+                                            isOther = it.isOther,
                                             otherPlaceholder = configuration.text.survey.otherAnswerPlaceholder.toTextSource()
                                         )
                                     },
-                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
+                                    backgroundColor = configuration.theme.secondaryColor.color()
+                                        .toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
-                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color()
+                                        .toColorSource(),
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
@@ -258,15 +271,19 @@ fun buildSurvey(
                                         configuration.text.task.skipButton,
                                         configuration.theme.primaryColorEnd.color()
                                     ),
-                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
+                                    backgroundColor = configuration.theme.secondaryColor.color()
+                                        .toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
-                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    shadowColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    buttonImage = imageConfiguration.nextStepSecondary().toImageSource(),
-                                    textColor = configuration.theme.primaryTextColor.color().toColorSource(),
-                                    placeholderColor = configuration.theme.fourthTextColor.color().toColorSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color()
+                                        .toColorSource(),
+                                    buttonImage = imageConfiguration.nextStepSecondary()
+                                        .toImageSource(),
+                                    textColor = configuration.theme.primaryTextColor.color()
+                                        .toColorSource(),
+                                    placeholderColor = configuration.theme.fourthTextColor.color()
+                                        .toColorSource(),
                                     placeholder = question.placeholder?.toTextSource(),
                                     maxCharacters = question.maxCharacters
                                 )
@@ -348,8 +365,6 @@ fun buildSurvey(
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
                                     questionColor =
-                                    configuration.theme.primaryTextColor.color().toColorSource(),
-                                    shadowColor =
                                     configuration.theme.primaryTextColor.color().toColorSource(),
                                     buttonImage =
                                     imageConfiguration

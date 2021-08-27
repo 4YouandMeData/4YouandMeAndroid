@@ -16,7 +16,6 @@ class TextInputStep(
     val questionId: String,
     val question: TextSource,
     val questionColor: ColorSource,
-    val shadowColor: ColorSource,
     val buttonImage: ImageSource,
     val textColor: ColorSource,
     val placeholderColor: ColorSource,

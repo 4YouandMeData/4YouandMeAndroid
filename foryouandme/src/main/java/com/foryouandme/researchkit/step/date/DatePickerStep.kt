@@ -1,6 +1,5 @@
 package com.foryouandme.researchkit.step.date
 
-import androidx.compose.ui.graphics.Color
 import com.foryouandme.entity.source.ColorSource
 import com.foryouandme.entity.source.ImageSource
 import com.foryouandme.entity.source.TextSource
@@ -19,7 +18,6 @@ class DatePickerStep(
     val questionId: String,
     val question: TextSource,
     val questionColor: ColorSource,
-    val shadowColor: ColorSource,
     val buttonImage: ImageSource,
     val entryDateColors: EntryDateColors,
     val minDate: LocalDate?,

@@ -71,7 +71,6 @@ private fun DatePickerPage(
             question = state.step.question.getText(),
             questionColor = state.step.questionColor.getColor(),
             buttonImage = state.step.buttonImage,
-            shadowColor = state.step.shadowColor.getColor(),
             isNextEnabled = state.canGoNext,
             image = state.step.image,
             onNext = onNext

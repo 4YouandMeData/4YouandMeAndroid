@@ -25,7 +25,6 @@ class RangeStep(
     val questionId: String,
     val question: TextSource,
     val questionColor: ColorSource,
-    val shadowColor: ColorSource,
     val buttonImage: ImageSource,
     val skips: List<SurveySkip.Range>
 ) : Step(identifier, back, skip, { RangeStepFragment() })
