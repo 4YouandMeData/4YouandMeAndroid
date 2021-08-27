@@ -1,3 +1,18 @@
+
+## Release 0.2.12
+
+- Garmin date on tile not corresponding fix
+
+## Release 0.2.11
+
+- Fix material dialogs layouts
+
+- Add keyboardActions to pin login
+
+- Removed unused study info strings from configuration
+
+- Refactor study info detail
+
 ## Release 0.2.10
 
 - Fix Experimental annotation
