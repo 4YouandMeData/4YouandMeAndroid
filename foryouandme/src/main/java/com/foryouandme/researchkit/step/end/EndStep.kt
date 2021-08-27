@@ -16,4 +16,4 @@ class EndStep(
     val close: Boolean = false,
     val checkMarkBackgroundColor: Int,
     val checkMarkColor: Int
-) : Step(identifier, null, null, { EndStepFragment() })
+) : Step(identifier = identifier, back = null, skip = null, view = { EndStepFragment() })

@@ -52,6 +52,7 @@ class FYAMTrailMakingTask(
         }.plus(
 
                 TrailMakingTask.getTrailMakingCoreSteps(
+                        stepColor = primaryText,
                         startBackImage = imageConfiguration.backSecondary(),
                         startBackgroundColor = secondary,
                         startTitle = null,

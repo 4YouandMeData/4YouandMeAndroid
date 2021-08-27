@@ -2,6 +2,7 @@ package com.foryouandme.researchkit.step.sensor
 
 import android.content.Context
 import com.foryouandme.researchkit.recorder.RecorderConfig
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Step
 import java.util.*
 
@@ -39,6 +40,7 @@ import java.util.*
  */
 class SensorStep(
     identifier: String,
+    block: Block,
     val backgroundColor: Int,
     val title: (Context) -> String,
     val titleColor: Int,
@@ -55,7 +57,13 @@ class SensorStep(
     val shouldPlaySoundOnFinish: Boolean = false,
     val estimateTimeInMsToSpeakEndInstruction: Long = 1000
 
-) : Step(identifier, null, null, { SensorStepFragment() }) {
+) : Step(
+    identifier = identifier,
+    back = null,
+    block = block,
+    skip = null,
+    view = { SensorStepFragment() }
+) {
 
     /**
      * The recording UUID is a unique identifier used by the RecorderService

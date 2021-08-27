@@ -16,6 +16,7 @@ import com.foryouandme.R
 import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.compose.StepHeader
 import com.foryouandme.researchkit.step.holepeg.HolePegAction.*
 import com.foryouandme.ui.compose.ForYouAndMeTheme
@@ -141,6 +142,7 @@ private fun HolePegPreview() {
         HolePegState(
             HolePegStep(
                 identifier = "",
+                block = Block("", Color.BLACK),
                 backgroundColor = Color.WHITE,
                 titleColor = Color.BLACK,
                 descriptionColor = Color.BLACK,

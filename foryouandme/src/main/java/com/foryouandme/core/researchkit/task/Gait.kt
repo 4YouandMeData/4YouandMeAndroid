@@ -26,6 +26,7 @@ suspend fun FYAMTaskConfiguration.buildGait(
 
     return GaitTask(
         id = id,
+        stepColor = primaryText,
         welcomeBackImage = imageConfiguration.backSecondary(),
         welcomeBackgroundColor = secondary,
         welcomeImage = imageConfiguration.videoDiaryIntro(),

@@ -48,6 +48,7 @@ class FYAMGaitTask(
             )
         }.plus(
             GaitTask.getGaitCoreSteps(
+                stepColor = primaryText,
                 startBackImage = imageConfiguration.backSecondary(),
                 startBackgroundColor = secondary,
                 startTitle = null,

@@ -28,6 +28,7 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
 import com.foryouandme.ui.compose.toColor
 import com.foryouandme.R
+import com.foryouandme.researchkit.step.Block
 
 @Composable
 fun Introduction(introductionViewModel: IntroductionViewModel = viewModel(), onNext: () -> Unit) {
@@ -116,6 +117,7 @@ private fun IntroductionPreview() {
             IntroductionState(
                 IntroductionStep(
                     identifier = "id",
+                    block = Block("", android.graphics.Color.BLACK),
                     back = Back(R.drawable.placeholder),
                     backgroundColor = android.graphics.Color.WHITE,
                     title = TextSource.Text(Mock.title),

@@ -6,6 +6,7 @@ import com.foryouandme.entity.task.holepeg.HolePegPointPosition
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
 import com.foryouandme.entity.task.holepeg.HolePegTargetPosition
 import com.foryouandme.researchkit.step.Back
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.holepeg.HolePegStep
 import com.foryouandme.researchkit.step.introduction.IntroductionStep
@@ -14,6 +15,7 @@ import com.foryouandme.researchkit.task.TaskIdentifiers
 
 class HolePegTask(
     id: String,
+    stepColor: Int,
     introBackImage: Int,
     introBackgroundColor: Int,
     introTitle: String?,
@@ -52,6 +54,7 @@ class HolePegTask(
     override val steps: List<Step> by lazy {
 
         getHolePegCoreSteps(
+            stepColor = stepColor,
             introBackImage = introBackImage,
             introBackgroundColor = introBackgroundColor,
             introTitle = introTitle,
@@ -92,6 +95,8 @@ class HolePegTask(
 
     companion object {
 
+        const val HOLE_PEG_BLOCK: String = "hole_peg_block"
+
         const val HOLE_PEG_INTRO: String = "hole_peg_intro"
 
         const val HOLE_PEG_TUTORIAL: String = "hole_peg_tutorial"
@@ -99,6 +104,7 @@ class HolePegTask(
         const val HOLE_PEG: String = "hole_peg"
 
         fun getHolePegCoreSteps(
+            stepColor: Int,
             introBackImage: Int,
             introBackgroundColor: Int,
             introTitle: String?,
@@ -139,6 +145,7 @@ class HolePegTask(
             listOf(
                 IntroductionStep(
                     identifier = HOLE_PEG_INTRO,
+                    block = Block(HOLE_PEG_BLOCK, stepColor),
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
                     title = introTitle.toTextSource(R.string.HOLE_PEG_title),
@@ -156,6 +163,7 @@ class HolePegTask(
                 ),
                 IntroductionStep(
                     identifier = HOLE_PEG_TUTORIAL,
+                    block = Block(HOLE_PEG_BLOCK, stepColor),
                     back = Back(tutorialBackImage),
                     backgroundColor = tutorialBackgroundColor,
                     title = tutorialTitle.toTextSource(R.string.HOLE_PEG_title),
@@ -182,6 +190,7 @@ class HolePegTask(
                 ),
                 HolePegStep(
                     identifier = HOLE_PEG,
+                    block = Block(HOLE_PEG_BLOCK, stepColor),
                     backgroundColor = holePegBackgroundColor,
                     title = holePegTitle,
                     titleColor = holePegTitleColor,

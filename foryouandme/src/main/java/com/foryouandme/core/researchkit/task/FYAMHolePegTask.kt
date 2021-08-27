@@ -47,6 +47,7 @@ class FYAMHolePegTask(
 
         }.plus(
             HolePegTask.getHolePegCoreSteps(
+                stepColor = primaryText,
                 introBackImage = imageConfiguration.backSecondary(),
                 introBackgroundColor = secondary,
                 introTitle = null,

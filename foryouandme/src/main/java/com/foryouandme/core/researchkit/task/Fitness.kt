@@ -26,6 +26,7 @@ suspend fun FYAMTaskConfiguration.buildFitness(
 
     return FitnessTask(
         id = id,
+        stepColor = primaryText,
         welcomeBackImage = imageConfiguration.backSecondary(),
         welcomeBackgroundColor = secondary,
         welcomeImage = imageConfiguration.videoDiaryIntro(),
