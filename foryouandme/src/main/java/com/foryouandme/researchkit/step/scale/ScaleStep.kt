@@ -6,9 +6,11 @@ import com.foryouandme.researchkit.step.Back
 import com.foryouandme.researchkit.step.Skip
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.entity.source.ImageSource
+import com.foryouandme.researchkit.step.Block
 
 class ScaleStep(
     identifier: String,
+    block: Block,
     back: Back,
     skip: Skip,
     val minValue: Int,
@@ -23,4 +25,10 @@ class ScaleStep(
     val shadowColor: Int,
     val buttonImage: ImageSource,
     val skips: List<SurveySkip.Range>
-) : Step(identifier, back, skip, { ScaleStepFragment() })
+) : Step(
+    identifier = identifier,
+    block = block,
+    back = back,
+    skip = skip,
+    view = { ScaleStepFragment() }
+)

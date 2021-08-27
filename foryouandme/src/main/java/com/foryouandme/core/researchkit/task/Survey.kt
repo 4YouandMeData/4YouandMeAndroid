@@ -17,6 +17,7 @@ import com.foryouandme.entity.survey.SurveyQuestion
 import com.foryouandme.researchkit.skip.SkipTarget
 import com.foryouandme.researchkit.skip.SurveySkip
 import com.foryouandme.researchkit.step.Back
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Skip
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.choosemany.ChooseManyAnswer
@@ -75,6 +76,11 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
+                                    ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =
                                     Skip(
@@ -103,6 +109,11 @@ fun buildSurvey(
                                     getSurveyQuestionStepId(
                                         surveyBlock.id,
                                         question.id
+                                    ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
                                     ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =
@@ -146,6 +157,11 @@ fun buildSurvey(
                                     getSurveyQuestionStepId(
                                         surveyBlock.id,
                                         question.id
+                                    ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
                                     ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =
@@ -203,6 +219,11 @@ fun buildSurvey(
                                     getSurveyQuestionStepId(
                                         surveyBlock.id,
                                         question.id
+                                    ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
                                     ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =
@@ -265,6 +286,11 @@ fun buildSurvey(
                                         surveyBlock.id,
                                         question.id
                                     ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
+                                    ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =
                                     Skip(
@@ -294,6 +320,11 @@ fun buildSurvey(
                                     getSurveyQuestionStepId(
                                         surveyBlock.id,
                                         question.id
+                                    ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
                                     ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =
@@ -340,6 +371,11 @@ fun buildSurvey(
                                     getSurveyQuestionStepId(
                                         surveyBlock.id,
                                         question.id
+                                    ),
+                                    block =
+                                    Block(
+                                        surveyBlock.id,
+                                        configuration.theme.primaryTextColor.color()
                                     ),
                                     back = Back(imageConfiguration.backSecondary()),
                                     skip =

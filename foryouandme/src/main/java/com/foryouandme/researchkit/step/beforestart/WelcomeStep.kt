@@ -22,4 +22,4 @@ class WelcomeStep(
     val shadowColor: Int,
     val remindMeLater: Boolean,
     val close: Boolean = false
-) : Step(identifier, back, null, { WelcomeStepFragment() })
+) : Step(identifier = identifier, back = back, skip = null, view = { WelcomeStepFragment() })

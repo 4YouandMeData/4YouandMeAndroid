@@ -20,4 +20,4 @@ class IntroductionListStep(
     val buttonTextColor: Int,
     val list: List<IntroductionItem>,
     val shadowColor: Int,
-) : Step(identifier, back, null, { IntroductionListStepFragment() })
+) : Step(identifier = identifier, back = back, skip = null, view = { IntroductionListStepFragment() })

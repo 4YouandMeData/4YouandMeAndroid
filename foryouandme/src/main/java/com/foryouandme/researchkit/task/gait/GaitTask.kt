@@ -9,6 +9,7 @@ import com.foryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerRe
 import com.foryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import com.foryouandme.researchkit.step.Back
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.beforestart.WelcomeStep
 import com.foryouandme.researchkit.step.countdown.CountDownStep
@@ -23,6 +24,7 @@ import com.squareup.moshi.Moshi
 
 class GaitTask(
     id: String,
+    stepColor: Int,
     welcomeRemindMeLater: Boolean,
     welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
@@ -124,6 +126,7 @@ class GaitTask(
             )
         ).plus(
             getGaitCoreSteps(
+                stepColor = stepColor,
                 startBackImage = startBackImage,
                 startBackgroundColor = startBackgroundColor,
                 startTitle = startTitle,
@@ -191,6 +194,8 @@ class GaitTask(
 
     companion object {
 
+        const val GAIT_BLOCK = "gait_block"
+
         const val GAIT_WELCOME: String = "gait_welcome"
 
         const val GAIT_START: String = "gait_start"
@@ -238,6 +243,7 @@ class GaitTask(
 
 
         fun getGaitCoreSteps(
+            stepColor: Int,
             startBackImage: Int,
             startBackgroundColor: Int,
             startTitle: String?,
@@ -287,6 +293,7 @@ class GaitTask(
             listOf(
                 StartStep(
                     identifier = GAIT_START,
+                    block = Block(GAIT_BLOCK, stepColor),
                     back = Back(startBackImage),
                     backgroundColor = startBackgroundColor,
                     title = { startTitle ?: it.getString(R.string.GAIT_title) },
@@ -299,6 +306,7 @@ class GaitTask(
                 ),
                 IntroductionStep(
                     identifier = GAIT_INTRO,
+                    block = Block(GAIT_BLOCK, stepColor),
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
                     title = introTitle.toTextSource(R.string.GAIT_title),
@@ -312,6 +320,7 @@ class GaitTask(
                 ),
                 CountDownStep(
                     identifier = GAIT_COUNT_DOWN,
+                    block = Block(GAIT_BLOCK, stepColor),
                     back = Back(countDownBackImage),
                     backgroundColor = countDownBackgroundColor,
                     titleColor = countDownTitleColor,
@@ -324,6 +333,7 @@ class GaitTask(
                 ),
                 SensorStep(
                     identifier = GAIT_OUTBOUND,
+                    block = Block(GAIT_BLOCK, stepColor),
                     backgroundColor = outboundBackgroundColor,
                     title = { outboundTitle ?: it.getString(R.string.GAIT_title) },
                     titleColor = outboundTitleColor,
@@ -351,6 +361,7 @@ class GaitTask(
                 ),
                 SensorStep(
                     identifier = GAIT_RETURN,
+                    block = Block(GAIT_BLOCK, stepColor),
                     backgroundColor = returnBackgroundColor,
                     title = { returnTitle ?: it.getString(R.string.GAIT_title) },
                     titleColor = returnTitleColor,
@@ -372,6 +383,7 @@ class GaitTask(
                 ),
                 SensorStep(
                     identifier = GAIT_REST,
+                    block = Block(GAIT_BLOCK, stepColor),
                     backgroundColor = restBackgroundColor,
                     title = { restTitle ?: it.getString(R.string.GAIT_title) },
                     titleColor = restTitleColor,

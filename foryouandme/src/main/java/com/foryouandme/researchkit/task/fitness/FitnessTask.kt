@@ -9,6 +9,7 @@ import com.foryouandme.researchkit.recorder.sensor.accelerometer.AccelerometerRe
 import com.foryouandme.researchkit.recorder.sensor.motion.DeviceMotionRecorder
 import com.foryouandme.researchkit.recorder.sensor.pedometer.PedometerRecorder
 import com.foryouandme.researchkit.step.Back
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Step
 import com.foryouandme.researchkit.step.beforestart.WelcomeStep
 import com.foryouandme.researchkit.step.countdown.CountDownStep
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit
 
 class FitnessTask(
     id: String,
+    stepColor: Int,
     welcomeRemindMeLater: Boolean,
     welcomeBackImage: Int,
     welcomeBackgroundColor: Int,
@@ -125,6 +127,7 @@ class FitnessTask(
         ).plus(
 
             getFitnessCoreSteps(
+                stepColor = stepColor,
                 startBackImage = startBackImage,
                 startBackgroundColor = startBackgroundColor,
                 startTitle = startTitle,
@@ -193,6 +196,8 @@ class FitnessTask(
 
     companion object {
 
+        const val FITNESS_BLOCK = "fitness"
+
         const val FITNESS_WELCOME: String = "fitness_welcome"
 
         const val FITNESS_START: String = "fitness_start"
@@ -209,6 +214,7 @@ class FitnessTask(
 
 
         fun getFitnessCoreSteps(
+            stepColor: Int,
             startBackImage: Int,
             startBackgroundColor: Int,
             startTitle: String?,
@@ -255,6 +261,7 @@ class FitnessTask(
             listOf(
                 IntroductionStep(
                     identifier = FITNESS_START,
+                    block = Block(FITNESS_BLOCK, stepColor),
                     back = Back(startBackImage),
                     backgroundColor = startBackgroundColor,
                     title = startTitle.toTextSource(R.string.FITNESS_title),
@@ -272,6 +279,7 @@ class FitnessTask(
                 ),
                 IntroductionStep(
                     identifier = FITNESS_INTRO,
+                    block = Block(FITNESS_BLOCK, stepColor),
                     back = Back(introBackImage),
                     backgroundColor = introBackgroundColor,
                     title = introTitle.toTextSource(R.string.FITNESS_title),
@@ -290,6 +298,7 @@ class FitnessTask(
                 ),
                 CountDownStep(
                     identifier = FITNESS_COUNT_DOWN,
+                    block = Block(FITNESS_BLOCK, stepColor),
                     back = Back(countDownBackImage),
                     backgroundColor = countDownBackgroundColor,
                     titleColor = countDownTitleColor,
@@ -302,6 +311,7 @@ class FitnessTask(
                 ),
                 SensorStep(
                     identifier = FITNESS_WALK,
+                    block = Block(FITNESS_BLOCK, stepColor),
                     backgroundColor = walkBackgroundColor,
                     title = { walkTitle ?: it.getString(R.string.FITNESS_title) },
                     titleColor = walkTitleColor,
@@ -330,6 +340,7 @@ class FitnessTask(
                 ),
                 SensorStep(
                     identifier = FITNESS_SIT,
+                    block = Block(FITNESS_BLOCK, stepColor),
                     backgroundColor = sitBackgroundColor,
                     title = { sitTitle ?: it.getString(R.string.FITNESS_title) },
                     titleColor = sitTitleColor,

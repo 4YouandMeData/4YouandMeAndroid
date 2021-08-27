@@ -49,6 +49,7 @@ class FYAMFitnessTask(
 
         }.plus(
             FitnessTask.getFitnessCoreSteps(
+                stepColor = primaryText,
                 startBackImage = imageConfiguration.backSecondary(),
                 startBackgroundColor = secondary,
                 startTitle = null,

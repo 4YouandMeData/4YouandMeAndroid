@@ -1,10 +1,12 @@
 package com.foryouandme.researchkit.step.holepeg
 
 import com.foryouandme.entity.task.holepeg.HolePegSubStep
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Step
 
 class HolePegStep(
     identifier: String,
+    block: Block,
     val backgroundColor: Int,
     val title: String? = null,
     val titleColor: Int,
@@ -20,4 +22,10 @@ class HolePegStep(
     val targetColor: Int,
     val subSteps: List<HolePegSubStep>,
     val numberOfPegs: Int = 9
-) : Step(identifier, null, null, { HolePegFragment() })
+) : Step(
+    identifier = identifier,
+    back = null,
+    block = block,
+    skip = null,
+    view = { HolePegFragment() }
+)

@@ -50,6 +50,8 @@ open class StepFragment : BaseFragment {
             else
                 hideToolbar()
 
+            showStepCount(it.identifier, it.block)
+
             if (it.skip != null) showSkip(it.skip.text, it.skip.color)
             else hideSkip()
         }
@@ -67,7 +69,7 @@ open class StepFragment : BaseFragment {
 
     protected open fun skipTo(target: SkipTarget) {
         hideKeyboard()
-        when(target) {
+        when (target) {
             SkipTarget.End -> end()
             is SkipTarget.StepId ->
                 taskViewModel.execute(TaskStateEvent.SkipToStep(target.id, indexArg()))
@@ -137,6 +139,35 @@ open class StepFragment : BaseFragment {
             setTextColor(color)
             visibility = View.VISIBLE
             setOnClickListener { next() }
+
+        }
+
+    }
+
+    private fun showStepCount(stepId: String, block: Block?) {
+
+        taskFragment().binding?.step?.apply {
+
+            if (block == null) text = ""
+            else {
+                val steps =
+                    taskViewModel.state
+                        .task
+                        ?.steps
+                        ?.filter { it.block?.identifier == block.identifier } ?: emptyList()
+                text = if (steps.isEmpty()) ""
+                else {
+                    val index = steps.indexOfFirst { it.identifier == stepId }
+                    if (index >= 0)
+                        getString(
+                            R.string.TASK_step,
+                            index + 1,
+                            steps.size
+                        )
+                    else ""
+                }
+                setTextColor(block.color)
+            }
 
         }
 

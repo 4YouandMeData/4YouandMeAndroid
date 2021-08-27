@@ -1,5 +1,6 @@
 package com.foryouandme.researchkit.step.reaction
 
+import com.foryouandme.researchkit.step.Block
 import com.foryouandme.researchkit.step.Step
 
 /**
@@ -15,6 +16,7 @@ import com.foryouandme.researchkit.step.Step
  */
 class ReactionTimeStep(
     identifier: String,
+    block: Block,
     val backgroundColor: Int,
     val titleText: String?,
     val titleTextColor: Int,
@@ -25,4 +27,10 @@ class ReactionTimeStep(
     val minimumStimulusIntervalSeconds: Long,
     val numberOfAttempts: Int,
     val timeoutSeconds: Long
-) : Step(identifier, null, null, { ReactionTimeStepFragment() })
+) : Step(
+    identifier = identifier,
+    back = null,
+    block = block,
+    skip = null,
+    view = { ReactionTimeStepFragment() }
+)
