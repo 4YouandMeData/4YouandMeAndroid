@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -17,7 +18,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
-import com.foryouandme.core.ext.drawColoredShadow
 import com.foryouandme.core.view.page.EPageType
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.mock.Mock
@@ -44,7 +44,7 @@ fun PageFooter(
         Modifier
             .fillMaxWidth()
             .height(135.dp)
-            .drawColoredShadow(configuration.theme.primaryTextColor.value)
+            .shadow(20.dp)
             .background(configuration.theme.secondaryColor.value)
             .padding(horizontal = 25.dp),
     ) {

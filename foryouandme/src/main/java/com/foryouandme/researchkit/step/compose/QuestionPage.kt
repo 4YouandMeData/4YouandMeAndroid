@@ -24,7 +24,6 @@ fun QuestionPageLazy(
     question: String,
     questionColor: Color,
     buttonImage: ImageSource,
-    shadowColor: Color,
     isNextEnabled: Boolean = true,
     image: ImageSource? = null,
     lazyListState: LazyListState = rememberLazyListState(),
@@ -71,7 +70,6 @@ fun QuestionPageLazy(
         StepFooter(
             color = backgroundColor,
             button = buttonImage,
-            shadowColor = shadowColor,
             isEnabled = isNextEnabled,
             onClick = onNext
         )
@@ -84,7 +82,6 @@ fun QuestionPage(
     question: String,
     questionColor: Color,
     buttonImage: ImageSource,
-    shadowColor: Color,
     isNextEnabled: Boolean = true,
     image: ImageSource? = null,
     scrollState: ScrollState = rememberScrollState(),
@@ -128,7 +125,6 @@ fun QuestionPage(
         StepFooter(
             color = backgroundColor,
             button = buttonImage,
-            shadowColor = shadowColor,
             isEnabled = isNextEnabled,
             onClick = onNext
         )

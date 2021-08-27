@@ -20,7 +20,6 @@ class NumberRangePickerStep(
     val questionId: String,
     val question: TextSource,
     val questionColor: Int,
-    val shadowColor: Int,
     val buttonImage: ImageSource,
     val arrowColor: Int,
     val skips: List<SurveySkip.Range>

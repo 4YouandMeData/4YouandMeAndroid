@@ -1,6 +1,5 @@
 package com.foryouandme.researchkit.step.chooseone
 
-import android.content.Context
 import com.foryouandme.entity.source.ColorSource
 import com.foryouandme.entity.source.ImageSource
 import com.foryouandme.entity.source.TextSource
@@ -19,7 +18,6 @@ class ChooseOneStep(
     val questionId: String,
     val question: TextSource,
     val questionColor: ColorSource,
-    val shadowColor: ColorSource,
     val buttonImage: ImageSource,
     val skips: List<SurveySkip.Answer>
 ) : Step(identifier, back, skip, { ChooseOneStepFragment() })

@@ -7,11 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.R
-import com.foryouandme.core.ext.drawColoredShadow
 import com.foryouandme.entity.source.ImageSource
 import com.foryouandme.entity.source.MultiSourceImage
 import com.foryouandme.ui.compose.ForYouAndMeTheme
@@ -20,7 +20,6 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 fun StepFooter(
     color: Color,
     button: ImageSource,
-    shadowColor: Color,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     onClick: () -> Unit = {}
@@ -31,7 +30,7 @@ fun StepFooter(
         Modifier
             .fillMaxWidth()
             .height(135.dp)
-            .drawColoredShadow(shadowColor)
+            .shadow(20.dp)
             .background(color)
             .then(modifier)
 
@@ -54,7 +53,6 @@ private fun StepFooterPreview() {
         StepFooter(
             color = Color.White,
             button = ImageSource.AndroidResource(R.drawable.error),
-            shadowColor = Color.Black,
         )
     }
 }

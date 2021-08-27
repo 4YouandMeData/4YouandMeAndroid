@@ -18,7 +18,6 @@ class ChooseManyStep(
     val questionId: String,
     val question: TextSource,
     val questionColor: ColorSource,
-    val shadowColor: ColorSource,
     val buttonImage: ImageSource,
     val skips: List<SurveySkip.Answer>
 ) : Step(identifier, back, skip, { ChooseManyStepFragment() })
