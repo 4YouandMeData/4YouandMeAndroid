@@ -76,10 +76,6 @@ private fun WelcomePage(
                 Image(
                     painter = painterResource(id = imageConfiguration.logoStudy()),
                     contentDescription = null,
-                    modifier =
-                    Modifier
-                        .width(100.dp)
-                        .aspectRatio(getImageRatio(id = imageConfiguration.logoStudy()))
                 )
                 Spacer(modifier = Modifier.height(50.dp))
             }
@@ -87,9 +83,6 @@ private fun WelcomePage(
             Image(
                 painter = painterResource(id = imageConfiguration.logoStudySecondary()),
                 contentDescription = null,
-                modifier = Modifier
-                    .width(150.dp)
-                    .aspectRatio(getImageRatio(id = imageConfiguration.logoStudySecondary()))
             )
             Spacer(modifier = Modifier.weight(1f))
         }
