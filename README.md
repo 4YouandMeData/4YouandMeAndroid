@@ -26,6 +26,10 @@ object ProjectConfig {
 
 `./gradlew assembleRelease`
 
-Run the following command to upload the **release** on the nexus repository
+4.  Run the following command to upload the **release** on the nexus repository
 
 `./gradlew foryouandme:publishReleasePublicationToForYouAndMe`
+
+4.  Run the following command to release your staging repository on the nexus repository
+
+`./gradlew closeAndReleaseSonatypeStagingRepository`
