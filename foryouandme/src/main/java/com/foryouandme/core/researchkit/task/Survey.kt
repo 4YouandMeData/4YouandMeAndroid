@@ -333,15 +333,19 @@ fun buildSurvey(
                                         configuration.theme.primaryColorEnd.color()
                                     ),
                                     minValue = question.min,
-                                    maxValue = question.max,
+                                    maxValue = question.max - (question.max - question.min) % (question.interval ?: 1),
                                     interval = question.interval ?: 1,
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
-                                    progressColor = configuration.theme.primaryColorEnd.color(),
+                                    valueColor =
+                                    configuration.theme.primaryTextColor.color().toColorSource(),
+                                    backgroundColor = configuration.theme.secondaryColor.color()
+                                        .toColorSource(),
+                                    progressColor = configuration.theme.primaryColorEnd.color()
+                                        .toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
-                                    question = { question.text },
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    shadowColor = configuration.theme.primaryTextColor.color(),
+                                    question = question.text.toTextSource(),
+                                    questionColor = configuration.theme.primaryTextColor.color()
+                                        .toColorSource(),
                                     buttonImage =
                                     imageConfiguration
                                         .nextStepSecondary()
