@@ -259,7 +259,7 @@ var ossrhUsername = ""
 var ossrhPassword = ""
 extra["signing.keyId"] = ""
 extra["signing.password"] = ""
-extra["signing.secretKeyRingFile"] = ""
+extra["signing.key"] = ""
 
 if (rootProject.file("local.properties").exists()) {
     val properties = Properties()
@@ -269,7 +269,7 @@ if (rootProject.file("local.properties").exists()) {
     ossrhPassword = properties.getProperty("ossrhPassword")
     extra["signing.keyId"] = properties.getProperty("signing.keyId")
     extra["signing.password"] = properties.getProperty("signing.password")
-    extra["signing.secretKeyRingFile"] = properties.getProperty("signing.secretKeyRingFile")
+    extra["signing.key"] = properties.getProperty("signing.key")
 
 }
 
