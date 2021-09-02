@@ -60,8 +60,7 @@
     <fragment
         android:id="@+id/sign_up_info"
         android:name="com.foryouandme.ui.auth.signup.info.SignUpInfoFragment"
-        android:label="sign_up_info"
-        tools:layout="@layout/sign_up_info">
+        android:label="sign_up_info">
 
         <action
             android:id="@+id/action_sign_up_info_to_sign_up_later"
@@ -93,8 +92,7 @@
     <fragment
         android:id="@+id/sign_up_later"
         android:name="com.foryouandme.ui.auth.signup.later.SignUpLaterFragment"
-        android:label="sign_up_later"
-        tools:layout="@layout/sign_up_later" />
+        android:label="sign_up_later" />
 
     <fragment
         android:id="@+id/enter_phone"
