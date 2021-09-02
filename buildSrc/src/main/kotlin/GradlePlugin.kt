@@ -66,4 +66,10 @@ object GradlePlugin {
                 "1.5.0"
             )
 
+    object NexusPublishPugin:
+        Dependency(
+            "io.github.gradle-nexus",
+            "publish-plugin",
+            "1.1.0"
+        )
 }

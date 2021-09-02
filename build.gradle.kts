@@ -24,6 +24,7 @@ buildscript {
 
 plugins {
     id("com.github.ben-manes.versions") version GradlePlugin.Versions.version
+    id("io.github.gradle-nexus.publish-plugin") version GradlePlugin.NexusPublishPugin.version
 }
 
 apply(plugin = "org.jetbrains.dokka")
@@ -67,4 +68,42 @@ fun isNonStable(version: String): Boolean {
 
 tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml").configure {
     outputDirectory.set(buildDir.resolve("dokka"))
+}
+
+
+// Nexus Publish
+
+extra["signing.keyId"] = ""
+extra["signing.password"] = ""
+extra["signing.key"] = ""
+extra["ossrhUsername"] = ""
+extra["ossrhPassword"] = ""
+extra["sonatypeStagingProfileId"] = ""
+
+val secretPropsFile = rootProject.file("local.properties")
+if (secretPropsFile.exists()) {
+    // Read local.properties file first if it exists
+    val properties = java.util.Properties()
+    java.io.FileInputStream(secretPropsFile).use { file -> properties.load(file) }
+    properties.forEach { name, value -> extra[name.toString()] = value }
+} else {
+    // Use system environment variables
+    extra["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
+    extra["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
+    extra["sonatypeStagingProfileId"] = System.getenv("SONATYPE_STAGING_PROFILE_ID")
+    extra["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
+    extra["signing.password"] = System.getenv("SIGNING_PASSWORD")
+    extra["signing.key"] = System.getenv("SIGNING_KEY")
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            stagingProfileId.set(extra["sonatypeStagingProfileId"].toString())
+            username.set(extra["ossrhUsername"].toString())
+            password.set(extra["ossrhPassword"].toString())
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
 }

@@ -28,7 +28,7 @@ object ProjectConfig {
 
 4.  Run the following command to upload the **release** on the nexus repository
 
-`./gradlew foryouandme:publishReleasePublicationToForYouAndMe`
+`./gradlew foryouandme:publishReleasePublicationToSonatypeRepository`
 
 4.  Run the following command to release your staging repository on the nexus repository
 
