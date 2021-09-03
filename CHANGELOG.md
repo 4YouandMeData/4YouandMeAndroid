@@ -1,3 +1,18 @@
+- readme file updates
+
+# Release 0.2.13
+
+- Update release doc
+
+- Refactor scale step
+
+- Fix welcome page logo
+
+- Send empty result for video diary task
+
+- Add task step block counter
+
+- Fix survey shadow
 
 ## Release 0.2.12
 
