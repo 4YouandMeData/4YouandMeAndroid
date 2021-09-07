@@ -1,5 +1,6 @@
 package com.foryouandme.researchkit.step.number
 
+import com.foryouandme.entity.source.ColorSource
 import com.foryouandme.entity.source.ImageSource
 import com.foryouandme.entity.source.TextSource
 import com.foryouandme.researchkit.skip.SurveySkip
@@ -17,13 +18,13 @@ class NumberRangePickerStep(
     val max: Int,
     val minDisplayValue: String?,
     val maxDisplayValue: String?,
-    val backgroundColor: Int,
+    val backgroundColor: ColorSource,
     val image: ImageSource?,
     val questionId: String,
     val question: TextSource,
-    val questionColor: Int,
+    val questionColor: ColorSource,
     val buttonImage: ImageSource,
-    val arrowColor: Int,
+    val arrowColor: ColorSource,
     val skips: List<SurveySkip.Range>
 ) : Step(
     identifier = identifier,
