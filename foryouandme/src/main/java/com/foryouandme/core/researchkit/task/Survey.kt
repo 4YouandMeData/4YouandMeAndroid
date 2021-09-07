@@ -125,12 +125,12 @@ fun buildSurvey(
                                     max = question.maxValue,
                                     minDisplayValue = question.minDisplayValue,
                                     maxDisplayValue = question.maxDisplayValue,
-                                    backgroundColor = configuration.theme.secondaryColor.color(),
+                                    backgroundColor = configuration.theme.secondaryColor.color().toColorSource(),
                                     image = question.image?.let { ImageSource.Base64(it) },
                                     questionId = question.id,
                                     question = question.text.toTextSource(),
-                                    questionColor = configuration.theme.primaryTextColor.color(),
-                                    arrowColor = configuration.theme.primaryColorStart.color(),
+                                    questionColor = configuration.theme.primaryTextColor.color().toColorSource(),
+                                    arrowColor = configuration.theme.primaryColorStart.color().toColorSource(),
                                     buttonImage = imageConfiguration.nextStepSecondary()
                                         .toImageSource(),
                                     skips =
