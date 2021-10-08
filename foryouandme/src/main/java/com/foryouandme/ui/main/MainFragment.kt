@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import com.foryouandme.core.activity.FYAMViewModel
 import com.foryouandme.core.arch.android.BaseFragment
+import com.foryouandme.core.arch.navigation.AnywhereToConsent
 import com.foryouandme.core.arch.navigation.AnywhereToWeb
 import com.foryouandme.core.arch.navigation.action.ContextAction
 import com.foryouandme.core.ext.execute

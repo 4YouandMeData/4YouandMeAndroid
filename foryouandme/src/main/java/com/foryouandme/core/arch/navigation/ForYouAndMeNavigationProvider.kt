@@ -45,6 +45,7 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
         when (action) {
 
             is AnywhereToAuth -> anywhereToAuth()
+            is AnywhereToConsent -> anywhereToConsent()
             is AnywhereToWelcome -> anywhereToWelcome()
             is AnywhereToWeb -> anywhereToWeb(action.url, action.type)
 

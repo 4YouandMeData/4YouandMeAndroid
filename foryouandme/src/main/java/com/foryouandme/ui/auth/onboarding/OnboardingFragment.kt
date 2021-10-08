@@ -43,7 +43,7 @@ class OnboardingFragment : AuthSectionFragment(R.layout.onboarding) {
                 when (it.cause) {
                     OnboardingError.Initialization ->
                         binding?.error?.setError(it.error, viewModel.state.configuration)
-                        { viewModel.execute(OnboardingStateEvent.Initialize) }
+                        { viewModel.execute(OnboardingStateEvent.Initialize(authFragment().updateConsentArg())) }
                     OnboardingError.NextStep ->
                         binding?.error?.setError(it.error, viewModel.state.configuration)
                 }
@@ -77,7 +77,7 @@ class OnboardingFragment : AuthSectionFragment(R.layout.onboarding) {
         super.onViewCreated(view, savedInstanceState)
 
         if (viewModel.isInitialized().not())
-            viewModel.execute(OnboardingStateEvent.Initialize)
+            viewModel.execute(OnboardingStateEvent.Initialize(authFragment().updateConsentArg()))
         else
             setupNavigation()
 
