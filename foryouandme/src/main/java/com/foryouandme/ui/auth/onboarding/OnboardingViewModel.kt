@@ -45,24 +45,27 @@ class OnboardingViewModel @Inject constructor(
     fun isInitialized(): Boolean =
         state.configuration != null && state.onboardingSteps.isNotEmpty()
 
-    private suspend fun initialize() {
+    private suspend fun initialize(updateConsent: Boolean) {
 
         loadingFlow.show(OnboardingLoading.Initialization)
 
         val configuration = getConfigurationUseCase(Policy.LocalFirst)
         val steps =
-            configuration.text.onboarding.sections.mapNotNull {
+            if (updateConsent)
+                listOf(ConsentStep)
+            else
+                configuration.text.onboarding.sections.mapNotNull {
 
-                when (it) {
-                    VideoStep.identifier -> VideoStep
-                    ScreeningStep.identifier -> ScreeningStep
-                    ConsentStep.identifier -> ConsentStep
-                    OptInStep.identifier -> OptInStep
-                    IntegrationStep.identifier -> IntegrationStep
-                    else -> null
+                    when (it) {
+                        VideoStep.identifier -> VideoStep
+                        ScreeningStep.identifier -> ScreeningStep
+                        ConsentStep.identifier -> ConsentStep
+                        OptInStep.identifier -> OptInStep
+                        IntegrationStep.identifier -> IntegrationStep
+                        else -> null
+                    }
+
                 }
-
-            }
 
         state = state.copy(configuration = configuration, onboardingSteps = steps)
         stateUpdateFlow.update(OnboardingStateUpdate.Initialized(configuration, steps))
@@ -97,13 +100,13 @@ class OnboardingViewModel @Inject constructor(
     fun execute(stateEvent: OnboardingStateEvent) {
 
         when (stateEvent) {
-            OnboardingStateEvent.Initialize ->
+            is OnboardingStateEvent.Initialize ->
                 errorFlow.launchCatch(
                     viewModelScope,
                     OnboardingError.Initialization,
                     loadingFlow,
                     OnboardingLoading.Initialization
-                ) { initialize() }
+                ) { initialize(stateEvent.updateConsent) }
             is OnboardingStateEvent.NextStep ->
                 errorFlow.launchCatch(
                     viewModelScope,

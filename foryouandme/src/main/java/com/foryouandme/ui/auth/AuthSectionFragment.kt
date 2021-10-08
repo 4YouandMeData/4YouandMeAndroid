@@ -11,7 +11,7 @@ abstract class AuthSectionFragment : BaseFragment {
 
     fun authNavController(): AuthNavController = AuthNavController(findNavController())
 
-    private fun authFragment(): AuthFragment = find()
+    fun authFragment(): AuthFragment = find()
 
     protected fun back() {
         if (navigator.back(authNavController()).not())

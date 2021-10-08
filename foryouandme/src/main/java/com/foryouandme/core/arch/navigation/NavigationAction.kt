@@ -6,6 +6,8 @@ interface NavigationAction
 
 object AnywhereToAuth : NavigationAction
 
+object AnywhereToConsent : NavigationAction
+
 object AnywhereToWelcome : NavigationAction
 
 data class AnywhereToWeb(

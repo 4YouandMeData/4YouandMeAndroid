@@ -34,7 +34,7 @@ sealed class OnboardingError {
 
 sealed class OnboardingStateEvent {
 
-    object Initialize : OnboardingStateEvent()
+    data class Initialize(val updateConsent: Boolean) : OnboardingStateEvent()
     data class NextStep(val currentStepIndex: Int): OnboardingStateEvent()
 
 }
