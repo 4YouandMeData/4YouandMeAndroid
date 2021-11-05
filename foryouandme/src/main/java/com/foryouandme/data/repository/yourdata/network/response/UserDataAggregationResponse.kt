@@ -22,21 +22,24 @@ data class UserDataAggregationResponse(
             when (null) {
                 id, type, strategy, title, data, xLabels, yLabels -> null
                 else ->
-                    UserDataAggregation(
-                        id = id,
-                        type = type,
-                        strategy = strategy,
-                        title = title,
-                        color = color,
-                        data =
-                        // for bodyport convert data from kg to libs
-                        if (strategy.contains("bodyport_weight"))
-                            data.map { if (it != null) it * 2.205f else it }
-                        else
-                            data,
-                        xLabels = xLabels,
-                        yLabels = yLabels
-                    )
+                    // exclude apple watch data
+                    if (strategy == "apple_watch_steps_daily") null
+                    else
+                        UserDataAggregation(
+                            id = id,
+                            type = type,
+                            strategy = strategy,
+                            title = title,
+                            color = color,
+                            data =
+                            // for bodyport convert data from kg to libs
+                            if (strategy.contains("bodyport_weight"))
+                                data.map { if (it != null) it * 2.205f else it }
+                            else
+                                data,
+                            xLabels = xLabels,
+                            yLabels = yLabels
+                        )
             }
         }
 
