@@ -123,6 +123,7 @@ private fun String.toFeedAction(): FeedAction? {
         this == "faq" -> FeedAction.Faq
         this == "rewards" -> FeedAction.Rewards
         this == "contacts" -> FeedAction.Contacts
+        this == "new_consent_version_available" -> FeedAction.Consent
         integration != null -> FeedAction.Integration(integration)
         isNotEmpty() -> FeedAction.Web(this)
         else -> null
