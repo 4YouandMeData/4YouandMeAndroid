@@ -112,6 +112,7 @@ sealed class FeedAction {
     object Faq : FeedAction()
     object Rewards : FeedAction()
     object Contacts : FeedAction()
+    object Consent : FeedAction()
     data class Integration(val app: IntegrationApp) : FeedAction()
     data class Web(val url: String) : FeedAction()
 

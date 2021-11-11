@@ -102,6 +102,8 @@ class MainFragment : BaseFragment() {
                     rootNavController(),
                     MainToStudyInfoDetail(EStudyInfoType.INFO)
                 )
+            FeedAction.Consent ->
+                navigator.navigateTo(rootNavController(), AnywhereToConsent)
             is FeedAction.Integration ->
                 requireContext().execute(ContextAction.OpenApp(feedAction.app.packageName))
             is FeedAction.Web ->
