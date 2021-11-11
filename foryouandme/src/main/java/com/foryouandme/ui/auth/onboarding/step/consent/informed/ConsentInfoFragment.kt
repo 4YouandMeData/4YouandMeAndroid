@@ -103,17 +103,21 @@ class ConsentInfoFragment : ConsentSectionFragment(R.layout.consent_info) {
 
     fun showAbort(color: Int, type: ConsentInfoAbort) {
 
-        val viewBinding = binding
-        val configuration = configuration
+        if (consentFragment().onboardingFragment().authFragment().updateConsentArg().not()) {
 
-        if (viewBinding != null && configuration != null) {
+            val viewBinding = binding
+            val configuration = configuration
 
-            viewBinding.abort.text = configuration.text.onboarding.abortButton
-            viewBinding.abort.setTextColor(color)
-            viewBinding.abort.setOnClickListener { showAbortAlert(type) }
-            viewBinding.abort.isVisible = true
+            if (viewBinding != null && configuration != null) {
 
-        }
+                viewBinding.abort.text = configuration.text.onboarding.abortButton
+                viewBinding.abort.setTextColor(color)
+                viewBinding.abort.setOnClickListener { showAbortAlert(type) }
+                viewBinding.abort.isVisible = true
+
+            }
+
+        } else hideAbort()
 
     }
 
