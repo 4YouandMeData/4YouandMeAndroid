@@ -4,6 +4,7 @@ import com.foryouandme.core.activity.FYAMState
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.notifiable.FeedAction
 import com.foryouandme.ui.studyinfo.detail.EStudyInfoType
 
 data class MainState(
@@ -22,6 +23,7 @@ sealed class MainEvent {
 
     data class OpenUrl(val url: String) : MainEvent()
     data class OpenTask(val taskId: String) : MainEvent()
+    data class OpenFeed(val feedAction: FeedAction) : MainEvent()
     data class OpenApp(val packageName: String) : MainEvent()
 
 }

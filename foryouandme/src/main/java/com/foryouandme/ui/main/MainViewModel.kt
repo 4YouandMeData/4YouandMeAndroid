@@ -9,15 +9,19 @@ import com.foryouandme.core.arch.flow.UIEvent
 import com.foryouandme.core.arch.flow.toUIEvent
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.arch.toError
-import com.foryouandme.core.ext.Action
-import com.foryouandme.core.ext.action
-import com.foryouandme.core.ext.launchAction
-import com.foryouandme.core.ext.launchSafe
+import com.foryouandme.core.ext.*
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.feed.GetFeedByIdUseCase
+import com.foryouandme.entity.activity.QuickActivity
+import com.foryouandme.entity.activity.TaskActivity
+import com.foryouandme.entity.feed.FeedType
+import com.foryouandme.entity.notifiable.FeedAlert
+import com.foryouandme.entity.notifiable.FeedEducational
+import com.foryouandme.entity.notifiable.FeedReward
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +33,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
+    private val getFeedByIdUseCase: GetFeedByIdUseCase,
     val imageConfiguration: ImageConfiguration,
 ) : ViewModel() {
 
@@ -62,8 +67,7 @@ class MainViewModel @Inject constructor(
 
     private suspend fun handleDeepLink(fyamState: FYAMState) {
 
-        val taskId =
-            fyamState.taskId?.getContentOnce()?.getOrNull()
+        val taskId = fyamState.taskId?.getContentOnce()?.getOrNull()
         val url =
             fyamState.url?.getContentOnce()?.getOrNull()
         val openApplicationIntegration =
@@ -71,8 +75,27 @@ class MainViewModel @Inject constructor(
 
         when {
 
-            taskId != null ->
-                events.emit(MainEvent.OpenTask(taskId).toUIEvent())
+            taskId != null -> {
+                val feed = catchToNullSuspend { getFeedByIdUseCase(taskId) }
+                when (val feedType = feed?.type) {
+                    is FeedType.StudyActivityFeed ->
+                        when (feedType.studyActivity) {
+                            is QuickActivity -> Unit
+                            is TaskActivity -> events.emit(MainEvent.OpenTask(taskId).toUIEvent())
+                        }
+                    is FeedType.StudyNotifiableFeed -> {
+                        val feedAction =
+                            when (val notifiable = feedType.studyNotifiable) {
+                                is FeedAlert -> notifiable.action
+                                is FeedEducational -> notifiable.action
+                                is FeedReward -> notifiable.action
+                            }
+                        if (feedAction != null)
+                            events.emit(MainEvent.OpenFeed(feedAction).toUIEvent())
+                    }
+                    null -> Unit
+                }
+            }
             url != null ->
                 events.emit(MainEvent.OpenUrl(url).toUIEvent())
             openApplicationIntegration != null ->

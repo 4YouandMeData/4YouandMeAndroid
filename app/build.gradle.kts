@@ -13,7 +13,7 @@ android {
     compileSdk = ProjectConfig.compile_sdk
 
     defaultConfig {
-        applicationId = "com.foryouandme.app"
+        applicationId = "com.foryouandme.bump.staging"
         minSdk = ProjectConfig.min_sdk
         targetSdk = ProjectConfig.target_sdk
         versionCode = ProjectConfig.version_code

@@ -11,4 +11,9 @@ interface FeedRepository {
         pageSize: Int
     ): PagedList<Feed>
 
+    suspend fun getById(
+        token: String,
+        id: String
+    ): Feed?
+
 }

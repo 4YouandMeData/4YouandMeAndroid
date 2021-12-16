@@ -66,6 +66,7 @@ fun MainPage(
                     is MainEvent.OpenApp -> context.execute(ContextAction.OpenApp(it.packageName))
                     is MainEvent.OpenTask -> openTask(it.taskId)
                     is MainEvent.OpenUrl -> openUrl(it.url)
+                    is MainEvent.OpenFeed -> onFeedActionClicked(it.feedAction)
                 }
             }
             .collect()
