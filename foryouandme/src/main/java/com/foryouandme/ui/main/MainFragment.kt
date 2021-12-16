@@ -76,7 +76,12 @@ class MainFragment : BaseFragment() {
                             MainToStudyInfoDetail(EStudyInfoType.FAQ)
                         )
                     },
-                    openTask = { navigator.navigateTo(rootNavController(), MainToTask(it)) },
+                    openTask = {
+                        when(it) {
+                            "new_consent_version_available" -> AnywhereToConsent
+                            else -> navigator.navigateTo(rootNavController(), MainToTask(it))
+                        }
+                    },
                     openUrl = { navigator.navigateTo(rootNavController(), AnywhereToWeb(it)) }
                 )
             }
