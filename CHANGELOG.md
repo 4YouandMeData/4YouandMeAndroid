@@ -1,4 +1,35 @@
-- readme file updates
+
+- secret_sample file added
+
+## Release 0.2.19
+
+- Fixed example app package name
+
+- Fixed deeplink
+
+- Fixed consent update push
+
+## Release 0.2.17
+
+- Added consent feed action
+
+## Release 0.2.16
+
+- Hide abort button for consent update
+
+- Refactor video
+
+- Refactor sign up later
+
+- Refactor sign up info
+
+- Added consent update navigation
+
+## Release 0.2.15
+
+- Hide apple watch chart
+
+- Number question page scrolling not working fixed
 
 # Release 0.2.13
 
