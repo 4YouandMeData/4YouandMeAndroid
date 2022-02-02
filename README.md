@@ -12,7 +12,7 @@ To run the example project:
 
 1.  clone the repo,
     
-2.  download your Firebase project `google-services.json` from Firebase Console(follow instructions at [https://firebase.google.com/docs/cloud-messaging/android/client](https://firebase.google.com/docs/cloud-messaging/android/client) ) then move it under the `app/src` folder. **Ensure that your app Application Id matches with the created Firebase app id.**
+2.  download your Firebase project `google-services.json` from Firebase Console(follow instructions at [https://firebase.google.com/docs/cloud-messaging/android/client](https://firebase.google.com/docs/cloud-messaging/android/client) ) then move it under the `app/src` folder.
     
 3.  Navigate - using _Finder_ on _Mac_, or _Windows Explorer_ on _Windows_ - to `/app/src/main/res/values` folder and rename the `secrets_sample.xml` to `secrets.xml`.
     
@@ -25,8 +25,10 @@ To run the example project:
     3.  `OAUTH_BASE_URL` base url of the server that handles your Oauth authentication against the supported integrations(ex.: [https://oauth.example.com](https://oauth.example.com)).
         
     4.  `PIN_CODE_SUFFIX` (only needed in studies that use the pin login) pin code suffix needed for your study, or to `none` if pin code is not supported for your study.
-        
-5.  select the connected device or a simulator and run the app.
+
+5.  Ensure that your app Application Id matches with the created Firebase app id by checking its value in the `build.gradle.kts(:app)`.
+
+6.  select the connected device or a simulator and run the app.
     
 
 **Create a study app from scratch**
