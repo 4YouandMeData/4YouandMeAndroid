@@ -12,7 +12,7 @@ To run the example project:
 
 1.  clone the repo,
     
-2.  download your Firebase project `google-services.json` from Firebase Console(follow instructions at [https://firebase.google.com/docs/cloud-messaging/ios/client#upload\_your\_apns\_authentication\_key](https://firebase.google.com/docs/cloud-messaging/ios/client#upload_your_apns_authentication_key) ) then move it under the `app/src` folder,
+2.  download your Firebase project `google-services.json` from Firebase Console(follow instructions at [https://firebase.google.com/docs/cloud-messaging/android/client](https://firebase.google.com/docs/cloud-messaging/android/client) ) then move it under the `app/src` folder,
     
 3.  Navigate - using _Finder_ on _Mac_, or _Windows Explorer_ on _Windows_ - to `/app/src/main/res/values` folder and rename the `secrets_sample.xml` to `secrets.xml`.
     
