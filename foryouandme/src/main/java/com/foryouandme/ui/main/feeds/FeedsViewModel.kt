@@ -72,7 +72,7 @@ FeedsViewModel @Inject constructor(
 
     /* --- tasks --- */
 
-    private val pageSize: Int = 20
+    private val pageSize: Int = 10
     private var fetchJob: Job? = null
 
     private fun getTasks(page: Int, isRefreshing: Boolean): Action =
