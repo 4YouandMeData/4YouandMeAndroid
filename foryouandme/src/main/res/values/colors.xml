@@ -1,9 +1,9 @@
-***REMOVED***
-***REMOVED***
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
     <color name="loading">#191919</color>
     <color name="text">#303740</color>
     <color name="text_button">#FFFFFF</color>
     <color name="background">#FFFFFF</color>
 
-***REMOVED***
+</resources>

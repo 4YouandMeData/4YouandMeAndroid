@@ -292,14 +292,14 @@ It’s recommended to create a `secrets.xml` to store sensible data as API url, 
 14\. Create a file named `secrets.xml` under `app/src/main/res/values/` . The content will look as follow:
 
 ```java
-***REMOVED***
-***REMOVED***
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
     <string name="STUDY_ID" translatable="false">example_study</string>
     <string name="BASE_URL" translatable="false">https://api.example.exampleapp.com</string>
     <string name="OAUTH_BASE_URL" translatable="false">https://auth.example.exampleapp.com</string>
 
-***REMOVED***
+</resources>
 ```
 
 **This file must contain production values.**  
@@ -412,7 +412,7 @@ object SampleAppModule {
 21\. Open `AndroidManifest.xml` and write as follows:
 
 ```java
-***REMOVED***
+<?xml version="1.0" encoding="utf-8"?>
 
 ...
 

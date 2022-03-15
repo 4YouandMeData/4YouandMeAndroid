@@ -1,5 +1,5 @@
-***REMOVED***
-***REMOVED***
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
     <string name="ERROR_generic">Something went wrong, please try again</string>
     <string name="ERROR_api">Something went wrong, please try again (error code: %1$s)</string>
@@ -86,4 +86,4 @@
     <string name="HOLE_PEG_grab">Grab the colored icon using two fingers.</string>
     <string name="HOLE_PEG_release">Lift your fingers to release the colored icon.</string>
 
-***REMOVED***
+</resources>
