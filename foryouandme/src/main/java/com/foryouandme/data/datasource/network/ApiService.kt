@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 inline fun <reified T> getApiService(
     baseUrl: String,
@@ -17,7 +18,10 @@ inline fun <reified T> getApiService(
     // TODO: enable only for staging
     val logger = HttpLoggingInterceptor()
     logger.level = HttpLoggingInterceptor.Level.BODY
-    httpClient.addInterceptor(logger)
+    httpClient
+        .readTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .addInterceptor(logger)
 
     return Retrofit.Builder()
         .baseUrl(baseUrl)
