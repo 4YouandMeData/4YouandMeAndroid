@@ -18,7 +18,7 @@ data class QuickActivityOptionResponse(
         QuickActivityAnswer(
             id,
             label,
-            image?.decodeBase64Image(),
-            selectedImage?.decodeBase64Image()
+            image,
+            selectedImage
         )
 }

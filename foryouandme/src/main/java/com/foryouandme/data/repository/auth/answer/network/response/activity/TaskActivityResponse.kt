@@ -54,7 +54,7 @@ class TaskActivityResponse(
                     description,
                     button,
                     if (cardColor != null) HEXGradient(cardColor, cardColor) else null,
-                    image?.decodeBase64Image(),
+                    image,
                     activityType?.let { TaskActivityType.fromType(it) },
                     welcomePage,
                     pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),

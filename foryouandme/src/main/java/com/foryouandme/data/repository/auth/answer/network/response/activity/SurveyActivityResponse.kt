@@ -50,7 +50,7 @@ class SurveyActivityResponse(
                     description,
                     null,
                     if (cardColor != null) HEXGradient(cardColor, cardColor) else null,
-                    image?.decodeBase64Image(),
+                    image,
                     TaskActivityType.Survey,
                     welcomePage,
                     pages?.get(document)?.mapNotNull { it.toPage(document) } ?: emptyList(),

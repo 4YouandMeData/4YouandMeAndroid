@@ -51,8 +51,8 @@ data class QuickActivity(
 data class QuickActivityAnswer(
     val id: String,
     val text: String?,
-    val image: Bitmap?,
-    val selectedImage: Bitmap?
+    val image: String?,
+    val selectedImage: String?
 ) {
 
     companion object {
@@ -76,7 +76,7 @@ data class TaskActivity(
     val description: String?,
     val button: String?,
     val gradient: HEXGradient?,
-    val image: Bitmap?,
+    val image: String?,
     val activityType: TaskActivityType?,
     val welcomePage: Page,
     val pages: List<Page>,

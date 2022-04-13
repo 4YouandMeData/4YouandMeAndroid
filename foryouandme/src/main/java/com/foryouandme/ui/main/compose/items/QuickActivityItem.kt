@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.entity.activity.QuickActivityAnswer
 import com.foryouandme.entity.configuration.Configuration
@@ -157,12 +157,12 @@ private fun RowScope.QuickActivityAnswer(
 
         val isSelected = answer != null && answer.id == selectedAnswer
         val image =
-            if (isSelected) answer?.selectedImage?.asImageBitmap()
-            else answer?.image?.asImageBitmap()
+            if (isSelected) answer?.selectedImage
+            else answer?.image
 
         if (image != null)
             Image(
-                bitmap = image,
+                painter = rememberImagePainter(image),
                 contentDescription = null,
                 modifier =
                 Modifier
