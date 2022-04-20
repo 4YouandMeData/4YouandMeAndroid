@@ -21,8 +21,14 @@ class FeedRepositoryImpl @Inject constructor(
         page: Int,
         pageSize: Int
     ): PagedList<Feed> =
-        authErrorInterceptor.execute { api.getFeeds(token, page, pageSize) }
-            .toFeedItems(moshi)
+        authErrorInterceptor.execute {
+            api.getFeeds(
+                token,
+                page,
+                pageSize,
+                urlImagesEncoding = true
+            )
+        }.toFeedItems(moshi)
             .let { it.toPagedList(page, it.size < page) }
 
     override suspend fun getById(token: String, id: String): Feed? =

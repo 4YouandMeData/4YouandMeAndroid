@@ -41,12 +41,13 @@ class TaskRepositoryImpl @Inject constructor(
             authErrorInterceptor.execute {
 
                 api.getTasks(
-                    token,
-                    true,
-                    true,
-                    order.value,
-                    page,
-                    pageSize
+                    token = token,
+                    active = true,
+                    notCompleted = true,
+                    order = order.value,
+                    page = page,
+                    pageSize = pageSize,
+                    urlImagesEncoding = true
                 )
 
             }.mapNotNull { it.toTask() }
