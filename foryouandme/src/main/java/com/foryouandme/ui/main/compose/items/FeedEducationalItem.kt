@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.notifiable.FeedAction
 import com.foryouandme.ui.compose.ForYouAndMeTheme
@@ -43,9 +43,9 @@ fun FeedEducationalItem(
         ) {
             if (item.data.image != null)
                 Image(
-                    bitmap = item.data.image.asImageBitmap(),
+                    painter = rememberImagePainter(item.data.image),
                     contentDescription = null,
-                    modifier = Modifier.width(57.dp)
+                    modifier = Modifier.size(57.dp)
                 )
             if (item.data.title != null) {
                 Spacer(modifier = Modifier.height(15.dp))

@@ -14,7 +14,7 @@ interface FeedApi {
         @Header(Headers.AUTH) token: String,
         @Query("page") page: Int,
         @Query("per_page") pageSize: Int,
-        @Query("url_images_encoding") urlImagesEncoding: Boolean
+        @Query("url_images_encoding") urlImagesEncoding: Int
     ): Array<FeedResponse>
 
     @GET("api/v1/tasks/{id}")

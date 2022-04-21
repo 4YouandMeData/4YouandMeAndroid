@@ -47,7 +47,7 @@ class TaskRepositoryImpl @Inject constructor(
                     order = order.value,
                     page = page,
                     pageSize = pageSize,
-                    urlImagesEncoding = true
+                    urlImagesEncoding = 1
                 )
 
             }.mapNotNull { it.toTask() }

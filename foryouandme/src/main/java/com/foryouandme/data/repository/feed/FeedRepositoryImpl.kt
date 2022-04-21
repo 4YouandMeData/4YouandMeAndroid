@@ -26,7 +26,7 @@ class FeedRepositoryImpl @Inject constructor(
                 token,
                 page,
                 pageSize,
-                urlImagesEncoding = true
+                urlImagesEncoding = 1
             )
         }.toFeedItems(moshi)
             .let { it.toPagedList(page, it.size < page) }

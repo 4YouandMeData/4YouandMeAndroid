@@ -22,7 +22,7 @@ interface TaskApi {
         @Query("q[s]") order: String,
         @Query("page") page: Int,
         @Query("per_page") pageSize: Int,
-        @Query("url_images_encoding") urlImagesEncoding: Boolean
+        @Query("url_images_encoding") urlImagesEncoding: Int
     ): Array<TaskResponse>
 
     @Multipart

@@ -42,7 +42,7 @@ fun TaskActivityItem(
                 Image(
                     painter = rememberImagePainter(item.data.image),
                     contentDescription = null,
-                    modifier = Modifier.width(57.dp)
+                    modifier = Modifier.size(57.dp)
                 )
             if (item.data.title != null) {
                 Spacer(modifier = Modifier.height(15.dp))
