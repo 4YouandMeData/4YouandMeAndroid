@@ -1,10 +1,14 @@
 package com.foryouandme.researchkit.step.video
 
+import android.R
+import android.graphics.SurfaceTexture
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import com.foryouandme.researchkit.step.StepFragment
 import com.foryouandme.researchkit.step.video.compose.VideoStepPage
@@ -14,6 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class VideoStepFragment : StepFragment() {
 
     private val viewModel: VideoStepViewModel by viewModels()
+    private var previewFrameTexture: SurfaceTexture? = null
+    private var previewDisplayView: SurfaceView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,6 +27,8 @@ class VideoStepFragment : StepFragment() {
         savedInstanceState: Bundle?
     ): View =
         ComposeView(requireContext()).apply {
+            previewDisplayView = SurfaceView(requireContext());
+            setupPreviewDisplayView(container);
             setContent {
                 VideoStepPage(
                     onCloseClicked = { showCancelDialog() },
@@ -36,6 +44,14 @@ class VideoStepFragment : StepFragment() {
 
         val step = taskViewModel.getStepByIndexAs<VideoStep>(indexArg())
         viewModel.execute(VideoStepAction.SetStep(step))
+
+    }
+
+    // Initialization for Surface View
+    // This can be used to manipulate Camera
+    private fun setupPreviewDisplayView(viewGroup: ViewGroup?) {
+        previewDisplayView!!.visibility = View.VISIBLE
+        viewGroup?.addView(previewDisplayView)
 
     }
 

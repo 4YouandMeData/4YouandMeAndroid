@@ -56,6 +56,18 @@ android {
 
 dependencies {
 
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+
+    /* --- mediapipe --- */
+
+    implementation(MediaPipe.Flogger.FloggerCore.get())
+    implementation(MediaPipe.Flogger.FloggerSystemBackend.get())
+    implementation(MediaPipe.Findbugs.FindbugsJsr.get())
+    implementation(MediaPipe.Guava.GuavaCore.get())
+    implementation(MediaPipe.Protobuf.ProtobufJavalite.get())
+    implementation(MediaPipe.AutoValue.AutoValueCore.get())
+    implementation(MediaPipe.AutoValue.AutoValueAnnotation.get())
+
     /* --- kotlin --- */
 
     implementation(Kotlin.StdLib.get())

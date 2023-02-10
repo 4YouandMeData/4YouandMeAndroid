@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.view.WindowCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import com.foryouandme.R
@@ -21,6 +20,11 @@ import kotlinx.coroutines.flow.onEach
 class FYAMActivity : BaseActivity() {
 
     private val viewModel: FYAMViewModel by viewModels()
+
+    init {
+        System.loadLibrary("opencv_java3")
+        System.loadLibrary("mediapipe_jni")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +49,6 @@ class FYAMActivity : BaseActivity() {
                                 .alpha(0f)
                                 .withEndAction { binding.splashLogo.isVisible = false }
                                 .start()
-
                         }
 
                     }
@@ -57,7 +60,6 @@ class FYAMActivity : BaseActivity() {
             .unwrapEvent(name)
             .onEach {
                 binding.error.setError(it.error, viewModel.state.configuration) {
-
                     viewModel.execute(
                         FYAMStateEvent.Initialize(
                             taskIdArg(),
