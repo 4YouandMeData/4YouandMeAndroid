@@ -2,8 +2,9 @@ package com.foryouandme.ui.compose.camera
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
-import android.util.Log
+import android.opengl.GLSurfaceView
 import android.util.Rational
 import android.util.Size
 import android.view.SurfaceHolder
@@ -11,6 +12,7 @@ import android.view.SurfaceView
 import android.view.View
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.VideoCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -34,9 +36,15 @@ import com.google.mediapipe.components.ExternalTextureConverter
 import com.google.mediapipe.components.FrameProcessor
 import com.google.mediapipe.framework.AndroidAssetUtil
 import com.google.mediapipe.glutil.EglManager
+import jp.co.cyberagent.android.gpuimage.GPUImage
+import jp.co.cyberagent.android.gpuimage.GPUImageView
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorInvertFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageSobelEdgeDetectionFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
 @SuppressLint("UnsafeOptInUsageError", "MissingPermission", "RestrictedApi")
@@ -56,49 +64,50 @@ fun Camera(
     var camera: Camera? by remember { mutableStateOf(null) }
     var currentLens by remember { mutableStateOf(cameraLens) }
     var currentFlash by remember { mutableStateOf(cameraFlash) }
-    var isFilterActive = true
-    var surfaceView: SurfaceView
+    var converter : YuvToRgbConverter = YuvToRgbConverter(context)
+    var bitmap : Bitmap? = null
+    val executor = Executors.newSingleThreadExecutor()
+    var gpuImageView : GPUImageView
 
     BoxWithConstraints(modifier = modifier) {
 
-        val widthPixel = LocalDensity.current.run { maxWidth.toPx() }
-        val heightPixel = LocalDensity.current.run { maxHeight.toPx() }
-
-
-        if(!isFilterActive) {
             AndroidView(
                 factory = { ctx ->
-                    val previewView = PreviewView(ctx)
+                    gpuImageView = GPUImageView(ctx)
+                    converter = YuvToRgbConverter(ctx)
+                    gpuImageView.rotation = 270F
+                    gpuImageView.rotationY = 180F
+                    gpuImageView.setScaleType(GPUImage.ScaleType.CENTER_CROP)
+                    gpuImageView.filter = GPUImageSobelEdgeDetectionFilter().apply { setLineSize(0.5F) .apply { addFilter(GPUImageColorInvertFilter()) } }
 
-                    previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
-                    previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-
-                    startCamera(
-                        ctx,
-                        lifecycleOwner,
-                        previewView,
-                        videoCapture,
+                    startCameraGPU(
+                        gpuImageView,
+                        executor,
+                        converter,
                         cameraLens,
-                        widthPixel,
-                        heightPixel,
+                        cameraProvider,
+                        lifecycleOwner,
+                        bitmap,
+                        ctx
                     )
                     {
                         camera = it
                         currentLens = cameraLens
                     }
-                    previewView
+                    gpuImageView
                 },
                 modifier = Modifier.fillMaxSize(),
                 update = { view ->
                     if (cameraLens != currentLens)
-                        startCamera(
-                            context,
-                            lifecycleOwner,
+                        startCameraGPU(
                             view,
-                            videoCapture,
+                            executor,
+                            converter,
                             cameraLens,
-                            widthPixel,
-                            heightPixel,
+                            cameraProvider,
+                            lifecycleOwner,
+                            bitmap,
+                            context
                         )
                         {
                             camera = it
@@ -111,45 +120,6 @@ fun Camera(
                     }
                 }
             )
-        } else {
-            val cameraBack: String = "Back"
-            var currentCamera: CameraFacing = if (cameraLens.toString().contains(cameraBack)) CameraFacing.BACK else CameraFacing.FRONT
-            AndroidView(
-                factory = { ctx ->
-                    surfaceView = SurfaceView(ctx)
-                    startCameraFilter(
-                        ctx,
-                        surfaceView,
-                        currentCamera
-                    )
-                    surfaceView
-                },
-                modifier = Modifier.fillMaxSize(),
-                update = { view ->
-                    if (cameraLens != currentLens) {
-                        
-                        currentLens = cameraLens
-                        currentCamera = if(cameraLens.toString().contains(cameraBack)) {
-                            CameraFacing.BACK
-                        } else {
-                            CameraFacing.FRONT
-                        }
-
-                        startCameraFilter(
-                            context,
-                            view,
-                            currentCamera
-                        )
-
-                    }
-
-                    if (cameraFlash != currentFlash) {
-                        camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)
-                        currentFlash = cameraFlash
-                    }
-                }
-            )
-        }
 
     }
 
@@ -185,6 +155,56 @@ fun Camera(
             }
         }.collect()
     }
+
+}
+
+fun allocateBitmapIfNecessary(width: Int, height: Int, bitmap: Bitmap?): Bitmap {
+    var newBitmap = bitmap
+    if (newBitmap == null || newBitmap!!.width != width || newBitmap!!.height != height) {
+        newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    }
+    return newBitmap!!
+}
+
+@SuppressLint("UnsafeOptInUsageError")
+fun startCameraGPU(
+    gpuImageView: GPUImageView,
+    executor: Executor,
+    converter: YuvToRgbConverter,
+    cameraLens: CameraLens,
+    cameraProvider : ProcessCameraProvider?,
+    lifecycleOwner: LifecycleOwner,
+    oldBitmap: Bitmap?,
+    context: Context,
+    onCameraReady: (Camera) -> Unit
+) {
+
+    var cameraProvider = ProcessCameraProvider.getInstance()
+    val cameraProviderFuture = ProcessCameraProvider.getInstance(context);
+    cameraProviderFuture.addListener(Runnable {
+        cameraProvider = cameraProviderFuture.get()
+    }, ContextCompat.getMainExecutor(context))
+
+    val imageAnalysis = ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build()
+    imageAnalysis.setAnalyzer(executor, ImageAnalysis.Analyzer {
+        var bitmap = allocateBitmapIfNecessary(it.width, it.height, oldBitmap)
+        converter.yuvToRgb(it.image!!, bitmap)
+        it.close()
+        gpuImageView.post {
+            gpuImageView.setImage(bitmap)
+        }
+    })
+    val cameraSelector =
+        CameraSelector.Builder()
+            .requireLensFacing(
+                when (cameraLens) {
+                    CameraLens.Back -> CameraSelector.LENS_FACING_BACK
+                    CameraLens.Front -> CameraSelector.LENS_FACING_FRONT
+                }
+            )
+            .build()
+
+    cameraProvider?.bindToLifecycle(lifecycleOwner, cameraSelector, imageAnalysis)
 }
 
 fun startCamera (
@@ -234,84 +254,6 @@ fun startCamera (
             },
             executor
         )
-
-}
-
-fun startCameraFilter(
-    context: Context,
-    surfaceView: SurfaceView,
-    cameraFacing: CameraFacing
-) {
-
-    ////////////////////////////// MediaPipe //////////////////////////////
-    var cameraHelper: CameraXPreviewHelper? = null
-    var previewFrameTexture: SurfaceTexture? = null
-    val eglManager: EglManager?
-    val processor: FrameProcessor?
-    val converter: ExternalTextureConverter?
-
-    AndroidAssetUtil.initializeNativeAssetManager(context);
-    eglManager = EglManager(null)
-
-    processor = FrameProcessor(
-        context,
-        eglManager.nativeContext,
-        "mobile_gpu.binarypb",
-        "input_video",
-        "output_video"
-    )
-
-    processor.videoSurfaceOutput.setSurface(null)
-
-    processor
-        .videoSurfaceOutput
-        .setFlipY(
-            true
-        )
-
-    converter = ExternalTextureConverter(eglManager.context)
-    converter.setFlipY(true)
-    converter.setConsumer(processor)
-
-    //Set Preview Display
-    surfaceView.visibility = View.GONE
-    surfaceView
-        .holder
-        .addCallback(
-            object : SurfaceHolder.Callback {
-                override fun surfaceCreated(holder: SurfaceHolder) {
-                    processor.videoSurfaceOutput.setSurface(holder.surface)
-                }
-
-                override fun surfaceChanged(
-                    holder: SurfaceHolder,
-                    format: Int,
-                    width: Int,
-                    height: Int
-                ) {
-                    val viewSize = Size(width, height)
-                    val displaySize =
-                        cameraHelper?.computeDisplaySizeFromViewSize(viewSize)
-
-                    converter.setSurfaceTextureAndAttachToGLContext(
-                        previewFrameTexture, displaySize!!.width, displaySize.height
-                    )
-                }
-
-                override fun surfaceDestroyed(holder: SurfaceHolder) {
-                    processor.videoSurfaceOutput.setSurface(null)
-                }
-            })
-    ////////////////////////////// MediaPipe //////////////////////////////
-
-
-    // Start Camera
-    cameraHelper = CameraXPreviewHelper()
-    cameraHelper.setOnCameraStartedListener{ surfaceTexture: SurfaceTexture? ->
-        previewFrameTexture = surfaceTexture
-        surfaceView.visibility = View.VISIBLE
-    }
-    cameraHelper.startCamera(context.findActivity(), cameraFacing, null)
 
 }
 

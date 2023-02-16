@@ -68,6 +68,8 @@ dependencies {
     implementation(MediaPipe.AutoValue.AutoValueCore.get())
     implementation(MediaPipe.AutoValue.AutoValueAnnotation.get())
 
+    implementation(MediaPipe.GPUImage.GPUImageCore.get())
+
     /* --- kotlin --- */
 
     implementation(Kotlin.StdLib.get())
