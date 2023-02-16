@@ -85,15 +85,10 @@ fun Camera(
                         executor,
                         converter,
                         cameraLens,
-                        cameraProvider,
                         lifecycleOwner,
                         bitmap,
                         ctx
                     )
-                    {
-                        camera = it
-                        currentLens = cameraLens
-                    }
                     gpuImageView
                 },
                 modifier = Modifier.fillMaxSize(),
@@ -104,15 +99,10 @@ fun Camera(
                             executor,
                             converter,
                             cameraLens,
-                            cameraProvider,
                             lifecycleOwner,
                             bitmap,
                             context
                         )
-                        {
-                            camera = it
-                            currentLens = cameraLens
-                        }
 
                     if (cameraFlash != currentFlash) {
                         camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)
@@ -166,8 +156,34 @@ fun allocateBitmapIfNecessary(width: Int, height: Int, bitmap: Bitmap?): Bitmap 
     return newBitmap!!
 }
 
-@SuppressLint("UnsafeOptInUsageError")
 fun startCameraGPU(
+    gpuImageView: GPUImageView,
+    executor: Executor,
+    converter: YuvToRgbConverter,
+    cameraLens: CameraLens,
+    lifecycleOwner: LifecycleOwner,
+    oldBitmap: Bitmap?,
+    context: Context
+) {
+    var cameraProvider: ProcessCameraProvider? = null
+    val cameraProviderFuture = ProcessCameraProvider.getInstance(context);
+    cameraProviderFuture.addListener(Runnable {
+        cameraProvider = cameraProviderFuture.get()
+        startCameraIfReady(
+            gpuImageView,
+            executor,
+            converter,
+            cameraLens,
+            cameraProvider,
+            lifecycleOwner,
+            oldBitmap,
+            context
+        )
+    }, ContextCompat.getMainExecutor(context))
+}
+
+@SuppressLint("UnsafeOptInUsageError")
+fun startCameraIfReady(
     gpuImageView: GPUImageView,
     executor: Executor,
     converter: YuvToRgbConverter,
@@ -175,15 +191,8 @@ fun startCameraGPU(
     cameraProvider : ProcessCameraProvider?,
     lifecycleOwner: LifecycleOwner,
     oldBitmap: Bitmap?,
-    context: Context,
-    onCameraReady: (Camera) -> Unit
+    context: Context
 ) {
-
-    var cameraProvider = ProcessCameraProvider.getInstance()
-    val cameraProviderFuture = ProcessCameraProvider.getInstance(context);
-    cameraProviderFuture.addListener(Runnable {
-        cameraProvider = cameraProviderFuture.get()
-    }, ContextCompat.getMainExecutor(context))
 
     val imageAnalysis = ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build()
     imageAnalysis.setAnalyzer(executor, ImageAnalysis.Analyzer {
