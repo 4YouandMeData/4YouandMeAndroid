@@ -3,13 +3,8 @@ package com.foryouandme.ui.compose.camera
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.SurfaceTexture
-import android.opengl.GLSurfaceView
 import android.util.Rational
 import android.util.Size
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.view.View
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -22,23 +17,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.foryouandme.core.ext.catchToNull
-import com.foryouandme.core.ext.findActivity
-import com.google.mediapipe.components.CameraHelper
-import com.google.mediapipe.components.CameraHelper.CameraFacing
-import com.google.mediapipe.components.CameraXPreviewHelper
-import com.google.mediapipe.components.ExternalTextureConverter
-import com.google.mediapipe.components.FrameProcessor
-import com.google.mediapipe.framework.AndroidAssetUtil
-import com.google.mediapipe.glutil.EglManager
 import jp.co.cyberagent.android.gpuimage.GPUImage
 import jp.co.cyberagent.android.gpuimage.GPUImageView
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorInvertFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSobelEdgeDetectionFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -64,7 +51,8 @@ fun Camera(
     var camera: Camera? by remember { mutableStateOf(null) }
     var currentLens by remember { mutableStateOf(cameraLens) }
     var currentFlash by remember { mutableStateOf(cameraFlash) }
-    var converter : YuvToRgbConverter = YuvToRgbConverter(context)
+    var isFilterActive = false
+    var converter = YuvToRgbConverter(context)
     var bitmap : Bitmap? = null
     val executor = Executors.newSingleThreadExecutor()
     var gpuImageView : GPUImageView
@@ -74,11 +62,9 @@ fun Camera(
             AndroidView(
                 factory = { ctx ->
                     gpuImageView = GPUImageView(ctx)
+                    gpuImageView.setScaleType(GPUImage.ScaleType.CENTER_INSIDE)
+
                     converter = YuvToRgbConverter(ctx)
-                    gpuImageView.rotation = 270F
-                    gpuImageView.rotationY = 180F
-                    gpuImageView.setScaleType(GPUImage.ScaleType.CENTER_CROP)
-                    gpuImageView.filter = GPUImageSobelEdgeDetectionFilter().apply { setLineSize(0.5F) .apply { addFilter(GPUImageColorInvertFilter()) } }
 
                     startCameraGPU(
                         gpuImageView,
@@ -87,8 +73,13 @@ fun Camera(
                         cameraLens,
                         lifecycleOwner,
                         bitmap,
-                        ctx
+                        ctx,
+                        isFilterActive
                     )
+                    {
+                        camera = it
+                        currentLens = cameraLens
+                    }
                     gpuImageView
                 },
                 modifier = Modifier.fillMaxSize(),
@@ -101,8 +92,13 @@ fun Camera(
                             cameraLens,
                             lifecycleOwner,
                             bitmap,
-                            context
+                            context,
+                            isFilterActive
                         )
+                        {
+                            camera = it
+                            currentLens = cameraLens
+                        }
 
                     if (cameraFlash != currentFlash) {
                         camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)
@@ -163,7 +159,9 @@ fun startCameraGPU(
     cameraLens: CameraLens,
     lifecycleOwner: LifecycleOwner,
     oldBitmap: Bitmap?,
-    context: Context
+    context: Context,
+    isFilterActive: Boolean,
+    onCameraReady: (Camera?) -> Unit
 ) {
     var cameraProvider: ProcessCameraProvider? = null
     val cameraProviderFuture = ProcessCameraProvider.getInstance(context);
@@ -177,7 +175,9 @@ fun startCameraGPU(
             cameraProvider,
             lifecycleOwner,
             oldBitmap,
-            context
+            context,
+            isFilterActive,
+            onCameraReady
         )
     }, ContextCompat.getMainExecutor(context))
 }
@@ -191,18 +191,29 @@ fun startCameraIfReady(
     cameraProvider : ProcessCameraProvider?,
     lifecycleOwner: LifecycleOwner,
     oldBitmap: Bitmap?,
-    context: Context
+    context: Context,
+    isFilterActive : Boolean,
+    onCameraReady: (Camera?) -> Unit
 ) {
 
+    cameraProvider?.unbindAll()
+
+    if(isFilterActive) {
+        gpuImageView.filter = GPUImageSobelEdgeDetectionFilter().apply { setLineSize(0.3F). apply { addFilter(GPUImageColorInvertFilter()) } }
+    } else {
+        gpuImageView.filter = GPUImageFilter()
+    }
+
+
     val imageAnalysis = ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build()
-    imageAnalysis.setAnalyzer(executor, ImageAnalysis.Analyzer {
+    imageAnalysis.setAnalyzer(executor) {
         var bitmap = allocateBitmapIfNecessary(it.width, it.height, oldBitmap)
         converter.yuvToRgb(it.image!!, bitmap)
         it.close()
         gpuImageView.post {
             gpuImageView.setImage(bitmap)
         }
-    })
+    }
     val cameraSelector =
         CameraSelector.Builder()
             .requireLensFacing(
@@ -212,6 +223,14 @@ fun startCameraIfReady(
                 }
             )
             .build()
+
+    val camera =
+        cameraProvider?.bindToLifecycle(
+            lifecycleOwner,
+            cameraSelector
+        )
+
+    onCameraReady(camera)
 
     cameraProvider?.bindToLifecycle(lifecycleOwner, cameraSelector, imageAnalysis)
 }

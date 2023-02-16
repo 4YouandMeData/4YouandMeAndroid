@@ -21,11 +21,6 @@ class FYAMActivity : BaseActivity() {
 
     private val viewModel: FYAMViewModel by viewModels()
 
-    init {
-        System.loadLibrary("opencv_java3")
-        System.loadLibrary("mediapipe_jni")
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
