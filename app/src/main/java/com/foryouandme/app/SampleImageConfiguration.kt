@@ -131,4 +131,8 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun garmin(): Int = R.drawable.garmin
 
     override fun filters(): Int = R.drawable.filters
+
+    override fun videoDiaryFilterOn(): Int = R.drawable.canny_on
+
+    override fun videoDiaryFilterOff(): Int = R.drawable.canny_off
 }
