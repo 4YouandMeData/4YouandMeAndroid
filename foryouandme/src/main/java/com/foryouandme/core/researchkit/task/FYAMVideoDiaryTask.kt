@@ -86,7 +86,9 @@ class FYAMVideoDiaryTask(
                 videoMissingPermissionMic = configuration.text.videoDiary.missingPermissionTitleMic,
                 videoMissingPermissionMicBody = configuration.text.videoDiary.missingPermissionBodyMic,
                 videoSettings = configuration.text.videoDiary.missingPermissionBodySettings,
-                videoCancel = configuration.text.videoDiary.missingPermissionDiscard
+                videoCancel = configuration.text.videoDiary.missingPermissionDiscard,
+                videoDiaryFilterOff = imageConfiguration.videoDiaryFilterOff(),
+                videoDiaryFilterOn = imageConfiguration.videoDiaryFilterOn(),
             ).let { list ->
 
                 successPage?.let {

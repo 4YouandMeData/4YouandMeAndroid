@@ -56,6 +56,8 @@ class VideoDiaryTask(
     videoMissingPermissionMicBody: String,
     videoSettings: String,
     videoCancel: String,
+    videoFilterOnImage: Int,
+    videoFilterOffImage: Int,
 ) : Task(TaskIdentifiers.VIDEO_DIARY, id) {
 
 
@@ -114,7 +116,9 @@ class VideoDiaryTask(
                 videoMissingPermissionMic = videoMissingPermissionMic,
                 videoMissingPermissionMicBody = videoMissingPermissionMicBody,
                 videoSettings = videoSettings,
-                videoCancel = videoCancel
+                videoCancel = videoCancel,
+                videoDiaryFilterOff = videoFilterOffImage,
+                videoDiaryFilterOn = videoFilterOnImage,
             )
 
         )
@@ -159,6 +163,8 @@ class VideoDiaryTask(
             videoMissingPermissionMicBody: String,
             videoSettings: String,
             videoCancel: String,
+            videoDiaryFilterOn: Int,
+            videoDiaryFilterOff: Int,
         ): List<Step> =
             listOf(
                 VideoStep(
@@ -193,7 +199,9 @@ class VideoDiaryTask(
                     missingPermissionMic = videoMissingPermissionMic,
                     missingPermissionMicBody = videoMissingPermissionMicBody,
                     settings = videoSettings,
-                    cancel = videoCancel
+                    cancel = videoCancel,
+                    videoDiaryFilterOn = videoDiaryFilterOn,
+                    videoDiaryFilterOff = videoDiaryFilterOff,
                 )
             )
 

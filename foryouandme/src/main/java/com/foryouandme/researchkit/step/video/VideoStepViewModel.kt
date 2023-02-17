@@ -19,6 +19,7 @@ import com.foryouandme.entity.permission.PermissionResult
 import com.foryouandme.ui.compose.camera.CameraEvent
 import com.foryouandme.ui.compose.camera.CameraFlash
 import com.foryouandme.ui.compose.camera.CameraLens
+import com.foryouandme.ui.compose.camera.FilterCamera
 import com.foryouandme.ui.compose.error.toForYouAndMeException
 import com.foryouandme.ui.compose.video.VideoPlayerEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -90,6 +91,10 @@ class VideoStepViewModel @Inject constructor(
 
     private suspend fun setFlash(flash: CameraFlash) {
         state.emit(state.value.copy(cameraFlash = flash))
+    }
+
+    private suspend fun setFilterCamera(filterStatus: FilterCamera) {
+        state.emit(state.value.copy(filterCamera = filterStatus))
     }
 
     /* --- camera --- */
@@ -370,6 +375,15 @@ class VideoStepViewModel @Inject constructor(
                 viewModelScope.launchAction(merge())
             is VideoStepAction.Submit ->
                 viewModelScope.launchAction(submit(action.taskId))
+            VideoStepAction.ToggleFilter ->
+                viewModelScope.launchSafe {
+                    setFilterCamera(
+                        when (state.value.filterCamera) {
+                            FilterCamera.Off -> FilterCamera.On
+                            FilterCamera.On -> FilterCamera.Off
+                        }
+                    )
+                }
         }
     }
 

@@ -3,6 +3,7 @@ package com.foryouandme.researchkit.step.video.compose
 import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AlertDialog
+import androidx.camera.core.ViewPort
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -93,7 +94,8 @@ fun VideoStepPage(
             onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) },
             onCloseClicked = { onCloseClicked() },
             onReviewClicked = { videoStepViewModel.execute(Merge) },
-            onSubmitClicked = { videoStepViewModel.execute(Submit(taskId)) }
+            onSubmitClicked = { videoStepViewModel.execute(Submit(taskId)) },
+            onFilterClicked = { videoStepViewModel.execute(ToggleFilter) },
         )
     }
 
@@ -111,12 +113,13 @@ private fun VideoStepPage(
     onRecordError: () -> Unit = {},
     onCloseClicked: () -> Unit = {},
     onReviewClicked: () -> Unit = {},
-    onSubmitClicked: () -> Unit = {}
+    onSubmitClicked: () -> Unit = {},
+    onFilterClicked: () -> Unit = {},
 ) {
 
     if (state.step != null) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if(state.permissionsGranted.not())
+            if (state.permissionsGranted.not())
                 requestPermissions()
             else if (
                 state.recordingState is RecordingState.RecordingPause ||
@@ -133,7 +136,9 @@ private fun VideoStepPage(
                         targetResolution = Resolution(width = 500, height = 899)
                     ),
                     onRecordError = onRecordError,
+                    filterCamera = state.filterCamera,
                     modifier = Modifier.fillMaxSize()
+
                 )
             else if (state.mergedVideoPath is LazyData.Data)
                 VideoPlayer(
@@ -155,7 +160,11 @@ private fun VideoStepPage(
                     onFlashClicked = onFlashClicked,
                     cameraToggle = state.step.cameraToggleImage,
                     cameraLens = state.cameraLens,
-                    onCameraClicked = onCameraClicked
+                    onCameraClicked = onCameraClicked,
+                    filterOn = state.step.videoDiaryFilterOn,
+                    filterOff = state.step.videoDiaryFilterOff,
+                    filterCamera = state.filterCamera,
+                    onFilterClicked = onFilterClicked,
                 )
                 MediaButton(
                     recordingState = state.recordingState,
@@ -264,12 +273,13 @@ private fun VideoStepPagePreview() {
                     missingPermissionMic = Mock.title,
                     missingPermissionMicBody = Mock.body,
                     settings = Mock.button,
-                    cancel = Mock.button
-
+                    cancel = Mock.button,
+                    videoDiaryFilterOn = 0,
+                    videoDiaryFilterOff = 0,
                 )
             ),
             cameraEvents = flow { },
-            videoPlayerEvents = flow {  }
+            videoPlayerEvents = flow { }
         )
     }
 }

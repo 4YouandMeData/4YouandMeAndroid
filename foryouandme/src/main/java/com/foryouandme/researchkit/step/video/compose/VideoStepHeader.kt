@@ -23,6 +23,7 @@ import com.foryouandme.ui.compose.camera.CameraFlash.*
 import com.foryouandme.ui.compose.camera.CameraLens
 import com.foryouandme.ui.compose.camera.CameraLens.*
 import com.foryouandme.entity.mock.Mock
+import com.foryouandme.ui.compose.camera.FilterCamera
 
 @Composable
 fun VideoStepHeader(
@@ -38,7 +39,11 @@ fun VideoStepHeader(
     cameraLens: CameraLens,
     modifier: Modifier = Modifier,
     onFlashClicked: () -> Unit = {},
-    onCameraClicked: () -> Unit = {}
+    onCameraClicked: () -> Unit = {},
+    filterOn: Int,
+    filterOff: Int,
+    filterCamera: FilterCamera,
+    onFilterClicked: () -> Unit = {},
 ) {
 
     val headerLabel = remember(title, recordingState, recordTimeSeconds, maxRecordTimeSeconds) {
@@ -57,18 +62,31 @@ fun VideoStepHeader(
         modifier = Modifier
             .fillMaxWidth()
             .then(modifier),
+
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(20.dp))
-        Box(modifier = Modifier.size(30.dp, 30.dp)) {
-            if (canShowFlashButton)
+        Row() {
+            Box(modifier = Modifier.size(30.dp, 30.dp)) {
+                if (canShowFlashButton)
+                    Image(
+                        painter = painterResource(id = if (cameraFlash is On) flashOn else flashOff),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { onFlashClicked() }
+                    )
+            }
+
+            Box(modifier = Modifier.size(30.dp, 30.dp)) {
                 Image(
-                    painter = painterResource(id = if (cameraFlash is On) flashOn else flashOff),
+                    painter = painterResource(id = if (filterCamera is FilterCamera.On) filterOn else filterOff),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable { onFlashClicked() }
+                        .clickable { onFilterClicked() }
                 )
+            }
         }
         Text(
             text = headerLabel,
@@ -153,9 +171,11 @@ private fun VideoStepHeaderPreviewPause() {
             flashOff = 0,
             cameraFlash = On,
             cameraToggle = 0,
-            cameraLens = Back
+            cameraLens = Back,
+            filterCamera = FilterCamera.On,
+            filterOn = 0,
+            filterOff = 0,
         )
-
     }
 }
 
@@ -174,7 +194,10 @@ private fun VideoStepHeaderPreviewRecording() {
             flashOff = 0,
             cameraFlash = On,
             cameraToggle = 0,
-            cameraLens = Back
+            cameraLens = Back,
+            filterCamera = FilterCamera.On,
+            filterOn = 0,
+            filterOff = 0,
         )
     }
 }

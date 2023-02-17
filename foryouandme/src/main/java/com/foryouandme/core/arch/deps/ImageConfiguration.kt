@@ -200,6 +200,15 @@ interface ImageConfiguration {
     @DrawableRes
     fun filters(): Int
 
+
+    /*--- Filter camera ---*/
+
+    @DrawableRes
+    fun videoDiaryFilterOn(): Int
+
+    @DrawableRes
+    fun videoDiaryFilterOff(): Int
+
     /* --- mock --- */
 
     companion object {
@@ -265,6 +274,8 @@ interface ImageConfiguration {
                 override fun filters(): Int = R.drawable.placeholder
                 override fun checkBoxOn(): Int = R.drawable.placeholder
                 override fun checkBoxOff(): Int = R.drawable.placeholder
+                override fun videoDiaryFilterOff(): Int = R.drawable.placeholder
+                override fun videoDiaryFilterOn(): Int = R.drawable.placeholder
             }
 
     }

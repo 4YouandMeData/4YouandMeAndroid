@@ -35,4 +35,6 @@ class VideoStep(
     val missingPermissionMicBody: String,
     val settings: String,
     val cancel: String,
+    val videoDiaryFilterOff: Int,
+    val videoDiaryFilterOn: Int,
 ) : Step(identifier = identifier, back = null, skip = null, view = { VideoStepFragment() })
