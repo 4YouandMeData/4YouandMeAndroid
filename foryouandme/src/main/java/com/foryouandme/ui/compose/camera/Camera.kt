@@ -129,13 +129,13 @@ fun Camera(
         Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
             val ovalPath = Path().apply {
                 val centerX = size.width / 2
-                val centerY = size.height / 2 - size.height / 8
-                val radiusY = size.minDimension / 1.6f
-                val radiusX = radiusY / 1.7f
+                val centerY = size.height / 2 - size.height / 12
+                val radiusY = size.minDimension / 1.45f
+                val radiusX = radiusY / 1.55f
                 addOval(Rect(centerX - radiusX, centerY - radiusY, centerX + radiusX, centerY + radiusY))
             }
             clipPath(ovalPath, clipOp = ClipOp.Difference) {
-                drawRect(SolidColor(Color.Black.copy(alpha = 0.3f)))
+                drawRect(SolidColor(Color.Black.copy(alpha = 0.35f)))
             }
         })
 
@@ -270,7 +270,7 @@ fun startCameraIfReady(
 
     if (cameraLens is CameraLens.Front) {
         gpuImageView.setRotation(Rotation.ROTATION_270)
-        gpuImageView.rotationY = 180F
+        gpuImageView.rotationY = 180f
     } else {
         gpuImageView.setRotation(Rotation.ROTATION_90)
     }
