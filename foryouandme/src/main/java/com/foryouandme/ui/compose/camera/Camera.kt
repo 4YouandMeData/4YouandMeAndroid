@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleOwner
 import jp.co.cyberagent.android.gpuimage.GPUImage
 import jp.co.cyberagent.android.gpuimage.GPUImageView
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorInvertFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageContrastFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSobelEdgeDetectionFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageTransformFilter
@@ -60,8 +61,9 @@ fun Camera(
     var gpuImageView: GPUImageView?
     val filterNormal = GPUImageFilter()
     val filterInverted = GPUImageSobelEdgeDetectionFilter().apply {
-        setLineSize(0.3F).apply {
+        setLineSize(0.8F).apply {
             addFilter(GPUImageColorInvertFilter())
+            addFilter(GPUImageContrastFilter().apply {setContrast(1.4F)})
         }
     }
     val flipFrontalCamera = GPUImageTransformFilter()
@@ -73,9 +75,10 @@ fun Camera(
     )
     flipFrontalCamera.transform3D = transformMatrix
     val frontalCameraInverted = GPUImageSobelEdgeDetectionFilter().apply {
-        setLineSize(0.3F).apply {
+        setLineSize(0.8F).apply {
             addFilter(GPUImageColorInvertFilter())
             addFilter(flipFrontalCamera)
+            addFilter(GPUImageContrastFilter().apply {setContrast(1.4F)})
         }
     }
 
