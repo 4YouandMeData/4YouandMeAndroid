@@ -14,10 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -29,12 +26,14 @@ import jp.co.cyberagent.android.gpuimage.GPUImageView
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorInvertFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSobelEdgeDetectionFilter
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageTransformFilter
 import jp.co.cyberagent.android.gpuimage.util.Rotation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+
 
 @SuppressLint("UnsafeOptInUsageError", "MissingPermission", "RestrictedApi")
 @Composable
@@ -56,13 +55,27 @@ fun Camera(
     var currentFlash by remember { mutableStateOf(cameraFlash) }
     var currentFilterCamera by remember { mutableStateOf(filterCamera) }
     var converter = YuvToRgbConverter(context)
-    var bitmap: Bitmap? = null
+    val bitmap: Bitmap? = null
     val executor = Executors.newSingleThreadExecutor()
-    var gpuImageView: GPUImageView? = null
+    var gpuImageView: GPUImageView?
     val filterNormal = GPUImageFilter()
     val filterInverted = GPUImageSobelEdgeDetectionFilter().apply {
-        setLineSize(0.4F).apply {
+        setLineSize(0.3F).apply {
             addFilter(GPUImageColorInvertFilter())
+        }
+    }
+    val flipFrontalCamera = GPUImageTransformFilter()
+    val transformMatrix = floatArrayOf(
+        -1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    )
+    flipFrontalCamera.transform3D = transformMatrix
+    val frontalCameraInverted = GPUImageSobelEdgeDetectionFilter().apply {
+        setLineSize(0.3F).apply {
+            addFilter(GPUImageColorInvertFilter())
+            addFilter(flipFrontalCamera)
         }
     }
 
@@ -86,6 +99,8 @@ fun Camera(
                     filterCamera,
                     filterNormal,
                     filterInverted,
+                    flipFrontalCamera,
+                    frontalCameraInverted
                 )
                 {
                     camera = it
@@ -108,7 +123,9 @@ fun Camera(
                         videoCapture,
                         filterCamera,
                         filterNormal,
-                        filterInverted
+                        filterInverted,
+                        flipFrontalCamera,
+                        frontalCameraInverted
                     )
                     {
                         camera = it
@@ -178,7 +195,7 @@ fun Camera(
 
 fun allocateBitmapIfNecessary(width: Int, height: Int, bitmap: Bitmap?): Bitmap {
     var newBitmap = bitmap
-    if (newBitmap == null || newBitmap!!.width != width || newBitmap!!.height != height) {
+    if (newBitmap == null || newBitmap.width != width || newBitmap.height != height) {
         newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     }
     return newBitmap!!
@@ -196,10 +213,12 @@ fun startCameraGPU(
     filterCamera: FilterCamera,
     filterStandard: GPUImageFilter,
     filterInverted: GPUImageSobelEdgeDetectionFilter,
+    frontalCameraNormal: GPUImageFilter,
+    frontalCameraInverted: GPUImageSobelEdgeDetectionFilter,
     onCameraReady: (Camera?) -> Unit,
 ) {
-    var cameraProvider: ProcessCameraProvider? = null
-    val cameraProviderFuture = ProcessCameraProvider.getInstance(context);
+    var cameraProvider: ProcessCameraProvider?
+    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
     cameraProviderFuture.addListener({
         cameraProvider = cameraProviderFuture.get()
         startCameraIfReady(
@@ -215,6 +234,8 @@ fun startCameraGPU(
             filterCamera,
             filterStandard,
             filterInverted,
+            frontalCameraNormal,
+            frontalCameraInverted,
             onCameraReady,
         )
     }, ContextCompat.getMainExecutor(context))
@@ -234,22 +255,37 @@ fun startCameraIfReady(
     filterCamera: FilterCamera,
     filterStandard: GPUImageFilter,
     filterInverted: GPUImageSobelEdgeDetectionFilter,
+    frontalCameraNormal: GPUImageFilter,
+    frontalCameraInverted: GPUImageSobelEdgeDetectionFilter,
     onCameraReady: (Camera?) -> Unit,
 ) {
 
     cameraProvider?.unbindAll()
 
-    gpuImageView.filter =
+    gpuImageView.filter = if(cameraLens is CameraLens.Front) {
+        when (filterCamera) {
+            FilterCamera.On -> frontalCameraInverted
+            FilterCamera.Off -> frontalCameraNormal
+        }
+    } else {
         when (filterCamera) {
             FilterCamera.On -> filterInverted
             FilterCamera.Off -> filterStandard
         }
+    }
+
+
+    if (cameraLens is CameraLens.Front) {
+        gpuImageView.setRotation(Rotation.ROTATION_270)
+    } else {
+        gpuImageView.setRotation(Rotation.ROTATION_90)
+    }
 
     val imageAnalysis =
         ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
     imageAnalysis.setAnalyzer(executor) {
-        var bitmap = allocateBitmapIfNecessary(it.width, it.height, oldBitmap)
+        val bitmap = allocateBitmapIfNecessary(it.width, it.height, oldBitmap)
         converter.yuvToRgb(it.image!!, bitmap)
         it.close()
         gpuImageView.post {
@@ -267,13 +303,6 @@ fun startCameraIfReady(
                 }
             )
             .build()
-
-    if (cameraLens is CameraLens.Front) {
-        gpuImageView.setRotation(Rotation.ROTATION_270)
-        gpuImageView.rotationY = 180f
-    } else {
-        gpuImageView.setRotation(Rotation.ROTATION_90)
-    }
 
     val camera =
         cameraProvider?.bindToLifecycle(
