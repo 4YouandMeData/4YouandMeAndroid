@@ -264,7 +264,7 @@ fun startCameraIfReady(
 ) {
 
     cameraProvider?.unbindAll()
-
+    
     gpuImageView.filter = if(cameraLens is CameraLens.Front) {
         when (filterCamera) {
             FilterCamera.On -> frontalCameraInverted
