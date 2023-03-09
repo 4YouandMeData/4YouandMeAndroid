@@ -114,7 +114,7 @@ fun Camera(
             },
             modifier = Modifier.fillMaxSize(),
             update = { view ->
-                if (cameraLens != currentLens || currentFilterCamera != filterCamera)
+                if (cameraLens != currentLens || currentFilterCamera != filterCamera) {
                     startCameraGPU(
                         view,
                         executor,
@@ -135,6 +135,7 @@ fun Camera(
                         currentLens = cameraLens
                         currentFilterCamera = filterCamera
                     }
+                }
 
                 if (cameraFlash != currentFlash) {
                     camera?.cameraControl?.enableTorch(cameraFlash is CameraFlash.On)

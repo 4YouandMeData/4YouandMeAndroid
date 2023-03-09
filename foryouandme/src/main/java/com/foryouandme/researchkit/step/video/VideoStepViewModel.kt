@@ -93,6 +93,8 @@ class VideoStepViewModel @Inject constructor(
         state.emit(state.value.copy(cameraFlash = flash))
     }
 
+    /* --- filter --- */
+
     private suspend fun setFilterCamera(filterStatus: FilterCamera) {
         state.emit(state.value.copy(filterCamera = filterStatus))
     }

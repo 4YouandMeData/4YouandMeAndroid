@@ -202,10 +202,10 @@ private fun VideoStepPage(
             }
             Loading(
                 backgroundColor = state.step.infoBackgroundColor.toColor(),
+                modifier = Modifier.fillMaxSize(),
                 isVisible =
-                state.mergedVideoPath is LazyData.Loading ||
-                        state.submit is LazyData.Loading,
-                modifier = Modifier.fillMaxSize()
+                    state.mergedVideoPath is LazyData.Loading ||
+                        state.submit is LazyData.Loading
             )
         }
     }
