@@ -3,7 +3,6 @@ package com.foryouandme.researchkit.step.video.compose
 import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AlertDialog
-import androidx.camera.core.ViewPort
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier

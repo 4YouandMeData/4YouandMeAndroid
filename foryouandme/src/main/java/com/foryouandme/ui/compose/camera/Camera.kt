@@ -3,6 +3,7 @@ package com.foryouandme.ui.compose.camera
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -35,7 +36,6 @@ import kotlinx.coroutines.flow.onEach
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-
 @SuppressLint("UnsafeOptInUsageError", "MissingPermission", "RestrictedApi")
 @Composable
 fun Camera(
@@ -56,7 +56,7 @@ fun Camera(
     var currentFlash by remember { mutableStateOf(cameraFlash) }
     var currentFilterCamera by remember { mutableStateOf(filterCamera) }
     var converter = YuvToRgbConverter(context)
-    val bitmap: Bitmap? = null
+    var bitmap: Bitmap? = null
     val executor = Executors.newSingleThreadExecutor()
     var gpuImageView: GPUImageView?
     val filterNormal = GPUImageFilter()
@@ -158,6 +158,15 @@ fun Camera(
                 drawRect(SolidColor(Color.Black.copy(alpha = 0.35f)))
             }
         })
+
+    }
+
+    // --------- Clean cache test --------- //
+    DisposableEffect(Unit) {
+        onDispose {
+            bitmap = null
+            gpuImageView = null
+        }
 
     }
 
@@ -264,7 +273,8 @@ fun startCameraIfReady(
 ) {
 
     cameraProvider?.unbindAll()
-    
+    oldBitmap?.recycle()
+
     gpuImageView.filter = if(cameraLens is CameraLens.Front) {
         when (filterCamera) {
             FilterCamera.On -> frontalCameraInverted
@@ -276,7 +286,6 @@ fun startCameraIfReady(
             FilterCamera.Off -> filterStandard
         }
     }
-
 
     if (cameraLens is CameraLens.Front) {
         gpuImageView.setRotation(Rotation.ROTATION_270)
@@ -298,7 +307,6 @@ fun startCameraIfReady(
 
     val cameraSelector =
         CameraSelector.Builder()
-
             .requireLensFacing(
                 when (cameraLens) {
                     CameraLens.Back -> CameraSelector.LENS_FACING_BACK

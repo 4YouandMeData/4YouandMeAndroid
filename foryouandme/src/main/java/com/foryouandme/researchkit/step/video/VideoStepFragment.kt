@@ -17,7 +17,6 @@ import jp.co.cyberagent.android.gpuimage.GPUImageView
 class VideoStepFragment : StepFragment() {
 
     private val viewModel: VideoStepViewModel by viewModels()
-    private var previewFrameTexture: SurfaceTexture? = null
     private var previewDisplayView: GPUImageView? = null
 
     override fun onCreateView(

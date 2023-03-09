@@ -79,13 +79,14 @@ fun VideoStepHeader(
             }
 
             Box(modifier = Modifier.size(30.dp, 30.dp)) {
-                Image(
-                    painter = painterResource(id = if (filterCamera is FilterCamera.On) filterOn else filterOff),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { onFilterClicked() }
-                )
+                if(canShowCameraButton)
+                    Image(
+                        painter = painterResource(id = if (filterCamera is FilterCamera.On) filterOn else filterOff),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { onFilterClicked() }
+                    )
             }
         }
         Text(

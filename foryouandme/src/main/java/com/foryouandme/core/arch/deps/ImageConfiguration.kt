@@ -200,7 +200,6 @@ interface ImageConfiguration {
     @DrawableRes
     fun filters(): Int
 
-
     /*--- Filter camera ---*/
 
     @DrawableRes
