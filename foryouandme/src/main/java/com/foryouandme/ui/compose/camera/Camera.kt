@@ -3,7 +3,6 @@ package com.foryouandme.ui.compose.camera
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -22,6 +21,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.foryouandme.core.ext.catchToNull
+import com.google.common.util.concurrent.ListenableFuture
 import jp.co.cyberagent.android.gpuimage.GPUImage
 import jp.co.cyberagent.android.gpuimage.GPUImageView
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorInvertFilter
@@ -56,7 +57,7 @@ fun Camera(
     var currentFlash by remember { mutableStateOf(cameraFlash) }
     var currentFilterCamera by remember { mutableStateOf(filterCamera) }
     var converter = YuvToRgbConverter(context)
-    var bitmap: Bitmap? = null
+    val bitmap: Bitmap? = null
     val executor = Executors.newSingleThreadExecutor()
     var gpuImageView: GPUImageView?
     val filterNormal = GPUImageFilter()
@@ -81,6 +82,8 @@ fun Camera(
             addFilter(GPUImageContrastFilter().apply {setContrast(1.4F)})
         }
     }
+    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+    val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
     BoxWithConstraints(modifier = modifier) {
         AndroidView(
@@ -103,7 +106,9 @@ fun Camera(
                     filterNormal,
                     filterInverted,
                     flipFrontalCamera,
-                    frontalCameraInverted
+                    frontalCameraInverted,
+                    cameraProviderFuture,
+                    cameraProvider
                 )
                 {
                     camera = it
@@ -128,7 +133,9 @@ fun Camera(
                         filterNormal,
                         filterInverted,
                         flipFrontalCamera,
-                        frontalCameraInverted
+                        frontalCameraInverted,
+                        cameraProviderFuture,
+                        cameraProvider
                     )
                     {
                         camera = it
@@ -146,6 +153,14 @@ fun Camera(
 
         )
 
+        DisposableEffect(bitmap) {
+            onDispose {
+                bitmap?.recycle()
+                gpuImageView = null
+                cameraProvider.unbindAll()
+            }
+        }
+
         // Oval for face positioning
         Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
             val ovalPath = Path().apply {
@@ -159,15 +174,6 @@ fun Camera(
                 drawRect(SolidColor(Color.Black.copy(alpha = 0.35f)))
             }
         })
-
-    }
-
-    // --------- Clean cache test --------- //
-    DisposableEffect(Unit) {
-        onDispose {
-            bitmap = null
-            gpuImageView = null
-        }
 
     }
 
@@ -228,12 +234,11 @@ fun startCameraGPU(
     filterInverted: GPUImageSobelEdgeDetectionFilter,
     frontalCameraNormal: GPUImageFilter,
     frontalCameraInverted: GPUImageSobelEdgeDetectionFilter,
+    cameraProviderFuture: ListenableFuture<ProcessCameraProvider>,
+    cameraProvider: ProcessCameraProvider?,
     onCameraReady: (Camera?) -> Unit,
 ) {
-    var cameraProvider: ProcessCameraProvider?
-    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
     cameraProviderFuture.addListener({
-        cameraProvider = cameraProviderFuture.get()
         startCameraIfReady(
             gpuImageView,
             executor,
@@ -315,6 +320,8 @@ fun startCameraIfReady(
                 }
             )
             .build()
+
+    catchToNull { cameraProvider?.unbindAll() }
 
     val camera =
         cameraProvider?.bindToLifecycle(
