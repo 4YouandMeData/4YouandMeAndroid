@@ -81,7 +81,7 @@ fun VideoStepHeader(
             Box(modifier = Modifier.size(30.dp, 30.dp)) {
                 if(canShowCameraButton)
                     Image(
-                        painter = painterResource(id = if (filterCamera is FilterCamera.On) filterOn else filterOff),
+                        painter = painterResource(id = if (filterCamera is FilterCamera.On) filterOff else filterOn),
                         contentDescription = "",
                         modifier = Modifier
                             .fillMaxSize()

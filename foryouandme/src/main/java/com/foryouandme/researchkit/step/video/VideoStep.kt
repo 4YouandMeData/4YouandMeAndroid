@@ -20,6 +20,8 @@ class VideoStep(
     val timeProgressColor: Int,
     val infoTitle: String,
     val infoTitleColor: Int,
+    val infoFilter: String,
+    val filterImage: Int,
     val infoBody: String,
     val infoBodyColor: Int,
     val reviewTimeColor: Int,

@@ -127,6 +127,9 @@ interface ImageConfiguration {
     @DrawableRes
     fun trailMaking(): Int
 
+    @DrawableRes
+    fun videoFilterImage(): Int
+
     /* --- menu item --- */
 
     @DrawableRes
@@ -237,6 +240,7 @@ interface ImageConfiguration {
                 override fun pocket(): Int = R.drawable.placeholder
                 override fun videoDiaryIntro(): Int = R.drawable.placeholder
                 override fun videoDiaryTime(): Int = R.drawable.placeholder
+                override fun videoFilterImage(): Int = R.drawable.placeholder
                 override fun videoDiaryClose(): Int = R.drawable.placeholder
                 override fun videoDiaryRecord(): Int = R.drawable.placeholder
                 override fun videoDiaryPause(): Int = R.drawable.placeholder

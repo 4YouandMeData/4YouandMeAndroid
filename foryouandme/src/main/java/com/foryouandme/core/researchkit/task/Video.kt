@@ -83,6 +83,8 @@ suspend fun FYAMTaskConfiguration.buildVideoDiary(
         videoTimeProgressColor = active,
         videoInfoTitle = configuration.text.videoDiary.recorderInfoTitle,
         videoInfoTitleColor = fourthText,
+        videoInfoFilter = configuration.text.videoDiary.recorderInfoFilter,
+        videoFilterImage = imageConfiguration.videoFilterImage(),
         videoInfoBody = configuration.text.videoDiary.recorderInfoBody,
         videoInfoBodyColor = primaryText,
         videoReviewTimeColor = primaryText,

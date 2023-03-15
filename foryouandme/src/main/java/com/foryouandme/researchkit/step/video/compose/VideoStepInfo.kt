@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,8 @@ fun VideoStepInfo(
     progressBackgroundColor: Color,
     infoTitle: String,
     infoTitleColor: Color,
+    infoFilter: String,
+    filterImage:Int,
     infoBody: String,
     infoBodyColor: Color,
     reviewButton: String,
@@ -50,6 +53,8 @@ fun VideoStepInfo(
     onReviewClicked: () -> Unit = {},
     onSubmitClicked: () -> Unit = {}
 ) {
+
+    val info = "Testo di prova"
 
     val time = remember(recordTimeSeconds, maxRecordTimeSeconds) {
         getTimeLabel(recordTimeSeconds, maxRecordTimeSeconds)
@@ -118,6 +123,24 @@ fun VideoStepInfo(
                     backgroundColor = progressBackgroundColor,
                     modifier = Modifier.fillMaxWidth()
                 )
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Image(
+                        painter = painterResource(id = filterImage),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp, 20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = infoFilter,
+                        color = titleColor,
+                        style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Medium),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 Spacer(modifier = Modifier.height(15.dp))
                 Text(
                     text = infoTitle,
@@ -206,6 +229,8 @@ private fun VideoStepRecordingInfoPreview() {
             progressBackgroundColor = Color.Yellow,
             infoTitle = Mock.time,
             infoTitleColor = Color.Black,
+            infoFilter = Mock.body,
+            filterImage = 0,
             infoBody = Mock.body,
             infoBodyColor = Color.Black,
             reviewButton = Mock.button,
