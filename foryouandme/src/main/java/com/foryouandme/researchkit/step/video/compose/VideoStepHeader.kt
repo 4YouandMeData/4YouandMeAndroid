@@ -40,9 +40,7 @@ fun VideoStepHeader(
     modifier: Modifier = Modifier,
     onFlashClicked: () -> Unit = {},
     onCameraClicked: () -> Unit = {},
-    filterOn: Int,
-    filterOff: Int,
-    filterCamera: FilterCamera,
+    filterToggle: Int,
     onFilterClicked: () -> Unit = {},
 ) {
 
@@ -81,7 +79,7 @@ fun VideoStepHeader(
             Box(modifier = Modifier.size(30.dp, 30.dp)) {
                 if(canShowCameraButton)
                     Image(
-                        painter = painterResource(id = if (filterCamera is FilterCamera.On) filterOff else filterOn),
+                        painter = painterResource(id = filterToggle),
                         contentDescription = "",
                         modifier = Modifier
                             .fillMaxSize()
@@ -173,9 +171,7 @@ private fun VideoStepHeaderPreviewPause() {
             cameraFlash = On,
             cameraToggle = 0,
             cameraLens = Back,
-            filterCamera = FilterCamera.On,
-            filterOn = 0,
-            filterOff = 0,
+            filterToggle = 0,
         )
     }
 }
@@ -196,9 +192,7 @@ private fun VideoStepHeaderPreviewRecording() {
             cameraFlash = On,
             cameraToggle = 0,
             cameraLens = Back,
-            filterCamera = FilterCamera.On,
-            filterOn = 0,
-            filterOff = 0,
+            filterToggle = 0,
         )
     }
 }

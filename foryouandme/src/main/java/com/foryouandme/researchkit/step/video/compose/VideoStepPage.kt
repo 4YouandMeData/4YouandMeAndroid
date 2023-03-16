@@ -160,9 +160,7 @@ private fun VideoStepPage(
                     cameraToggle = state.step.cameraToggleImage,
                     cameraLens = state.cameraLens,
                     onCameraClicked = onCameraClicked,
-                    filterOn = state.step.videoDiaryFilterOn,
-                    filterOff = state.step.videoDiaryFilterOff,
-                    filterCamera = state.filterCamera,
+                    filterToggle = state.step.videoDiaryFilter,
                     onFilterClicked = onFilterClicked,
                 )
                 MediaButton(
@@ -277,8 +275,7 @@ private fun VideoStepPagePreview() {
                     missingPermissionMicBody = Mock.body,
                     settings = Mock.button,
                     cancel = Mock.button,
-                    videoDiaryFilterOn = 0,
-                    videoDiaryFilterOff = 0,
+                    videoDiaryFilter = 0,
                 )
             ),
             cameraEvents = flow { },

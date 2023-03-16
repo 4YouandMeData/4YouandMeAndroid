@@ -100,8 +100,7 @@ suspend fun FYAMTaskConfiguration.buildVideoDiary(
         videoMissingPermissionMicBody = configuration.text.videoDiary.missingPermissionBodyMic,
         videoSettings = configuration.text.videoDiary.missingPermissionBodySettings,
         videoCancel = configuration.text.videoDiary.missingPermissionDiscard,
-        videoFilterOnImage = imageConfiguration.videoDiaryFilterOn(),
-        videoFilterOffImage = imageConfiguration.videoDiaryFilterOff(),
+        videoFilterToggleImage = imageConfiguration.videoDiaryFilter(),
     )
 }
 
