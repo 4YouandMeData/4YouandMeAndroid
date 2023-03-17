@@ -3,7 +3,6 @@ package com.foryouandme.ui.compose.camera
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.DisplayMetrics
 import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -19,7 +18,6 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -28,14 +26,10 @@ import com.google.common.util.concurrent.ListenableFuture
 import jp.co.cyberagent.android.gpuimage.GPUImage
 import jp.co.cyberagent.android.gpuimage.GPUImageView
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorInvertFilter
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageColorMatrixFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageContrastFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageLuminosityBlendFilter
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageOverlayBlendFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageSobelEdgeDetectionFilter
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageTransformFilter
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageTwoInputFilter
 import jp.co.cyberagent.android.gpuimage.util.Rotation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
