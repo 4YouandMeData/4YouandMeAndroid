@@ -64,6 +64,7 @@ fun EntryPickerItem(
     ForYouAndMeReadOnlyTextField(
         value = item.value?.name.orEmpty(),
         label = item.name,
+        description = item.description,
         placeholder = null,
         labelColor = configuration.theme.fourthTextColor.value,
         placeholderColor = configuration.theme.fourthTextColor.value,

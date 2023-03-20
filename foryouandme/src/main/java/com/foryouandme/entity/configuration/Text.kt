@@ -497,6 +497,8 @@ data class VideoDiary(
 
 data class StudyInfo(
     val aboutYou: String,
+    val dueDateExtra: String?,
+    val deliveryDateExtra: String?,
 ) {
 
     companion object {
@@ -504,6 +506,8 @@ data class StudyInfo(
         fun mock(): StudyInfo =
             StudyInfo(
                 aboutYou = Mock.button,
+                dueDateExtra = Mock.body,
+                deliveryDateExtra = Mock.body
             )
 
     }

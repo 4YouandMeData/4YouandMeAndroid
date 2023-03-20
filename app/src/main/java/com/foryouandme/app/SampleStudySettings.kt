@@ -18,7 +18,7 @@ class SampleStudySettings(context: Context) : StudySettings() {
     override val getOAuthBaseUrl: String =
         context.getString(R.string.OAUTH_BASE_URL)
 
-    override val useCustomData: Boolean = false
+    override val useCustomData: Boolean = true
 
     override val pinCodeSuffix: String =
         context.getString(R.string.PIN_CODE_SUFFIX)

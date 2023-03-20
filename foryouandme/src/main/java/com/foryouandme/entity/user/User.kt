@@ -52,10 +52,14 @@ data class UserCustomData(
     val name: String,
     val type: UserCustomDataType,
     val phase: String?
-)
+) {
 
-const val PREGNANCY_END_DATE_IDENTIFIER: String = "1"
-const val DELIVERY_DATE_IDENTIFIER: String = "2"
+    companion object {
+        const val PREGNANCY_END_DATE_IDENTIFIER: String = "1"
+        const val DELIVERY_DATE_IDENTIFIER: String = "2"
+    }
+
+}
 
 data class UserCustomDataItem(
     val identifier: String,

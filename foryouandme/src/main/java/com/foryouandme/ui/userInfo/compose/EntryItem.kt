@@ -27,6 +27,7 @@ sealed class EntryItem {
     data class Date(
         val id: String,
         val name: String,
+        val description: String?,
         val value: LocalDate?,
     ) : EntryItem() {
 
@@ -36,6 +37,7 @@ sealed class EntryItem {
                 Date(
                     id = "id",
                     name = Mock.name,
+                    description = Mock.body,
                     value = LocalDate.of(2021, 6, 27)
                 )
 
@@ -46,6 +48,7 @@ sealed class EntryItem {
     data class Picker(
         val id: String,
         val name: String,
+        val description: String?,
         val value: Value?,
         val values: List<Value>,
     ): EntryItem() {
@@ -58,6 +61,7 @@ sealed class EntryItem {
                 Picker(
                     id = "id",
                     name = Mock.name,
+                    description = null,
                     value = Value("1", Mock.name),
                     values =
                     listOf(

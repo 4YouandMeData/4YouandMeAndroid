@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.user.PREGNANCY_END_DATE_IDENTIFIER
 import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.verticalGradient
 import org.threeten.bp.LocalDate
@@ -104,7 +104,7 @@ private fun getPregnancyWeeks(user: User?): Long? =
 
 private fun User.getPregnancyEndDate(): LocalDate? =
     catchToNull {
-        getCustomDataByIdentifier(PREGNANCY_END_DATE_IDENTIFIER)
+        getCustomDataByIdentifier(UserCustomData.PREGNANCY_END_DATE_IDENTIFIER)
             ?.value
             ?.let { LocalDate.parse(it) }
     }

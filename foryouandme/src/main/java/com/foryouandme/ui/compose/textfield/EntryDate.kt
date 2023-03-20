@@ -1,7 +1,5 @@
 package com.foryouandme.ui.compose.textfield
 
-import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -13,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +36,7 @@ fun EntryDate(
     imageConfiguration: ImageConfiguration?,
     placeholder: String? = null,
     label: String? = null,
+    description: String? = null,
     minDate: LocalDate? = null,
     maxDate: LocalDate? = null,
     onDateSelected: (LocalDate) -> Unit = { }
@@ -50,6 +48,7 @@ fun EntryDate(
         imageConfiguration = imageConfiguration,
         placeholder = placeholder,
         label = label,
+        description = description,
         minDate = minDate,
         maxDate = maxDate,
         onDateSelected = onDateSelected
@@ -93,6 +92,7 @@ private fun EntryDateImpl(
     imageConfiguration: ImageConfiguration? = null,
     placeholder: String? = null,
     label: String? = null,
+    description: String? = null,
     minDate: LocalDate? = null,
     maxDate: LocalDate? = null,
     onDateSelected: (LocalDate) -> Unit = { }
@@ -129,6 +129,7 @@ private fun EntryDateImpl(
     ForYouAndMeReadOnlyTextField(
         value = value?.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")).orEmpty(),
         label = label,
+        description = description,
         placeholder = placeholder,
         labelColor = entryDateColors.labelColor,
         placeholderColor = entryDateColors.placeholderColor,

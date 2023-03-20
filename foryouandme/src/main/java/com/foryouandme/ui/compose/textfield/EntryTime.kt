@@ -61,6 +61,7 @@ fun EntryTime(
     ForYouAndMeReadOnlyTextField(
         value = time.format(DateTimeFormatter.ofPattern("HH:mm")).orEmpty(),
         label = null,
+        description = null,
         placeholder = null,
         labelColor = configuration.theme.fourthTextColor.value,
         placeholderColor = configuration.theme.fourthTextColor.value,

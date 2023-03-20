@@ -91,12 +91,14 @@ class UserInfoViewModel @Inject constructor(
                     EntryItem.Date(
                         id = data.identifier,
                         name = data.name,
+                        description = getEntryDescription(data.identifier),
                         value = catchToNull { LocalDate.parse(data.value) },
                     )
                 is UserCustomDataType.Items ->
                     EntryItem.Picker(
                         id = data.identifier,
                         name = data.name,
+                        description = getEntryDescription(data.identifier),
                         value =
                         data.type.items
                             .firstOrNull { it.identifier == data.value }
@@ -107,6 +109,19 @@ class UserInfoViewModel @Inject constructor(
             }
 
         }
+
+    private fun getEntryDescription(entryId: String): String? {
+        val configuration = state.value.configuration.currentOrPrevious()
+        return if (configuration != null)
+            when (entryId) {
+                UserCustomData.PREGNANCY_END_DATE_IDENTIFIER ->
+                    configuration.text.studyInfo.dueDateExtra
+                UserCustomData.DELIVERY_DATE_IDENTIFIER ->
+                    configuration.text.studyInfo.deliveryDateExtra
+                else -> null
+            }
+        else null
+    }
 
     /* --- edit --- */
 

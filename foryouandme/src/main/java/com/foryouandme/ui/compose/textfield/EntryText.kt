@@ -110,6 +110,7 @@ private fun EntryTextImpl(
     modifier: Modifier = Modifier,
     placeholder: String? = null,
     label: String? = null,
+    description: String? = null,
     isEditable: Boolean = true,
     isValid: Boolean = true,
     maxCharacter: Int? = null,
@@ -123,6 +124,7 @@ private fun EntryTextImpl(
     ForYouAndMeTextField(
         value = text,
         label = label,
+        description = description,
         placeholder = placeholder,
         isEditable = isEditable,
         labelColor = labelColor,

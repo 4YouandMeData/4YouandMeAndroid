@@ -43,19 +43,19 @@ class GetUserUseCase @Inject constructor(
     private fun defaultUserCustomData(phases: List<String>): List<UserCustomData> =
         listOf(
             UserCustomData(
-                identifier = PREGNANCY_END_DATE_IDENTIFIER,
+                identifier = UserCustomData.PREGNANCY_END_DATE_IDENTIFIER,
                 type = UserCustomDataType.Date,
                 name = "Your due date",
                 value = null,
                 phase = null
             ),
-//            UserCustomData(
-//                identifier = DELIVERY_DATE_IDENTIFIER,
-//                type = UserCustomDataType.Date,
-//                name = "Your delivery date",
-//                value = null,
-//                phase = phases.getOrNull(index = 1)
-//            )
+            UserCustomData(
+                identifier = UserCustomData.DELIVERY_DATE_IDENTIFIER,
+                type = UserCustomDataType.Date,
+                name = "Your delivery date",
+                value = null,
+                phase = phases.getOrNull(index = 1)
+            )
         )
 
 }

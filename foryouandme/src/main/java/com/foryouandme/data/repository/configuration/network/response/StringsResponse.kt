@@ -149,6 +149,8 @@ data class StringsResponse(
     @Json(name = "STUDY_INFO_CONTACT_INFO") val studyInfoContactInfo: String? = null,
     @Json(name = "STUDY_INFO_REWARDS") val studyInfoRewards: String? = null,
     @Json(name = "STUDY_INFO_FAQ") val studyInfoFaq: String? = null,
+    @Json(name = "STUDY_INFO_YOUR_DUE_DATE_EXTRA") val studyInfoDueDateExtra: String? = null,
+    @Json(name = "STUDY_INFO_YOUR_DELIVERY_DATE_EXTRA") val studyInfoDeliveryDateExtra: String? = null,
 
     @Json(name = "PROFILE_TITLE") val profileTitle: String? = null,
 
@@ -553,8 +555,12 @@ data class StringsResponse(
     private fun toStudyInfo(): StudyInfo? =
         when (null) {
             studyInfoAboutYou, studyInfoContactInfo, studyInfoRewards, studyInfoFaq -> null
-            else -> StudyInfo(studyInfoAboutYou)
-
+            else ->
+                StudyInfo(
+                aboutYou = studyInfoAboutYou,
+                deliveryDateExtra = studyInfoDeliveryDateExtra,
+                dueDateExtra = studyInfoDueDateExtra
+            )
         }
 
     private fun toProfile(): Profile? {
