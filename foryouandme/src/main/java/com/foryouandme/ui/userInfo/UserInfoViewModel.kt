@@ -15,8 +15,8 @@ import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.entity.user.UserCustomDataItem
 import com.foryouandme.entity.user.UserCustomDataType
-import com.foryouandme.ui.userInfo.compose.EntryItem
 import com.foryouandme.ui.compose.error.toForYouAndMeException
+import com.foryouandme.ui.userInfo.compose.EntryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -172,14 +172,16 @@ class UserInfoViewModel @Inject constructor(
                                     item.id,
                                     item.value.emptyOrBlankToNull(),
                                     item.name,
-                                    UserCustomDataType.String
+                                    UserCustomDataType.String,
+                                    getCustomDataPhase(item.id)
                                 )
                             is EntryItem.Date ->
                                 UserCustomData(
                                     item.id,
                                     item.value?.format(DateTimeFormatter.ISO_LOCAL_DATE),
                                     item.name,
-                                    UserCustomDataType.Date
+                                    UserCustomDataType.Date,
+                                    getCustomDataPhase(item.id)
                                 )
                             is EntryItem.Picker ->
                                 UserCustomData(
@@ -188,7 +190,8 @@ class UserInfoViewModel @Inject constructor(
                                     item.name,
                                     UserCustomDataType.Items(
                                         item.values.map { UserCustomDataItem(it.id, it.name) }
-                                    )
+                                    ),
+                                    getCustomDataPhase(item.id)
                                 )
                         }
                     }
@@ -203,6 +206,9 @@ class UserInfoViewModel @Inject constructor(
                 eventChannel.send(UserInfoEvent.UploadError(it.toForYouAndMeException()))
             }
         )
+
+    private fun getCustomDataPhase(id: String): String? =
+        state.value.user.dataOrNull()?.customData?.find { it.identifier == id }?.phase
 
     /* --- action --- */
 

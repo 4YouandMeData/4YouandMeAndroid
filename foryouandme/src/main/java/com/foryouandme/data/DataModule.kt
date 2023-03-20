@@ -33,6 +33,8 @@ import com.foryouandme.data.repository.survey.network.response.SurveyBlockRespon
 import com.foryouandme.data.repository.survey.network.response.SurveyQuestionResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.response.TaskResponse
+import com.foryouandme.data.repository.user.network.response.StudyPhaseResponse
+import com.foryouandme.data.repository.user.network.response.UserStudyPhaseResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -75,6 +77,8 @@ class DataModule {
                     .add(SurveyActivityResponse::class.java)
                     .add(TaskActivityResponse::class.java)
                     .add(UserResponse::class.java)
+                    .add(UserStudyPhaseResponse::class.java)
+                    .add(StudyPhaseResponse::class.java)
                     .add(StudyInfoResponse::class.java)
                     .add(FeedRewardResponse::class.java)
                     .build()

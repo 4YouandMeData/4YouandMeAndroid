@@ -8,7 +8,7 @@ sealed class EntryItem {
     data class Text(
         val id: String,
         val name: String,
-        val value: String
+        val value: String,
     ) : EntryItem() {
 
         companion object {

@@ -2,6 +2,7 @@ package com.foryouandme.entity.user
 
 import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.permission.Permission
+import com.foryouandme.entity.phase.UserStudyPhase
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
 
@@ -16,7 +17,8 @@ data class User(
     val customData: List<UserCustomData>,
     val timeZone: ZoneId?,
     val points: Int,
-    val permissions: List<Permission>
+    val permissions: List<Permission>,
+    val phase: UserStudyPhase?
 ) {
 
     fun getCustomDataByIdentifier(identifier: String): UserCustomData? =
@@ -36,7 +38,8 @@ data class User(
                 customData = emptyList(),
                 timeZone = ZoneOffset.UTC,
                 points = 30,
-                permissions = listOf(Permission.Location, Permission.Camera)
+                permissions = listOf(Permission.Location, Permission.Camera),
+                phase = UserStudyPhase.mock()
             )
 
     }
@@ -48,11 +51,11 @@ data class UserCustomData(
     val value: String?,
     val name: String,
     val type: UserCustomDataType,
+    val phase: String?
 )
 
 const val PREGNANCY_END_DATE_IDENTIFIER: String = "1"
-const val BABY_GENDER_IDENTIFIER: String = "2"
-const val BABY_NAME_IDENTIFIER: String = "3"
+const val DELIVERY_DATE_IDENTIFIER: String = "2"
 
 data class UserCustomDataItem(
     val identifier: String,

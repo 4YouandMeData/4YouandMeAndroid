@@ -21,7 +21,8 @@ data class Text(
     val gaitActivity: GaitActivity,
     val fitnessActivity: FitnessActivity,
     val camCogActivity: CamCogActivity,
-    val survey: Survey
+    val survey: Survey,
+    val phases: List<String>
 ) {
 
     companion object {
@@ -46,7 +47,8 @@ data class Text(
                 gaitActivity = GaitActivity.mock(),
                 fitnessActivity = FitnessActivity.mock(),
                 camCogActivity = CamCogActivity.mock(),
-                survey = Survey.mock()
+                survey = Survey.mock(),
+                phases = emptyList()
             )
 
     }

@@ -196,7 +196,9 @@ data class StringsResponse(
     @Json(name = "ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteServer: String? = null,
     @Json(name = "ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null,
 
-    ) {
+    @Json(name = "STUDY_PHASES") val phases: String? = null
+
+) {
 
     fun toText(): Text? {
 
@@ -244,7 +246,8 @@ data class StringsResponse(
                     gaitActivity,
                     fitnessActivity,
                     camCogActivity,
-                    survey
+                    survey,
+                    phases = phases?.split(";") ?: emptyList()
                 )
 
         }
@@ -578,8 +581,8 @@ data class StringsResponse(
     }
 
     private fun toUserInfo(): UserInfo? =
-        when(null) {
-            userInfoTitle,userInfoButtonEdit, userInfoButtonSubmit -> null
+        when (null) {
+            userInfoTitle, userInfoButtonEdit, userInfoButtonSubmit -> null
             else ->
                 UserInfo(
                     title = userInfoTitle,
@@ -589,7 +592,7 @@ data class StringsResponse(
         }
 
     private fun toAppsAndDevices(): AppsAndDevices? =
-        when(null) {
+        when (null) {
             appsAndDevicesTitle, appsAndDevicesConnect,
             appsAndDevicesDeauthorize -> null
             else ->
@@ -618,7 +621,7 @@ data class StringsResponse(
         }
 
     private fun toDailySurveyTime(): DailySurveyTime? =
-        when(null) {
+        when (null) {
             dailSurveyTimeTitle, dailySurveyTimeDescription, dailSurveyTimeButton,
             dailySurveyTimingHidden -> null
             else ->

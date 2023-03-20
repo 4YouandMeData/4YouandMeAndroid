@@ -24,7 +24,7 @@ suspend fun <T> catchToNullSuspend(block: suspend () -> T): T? =
         null
     }
 
-suspend fun catchSuspend(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) =
+suspend fun <T> catchSuspend(block: suspend () -> T, error: suspend (Throwable) -> T): T =
     try {
         block()
     } catch (e: Throwable) {
