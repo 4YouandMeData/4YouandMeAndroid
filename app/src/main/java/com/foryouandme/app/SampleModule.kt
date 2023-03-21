@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.sync.Mutex
 import javax.inject.Singleton
 
 @Module
@@ -35,5 +36,8 @@ object SampleModule {
     @Singleton
     fun provideFirebaseAnalytics(@ApplicationContext context: Context): FirebaseAnalytics =
         FirebaseAnalytics.getInstance(context)
+
+    @Provides
+    fun provideMutex(): Mutex = Mutex()
 
 }

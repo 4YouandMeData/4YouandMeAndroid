@@ -30,7 +30,13 @@ class UserInfoFragment : BaseFragment() {
             setContent {
                 UserInfoPage(
                     userInfoViewModel = viewModel,
-                    onBack = { navigator.back(rootNavController()) }
+                    onBack = { navigator.back(rootNavController()) },
+                    onFaqClicked = {
+                        navigator.navigateTo(
+                            rootNavController(),
+                            UserInfoToStudyInfoDetail
+                        )
+                    }
                 )
             }
         }

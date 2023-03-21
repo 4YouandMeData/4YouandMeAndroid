@@ -198,7 +198,10 @@ data class StringsResponse(
     @Json(name = "ERROR_MESSAGE_REMOTE_SERVER") val errorMessageRemoteServer: String? = null,
     @Json(name = "ERROR_MESSAGE_CONNECTIVITY") val errorMessageConnectivity: String? = null,
 
-    @Json(name = "STUDY_PHASES") val phases: String? = null
+    @Json(name = "STUDY_PHASES") val phases: String? = null,
+    @Json(name = "PHASE_SWITCH_PROMPT") val phaseSwitchDescription: String? = null,
+    @Json(name = "PHASE_SWITCH_BUTTON_YES") val phaseSwitchYes: String? = null,
+    @Json(name = "PHASE_SWITCH_BUTTON_NO") val phaseSwitchNo: String? = null
 
 ) {
 
@@ -557,10 +560,10 @@ data class StringsResponse(
             studyInfoAboutYou, studyInfoContactInfo, studyInfoRewards, studyInfoFaq -> null
             else ->
                 StudyInfo(
-                aboutYou = studyInfoAboutYou,
-                deliveryDateExtra = studyInfoDeliveryDateExtra,
-                dueDateExtra = studyInfoDueDateExtra
-            )
+                    aboutYou = studyInfoAboutYou,
+                    deliveryDateExtra = studyInfoDeliveryDateExtra,
+                    dueDateExtra = studyInfoDueDateExtra
+                )
         }
 
     private fun toProfile(): Profile? {
@@ -569,14 +572,16 @@ data class StringsResponse(
         val appsAndDevices = toAppsAndDevices()
         val permissions = toPermissions()
         val dailySurveyTime = toDailySurveyTime()
+        val phase = toPhase()
 
         return when (null) {
-            profileTitle, reviewConsentTitle, userInfo, appsAndDevices, permissions,
+            profileTitle, reviewConsentTitle, userInfo, phase, appsAndDevices, permissions,
             dailySurveyTime, profileDisclaimer -> null
             else ->
                 Profile(
                     title = profileTitle,
                     userInfo = userInfo,
+                    phase = phase,
                     appsAndDevices = appsAndDevices,
                     reviewConsent = reviewConsentTitle,
                     permissions = permissions,
@@ -594,6 +599,17 @@ data class StringsResponse(
                     title = userInfoTitle,
                     edit = userInfoButtonEdit,
                     submit = userInfoButtonSubmit
+                )
+        }
+
+    private fun toPhase(): Phase? =
+        when (null) {
+            phaseSwitchDescription, phaseSwitchYes, phaseSwitchNo -> null
+            else ->
+                Phase(
+                    switchDescription = phaseSwitchDescription,
+                    switchYes = phaseSwitchYes,
+                    switchNo = phaseSwitchNo
                 )
         }
 

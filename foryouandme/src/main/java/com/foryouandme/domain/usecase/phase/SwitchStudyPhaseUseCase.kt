@@ -13,7 +13,7 @@ class SwitchStudyPhaseUseCase @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
 ) {
 
-    suspend operator fun invoke(studyPhase: StudyPhase) {
+    suspend operator fun invoke(studyPhase: StudyPhase): Boolean =
         catchSuspend(
             {
                 // Get fresh user data from network
@@ -27,13 +27,16 @@ class SwitchStudyPhaseUseCase @Inject constructor(
                         repository.closeStudyPhase(getTokenUseCase(), currentUserPhase)
 
                     repository.addStudyPhase(getTokenUseCase(), studyPhase)
+                    getUserUseCase(Policy.Network)
+                    return@catchSuspend true
                 }
+                false
             },
             {
                 // Fix User Custom Data
                 getUserUseCase(Policy.Network)
+                false
             }
         )
-    }
 
 }

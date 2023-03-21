@@ -35,6 +35,7 @@ import com.foryouandme.ui.main.*
 import com.foryouandme.ui.main.feeds.FeedsToTask
 import com.foryouandme.ui.main.tasks.TasksToTask
 import com.foryouandme.ui.tasks.StepToStep
+import com.foryouandme.ui.userInfo.UserInfoToStudyInfoDetail
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -175,6 +176,9 @@ class ForYouAndMeNavigationProvider @Inject constructor() {
                 aboutYouToUserInfo()
             is AboutYouToDailySurveyTime ->
                 aboutYouToDailySurveyTime()
+
+            is UserInfoToStudyInfoDetail ->
+                userInfoToStudyInfoDetail()
 
             else -> {
                 {}

@@ -1,6 +1,7 @@
 package com.foryouandme.ui.userInfo
 
 import com.foryouandme.core.arch.LazyData
+import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
@@ -13,6 +14,7 @@ data class UserInfoState(
     val entries: List<EntryItem> = emptyList(),
     val isEditing: Boolean = false,
     val upload: LazyData<Unit> = LazyData.Empty,
+    val phaseAlert: Boolean = false
 )
 
 sealed class UserInfoAction {
@@ -26,8 +28,8 @@ sealed class UserInfoAction {
         val item: EntryItem.Picker,
         val value: EntryItem.Picker.Value
     ) : UserInfoAction()
-    object Upload: UserInfoAction()
 
+    object Upload : UserInfoAction()
 }
 
 sealed class UserInfoEvent {
@@ -36,4 +38,7 @@ sealed class UserInfoEvent {
     data class UploadError(val error: ForYouAndMeException) : UserInfoEvent()
 
 }
+
+
+object UserInfoToStudyInfoDetail : NavigationAction
 

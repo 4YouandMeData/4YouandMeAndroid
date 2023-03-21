@@ -198,7 +198,18 @@
     <fragment
         android:id="@+id/user_info"
         android:name="com.foryouandme.ui.userInfo.UserInfoFragment"
-        android:label="user_info" />
+        android:label="user_info">
+
+        <action
+            android:id="@+id/action_user_info_to_study_info_detail"
+            app:destination="@id/study_info_detail"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+            app:popUpTo="@id/about_you" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/daily_survey_time"

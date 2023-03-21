@@ -22,8 +22,10 @@ import com.foryouandme.ui.userInfo.compose.EntryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import javax.inject.Inject
@@ -34,13 +36,18 @@ class UserInfoViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val updateUserCustomDataUseCase: UpdateUserCustomDataUseCase,
     private val switchStudyPhaseUseCase: SwitchStudyPhaseUseCase,
-    val imageConfiguration: ImageConfiguration
+    val imageConfiguration: ImageConfiguration,
+    private val mutex: Mutex
 ) : ViewModel() {
 
     /* --- state --- */
 
-    private val state = MutableStateFlow(UserInfoState())
-    val stateFlow = state as StateFlow<UserInfoState>
+    private val mutableStateFlow = MutableStateFlow(UserInfoState())
+    val stateFlow = mutableStateFlow.asStateFlow()
+
+    suspend fun emit(update: (UserInfoState) -> UserInfoState) {
+        mutex.withLock { mutableStateFlow.emit(update(mutableStateFlow.value)) }
+    }
 
     private val eventChannel = Channel<UserInfoEvent>(Channel.BUFFERED)
     val events = eventChannel.receiveAsFlow()
@@ -54,12 +61,12 @@ class UserInfoViewModel @Inject constructor(
     private fun getConfiguration(): Action =
         action(
             {
-                state.emit(state.value.copy(configuration = state.value.configuration.toLoading()))
+                mutableStateFlow.emit(mutableStateFlow.value.copy(configuration = mutableStateFlow.value.configuration.toLoading()))
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
-                state.emit(state.value.copy(configuration = configuration.toData()))
+                mutableStateFlow.emit(mutableStateFlow.value.copy(configuration = configuration.toData()))
                 execute(UserInfoAction.GetUser)
             },
-            { state.emit(state.value.copy(configuration = it.toError())) }
+            { mutableStateFlow.emit(mutableStateFlow.value.copy(configuration = it.toError())) }
         )
 
     /* --- user --- */
@@ -67,18 +74,39 @@ class UserInfoViewModel @Inject constructor(
     private fun getUser(): Action =
         action(
             {
-                val configuration = state.value.configuration.dataOrNull()
+                val configuration = mutableStateFlow.value.configuration.dataOrNull()
 
                 if (configuration != null) {
-                    state.emit(state.value.copy(user = state.value.user.toLoading()))
+                    mutableStateFlow.emit(mutableStateFlow.value.copy(user = mutableStateFlow.value.user.toLoading()))
                     val user = getUserUseCase(Policy.LocalFirst)
                     val entries = getEntryItems(user)
-                    state.emit(state.value.copy(user = user.toData(), entries = entries))
+                    mutableStateFlow.emit(
+                        mutableStateFlow.value.copy(
+                            user = user.toData(),
+                            entries = entries
+                        )
+                    )
                 } else execute(UserInfoAction.GetConfiguration)
 
             },
-            { state.emit(state.value.copy(user = it.toError())) }
+            { mutableStateFlow.emit(mutableStateFlow.value.copy(user = it.toError())) }
         )
+
+    private suspend fun getUserSilent() {
+
+        // Refresh user and entry data with no error
+        val configuration = mutableStateFlow.value.configuration.dataOrNull()
+        if (configuration != null) {
+            val user = getUserUseCase(Policy.LocalFirst)
+            val entries = getEntryItems(user)
+            mutableStateFlow.emit(
+                mutableStateFlow.value.copy(
+                    user = user.toData(),
+                    entries = entries
+                )
+            )
+        }
+    }
 
     private fun getEntryItems(user: User): List<EntryItem> =
         user.customData.map { data ->
@@ -115,7 +143,7 @@ class UserInfoViewModel @Inject constructor(
         }
 
     private fun getEntryDescription(entryId: String): String? {
-        val configuration = state.value.configuration.currentOrPrevious()
+        val configuration = mutableStateFlow.value.configuration.currentOrPrevious()
         return if (configuration != null)
             when (entryId) {
                 UserCustomData.PREGNANCY_END_DATE_IDENTIFIER ->
@@ -135,11 +163,11 @@ class UserInfoViewModel @Inject constructor(
 
     private suspend fun toggleEdit() {
 
-        if (state.value.isEditing) {
+        if (mutableStateFlow.value.isEditing) {
             execute(UserInfoAction.Upload)
-            state.emit(state.value.copy(isEditing = false))
+            mutableStateFlow.emit(mutableStateFlow.value.copy(isEditing = false))
         } else
-            state.emit(state.value.copy(isEditing = true))
+            mutableStateFlow.emit(mutableStateFlow.value.copy(isEditing = true))
 
     }
 
@@ -148,37 +176,37 @@ class UserInfoViewModel @Inject constructor(
     private suspend fun updateEntryText(item: EntryItem.Text, text: String) {
 
         val entries =
-            state.value.entries.map {
+            mutableStateFlow.value.entries.map {
                 if (it == item) item.copy(value = text)
                 else it
             }
 
-        state.emit(state.value.copy(entries = entries))
+        mutableStateFlow.emit(mutableStateFlow.value.copy(entries = entries))
 
     }
 
     private suspend fun updateEntryDate(item: EntryItem.Date, date: LocalDate) {
 
         val entries =
-            state.value.entries.map {
+            mutableStateFlow.value.entries.map {
                 if (it == item)
                     item.copy(value = date, isEditable = canEditField(item.id, date.toString()))
                 else it
             }
 
-        state.emit(state.value.copy(entries = entries))
+        mutableStateFlow.emit(mutableStateFlow.value.copy(entries = entries))
 
     }
 
     private suspend fun updateEntryPicker(item: EntryItem.Picker, value: EntryItem.Picker.Value) {
 
         val entries =
-            state.value.entries.map {
+            mutableStateFlow.value.entries.map {
                 if (it == item) item.copy(value = value)
                 else it
             }
 
-        state.emit(state.value.copy(entries = entries))
+        mutableStateFlow.emit(mutableStateFlow.value.copy(entries = entries))
 
     }
 
@@ -187,9 +215,9 @@ class UserInfoViewModel @Inject constructor(
     private fun upload(): Action =
         action(
             {
-                state.emit(state.value.copy(upload = state.value.upload.toLoading()))
+                mutableStateFlow.emit(mutableStateFlow.value.copy(upload = mutableStateFlow.value.upload.toLoading()))
                 val data =
-                    state.value.entries.map { item ->
+                    mutableStateFlow.value.entries.map { item ->
                         when (item) {
                             is EntryItem.Text ->
                                 UserCustomData(
@@ -221,7 +249,7 @@ class UserInfoViewModel @Inject constructor(
                     }
 
                 val currentCustomData =
-                    state.value.user.currentOrPrevious()?.customData ?: emptyList()
+                    mutableStateFlow.value.user.currentOrPrevious()?.customData ?: emptyList()
                 val diff =
                     data.mapNotNull { update ->
                         val current = currentCustomData.find { it.identifier == update.identifier }
@@ -229,24 +257,33 @@ class UserInfoViewModel @Inject constructor(
                         else null
                     }
 
+                //updateUserCustomDataUseCase(data)
+
+                var phaseSwitched = false
                 diff.forEach {
                     val switch = it.phase
-                    if (switch != null) switchStudyPhaseUseCase(switch)
+                    if (switch != null) phaseSwitched = true//switchStudyPhaseUseCase(switch)
                 }
 
-                updateUserCustomDataUseCase(data)
-                state.emit(state.value.copy(upload = LazyData.unit()))
-                eventChannel.send(UserInfoEvent.UploadCompleted)
+
+                if (phaseSwitched) {
+                    getUserSilent()
+                    emit { it.copy(phaseAlert = true, upload = LazyData.unit()) }
+                }
+                else {
+                    emit { it.copy(upload = LazyData.unit()) }
+                    eventChannel.send(UserInfoEvent.UploadCompleted)
+                }
 
             },
             {
-                state.emit(state.value.copy(upload = it.toError()))
+                mutableStateFlow.emit(mutableStateFlow.value.copy(upload = it.toError()))
                 eventChannel.send(UserInfoEvent.UploadError(it.toForYouAndMeException()))
             }
         )
 
     private fun getCustomDataPhase(id: String): StudyPhase? =
-        state.value.user.dataOrNull()?.customData?.find { it.identifier == id }?.phase
+        mutableStateFlow.value.user.dataOrNull()?.customData?.find { it.identifier == id }?.phase
 
     /* --- action --- */
 

@@ -10,12 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.errorToast
+import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
@@ -36,7 +39,8 @@ import org.threeten.bp.LocalDate
 @Composable
 fun UserInfoPage(
     userInfoViewModel: UserInfoViewModel = viewModel(),
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    onFaqClicked: () -> Unit
 ) {
 
     val state by userInfoViewModel.stateFlow.collectAsState()
@@ -72,6 +76,8 @@ fun UserInfoPage(
             { item, value -> userInfoViewModel.execute(OnDateChanged(item, value)) },
             onValueSelected =
             { item, value -> userInfoViewModel.execute(OnPickerChanged(item, value)) },
+            onPhasePositiveClicked = onFaqClicked,
+            onPhaseNegativeClicked = onBack
         )
     }
 
@@ -85,12 +91,14 @@ fun UserInfoPage(
     state: UserInfoState,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
-    onBack: () -> Unit = {},
-    onUserError: () -> Unit = {},
-    onEditSaveClicked: () -> Unit = {},
-    onTextChanged: (EntryItem.Text, String) -> Unit = { _, _ -> },
-    onDateChanged: (EntryItem.Date, LocalDate) -> Unit = { _, _ -> },
-    onValueSelected: (EntryItem.Picker, EntryItem.Picker.Value) -> Unit = { _, _ -> }
+    onBack: () -> Unit,
+    onUserError: () -> Unit,
+    onEditSaveClicked: () -> Unit,
+    onTextChanged: (EntryItem.Text, String) -> Unit,
+    onDateChanged: (EntryItem.Date, LocalDate) -> Unit,
+    onValueSelected: (EntryItem.Picker, EntryItem.Picker.Value) -> Unit,
+    onPhasePositiveClicked: () -> Unit,
+    onPhaseNegativeClicked: () -> Unit
 ) {
     StatusBar(color = configuration.theme.primaryColorStart.value)
     LoadingError(
@@ -153,6 +161,22 @@ fun UserInfoPage(
 
                 }
             }
+            if (state.phaseAlert)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .noIndicationClickable { }
+                        .background(Color.Black.copy(alpha = 0.7f))
+                        .padding(20.dp)
+                ) {
+                    PhaseSwitchAlert(
+                        configuration = configuration,
+                        onPositiveClicked = onPhasePositiveClicked,
+                        onNegativeClicked = onPhaseNegativeClicked
+                    )
+                }
             Loading(
                 configuration = configuration,
                 isVisible = state.upload.isLoading(),

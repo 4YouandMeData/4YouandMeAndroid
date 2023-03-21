@@ -517,6 +517,7 @@ data class StudyInfo(
 data class Profile(
     val title: String,
     val userInfo: UserInfo,
+    val phase: Phase,
     val appsAndDevices: AppsAndDevices,
     val reviewConsent: String,
     val permissions: Permissions,
@@ -530,6 +531,7 @@ data class Profile(
             Profile(
                 title = Mock.title,
                 userInfo = UserInfo.mock(),
+                phase = Phase.mock(),
                 appsAndDevices = AppsAndDevices.mock(),
                 reviewConsent = Mock.title,
                 permissions = Permissions.mock(),
@@ -554,6 +556,25 @@ data class UserInfo(
                 title = Mock.title,
                 edit = Mock.button,
                 submit = Mock.button,
+            )
+
+    }
+
+}
+
+data class Phase(
+    val switchDescription: String,
+    val switchYes: String,
+    val switchNo: String,
+) {
+
+    companion object {
+
+        fun mock(): Phase =
+            Phase(
+                switchDescription = Mock.body,
+                switchYes = Mock.button,
+                switchNo = Mock.button,
             )
 
     }
