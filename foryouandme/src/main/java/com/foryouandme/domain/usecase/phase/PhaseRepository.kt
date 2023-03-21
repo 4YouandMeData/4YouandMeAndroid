@@ -5,7 +5,7 @@ import com.foryouandme.entity.phase.UserStudyPhase
 
 interface PhaseRepository {
 
-    suspend fun closeStudyPhases(userStudyPhase: UserStudyPhase)
-    suspend fun addStudyPhase(studyPhase: StudyPhase)
+    suspend fun closeStudyPhase(token: String, userStudyPhase: UserStudyPhase)
+    suspend fun addStudyPhase(token: String, studyPhase: StudyPhase)
 
 }

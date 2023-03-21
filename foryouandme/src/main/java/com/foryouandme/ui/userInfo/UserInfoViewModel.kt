@@ -9,6 +9,7 @@ import com.foryouandme.core.arch.toError
 import com.foryouandme.core.ext.*
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
+import com.foryouandme.domain.usecase.phase.SwitchStudyPhaseUseCase
 import com.foryouandme.domain.usecase.user.GetUserUseCase
 import com.foryouandme.domain.usecase.user.UpdateUserCustomDataUseCase
 import com.foryouandme.entity.phase.StudyPhase
@@ -32,6 +33,7 @@ class UserInfoViewModel @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val updateUserCustomDataUseCase: UpdateUserCustomDataUseCase,
+    private val switchStudyPhaseUseCase: SwitchStudyPhaseUseCase,
     val imageConfiguration: ImageConfiguration
 ) : ViewModel() {
 
@@ -94,6 +96,7 @@ class UserInfoViewModel @Inject constructor(
                         name = data.name,
                         description = getEntryDescription(data.identifier),
                         value = catchToNull { LocalDate.parse(data.value) },
+                        isEditable = canEditField(data.identifier, data.value)
                     )
                 is UserCustomDataType.Items ->
                     EntryItem.Picker(
@@ -126,6 +129,10 @@ class UserInfoViewModel @Inject constructor(
 
     /* --- edit --- */
 
+    private fun canEditField(id: String, value: String?): Boolean =
+        if (id == UserCustomData.DELIVERY_DATE_IDENTIFIER) value == null
+        else true
+
     private suspend fun toggleEdit() {
 
         if (state.value.isEditing) {
@@ -154,7 +161,8 @@ class UserInfoViewModel @Inject constructor(
 
         val entries =
             state.value.entries.map {
-                if (it == item) item.copy(value = date)
+                if (it == item)
+                    item.copy(value = date, isEditable = canEditField(item.id, date.toString()))
                 else it
             }
 
@@ -211,6 +219,20 @@ class UserInfoViewModel @Inject constructor(
                                 )
                         }
                     }
+
+                val currentCustomData =
+                    state.value.user.currentOrPrevious()?.customData ?: emptyList()
+                val diff =
+                    data.mapNotNull { update ->
+                        val current = currentCustomData.find { it.identifier == update.identifier }
+                        if (update.value != current?.value) update
+                        else null
+                    }
+
+                diff.forEach {
+                    val switch = it.phase
+                    if (switch != null) switchStudyPhaseUseCase(switch)
+                }
 
                 updateUserCustomDataUseCase(data)
                 state.emit(state.value.copy(upload = LazyData.unit()))

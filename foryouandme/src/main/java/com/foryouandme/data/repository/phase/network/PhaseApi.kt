@@ -2,25 +2,22 @@ package com.foryouandme.data.repository.phase.network
 
 import com.foryouandme.data.datasource.network.Headers
 import com.foryouandme.data.repository.feed.network.response.FeedResponse
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Query
+import com.foryouandme.data.repository.phase.network.request.CloseUserStudyPhaseRequest
+import retrofit2.http.*
 
 interface PhaseApi {
 
-    @GET("api/v1/feeds")
-    suspend fun getFeeds(
+    @PATCH("api/v1/user_study_phases/{user_study_phase_id}")
+    suspend fun closeStudyPhase(
         @Header(Headers.AUTH) token: String,
-        @Query("page") page: Int,
-        @Query("per_page") pageSize: Int,
-        @Query("url_images_encoding") urlImagesEncoding: Int
-    ): Array<FeedResponse>
+        @Query("user_study_phase_id") userStudyPhaseId: String,
+        @Body request: CloseUserStudyPhaseRequest
+    )
 
-    @GET("api/v1/tasks/{id}")
-    suspend fun getFeed(
+    @GET("api/v1/study_phases/{study_phase_id}/user_study_phases")
+    suspend fun addStudyPhase(
         @Header(Headers.AUTH) token: String,
-        @Path("id") id: String
+        @Path("study_phase_id") studyPhaseId: String
     ): FeedResponse
 
 }

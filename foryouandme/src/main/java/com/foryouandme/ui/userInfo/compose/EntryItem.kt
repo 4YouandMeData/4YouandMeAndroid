@@ -29,6 +29,7 @@ sealed class EntryItem {
         val name: String,
         val description: String?,
         val value: LocalDate?,
+        val isEditable: Boolean
     ) : EntryItem() {
 
         companion object {
@@ -38,7 +39,8 @@ sealed class EntryItem {
                     id = "id",
                     name = Mock.name,
                     description = Mock.body,
-                    value = LocalDate.of(2021, 6, 27)
+                    value = LocalDate.of(2021, 6, 27),
+                    isEditable = true
                 )
 
         }
@@ -51,7 +53,7 @@ sealed class EntryItem {
         val description: String?,
         val value: Value?,
         val values: List<Value>,
-    ): EntryItem() {
+    ) : EntryItem() {
 
         data class Value(val id: String, val name: String)
 

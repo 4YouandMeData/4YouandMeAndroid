@@ -17,17 +17,20 @@ class GetUserUseCase @Inject constructor(
     private val updateUserCustomDataUseCase: UpdateUserCustomDataUseCase
 ) {
 
-    suspend operator fun invoke(policy: Policy = Policy.Network): User =
-        when (policy) {
+    suspend operator fun invoke(policy: Policy = Policy.Network): User {
+
+        val configuration = getConfigurationUseCase(Policy.LocalFirst)
+
+        val user = when (policy) {
             Policy.LocalFirst -> repository.loadUser() ?: invoke(Policy.Network)
             Policy.Network -> {
 
                 val token = getTokenUseCase()
-                val configuration = getConfigurationUseCase(Policy.LocalFirst)
                 val user = repository.getUser(token, configuration)!!
 
                 // if user has empty custom data update it with default configuration
-                val defaultUserCustomData = defaultUserCustomData(configuration.text.phases, configuration.phases)
+                val defaultUserCustomData =
+                    defaultUserCustomData(configuration.text.phases, configuration.phases)
                 if (settings.useCustomData && user.customData.size != defaultUserCustomData.size) {
 
                     val customData =
@@ -40,6 +43,29 @@ class GetUserUseCase @Inject constructor(
                 } else user
             }
         }
+
+        // TODO: Remove hardcoded user status reset
+        val deliveryDate =
+            user.customData
+                .find { it.identifier == UserCustomData.DELIVERY_DATE_IDENTIFIER }
+
+        val userPhase = user.phase?.phase?.name
+        val isInFirstPhase =
+            userPhase != null && userPhase == configuration.phases.firstOrNull()?.name
+
+        if (deliveryDate != null && isInFirstPhase.not()) {
+            val customData =
+                user.customData
+                    .map {
+                        if (it.identifier == UserCustomData.DELIVERY_DATE_IDENTIFIER)
+                            it.copy(value = null)
+                        else it
+                    }
+            updateUserCustomDataUseCase(customData)
+        }
+
+        return user
+    }
 
     // TODO: remove this and handle default configuration from server
     private fun defaultUserCustomData(
