@@ -257,12 +257,12 @@ class UserInfoViewModel @Inject constructor(
                         else null
                     }
 
-                //updateUserCustomDataUseCase(data)
+                updateUserCustomDataUseCase(data)
 
                 var phaseSwitched = false
                 diff.forEach {
                     val switch = it.phase
-                    if (switch != null) phaseSwitched = true//switchStudyPhaseUseCase(switch)
+                    if (switch != null) phaseSwitched = switchStudyPhaseUseCase(switch)
                 }
 
 
