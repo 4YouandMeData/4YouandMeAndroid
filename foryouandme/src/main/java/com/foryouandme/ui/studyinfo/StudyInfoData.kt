@@ -4,7 +4,7 @@ import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.toData
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.studyinfo.StudyInfo
+import com.foryouandme.entity.study.StudyInfo
 
 data class StudyInfoState(
     val configuration: LazyData<Configuration> = LazyData.Empty,

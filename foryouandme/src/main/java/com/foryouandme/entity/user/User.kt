@@ -2,6 +2,7 @@ package com.foryouandme.entity.user
 
 import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.permission.Permission
+import com.foryouandme.entity.phase.StudyPhase
 import com.foryouandme.entity.phase.UserStudyPhase
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
@@ -51,7 +52,7 @@ data class UserCustomData(
     val value: String?,
     val name: String,
     val type: UserCustomDataType,
-    val phase: String?
+    val phase: StudyPhase?
 ) {
 
     companion object {

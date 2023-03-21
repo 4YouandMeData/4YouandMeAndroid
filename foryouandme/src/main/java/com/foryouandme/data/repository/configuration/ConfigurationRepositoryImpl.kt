@@ -6,6 +6,7 @@ import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.repository.configuration.network.ConfigurationApi
 import com.foryouandme.domain.usecase.configuration.ConfigurationRepository
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.phase.StudyPhase
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,8 +22,8 @@ class ConfigurationRepositoryImpl @Inject constructor(
     // local cache
     var config: Configuration? = null
 
-    override suspend fun fetchConfiguration(): Configuration =
-        api.getConfiguration(settings.studyId).toConfiguration()!!
+    override suspend fun fetchConfiguration(phases: List<StudyPhase>): Configuration =
+        api.getConfiguration(settings.studyId).toConfiguration(phases)!!
 
     override suspend fun loadConfiguration(): Configuration? =
 

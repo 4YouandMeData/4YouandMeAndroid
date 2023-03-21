@@ -9,6 +9,7 @@ import com.foryouandme.data.repository.user.network.request.UserFirebaseTokenUpd
 import com.foryouandme.data.repository.user.network.request.UserTimeZoneUpdateRequest.Companion.asRequest
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.usecase.user.UserRepository
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
 import org.threeten.bp.ZoneId
@@ -27,16 +28,19 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getToken(): String =
         authErrorInterceptor.execute {
-            prefs.getString(USER_TOKEN, null) ?: throw ForYouAndMeException.UserNotLoggedIn
+            prefs.getString(
+                USER_TOKEN,
+                null
+            ) ?: throw ForYouAndMeException.UserNotLoggedIn
         }
 
     override suspend fun getTokenOrNull(): String? =
         prefs.getString(USER_TOKEN, null)
 
-    override suspend fun getUser(token: String): User? =
+    override suspend fun getUser(token: String, configuration: Configuration): User? =
         authErrorInterceptor
             .execute { api.getUser(token) }
-            .toUser(token)
+            .toUser(token, configuration)
             .also { user = it }
 
     override suspend fun loadUser(): User? = user
@@ -53,9 +57,13 @@ class UserRepositoryImpl @Inject constructor(
         authErrorInterceptor.execute { api.updateUserTimeZone(token, zoneId.asRequest()) }
     }
 
-    override suspend fun updateUserCustomData(token: String, data: List<UserCustomData>) {
+    override suspend fun updateUserCustomData(
+        token: String,
+        data: List<UserCustomData>,
+        configuration: Configuration
+    ) {
         authErrorInterceptor.execute {
-            api.updateUserCustomData(token, data.asRequest())
+            api.updateUserCustomData(token, data.asRequest(configuration))
             user = user?.copy(customData = data)
         }
     }

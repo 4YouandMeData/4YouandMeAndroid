@@ -1,20 +1,26 @@
 package com.foryouandme.data.repository.study
 
+import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.data.datasource.network.AuthErrorInterceptor
-import com.foryouandme.data.repository.study.network.StudyInfoApi
+import com.foryouandme.data.repository.study.network.StudyIApi
 import com.foryouandme.domain.policy.Policy
-import com.foryouandme.domain.usecase.study.StudyInfoRepository
-import com.foryouandme.entity.studyinfo.StudyInfo
+import com.foryouandme.domain.usecase.study.StudyRepository
+import com.foryouandme.entity.study.Study
+import com.foryouandme.entity.study.StudyInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class StudyInfoRepositoryImpl @Inject constructor(
-    private val api: StudyInfoApi,
+class StudyRepositoryImpl @Inject constructor(
+    private val api: StudyIApi,
+    private val settings: StudySettings,
     private val authErrorInterceptor: AuthErrorInterceptor
-) : StudyInfoRepository {
+) : StudyRepository {
 
     private var studyInfo: StudyInfo? = null
+
+    override suspend fun fetchStudy(): Study =
+        api.getStudy(settings.studyId).toStudy()
 
     override suspend fun fetchStudyInfo(
         token: String,

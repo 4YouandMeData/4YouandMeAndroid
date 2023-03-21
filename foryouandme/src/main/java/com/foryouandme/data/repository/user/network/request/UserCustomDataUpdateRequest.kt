@@ -4,6 +4,7 @@ import com.foryouandme.data.repository.user.network.request.UserCustomDataItemRe
 import com.foryouandme.data.repository.user.network.response.USER_CUSTOM_DATA_TYPE_DATE
 import com.foryouandme.data.repository.user.network.response.USER_CUSTOM_DATA_TYPE_ITEMS
 import com.foryouandme.data.repository.user.network.response.USER_CUSTOM_DATA_TYPE_STRING
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.entity.user.UserCustomDataItem
 import com.foryouandme.entity.user.UserCustomDataType
@@ -15,7 +16,9 @@ data class UserCustomDataUpdateRequest(
 
     companion object {
 
-        fun List<UserCustomData>.asRequest(): UserCustomDataUpdateRequest =
+        fun List<UserCustomData>.asRequest(
+            configuration: Configuration
+        ): UserCustomDataUpdateRequest =
             UserCustomDataUpdateRequest(
                 user = UserCustomDataUpdateDataRequest(
                     customData = map { data ->
@@ -35,11 +38,17 @@ data class UserCustomDataUpdateRequest(
                                     emptyList()
                             }
 
+                        val phaseIndex =
+                            data.phase?.name
+                                ?.let { configuration.text.phases.indexOf(it) }
+                                ?.let { if (it < 0) null else it }
+
                         UserCustomDataRequest(
                             data.identifier,
                             data.value,
                             data.name,
                             type,
+                            phaseIndex,
                             items
                         )
 
@@ -60,6 +69,7 @@ data class UserCustomDataRequest(
     @Json(name = "value") val value: String? = null,
     @Json(name = "name") val name: String,
     @Json(name = "type") val type: String,
+    @Json(name = "phase") val phase: Int?,
     @Json(name = "items") val items: List<UserCustomDataItemRequest>,
 )
 

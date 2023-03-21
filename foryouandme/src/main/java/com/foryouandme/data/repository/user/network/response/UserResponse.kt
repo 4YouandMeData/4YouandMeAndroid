@@ -2,10 +2,9 @@ package com.foryouandme.data.repository.user.network.response
 
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.data.repository.permission.fromServerName
+import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.integration.IntegrationApp
 import com.foryouandme.entity.permission.Permission
-import com.foryouandme.entity.phase.StudyPhase
-import com.foryouandme.entity.phase.UserStudyPhase
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.entity.user.UserCustomDataItem
@@ -15,7 +14,6 @@ import moe.banana.jsonapi2.HasMany
 import moe.banana.jsonapi2.JsonApi
 import moe.banana.jsonapi2.Resource
 import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 
 @JsonApi(type = "user")
 data class UserResponse(
@@ -31,7 +29,7 @@ data class UserResponse(
     @field:Json(name = "user_study_phases") val phases: HasMany<UserStudyPhaseResponse>? = null
 ) : Resource() {
 
-    fun toUser(token: String): User? {
+    fun toUser(token: String, configuration: Configuration): User? {
 
         val usersPhases = phases?.get(document) ?: emptyList()
         val userPhase =
@@ -39,13 +37,7 @@ data class UserResponse(
         val studyPhase = userPhase?.studyPhase?.get(document)
 
         val userStudyPhase =
-            if (userPhase != null && studyPhase != null)
-                UserStudyPhase(
-                    id = userPhase.id,
-                    start = ZonedDateTime.parse(userPhase.start),
-                    end = if(userPhase.end != null) ZonedDateTime.parse(userPhase.end) else null,
-                    phase = StudyPhase(id = studyPhase.id, name = studyPhase.name.orEmpty())
-                )
+            if (userPhase != null && studyPhase != null) userPhase.toUserStudyPhase()
             else null
 
         val userPermissions =
@@ -65,7 +57,8 @@ data class UserResponse(
                     identities?.mapNotNull { IntegrationApp.fromIdentifier(it) } ?: emptyList(),
                     onBoardingCompleted = onBoardingCompleted,
                     token = token,
-                    customData = customData?.mapNotNull { it.toUserCustomData() } ?: emptyList(),
+                    customData = customData?.mapNotNull { it.toUserCustomData(configuration) }
+                        ?: emptyList(),
                     timeZone = catchToNull { ZoneId.of(timeZone) },
                     points = points,
                     phase = userStudyPhase,
@@ -83,10 +76,10 @@ data class UserCustomDataResponse(
     @field:Json(name = "name") val name: String? = null,
     @field:Json(name = "type") val type: String? = null,
     @field:Json(name = "items") val items: List<UserCustomDataItemResponse>? = null,
-    @field:Json(name = "phase") val phase: String? = null,
+    @field:Json(name = "phase") val phase: Int? = null,
 ) {
 
-    fun toUserCustomData(): UserCustomData? {
+    fun toUserCustomData(configuration: Configuration): UserCustomData? {
 
         val type =
             when (type) {
@@ -109,9 +102,19 @@ data class UserCustomDataResponse(
                 else -> null
             }
 
+        val phaseName = if (phase != null) configuration.text.phases[phase] else null
+        val phase = configuration.phases.find { it.name == phaseName }
+
         return when (null) {
             identifier, name, type -> null
-            else -> UserCustomData(identifier, value, name, type, phase)
+            else ->
+                UserCustomData(
+                    identifier,
+                    value,
+                    name,
+                    type,
+                    phase
+                )
         }
 
     }

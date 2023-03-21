@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.foryouandme.data.repository.user.network.response.UserResponse
+import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
+import com.foryouandme.data.datasource.network.SerializeNulls
+import com.foryouandme.data.datasource.network.response.StudyPhaseResponse
 import com.foryouandme.data.repository.auth.answer.network.response.AnswerResponse
 import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
 import com.foryouandme.data.repository.auth.answer.network.response.QuestionResponse
@@ -17,23 +19,18 @@ import com.foryouandme.data.repository.auth.answer.network.response.activity.Tas
 import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedAlertResponse
 import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedEducationalResponse
 import com.foryouandme.data.repository.auth.answer.network.response.notifiable.FeedRewardResponse
-import com.foryouandme.data.repository.auth.consent.network.response.ConsentInfoResponse
-import com.foryouandme.data.repository.auth.consent.network.response.ConsentReviewResponse
+import com.foryouandme.data.repository.auth.consent.network.response.*
 import com.foryouandme.data.repository.auth.integration.network.response.IntegrationResponse
-import com.foryouandme.data.repository.auth.consent.network.response.OptInsPermissionResponse
-import com.foryouandme.data.repository.auth.consent.network.response.OptInsResponse
 import com.foryouandme.data.repository.auth.screening.network.response.ScreeningResponse
-import com.foryouandme.data.datasource.database.ForYouAndMeDatabase
-import com.foryouandme.data.datasource.network.SerializeNulls
-import com.foryouandme.data.repository.auth.consent.network.response.ConsentUserResponse
 import com.foryouandme.data.repository.feed.network.response.FeedResponse
 import com.foryouandme.data.repository.study.network.response.StudyInfoResponse
+import com.foryouandme.data.repository.study.network.response.StudyResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyAnswerResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyBlockResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyQuestionResponse
 import com.foryouandme.data.repository.survey.network.response.SurveyResponse
 import com.foryouandme.data.repository.task.network.response.TaskResponse
-import com.foryouandme.data.repository.user.network.response.StudyPhaseResponse
+import com.foryouandme.data.repository.user.network.response.UserResponse
 import com.foryouandme.data.repository.user.network.response.UserStudyPhaseResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -80,6 +77,7 @@ class DataModule {
                     .add(UserStudyPhaseResponse::class.java)
                     .add(StudyPhaseResponse::class.java)
                     .add(StudyInfoResponse::class.java)
+                    .add(StudyResponse::class.java)
                     .add(FeedRewardResponse::class.java)
                     .build()
             )

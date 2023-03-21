@@ -1,7 +1,7 @@
 package com.foryouandme.data.repository.study.network.response
 
 import com.foryouandme.data.repository.auth.answer.network.response.PageResponse
-import com.foryouandme.entity.studyinfo.StudyInfo
+import com.foryouandme.entity.study.StudyInfo
 import com.squareup.moshi.Json
 import moe.banana.jsonapi2.HasOne
 import moe.banana.jsonapi2.JsonApi

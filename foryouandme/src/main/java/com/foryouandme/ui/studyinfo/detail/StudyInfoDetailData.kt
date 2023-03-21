@@ -3,7 +3,7 @@ package com.foryouandme.ui.studyinfo.detail
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.toData
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.studyinfo.StudyInfo
+import com.foryouandme.entity.study.StudyInfo
 
 
 data class StudyInfoDetailState(

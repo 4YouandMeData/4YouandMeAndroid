@@ -11,6 +11,7 @@ import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.user.GetUserUseCase
 import com.foryouandme.domain.usecase.user.UpdateUserCustomDataUseCase
+import com.foryouandme.entity.phase.StudyPhase
 import com.foryouandme.entity.user.User
 import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.entity.user.UserCustomDataItem
@@ -222,7 +223,7 @@ class UserInfoViewModel @Inject constructor(
             }
         )
 
-    private fun getCustomDataPhase(id: String): String? =
+    private fun getCustomDataPhase(id: String): StudyPhase? =
         state.value.user.dataOrNull()?.customData?.find { it.identifier == id }?.phase
 
     /* --- action --- */

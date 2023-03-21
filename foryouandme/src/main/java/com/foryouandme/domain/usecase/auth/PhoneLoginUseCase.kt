@@ -1,10 +1,12 @@
 package com.foryouandme.domain.usecase.auth
 
 import com.foryouandme.data.datasource.StudySettings
+import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.analytics.AnalyticsEvent
 import com.foryouandme.domain.usecase.analytics.EAnalyticsProvider
 import com.foryouandme.domain.usecase.analytics.SendAnalyticsEventUseCase
 import com.foryouandme.domain.usecase.analytics.SetAnalyticsUserIdUseCase
+import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
 import com.foryouandme.domain.usecase.push.GetPushTokenUseCase
 import com.foryouandme.domain.usecase.user.GetUserUseCase
 import com.foryouandme.domain.usecase.user.SaveUserUseCase
@@ -24,6 +26,7 @@ class PhoneLoginUseCase @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val sendAnalyticsEventUseCase: SendAnalyticsEventUseCase,
     private val setAnalyticsUserIdUseCase: SetAnalyticsUserIdUseCase,
+    private val getConfigurationUseCase: GetConfigurationUseCase,
     private val logOutUseCase: LogOutUseCase
 ) {
 
@@ -31,7 +34,13 @@ class PhoneLoginUseCase @Inject constructor(
 
         try {
 
-            val user = repository.phoneLogin(settings.studyId, phone, code)!!
+            val user =
+                repository.phoneLogin(
+                    settings.studyId,
+                    phone,
+                    code,
+                    getConfigurationUseCase(Policy.LocalFirst)
+                )!!
             updateUserTimeZoneUseCase(user.token, ZoneId.systemDefault())
             val firebaseToken = getPushTokenUseCase()
             updateUserFirebaseTokenUseCase(user.token, firebaseToken)

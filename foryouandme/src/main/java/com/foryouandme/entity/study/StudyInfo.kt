@@ -1,4 +1,4 @@
-package com.foryouandme.entity.studyinfo
+package com.foryouandme.entity.study
 
 import com.foryouandme.entity.page.Page
 

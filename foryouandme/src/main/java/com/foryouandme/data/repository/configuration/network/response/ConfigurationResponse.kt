@@ -1,6 +1,7 @@
 package com.foryouandme.data.repository.configuration.network.response
 
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.phase.StudyPhase
 import com.squareup.moshi.Json
 
 data class ConfigurationResponse(
@@ -15,7 +16,7 @@ data class ConfigurationResponse(
 
 ) {
 
-    fun toConfiguration(): Configuration? {
+    fun toConfiguration(phases: List<StudyPhase>): Configuration? {
 
         val theme = colorPalette?.toTheme()
         val text = strings?.toText()
@@ -24,11 +25,13 @@ data class ConfigurationResponse(
             theme, text, pinCodeLogin -> null
             else ->
                 Configuration(
-                    theme,
-                    text,
-                    countryCodes ?: emptyList(),
+                    theme = theme,
+                    text = text,
+                    countryCodes = countryCodes ?: emptyList(),
+                    integrationsIdentifiers =
                     integration?.toIntegrationAppsIdentifiers() ?: emptyList(),
-                    pinCodeLogin
+                    pinCodeLogin = pinCodeLogin,
+                    phases = phases
                 )
         }
 

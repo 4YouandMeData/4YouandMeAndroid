@@ -1,10 +1,12 @@
 package com.foryouandme.domain.usecase.user
 
-import com.foryouandme.core.ext.catchSuspend
 import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
-import com.foryouandme.entity.user.*
+import com.foryouandme.entity.phase.StudyPhase
+import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
+import com.foryouandme.entity.user.UserCustomDataType
 import javax.inject.Inject
 
 class GetUserUseCase @Inject constructor(
@@ -21,11 +23,11 @@ class GetUserUseCase @Inject constructor(
             Policy.Network -> {
 
                 val token = getTokenUseCase()
-                val user = repository.getUser(token)!!
                 val configuration = getConfigurationUseCase(Policy.LocalFirst)
+                val user = repository.getUser(token, configuration)!!
 
                 // if user has empty custom data update it with default configuration
-                val defaultUserCustomData = defaultUserCustomData(configuration.text.phases)
+                val defaultUserCustomData = defaultUserCustomData(configuration.text.phases, configuration.phases)
                 if (settings.useCustomData && user.customData.size != defaultUserCustomData.size) {
 
                     val customData =
@@ -34,13 +36,16 @@ class GetUserUseCase @Inject constructor(
                         }
 
                     updateUserCustomDataUseCase(customData)
-                    repository.getUser(token)!!
+                    repository.getUser(token, configuration)!!
                 } else user
             }
         }
 
     // TODO: remove this and handle default configuration from server
-    private fun defaultUserCustomData(phases: List<String>): List<UserCustomData> =
+    private fun defaultUserCustomData(
+        phasesOrder: List<String>,
+        phases: List<StudyPhase>
+    ): List<UserCustomData> =
         listOf(
             UserCustomData(
                 identifier = UserCustomData.PREGNANCY_END_DATE_IDENTIFIER,
@@ -54,7 +59,10 @@ class GetUserUseCase @Inject constructor(
                 type = UserCustomDataType.Date,
                 name = "Your delivery date",
                 value = null,
-                phase = phases.getOrNull(index = 1)
+                phase =
+                phasesOrder
+                    .getOrNull(index = 1)
+                    ?.let { phase -> phases.find { it.name == phase } }
             )
         )
 
