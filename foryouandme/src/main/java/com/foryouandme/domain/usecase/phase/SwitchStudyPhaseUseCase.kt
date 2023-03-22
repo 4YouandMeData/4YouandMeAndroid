@@ -1,6 +1,7 @@
 package com.foryouandme.domain.usecase.phase
 
 import com.foryouandme.core.ext.catchSuspend
+import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.user.GetTokenUseCase
 import com.foryouandme.domain.usecase.user.GetUserUseCase
@@ -13,11 +14,11 @@ class SwitchStudyPhaseUseCase @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
 ) {
 
-    suspend operator fun invoke(studyPhase: StudyPhase): Boolean =
+    suspend operator fun invoke(studyPhase: StudyPhase) {
         catchSuspend(
             {
                 // Get fresh user data from network
-                val user = getUserUseCase(Policy.Network)
+                val user = getUserUseCase(Policy.Network, statusCheck = false)
                 val currentUserPhase = user.phase
 
                 // Avoid to switch to the same phase
@@ -28,15 +29,15 @@ class SwitchStudyPhaseUseCase @Inject constructor(
 
                     repository.addStudyPhase(getTokenUseCase(), studyPhase)
                     getUserUseCase(Policy.Network)
-                    return@catchSuspend true
                 }
-                false
+                else throw ForYouAndMeException.Unknown
             },
             {
                 // Fix User Custom Data
                 getUserUseCase(Policy.Network)
-                false
+                throw it
             }
         )
+    }
 
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,7 +18,7 @@ import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.toData
 import com.foryouandme.core.ext.toImageSource
 import com.foryouandme.entity.configuration.Configuration
-import com.foryouandme.entity.user.User
+import com.foryouandme.ui.aboutyou.AboutYouAction
 import com.foryouandme.ui.aboutyou.AboutYouAction.GetConfiguration
 import com.foryouandme.ui.aboutyou.AboutYouAction.GetUser
 import com.foryouandme.ui.aboutyou.AboutYouState
@@ -26,7 +27,6 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
 import com.foryouandme.ui.compose.menu.MenuItem
 import com.foryouandme.ui.compose.statusbar.StatusBar
-import org.threeten.bp.ZoneId
 
 @Composable
 fun AboutYouPage(
@@ -40,6 +40,10 @@ fun AboutYouPage(
 ) {
 
     val state by aboutYouViewModel.stateFlow.collectAsState()
+
+    LaunchedEffect(key1 = "about_you") {
+        aboutYouViewModel.execute(GetUser)
+    }
 
     ForYouAndMeTheme(
         state.configuration,

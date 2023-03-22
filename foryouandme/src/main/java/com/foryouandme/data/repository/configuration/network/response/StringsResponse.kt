@@ -178,6 +178,10 @@ data class StringsResponse(
 
     @Json(name = "PROFILE_USER_INFO_BUTTON_EDIT") val userInfoButtonEdit: String? = null,
     @Json(name = "PROFILE_USER_INFO_BUTTON_SUBMIT") val userInfoButtonSubmit: String? = null,
+    @Json(name = "PROFILE_USER_INFO_PERMANENT_ALERT_TITLE") val userInfoPermanentAlertTitle: String? = null,
+    @Json(name = "PROFILE_USER_INFO_PERMANENT_ALERT_MESSAGE") val userInfoPermanentAlertMessage: String? = null,
+    @Json(name = "PROFILE_USER_INFO_PERMANENT_ALERT_CONFIRM") val userInfoPermanentAlertConfirm: String? = null,
+    @Json(name = "PROFILE_USER_INFO_PERMANENT_ALERT_CANCEL") val userInfoPermanentAlertCancel: String? = null,
 
     @Json(name = "TAB_USER_DATA_PERIOD_TITLE") val tabUserDataPeriodTitle: String? = null,
     @Json(name = "TAB_USER_DATA_PERIOD_DAY") val tabUserDataPeriodDay: String? = null,
@@ -595,12 +599,18 @@ data class StringsResponse(
 
     private fun toUserInfo(): UserInfo? =
         when (null) {
-            userInfoTitle, userInfoButtonEdit, userInfoButtonSubmit -> null
+            userInfoTitle, userInfoButtonEdit, userInfoButtonSubmit, userInfoPermanentAlertTitle,
+            userInfoPermanentAlertMessage, userInfoPermanentAlertConfirm,
+            userInfoPermanentAlertCancel -> null
             else ->
                 UserInfo(
                     title = userInfoTitle,
                     edit = userInfoButtonEdit,
-                    submit = userInfoButtonSubmit
+                    submit = userInfoButtonSubmit,
+                    permanentAlertTitle = userInfoPermanentAlertTitle,
+                    permanentAlertMessage = userInfoPermanentAlertMessage,
+                    permanentAlertConfirm = userInfoPermanentAlertConfirm,
+                    permanentAlertCancel = userInfoPermanentAlertCancel
                 )
         }
 

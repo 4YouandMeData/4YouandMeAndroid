@@ -1,9 +1,7 @@
 package com.foryouandme.ui.compose.textfield
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -15,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.foryouandme.entity.mock.Mock
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 
@@ -37,61 +36,66 @@ fun ForYouAndMeTextField(
     trailingIcon: @Composable () -> Unit = {},
     onTextChanged: (String) -> Unit = { }
 ) {
-    TextField(
-        value = value,
-        label = {
-            Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier) {
+
+        TextField(
+            value = value,
+            label = {
                 if (label != null)
                     Text(
                         text = label,
                         style = MaterialTheme.typography.body1,
                         color = labelColor,
                     )
-                if(description != null)
+            },
+            placeholder = {
+                if (placeholder != null)
                     Text(
-                        text = description,
+                        text = placeholder,
                         style = MaterialTheme.typography.body1,
-                        color = labelColor,
+                        color = placeholderColor
                     )
-            }
-        },
-        placeholder = {
-            if (placeholder != null)
-                Text(
-                    text = placeholder,
-                    style = MaterialTheme.typography.body1,
-                    color = placeholderColor
-                )
-        },
-        enabled = isEditable,
-        singleLine = true,
-        trailingIcon = trailingIcon,
-        textStyle =
-        MaterialTheme
-            .typography
-            .body1
-            .copy(color = textColor),
-        colors =
-        TextFieldDefaults.textFieldColors(
-            textColor = textColor,
-            backgroundColor = Color.Transparent,
-            placeholderColor = placeholderColor.copy(alpha = 0.6f),
-            focusedIndicatorColor = indicatorColor,
-            unfocusedIndicatorColor = indicatorColor,
-            focusedLabelColor = labelColor,
-            unfocusedLabelColor = labelColor,
-            cursorColor = cursorColor,
-        ),
-        onValueChange = {
-            when {
-                maxCharacter == null -> onTextChanged(it)
-                it.length <= maxCharacter -> onTextChanged(it)
-            }
-        },
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        modifier = modifier
-    )
+            },
+            enabled = isEditable,
+            singleLine = true,
+            trailingIcon = trailingIcon,
+            textStyle =
+            MaterialTheme
+                .typography
+                .body1
+                .copy(color = textColor),
+            colors =
+            TextFieldDefaults.textFieldColors(
+                textColor = textColor,
+                backgroundColor = Color.Transparent,
+                placeholderColor = placeholderColor.copy(alpha = 0.6f),
+                focusedIndicatorColor = indicatorColor,
+                unfocusedIndicatorColor = indicatorColor,
+                focusedLabelColor = labelColor,
+                unfocusedLabelColor = labelColor,
+                cursorColor = cursorColor,
+            ),
+            onValueChange = {
+                when {
+                    maxCharacter == null -> onTextChanged(it)
+                    it.length <= maxCharacter -> onTextChanged(it)
+                }
+            },
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        if (description != null) {
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = description,
+                style = MaterialTheme.typography.body1,
+                color = labelColor,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+            )
+        }
+    }
 }
 
 

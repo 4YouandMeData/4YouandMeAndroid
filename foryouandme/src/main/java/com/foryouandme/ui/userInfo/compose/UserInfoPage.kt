@@ -76,8 +76,10 @@ fun UserInfoPage(
             { item, value -> userInfoViewModel.execute(OnDateChanged(item, value)) },
             onValueSelected =
             { item, value -> userInfoViewModel.execute(OnPickerChanged(item, value)) },
-            onPhasePositiveClicked = onFaqClicked,
-            onPhaseNegativeClicked = onBack
+            onPhaseInfoPositiveClicked = onFaqClicked,
+            onPhaseInfoNegativeClicked = onBack,
+            onPhaseSwitchConfirmClicked = { userInfoViewModel.execute(PhaseSwitch) },
+            onPhaseSwitchCancelClicked = { userInfoViewModel.execute(AbortPhaseSwitch) }
         )
     }
 
@@ -97,8 +99,10 @@ fun UserInfoPage(
     onTextChanged: (EntryItem.Text, String) -> Unit,
     onDateChanged: (EntryItem.Date, LocalDate) -> Unit,
     onValueSelected: (EntryItem.Picker, EntryItem.Picker.Value) -> Unit,
-    onPhasePositiveClicked: () -> Unit,
-    onPhaseNegativeClicked: () -> Unit
+    onPhaseInfoPositiveClicked: () -> Unit,
+    onPhaseInfoNegativeClicked: () -> Unit,
+    onPhaseSwitchConfirmClicked: () -> Unit,
+    onPhaseSwitchCancelClicked: () -> Unit
 ) {
     StatusBar(color = configuration.theme.primaryColorStart.value)
     LoadingError(
@@ -162,7 +166,27 @@ fun UserInfoPage(
 
                 }
             }
+
+            // PHASE SWITCHED INFO
             if (state.phaseAlert)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .noIndicationClickable { }
+                        .background(Color.Black.copy(alpha = 0.7f))
+                        .padding(20.dp)
+                ) {
+                    PhaseSwitchedInfo(
+                        configuration = configuration,
+                        onPositiveClicked = onPhaseInfoPositiveClicked,
+                        onNegativeClicked = onPhaseInfoNegativeClicked
+                    )
+                }
+
+            // PHASE SWITCH ALERT
+            if (state.pendingPhaseSwitch != null)
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier =
@@ -174,10 +198,11 @@ fun UserInfoPage(
                 ) {
                     PhaseSwitchAlert(
                         configuration = configuration,
-                        onPositiveClicked = onPhasePositiveClicked,
-                        onNegativeClicked = onPhaseNegativeClicked
+                        onPositiveClicked = onPhaseSwitchConfirmClicked,
+                        onNegativeClicked = onPhaseSwitchCancelClicked
                     )
                 }
+
             Loading(
                 configuration = configuration,
                 isVisible = state.upload.isLoading(),

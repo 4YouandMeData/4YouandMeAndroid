@@ -18,7 +18,7 @@ import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
 
 @Composable
-fun PhaseSwitchAlert(
+fun PhaseSwitchedInfo(
     configuration: Configuration,
     onPositiveClicked: () -> Unit,
     onNegativeClicked: () -> Unit
@@ -38,15 +38,7 @@ fun PhaseSwitchAlert(
                 .padding(horizontal = 25.dp, vertical = 30.dp)
         ) {
             Text(
-                text = configuration.text.profile.userInfo.permanentAlertTitle,
-                color = configuration.theme.primaryTextColor.value,
-                style = MaterialTheme.typography.h1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = configuration.text.profile.userInfo.permanentAlertMessage,
+                text = configuration.text.profile.phase.switchDescription,
                 color = configuration.theme.primaryTextColor.value,
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
@@ -54,14 +46,14 @@ fun PhaseSwitchAlert(
             )
             Spacer(modifier = Modifier.height(20.dp))
             ForYouAndMeButton(
-                text = configuration.text.profile.userInfo.permanentAlertConfirm,
+                text = configuration.text.profile.phase.switchYes,
                 backgroundColor = configuration.theme.primaryColorStart.value,
                 textColor = configuration.theme.secondaryTextColor.value,
                 onClick = { onPositiveClicked() }
             )
             Spacer(modifier = Modifier.height(20.dp))
             ForYouAndMeButton(
-                text = configuration.text.profile.userInfo.permanentAlertCancel,
+                text = configuration.text.profile.phase.switchNo,
                 backgroundColor = configuration.theme.primaryColorStart.value,
                 textColor = configuration.theme.secondaryTextColor.value,
                 onClick = { onNegativeClicked() }
@@ -72,9 +64,9 @@ fun PhaseSwitchAlert(
 
 @Preview
 @Composable
-private fun PhaseSwitchAlertPreview() {
+private fun PhaseSwitchedInfoPreview() {
     ForYouAndMeTheme {
-        PhaseSwitchAlert(
+        PhaseSwitchedInfo(
             configuration = Configuration.mock(),
             onPositiveClicked = {},
             onNegativeClicked = {}

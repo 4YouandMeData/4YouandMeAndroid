@@ -549,6 +549,10 @@ data class UserInfo(
     val title: String,
     val edit: String,
     val submit: String,
+    val permanentAlertTitle: String,
+    val permanentAlertMessage: String,
+    val permanentAlertConfirm: String,
+    val permanentAlertCancel: String,
 ) {
 
     companion object {
@@ -558,6 +562,10 @@ data class UserInfo(
                 title = Mock.title,
                 edit = Mock.button,
                 submit = Mock.button,
+                permanentAlertTitle = Mock.title,
+                permanentAlertMessage = Mock.body,
+                permanentAlertConfirm = Mock.button,
+                permanentAlertCancel = Mock.button
             )
 
     }

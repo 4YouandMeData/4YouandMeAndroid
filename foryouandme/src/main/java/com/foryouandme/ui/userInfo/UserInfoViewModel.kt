@@ -43,6 +43,7 @@ class UserInfoViewModel @Inject constructor(
     /* --- state --- */
 
     private val mutableStateFlow = MutableStateFlow(UserInfoState())
+    private val state get() = mutableStateFlow.value
     val stateFlow = mutableStateFlow.asStateFlow()
 
     suspend fun emit(update: (UserInfoState) -> UserInfoState) {
@@ -248,8 +249,7 @@ class UserInfoViewModel @Inject constructor(
                         }
                     }
 
-                val currentCustomData =
-                    mutableStateFlow.value.user.currentOrPrevious()?.customData ?: emptyList()
+                val currentCustomData = state.user.currentOrPrevious()?.customData ?: emptyList()
                 val diff =
                     data.mapNotNull { update ->
                         val current = currentCustomData.find { it.identifier == update.identifier }
@@ -257,20 +257,16 @@ class UserInfoViewModel @Inject constructor(
                         else null
                     }
 
-                updateUserCustomDataUseCase(data)
+                val phaseSwitch = diff.firstNotNullOfOrNull { it.phase }
 
-                var phaseSwitched = false
-                diff.forEach {
-                    val switch = it.phase
-                    if (switch != null) phaseSwitched = switchStudyPhaseUseCase(switch)
-                }
-
-
-                if (phaseSwitched) {
-                    getUserSilent()
-                    emit { it.copy(phaseAlert = true, upload = LazyData.unit()) }
-                }
-                else {
+                if (phaseSwitch != null)
+                    emit {
+                        it.copy(
+                            pendingPhaseSwitch = data to phaseSwitch,
+                            upload = LazyData.unit()
+                        )
+                    } else {
+                    updateUserCustomDataUseCase(data)
                     emit { it.copy(upload = LazyData.unit()) }
                     eventChannel.send(UserInfoEvent.UploadCompleted)
                 }
@@ -281,6 +277,33 @@ class UserInfoViewModel @Inject constructor(
                 eventChannel.send(UserInfoEvent.UploadError(it.toForYouAndMeException()))
             }
         )
+
+    private fun phaseSwitch(): Action =
+        action(
+            {
+                val switch = state.pendingPhaseSwitch
+                emit { it.copy(pendingPhaseSwitch = null) }
+                if (switch != null) {
+                    val (customData, phase) = switch
+                    emit { it.copy(upload = it.upload.toLoading()) }
+                    updateUserCustomDataUseCase(customData)
+
+                    switchStudyPhaseUseCase(phase)
+                    getUserSilent()
+                    emit { it.copy(phaseAlert = true, upload = LazyData.unit()) }
+                }
+            },
+            { throwable ->
+                emit { it.copy(upload = throwable.toError()) }
+                eventChannel.send(UserInfoEvent.UploadError(throwable.toForYouAndMeException()))
+                execute(UserInfoAction.GetUser)
+            }
+        )
+
+    private suspend fun abortPhaseSwitch() {
+        emit { it.copy(pendingPhaseSwitch = null) }
+        execute(UserInfoAction.GetUser)
+    }
 
     private fun getCustomDataPhase(id: String): StudyPhase? =
         mutableStateFlow.value.user.dataOrNull()?.customData?.find { it.identifier == id }?.phase
@@ -303,6 +326,10 @@ class UserInfoViewModel @Inject constructor(
                 viewModelScope.launchSafe { updateEntryPicker(action.item, action.value) }
             UserInfoAction.Upload ->
                 viewModelScope.launchAction(upload())
+            is UserInfoAction.PhaseSwitch ->
+                viewModelScope.launchAction(phaseSwitch())
+            UserInfoAction.AbortPhaseSwitch ->
+                viewModelScope.launchSafe { abortPhaseSwitch() }
         }
     }
 

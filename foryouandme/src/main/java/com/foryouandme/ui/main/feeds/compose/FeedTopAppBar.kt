@@ -81,7 +81,7 @@ fun FeedTopAppBar(
 }
 
 private fun getTitle(configuration: Configuration, user: User?): String? =
-    if (user?.getDeliveryEndDate(configuration) != null) configuration.text.tab.feedTitlePhase2
+    if (user?.getDeliveryStartDate(configuration) != null) configuration.text.tab.feedTitlePhase2
     else getFormattedPregnancyMonths(configuration, user)
 
 private fun getSubtitle(configuration: Configuration, user: User?): String? =
@@ -126,8 +126,7 @@ private fun getPregnancyWeeks(user: User?): Long? =
         ?.differenceInWeeksFromNow()
 
 private fun getDeliveryWeeks(user: User?, configuration: Configuration): Long? =
-    user?.getDeliveryEndDate(configuration)
-        ?.getPregnancyStartDate()
+    user?.getDeliveryStartDate(configuration)
         ?.differenceInWeeksFromNow()
 
 
@@ -138,12 +137,12 @@ private fun User.getPregnancyEndDate(): LocalDate? =
             ?.let { LocalDate.parse(it) }
     }
 
-private fun User.getDeliveryEndDate(configuration: Configuration): LocalDate? =
+private fun User.getDeliveryStartDate(configuration: Configuration): LocalDate? =
     catchToNull {
         val userPhase = phase
         if (userPhase != null) {
             val index = configuration.text.phases.indexOf(userPhase.phase.name)
-            if (index > 0) userPhase.end?.toLocalDate()
+            if (index > 0) userPhase.start.toLocalDate()
             else null
         } else null
     }
@@ -155,7 +154,7 @@ private fun LocalDate.differenceInMonthsFromNow(): Long =
     ChronoUnit.MONTHS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
 
 private fun LocalDate.differenceInWeeksFromNow(): Long =
-    ChronoUnit.WEEKS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC))
+    ChronoUnit.WEEKS.between(this, LocalDateTime.now().atZone(ZoneOffset.UTC)) + 1
 
 @Preview
 @Composable

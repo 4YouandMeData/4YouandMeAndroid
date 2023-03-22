@@ -4,7 +4,9 @@ import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.phase.StudyPhase
 import com.foryouandme.entity.user.User
+import com.foryouandme.entity.user.UserCustomData
 import com.foryouandme.ui.userInfo.compose.EntryItem
 import org.threeten.bp.LocalDate
 
@@ -14,7 +16,8 @@ data class UserInfoState(
     val entries: List<EntryItem> = emptyList(),
     val isEditing: Boolean = false,
     val upload: LazyData<Unit> = LazyData.Empty,
-    val phaseAlert: Boolean = false
+    val phaseAlert: Boolean = false,
+    val pendingPhaseSwitch: Pair<List<UserCustomData>, StudyPhase>? = null
 )
 
 sealed class UserInfoAction {
@@ -30,6 +33,8 @@ sealed class UserInfoAction {
     ) : UserInfoAction()
 
     object Upload : UserInfoAction()
+    object PhaseSwitch : UserInfoAction()
+    object AbortPhaseSwitch : UserInfoAction()
 }
 
 sealed class UserInfoEvent {

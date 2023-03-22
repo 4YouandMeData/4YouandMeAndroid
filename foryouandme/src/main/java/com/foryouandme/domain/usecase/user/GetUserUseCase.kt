@@ -1,5 +1,6 @@
 package com.foryouandme.domain.usecase.user
 
+import android.util.Log
 import com.foryouandme.data.datasource.StudySettings
 import com.foryouandme.domain.policy.Policy
 import com.foryouandme.domain.usecase.configuration.GetConfigurationUseCase
@@ -17,12 +18,15 @@ class GetUserUseCase @Inject constructor(
     private val updateUserCustomDataUseCase: UpdateUserCustomDataUseCase
 ) {
 
-    suspend operator fun invoke(policy: Policy = Policy.Network): User {
+    suspend operator fun invoke(
+        policy: Policy = Policy.Network,
+        statusCheck: Boolean = true
+    ): User {
 
         val configuration = getConfigurationUseCase(Policy.LocalFirst)
 
         val user = when (policy) {
-            Policy.LocalFirst -> repository.loadUser() ?: invoke(Policy.Network)
+            Policy.LocalFirst -> repository.loadUser() ?: invoke(Policy.Network, statusCheck)
             Policy.Network -> {
 
                 val token = getTokenUseCase()
@@ -44,24 +48,29 @@ class GetUserUseCase @Inject constructor(
             }
         }
 
-        // TODO: Remove hardcoded user status reset
-        val deliveryDate =
-            user.customData
-                .find { it.identifier == UserCustomData.DELIVERY_DATE_IDENTIFIER }
-
-        val userPhase = user.phase?.phase?.name
-        val isInFirstPhase =
-            userPhase != null && userPhase == configuration.phases.firstOrNull()?.name
-
-        if (deliveryDate != null && isInFirstPhase.not()) {
-            val customData =
+        if (statusCheck) {
+            // TODO: Remove hardcoded user status reset
+            val deliveryDate =
                 user.customData
-                    .map {
-                        if (it.identifier == UserCustomData.DELIVERY_DATE_IDENTIFIER)
-                            it.copy(value = null)
-                        else it
-                    }
-            updateUserCustomDataUseCase(customData)
+                    .find { it.identifier == UserCustomData.DELIVERY_DATE_IDENTIFIER }
+                    ?.value
+
+            val userPhase = user.phase?.phase?.name
+            val isInSecondPhase =
+                userPhase != null && userPhase == configuration.text.phases.getOrNull(index = 1)
+
+            Log.d("TEST_TEST", "$deliveryDate  $isInSecondPhase")
+
+            if (deliveryDate != null && isInSecondPhase.not()) {
+                val customData =
+                    user.customData
+                        .map {
+                            if (it.identifier == UserCustomData.DELIVERY_DATE_IDENTIFIER)
+                                it.copy(value = null)
+                            else it
+                        }
+                updateUserCustomDataUseCase(customData)
+            }
         }
 
         return user

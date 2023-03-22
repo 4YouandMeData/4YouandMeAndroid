@@ -39,7 +39,6 @@ class AboutYouViewModel @Inject constructor(
     init {
         execute(AboutYouAction.ScreenViewed)
         execute(AboutYouAction.GetConfiguration)
-        execute(AboutYouAction.GetUser)
     }
 
     /* --- configuration --- */
