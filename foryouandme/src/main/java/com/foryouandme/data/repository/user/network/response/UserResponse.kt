@@ -33,7 +33,7 @@ data class UserResponse(
 
         val usersPhases = phases?.get(document) ?: emptyList()
         val userPhase =
-            usersPhases.firstOrNull { it.end == null } ?: usersPhases.lastOrNull()
+            usersPhases.mapNotNull { it }.firstOrNull { it.end == null } ?: usersPhases.lastOrNull()
         val studyPhase = userPhase?.studyPhase?.get(document)
 
         val userStudyPhase =
