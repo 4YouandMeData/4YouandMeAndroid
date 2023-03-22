@@ -1,5 +1,6 @@
 package com.foryouandme.entity.phase
 
+import com.foryouandme.entity.mock.Mock
 import org.threeten.bp.ZonedDateTime
 
 data class UserStudyPhase(
@@ -14,7 +15,7 @@ data class UserStudyPhase(
         fun mock(): UserStudyPhase =
             UserStudyPhase(
                 id = "id",
-                start = ZonedDateTime.now().minusDays(1),
+                start = Mock.zoneDateTime,
                 end = null,
                 phase = StudyPhase.mock()
             )

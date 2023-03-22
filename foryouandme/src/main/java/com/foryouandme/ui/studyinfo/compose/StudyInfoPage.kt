@@ -13,17 +13,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import com.foryouandme.core.arch.LazyData
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.arch.toData
+import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.core.ext.errorToast
 import com.foryouandme.core.ext.toBase64ImageSource
 import com.foryouandme.core.ext.toImageSource
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
+import com.foryouandme.ui.compose.lifecycle.observeAsState
 import com.foryouandme.ui.compose.loading.Loading
 import com.foryouandme.ui.compose.menu.MenuItem
 import com.foryouandme.ui.compose.statusbar.StatusBar
@@ -51,11 +55,20 @@ fun StudyInfoPage(
         viewModel.execute(StudyInfoAction.GetStudyInfo)
     }
 
+    val lifecycleState = LocalLifecycleOwner.current.lifecycle.observeAsState()
+    val lifecycleEvent = catchToNull { lifecycleState.value.targetState }
+
+    LaunchedEffect(key1 = lifecycleEvent) {
+        if (lifecycleEvent == Lifecycle.State.RESUMED) {
+            viewModel.execute(StudyInfoAction.GetUser)
+        }
+    }
+
     LaunchedEffect(key1 = viewModel) {
         viewModel.eventsFlow
             .unwrapEvent("study_info")
             .onEach {
-                when(it) {
+                when (it) {
                     is StudyInfoEvent.StudyInfoError -> context.errorToast(it.error)
                 }
             }
@@ -98,9 +111,11 @@ fun StudyInfoPage(
             .background(configuration.theme.secondaryColor.value)
     ) {
         StudyInfoHeader(
+            user = state.user.currentOrPrevious(),
             configuration = configuration,
             imageConfiguration = imageConfiguration,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.45f)
                 .background(configuration.theme.primaryColorStart.value),

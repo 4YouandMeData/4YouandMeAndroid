@@ -14,12 +14,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.logoStudySecondary
 import com.foryouandme.core.arch.toData
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 
 @Composable
 fun StudyInfoHeader(
+    user: User?,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     modifier: Modifier = Modifier,
@@ -28,13 +31,17 @@ fun StudyInfoHeader(
     Box(
         modifier = modifier
     ) {
-        Image(
-            painter = painterResource(id = imageConfiguration.logoStudySecondary()),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-        )
+        if (user != null)
+            Image(
+                painter =
+                painterResource(
+                    id = imageConfiguration.logoStudySecondary(user, configuration)
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+            )
         Text(
             text = configuration.text.tab.studyInfoTitle,
             color = configuration.theme.secondaryColor.value,
@@ -51,6 +58,7 @@ fun StudyInfoHeader(
 private fun StudyInfoHeaderPreview() {
     ForYouAndMeTheme(Configuration.mock().toData()) {
         StudyInfoHeader(
+            user = User.mock(),
             it,
             ImageConfiguration.mock(),
             Modifier

@@ -81,7 +81,7 @@ private fun WelcomePage(
             }
 
             Image(
-                painter = painterResource(id = imageConfiguration.logoStudySecondary()),
+                painter = painterResource(id = imageConfiguration.logoStudySecondaryDefault()),
                 contentDescription = null,
             )
             Spacer(modifier = Modifier.weight(1f))

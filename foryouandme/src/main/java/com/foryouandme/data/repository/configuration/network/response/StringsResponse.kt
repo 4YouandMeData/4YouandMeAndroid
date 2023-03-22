@@ -71,6 +71,7 @@ data class StringsResponse(
 
     @Json(name = "TAB_FEED") val tabFeed: String? = null,
     @Json(name = "TAB_FEED_TITLE") val tabFeedTitle: String? = null,
+    @Json(name = "TAB_FEED_TITLE_PHASE_2") val tabFeedTitlePhase2: String? = null,
     @Json(name = "TAB_FEED_SUBTITLE") val tabFeedSubTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_TITLE") val tabFeedEmptyTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_SUBTITLE") val tabFeedEmptySubTitle: String? = null,
@@ -465,6 +466,7 @@ data class StringsResponse(
                 Tab(
                     tabFeed,
                     tabFeedTitle,
+                    tabFeedTitlePhase2,
                     tabFeedSubTitle,
                     tabFeedEmptyTitle,
                     tabFeedEmptySubTitle,

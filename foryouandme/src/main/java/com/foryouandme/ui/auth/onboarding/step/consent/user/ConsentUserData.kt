@@ -3,8 +3,10 @@ package com.foryouandme.ui.auth.onboarding.step.consent.user
 import android.graphics.Bitmap
 import com.foryouandme.core.arch.navigation.NavigationAction
 import com.foryouandme.entity.consent.user.ConsentUser
+import com.foryouandme.entity.user.User
 
 data class ConsentUserState(
+    val user: User? = null,
     val consent: ConsentUser? = null,
     val firstName: String = "",
     val lastName: String = "",

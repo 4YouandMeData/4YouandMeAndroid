@@ -41,7 +41,7 @@ fun FeedPage(
         onConfigurationError = { feedsViewModel.execute(GetConfiguration) }
     ) { configuration ->
 
-        LaunchedEffect(key1 = "tasks") {
+        LaunchedEffect(key1 = "feed") {
             feedsViewModel.execute(GetFeedsFirstPage())
         }
 

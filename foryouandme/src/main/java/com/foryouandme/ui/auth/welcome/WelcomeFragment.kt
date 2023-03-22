@@ -62,7 +62,7 @@ class WelcomeFragment : AuthSectionFragment() {
 
         if (viewBinding != null) {
             viewBinding.logo.setImageResource(imageConfiguration.logoStudy())
-            viewBinding.welcomeImage.setImageResource(imageConfiguration.logoStudySecondary())
+            viewBinding.welcomeImage.setImageResource(imageConfiguration.logoStudySecondaryDefault())
         }
 
     }

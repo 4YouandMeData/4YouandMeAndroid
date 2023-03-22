@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.foryouandme.R
+import com.foryouandme.core.arch.deps.logoStudySecondary
 import com.foryouandme.core.arch.flow.observeIn
 import com.foryouandme.core.arch.flow.unwrapEvent
 import com.foryouandme.core.ext.*
@@ -87,8 +88,6 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
 
         if (viewBinding != null) {
 
-            viewBinding.logo.setImageResource(imageConfiguration.logoStudySecondary())
-
             consentUserFragment()
                 .binding
                 ?.toolbar
@@ -116,6 +115,8 @@ class ConsentUserEmailFragment : ConsentUserSectionFragment(R.layout.consent_use
         val viewBinding = binding
 
         if (configuration != null && viewBinding != null) {
+
+            viewBinding.logo.setImageResource(imageConfiguration.logoStudySecondaryDefault())
 
             setStatusBar(configuration.theme.secondaryColor.color())
 

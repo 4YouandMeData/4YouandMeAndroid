@@ -11,14 +11,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.logoStudySecondary
 import com.foryouandme.core.arch.toData
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 
 @Composable
 fun AboutYouHeader(
+    user: User,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     modifier: Modifier = Modifier,
@@ -34,15 +37,20 @@ fun AboutYouHeader(
             onBack = onBack
         )
         Image(
-            painter = painterResource(id = imageConfiguration.logoStudySecondary()),
+            painter =
+            painterResource(id = imageConfiguration.logoStudySecondary(user, configuration)),
             contentDescription = null,
-            modifier = Modifier.width(65.dp).align(Alignment.Center)
+            modifier = Modifier
+                .width(65.dp)
+                .align(Alignment.Center)
         )
         Text(
             text = configuration.text.profile.title,
             color = configuration.theme.secondaryColor.value,
             style = MaterialTheme.typography.h1,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 30.dp)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 30.dp)
         )
     }
 }
@@ -52,9 +60,12 @@ fun AboutYouHeader(
 private fun AboutYouHeaderPreview() {
     ForYouAndMeTheme(Configuration.mock().toData()) {
         AboutYouHeader(
+            User.mock(),
             it,
             ImageConfiguration.mock(),
-            Modifier.fillMaxWidth().height(200.dp)
+            Modifier
+                .fillMaxWidth()
+                .height(200.dp)
         )
     }
 }

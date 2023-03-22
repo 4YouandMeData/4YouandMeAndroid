@@ -114,6 +114,7 @@ fun UserInfoPage(
                     .background(configuration.theme.secondaryColor.value)
             ) {
                 UserInfoHeader(
+                    user = it,
                     configuration = configuration,
                     imageConfiguration = imageConfiguration,
                     isEditing = state.isEditing,

@@ -11,14 +11,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.logoStudySecondary
 import com.foryouandme.core.arch.toData
 import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.topappbar.ForYouAndMeTopAppBar
 import com.foryouandme.ui.compose.topappbar.TopAppBarIcon
 
 @Composable
 fun UserInfoHeader(
+    user: User,
     configuration: Configuration,
     imageConfiguration: ImageConfiguration,
     isEditing: Boolean,
@@ -45,7 +48,8 @@ fun UserInfoHeader(
             )
         }
         Image(
-            painter = painterResource(id = imageConfiguration.logoStudySecondary()),
+            painter =
+            painterResource(id = imageConfiguration.logoStudySecondary(user, configuration)),
             contentDescription = null,
             modifier = Modifier
                 .width(65.dp)
@@ -67,6 +71,7 @@ fun UserInfoHeader(
 private fun UserInfoHeaderPreview() {
     ForYouAndMeTheme(Configuration.mock().toData()) {
         UserInfoHeader(
+            user = User.mock(),
             configuration = it,
             imageConfiguration = ImageConfiguration.mock(),
             isEditing = false,

@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.foryouandme.core.arch.deps.ImageConfiguration
+import com.foryouandme.core.arch.deps.logoStudySecondary
 import com.foryouandme.core.ext.catchToNull
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.entity.user.User
@@ -40,37 +41,51 @@ fun FeedTopAppBar(
             .background(configuration.theme.verticalGradient)
             .padding(horizontal = 16.dp)
     ) {
-        Image(
-            painter = painterResource(id = imageConfiguration.logoStudySecondary()),
-            contentDescription = null,
-            modifier = Modifier
-                .size(50.dp)
-                .align(Alignment.CenterStart)
-                .clickable { onLogoClicked() }
-        )
+        if (user != null)
+            Image(
+                painter = painterResource(
+                    id =
+                    imageConfiguration.logoStudySecondary(
+                        user,
+                        configuration
+                    )
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Alignment.CenterStart)
+                    .clickable { onLogoClicked() }
+            )
 
-        val pregnancyMonths = getFormattedPregnancyMonths(configuration, user)
-        val pregnancyWeek = getFormattedPregnancyWeeks(configuration, user)
+        val title = getTitle(configuration, user)
+        val subtitle = getSubtitle(configuration, user)
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            if (pregnancyMonths != null)
-                Text(
-                    text = pregnancyMonths,
-                    style = MaterialTheme.typography.body1,
-                    color = configuration.theme.secondaryColor.value.copy(alpha = 0.5f)
-                )
-            if (pregnancyWeek != null)
-                Text(
-                    text = pregnancyWeek,
-                    style = MaterialTheme.typography.h1,
-                    color = configuration.theme.secondaryColor.value
-                )
-        }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.align(Alignment.Center)
+            ) {
+                if (title != null)
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.body1,
+                        color = configuration.theme.secondaryColor.value.copy(alpha = 0.5f)
+                    )
+                if (subtitle != null)
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.h1,
+                        color = configuration.theme.secondaryColor.value
+                    )
+            }
     }
 }
+
+private fun getTitle(configuration: Configuration, user: User?): String? =
+    if (user?.getDeliveryEndDate(configuration) != null) configuration.text.tab.feedTitlePhase2
+    else getFormattedPregnancyMonths(configuration, user)
+
+private fun getSubtitle(configuration: Configuration, user: User?): String? =
+    getFormattedDeliveryWeeks(configuration, user) ?: getFormattedPregnancyWeeks(configuration, user)
 
 private fun getFormattedPregnancyMonths(configuration: Configuration, user: User?): String? {
 
@@ -91,6 +106,15 @@ private fun getFormattedPregnancyWeeks(configuration: Configuration, user: User?
 
 }
 
+private fun getFormattedDeliveryWeeks(configuration: Configuration, user: User?): String? {
+
+    val deliveryWeeks = getDeliveryWeeks(user, configuration)
+    if (deliveryWeeks == null || deliveryWeeks < 0) return null
+    return deliveryWeeks
+        .let { MessageFormat.format(configuration.text.tab.feedSubTitle, it) }
+
+}
+
 private fun getPregnancyMonths(user: User?): Long? =
     user?.getPregnancyEndDate()
         ?.getPregnancyStartDate()
@@ -101,12 +125,27 @@ private fun getPregnancyWeeks(user: User?): Long? =
         ?.getPregnancyStartDate()
         ?.differenceInWeeksFromNow()
 
+private fun getDeliveryWeeks(user: User?, configuration: Configuration): Long? =
+    user?.getDeliveryEndDate(configuration)
+        ?.getPregnancyStartDate()
+        ?.differenceInWeeksFromNow()
+
 
 private fun User.getPregnancyEndDate(): LocalDate? =
     catchToNull {
         getCustomDataByIdentifier(UserCustomData.PREGNANCY_END_DATE_IDENTIFIER)
             ?.value
             ?.let { LocalDate.parse(it) }
+    }
+
+private fun User.getDeliveryEndDate(configuration: Configuration): LocalDate? =
+    catchToNull {
+        val userPhase = phase
+        if (userPhase != null) {
+            val index = configuration.text.phases.indexOf(userPhase.phase.name)
+            if (index > 0) userPhase.end?.toLocalDate()
+            else null
+        } else null
     }
 
 private fun LocalDate.getPregnancyStartDate(): LocalDate? =

@@ -87,6 +87,7 @@ fun AboutYouPage(
                 .background(configuration.theme.secondaryColor.value)
         ) {
             AboutYouHeader(
+                user = it,
                 configuration = configuration,
                 imageConfiguration = imageConfiguration,
                 modifier = Modifier

@@ -344,6 +344,7 @@ data class OnboardingUserError(
 data class Tab(
     val feed: String,
     val feedTitle: String,
+    val feedTitlePhase2: String?,
     val feedSubTitle: String,
     val feedEmptyTitle: String,
     val feedEmptySubTitle: String,
@@ -367,6 +368,7 @@ data class Tab(
             Tab(
                 feed = Mock.body,
                 feedTitle = Mock.title,
+                feedTitlePhase2 = Mock.title,
                 feedSubTitle = Mock.title,
                 feedEmptyTitle = Mock.title,
                 feedEmptySubTitle = Mock.title,

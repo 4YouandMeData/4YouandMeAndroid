@@ -2,6 +2,8 @@ package com.foryouandme.core.arch.deps
 
 import androidx.annotation.DrawableRes
 import com.foryouandme.R
+import com.foryouandme.entity.configuration.Configuration
+import com.foryouandme.entity.user.User
 
 interface ImageConfiguration {
 
@@ -35,7 +37,13 @@ interface ImageConfiguration {
     fun logoStudy(): Int
 
     @DrawableRes
-    fun logoStudySecondary(): Int
+    fun logoStudySecondaryDefault(): Int
+
+    @DrawableRes
+    fun logoStudySecondaryPhase0(): Int
+
+    @DrawableRes
+    fun logoStudySecondaryPhase1(): Int
 
     @DrawableRes
     fun nextStep(): Int
@@ -205,7 +213,7 @@ interface ImageConfiguration {
     companion object {
 
         fun mock(): ImageConfiguration =
-            object: ImageConfiguration {
+            object : ImageConfiguration {
                 override fun splashLogo(): Int = R.drawable.placeholder
                 override fun pushSmallIcon(): Int = R.drawable.placeholder
                 override fun back(): Int = R.drawable.placeholder
@@ -215,7 +223,9 @@ interface ImageConfiguration {
                 override fun clear(): Int = R.drawable.placeholder
                 override fun logo(): Int = R.drawable.placeholder
                 override fun logoStudy(): Int = R.drawable.placeholder
-                override fun logoStudySecondary(): Int = R.drawable.placeholder
+                override fun logoStudySecondaryDefault(): Int = R.drawable.placeholder
+                override fun logoStudySecondaryPhase0(): Int = R.drawable.placeholder
+                override fun logoStudySecondaryPhase1(): Int = R.drawable.placeholder
                 override fun nextStep(): Int = R.drawable.placeholder
                 override fun nextStepSecondary(): Int = R.drawable.placeholder
                 override fun previousStepSecondary(): Int = R.drawable.placeholder
@@ -269,4 +279,15 @@ interface ImageConfiguration {
 
     }
 
+}
+
+fun ImageConfiguration.logoStudySecondary(user: User, configuration: Configuration): Int {
+
+    val phaseName = user.phase?.phase?.name
+
+    return when (if (phaseName != null) configuration.text.phases.indexOf(phaseName) else null) {
+        0 -> logoStudySecondaryPhase0()
+        1 -> logoStudySecondaryPhase1()
+        else -> logoStudySecondaryDefault()
+    }
 }

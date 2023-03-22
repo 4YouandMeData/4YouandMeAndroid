@@ -24,7 +24,9 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun logoStudy(): Int = R.drawable.logo_study
 
-    override fun logoStudySecondary(): Int = R.drawable.logo_study_secondary
+    override fun logoStudySecondaryDefault(): Int = R.drawable.logo_study_secondary
+    override fun logoStudySecondaryPhase0(): Int = R.drawable.logo_study_secondary
+    override fun logoStudySecondaryPhase1(): Int = R.drawable.logo_study_secondary_phase_1
 
     override fun nextStep(): Int = R.drawable.next_step
 
