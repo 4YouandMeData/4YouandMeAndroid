@@ -59,8 +59,6 @@ class GetUserUseCase @Inject constructor(
             val isInSecondPhase =
                 userPhase != null && userPhase == configuration.text.phases.getOrNull(index = 1)
 
-            Log.d("TEST_TEST", "$deliveryDate  $isInSecondPhase")
-
             if (deliveryDate != null && isInSecondPhase.not()) {
                 val customData =
                     user.customData
@@ -73,7 +71,7 @@ class GetUserUseCase @Inject constructor(
             }
         }
 
-        return user
+        return user.copy(customData = user.customData.sortedBy { it.identifier.toIntOrNull() })
     }
 
     // TODO: remove this and handle default configuration from server

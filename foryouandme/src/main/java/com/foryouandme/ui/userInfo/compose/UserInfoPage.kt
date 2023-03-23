@@ -10,15 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.foryouandme.core.arch.deps.ImageConfiguration
 import com.foryouandme.core.ext.errorToast
-import com.foryouandme.core.ext.noIndicationClickable
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.lazydata.LoadingError
@@ -169,39 +166,19 @@ fun UserInfoPage(
 
             // PHASE SWITCHED INFO
             if (state.phaseAlert)
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .noIndicationClickable { }
-                        .background(Color.Black.copy(alpha = 0.7f))
-                        .padding(20.dp)
-                ) {
-                    PhaseSwitchedInfo(
-                        configuration = configuration,
-                        onPositiveClicked = onPhaseInfoPositiveClicked,
-                        onNegativeClicked = onPhaseInfoNegativeClicked
-                    )
-                }
+                PhaseSwitchedInfo(
+                    configuration = configuration,
+                    onPositiveClicked = onPhaseInfoPositiveClicked,
+                    onNegativeClicked = onPhaseInfoNegativeClicked
+                )
 
             // PHASE SWITCH ALERT
             if (state.pendingPhaseSwitch != null)
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .noIndicationClickable { }
-                        .background(Color.Black.copy(alpha = 0.7f))
-                        .padding(20.dp)
-                ) {
-                    PhaseSwitchAlert(
-                        configuration = configuration,
-                        onPositiveClicked = onPhaseSwitchConfirmClicked,
-                        onNegativeClicked = onPhaseSwitchCancelClicked
-                    )
-                }
+                PhaseSwitchAlert(
+                    configuration = configuration,
+                    onPositiveClicked = onPhaseSwitchConfirmClicked,
+                    onNegativeClicked = onPhaseSwitchCancelClicked
+                )
 
             Loading(
                 configuration = configuration,

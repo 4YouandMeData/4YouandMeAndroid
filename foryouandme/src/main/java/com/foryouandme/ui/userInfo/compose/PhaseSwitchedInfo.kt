@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.foryouandme.entity.configuration.Configuration
 import com.foryouandme.ui.compose.ForYouAndMeTheme
 import com.foryouandme.ui.compose.button.ForYouAndMeButton
+import com.foryouandme.ui.compose.dialog.AlertDialog
 
 @Composable
 fun PhaseSwitchedInfo(
@@ -23,43 +24,14 @@ fun PhaseSwitchedInfo(
     onPositiveClicked: () -> Unit,
     onNegativeClicked: () -> Unit
 ) {
-    Card(
-        shape = RoundedCornerShape(10.dp),
-        elevation = 20.dp,
-        backgroundColor = Color.Transparent,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(configuration.theme.secondaryColor.value)
-                .padding(horizontal = 25.dp, vertical = 30.dp)
-        ) {
-            Text(
-                text = configuration.text.profile.phase.switchDescription,
-                color = configuration.theme.primaryTextColor.value,
-                style = MaterialTheme.typography.body1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            ForYouAndMeButton(
-                text = configuration.text.profile.phase.switchYes,
-                backgroundColor = configuration.theme.primaryColorStart.value,
-                textColor = configuration.theme.secondaryTextColor.value,
-                onClick = { onPositiveClicked() }
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            ForYouAndMeButton(
-                text = configuration.text.profile.phase.switchNo,
-                backgroundColor = configuration.theme.primaryColorStart.value,
-                textColor = configuration.theme.secondaryTextColor.value,
-                onClick = { onNegativeClicked() }
-            )
-        }
-    }
+   AlertDialog(
+       title = null,
+       message = configuration.text.profile.phase.switchDescription,
+       positiveButton = configuration.text.profile.phase.switchYes,
+       negativeButton = configuration.text.profile.phase.switchNo,
+       onPositiveClicked = onPositiveClicked,
+       onNegativeClicked = onNegativeClicked
+   )
 }
 
 @Preview
