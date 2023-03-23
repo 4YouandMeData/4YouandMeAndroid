@@ -71,12 +71,13 @@ data class StringsResponse(
 
     @Json(name = "TAB_FEED") val tabFeed: String? = null,
     @Json(name = "TAB_FEED_TITLE") val tabFeedTitle: String? = null,
-    @Json(name = "TAB_FEED_TITLE_PHASE_2") val tabFeedTitlePhase2: String? = null,
+    @Json(name = "PHASE_2_TAB_FEED_TITLE") val tabFeedTitlePhase2: String? = null,
     @Json(name = "TAB_FEED_SUBTITLE") val tabFeedSubTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_TITLE") val tabFeedEmptyTitle: String? = null,
     @Json(name = "TAB_FEED_EMPTY_SUBTITLE") val tabFeedEmptySubTitle: String? = null,
     @Json(name = "TAB_FEED_HEADER_TITLE") val tabFeedHeaderTitle: String? = null,
     @Json(name = "TAB_FEED_HEADER_SUBTITLE") val tabFeedHeaderSubTitle: String? = null,
+    @Json(name = "PHASE_2_TAB_FEED_HEADER_SUBTITLE") val tabFeedHeaderSubTitlePhase2: String? = null,
     @Json(name = "TAB_FEED_HEADER_POINTS") val tabFeedHeaderPoints: String? = null,
 
     @Json(name = "TAB_TASK") val tabTask: String? = null,
@@ -464,8 +465,8 @@ data class StringsResponse(
         when (null) {
             tabFeed, tabFeedTitle, tabFeedSubTitle, tabFeedEmptyTitle, tabFeedEmptySubTitle,
             tabFeedHeaderTitle, tabFeedHeaderSubTitle, tabFeedHeaderPoints, tabTask, tabTaskTitle,
-            tabTaskEmptyTitle, tabTaskEmptySubtitle, tabTaskEmptyButton, tabUserData,
-            tabUserDataTitle, tabStudyInfo, tabStudyInfoTitle -> null
+            tabTaskEmptyTitle, tabTaskEmptySubtitle, tabFeedHeaderSubTitlePhase2, tabTaskEmptyButton,
+            tabUserData, tabUserDataTitle, tabStudyInfo, tabStudyInfoTitle -> null
             else ->
                 Tab(
                     tabFeed,
@@ -476,6 +477,7 @@ data class StringsResponse(
                     tabFeedEmptySubTitle,
                     tabFeedHeaderTitle,
                     tabFeedHeaderSubTitle,
+                    tabFeedHeaderSubTitlePhase2,
                     tabFeedHeaderPoints,
                     tabTask,
                     tabTaskTitle,
