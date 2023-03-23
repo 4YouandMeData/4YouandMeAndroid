@@ -72,6 +72,8 @@ class FYAMVideoDiaryTask(
                 videoTimeProgressColor = active,
                 videoInfoTitle = configuration.text.videoDiary.recorderInfoTitle,
                 videoInfoTitleColor = fourthText,
+                videoInfoFilter = configuration.text.videoDiary.recorderInfoFilter,
+                videoFilterImage = imageConfiguration.videoFilterImage(),
                 videoInfoBody = configuration.text.videoDiary.recorderInfoBody,
                 videoInfoBodyColor = primaryText,
                 videoReviewTimeColor = primaryText,
@@ -86,7 +88,8 @@ class FYAMVideoDiaryTask(
                 videoMissingPermissionMic = configuration.text.videoDiary.missingPermissionTitleMic,
                 videoMissingPermissionMicBody = configuration.text.videoDiary.missingPermissionBodyMic,
                 videoSettings = configuration.text.videoDiary.missingPermissionBodySettings,
-                videoCancel = configuration.text.videoDiary.missingPermissionDiscard
+                videoCancel = configuration.text.videoDiary.missingPermissionDiscard,
+                videoDiaryFilter = imageConfiguration.videoDiaryFilter(),
             ).let { list ->
 
                 successPage?.let {

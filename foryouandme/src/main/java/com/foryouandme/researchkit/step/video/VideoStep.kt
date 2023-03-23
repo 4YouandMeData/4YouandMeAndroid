@@ -20,6 +20,8 @@ class VideoStep(
     val timeProgressColor: Int,
     val infoTitle: String,
     val infoTitleColor: Int,
+    val infoFilter: String,
+    val filterImage: Int,
     val infoBody: String,
     val infoBodyColor: Int,
     val reviewTimeColor: Int,
@@ -35,4 +37,5 @@ class VideoStep(
     val missingPermissionMicBody: String,
     val settings: String,
     val cancel: String,
+    val videoDiaryFilter: Int,
 ) : Step(identifier = identifier, back = null, skip = null, view = { VideoStepFragment() })

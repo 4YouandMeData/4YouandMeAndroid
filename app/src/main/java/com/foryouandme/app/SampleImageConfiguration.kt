@@ -78,6 +78,8 @@ class SampleImageConfiguration : ImageConfiguration {
 
     override fun videoDiaryToggleCamera(): Int = R.drawable.video_diary_toggle_camera
 
+    override fun videoFilterImage(): Int = R.drawable.video_diary_filter_info
+
     override fun heartBeat(): Int = R.drawable.heartbeat
 
     override fun sittingMan(): Int = R.drawable.sittingman
@@ -133,4 +135,7 @@ class SampleImageConfiguration : ImageConfiguration {
     override fun garmin(): Int = R.drawable.garmin
 
     override fun filters(): Int = R.drawable.filters
+
+    override fun videoDiaryFilter(): Int = R.drawable.video_diary_filter
+
 }

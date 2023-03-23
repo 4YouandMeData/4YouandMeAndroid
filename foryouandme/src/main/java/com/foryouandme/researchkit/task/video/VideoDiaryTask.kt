@@ -41,6 +41,8 @@ class VideoDiaryTask(
     videoTimeProgressColor: Int,
     videoInfoTitle: String,
     videoInfoTitleColor: Int,
+    videoInfoFilter: String,
+    videoFilterImage: Int,
     videoInfoBody: String,
     videoInfoBodyColor: Int,
     videoReviewTimeColor: Int,
@@ -56,6 +58,7 @@ class VideoDiaryTask(
     videoMissingPermissionMicBody: String,
     videoSettings: String,
     videoCancel: String,
+    videoFilterToggleImage: Int,
 ) : Task(TaskIdentifiers.VIDEO_DIARY, id) {
 
 
@@ -100,6 +103,8 @@ class VideoDiaryTask(
                 videoTimeProgressColor = videoTimeProgressColor,
                 videoInfoTitle = videoInfoTitle,
                 videoInfoTitleColor = videoInfoTitleColor,
+                videoInfoFilter = videoInfoFilter,
+                videoFilterImage = videoFilterImage,
                 videoInfoBody = videoInfoBody,
                 videoInfoBodyColor = videoInfoBodyColor,
                 videoReviewTimeColor = videoReviewTimeColor,
@@ -114,7 +119,8 @@ class VideoDiaryTask(
                 videoMissingPermissionMic = videoMissingPermissionMic,
                 videoMissingPermissionMicBody = videoMissingPermissionMicBody,
                 videoSettings = videoSettings,
-                videoCancel = videoCancel
+                videoCancel = videoCancel,
+                videoDiaryFilter = videoFilterToggleImage,
             )
 
         )
@@ -144,6 +150,8 @@ class VideoDiaryTask(
             videoTimeProgressColor: Int,
             videoInfoTitle: String,
             videoInfoTitleColor: Int,
+            videoInfoFilter: String,
+            videoFilterImage: Int,
             videoInfoBody: String,
             videoInfoBodyColor: Int,
             videoReviewTimeColor: Int,
@@ -159,6 +167,7 @@ class VideoDiaryTask(
             videoMissingPermissionMicBody: String,
             videoSettings: String,
             videoCancel: String,
+            videoDiaryFilter: Int,
         ): List<Step> =
             listOf(
                 VideoStep(
@@ -179,6 +188,8 @@ class VideoDiaryTask(
                     timeProgressColor = videoTimeProgressColor,
                     infoTitle = videoInfoTitle,
                     infoTitleColor = videoInfoTitleColor,
+                    infoFilter = videoInfoFilter,
+                    filterImage = videoFilterImage,
                     infoBody = videoInfoBody,
                     infoBodyColor = videoInfoBodyColor,
                     reviewTimeColor = videoReviewTimeColor,
@@ -193,7 +204,8 @@ class VideoDiaryTask(
                     missingPermissionMic = videoMissingPermissionMic,
                     missingPermissionMicBody = videoMissingPermissionMicBody,
                     settings = videoSettings,
-                    cancel = videoCancel
+                    cancel = videoCancel,
+                    videoDiaryFilter = videoDiaryFilter,
                 )
             )
 

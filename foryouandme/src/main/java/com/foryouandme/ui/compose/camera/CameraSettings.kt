@@ -7,6 +7,14 @@ sealed class CameraLens {
 
 }
 
+sealed class FilterCamera {
+
+    object On : FilterCamera()
+    object Off : FilterCamera()
+
+}
+
+
 sealed class CameraFlash {
 
     object On : CameraFlash()

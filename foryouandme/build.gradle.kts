@@ -56,6 +56,10 @@ android {
 
 dependencies {
 
+    /* --- gpuimage --- */
+    
+    implementation(GPUImage.GPUImage.GPUImageCore.get())
+
     /* --- kotlin --- */
 
     implementation(Kotlin.StdLib.get())

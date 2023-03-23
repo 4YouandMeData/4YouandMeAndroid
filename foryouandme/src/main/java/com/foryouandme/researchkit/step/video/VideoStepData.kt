@@ -5,6 +5,7 @@ import com.foryouandme.domain.error.ForYouAndMeException
 import com.foryouandme.entity.permission.Permission
 import com.foryouandme.ui.compose.camera.CameraFlash
 import com.foryouandme.ui.compose.camera.CameraLens
+import com.foryouandme.ui.compose.camera.FilterCamera
 import java.io.File
 
 data class VideoStepState(
@@ -16,6 +17,7 @@ data class VideoStepState(
     val lastRecordedFilePath: String? = null,
     val recordingState: RecordingState = RecordingState.RecordingPause,
     val cameraFlash: CameraFlash = CameraFlash.Off,
+    val filterCamera: FilterCamera = FilterCamera.Off,
     val cameraLens: CameraLens = CameraLens.Back,
     val mergedVideoPath: LazyData<String> = LazyData.Empty,
     val submit: LazyData<Unit> = LazyData.Empty
@@ -38,6 +40,7 @@ sealed class VideoStepAction {
     object RequestPermissions: VideoStepAction()
     object ToggleCamera : VideoStepAction()
     object ToggleFlash : VideoStepAction()
+    object ToggleFilter : VideoStepAction()
     object PlayPause: VideoStepAction()
     object HandleVideoRecordError: VideoStepAction()
     object Merge: VideoStepAction()

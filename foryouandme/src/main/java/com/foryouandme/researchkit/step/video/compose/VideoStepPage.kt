@@ -93,7 +93,8 @@ fun VideoStepPage(
             onRecordError = { videoStepViewModel.execute(HandleVideoRecordError) },
             onCloseClicked = { onCloseClicked() },
             onReviewClicked = { videoStepViewModel.execute(Merge) },
-            onSubmitClicked = { videoStepViewModel.execute(Submit(taskId)) }
+            onSubmitClicked = { videoStepViewModel.execute(Submit(taskId)) },
+            onFilterClicked = { videoStepViewModel.execute(ToggleFilter) },
         )
     }
 
@@ -111,12 +112,13 @@ private fun VideoStepPage(
     onRecordError: () -> Unit = {},
     onCloseClicked: () -> Unit = {},
     onReviewClicked: () -> Unit = {},
-    onSubmitClicked: () -> Unit = {}
+    onSubmitClicked: () -> Unit = {},
+    onFilterClicked: () -> Unit = {},
 ) {
 
     if (state.step != null) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if(state.permissionsGranted.not())
+            if (state.permissionsGranted.not())
                 requestPermissions()
             else if (
                 state.recordingState is RecordingState.RecordingPause ||
@@ -133,7 +135,9 @@ private fun VideoStepPage(
                         targetResolution = Resolution(width = 500, height = 899)
                     ),
                     onRecordError = onRecordError,
+                    filterCamera = state.filterCamera,
                     modifier = Modifier.fillMaxSize()
+
                 )
             else if (state.mergedVideoPath is LazyData.Data)
                 VideoPlayer(
@@ -155,7 +159,9 @@ private fun VideoStepPage(
                     onFlashClicked = onFlashClicked,
                     cameraToggle = state.step.cameraToggleImage,
                     cameraLens = state.cameraLens,
-                    onCameraClicked = onCameraClicked
+                    onCameraClicked = onCameraClicked,
+                    filterToggle = state.step.videoDiaryFilter,
+                    onFilterClicked = onFilterClicked,
                 )
                 MediaButton(
                     recordingState = state.recordingState,
@@ -181,6 +187,8 @@ private fun VideoStepPage(
                     progressBackgroundColor = state.step.timeProgressBackgroundColor.toColor(),
                     infoTitle = state.step.infoTitle,
                     infoTitleColor = state.step.infoTitleColor.toColor(),
+                    infoFilter = state.step.infoFilter,
+                    filterImage = state.step.filterImage,
                     infoBody = state.step.infoBody,
                     infoBodyColor = state.step.infoBodyColor.toColor(),
                     reviewButton = state.step.reviewButton,
@@ -194,10 +202,10 @@ private fun VideoStepPage(
             }
             Loading(
                 backgroundColor = state.step.infoBackgroundColor.toColor(),
+                modifier = Modifier.fillMaxSize(),
                 isVisible =
-                state.mergedVideoPath is LazyData.Loading ||
-                        state.submit is LazyData.Loading,
-                modifier = Modifier.fillMaxSize()
+                    state.mergedVideoPath is LazyData.Loading ||
+                        state.submit is LazyData.Loading
             )
         }
     }
@@ -250,6 +258,8 @@ private fun VideoStepPagePreview() {
                     timeProgressColor = Color.WHITE,
                     infoTitle = Mock.title,
                     infoTitleColor = Color.WHITE,
+                    infoFilter = Mock.body,
+                    filterImage = 0,
                     infoBody = Mock.body,
                     infoBodyColor = Color.WHITE,
                     reviewTimeColor = Color.WHITE,
@@ -264,12 +274,12 @@ private fun VideoStepPagePreview() {
                     missingPermissionMic = Mock.title,
                     missingPermissionMicBody = Mock.body,
                     settings = Mock.button,
-                    cancel = Mock.button
-
+                    cancel = Mock.button,
+                    videoDiaryFilter = 0,
                 )
             ),
             cameraEvents = flow { },
-            videoPlayerEvents = flow {  }
+            videoPlayerEvents = flow { }
         )
     }
 }
